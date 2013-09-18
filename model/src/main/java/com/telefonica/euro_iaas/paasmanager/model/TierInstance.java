@@ -36,6 +36,7 @@ public class TierInstance  extends InstallableInstance{
 		super();
 		this.tier = tier;
 		this.productInstances = productInstances;
+		setName();
 	}
 
 	/**
@@ -66,7 +67,18 @@ public class TierInstance  extends InstallableInstance{
 		this.productInstances = productInstances;
 	}
 
-	
+	/*
+	 * setting the Name as function of Tier and ProductIntances
+	 */
+	private void setName(){
+		String nameProducts = "";
+		for (int i=0; i< productInstances.size(); i++){
+			nameProducts = nameProducts + productInstances.get(i).getName() + "-";
+		}
+		this.name = tier.getName() + "-" 
+				+ nameProducts.substring(0, nameProducts.length() -1); 
+
+	}
 	
 	
 	

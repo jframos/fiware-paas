@@ -172,7 +172,7 @@ public class ProductInstanceAsyncManagerImpl implements
     private ProductInstance getInstalledProduct(ProductRelease productRelease, VM vm) {
         ProductInstanceSearchCriteria criteria = new ProductInstanceSearchCriteria();
         criteria.setVm(vm);
-        criteria.setProductReleaseName(productRelease.getName());
+        criteria.setProductRelease(productRelease);
         try {
             return productInstanceManager.loadByCriteria(criteria);
         } catch (EntityNotFoundException e) {

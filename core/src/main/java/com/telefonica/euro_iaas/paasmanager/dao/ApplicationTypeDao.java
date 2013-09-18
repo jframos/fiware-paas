@@ -9,6 +9,6 @@ import com.telefonica.euro_iaas.paasmanager.model.ApplicationType;
  * @author Jesus M. Movilla
  * @version $Id: $
  */
-public interface ApplicationTypeDao extends BaseDAO<ApplicationType, Long> {
+public interface ApplicationTypeDao extends BaseDAO<ApplicationType, String> {
 
 }

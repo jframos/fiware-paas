@@ -29,6 +29,7 @@ public class ApplicationInstance extends InstallableInstance {
 			EnvironmentInstance environmentInstance) {
 		this.applicationRelease = applicationRelease;
 		this.environmentInstance = environmentInstance;
+		setName();
 	}
 
 	/**
@@ -57,6 +58,14 @@ public class ApplicationInstance extends InstallableInstance {
 	 */
 	public void setEnvironmentInstance(EnvironmentInstance environmentInstance) {
 		this.environmentInstance = environmentInstance;
+	}
+	
+	/*
+	 * setting the name as fuction of applicationRelease.name 
+	 * and environmentInstance.name
+	 */
+	private void setName() {
+		this.name = applicationRelease.getName() + "-" + environmentInstance.getName();
 	}
 
 }

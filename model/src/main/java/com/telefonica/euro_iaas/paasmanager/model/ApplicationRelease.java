@@ -50,8 +50,14 @@ public class ApplicationRelease  {
 	private List<ApplicationRelease> transitableReleases;
 
 	@ManyToMany
-	private List<ArtifactType> artifactTypes;
+	private List<Artifact> artifacts;
 
+	
+	/**
+	 */
+	public ApplicationRelease() {
+	}
+	
 	/**
 	 * @param name
 	 * @param version
@@ -70,13 +76,13 @@ public class ApplicationRelease  {
 	 * @param applicationType
 	 * @param attributes
 	 * @param transitableReleases
-	 * @param artifactTypes
+	 * @param artifacts
 	 */
-	public ApplicationRelease(String name, String version,
-			String description, ApplicationType applicationType,
-			List<Attribute> attributes,
-			List<ApplicationRelease> transitableReleases,
-			List<ArtifactType> artifactTypes) {
+		public ApplicationRelease(String name, String version,
+				String description, ApplicationType applicationType,
+				List<Attribute> attributes,
+				List<ApplicationRelease> transitableReleases,
+				List<Artifact> artifacts) {
 		this.id = name + "-" + version;
 		this.name = name;
 		this.version = version;
@@ -84,7 +90,7 @@ public class ApplicationRelease  {
 		this.applicationType = applicationType;
 		this.attributes = attributes;
 		this.transitableReleases = transitableReleases;
-		this.artifactTypes = artifactTypes;
+		this.artifacts = artifacts;
 	}
 
 	/**
@@ -186,17 +192,17 @@ public class ApplicationRelease  {
 	}
 
 	/**
-	 * @return the artifactTypes
+	 * @return the artifacts
 	 */
-	public List<ArtifactType> getArtifactTypes() {
-		return artifactTypes;
+	public List<Artifact> getArtifacts() {
+		return artifacts;
 	}
 
 	/**
-	 * @param artifactTypes the artifactTypes to set
+	 * @param artifacts the artifacts to set
 	 */
-	public void setArtifactTypes(List<ArtifactType> artifactTypes) {
-		this.artifactTypes = artifactTypes;
+	public void setArtifacts(List<Artifact> artifacts) {
+		this.artifacts = artifacts;
 	}
 
 	/* (non-Javadoc)

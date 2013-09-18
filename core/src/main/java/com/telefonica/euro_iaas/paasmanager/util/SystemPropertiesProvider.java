@@ -1,3 +1,15 @@
+/*
+
+  (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights
+  Reserved.
+
+  The copyright to the software program(s) is property of Telefonica I+D.
+  The program(s) may be used and or copied only with the express written
+  consent of Telefonica I+D or in accordance with the terms and conditions
+  stipulated in the agreement/contract under which the program(s) have
+  been supplied.
+
+*/
 package com.telefonica.euro_iaas.paasmanager.util;
 
 import java.util.Properties;
@@ -12,11 +24,25 @@ public interface SystemPropertiesProvider {
     public final static String TASK_BASE_URL = "taskBaseUrl";
 	
     public final static String PRODUCT_INSTANCE_BASE_URL = "productInstanceBaseUrl";
+    public final static String PRODUCT_RELEASE_BASE_URL ="productReleaseBaseUrl";
     public final static String APPLICATION_INSTANCE_BASE_URL = "applicationInstanceBaseUrl";
     public final static String ENVIRONMENT_INSTANCE_BASE_URL = "environmentInstanceBaseUrl";
-    
+    public final static String ENVIRONMENT_BASE_URL = "environmentBaseUrl";
+    public final static String APPLICATION_RELEASE_BASE_URL = "applicationReleaseBaseUrl";
+    public final static String APPLICATION_TYPE_BASE_URL = "applicationTypeBaseUrl";
+       
     public final static String SDC_SERVER_URL = "sdcServerUrl";
     public final static String SDC_SERVER_MEDIATYPE = "sdcServerMediaType";
+    
+    public final static String FQN1 = "fqn1";
+    public final static String FQN2 = "fqn2";
+    public final static String IP1 = "ip1";
+    public final static String IP2 = "ip2";
+    public final static String HOSTNAME1 = "hostname1";
+    public final static String HOSTNAME2 = "hostname2";
+    public final static String DOMAINNAME1 = "domainname1";
+    public final static String DOMAINNAME2 = "domainname2";
+    public final static String OSTYPE = "osType";
     /*
     // CHEF PROPERTIES //
     public final static String EXECUTE_RECIPES_SCRIPT = "executeRecipesScript";

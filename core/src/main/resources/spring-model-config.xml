@@ -5,7 +5,7 @@
               http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
     default-autowire="no">
  
-    <bean id="sdcClient" lazy-init="true"
+    <bean id="sDCClient" lazy-init="true"
         class="com.telefonica.euro_iaas.sdc.client.SDCClient">
     </bean>
     
@@ -15,7 +15,7 @@
     
     <bean id="productInstallator" lazy-init="true"
         class="com.telefonica.euro_iaas.paasmanager.util.ProductInstallatorSdcImpl">
-        <property name="sdcClient" ref="sdcClient"/>
+        <property name="sDCClient" ref="sDCClient"/>
         <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
     </bean>
     
@@ -29,5 +29,41 @@
         class="com.telefonica.euro_iaas.paasmanager.manager.impl.ProductInstanceManagerImpl">
         <property name="productInstanceDao" ref="productInstanceDao"/>
         <property name="productInstallator" ref="productInstallator"/>
+        <property name="productReleaseDao" ref="productReleaseDao"/>
     </bean>
+    <bean id="appicationInstanceManager" lazy-init="true" 
+        class="com.telefonica.euro_iaas.paasmanager.manager.impl.ApplicationInstanceManagerImpl">
+        <property name="applicationInstanceDao" ref="applicationInstanceDao"/>
+        <property name="applicationReleaseDao" ref="applicationReleaseDao"/>
+        <property name="artifactDao" ref="artifactDao"/>
+        <property name="artifactTypeDao" ref="artifactTypeDao"/>
+        <property name="productReleaseDao" ref="productReleaseDao"/>
+        <property name="applicationTypeDao" ref="applicationTypeDao"/>        
+    </bean>
+    <bean id="environmentInstanceManager" lazy-init="true" 
+        class="com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentInstanceManagerImpl">
+        <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
+        <property name="environmentDao" ref="environmentDao"/>
+        <property name="tierInstanceDao" ref="tierInstanceDao"/>
+        <property name="tierDao" ref="tierDao"/>
+        <property name="productReleaseDao" ref="productReleaseDao"/>
+        <property name="productInstanceDao" ref="productInstanceDao"/>
+        <property name="environmentManager" ref="environmentManager"/>
+        <property name="productInstanceManager" ref="productInstanceManager"/>
+        <property name="infrastructureManager" ref="infrastructureManager"/>
+    </bean>
+    <bean id="tierInstanceManager" lazy-init="true" 
+        class="com.telefonica.euro_iaas.paasmanager.manager.impl.TierInstanceManagerImpl">
+        <property name="tierInstanceDao" ref="tierInstanceDao"/>
+        <property name="tierDao" ref="tierDao"/>
+        <property name="productInstanceDao" ref="productInstanceDao"/>
+    </bean>
+        <bean id="environmentManager" lazy-init="true" 
+        class="com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl">
+        <property name="environmentDao" ref="environmentDao"/>
+    </bean>
+    <bean id="infrastructureManager" lazy-init="true" 
+        class="com.telefonica.euro_iaas.paasmanager.manager.impl.InfrastructureManagerClaudiaImpl">
+        <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
+    </bean>    
 </beans>

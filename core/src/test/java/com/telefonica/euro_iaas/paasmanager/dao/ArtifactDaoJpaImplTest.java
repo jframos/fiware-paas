@@ -1,3 +1,15 @@
+/*
+
+  (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights
+  Reserved.
+
+  The copyright to the software program(s) is property of Telefonica I+D.
+  The program(s) may be used and or copied only with the express written
+  consent of Telefonica I+D or in accordance with the terms and conditions
+  stipulated in the agreement/contract under which the program(s) have
+  been supplied.
+
+*/
 package com.telefonica.euro_iaas.paasmanager.dao;
 
 import java.util.List;
@@ -60,7 +72,7 @@ public class ArtifactDaoJpaImplTest extends AbstractJpaDaoTest {
         assertNotNull(createdArtifact.getId());
         assertEquals(artifact.getId(), createdArtifact.getId());
 
-        Artifact findArtifact = artifactDao.load(createdArtifact.getId());
+        Artifact findArtifact = artifactDao.load(createdArtifact.getName());
         assertEquals(createdArtifact, findArtifact);
     }
 
@@ -76,7 +88,7 @@ public class ArtifactDaoJpaImplTest extends AbstractJpaDaoTest {
         Artifact artifact = artifacts.get(0);
         artifact.setPath("/Artifact2/path2");
         artifactDao.update(artifact);
-        assertEquals("/Artifact2/path2", artifactDao.load(artifact.getId()).getPath());
+        assertEquals("/Artifact2/path2", artifactDao.load(artifact.getName()).getPath());
         
         artifactDao.remove(artifact);
         assertEquals(0, artifactDao.findAll().size());       

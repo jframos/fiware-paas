@@ -18,13 +18,15 @@
         <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
         <property name="taskNotificator" ref="taskNotificator"/>
     </bean>
-        <bean id="environmentInstanceAsyncManager" lazy-init="true"
-        class="com.telefonica.euro_iaas.paasmanager.manager.async.impl.EnvironmentInstanceAsyncManagerImpl">
+    <bean id="environmentInstanceAsyncManager" lazy-init="true"
+            class="com.telefonica.euro_iaas.paasmanager.manager.async.impl.EnvironmentInstanceAsyncManagerImpl">
         <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
+        <property name="environmentManager" ref="environmentManager"/>
         <property name="productInstanceManager" ref="productInstanceManager"/>
         <property name="taskManager" ref="taskManager"/>
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
+        <property name="infrastructureManager" ref="infrastructureManager"/>
         <property name="taskNotificator" ref="taskNotificator"/>
+        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
     </bean>
 <!-- 
     <bean id="applicationInstanceAsyncManager" lazy-init="true"

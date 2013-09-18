@@ -9,6 +9,6 @@ import com.telefonica.euro_iaas.paasmanager.model.ArtifactType;
  * @author Jesus M. Movilla
  * @version $Id: $
  */
-public interface ArtifactTypeDao extends BaseDAO<ArtifactType, Long> {
+public interface ArtifactTypeDao extends BaseDAO<ArtifactType, String> {
 
 }

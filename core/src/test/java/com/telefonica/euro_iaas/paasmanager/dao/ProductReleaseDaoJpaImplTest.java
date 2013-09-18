@@ -111,7 +111,7 @@ public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
         ProductRelease productRelease = productReleases.get(0);
         productRelease.setDescription("newDescription");
         productReleaseDao.update(productRelease);
-        assertEquals("newDescription", productReleaseDao.load(productRelease.getId()).getDescription());
+        assertEquals("newDescription", productReleaseDao.load(productRelease.getName()).getDescription());
         productReleaseDao.remove(productRelease);
         assertEquals(0, productReleaseDao.findAll().size());
     }

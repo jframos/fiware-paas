@@ -1,6 +1,7 @@
 package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
@@ -39,11 +40,11 @@ public class ProductInstanceDaoJpaImpl extends AbstractBaseDao<ProductInstance, 
                 .createCriteria(ProductInstance.class);
 
    
-        if (!StringUtils.isEmpty(criteria.getProductReleaseName())) {
-            baseCriteria.createAlias("productRelaseName", "rls")
-            .createAlias("rls.productRelease", "pr");
-            baseCriteria.add(Restrictions.eq("pr.name",
-                    criteria.getProductReleaseName()));
+        if (!StringUtils.isEmpty(criteria.getProductName())) {
+            baseCriteria.createAlias("productRelease", "rls");
+            //.createAlias("rls.productRelease", "prod");
+            baseCriteria.add(Restrictions.eq("rls.name",
+                    criteria.getProductName()));
         }
         
         if (criteria.getVm() != null) {
@@ -81,10 +82,13 @@ public class ProductInstanceDaoJpaImpl extends AbstractBaseDao<ProductInstance, 
     public ProductInstance findUniqueByCriteria(
             ProductInstanceSearchCriteria criteria)
                     throws NotUniqueResultException {
-        List<ProductInstance> instances = findByCriteria(criteria);
-        if (instances.size() != 1) {
+    	List<ProductInstance> instances = findByCriteria(criteria);
+        if (instances.size() > 1) {
             throw new NotUniqueResultException();
         }
+        if (instances.size() == 0)
+        	throw new NoSuchElementException();
+        
         return instances.iterator().next();
     }
     
