@@ -1,0 +1,92 @@
+package com.telefonica.euro_iaas.paasmanager.model.dto;
+
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import com.telefonica.euro_iaas.paasmanager.model.Attribute;
+
+/**
+ * DTO to receive the complete information when a product release is going to be
+ * installed.
+ *
+ * @author Jesus M. Movilla
+ *
+ */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class ProductInstanceDto {
+
+    private ProductReleaseDto product;
+    private VM vm;
+    private List<Attribute> attributes;
+    private String vdc;
+
+    /**
+     */
+    public ProductInstanceDto() {
+    }
+
+    /**
+     * @param product
+     * @param vm
+     */
+    public ProductInstanceDto(ProductReleaseDto product, VM vm) {
+        this.product = product;
+        this.vm = vm;
+    }
+    /**
+     * @return the product
+     */
+    public ProductReleaseDto getProduct() {
+        return product;
+    }
+    /**
+     * @param product the product to set
+     */
+    public void setProduct(ProductReleaseDto product) {
+        this.product = product;
+    }
+    /**
+     * @return the vm
+     */
+    public VM getVm() {
+        return vm;
+    }
+    /**
+     * @param vm the vm to set
+     */
+    public void setVm(VM vm) {
+        this.vm = vm;
+    }
+
+    /**
+     * @return the attributes
+     */
+    public List<Attribute> getAttributes() {
+        return attributes;
+    }
+
+    /**
+     * @param attributes the attributes to set
+     */
+    public void setAttributes(List<Attribute> attributes) {
+        this.attributes = attributes;
+    }
+
+    /**
+     * @return the vdc
+     */
+    public String getVdc() {
+        return vdc;
+    }
+
+    /**
+     * @param vdc the vdc to set
+     */
+    public void setVdc(String vdc) {
+        this.vdc = vdc;
+    }
+}

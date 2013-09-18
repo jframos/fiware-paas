@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.telefonica.euro_iaas</groupId>
+    <artifactId>paas-manager-core</artifactId>
+    <packaging>jar</packaging>
+    <name>paas-manager-core</name>
+   
+
+    <parent> 
+        <groupId>com.telefonica.euro_iaas</groupId>
+        <artifactId>paas-manager-server</artifactId>
+        <version>0.0.1</version>
+    </parent>
+    
+    <properties>
+        <spring.version>3.0.5.RELEASE</spring.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.telefonica.euro_iaas</groupId>
+            <artifactId>sdc-client</artifactId>
+            <version>1.9.45</version>
+        </dependency>
+        <dependency>
+            <groupId>com.telefonica.euro_iaas</groupId>
+            <artifactId>sdc-server-model</artifactId>
+            <version>1.9.45</version>
+        </dependency>
+        <dependency>
+            <groupId>com.telefonica.euro_iaas</groupId>
+            <artifactId>paas-manager-model</artifactId>
+        </dependency>
+        <!-- Persistence -->
+        <dependency>
+            <groupId>com.telefonica.euro_iaas</groupId>
+            <artifactId>commons-dao</artifactId>          
+        </dependency>
+        <dependency>
+            <groupId>com.telefonica.euro_iaas</groupId>
+            <artifactId>commons-properties</artifactId>
+        </dependency>
+        <!-- FOR ENTITY-MANAGER -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.4.2</version>
+        </dependency>
+        <!-- concrete Log4J Implementation for SLF4J API -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.4.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+
+        <!-- SPRING DEPENDENCIES -->
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.6.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- /SPRING DEPENDENCIES -->
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.5</version>
+        </dependency>
+
+        <!-- TEST DEPENDENCIES -->
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+        </dependency>
+        <dependency>
+            <!-- To get test datasource -->
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.7</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- TAR/ZIP DEPENDENCIES -->
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+
+        <!--/JERSEY DEPENDENCIES -->
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>1.6</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>1.40</version>
+        </dependency>
+    	
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>2.4</version>
+            <classifier>jdk15</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.xuse</groupId>
+            <artifactId>xuse-annotation-tool</artifactId>
+            <version>01.00.00-RC2</version>
+        </dependency>
+<!--        
+        <dependency> 
+            <groupId>sun.jdk</groupId> 
+            <artifactId>tools</artifactId> 
+            <version>1.5.0</version> 
+            <systemPath>/System/Library/Frameworks/JavaVM.framework/Versions/1.5/Classes/classes.jar</systemPath> 
+            <scope>system</scope> 
+        </dependency> 
+-->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+             
+                <configuration>
+                    <reportPlugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-project-info-reports-plugin</artifactId>
+                   
+                        </plugin>
+                    </reportPlugins>
+                </configuration>  
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>		
+            </plugin> 
+        </plugins>
+    </build>
+
+</project>

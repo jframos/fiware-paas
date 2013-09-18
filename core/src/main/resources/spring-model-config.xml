@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+              http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+    default-autowire="no">
+ 
+    <bean id="sdcClient" lazy-init="true"
+        class="com.telefonica.euro_iaas.sdc.client.SDCClient">
+    </bean>
+    
+    <!--  UTIL CLASSES -->
+    <bean id="restClient" class="com.sun.jersey.api.client.Client"
+     factory-method="create"/>
+    
+    <bean id="productInstallator" lazy-init="true"
+        class="com.telefonica.euro_iaas.paasmanager.util.ProductInstallatorSdcImpl">
+        <property name="sdcClient" ref="sdcClient"/>
+        <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
+    </bean>
+    
+    <bean id="taskNotificator" lazy-init="true"
+          class="com.telefonica.euro_iaas.paasmanager.util.TaskNotificatorImpl">
+          <property name="client" ref="restClient"/>
+    </bean>
+    
+    <!--  MANAGERS -->
+    <bean id="productInstanceManager" lazy-init="true" 
+        class="com.telefonica.euro_iaas.paasmanager.manager.impl.ProductInstanceManagerImpl">
+        <property name="productInstanceDao" ref="productInstanceDao"/>
+        <property name="productInstallator" ref="productInstallator"/>
+    </bean>
+</beans>
