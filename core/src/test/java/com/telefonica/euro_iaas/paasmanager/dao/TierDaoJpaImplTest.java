@@ -30,7 +30,7 @@ public class TierDaoJpaImplTest extends AbstractJpaDaoTest {
      */
     public void testCreate1() throws Exception {
         
-    	ServiceDaoJpaImplTest serviceDaoJpaImplTest= new ServiceDaoJpaImplTest();
+    	/*ServiceDaoJpaImplTest serviceDaoJpaImplTest= new ServiceDaoJpaImplTest();
     	serviceDaoJpaImplTest.setServiceDao(serviceDao);
     	
     	List<Service> services = serviceDao.findAll();
@@ -41,17 +41,18 @@ public class TierDaoJpaImplTest extends AbstractJpaDaoTest {
     			serviceDaoJpaImplTest.create (new Service("ServiceName", "ServiceDesc", null));
     	else
     		service = serviceDao.findAll().get(0);
+    	*/
     	
     	ProductReleaseDaoJpaImplTest productReleaseDaoJpaImplTest = new ProductReleaseDaoJpaImplTest();
     	productReleaseDaoJpaImplTest.setProductReleaseDao(productReleaseDao);
     	productReleaseDaoJpaImplTest.setOsDao(osDao);
     	productReleaseDaoJpaImplTest.setProductTypeDao(productTypeDao);
     	productReleaseDaoJpaImplTest.testCreate1();
-    	ProductRelease productRelease = productReleaseDao.findAll().get(0);
+    	List<ProductRelease> productReleases = productReleaseDao.findAll();
     	
     	Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES,
     			MINIMUM_INSTANCES, INITIAL_INSTANCES,
-    			service, productRelease);
+    			productReleases);
     			
     	Tier createdTier = tierDao.create(tier);
     	
@@ -68,25 +69,25 @@ public class TierDaoJpaImplTest extends AbstractJpaDaoTest {
     	ServiceDaoJpaImplTest serviceDaoJpaImplTest= new ServiceDaoJpaImplTest();
     	serviceDaoJpaImplTest.setServiceDao(serviceDao);
 
-    	List<Service> services = serviceDao.findAll();
+    	/*List<Service> services = serviceDao.findAll();
     	
     	Service service;
     	if (services.size()==0)
     		service =
     			serviceDaoJpaImplTest.create (new Service("ServiceName2", "ServiceDesc2", null));
     	else
-    		service = serviceDao.findAll().get(0);
+    		service = serviceDao.findAll().get(0);*/
     	
     	ProductReleaseDaoJpaImplTest productReleaseDaoJpaImplTest = new ProductReleaseDaoJpaImplTest();
     	productReleaseDaoJpaImplTest.setProductReleaseDao(productReleaseDao);
     	productReleaseDaoJpaImplTest.setOsDao(osDao);
     	productReleaseDaoJpaImplTest.setProductTypeDao(productTypeDao);
     	productReleaseDaoJpaImplTest.testCreate2();
-    	ProductRelease productRelease2 = productReleaseDao.findAll().get(0);
+    	List<ProductRelease> productReleases2 = productReleaseDao.findAll();
     	
     	Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES,
     			MINIMUM_INSTANCES, INITIAL_INSTANCES,
-    			service, productRelease2);
+    			productReleases2);
     			
     	Tier createdTier = tierDao.create(tier);
     	

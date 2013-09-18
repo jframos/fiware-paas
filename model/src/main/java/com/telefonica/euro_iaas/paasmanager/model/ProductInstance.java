@@ -44,6 +44,7 @@ public class ProductInstance extends InstallableInstance
         this.productRelease = productRelease;
         this.vm = vm;
         setVdc(vdc);
+		setName();
     }
 
 
@@ -94,6 +95,14 @@ public class ProductInstance extends InstallableInstance
         return this.getProductRelease().getName().compareTo(
                 o.getProductRelease().getName());
     }
+	
+	/*
+	 * setting the name as fuction of applicationRelease.name 
+	 * and environmentInstance.name
+	 */
+	private void setName(){
+		this.name = productRelease.getName() + "-" + vm.getFqn();
+	}
 
     
 }

@@ -14,7 +14,7 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductInstance
 /**
  * Defines the interface to work with async requests.
  *
- * @author Sergio Arroyo
+ * @author Jesus M Movilla
  *
  */
 public interface ProductInstanceAsyncManager {

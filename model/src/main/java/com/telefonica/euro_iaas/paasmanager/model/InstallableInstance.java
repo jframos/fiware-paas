@@ -55,7 +55,7 @@ public class InstallableInstance {
     private Date date;
     
 	@Column(nullable=false, length=256)
-    private String name;
+    protected String name;
 	
     @Enumerated(EnumType.STRING)
     private Status status;

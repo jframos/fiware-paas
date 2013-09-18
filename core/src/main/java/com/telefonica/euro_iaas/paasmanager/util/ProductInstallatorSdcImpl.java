@@ -6,18 +6,15 @@ import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider
 import java.util.ArrayList;
 
 
-import com.telefonica.euro_iaas.paasmanager.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 
 import com.telefonica.euro_iaas.sdc.client.SDCClient;
-import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
-import com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto;
 
 public class ProductInstallatorSdcImpl implements ProductInstallator {
 
-	private SDCClient sdcClient;
+	private SDCClient sDCClient;
     private SystemPropertiesProvider systemPropertiesProvider;
     
     
@@ -29,10 +26,12 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 		    
 		//SDCClient client = new SDCClient();
         com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService service =
-        		sdcClient.getProductInstanceService(sdcServerUrl, sdcMediaType);
+        		sDCClient.getProductInstanceService(sdcServerUrl, sdcMediaType);
         
         //From Paasmanager ProductRelease To SDC ProductInstanceDto
-        ProductInstanceDto productInstanceDto = new ProductInstanceDto();
+        com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto productInstanceDto 
+        	= new com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto();
+        
         productInstanceDto.setVm(
         		new com.telefonica.euro_iaas.sdc.model.dto.VM(
         				productInstance.getVm().getFqn(), 
@@ -42,27 +41,32 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         				productInstance.getVm().getOsType()));
         
         productInstanceDto.setProduct(
-        		new ProductReleaseDto(
+        		new com.telefonica.euro_iaas.sdc.model.dto.ProductReleaseDto(
         				productInstance.getProductRelease().getName(), 
         				productInstance.getProductRelease().getDescription(),
         				productInstance.getProductRelease().getVersion(), null, 
         				null, 
         				null, null));
         
+        if (productInstance.getVdc() != null)
+        	productInstanceDto.setVdc(productInstance.getVdc());
+        
         productInstanceDto.setAttributes(
         		new ArrayList<com.telefonica.euro_iaas.sdc.model.Attribute>());
         
-        for (Attribute attribute : productInstance.getPrivateAttributes()) {
-        	productInstanceDto.getAttributes().add(
-                    new com.telefonica.euro_iaas.sdc.model.Attribute(
-                    		attribute.getKey(), attribute.getValue()));
+        if (productInstance.getPrivateAttributes() != null) {
+        	for (Attribute attribute : productInstance.getPrivateAttributes()) {
+            	productInstanceDto.getAttributes().add(
+                        new com.telefonica.euro_iaas.sdc.model.Attribute(
+                        		attribute.getKey(), attribute.getValue()));
+            }
         }
-        
+                
         //Installing product with SDC
         productInstance.setStatus(Status.INSTALLING);
-        service.install(productInstance.getVdc(), productInstanceDto, null);
+        com.telefonica.euro_iaas.sdc.model.Task task = service.install(productInstance.getVdc(), productInstanceDto, null);
         productInstance.setStatus(Status.INSTALLED);
-        
+
         return productInstance;
 
 	}
@@ -75,7 +79,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 		
 		//SDCClient client = new SDCClient();
         com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService productService =
-        		sdcClient.getProductInstanceService(sdcServerUrl, sdcMediaType);
+        		sDCClient.getProductInstanceService(sdcServerUrl, sdcMediaType);
         
         //TODO check if the product to be uninstalled supports a current application instance:
         /*List<InstallableInstanceDto> applicationInstances =         
@@ -90,11 +94,11 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 	
     // //////////// I.O.C /////////////
     /**
-     * @param sdcClient
-     *            the sdcClient to set
+     * @param sDCClient
+     *            the sDCClient to set
      */
-    public void setSDCClient(SDCClient sdcClient) {
-        this.sdcClient = sdcClient;
+    public void setSDCClient(SDCClient sDCClient) {
+        this.sDCClient = sDCClient;
     }
 
     /**

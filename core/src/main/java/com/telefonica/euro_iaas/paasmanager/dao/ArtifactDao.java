@@ -11,7 +11,7 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ArtifactSearchC
  * @author Jesus M. Movilla
  * @version $Id: $
  */
-public interface ArtifactDao extends BaseDAO<Artifact, Long> {
+public interface ArtifactDao extends BaseDAO<Artifact, String> {
 
 	/**
      * Find the artifacts that matches with the given criteria.

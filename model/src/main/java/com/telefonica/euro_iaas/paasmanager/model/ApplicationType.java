@@ -39,6 +39,12 @@ public class ApplicationType {
 	private List<EnvironmentType> environmentTypes;
 
 	/**
+	 * Default Constructor
+	 */
+	public ApplicationType() {
+	}
+	
+	/**
 	 * @param name
 	 * @param description
 	 * @param environmentTypes

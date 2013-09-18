@@ -8,9 +8,9 @@
    
 
     <parent> 
-        <groupId>com.telefonica.euro_iaas</groupId>
-        <artifactId>paas-manager-server</artifactId>
-        <version>0.0.1</version>
+      <groupId>com.telefonica.euro_iaas</groupId>
+      <artifactId>paas-manager-server</artifactId>
+      <version>0.0.2</version>
     </parent>
     
     <properties>
@@ -188,7 +188,7 @@
             <artifactId>bcprov-jdk16</artifactId>
             <version>1.40</version>
         </dependency>
-    	
+
         <dependency>
             <groupId>net.sf.json-lib</groupId>
             <artifactId>json-lib</artifactId>
@@ -201,38 +201,29 @@
             <artifactId>xuse-annotation-tool</artifactId>
             <version>01.00.00-RC2</version>
         </dependency>
-<!--        
-        <dependency> 
-            <groupId>sun.jdk</groupId> 
-            <artifactId>tools</artifactId> 
-            <version>1.5.0</version> 
-            <systemPath>/System/Library/Frameworks/JavaVM.framework/Versions/1.5/Classes/classes.jar</systemPath> 
-            <scope>system</scope> 
-        </dependency> 
--->
     </dependencies>
 
     <build>
-        <plugins>
-            <plugin>
+      <plugins>
+             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
              
-                <configuration>
+                  <configuration>
                     <reportPlugins>
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-project-info-reports-plugin</artifactId>
                    
                         </plugin>
-                    </reportPlugins>
-                </configuration>  
+                     </reportPlugins>
+                  </configuration>  
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>		
-            </plugin> 
-        </plugins>
+             <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>		
+			</plugin> 
+       </plugins>
     </build>
 
 </project>

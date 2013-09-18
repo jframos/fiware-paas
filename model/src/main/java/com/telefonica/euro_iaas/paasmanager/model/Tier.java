@@ -1,14 +1,15 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.persistence.ManyToMany;
+
 
 /**
  * Represents an artifact to be installed on a ProductRelease
@@ -30,11 +31,11 @@ public class Tier {
 	private Integer minimum_number_instances;
 	private Integer initial_number_instances;
 	
-	@ManyToOne
-	private Service service;
+	//@ManyToOne
+	//private Service service;
 	
-	@ManyToOne	
-	private ProductRelease productRelease;
+	@ManyToMany	
+	private List<ProductRelease> productReleases;
 
 	/**
 	 * Default Constructor
@@ -47,18 +48,16 @@ public class Tier {
 	 * @param maximum_number_instances
 	 * @param minimum_number_instances
 	 * @param initial_number_instances
-	 * @param service
-	 * @param productRelease
+	 * @param productReleases
 	 */
 	public Tier(String name, Integer maximum_number_instances,
 			Integer minimum_number_instances, Integer initial_number_instances,
-			Service service, ProductRelease productRelease) {
+			List<ProductRelease> productReleases) {
 		this.name = name;
 		this.maximum_number_instances = maximum_number_instances;
 		this.minimum_number_instances = minimum_number_instances;
 		this.initial_number_instances = initial_number_instances;
-		this.service = service;
-		this.productRelease = productRelease;
+		this.productReleases = productReleases;
 	}
 
 	/**
@@ -97,17 +96,10 @@ public class Tier {
 	}
 
 	/**
-	 * @return the service
+	 * @return the productReleases
 	 */
-	public Service getService() {
-		return service;
-	}
-
-	/**
-	 * @return the productRelease
-	 */
-	public ProductRelease getProductRelease() {
-		return productRelease;
+	public List<ProductRelease> getProductReleases() {
+		return productReleases;
 	}
 
 	/**
@@ -139,17 +131,10 @@ public class Tier {
 	}
 
 	/**
-	 * @param service the service to set
+	 * @param productReleases the productReleases to set
 	 */
-	public void setService(Service service) {
-		this.service = service;
-	}
-
-	/**
-	 * @param productRelease the productRelease to set
-	 */
-	public void setProductType(ProductRelease productRelease) {
-		this.productRelease = productRelease;
+	public void setProductReleases(List<ProductRelease> productReleases) {
+		this.productReleases = productReleases;
 	}
 
 	/* (non-Javadoc)

@@ -36,7 +36,8 @@ public interface ProductInstanceManager {
      * @return the of installed product.
      */
     ProductInstance install(VM vm, String vdc, ProductRelease product,
-            List<Attribute> attributes) throws InvalidEntityException;
+            List<Attribute> attributes) throws InvalidEntityException,
+            NotUniqueResultException;
         //throws NodeExecutionException, AlreadyInstalledException,
         //InvalidInstallProductRequestException;
 

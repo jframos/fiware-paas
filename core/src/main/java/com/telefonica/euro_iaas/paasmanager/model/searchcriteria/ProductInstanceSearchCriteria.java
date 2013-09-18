@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 
 
@@ -21,8 +22,9 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
      */
     private List<Status> status;
     private VM vm;
-    private String productReleaseName;
-
+    private ProductRelease productRelease;
+    private String productName;
+    
     /**
      * Default constructor
      */
@@ -36,15 +38,15 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
      * @param orderType
      * @param status
      * @param vm
-     * @param productReleaseName
+     * @param productRelease
      */
     public ProductInstanceSearchCriteria(Integer page, Integer pageSize,
             String orderBy, String orderType, List<Status> status,
-            VM vm, String productReleaseName) {
+            VM vm, ProductRelease productRelease) {
         super(page, pageSize, orderBy, orderType);
         this.status = status;
         this.vm = vm;
-        this.productReleaseName = productReleaseName;
+        this.productRelease = productRelease;
     }
 
     /**
@@ -52,15 +54,15 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
      * @param orderType
      * @param status
      * @param vm
-     * @param productReleaseName
+     * @param productRelease
      */
     public ProductInstanceSearchCriteria(String orderBy, String orderType,
     		List<Status> status,
-            VM vm, String productReleaseName) {
+            VM vm, ProductRelease productRelease) {
         super(orderBy, orderType);
         this.status = status;
         this.vm = vm;
-        this.productReleaseName = productReleaseName;
+        this.productRelease = productRelease;
     }
 
     /**
@@ -68,27 +70,27 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
      * @param pagesize
      * @param status
      * @param vm
-     * @param productReleaseName
+     * @param productRelease
      */
     public ProductInstanceSearchCriteria(Integer page, Integer pageSize,
     		List<Status> status,
-            VM vm, String productReleaseName) {
+            VM vm, ProductRelease productRelease) {
         super(page, pageSize);
         this.status = status;
         this.vm = vm;
-        this.productReleaseName = productReleaseName;
+        this.productRelease = productRelease;
     }
 
     /**
      * @param status
      * @param vm
-     * @param productReleaseName
+     * @param productRelease
      */
     public ProductInstanceSearchCriteria(List<Status> status, VM vm, 
-    		String productReleaseName) {
+    		ProductRelease productReleaseName) {
         this.status = status;
         this.vm = vm;
-        this.productReleaseName = productReleaseName;
+        this.productRelease = productRelease;
     }
 
     /**
@@ -120,17 +122,31 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
     }
 
     /**
-     * @return the productReleaseName
+     * @return the productRelease
      */
-    public String getProductReleaseName() {
-        return productReleaseName;
+    public ProductRelease getProductRelease() {
+        return productRelease;
     }
 
     /**
-     * @param productReleaseName the productReleaseName to set
+     * @param productRelease the productRelease to set
      */
-    public void setProductReleaseName(String productReleaseName) {
-        this.productReleaseName = productReleaseName;
+    public void setProductRelease(ProductRelease productRelease) {
+        this.productRelease = productRelease;
+    }
+    
+    /**
+     * @return the productName
+     */
+    public String getProductName() {
+        return productName;
+    }
+
+    /**
+     * @param productName the productName to set
+     */
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
 }

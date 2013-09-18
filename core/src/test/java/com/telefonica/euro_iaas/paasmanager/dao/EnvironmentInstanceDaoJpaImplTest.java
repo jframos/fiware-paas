@@ -118,10 +118,10 @@ public class EnvironmentInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
         	= environmentInstanceDao.findAll();
         assertEquals(1, environmentInstances.size());
         EnvironmentInstance environmentInstance = environmentInstances.get(0);
-        environmentInstance.setDate(new Date(86,12,19));
+        //environmentInstance.setDate(new Date(86,12,19));
         environmentInstanceDao.update(environmentInstance);
-        assertEquals(new Date(86,12,19), 
-        		environmentInstanceDao.load(environmentInstance.getId()).getDate());
+        assertEquals(environmentInstance.getName(), 
+        		environmentInstanceDao.load(environmentInstance.getName()).getName());
         environmentInstanceDao.remove(environmentInstance);
         assertEquals(0, environmentInstanceDao.findAll().size());
     }

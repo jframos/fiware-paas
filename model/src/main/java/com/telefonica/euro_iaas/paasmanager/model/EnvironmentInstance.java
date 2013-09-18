@@ -22,6 +22,9 @@ public class EnvironmentInstance extends InstallableInstance{
 	@ManyToMany	
 	private List<TierInstance> tierInstances;
 
+	public EnvironmentInstance() {
+	}
+	
 	/**
 	 * @param environment
 	 * @param tierInstances
@@ -31,6 +34,7 @@ public class EnvironmentInstance extends InstallableInstance{
 		super();
 		this.environment = environment;
 		this.tierInstances = tierInstances;
+		setName();
 	}
 
 	/**
@@ -59,6 +63,18 @@ public class EnvironmentInstance extends InstallableInstance{
 	 */
 	public void setTierInstances(List<TierInstance> tierInstances) {
 		this.tierInstances = tierInstances;
+	}
+	
+	/*
+	 * setting the Name as function of environment and Tiers
+	 */
+	private void setName(){
+		String nameTiers = "";
+		for (int i=0; i< tierInstances.size(); i++){
+			nameTiers = nameTiers + tierInstances.get(i).getName() + "-";
+		}
+		this.name = environment.getName() + "-" + nameTiers.substring(0, 
+				nameTiers.length() -1); 
 	}
 
 	

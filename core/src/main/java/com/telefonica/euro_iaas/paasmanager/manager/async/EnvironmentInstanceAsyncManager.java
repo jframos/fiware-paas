@@ -13,7 +13,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 
@@ -28,19 +31,22 @@ public interface EnvironmentInstanceAsyncManager {
      * @param task the task which contains the information about the async execution
      * @param callback if not null, contains the url where the system shall
      * notify when the task is done
+     * @throws EntityNotFoundException
+     * @throws InvalidEntityException
      * @return the task referencing the installed application.
      */
 
-    void create(String vdc, EnvironmentInstance environment,
-    		 Task task, String callback) throws EntityNotFoundException;
+    void create(String vdc, Environment environment,
+    		 Task task, String callback) throws EntityNotFoundException, 
+ 			InvalidEntityException, AlreadyExistsEntityException;
     
    
     /**
      * Retrieve the selected environment instance.
-     * @param id the instance id
+     * @param name the instance name
      * @return the environment instance
      */
-    EnvironmentInstance load(Long id) throws EntityNotFoundException;
+    //EnvironmentInstance load(String name) throws EntityNotFoundException;
     
     /**
      * Destroy an Instance of an Environment.

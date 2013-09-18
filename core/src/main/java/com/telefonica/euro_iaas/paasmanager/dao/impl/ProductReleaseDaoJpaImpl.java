@@ -24,7 +24,7 @@ public class ProductReleaseDaoJpaImpl
 
 	@Override
 	public ProductRelease load(String arg0) throws EntityNotFoundException {
-        return super.loadByField(ProductRelease.class, "id", arg0);
+        return super.loadByField(ProductRelease.class, "name", arg0);
 	}
 
 	@Override

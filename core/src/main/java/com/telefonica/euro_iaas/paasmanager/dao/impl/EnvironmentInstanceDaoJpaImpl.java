@@ -8,7 +8,7 @@ import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 
 public class EnvironmentInstanceDaoJpaImpl 
-	extends AbstractBaseDao<EnvironmentInstance, Long> implements EnvironmentInstanceDao {
+	extends AbstractBaseDao<EnvironmentInstance, String> implements EnvironmentInstanceDao {
 
 	
 	@Override
@@ -17,9 +17,8 @@ public class EnvironmentInstanceDaoJpaImpl
 	}
 
 	@Override
-	public EnvironmentInstance load(Long arg0) throws EntityNotFoundException {
-        return super.loadByField(EnvironmentInstance.class, "id", arg0);
+	public EnvironmentInstance load(String  arg0) throws EntityNotFoundException {
+        return super.loadByField(EnvironmentInstance.class, "name", arg0);
 	}
 
-	
 }
