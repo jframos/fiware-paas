@@ -7,14 +7,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentType;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class EnvironmentDto {
 	private EnvironmentType environmentType;
-	private List<Tier> tiers;
+	private List<TierDto> tierDtos;
 	private String name;
+	private String description;
 	
 	/**
 	 */
@@ -26,11 +26,19 @@ public class EnvironmentDto {
 	 * @param tiers
 	 * @param name
 	 */
-	public EnvironmentDto(EnvironmentType environmentType, List<Tier> tiers,
-			String name) {
+	public EnvironmentDto(EnvironmentType environmentType, List<TierDto> tierDtos,
+			String name, String description) {
 		this.environmentType = environmentType;
-		this.tiers = tiers;
+		this.tierDtos = tierDtos;
 		this.name = name;
+		this.description = description;
+	}
+	
+	public EnvironmentDto(List<TierDto> tierDtos,
+			String name, String description) {
+		this.tierDtos = tierDtos;
+		this.name = name;
+		this.description = description;
 	}
 	/**
 	 * @return the environmentType
@@ -47,14 +55,14 @@ public class EnvironmentDto {
 	/**
 	 * @return the tiers
 	 */
-	public List<Tier> getTiers() {
-		return tiers;
+	public List<TierDto> getTierDtos() {
+		return tierDtos;
 	}
 	/**
 	 * @param tiers the tiers to set
 	 */
-	public void setTiers(List<Tier> tiers) {
-		this.tiers = tiers;
+	public void setTierDtos(List<TierDto> tierDtos) {
+		this.tierDtos = tierDtos;
 	}
 	/**
 	 * @return the name
@@ -68,6 +76,4 @@ public class EnvironmentDto {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
 }

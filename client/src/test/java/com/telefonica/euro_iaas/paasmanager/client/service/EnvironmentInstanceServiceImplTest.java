@@ -19,6 +19,8 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductType;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 
 /**
  * Unit test suite for EnvironmentInstanceServiceImpl.
@@ -36,13 +38,14 @@ public class EnvironmentInstanceServiceImplTest {
 	String BASE_URL = "http://localhost:8080/paasmanager/rest";
 	String MYME_TYPE= "application/xml";
 	String vdc = "VDC";
+	String org = "ORG";
 	String callback = null;
 	
 	@Before
     public void setUp() throws Exception {
 		environmentInstanceService = mock(EnvironmentInstanceService.class);
         when(environmentInstanceService.create(
-                any(String.class), any(EnvironmentDto.class), any(String.class)))
+                any(String.class), any(String.class), any(EnvironmentDto.class), any(String.class)))
                 	.thenReturn(new Task());
         
 		environmentDto = new EnvironmentDto();
@@ -56,26 +59,26 @@ public class EnvironmentInstanceServiceImplTest {
 		List<OS> supportedOOSS = new ArrayList<OS>();
 		supportedOOSS.add(os);
 		
-		List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
-		ProductRelease productRelease = new ProductRelease();
-		productRelease.setDescription("productReleaseDescription");
-		productRelease.setName("productreleaseName");
-		productRelease.setVersion("1.0");
-		productRelease.setProductType(new ProductType("productTypeName",
-				"productTypeDescription"));
-		productRelease.setSupportedOOSS(supportedOOSS);
+		List<ProductReleaseDto> productReleaseDtos = new ArrayList<ProductReleaseDto>();
+		ProductReleaseDto productReleaseDto = new ProductReleaseDto();
+		productReleaseDto.setProductDescription("productReleaseDescription");
+		productReleaseDto.setProductName("productreleaseName");
+		productReleaseDto.setVersion("1.0");
+		//productReleaseDto.setProductType(new ProductType("productTypeName",
+			//	"productTypeDescription"));
+	//	productReleaseDto.setSupportedOS(supportedOOSS);
 		
-		productReleases.add(productRelease);
+		productReleaseDtos.add(productReleaseDto);
 		
-		List<Tier> tiers = new ArrayList<Tier>();
+		List<TierDto> tierDtos = new ArrayList<TierDto>();
 		
-		Tier tier = new Tier();
-		tier.setInitial_number_instances(1);
-		tier.setMaximum_number_instances(1);
-		tier.setMinimum_number_instances(1);
-		tier.setName("tierName");
-		tier.setProductReleases(productReleases);
-		environmentDto.setTiers(tiers);
+		TierDto tierDto = new TierDto();
+		tierDto.setInitial_number_instances(1);
+		tierDto.setMaximum_number_instances(1);
+		tierDto.setMinimum_number_instances(1);
+		tierDto.setName("tierName");
+		tierDto.setProductReleaseDtos(productReleaseDtos);
+		environmentDto.setTierDtos(tierDtos);
 	}
 	
 	@Test
@@ -83,7 +86,7 @@ public class EnvironmentInstanceServiceImplTest {
 		paasManagerClient = new PaasManagerClient();
 		//environmentInstanceService
 			//= paasManagerClient.getEnvironmentInstanceService(BASE_URL, MYME_TYPE);		
-		Task task = environmentInstanceService.create(vdc, environmentDto, callback);
+		Task task = environmentInstanceService.create(org, vdc, environmentDto, callback);
 		
 	}
 }

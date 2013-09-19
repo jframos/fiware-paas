@@ -28,7 +28,6 @@ public class PropertiesLoaderBootstrap implements ServletContextListener {
     /**
      * {@inheritDoc}
      */
-    @Override
     public void contextDestroyed(ServletContextEvent arg0) {
         // Do nothing
     }
@@ -36,13 +35,12 @@ public class PropertiesLoaderBootstrap implements ServletContextListener {
     /**
      * {@inheritDoc}
      */
-    @Override
     public void contextInitialized(ServletContextEvent event) {
         WebApplicationContext ctx = WebApplicationContextUtils
                 .getWebApplicationContext(event.getServletContext());
         EntityManagerFactory emf =
             (EntityManagerFactory) ctx.getBean("entityManagerFactory");
-
+        
         PropertiesProvider propertiesProvider =
             new PropertiesProviderFactoryImpl().createPropertiesProvider(emf);
         Properties properties = propertiesProvider.load(NAMESPACE);

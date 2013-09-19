@@ -20,15 +20,6 @@ public interface ProductReleaseDao extends BaseDAO<ProductRelease, String> {
      */
     List<ProductRelease> findByCriteria(ProductReleaseSearchCriteria criteria);
 
-    /**
-     * Find the product release that match with the given criteria.
-     * @param productName the productName
-     * @param version the release version
-     * @return the element that match with the criteria.
-     * @throws EntityNotFoundException
-     *                      if there is no product with the given version
-     */
-    ProductRelease load(String productName, String version)
-        throws EntityNotFoundException;
+ 
 
 }

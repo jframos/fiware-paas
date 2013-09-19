@@ -1,0 +1,425 @@
+/*
+
+  (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights
+  Reserved.
+
+  The copyright to the software program(s) is property of Telefonica I+D.
+  The program(s) may be used and or copied only with the express written
+  consent of Telefonica I+D or in accordance with the terms and conditions
+  stipulated in the agreement/contract under which the program(s) have
+  been supplied.
+
+*/
+package com.telefonica.euro_iaas.paasmanager.claudia.impl;
+
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_BASEURL;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_IP;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_PORT;
+
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.ws.rs.core.MediaType;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
+import org.xml.sax.SAXException;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.WebResource.Builder;
+import com.telefonica.claudia.client.OvfInjector;
+import com.telefonica.claudia.smi.URICreation;
+import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
+import com.telefonica.euro_iaas.paasmanager.exception.FileUtilsException;
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaResourceNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaRetrieveInfoException;
+import com.telefonica.euro_iaas.paasmanager.exception.IPNotRetrievedException;
+import com.telefonica.euro_iaas.paasmanager.exception.NetworkNotRetrievedException;
+import com.telefonica.euro_iaas.paasmanager.exception.OSNotRetrievedException;
+import com.telefonica.euro_iaas.paasmanager.exception.VMStatusNotRetrievedException;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
+import com.telefonica.euro_iaas.paasmanager.util.FileUtils;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+
+
+/**
+ * @author jesus.movilla
+ *
+ */
+public class OpenstackDummyImpl implements ClaudiaClient {
+
+	private SystemPropertiesProvider systemPropertiesProvider;
+	private FileUtils fileUtils = null;
+	private String auxIdVM = null;
+
+
+	public String OnOffScalability(ClaudiaData claudiaData, 
+			String environmentName, boolean b) 
+			throws InfrastructureException {		
+		return null;
+	}
+
+	
+	public String browseService(ClaudiaData claudiaData) 
+			throws ClaudiaResourceNotFoundException {
+		String payload = null;
+		try {
+			payload = 
+					fileUtils.readFile(systemPropertiesProvider
+							.getProperty("neoclaudiaVappVMLocation"));
+			} catch (FileUtilsException e) {
+				throw new ClaudiaResourceNotFoundException(
+						"Error in the Claudia Dummy Utils "
+								+ e.getMessage());
+			}
+			return payload;
+	}
+
+	
+	public String browseVDC(ClaudiaData claudiaData)
+			throws ClaudiaResourceNotFoundException {
+		// TODO Auto-generated method stub
+		return "OK";
+	}
+
+	
+	public String browseVM(String org, String vdc, String service, String vm,
+			PaasManagerUser user)
+			throws ClaudiaResourceNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	public String browseVMReplica(ClaudiaData claudiaData, String replica) 
+				throws ClaudiaResourceNotFoundException {
+		
+	    String payload = null;
+	    String ip = null;
+		try {
+			ip = obtainIPFromFqn(claudiaData.getOrg(), claudiaData.getVdc(), claudiaData.getService(),
+					claudiaData.getVm(), claudiaData.getUser());
+		} catch (IPNotRetrievedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (NetworkNotRetrievedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		try {
+			payload = fileUtils.readFile(systemPropertiesProvider.getProperty("neoclaudiaVappVMLocation"))
+			          .replace("{org}",claudiaData.getOrg())
+			          .replace("{vdc}",claudiaData.getVdc())
+			          .replace("{service}",claudiaData.getService())
+			          .replace("{vm}",claudiaData.getVm())
+                      .replace("{replica}","1")
+                      .replace("{IP}",ip);
+
+		} catch (FileUtilsException e) {
+			throw new ClaudiaResourceNotFoundException(
+					"Error in the Claudia Dummy Utils "
+							+ e.getMessage());
+		}
+		return payload;
+	}
+
+	
+	public String createImage(ClaudiaData claudiaData) 
+			throws ClaudiaRetrieveInfoException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	public String deployService(ClaudiaData claudiaData, String ovf) 
+			throws InfrastructureException {
+		// TODO Auto-generated method stub
+		
+		return "<task href=\"http://localhost:8081/paasmanager/rest/vdc/hola/task/65\" startTime=\"2013-02-11T11:29:44.713+01:00\" status=\"SUCESS\"> "+
+        	"<description>Create environment testtomcatsap8</description> "+
+        	"<vdc>hola</vdc> " +
+        	"</task>";
+	}
+
+	
+	public String deployVDC(ClaudiaData claudiaData,
+			String cpu, String mem,
+			String disk) throws InfrastructureException {
+		// TODO Auto-generated method stub
+		return "NO used";
+	}
+
+	
+	public String deployVM(String org, String vdc, String service,
+			String vmName, PaasManagerUser user, String vmPath ) throws InfrastructureException {
+		// TODO Auto-generated method stub
+		return "NO used";
+	}
+
+	
+	public String deployVM(ClaudiaData claudiaData, String payloadovf) 
+					throws InfrastructureException {
+		// TODO Auto-generated method stub
+		
+		String payload = null;
+
+		String url = "http://130.206.80.63:8774/v2/"+ claudiaData.getVdc()+ "/servers";
+		System.out.println("actionUri: " + url);
+		
+		String name = claudiaData.getService()+"-"+claudiaData.getVm();
+		try {
+			payload =  "{\"server\": \n"+
+            "{\"name\": \""+ name+"\", \"imageRef\": \"44dcdba3-a75d-46a3-b209-5e9035d2435e\", \"flavorRef\": \"2\"}}";
+			
+			Client client = new Client();
+			System.out.println("url: " + url);
+			ClientResponse response = null;
+			
+			    
+								
+				WebResource wr = client.resource(url);
+				Builder builder = wr.accept(MediaType.APPLICATION_JSON)
+		                .type(MediaType.APPLICATION_JSON).entity(payload);
+				
+				
+					Map<String, String> header = getHeaders(claudiaData.getUser());
+					for (String key : header.keySet()) {
+						builder = builder.header(key, header.get(key));
+					}
+			
+				
+				response = builder.post(ClientResponse.class);
+				
+				String result =  response.getEntity(String.class);
+				
+				System.out.println ("Result " + result);
+				
+				String id = result.substring(result.indexOf("\"id\": \"") + "\"id\": \"".length(),result.indexOf(", \"links\"") -1);
+				
+				auxIdVM = id;
+				
+				System.out.println ("ID " + id);
+				
+				System.out.println ("Error " + response.getStatus() + " " + result);
+				
+		        
+			} catch (Exception e) {
+				String errorMessage = "Error performing post on the resource: " +
+						url + " with payload: " + payload;
+				e.printStackTrace();
+				
+				throw new InfrastructureException(errorMessage);
+			}
+			
+
+		
+				
+		return "<task href=\"http://130.206.80.112:8080/paasmanager/rest/vdc/test1/task/35\" startTime=\"2012-11-22T10:29:20.746+01:00\" status=\"success\">"+
+        	" <description>Create environment testtomcatsap5</description>"+
+        	" <vdc>test1</vdc>    </task>";
+	}
+	
+	
+	
+	private Map<String, String> getHeaders(PaasManagerUser claudiaData) {
+		
+		/*PaasManagerUser user = (PaasManagerUser) SecurityContextHolder
+				 .getContext().getAuthentication().getPrincipal();
+		 */
+		
+		Map<String, String> headers = new HashMap<String, String>();
+		
+		
+        
+		headers.put("X-Auth-Token", 
+				claudiaData.getToken());
+        headers.put("X-Auth-Project-Id", 
+        		claudiaData.getTenantId());
+        
+   /*     headers.put("X-Auth-Token", 
+				"bc3fd7adc68643d28a386a0fe5a48f7c");
+        headers.put("X-Auth-Project-Id", 
+        		"6571e3422ad84f7d828ce2f30373b3d4");*/
+		
+		
+		return headers;
+
+	}
+
+	
+	public String getVApp(String org, String vdc, String service, String vmName,
+			PaasManagerUser user)
+			throws IPNotRetrievedException, ClaudiaResourceNotFoundException,
+			NetworkNotRetrievedException, OSNotRetrievedException {
+	
+		FileUtils fileUtils = null;
+	    String payload = null;
+	    String ip =systemPropertiesProvider.getProperty("IP_VM_DummyClaudia");
+
+	
+		try {
+			payload = fileUtils.readFile("VappTemplate.xml","./src/main/resources")
+			          .replace("{org}",org)
+			          .replace("{vdc}",vdc)
+			          .replace("{service}",service)
+			          .replace("{vm}",vmName)
+                      .replace("{replica}","1")
+                      .replace("{IP}",ip);
+
+		} catch (FileUtilsException e) {
+
+			throw new IPNotRetrievedException(
+					"Error in the Claudia Dummy Utils "
+							+ e.getMessage());
+		}
+		return payload;
+	}
+	
+
+	
+
+	
+	public String obtainIPFromFqn(String org, String vdc, String service,
+			String vmName, PaasManagerUser user) throws IPNotRetrievedException,
+			ClaudiaResourceNotFoundException, NetworkNotRetrievedException {
+	
+
+		try {
+			Thread.sleep(20000);
+		} catch (InterruptedException e) {
+			String errorThread = "Thread Interrupted Exception "
+					+ "during delay after vm deployment";
+		
+			throw new IPNotRetrievedException(errorThread);
+		}
+		
+	String url = "http://130.206.80.63:8774/v2/"+ vdc+ "/servers/"+this.auxIdVM;
+	System.out.println("actionUri: " + url);
+	try {
+	
+
+	Client client = new Client();
+	System.out.println("url: " + url);
+	ClientResponse response = null;
+
+
+					
+	WebResource wr = client.resource(url);
+	Builder builder = wr.accept(MediaType.APPLICATION_JSON);
+
+
+		Map<String, String> header = getHeaders(user);
+		for (String key : header.keySet()) {
+			builder = builder.header(key, header.get(key));
+		}
+
+
+	response = builder.get(ClientResponse.class);
+
+	String result =  response.getEntity(String.class);
+	
+	String ip = result.substring(result.indexOf("\"addr\": \"") + "\"addr\": \"".length(),result.indexOf("\"}]}"));
+
+    System.out.println (ip);
+
+
+	
+	return ip;
+
+	} catch (Exception e) {
+	String errorMessage = "Error performing get on the resource: " +
+			url ;
+	e.printStackTrace();
+
+	throw new IPNotRetrievedException(errorMessage);
+	}
+	
+
+	}
+
+	
+	public String obtainOS(String org, String vdc, String service, String vmName
+			, PaasManagerUser user)
+			throws OSNotRetrievedException, ClaudiaResourceNotFoundException {
+
+		return "95";
+	}
+
+	
+	public void undeployVM(String fqn) throws InfrastructureException {
+		return;
+		
+	}
+
+	
+	public void undeployVMReplica(String fqn, String replica)
+			throws InfrastructureException {
+		return;
+		
+	}
+	
+    /**
+     * @param propertiesProvider
+     *            the propertiesProvider to set
+     */
+    public void setSystemPropertiesProvider(
+            SystemPropertiesProvider systemPropertiesProvider) {
+        this.systemPropertiesProvider = systemPropertiesProvider;
+    }
+    
+    /**
+     * @param propertiesProvider
+     *            the propertiesProvider to set
+     */
+    public SystemPropertiesProvider  getSystemPropertiesProvider() {
+        return this.systemPropertiesProvider;
+    }
+    
+    public void setFileUtils(
+    		FileUtils fileUtils ) {
+        this.fileUtils = fileUtils;
+    }
+    
+    /**
+     * @param propertiesProvider
+     *            the propertiesProvider to set
+     */
+    public FileUtils getFileUtils() {
+        return this.fileUtils;
+    }
+
+	/* (non-Javadoc)
+	 * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#obtainVMStatus(java.lang.String)
+	 */
+	public String obtainVMStatus(String vapp)
+			throws VMStatusNotRetrievedException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#switchVMOn(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public String switchVMOn(String org, String vdc, String service,
+			String vmName, PaasManagerUser user) throws InfrastructureException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+    
+    
+    
+    
+    
+	
+
+
+
+
+}

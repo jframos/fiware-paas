@@ -5,6 +5,9 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Represents an instance of a application
@@ -13,14 +16,23 @@ import javax.persistence.ManyToOne;
  * @version $Id: $
  */
 @Entity
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ApplicationInstance extends InstallableInstance {
 	
+	public final static String VDC_FIELD = "vdc";
 	@ManyToOne
 	private ApplicationRelease applicationRelease;
 	
 	@ManyToOne
 	private EnvironmentInstance environmentInstance;
 
+	/**
+	 * Default Constructor
+	 */
+	public ApplicationInstance() {
+	}
+	
 	/**
 	 * @param applicationRelease
 	 * @param environmentInstance
@@ -30,6 +42,34 @@ public class ApplicationInstance extends InstallableInstance {
 		this.applicationRelease = applicationRelease;
 		this.environmentInstance = environmentInstance;
 		setName();
+	}
+	
+	/**
+	 * @param applicationRelease
+	 * @param environmentInstance
+	 * @param vdc
+	 */
+	public ApplicationInstance(ApplicationRelease applicationRelease,
+			EnvironmentInstance environmentInstance, String vdc) {
+		this.applicationRelease = applicationRelease;
+		this.environmentInstance = environmentInstance;
+		this.setVdc(vdc);
+		setName();
+	}
+	
+	/**
+	 * @param applicationRelease
+	 * @param environmentInstance
+	 * @param vdc
+	 * @param status
+	 */
+	public ApplicationInstance(ApplicationRelease applicationRelease,
+			EnvironmentInstance environmentInstance, String vdc, Status status) {
+		this.applicationRelease = applicationRelease;
+		this.environmentInstance = environmentInstance;
+		this.setVdc(vdc);
+		setName();
+		this.setStatus(status);
 	}
 
 	/**

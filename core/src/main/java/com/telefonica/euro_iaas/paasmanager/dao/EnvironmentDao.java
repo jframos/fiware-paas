@@ -3,6 +3,7 @@ package com.telefonica.euro_iaas.paasmanager.dao;
 import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.BaseDAO;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentSearchCriteria;
 
@@ -18,5 +19,5 @@ public interface EnvironmentDao extends BaseDAO<Environment, String> {
      * @return the list of elements that match with the criteria.
      */
     List<Environment> findByCriteria(EnvironmentSearchCriteria criteria);
-
+    
 }

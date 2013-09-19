@@ -3,6 +3,8 @@ package com.telefonica.euro_iaas.paasmanager.manager;
 import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentType;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
@@ -17,10 +19,8 @@ public interface EnvironmentManager {
      * @param environmentType
      * @return the of installed product.
      */
-    Environment create(String name, List<Tier> tiers, EnvironmentType
-    		environmentType) throws EntityNotFoundException;
-        //throws NodeExecutionException, AlreadyInstalledException,
-        //InvalidInstallProductRequestException;
+    Environment create(Environment environment) throws 
+			InvalidEnvironmentRequestException;
 
     /**
      * Configure an installed product
@@ -55,7 +55,7 @@ public interface EnvironmentManager {
      * Destroy a previously creted environment.
      * @param environment the candidate to environment
      */
-    void destroy(Environment environment);
+    void destroy(Environment environment) throws InvalidEntityException;
         //throws NodeExecutionException, ApplicationInstalledException,
         //FSMViolationException;
 
@@ -66,6 +66,8 @@ public interface EnvironmentManager {
      * @throws EntityNotFoundException if the product instance does not exists
      */
     Environment load(String name) throws EntityNotFoundException;
+    
+    Environment update(Environment name) throws EntityNotFoundException, InvalidEntityException;
 
    /**
      * Retrieve all Environment created in the system.

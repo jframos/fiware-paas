@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,11 +21,13 @@ import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider
 import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.SDC_SERVER_URL;
 
 
+import com.telefonica.euro_iaas.paasmanager.installator.ProductInstallatorSdcImpl;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.OS;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.ProductType;
+import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductInstanceSearchCriteria;
@@ -48,6 +51,7 @@ public class ProductInstallatorSdcImplTest {
     private ProductInstanceService service;
     
     private ProductInstance expectedProductInstance;
+    private TierInstance tierInstance;
     private ProductRelease productRelease;
     private OS os;
     private Attribute attribute;
@@ -78,13 +82,14 @@ public class ProductInstallatorSdcImplTest {
         
         ProductType productType = new ProductType ("type A", "Type A desc");
         
+        tierInstance = new TierInstance ();
         productRelease = new ProductRelease(
                 "productPrueba", "1.0", "Product Prueba desc", 
                 Arrays.asList(attribute),
 	            null, Arrays.asList(os), true, productType);
         
         expectedProductInstance = new ProductInstance(
-        		productRelease, Status.INSTALLED, host, "vdc");
+        		productRelease, Status.INSTALLED,  "vdc");
         
         expectedProductInstance.setPrivateAttributes(Arrays.asList(attribute));
    }
@@ -95,10 +100,34 @@ public class ProductInstallatorSdcImplTest {
 		installator.setSDCClient(sdcClient);
 		installator.setSystemPropertiesProvider(systemPropertiesProvider);
 
-	    ProductInstance installedProduct = installator.install(expectedProductInstance);
+	    ProductInstance installedProduct = installator.install(tierInstance, expectedProductInstance.getProductRelease());
 	    // make verifications
 	    assertEquals(expectedProductInstance, installedProduct);
 
+	    verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_URL);
+	    verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_MEDIATYPE);    
+	    
+	    // only one product will be installed, the other one causes error.
+	    //verify(productInstanceDao, times(1)).update(any(ProductInstance.class));
+	    //verify(productInstanceDao, times(1)).findUniqueByCriteria(
+	    		//any(ProductInstanceSearchCriteria.class));
+	}
+	
+	@Test
+	public void testConfigureWhenEverithingIsOk() throws Exception {
+		ProductInstallatorSdcImpl installator = new ProductInstallatorSdcImpl();
+		installator.setSDCClient(sdcClient);
+		installator.setSystemPropertiesProvider(systemPropertiesProvider);
+		
+		ProductInstance productInstance= new ProductInstance(
+        		productRelease, Status.INSTALLED,  "vdc");
+        
+		productInstance.setPrivateAttributes(Arrays.asList(attribute));
+		List<Attribute> attributes = new ArrayList ();
+		attributes.add(new Attribute ("dd", "ddd"));
+
+	    installator.configure(productInstance, attributes);
+	    
 	    verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_URL);
 	    verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_MEDIATYPE);    
 	    

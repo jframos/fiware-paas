@@ -9,6 +9,6 @@ import com.telefonica.euro_iaas.paasmanager.model.EnvironmentType;
  * @author Jesus M. Movilla
  * @version $Id: $
  */
-public interface EnvironmentTypeDao extends BaseDAO<EnvironmentType, Long> {
+public interface EnvironmentTypeDao extends BaseDAO<EnvironmentType, String> {
 
 }

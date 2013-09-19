@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Envelope   xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" 
+            xmlns="http://schemas.dmtf.org/ovf/envelope/1" 
+            xmlns:rsrvr="http://schemas.telefonica.com/claudia/ovf" 
+            xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" 
+            xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+            xsi:schemaLocation="http://schemas.telefonica.com/claudia/ovf reservoir.xsd">
+	<References>
+	  <!--  Note: these digests are not final. These values match IBM testbed on Fri 19/3/2010 -->
+		<!-- ovf:href nombre de la plantilla -->
+		<File ovf:id="tomcat" ovf:href="tomcat" rsrvr:digest="8f1643c4fdf83ab3827190ab771f76e1"/>
+		<File ovf:id="postgresql" ovf:href="postgresql" rsrvr:digest="8080eaaa7f4912314c0362129877c1f9"/>
+        <File ovf:id="haproxy" ovf:href="haproxy" rsrvr:digest="8f1643c4fdf83ab3827190ab771f76e1"/>
+	</References>	
+	<DiskSection>
+		<Info>The SGE service uses two disk templates, one for VEEMaster and another for VEEExecutor</Info>
+		<!-- ovf:fileRef discos adicionales al File correspondiente-->
+		<Disk ovf:diskId="tomcat" ovf:fileRef="tomcat" ovf:capacity="512" ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html"/>
+		<Disk ovf:diskId="postgresql" ovf:fileRef="postgresql" ovf:capacity="512" ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html"/>
+		<Disk ovf:diskId="haproxy" ovf:fileRef="haproxy" ovf:capacity="512" ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html"/>
+	</DiskSection>
+	<NetworkSection>
+		<Info>The SGE service uses one one public network (admin_net) and one internal network (sge_net)</Info>
+		<Network ovf:name="public" rsrvr:public="true">
+			<Description>Network to provide administrative access to VEEMaster</Description>
+		</Network>  
+	</NetworkSection>	
+	<rsrvr:KPISection><Info>SGE only uses one KPI: the length of the jobs queue</Info><rsrvr:KPI KPIname="requestDelay" KPItype="VEEHW" KPIVmname="tomcat"/></rsrvr:KPISection>
+	<!--  VM descriptions -->
+	<VirtualSystemCollection ovf:id="TPCW">
+		<Info>4caast demo</Info>
+		<StartupSection>
+			<!--Orden de llamada a cada maquina virtual-->
+		  <Item ovf:id="tomcat" ovf:order="1" ovf:waitingForGuest="true"/>
+		  <Item ovf:id="postgresql" ovf:order="2"/>
+          <Item ovf:id="haproxy" ovf:order="0"/></StartupSection>		   
+		<VirtualSystem ovf:id="tomcat" rsrvr:min="1" rsrvr:max="5" rsrvr:initial="1" rsrvr:balanced="haproxy">
+			<Info>Tomcat for the TPCW demo</Info>
+				<OperatingSystemSection ovf:id="94">
+				<Info>Specifies the operating system installed</Info>
+				<Description>tomcat</Description>
+			</OperatingSystemSection>
+			<!--  Master daemon configuration parameters -->				
+		 <ProductSection>
+				<Info>tomcat</Info>
+				<Product>tomcat</Product>
+				<Version>7</Version>				
+				<!-- <Category msgid="org.fourcaast.instancecomponent">Instance Component Metadata</Category>
+                <Property key="org.fourcaast.instancecomponent.id" value="tomcat"/>
+                <Property key="org.fourcaast.instancecomponent.recipe" value="tomcat"/>
+                <Property key="org.fourcaast.instancecomponent.type" value="PIC"/>
+                <Category msgid="org.fourcaast.instancecomponent.attributes">Product Specific Attributes</Category>
+                <Property key="port" value="8080"/>-->
+        </ProductSection>
+	    <ProductSection>
+            <Info>war application</Info>
+            <Product>application</Product>
+            <Version>1.0</Version>
+            <!-- <Category msgid="org.fourcaast.instancecomponent">Instance Component Metadata</Category>
+            <Property key="org.fourcaast.instancecomponent.id" value="mywebapplication"/>
+            <Property key="org.fourcaast.instancecomponent.recipe" value="javawebapplication"/>
+            <Property key="org.fourcaast.instancecomponent.type" value="AC"/>
+            <Property key="org.fourcaast.instancecomponent.parent"value="tomcat"/>
+            <Category msgid="org.fourcaast.instancecomponent.attributes">Product Specific Attributes</Category>
+            <Property key="warurl" value="http://svn.forge.morfeo-project.org/4caast/trunk/WP7/TaxiScenario/myapplication.war"/>
+            <Property key="IPmysql" value="@IP(mysql,public)"/>
+            <Property key="login" value="@login(mysql)"/>
+            <Property key="password" value="@password(mysql)"/>-->
+        </ProductSection>
+       <rsrvr:ElasticArraySection>
+                <Info>There are two elasticity rules, to scale up and down VEEExecutor components</Info>
+                <rsrvr:Rule>
+                    <rsrvr:KPIName>requestDelay</rsrvr:KPIName>
+                    <rsrvr:KPIType>VEEHW</rsrvr:KPIType>
+                    <rsrvr:Window unit="minute">5</rsrvr:Window>
+                    <rsrvr:Frequency>20</rsrvr:Frequency>
+                    <rsrvr:Quota>45</rsrvr:Quota>
+                    <rsrvr:Tolerance>55.55</rsrvr:Tolerance>
+                 </rsrvr:Rule>
+                </rsrvr:ElasticArraySection>		
+	 <VirtualHardwareSection>
+				<Info>Virtual Hardware Requirements: 512Mb, 2 CPU, 1 disk, 1 nic</Info>
+				
+				<Item>
+					<rasd:Description>Number of virtual CPUs</rasd:Description>
+					<rasd:ElementName>1 virtual CPU</rasd:ElementName>
+					<rasd:InstanceID>1</rasd:InstanceID>
+					<rasd:ResourceType>3</rasd:ResourceType>
+					<rasd:VirtualQuantity>1</rasd:VirtualQuantity>
+				</Item>
+				<Item>
+					<rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
+					<rasd:Description>Memory Size</rasd:Description>
+					<rasd:ElementName>512 MB of memory</rasd:ElementName>
+					<rasd:InstanceID>2</rasd:InstanceID>
+					<rasd:ResourceType>4</rasd:ResourceType>
+					<rasd:VirtualQuantity>512</rasd:VirtualQuantity>
+				</Item>
+				<Item>
+			    <rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+					<rasd:Connection>public</rasd:Connection>
+					<rasd:ElementName>Ethernet adapter on admin_net network</rasd:ElementName>
+					<rasd:InstanceID>3</rasd:InstanceID>
+					<rasd:ResourceType>10</rasd:ResourceType>
+                </Item>
+                <Item>
+					<rasd:ElementName>Harddisk 1</rasd:ElementName>
+					<rasd:HostResource>ovf://disk/tomcat</rasd:HostResource>
+					<rasd:InstanceID>3</rasd:InstanceID>
+					<rasd:Parent>4</rasd:Parent>
+					<rasd:ResourceType>17</rasd:ResourceType>
+				</Item>				
+		</VirtualHardwareSection>
+		</VirtualSystem>		
+		<VirtualSystem ovf:id="postgresql" rsrvr:min="1" rsrvr:max="1" rsrvr:initial="1">
+			<Info>VM for the 4caast demo</Info>
+				<OperatingSystemSection ovf:id="94">
+				<Info>Specifies the operating system installed</Info>
+				<Description>postgresql</Description>
+			</OperatingSystemSection>
+			<!--  Master daemon configuration parameters -->		
+			<ProductSection>
+				<Info>mysql</Info>
+				<Product>mysql</Product>
+				<Version>8.4</Version>						
+				<Category msgid="org.fourcaast.instancecomponent">Instance Component Metadata</Category>
+                <Property key="org.fourcaast.instancecomponent.id" value="mysql"/>
+                <Property key="org.fourcaast.instancecomponent.recipe" value="mysql"/>
+                <Property key="org.fourcaast.instancecomponent.type" value="PIC"/>
+                <Category msgid="org.fourcaast.instancecomponent.attributes">Product Specific Attributes</Category>
+                <Property key="passwordroot" value="root"/>
+            </ProductSection>
+            <ProductSection>
+                <Info>.sql script</Info>
+                <Product>mysqlsql</Product>
+                <Version>1.0</Version>
+                <!-- <Category msgid="org.fourcaast.instancecomponent">Instance Component Metadata</Category>
+                <Property key="org.fourcaast.instancecomponent.id" value="mysqlsql"/>
+                <Property key="org.fourcaast.instancecomponent.recipe" value="mysqlsql"/>
+                <Property key="org.fourcaast.instancecomponent.type" value="AC"/>
+                <Property key="org.fourcaast.instancecomponent.parent"value="mysql"/>
+                <Category msgid="org.fourcaast.instancecomponent.attributes">Product Specific Attributes</Category>
+                <Property key="sqlurl" value="http://svn.forge.morfeo-project.org/4caast/trunk/WP7/TaxiScenario/script.sql"/>-->
+			</ProductSection>			
+			<VirtualHardwareSection>
+				<Info>Virtual Hardware Requirements: 512Mb, 2 CPU, 1 disk, 1 nic</Info>				
+				<Item>
+					<rasd:Description>Number of virtual CPUs</rasd:Description>
+					<rasd:ElementName>1 virtual CPU</rasd:ElementName>
+					<rasd:InstanceID>1</rasd:InstanceID>
+					<rasd:ResourceType>3</rasd:ResourceType>
+					<rasd:VirtualQuantity>1</rasd:VirtualQuantity>
+				</Item>
+				<Item>
+					<rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
+					<rasd:Description>Memory Size</rasd:Description>
+					<rasd:ElementName>512 MB of memory</rasd:ElementName>
+					<rasd:InstanceID>2</rasd:InstanceID>
+					<rasd:ResourceType>4</rasd:ResourceType>
+					<rasd:VirtualQuantity>512</rasd:VirtualQuantity>
+				</Item>
+				<Item>
+			    <rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+					<rasd:Connection>public</rasd:Connection>
+					<rasd:ElementName>Ethernet adapter on admin_net network</rasd:ElementName>
+					<rasd:InstanceID>3</rasd:InstanceID>
+					<rasd:ResourceType>10</rasd:ResourceType>
+                </Item>
+                  <Item>
+					<rasd:ElementName>Harddisk 1</rasd:ElementName>
+					<rasd:HostResource>ovf://disk/mysql</rasd:HostResource>
+					<rasd:InstanceID>4</rasd:InstanceID>
+					<rasd:Parent>4</rasd:Parent>
+					<rasd:ResourceType>17</rasd:ResourceType>
+				</Item>				
+		</VirtualHardwareSection>
+		</VirtualSystem>
+        <VirtualSystem ovf:id="haproxy" rsrvr:min="1" rsrvr:max="1" rsrvr:initial="1" rsrvr:balancer="true" rsrvr:lbport="8088">
+			<Info>Tomcat for the TPCW demo</Info>
+				<OperatingSystemSection ovf:id="94">
+				<Info>Specifies the operating system installed</Info>
+				<Description>haproxy</Description>
+			</OperatingSystemSection>			
+		 <ProductSection>
+				<Info>haproxy</Info>
+				<Product>haproxy</Product>
+				<Version>1.0</Version>				
+		</ProductSection>
+		<VirtualHardwareSection>
+				<Info>Virtual Hardware Requirements: 512Mb, 2 CPU, 1 disk, 1 nic</Info>			
+				<Item>
+					<rasd:Description>Number of virtual CPUs</rasd:Description>
+					<rasd:ElementName>1 virtual CPU</rasd:ElementName>
+					<rasd:InstanceID>1</rasd:InstanceID>
+					<rasd:ResourceType>3</rasd:ResourceType>
+					<rasd:VirtualQuantity>1</rasd:VirtualQuantity>
+				</Item>
+				<Item>
+					<rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
+					<rasd:Description>Memory Size</rasd:Description>
+					<rasd:ElementName>512 MB of memory</rasd:ElementName>
+					<rasd:InstanceID>2</rasd:InstanceID>
+					<rasd:ResourceType>4</rasd:ResourceType>
+					<rasd:VirtualQuantity>512</rasd:VirtualQuantity>
+				</Item>
+				<Item>
+			    <rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+					<rasd:Connection>public</rasd:Connection>
+					<rasd:ElementName>Ethernet adapter on admin_net network</rasd:ElementName>
+					<rasd:InstanceID>3</rasd:InstanceID>
+					<rasd:ResourceType>10</rasd:ResourceType>
+                </Item>
+                <Item>
+					<rasd:ElementName>Harddisk 1</rasd:ElementName>
+					<rasd:HostResource>ovf://disk/haproxy</rasd:HostResource>
+					<rasd:InstanceID>3</rasd:InstanceID>
+					<rasd:Parent>4</rasd:Parent>
+					<rasd:ResourceType>17</rasd:ResourceType>
+				</Item>
+		</VirtualHardwareSection>
+		</VirtualSystem>
+    </VirtualSystemCollection>
+</Envelope>

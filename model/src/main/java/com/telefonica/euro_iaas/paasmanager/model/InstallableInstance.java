@@ -28,6 +28,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
  * @author Sergio Arroyo
  *
  */
+@SuppressWarnings("restriction")
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @XmlRootElement
@@ -37,6 +38,7 @@ public class InstallableInstance {
     public final static String VM_FIELD = "vm";
     public final static String STATUS_FIELD = "status";
     public final static String VDC_FIELD = "vdc";
+    public final static String ENVIRONMENT_INSTANCE_FIELD = "environmentinstance";
 
 
     /**
@@ -46,11 +48,11 @@ public class InstallableInstance {
      *
      */
     public enum Status {INSTALLING, INSTALLED, ERROR, UNINSTALLING, UNINSTALLED,
-        CONFIGURING, UPGRADING};
+        CONFIGURING, UPGRADING, DEPLOYING_ARTEFACT, UNDEPLOYING_ARTEFACT, ARTEFACT_DEPLOYED, ARTEFACT_UNDEPLOYED};
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    protected Long id;
 
     private Date date;
     
@@ -62,6 +64,9 @@ public class InstallableInstance {
 
     private String vdc;
 
+    /*@Column(length=5000)
+	private String vapp;
+    */
     @OneToMany(cascade=CascadeType.ALL)
     private List<Attribute> privateAttributes;
     
@@ -170,6 +175,7 @@ public class InstallableInstance {
 		this.privateAttributes = privateAttributes;
 	}
 
+		
 	/* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */

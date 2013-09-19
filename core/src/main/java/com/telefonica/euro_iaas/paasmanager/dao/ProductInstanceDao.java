@@ -3,7 +3,9 @@ package com.telefonica.euro_iaas.paasmanager.dao;
 import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.BaseDAO;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
+import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.exception.NotUniqueResultException;
 
@@ -12,7 +14,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.NotUniqueResultException;
  *
  * @author Jesus M. Movilla
  */
-public interface ProductInstanceDao extends BaseDAO<ProductInstance, Long> {
+public interface ProductInstanceDao extends BaseDAO<ProductInstance, String> {
     /**
      * Find the environment that matches with the given criteria.
      * @param criteria the search criteria
@@ -29,4 +31,6 @@ public interface ProductInstanceDao extends BaseDAO<ProductInstance, Long> {
      */
     ProductInstance findUniqueByCriteria(ProductInstanceSearchCriteria criteria)
     throws NotUniqueResultException;
+    
+   
 }

@@ -4,7 +4,7 @@ import org.springframework.test.jpa.AbstractJpaTests;
 
 public class AbstractJpaDaoTest extends AbstractJpaTests {
 
-    @Override
+   @Override
     protected String[] getConfigLocations() {
         return new String[] { "classpath:/spring-test-db-config.xml",
                 "classpath:/spring-dao-config.xml" };

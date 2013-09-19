@@ -1,0 +1,7 @@
+<ovfenvelope:Envelope xmlns:cimresallocdata="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" xmlns:ovfenvelope="http://schemas.dmtf.org/ovf/envelope/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ovfenvelope:References/>
+    <ovfenvelope:AnnotationSection ovfenvelope:required="true">
+    <ovfenvelope:Info ovfenvelope:msgid="org.fourcaast.application.id">app-00001</ovfenvelope:Info>
+    <ovfenvelope:Annotation></ovfenvelope:Annotation>
+    </ovfenvelope:AnnotationSection>
+</ovfenvelope:Envelope>

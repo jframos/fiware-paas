@@ -1,0 +1,60 @@
+<ovf:Envelope xmlns="http://schemas.tcloud.telefonica.com/tcloud/1" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Database" xsi:schemaLocation="http://schemas.tcloud.telefonica.com/tcloud/1 tcloud.xsd">
+<ovf:References>
+<ovf:File ovf:href="file:///DCEURO01/vm/Templates/Ubuntu Server 11.10-x86" ovf:id="file0" ovf:size="100"/>
+</ovf:References>
+<ovf:DiskSection>
+<ovf:Info>Virtual disk information</ovf:Info>
+<ovf:Disk ovf:diskId="disks-3000" ovf:fileRef="file0" ovf:capacity="100" ovf:capacityAllocationUnits="byte * 2^20" ovf:format="http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized"/>
+</ovf:DiskSection>
+<ovf:NetworkSection>
+<ovf:Info>Networks</ovf:Info>
+<ovf:Network ovf:name="servicio"/>
+</ovf:NetworkSection>
+<ovf:VirtualSystem ovf:id="Database">
+<ovf:Info>A virtual machine</ovf:Info>
+<ovf:Name>Database</ovf:Name>
+<ovf:OperatingSystemSection ovf:id="1" ovf:version="5">
+<ovf:Info>The kind of installed guest operating system</ovf:Info>
+<ovf:Description>Other 2.6x Linux (64-bit)</ovf:Description>
+</ovf:OperatingSystemSection>
+<ovf:VirtualHardwareSection>
+<ovf:Info>Virtual hardware requirements</ovf:Info>
+<ovf:System>
+<vssd:ElementName>Virtual Hardware Family</vssd:ElementName>
+<vssd:InstanceID>0</vssd:InstanceID>
+<vssd:VirtualSystemIdentifier>deploy-tcloud</vssd:VirtualSystemIdentifier>
+<vssd:VirtualSystemType>vmx-07</vssd:VirtualSystemType>
+</ovf:System>
+<ovf:Item>
+<rasd:AllocationUnits>hertz * 10^6</rasd:AllocationUnits>
+<rasd:Description>Number of Virtual CPUs</rasd:Description>
+<rasd:ElementName>1 virtual CPU(s)</rasd:ElementName>
+<rasd:InstanceID>1</rasd:InstanceID>
+<rasd:ResourceType>3</rasd:ResourceType>
+<rasd:VirtualQuantity>1</rasd:VirtualQuantity>
+</ovf:Item>
+<ovf:Item>
+<rasd:AllocationUnits>byte * 2^20</rasd:AllocationUnits>
+<rasd:Description>Memory Size</rasd:Description>
+<rasd:ElementName>128MB of memory</rasd:ElementName>
+<rasd:InstanceID>2</rasd:InstanceID>
+<rasd:ResourceType>4</rasd:ResourceType>
+<rasd:VirtualQuantity>128</rasd:VirtualQuantity>
+</ovf:Item>
+<ovf:Item>
+<rasd:ElementName>Disk Hard disk 1 (102,400 KB)</rasd:ElementName>
+<rasd:HostResource>ovf://disk/disks-3000</rasd:HostResource>
+<rasd:InstanceID>disks-3000</rasd:InstanceID>
+<rasd:ResourceType>17</rasd:ResourceType>
+<rasd:Weight>0</rasd:Weight>
+</ovf:Item>
+<ovf:Item>
+<rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+<rasd:Connection>servicio</rasd:Connection>
+<rasd:ElementName>Ethernet adapter on "servicio"</rasd:ElementName>
+<rasd:InstanceID>5</rasd:InstanceID>
+<rasd:ResourceType>10</rasd:ResourceType>
+</ovf:Item>
+</ovf:VirtualHardwareSection>
+</ovf:VirtualSystem>
+</ovf:Envelope>

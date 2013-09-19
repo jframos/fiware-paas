@@ -8,6 +8,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
+import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductInstanceSearchCriteria;
 
@@ -21,7 +22,7 @@ public interface ProductInstanceAsyncManager {
 
     /**
      * Install a product release in a given vm.
-     * @param vm the vm where  instance will be running in
+     * @param tierInstance the tierInstance where  instance will be running in
      * @param vdc the vdc where the instance will be installed
      * @param product the product to install
      * @param attributes the configuration
@@ -29,7 +30,7 @@ public interface ProductInstanceAsyncManager {
      * @param callback if not empty, contains the url where the result of the
      * execution will be sent
      */
-    void install(VM vm, String vdc, ProductRelease product,
+    void install(TierInstance tierInstance, String vdc, ProductRelease product,
             List<Attribute> attributes, Task task, String callback);
 
     /**
@@ -65,11 +66,11 @@ public interface ProductInstanceAsyncManager {
     /**
      * Find the ProductInstance using the given id.
      * @param vdc the vdc
-     * @param id the productInstance identifier
+     * @param name the productInstance name
      * @return the productInstance
      * @throws EntityNotFoundException if the product instance does not exists
      */
-    ProductInstance load(String vdc, Long id) throws EntityNotFoundException;
+    ProductInstance load(String vdc, String name) throws EntityNotFoundException;
 
 
     /**

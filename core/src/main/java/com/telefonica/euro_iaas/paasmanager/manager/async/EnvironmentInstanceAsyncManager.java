@@ -1,46 +1,37 @@
 package com.telefonica.euro_iaas.paasmanager.manager.async;
 
-import java.util.List;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
+import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 
 public interface EnvironmentInstanceAsyncManager {
 
-	/**
-     * Create a Instance of an Environment
-     * @param vdc the vdc where the application will be installed.
-     * @param environment the environment to install containing the tiers 
-     * and productInstances
-     * @param Attributes of the EnvironmentInstances
-     * @param task the task which contains the information about the async execution
-     * @param callback if not null, contains the url where the system shall
-     * notify when the task is done
-     * @throws EntityNotFoundException
-     * @throws InvalidEntityException
-     * @return the task referencing the installed application.
-     */
 
-    void create(String vdc, Environment environment,
-    		 Task task, String callback) throws EntityNotFoundException, 
- 			InvalidEntityException, AlreadyExistsEntityException;
+	/**
+	 * 
+	 * @param org
+	 * @param vdc
+	 * @param envInstanceName=service (Claudia)
+	 * @param environment
+	 * @param task
+	 * @param callback
+	 */
+	/*void create (String org, String vdc, PaasManagerUser user, 
+			String envInstanceName,
+			Environment environment, Task task, String callback);*/
     
-   
+	void create (ClaudiaData claudiaData, Environment environment, 
+			Task task, String callback);
+    
     /**
      * Retrieve the selected environment instance.
      * @param name the instance name
@@ -48,15 +39,14 @@ public interface EnvironmentInstanceAsyncManager {
      */
     //EnvironmentInstance load(String name) throws EntityNotFoundException;
     
-    /**
-     * Destroy an Instance of an Environment.
-     *
-     * @param environmentInstance to be removed
-     * @param task the task which contains the information about the async execution
-     * @param callback if not empty, contains the url where the result of the
-     * async operation will be sent
-     * @return the task.
-     */
-    void destroy(EnvironmentInstance environmentInstance, 
-    		Task task, String callback);
+   /**
+    * Delete an Instance of an Environment
+    * @param environmentInstance
+    * @param org
+    * @param vdc
+    * @param task
+    * @param callback
+    */
+    void destroy(ClaudiaData claudiaData, 
+    		EnvironmentInstance environmentInstance, Task task, String callback);
 }

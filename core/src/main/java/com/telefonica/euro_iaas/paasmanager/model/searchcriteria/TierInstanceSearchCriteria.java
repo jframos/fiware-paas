@@ -4,6 +4,7 @@ package com.telefonica.euro_iaas.paasmanager.model.searchcriteria;
 import com.telefonica.euro_iaas.commons.dao.AbstractSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Service;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 
 
 /**
@@ -16,6 +17,8 @@ public class TierInstanceSearchCriteria extends AbstractSearchCriteria {
 
     private ProductInstance productInstance;
     private Service service;
+    private String vdc;
+    private EnvironmentInstance environmentInstance;
 
     /**
      * Default constructor
@@ -33,10 +36,12 @@ public class TierInstanceSearchCriteria extends AbstractSearchCriteria {
      */
     public TierInstanceSearchCriteria(Integer page, Integer pageSize,
             String orderBy, String orderType, ProductInstance productInstance,
-            Service service) {
+            Service service, EnvironmentInstance environmentInstance, String vdc) {
         super(page, pageSize, orderBy, orderType);
         this.productInstance = productInstance;
         this.service = service;
+        this.environmentInstance = environmentInstance;
+        this.vdc = vdc;
     }
 
     /**
@@ -102,5 +107,21 @@ public class TierInstanceSearchCriteria extends AbstractSearchCriteria {
     public void setService(Service service) {
         this.service = service;
     }
+
+	public String getVdc() {
+		return vdc;
+	}
+
+	public void setVdc(String vdc) {
+		this.vdc = vdc;
+	}
+
+	public EnvironmentInstance getEnvironmentInstance() {
+		return environmentInstance;
+	}
+
+	public void setEnvironmentInstance(EnvironmentInstance environmentInstance) {
+		this.environmentInstance = environmentInstance;
+	}
 
 }

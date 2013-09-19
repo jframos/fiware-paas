@@ -1,165 +1,125 @@
+/*
+
+  (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights
+  Reserved.
+
+  The copyright to the software program(s) is property of Telefonica I+D.
+  The program(s) may be used and or copied only with the express written
+  consent of Telefonica I+D or in accordance with the terms and conditions
+  stipulated in the agreement/contract under which the program(s) have
+  been supplied.
+
+*/
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.dao.ProductInstanceDao;
+
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidProductInstanceRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.NotUniqueResultException;
+import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
+import com.telefonica.euro_iaas.paasmanager.exception.ProductReconfigurationException;
+import com.telefonica.euro_iaas.paasmanager.installator.ProductInstallator;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
+import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
+import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
-import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
-import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
+
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductInstanceSearchCriteria;
-import com.telefonica.euro_iaas.paasmanager.util.ProductInstallator;
-import com.telefonica.euro_iaas.paasmanager.dao.ProductInstanceDao;
-import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 
 public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
     private ProductInstanceDao productInstanceDao;
     private ProductInstallator productInstallator;
-    private ProductReleaseDao productReleaseDao;
+    private ProductReleaseManager productReleaseManager;
+  
     
-    @Override
-	public ProductInstance install(VM vm, String vdc, ProductRelease productRelease,
-			List<Attribute> attributes) throws InvalidEntityException, NotUniqueResultException {
+    public ProductInstance install(TierInstance tierInstance, String vdc, ProductRelease productRelease,
+			List<Attribute> attributes) throws 
+			ProductInstallatorException, InvalidProductInstanceRequestException, NotUniqueResultException, InvalidEntityException {
 		
-    	//¿Validate if there is one ProductInstance in BBDD and the status is OK?
-    	ProductInstance productInstance;
-
-    	productInstance = getProductToInstall(productRelease, vm, vdc, attributes);
+ 
     	
-    	productInstallator.install(productInstance);  	
+    	ProductInstance productInstance = productInstallator.install(tierInstance, productRelease);  	
     	
-    	productInstance = updateProductInstance(productInstance);
+    /*	try {
+			productInstance = create(productInstance);
+		} catch (InvalidEntityException e) {
+			throw new InvalidEntityException ("Error to persist the product Instance " + productInstance.getName() + " : " + e.getMessage());
+		} catch (AlreadyExistsEntityException e) {
+			// TODO Auto-generated catch block
+			throw new InvalidEntityException ("Error to persist the product Instance " + productInstance.getName() + " : " + e.getMessage());
+		}*/
         
     	return  productInstance;
 	}
 
-	@Override
 	public void uninstall(ProductInstance productInstance) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
-	public ProductInstance load(String vdc, Long id)
+	public ProductInstance load(String vdc, String name)
 			throws EntityNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+		return productInstanceDao.load(name);
+		
 	}
 
-	@Override
 	public ProductInstance loadByCriteria(ProductInstanceSearchCriteria criteria)
 			throws EntityNotFoundException, NotUniqueResultException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public List<ProductInstance> findAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public List<ProductInstance> findByCriteria(
 			ProductInstanceSearchCriteria criteria) {
-		// TODO Auto-generated method stub
-		return null;
+		return productInstanceDao.findByCriteria(criteria);
 	}
 	
-	 /**
-     * Creates or find the product instance in installation operation.
-     * @param product
-     * @param vm
-     * @return
-	 * @throws NotUniqueResultException, 
-     */
-    private ProductInstance getProductToInstall(ProductRelease productRelease, VM vm,
-            String vdc, List<Attribute> attributes) throws NotUniqueResultException {
-        ProductInstance productInstance = null;
-
-        ProductInstanceSearchCriteria criteria =
-                    new ProductInstanceSearchCriteria();
-         criteria.setVm(vm);
-         criteria.setProductRelease(productRelease);
-         criteria.setProductName(productRelease.getName());
-         
-        ProductRelease pRelease;
-		
-        try {
-        	pRelease = productReleaseDao.load(productRelease.getName());
-		} catch (EntityNotFoundException e1) {
-			pRelease = new ProductRelease (
-					productRelease.getName(),
-					productRelease.getVersion());
-			if (productRelease.getDescription()!= null)
-				pRelease.setDescription(productRelease.getDescription());
-			if (productRelease.getAttributes()!= null)
-				pRelease.setAttributes(productRelease.getAttributes());
-			if (productRelease.getProductType()!=null)
-				pRelease.setProductType(productRelease.getProductType());
-			if (productRelease.getSupportedOOSS() != null)
-				pRelease.setSupportedOOSS(productRelease.getSupportedOOSS());
-			if (productRelease.getTransitableReleases()!=null)
-				pRelease.setTransitableReleases(productRelease.getTransitableReleases());
-			
-		}
-        
-        try {
-			productInstance = productInstanceDao.findUniqueByCriteria(criteria);
-			productInstance.setProductRelease(pRelease);	
-			productInstance.setVm(vm);
-			productInstance.setVdc(vdc);
-			
-		} catch (NoSuchElementException nsee) {						
-			productInstance = new ProductInstance (pRelease, 
-					Status.INSTALLING, 
-					vm, vdc);			
-    	}
-        //productInstance.setName(pRelease.getName() + "-" + pRelease.getVersion() 
-			//	+ "-" + vm.getHostname() + "-" + vm.getDomain());
-        return productInstance;
-    }
     
-    
-    private ProductInstance updateProductInstance (ProductInstance productInstance) {
-    	
-    	ProductRelease productRelease = productInstance.getProductRelease();
-    	
-   		try {
-			productRelease = productReleaseDao.load(productRelease.getName());
-		} catch (EntityNotFoundException e) {
-				try {
-					productRelease = productReleaseDao.create(productRelease);
-					productInstance.setProductRelease(productRelease);
-				} catch (InvalidEntityException e1) {
+    public ProductInstance create (ProductInstance productInstance, String tierInstance) throws InvalidEntityException, AlreadyExistsEntityException
+    {
+          ProductRelease productRelease = productInstance.getProductRelease();
+          if (productInstance.getName() == null)
+            productInstance.setName(tierInstance+"_"+productRelease.getProduct()+"_"+productRelease.getVersion());
 
-				} catch (AlreadyExistsEntityException e1) {
-
-				}				
-		}
-
-   		try {
-			productInstance = productInstanceDao.load(productInstance.getId());
-		} catch (EntityNotFoundException e) {
+		if (productRelease.getId()== null)
 			try {
-				productInstance = productInstanceDao.create(productInstance);
-			} catch (InvalidEntityException e1) {
-
-			} catch (AlreadyExistsEntityException e1) {
-
+				productRelease = productReleaseManager
+						.load(productRelease.getProduct()+"-"+productRelease.getVersion());
+			} catch (EntityNotFoundException e) {
+				// TODO Auto-generated catch block
+				throw new InvalidEntityException ("Error to load the product release for persist the product Instance " + productInstance.getName() + " : " + e.getMessage());
 			}
-		}
-   		
-   	   	
-    	return productInstance;
+		
+		if (productInstance.getId()== null)
+			try {
+				productInstanceDao.create(productInstance);
+			} catch (InvalidEntityException e) {
+				// TODO Auto-generated catch block
+				throw new InvalidEntityException ("Error to persist the product Instance " + productInstance.getName() + " : " + e.getMessage());
+			} catch (AlreadyExistsEntityException e) {
+				// TODO Auto-generated catch block
+				throw new AlreadyExistsEntityException ("Error to persist the product Instance " + productInstance.getName() + " : " + e.getMessage());
+			}
+        return productInstance;
+
+        
     }
+
     
     // //////////// I.O.C /////////////
     /**
@@ -174,8 +134,8 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
      * @param productReleaseDao
      *            the productReleaseDao to set
      */
-    public void setProductReleaseDao(ProductReleaseDao productReleaseDao) {
-        this.productReleaseDao = productReleaseDao;
+    public void setProductReleaseManager(ProductReleaseManager productReleaseManager) {
+        this.productReleaseManager = productReleaseManager;
     }
     
     /**
@@ -185,4 +145,66 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
     public void setProductInstallator(ProductInstallator productInstallator) {
         this.productInstallator = productInstallator;
     }
+
+	
+
+	public ProductInstance load(String name) throws EntityNotFoundException {
+		return productInstanceDao.load(name);
+	}
+
+	public void remove(ProductInstance productInstance) {
+		productInstanceDao.remove(productInstance);
+		
+	}
+
+	public ProductInstance create(ProductInstance productInstance)
+			throws InvalidEntityException, AlreadyExistsEntityException, InvalidProductInstanceRequestException {
+   	      ProductRelease productRelease = null;
+   		try {
+			
+   			productRelease = productReleaseManager.load(productInstance.getProductRelease().getProduct()+"-"+productInstance.getProductRelease().getVersion());
+   			productInstance.setProductRelease(productRelease);
+		} catch (EntityNotFoundException e) {
+			String errorMessage = "The Product Release Object " 
+				+ productRelease.getId() + " is " +
+						"NOT valid";
+		    throw new InvalidProductInstanceRequestException (errorMessage);
+		}
+			
+   		try {
+   			productInstance = productInstanceDao.load(productInstance.getName());
+		} catch (EntityNotFoundException e) {
+			try {
+		
+				productInstance = productInstanceDao.create(productInstance);
+		
+			} catch (InvalidEntityException iee) {
+				String errorMessage = "The Product Instance Object " 
+						+ productInstance.getName() + " is " +
+								"NOT valid";
+				throw new InvalidProductInstanceRequestException (errorMessage);
+			} catch (AlreadyExistsEntityException aee) {
+				String errorMessage = "The ProductRelease Object " 
+						+ productInstance.getName()  + " already exist in Database";
+				throw new InvalidProductInstanceRequestException (errorMessage);
+			}
+			catch (Exception aee) {
+				String errorMessage = "The ProductRelease Object " 
+						+ productInstance.getName()  + " already exist in Database " + aee.getMessage();
+				throw new InvalidProductInstanceRequestException (errorMessage);
+			}
+		}
+   	
+    	return productInstance;
+	}
+
+	public void configure(ProductInstance productInstance,
+			List<Attribute> properties) throws InvalidEntityException,
+			AlreadyExistsEntityException, ProductInstallatorException, EntityNotFoundException, ProductReconfigurationException {
+         productInstallator.configure(productInstance, properties); 	
+    	
+
+	}
+
+	
 }

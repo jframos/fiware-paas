@@ -1,0 +1,1 @@
+<ovf:Disk ovf:diskId="disks-2000" ovf:fileRef="8195dcf5-32a6-4a20-ae93-ccde5e3b459d" ovf:capacity="10"  ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html"/>

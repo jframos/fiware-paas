@@ -8,16 +8,14 @@ import com.telefonica.euro_iaas.paasmanager.dao.ServiceDao;
 import com.telefonica.euro_iaas.paasmanager.model.Service;
 
 public class ServiceDaoJpaImpl 
-	extends AbstractBaseDao<Service, Long>  implements ServiceDao {
+	extends AbstractBaseDao<Service, String>  implements ServiceDao {
 
-	@Override
 	public List<Service> findAll() {
 		return super.findAll(Service.class);
 	}
 
-	@Override
-	public Service load(Long arg0) throws EntityNotFoundException {
-        return super.loadByField(Service.class, "id", arg0);
+	public Service load(String name) throws EntityNotFoundException {
+        return super.loadByField(Service.class, "name", name);
 	}
 
 }

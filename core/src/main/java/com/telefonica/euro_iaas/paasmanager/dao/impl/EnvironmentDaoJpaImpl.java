@@ -3,6 +3,12 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
+import javax.persistence.Query;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 
@@ -16,16 +22,19 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentSear
 public class EnvironmentDaoJpaImpl 
 	extends AbstractBaseDao<Environment, String> implements EnvironmentDao {
 
+	@PersistenceContext(unitName = "paasmanager", type=PersistenceContextType.EXTENDED)
+	private EntityManager entityManager;
+
+	
 	public List<Environment> findAll() {
 		return super.findAll(Environment.class);
 	}
 
-	@Override
-	public Environment load(String arg0) throws EntityNotFoundException {
-        return super.loadByField(Environment.class, "name", arg0);
+	public Environment load(String envName) throws EntityNotFoundException {        
+		return super.loadByField(Environment.class, "name", envName);
+		//return findByEnvironmentName(envName);
 	}
 
-	@Override
 	public List<Environment> findByCriteria(EnvironmentSearchCriteria criteria) {
 		Session session = (Session) getEntityManager().getDelegate();
 	    Criteria baseCriteria = session.createCriteria(Environment.class);
@@ -43,6 +52,25 @@ public class EnvironmentDaoJpaImpl
 	        
 	    return environments;
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang.String)
+	 */
+	private Environment findByEnvironmentName(String envName) throws EntityNotFoundException {
+		Query query = entityManager.createQuery("select p from Environment p join " 
+				+ "fetch p.tiers where p.name = :name" );
+		query.setParameter("name", envName);
+		Environment environment = null;
+		try {
+			environment = (Environment) query.getSingleResult();
+		 } catch (NoResultException  e) {
+			 String message = " No Environment found in the database with name: " +
+					 envName;
+			 throw new EntityNotFoundException (Environment.class, "name", envName);
+		 }
+		 return environment;
+	}
+
 	
 	 /**
      * Filter the result by tier

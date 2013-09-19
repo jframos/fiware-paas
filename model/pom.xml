@@ -9,17 +9,50 @@
    <parent> 
       <groupId>com.telefonica.euro_iaas</groupId>
       <artifactId>paas-manager-server</artifactId>
-      <version>0.0.2</version>
+      <version>0.0.3</version>
     </parent>
 
+    <properties>
+        <spring.version>3.1.0.RELEASE</spring.version>
+    </properties>
+    
     <dependencies>
+        <!-- SPRING SECURITY DEPENDENCIES -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-taglibs</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        
         <!-- TEST DEPENDENCIES -->
         <dependency>
             <groupId>javax.persistence</groupId>
             <artifactId>persistence-api</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+                        <groupId>org.hibernate</groupId>
+                        <artifactId>hibernate-annotations</artifactId>
+                        <version>3.4.0.GA</version>
+                </dependency>
         <dependency>
             <groupId>net.sf.json-lib</groupId>
             <artifactId>json-lib</artifactId>

@@ -12,6 +12,8 @@ public class ConfigurationDaoJpaImplTest extends AbstractJpaDaoTest {
 	
 	private ConfigurationDao configurationDao;
 	
+
+	
 	/**
      * Test the create and load method
      */
@@ -34,11 +36,15 @@ public class ConfigurationDaoJpaImplTest extends AbstractJpaDaoTest {
         Configuration foundConfiguration = configurationDao.load(createdConfiguration.getId());
         assertEquals(createdConfiguration, foundConfiguration);
     }
+    public void setConfigurationDao (ConfigurationDao configurationDao)
+    {
+    	this.configurationDao = configurationDao;
+    }
     
     /**
      * Test the find, remove and upload method
      */
-    public void testFindAllAndUpdate() throws Exception {
+   /* public void testFindAllAndUpdate() throws Exception {
         assertEquals(0, configurationDao.findAll().size());
         testCreate();
         List<Configuration> configurations = configurationDao.findAll();
@@ -49,7 +55,7 @@ public class ConfigurationDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(KEY2, configurationDao.load(configuration.getId()).getKey());
         configurationDao.remove(configuration);
         assertEquals(0, configurationDao.findAll().size());
-    }
+    }*/
     
    /* public void testSuma() throws Exception {
     	String suma = configurationDao.suma("a", "b");
@@ -59,7 +65,7 @@ public class ConfigurationDaoJpaImplTest extends AbstractJpaDaoTest {
 	/**
 	 * @param configurationDao the configurationDao to set
 	 */
-	public void setApplicationTypeDao(ConfigurationDao configurationDao) {
+	/*public void setApplicationTypeDao(ConfigurationDao configurationDao) {
 		this.configurationDao = configurationDao;
-	}
+	}*/
 }

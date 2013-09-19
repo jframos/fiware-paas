@@ -1,0 +1,34 @@
+<InstantiateOvfParams name="{0}"
+xsi:schemaLocation="http://schemas.tcloud.telefonica.com/tcloud/1 tcloud.xsd"
+xmlns="http://schemas.tcloud.telefonica.com/tcloud/1"
+xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"
+xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData"
+xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData"
+xmlns:rsrvr="http://schemas.telefonica.com/claudia/ovf"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ovf:Envelope>
+            <ovf:NetworkSection>
+                    <ovf:Info>The service considers one internal network and one public</ovf:Info>
+                    <ovf:Network ovf:name="{1}">
+                            <ovf:Description>Network to connect service components</ovf:Description>
+                    </ovf:Network>
+                    <ovf:Network ovf:name="{2}" rsrvr:public="true">
+                            <ovf:Description>Network to provide administrative accessr</ovf:Description>
+                    </ovf:Network>
+            </ovf:NetworkSection>
+
+            <ovf:VirtualSystemCollection ovf:id="{0}"/>
+    </ovf:Envelope>
+    <InstantiationParams>
+    <NetworkConfigSection ovf:required="true">
+      <NetworkConfig name="{1}">
+        <NetworkAssociation href="http://10.95.129.34:8182/api/org/es_tid/vdc/vdcAna1/net/{1}"/>
+      </NetworkConfig>
+      <NetworkConfig name="{2}">
+        <NetworkAssociation href="http://10.95.129.34:8182/api/org/es_tid/vdc/vdcAna1/net/{2}"/>
+      </NetworkConfig>
+    </NetworkConfigSection>
+  </InstantiationParams>
+
+
+</InstantiateOvfParams>

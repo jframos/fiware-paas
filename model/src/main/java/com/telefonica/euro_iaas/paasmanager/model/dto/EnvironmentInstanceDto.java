@@ -4,11 +4,13 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
-import com.telefonica.euro_iaas.paasmanager.model.Environment;
-import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -16,8 +18,10 @@ public class EnvironmentInstanceDto {
 	
 	private String environmentInstanceName;
 	private String vdc;
-	private Environment environment;
-	private List<TierInstance> tierInstances;
+	//private EnvironmentDto environmentDto;
+	
+	private List<TierInstanceDto> tierInstanceDtos;
+	
 	private List<Attribute> attributes;
 	
     /**
@@ -27,12 +31,12 @@ public class EnvironmentInstanceDto {
      * @param tierInstances
      */
     public EnvironmentInstanceDto(String environmentInstanceName, 
-    		Environment environment,
-    		List<TierInstance> tierInstances,
+    		EnvironmentDto environmentDto,
+    		List<TierInstanceDto> tierInstanceDtos,
     		String vdc){
         this.environmentInstanceName = environmentInstanceName;
-        this.environment = environment;
-        this.tierInstances = tierInstances;
+       // this.environmentDto = environmentDto;
+        this.tierInstanceDtos = tierInstanceDtos;
         this.vdc = vdc;
     }
 
@@ -73,29 +77,29 @@ public class EnvironmentInstanceDto {
 	/**
 	 * @return the environment
 	 */
-	public Environment getEnvironment() {
-		return environment;
-	}
+	/*public EnvironmentDto getEnvironmentDto() {
+		return environmentDto;
+	}*/
 
 	/**
 	 * @param environment the environment to set
 	 */
-	public void setEnvironment(Environment environment) {
-		this.environment = environment;
-	}
+	/*public void setEnvironmentDto(EnvironmentDto environmentDto) {
+		this.environmentDto = environmentDto;
+	}*/
 
 	/**
 	 * @return the tierInstances
 	 */
-	public List<TierInstance> getTierInstances() {
-		return tierInstances;
+	public List<TierInstanceDto> getTierInstances() {
+		return tierInstanceDtos;
 	}
 
 	/**
 	 * @param tierInstances the tierInstances to set
 	 */
-	public void setTierInstances(List<TierInstance> tierInstances) {
-		this.tierInstances = tierInstances;
+	public void setTierInstances(List<TierInstanceDto> tierInstanceDtos) {
+		this.tierInstanceDtos = tierInstanceDtos;
 	}
 
 	/**
@@ -111,6 +115,4 @@ public class EnvironmentInstanceDto {
 	public void setAttributes(List<Attribute> attributes) {
 		this.attributes = attributes;
 	}
-    
-	
 }

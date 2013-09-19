@@ -26,7 +26,7 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductType;
  */
 public class ArtifactDaoJpaImplTest extends AbstractJpaDaoTest {
 
-    private ProductReleaseDao productReleaseDao;
+    /*private ProductReleaseDao productReleaseDao;
     private ArtifactDao artifactDao;
     private ArtifactTypeDao artifactTypeDao;
     private OSDao osDao;
@@ -42,7 +42,7 @@ public class ArtifactDaoJpaImplTest extends AbstractJpaDaoTest {
     /**
      * Test the create and load method
      */
-    public void testCreate() throws Exception {
+   /* public void testCreate() throws Exception {
     	
     	ProductTypeDaoJpaImplTest productTypeDaoJpaImplTest 
     		= new ProductTypeDaoJpaImplTest();
@@ -74,12 +74,12 @@ public class ArtifactDaoJpaImplTest extends AbstractJpaDaoTest {
 
         Artifact findArtifact = artifactDao.load(createdArtifact.getName());
         assertEquals(createdArtifact, findArtifact);
-    }
+    }*/
 
     /**
      * Test the create and load method
      */
-    public void testFindAllAndUpdate() throws Exception {
+   /* public void testFindAllAndUpdate() throws Exception {
         assertEquals(0, artifactDao.findAll().size());
         testCreate();
         List<Artifact> artifacts = artifactDao.findAll();
@@ -92,40 +92,40 @@ public class ArtifactDaoJpaImplTest extends AbstractJpaDaoTest {
         
         artifactDao.remove(artifact);
         assertEquals(0, artifactDao.findAll().size());       
-    }
+    }*/
 
     /**
      * @param productReleaseDao the productReleaseDao to set
      */
-    public void setProductReleaseDao(ProductReleaseDao productReleaseDao) {
+  /*  public void setProductReleaseDao(ProductReleaseDao productReleaseDao) {
         this.productReleaseDao = productReleaseDao;
-    }
+    }*/
     
     /**
      * @param osDao the osDao to set
      */
-    public void setOSDao(OSDao osDao) {
+   /* public void setOSDao(OSDao osDao) {
         this.osDao = osDao;
-    }
+    }*/
     
     /**
      * @param artifactDao the artifactDao to set
      */
-    public void setArtifactDao(ArtifactDao artifactDao) {
+    /*public void setArtifactDao(ArtifactDao artifactDao) {
         this.artifactDao = artifactDao;
-    }
+    }*/
     
 	/**
      * @param productTypeDao the productTypeDao to set
     */
-    public void setProductTypeDao(ProductTypeDao productTypeDao) {
+    /*public void setProductTypeDao(ProductTypeDao productTypeDao) {
         this.productTypeDao = productTypeDao;
-    }
+    }*/
     
     /**
      * @param artifactTypeDao the artifactTypeDao to set
      */
-    public void setArtifactTypeDao(ArtifactTypeDao artifactTypeDao) {
+    /*public void setArtifactTypeDao(ArtifactTypeDao artifactTypeDao) {
         this.artifactTypeDao = artifactTypeDao;
-    }
+    }*/
 }

@@ -1,6 +1,7 @@
 package com.telefonica.euro_iaas.paasmanager.it;
 
 import static com.telefonica.euro_iaas.paasmanager.it.util.QAProperties.VDC;
+import static com.telefonica.euro_iaas.paasmanager.it.util.QAProperties.ORG;
 import static com.telefonica.euro_iaas.paasmanager.it.util.QAProperties.VM;
 import static com.telefonica.euro_iaas.paasmanager.it.util.QAProperties.getProperty;
 
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
+
 
 import com.telefonica.euro_iaas.paasmanager.it.util.EnvironmentInstanceUtils;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
@@ -18,11 +20,14 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductType;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 
-import cuke4duke.Table;
-import cuke4duke.annotation.I18n.EN.Given;
-import cuke4duke.annotation.I18n.EN.Then;
-import cuke4duke.annotation.I18n.EN.When;
+
+import cucumber.annotation.en.Given;
+import cucumber.annotation.en.Then;
+import cucumber.annotation.en.When;
+import cucumber.table.DataTable;
 
 /**
  * Contains the necessary steps to provision an environmentInsance giving a NotFoundException
@@ -36,15 +41,15 @@ public class EnvironmentInstanceStepsNFE {
     private List<Attribute> attributes;
     private ProductType productType;
     private EnvironmentType environmentType;
-    private List<ProductRelease> productReleases;
-    private List<Tier> tiers;
+    private List<ProductReleaseDto> productReleaseDtos;
+    private List<TierDto> tierDtos;
     private EnvironmentDto environmentDto;
     
     //CREATE ENVIRONMENTINSTANCE
     @Given("^Environment NFE OS:$")
-	public void getOOSS(Table table) {
+	public void getOOSS(DataTable table) {
     	supportedOOSS = new ArrayList<OS>();
-	    for (List<String> row: table.rows()) {
+	    for (List<String> row: table.raw()) {
 	    	supportedOOSS.add(new OS(row.get(0), row.get(1), row.get(2), "description"));
 	    	//System.out.println(row.get(0) + " - " + row.get(1));
 	    }
@@ -53,56 +58,65 @@ public class EnvironmentInstanceStepsNFE {
   
     
 	@Given("^Environment NFE default attributes:$")
-	public void getAttributes(Table table) {
+	public void getAttributes(DataTable table) {
 		attributes = new ArrayList<Attribute>();
-	    for (List<String> row: table.rows()) {
+	    for (List<String> row: table.raw()) {
 	    	attributes.add(new Attribute(row.get(0), row.get(1), row.get(2)));
 	    }
 	}
 	
 	@Given("^Environment NFE Product Type:$")
-	public void getProductTypes(Table table) {
+	public void getProductTypes(DataTable table) {
 		productType = new ProductType();
-	    for (List<String> row: table.rows()) {
+	    for (List<String> row: table.raw()) {
 	    	productType.setDescription(row.get(1));
 	    	productType.setName(row.get(0));
 	   }
 	}
 	
 	@Given("^Environment NFE the product releases:$")
-	public void getProductReleases(Table table) {
-		productReleases = new ArrayList<ProductRelease>();
+	public void getProductReleaseDtos(DataTable table) {
+		productReleaseDtos = new ArrayList<ProductReleaseDto>();
 	    
-		for (List<String> row: table.rows()) {
-	    	ProductRelease productRelease = new ProductRelease(row.get(0), row.get(1));
-	    	productRelease.setAttributes(attributes);
-	    	productRelease.setProductType(productType);
-	    	productRelease.setSupportedOOSS(supportedOOSS);
+		for (List<String> row: table.raw()) {
+			ProductReleaseDto productReleaseDto = new ProductReleaseDto();
+	    	productReleaseDto.setVersion(row.get(0));
+	    	productReleaseDto.setProductName(row.get(0));
+	    	productReleaseDto.setPrivateAttributes(attributes);
+
+	    	//productReleaseDto.setSupportedOS(supportedOOSS);
+    	
 	    	
-	    	productReleases.add(productRelease);
+	    	productReleaseDtos.add(productReleaseDto);
 	   }
 	}
 	
 	@Given("^Environment NFE Tiers:$")
-	public void getTiers(Table table) {
-		tiers = new ArrayList<Tier>();
+	public void getTierDtos(DataTable table) {
+		tierDtos = new ArrayList<TierDto>();
+		boolean isDescription = true;
 	    
-		for (List<String> row: table.rows()) {
-	    	Tier tier = new Tier();
-	    	tier.setInitial_number_instances(Integer.parseInt(row.get(1)));
-	    	tier.setMaximum_number_instances(Integer.parseInt(row.get(2)));
-	    	tier.setMinimum_number_instances(Integer.parseInt(row.get(3)));
-	    	tier.setName(row.get(0));
-	    	tier.setProductReleases(productReleases);
+		for (List<String> row: table.raw()) {
+			if (isDescription)
+			{
+				isDescription = false;
+			    continue;
+			}
+	    	TierDto tierDto = new TierDto();
+	    	tierDto.setInitial_number_instances(Integer.parseInt(row.get(1)));
+	    	tierDto.setMaximum_number_instances(Integer.parseInt(row.get(2)));
+	    	tierDto.setMinimum_number_instances(Integer.parseInt(row.get(3)));
+	    	tierDto.setName(row.get(0));
+	    	tierDto.setProductReleaseDtos(productReleaseDtos);
 	    	
-	    	tiers.add(tier);
+	    	tierDtos.add(tierDto);
 	   }
 	}
 	
 	@Given("^Environment NFE EnvironmentType:$")
-	public void getEnvironmentType(Table table) {
+	public void getEnvironmentType(DataTable table) {
 		environmentType = new EnvironmentType();
-	    for (List<String> row: table.rows()) {
+	    for (List<String> row: table.raw()) {
 	    	environmentType.setDescription(row.get(1));
 	    	environmentType.setName(row.get(0));
 	   }
@@ -114,25 +128,26 @@ public class EnvironmentInstanceStepsNFE {
     throws Exception {
         
     	String vdc = getProperty(VDC);
+    	String org = getProperty(ORG);
     	System.out.println ("vdc=" + vdc);
     	
     	System.out.println("Name: " + envName);
-    	if (tiers != null) {
-    		for (int i=0; i< tiers.size(); i++){
-    			System.out.println("Tier Name(" + i +"): " + tiers.get(i).getName());
-    			for (int j=0; j < tiers.get(i).getProductReleases().size(); j++ ){
+    	if (tierDtos != null) {
+    		for (int i=0; i< tierDtos.size(); i++){
+    			System.out.println("Tier Name(" + i +"): " + tierDtos.get(i).getName());
+    			for (int j=0; j < tierDtos.get(i).getProductReleaseDtos().size(); j++ ){
     				System.out.println("PR Name(" + j +"): " 
-    					+ tiers.get(i).getProductReleases().get(j).getName());
+    					+ tierDtos.get(i).getProductReleaseDtos().get(j).getProductName());
     			}
     		}
     	}
         environmentDto = new EnvironmentDto();
         environmentDto.setName(envName);
-        environmentDto.setTiers(tiers);
+        environmentDto.setTierDtos(tierDtos);
         environmentDto.setEnvironmentType(environmentType);
         
     	EnvironmentInstanceUtils envInstanceManager = new EnvironmentInstanceUtils();
-        Task task = envInstanceManager.create(
+        Task task = envInstanceManager.create(org,
         		vdc, environmentDto, null);
 
     }

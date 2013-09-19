@@ -9,6 +9,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Service;
  * @author Jesus M. Movilla
  * @version $Id: $
  */
-public interface ServiceDao extends BaseDAO<Service, Long> {
+public interface ServiceDao extends BaseDAO<Service, String> {
 
 }

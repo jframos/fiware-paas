@@ -38,7 +38,6 @@ public class ArtifactDaoJpaImpl
      * Find all the Artifacts in paas-manager database
      * @return artifacts, the list of artifacts
      */
-	@Override
 	public List<Artifact> findAll() {
 		return super.findAll(Artifact.class);
 	}
@@ -48,7 +47,6 @@ public class ArtifactDaoJpaImpl
      * @param name, the name of the artifact
      * @return artifact, the artifact
      */
-	@Override
 	public Artifact load(String name) throws EntityNotFoundException {
         return super.loadByField(Artifact.class, "name", name);
 	}
@@ -57,7 +55,6 @@ public class ArtifactDaoJpaImpl
      * @param crteria, the criteria to perform the search
      * @return artifacts, the list of artifacts
      */
-	@Override
 	public List<Artifact> findByCriteria(ArtifactSearchCriteria criteria) {
 		Session session = (Session) getEntityManager().getDelegate();
 	    Criteria baseCriteria = session.createCriteria(ProductRelease.class);

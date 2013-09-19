@@ -10,6 +10,7 @@ import com.sun.jersey.api.client.WebResource.Builder;
 import com.telefonica.euro_iaas.paasmanager.client.ClientConstants;
 import com.telefonica.euro_iaas.paasmanager.client.services.EnvironmentInstanceService;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 
 public class EnvironmentInstanceServiceImpl extends AbstractBaseService
@@ -23,18 +24,43 @@ public class EnvironmentInstanceServiceImpl extends AbstractBaseService
 	
 	
 	@Override
-	public Task create(String vdc, 
+	public Task create(String org, String vdc, 
 			EnvironmentDto environmentDto, String callback) {
         
-        String url = getBaseHost() + MessageFormat.format(
-                ClientConstants.BASE_ENVIRONMENT_INSTANCE_PATH, vdc);
+        String url = getBaseHost() + "/envInst" + MessageFormat.format(
+                ClientConstants.BASE_ENVIRONMENT_INSTANCE_PATH, org, vdc);
         WebResource wr = getClient().resource(url);
         Builder builder = wr.accept(getType()).type(getType()).entity(environmentDto);
         builder = addCallback(builder, callback);
         return builder.post(Task.class);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.telefonica.euro_iaas.paasmanager.client.services.EnvironmentInstanceService#create(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Task create(String org, String vdc, String payload, String callback) {
+		 String url = getBaseHost() + "/ovf"+ MessageFormat.format(
+	                ClientConstants.BASE_ENVIRONMENT_INSTANCE_PATH, org, vdc);
+	        WebResource wr = getClient().resource(url);
+	        Builder builder = wr.accept(getType()).type(getType()).entity(payload);
+	        builder = addCallback(builder, callback);
+	        return builder.post(Task.class);
+	}
 	
+	/**
+     * {@inheritDoc}
+     */
+    @Override
+    public EnvironmentInstanceDto load(String org, String vdc, String name) {
+        String url = getBaseHost()
+                + MessageFormat.format(
+                		ClientConstants.ENVIRONMENT_INSTANCE_PATH, org, vdc, name);
+        WebResource wr = getClient().resource(url);
+        return wr.accept(getType()).get(EnvironmentInstanceDto.class);
+    }
+
+
 	
     protected Builder addCallback(Builder resource, String callback) {
         if (!StringUtils.isEmpty(callback)) {

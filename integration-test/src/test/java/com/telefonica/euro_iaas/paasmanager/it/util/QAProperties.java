@@ -24,8 +24,10 @@ public class QAProperties {
     public static final String WAITING_PERIOD = "waiting.period";
 
     public static final String VDC = "vdc";
+    public static final String ORG = "org";
     public static final String VM = "vm";
-
+    public static final String PAYLOAD_LOATION = "payloadLocation";
+    
     private static Properties properties;
 
 

@@ -1,7 +1,9 @@
 package com.telefonica.euro_iaas.paasmanager.manager;
 
+import java.util.HashMap;
 import java.util.List;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 /*import com.telefonica.euro_iaas.paasmanager.exception.AlreadyInstalledException;
@@ -10,11 +12,15 @@ import com.telefonica.euro_iaas.paasmanager.exception.ApplicationInstalledExcept
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidInstallProductRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.NodeExecutionException;
 import com.telefonica.euro_iaas.paasmanager.exception.FSMViolationException;*/
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidProductInstanceRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.NotUniqueResultException;
+import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
+import com.telefonica.euro_iaas.paasmanager.exception.ProductReconfigurationException;
 //import com.telefonica.euro_iaas.paasmanager.exception.NotTransitableException;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
+import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductInstanceSearchCriteria;
 
@@ -28,18 +34,21 @@ public interface ProductInstanceManager {
 
     /**
      * Install a list of products in a given vm.
-     * @param vm the vm where  instance will be running in
-     * @param vdc the vdc where the instance will be installed
-     * @param product the product to install
-     * @param attributes the configuration
-     *
-     * @return the of installed product.
+     * @param vm
+     * @param org
+     * @param vdc
+     * @param product
+     * @param attributes
+     * @return
+     * @throws ProductInstallatorException
+     * @throws InvalidEntityException
+     * @throws NotUniqueResultException
+     * @throws InvalidEntityException 
      */
-    ProductInstance install(VM vm, String vdc, ProductRelease product,
-            List<Attribute> attributes) throws InvalidEntityException,
-            NotUniqueResultException;
-        //throws NodeExecutionException, AlreadyInstalledException,
-        //InvalidInstallProductRequestException;
+    ProductInstance install(TierInstance tierInstance, String vdc, ProductRelease product,
+            List<Attribute> attributes) throws ProductInstallatorException, 
+            InvalidProductInstanceRequestException,
+            NotUniqueResultException, InvalidEntityException;
 
     /**
      * Configure an installed product
@@ -86,11 +95,13 @@ public interface ProductInstanceManager {
     /**
      * Find the ProductInstance using the given id.
      * @param vdc the vdc
-     * @param id the productInstance identifier
+     * @param name the productInstance name
      * @return the productInstance
      * @throws EntityNotFoundException if the product instance does not exists
      */
-    ProductInstance load(String vdc, Long id) throws EntityNotFoundException;
+    ProductInstance load(String vdc, String name) throws EntityNotFoundException;
+    
+    ProductInstance load(String name) throws EntityNotFoundException;
 
     /**
      * Find the ProductInstance that match with the given criteria.
@@ -119,6 +130,19 @@ public interface ProductInstanceManager {
      * Updates a product instance and persist it in the database∫
      * @param productInstance
      * @return
+     * @throws InvalidProductInstanceRequestException 
      */
     //ProductInstance update(ProductInstance productInstance);
+    
+    ProductInstance create (ProductInstance productInstance) throws InvalidEntityException, AlreadyExistsEntityException, InvalidProductInstanceRequestException;
+
+	void remove(ProductInstance productInstance);
+	
+	void configure (ProductInstance productInstance, List<Attribute> properties) throws 
+	InvalidEntityException, AlreadyExistsEntityException, 
+	ProductInstallatorException, EntityNotFoundException, 
+	ProductReconfigurationException;
+
+
+
 }

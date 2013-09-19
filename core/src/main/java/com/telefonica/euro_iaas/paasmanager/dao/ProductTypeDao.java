@@ -9,6 +9,6 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductType;
  * @author Jesus M. Movilla
  * @version $Id: $
  */
-public interface ProductTypeDao extends BaseDAO<ProductType, Long> {
+public interface ProductTypeDao extends BaseDAO<ProductType, String> {
 
 }

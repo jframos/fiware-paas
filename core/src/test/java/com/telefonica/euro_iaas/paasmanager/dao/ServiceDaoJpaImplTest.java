@@ -13,8 +13,8 @@ import com.telefonica.euro_iaas.paasmanager.model.Service;
  * @author Jesus M. Movilla
  *
  */
-public class ServiceDaoJpaImplTest extends AbstractJpaDaoTest implements
-	ServiceDao {
+public class ServiceDaoJpaImplTest extends AbstractJpaDaoTest {
+	//implements	ServiceDao {
 		
     private ServiceDao serviceDao;
     
@@ -25,27 +25,23 @@ public class ServiceDaoJpaImplTest extends AbstractJpaDaoTest implements
     public final static String SERVICE2_NAME = "Service2Name";
     public final static String SERVICE2_DESCRIPTION = "Service2Description";
     
-    @Override
-	public Service create(Service service)
+    public Service create(Service service)
 			throws InvalidEntityException, AlreadyExistsEntityException {
 		service = serviceDao.create(service);
 		assertNotNull(service.getId());
 		return service;
 	}
 
-	@Override
 	public List<Service> findAll() {
 		return serviceDao.findAll();
 	}
 
-	@Override
-	public Service load(Long id) throws EntityNotFoundException {
-		Service service = serviceDao.load(id);
+	public Service load(String name) throws EntityNotFoundException {
+		Service service = serviceDao.load(name);
 		assertNotNull(service.getId());
 		return service;
 	}
 
-	@Override
 	public Service update(Service service) throws InvalidEntityException {
 		service.setDescription("Description2");	
 		
@@ -55,7 +51,6 @@ public class ServiceDaoJpaImplTest extends AbstractJpaDaoTest implements
 		return service;
 	}
 	
-	@Override
 	public void remove(Service service) {
 		serviceDao.remove(service);
 	}
@@ -81,7 +76,7 @@ public class ServiceDaoJpaImplTest extends AbstractJpaDaoTest implements
     /**
      * Test the create and load method
      */
-    public void testCreate2() throws Exception {
+   /* public void testCreate2() throws Exception {
         
     	Service service = new Service();
     	service.setName(SERVICE2_NAME);
@@ -90,7 +85,7 @@ public class ServiceDaoJpaImplTest extends AbstractJpaDaoTest implements
     	
     	Service createdService = serviceDao.create(service);
        
-    }
+    }*/
     
     /**
      * Test the create and load method
@@ -103,7 +98,7 @@ public class ServiceDaoJpaImplTest extends AbstractJpaDaoTest implements
         Service service = services.get(0);
         service.setDescription("newDescription");
         serviceDao.update(service);
-        assertEquals("newDescription", serviceDao.load(service.getId()).getDescription());
+        assertEquals("newDescription", serviceDao.load(service.getName()).getDescription());
         serviceDao.remove(service);
         assertEquals(0, serviceDao.findAll().size());
     }
@@ -111,7 +106,7 @@ public class ServiceDaoJpaImplTest extends AbstractJpaDaoTest implements
     /**
      * @param serviceDao the serviceDao to set
      */
-    public void setServiceDao(ServiceDao serviceDao) {
+   public void setServiceDao(ServiceDao serviceDao) {
         this.serviceDao = serviceDao;
     }
 

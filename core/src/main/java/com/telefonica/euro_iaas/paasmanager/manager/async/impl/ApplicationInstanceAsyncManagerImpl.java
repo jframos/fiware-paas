@@ -29,6 +29,7 @@ import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.ApplicationTypeNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.ApplicationInstanceAsyncManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
@@ -39,6 +40,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.TaskError;
 import com.telefonica.euro_iaas.paasmanager.model.TaskReference;
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
+import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.util.TaskNotificator;
 
@@ -67,8 +69,7 @@ public class ApplicationInstanceAsyncManagerImpl implements
 	* @param callback if not empty, contains the url where the result of the
 	* execution will be sent
 	*/   
-	@Override
-	public void install(String vdc, String environmentInstanceName,
+	public void install(String org, String vdc, String environmentInstanceName,
 			ApplicationRelease applicationRelease, Task task, String callback) {
 		
 		try {
@@ -77,7 +78,7 @@ public class ApplicationInstanceAsyncManagerImpl implements
 			
 			ApplicationInstance applicationInstance = 
 					applicationInstanceManager.install(
-			        vdc, environmentInstance, applicationRelease);
+			        org, vdc, environmentInstance, applicationRelease);
 			LOGGER.info("Application " + applicationRelease.getName() + '-'
                     + applicationRelease.getVersion() + " installed successfully "
                     + " on Environment " + environmentInstanceName);
@@ -100,11 +101,43 @@ public class ApplicationInstanceAsyncManagerImpl implements
 		}catch (AlreadyExistsEntityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ProductInstallatorException e) {
+			String errorMsg = "Error installing a product. Description:" + 
+					e.getMessage();
+			updateErrorTask("Error installing a product" , 
+					PRODUCT_RELEASE_BASE_URL, task, errorMsg, e);
 		} finally {
 			notifyTask(callback, task);
 	    }
 
 	}
+	
+	public void uninstall(String org, String vdc, String environmentInstanceName, String applicationName,
+    		Task task, String callback) {
+		
+		 ApplicationInstance applicationInstance = null; 
+		try {
+			 applicationInstance = 
+				 applicationInstanceManager.load(vdc,applicationName);
+			 EnvironmentInstance environmentInstance = 
+				 environmentInstanceDao.load(environmentInstanceName);
+			 applicationInstanceManager.uninstall(org, vdc, environmentInstance, applicationInstance);
+
+			 LOGGER.info("Application " + applicationInstance.getName() + '-'
+	                    + " uninstalled successfully "
+	                    + " on Environment " + environmentInstanceName);
+			} catch (EntityNotFoundException e) {
+				String errorMsg = e.getMessage();
+				updateErrorTask(environmentInstanceName, 
+						ENVIRONMENT_INSTANCE_BASE_URL, task, errorMsg, e);
+			} 
+			catch (ProductInstallatorException e) {
+				String errorMsg = e.getMessage();
+				updateErrorTask(environmentInstanceName, 
+						ENVIRONMENT_INSTANCE_BASE_URL, task, errorMsg, e);
+			} 
+
+	 }
 
 	
     /**
@@ -187,6 +220,8 @@ public class ApplicationInstanceAsyncManagerImpl implements
     public void setTaskNotificator(TaskNotificator taskNotificator) {
         this.taskNotificator = taskNotificator;
     }
+
+
 	
 
 }

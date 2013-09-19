@@ -15,12 +15,11 @@ import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 public class ApplicationInstanceSearchCriteria extends AbstractSearchCriteria {
 
 	private ApplicationRelease applicationRelease;
-    /**
-     * The vdc where the product is installed.
-     */
     private String vdc;
-
     private List<Status> status;
+    private String environmentInstance;
+    private String applicationName;
+    private String productInstanceName;
     
     /**
      * Default constructor
@@ -37,11 +36,35 @@ public class ApplicationInstanceSearchCriteria extends AbstractSearchCriteria {
 	 * @param vdc
 	 */
 	public ApplicationInstanceSearchCriteria(Integer page, Integer pageSize,
-			String orderBy, String orderType, List<Status> status,ApplicationRelease applicationRelease,
-			String vdc) {
+			String orderBy, String orderType, List<Status> status, 
+			ApplicationRelease applicationRelease,
+			String vdc, String environmentInstance) {
 		super(page, pageSize, orderBy, orderType);
 		this.applicationRelease = applicationRelease;
 		this.vdc = vdc;
+		this.environmentInstance=environmentInstance;
+		this.status = status;
+	}
+	
+	/**
+	 * @param page
+	 * @param pageSize
+	 * @param orderBy
+	 * @param orderType
+	 * @param applicationRelease
+	 * @param vdc
+	 */
+	public ApplicationInstanceSearchCriteria(Integer page, Integer pageSize,
+			String orderBy, String orderType, List<Status> status, 
+			ApplicationRelease applicationRelease,
+			String vdc, String environmentInstance, String productInstanceName, 
+			String applicationName) {
+		super(page, pageSize, orderBy, orderType);
+		this.applicationRelease = applicationRelease;
+		this.vdc = vdc;
+		this.environmentInstance=environmentInstance;
+		this.productInstanceName = productInstanceName;
+		this.applicationName = applicationName;
 		this.status = status;
 	}
 
@@ -53,10 +76,11 @@ public class ApplicationInstanceSearchCriteria extends AbstractSearchCriteria {
 	 */
 	public ApplicationInstanceSearchCriteria(String orderBy, String orderType, 
 			List<Status> status, ApplicationRelease applicationRelease,
-			String vdc) {
+			String vdc, String environmentInstance) {
 		super(orderBy, orderType);
 		this.applicationRelease = applicationRelease;
 		this.vdc = vdc;
+		this.environmentInstance=environmentInstance;
 		this.status = status;
 	}
 	
@@ -68,10 +92,11 @@ public class ApplicationInstanceSearchCriteria extends AbstractSearchCriteria {
 	 */
 	public ApplicationInstanceSearchCriteria(Integer page, Integer pageSize,
 			List<Status> status, ApplicationRelease applicationRelease,
-			String vdc) {
+			String vdc,  String environmentInstance) {
 		super(page, pageSize);
 		this.applicationRelease = applicationRelease;
 		this.vdc = vdc;
+		this.environmentInstance=environmentInstance;
 		this.status = status;
 	}
 	
@@ -80,10 +105,11 @@ public class ApplicationInstanceSearchCriteria extends AbstractSearchCriteria {
 	 * @param vdc
 	 */
 	public ApplicationInstanceSearchCriteria(List<Status> status,
-			ApplicationRelease applicationRelease,
+			ApplicationRelease applicationRelease,String environmentInstance,
 			String vdc) {
 		this.status=status;
 		this.applicationRelease = applicationRelease;
+		this.environmentInstance=environmentInstance;
 		this.vdc = vdc;
 	}
 	
@@ -110,6 +136,45 @@ public class ApplicationInstanceSearchCriteria extends AbstractSearchCriteria {
 	 */
 	public void setVdc(String vdc) {
 		this.vdc = vdc;
+	}
+	
+	/**
+	 * @return the environmentInstance
+	 */
+	public String getEnvironmentInstance() {
+		return environmentInstance;
+	}
+	/**
+	 * @param vdc the vdc to set
+	 */
+	public void setEnvironmentInstance(String environmentInstance) {
+		this.environmentInstance = environmentInstance;
+	}
+	
+	/**
+	 * @return the applicationName
+	 */
+	public String getApplicationName() {
+		return applicationName;
+	}
+	/**
+	 * @param vdc the applicationName to set
+	 */
+	public void setApplicationName(String applicationName) {
+		this.applicationName = applicationName;
+	}
+	
+	/**
+	 * @return the applicationName
+	 */
+	public String getProductInstanceName() {
+		return productInstanceName;
+	}
+	/**
+	 * @param vdc the applicationName to set
+	 */
+	public void setProductInstanceName(String productInstanceName) {
+		this.productInstanceName = productInstanceName;
 	}
 	
 	 /**

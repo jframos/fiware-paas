@@ -5,35 +5,121 @@
     <artifactId>paas-manager-core</artifactId>
     <packaging>jar</packaging>
     <name>paas-manager-core</name>
-   
-
+  
     <parent> 
       <groupId>com.telefonica.euro_iaas</groupId>
       <artifactId>paas-manager-server</artifactId>
-      <version>0.0.2</version>
+      <version>0.0.3</version>
     </parent>
     
     <properties>
-        <spring.version>3.0.5.RELEASE</spring.version>
+        <!-- <spring.version>3.0.5.RELEASE</spring.version>-->
+        <spring.version>3.1.0.RELEASE</spring.version>
     </properties>
 
     <dependencies>
+        <!--  XPathAPI -->
         <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.7.1</version>
+        </dependency>
+        <!--  restlet librries for REC Manager -->
+       <dependency>
+            <groupId>com.noelios.restlet</groupId>
+            <artifactId>com.noelios.restlet</artifactId>
+            <version>1.1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restlet</groupId>
+            <artifactId>org.restlet</artifactId>
+            <version>1.1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restlet</groupId>
+            <artifactId>org.restlet.ext.json</artifactId>
+            <version>1.1.7</version> 
+        </dependency>
+        <!-- tcloud apis -->
+        <!-- <dependency>
+            <groupId>com.telefonica.claudia</groupId>
+            <artifactId>tcloud-schemas</artifactId>
+            <version>0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.telefonica.claudia</groupId>
+            <artifactId>tcloud-cat-priv</artifactId>
+            <version>0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.telefonica.claudia</groupId>
+            <artifactId>tcloud-org</artifactId>
+            <version>0.1</version>
+        </dependency>-->
+        <!-- CLAUDIA -->
+         <dependency>
+            <groupId>com.telefonica.claudia</groupId>
+            <artifactId>claudia-commons</artifactId>
+             <version>0.3.21</version>
+        </dependency>
+        <!-- Introduce hibernate-core-3.6.0 -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+             <version>3.3.0.SP1</version>
+        </dependency>  
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+             <version>3.4.0.GA</version>
+        </dependency>     
+         <dependency>
+            <groupId>com.telefonica.claudia</groupId>
+            <artifactId>claudia-client</artifactId>
+            <version>0.3.33</version>
+        </dependency>
+       <dependency>
+            <groupId>com.telefonica.claudia</groupId>
+            <artifactId>clotho-commons</artifactId>
+            <version>0.3.33</version>
+        </dependency>
+         <dependency>
+            <groupId>com.telefonica.claudia</groupId>
+            <artifactId>tcloud-schemas</artifactId>
+            <version>0.11</version>
+        </dependency>
+         <!-- Claudia TCloud-schemas needed or RECManager-->
+        <dependency>
+            <groupId>com.telefonica.claudia</groupId>
+            <artifactId>ovf-generated-schemas</artifactId>
+            <version>0.3.33</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.telefonica.claudia</groupId>
+            <artifactId>ovf-utils</artifactId>
+            <version>0.3.33</version>
+            <scope>compile</scope>
+            <type>ejb</type>
+        </dependency>
+        <!--   -->
+         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-client</artifactId>
-            <version>1.9.45</version>
+            <version>1.9.50</version>
         </dependency>
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-server-model</artifactId>
-            <version>1.9.45</version>
+            <version>1.9.50</version>
         </dependency>
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>paas-manager-model</artifactId>
         </dependency>
         <!-- Persistence -->
-        <dependency>
+         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>commons-dao</artifactId>          
         </dependency>
@@ -48,7 +134,7 @@
             <version>1.4.2</version>
         </dependency>
         <!-- concrete Log4J Implementation for SLF4J API -->
-        <dependency>
+       <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.4.2</version>
@@ -65,8 +151,7 @@
             <version>2.0.1</version>
         </dependency>
 
-        <!-- SPRING DEPENDENCIES -->
-
+        <!-- SPRING DEPENDENCIES --> 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
@@ -129,8 +214,34 @@
             <version>1.6.0</version>
             <scope>compile</scope>
         </dependency>
+        
         <!-- /SPRING DEPENDENCIES -->
 
+         <!-- SPRINC SECURITY DEPENDENCIES -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-taglibs</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <!-- FIN SPRINC SECURITY DEPENDENCIES -->
+        
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -145,7 +256,7 @@
         </dependency>
 
         <!-- TEST DEPENDENCIES -->
-
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -196,7 +307,7 @@
             <classifier>jdk15</classifier>
         </dependency>
 
-        <dependency>
+       <dependency>
             <groupId>net.sourceforge.xuse</groupId>
             <artifactId>xuse-annotation-tool</artifactId>
             <version>01.00.00-RC2</version>
@@ -220,9 +331,9 @@
                   </configuration>  
             </plugin>
              <plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>		
-			</plugin> 
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>       
+            </plugin> 
        </plugins>
     </build>
 

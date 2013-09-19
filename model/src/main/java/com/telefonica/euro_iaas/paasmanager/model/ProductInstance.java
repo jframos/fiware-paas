@@ -2,14 +2,13 @@ package com.telefonica.euro_iaas.paasmanager.model;
 
 
 
-import java.util.List;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
-
-import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
@@ -17,14 +16,15 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 @Entity
 public class ProductInstance extends InstallableInstance
 	implements Comparable<ProductInstance>{
-
-    @ManyToOne
-    private ProductRelease productRelease;
 	
-    @Embedded
-    private VM vm;
-   	
-    //private List<Attribute> attributes;
+	@ManyToOne
+    private ProductRelease productRelease;
+    
+	/*@JoinColumn(name = "tierInstance_id", referencedColumnName = "id")
+	@ManyToOne(targetEntity = TierInstance.class, optional = true, fetch = FetchType.LAZY)
+	@XmlTransient
+	private TierInstance tierInstance;*/
+	
     /**
 	 * Default Constructor
 	 */
@@ -38,13 +38,11 @@ public class ProductInstance extends InstallableInstance
      * @param application a {@link com.telefonica.euro_iaas.sdc.model.Product} object.
      * @param status a {@link com.telefonica.euro_iaas.sdc.model.ProductInstance.Status} object.
      */
-    public ProductInstance(ProductRelease productRelease, Status status, VM vm,
+    public ProductInstance(ProductRelease productRelease, Status status, 
             String vdc) {
         super(status);
         this.productRelease = productRelease;
-        this.vm = vm;
         setVdc(vdc);
-		setName();
     }
 
 
@@ -61,48 +59,12 @@ public class ProductInstance extends InstallableInstance
 	public void setProductRelease(ProductRelease productRelease) {
 		this.productRelease = productRelease;
 	}
-
-	/**
-	 * @return the vm
-	 */
-	public VM getVm() {
-		return vm;
-	}
-
-	/**
-	 * @param vm the vm to set
-	 */
-	public void setVm(VM vm) {
-		this.vm = vm;
-	}
-
-	/**
-	 * @return the attributes
-	 */
-	/*public List<Attribute> getAttributes() {
-		return attributes;
-	}*/
-
-	/**
-	 * @param attributes the attributes to set
-	 */
-	/*public void setAttributes(List<Attribute> attributes) {
-		this.attributes = attributes;
-	}*/
-
-	@Override
-    public int compareTo(ProductInstance o) {
-        return this.getProductRelease().getName().compareTo(
-                o.getProductRelease().getName());
-    }
 	
-	/*
-	 * setting the name as fuction of applicationRelease.name 
-	 * and environmentInstance.name
-	 */
-	private void setName(){
-		this.name = productRelease.getName() + "-" + vm.getFqn();
-	}
 
+
+	public int compareTo(ProductInstance arg0) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
     
 }

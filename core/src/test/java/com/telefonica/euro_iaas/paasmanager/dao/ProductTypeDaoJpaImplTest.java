@@ -7,36 +7,32 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.model.ProductType;
 
-public class ProductTypeDaoJpaImplTest extends AbstractJpaDaoTest implements
-		ProductTypeDao {
+public class ProductTypeDaoJpaImplTest extends AbstractJpaDaoTest {
 
 	private String PRODUCTTYPE_NAME = "ProductType_name";
 	private String PRODUCTTYPE_DESC = "ProductType_desc";
 	
 	private ProductTypeDao productTypeDao;
 	
-	@Override
 	public ProductType create(ProductType productType) throws InvalidEntityException,
 			AlreadyExistsEntityException {
+		System.out.println("Inserting ProductTypeObject in DB");  	
 		productType = productTypeDao.create(productType);
 		assertNotNull(productType.getId());
 		return productType;
 	}
 
-	@Override
 	public List<ProductType> findAll() {
 		return productTypeDao.findAll();
 	}
 
-	@Override
 	public ProductType load(Long arg0) throws EntityNotFoundException {
 		ProductType productType = 
-				productTypeDao.load(productTypeDao.findAll().get(0).getId());
+				productTypeDao.load(productTypeDao.findAll().get(0).getName());
 		assertNotNull(productType.getId());
 		return productType;
 	}
 
-	@Override
 	public ProductType update(ProductType arg0) throws InvalidEntityException {
 		ProductType productType = productTypeDao.findAll().get(0);
 		productType.setDescription("Description2");	
@@ -47,7 +43,6 @@ public class ProductTypeDaoJpaImplTest extends AbstractJpaDaoTest implements
 		return productType;
 	}
 	
-	@Override
 	public void remove(ProductType arg0) {
 		productTypeDao.remove(productTypeDao.findAll().get(0));
 

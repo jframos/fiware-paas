@@ -16,100 +16,111 @@ import javax.ws.rs.core.MediaType;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
-import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationInstanceDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
+import com.telefonica.euro_iaas.paasmanager.exception.ApplicationInstanceNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidApplicationReleaseException;
-import com.telefonica.euro_iaas.paasmanager.exception.EnvironmentInstanceNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
 
 /**
  * Provides a rest api to works with ApplicationInstances
- *
+ * 
  * @author Jesus M. Movilla
- *
+ * 
  */
 public interface ApplicationInstanceResource {
 
-    /**
-     * Install a list of application in a given host running
-     * on the selected products.
-     * @param vdc the vdc where the application will be installed.
-     * @param application the application to install containing the ,
-     *  the appName and the environment Intance where the application is going 
-     *  to be installed.
-     * @param callback if not null, contains the url where the system shall
-     * notify when the task is done
-     * @throws InvalidApplicationReleaseException, EnvironmentInstanceNotFoundException
-     * @return the task referencing the installed application.
-     */
-    @POST
-    @Path("/")
-    @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    Task install(@PathParam("vdc") String vdc, 
-    		ApplicationInstanceDto applicationInstanceDto,
-            @HeaderParam("callback") String callback) 
-    		throws InvalidApplicationReleaseException, 
-    		EnvironmentInstanceNotFoundException, ProductReleaseNotFoundException;
+	/**
+	 * Install a list of application in a given host running on the selected
+	 * products.
+	 * 
+	 * @param org
+	 *            , the org environment belongs to
+	 * @param vdc
+	 *            the vdc where the application will be installed.
+	 * @param environmentInstanceName
+	 * @param application
+	 *            the application to install containing the , the appName and
+	 *            the environment Intance where the application is going to be
+	 *            installed.
+	 * @param callback
+	 *            if not null, contains the url where the system shall notify
+	 *            when the task is done
+	 * @throws InvalidApplicationReleaseException
+	 *             , ApplicationInstanceNotFoundException,
+	 *             ProductReleaseNotFoundException
+	 * @return the task referencing the installed application.
+	 */
+	@POST
+	@Path("/")
+	@Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Consumes( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	Task install(@PathParam("org") String org, @PathParam("vdc") String vdc,
+			@PathParam("environmentInstance") String environmentInstance,
+			ApplicationReleaseDto applicationReleaseDto,
+			@HeaderParam("callback") String callback)
+			throws InvalidApplicationReleaseException,
+			ApplicationInstanceNotFoundException,
+			ProductReleaseNotFoundException;
 
-    /**
-     * Retrieve all ApplicationInstance that match with a given criteria.
-     *
-     * @param hostname
-     *            the host name where the product is installed (<i>nullable</i>)
-     * @param domain
-     *            the domain where the machine is (<i>nullable if hostaname is null</i>)
-     * @param ip
-     *            the ip of the host (<i>nullable</i>)
-     * @param page
-     *            for pagination is 0 based number(<i>nullable</i>)
-     * @param pageSize
-     *            for pagination, the number of items retrieved in a query
-     *            (<i>nullable</i>)
-     * @param orderBy
-     *            the file to order the search (id by default <i>nullable</i>)
-     * @param orderType
-     *            defines if the order is ascending or descending
-     *            (asc by default <i>nullable</i>)
-     * @param status the status the product (<i>nullable</i>)
-     * @return the retrieved application instances.
-     */
-    @GET
-    @Path("/")
-    @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    List<ApplicationInstance> findAll(@QueryParam("hostname") String hostname,
-            @QueryParam("domain") String domain,
-            @QueryParam("ip") String ip,
-            @QueryParam("fqn") String fqn,
-            @QueryParam("page") Integer page,
-            @QueryParam("pageSize") Integer pageSize,
-            @QueryParam("orderBy") String orderBy,
-            @QueryParam("orderType") String orderType,
-            @QueryParam("status") List<Status> status,
-            @PathParam("vdc") String vdc,
-            @QueryParam("applicationName") String applicationName);
+	/**
+	 * Find the applications according to the criteria specified in the request
+	 * 
+	 * @param page
+	 * @param pageSize
+	 * @param orderBy
+	 * @param orderType
+	 * @param status
+	 * @param vdc
+	 * @param environmentInstance
+	 * @param productInstance
+	 * @param applicationName
+	 * @return
+	 * @throws ApplicationInstanceNotFoundException
+	 */
+	@GET
+	@Path("/")
+	@Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	List<ApplicationInstance> findAll(@QueryParam("page") Integer page,
+			@QueryParam("pageSize") Integer pageSize,
+			@QueryParam("orderBy") String orderBy,
+			@QueryParam("orderType") String orderType,
+			@QueryParam("status") List<Status> status,
+			@PathParam("vdc") String vdc,
+			@PathParam("environmentInstance") String environmentInstance,
+			@PathParam("productInstance") String productInstance,
+			@QueryParam("applicationName") String applicationName)
+			throws ApplicationInstanceNotFoundException;
 
-    /**
-     * Retrieve the selected application instance.
-     * @param id the application id
-     * @return the application instance
-     */
-    @GET
-    @Path("/{id}")
-    @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ApplicationInstance load(@PathParam("id") Long id);
-    
-    /**
-     * Uninstall a previously installed instance.
-     *
-     * @param id the installable instance id
-     * @param callback if not empty, contains the url where the result of the
-     * async operation will be sent
-     * @return the task.
-     */
-    @DELETE
-    @Path("/{id}")
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    Task uninstall(@PathParam("vdc") String vdc, @PathParam("id") Long id,
-            @HeaderParam("callback") String callback);
+	/**
+	 * Retrieve the selected application instance.
+	 * 
+	 * @param name
+	 *            the applicationInstanceName
+	 * @param vdc
+	 * @return the application instance
+	 */
+	@GET
+	@Path("/{name}")
+	@Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	ApplicationInstance load(@PathParam("vdc") String vdc,
+			@PathParam("name") String name);
+
+	/**
+	 * Uninstall a previously installed instance.
+	 * 
+	 * @param id
+	 *            the installable instance id
+	 * @param callback
+	 *            if not empty, contains the url where the result of the async
+	 *            operation will be sent
+	 * @return the task.
+	 */
+	@DELETE
+	@Path("/{name}")
+	@Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	Task uninstall(@PathParam("org") String org, @PathParam("vdc") String vdc,
+			@PathParam("environmentInstance") String environmentInstance,
+			@PathParam("name") String name,
+			@HeaderParam("callback") String callback);
 
 }

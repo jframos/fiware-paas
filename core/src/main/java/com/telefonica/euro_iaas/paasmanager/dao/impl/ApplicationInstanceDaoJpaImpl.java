@@ -13,32 +13,27 @@ import org.hibernate.criterion.SimpleExpression;
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.ApplicationInstanceDao;
-import com.telefonica.euro_iaas.paasmanager.dao.ApplicationReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
-import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
-import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationInstanceSearchCriteria;
 
 public class ApplicationInstanceDaoJpaImpl 
-	extends AbstractBaseDao<ApplicationInstance, Long>  implements ApplicationInstanceDao {
+	extends AbstractBaseDao<ApplicationInstance, String>  implements ApplicationInstanceDao {
 
-	@Override
 	public List<ApplicationInstance> findAll() {
 		return super.findAll(ApplicationInstance.class);
 	}
 
-	@Override
-	public ApplicationInstance load(Long arg0) throws EntityNotFoundException {
-        return super.loadByField(ApplicationInstance.class, "id", arg0);
+	public ApplicationInstance load(String arg0) throws EntityNotFoundException {
+        return super.loadByField(ApplicationInstance.class, "name", arg0);
 	}
 
-	@Override
 	public List<ApplicationInstance> findByCriteria(
 			ApplicationInstanceSearchCriteria criteria) {
 		Session session = (Session) getEntityManager().getDelegate();
         Criteria baseCriteria = session
-                .createCriteria(ProductInstance.class);
+                .createCriteria(ApplicationInstance.class);
         
         if (criteria.getStatus() != null && !criteria.getStatus().isEmpty()) {
             Criterion statusCr = null;
@@ -52,6 +47,10 @@ public class ApplicationInstanceDaoJpaImpl
             baseCriteria.add(Restrictions.eq(ApplicationInstance.VDC_FIELD,
                     criteria.getVdc()));
         }
+  /*      if (!StringUtils.isEmpty(criteria.getEnvironmentInstance())) {
+            baseCriteria.add(Restrictions.eq(ApplicationInstance.ENVIRONMENT_INSTANCE_FIELD,
+                    criteria.getEnvironmentInstance()));
+        }*/
                 
         List<ApplicationInstance> applicationInstances = setOptionalPagination(
                 criteria, baseCriteria).list();
@@ -62,6 +61,12 @@ public class ApplicationInstanceDaoJpaImpl
         			applicationInstances, 
         			criteria.getApplicatonRelease());
         }
+        
+        applicationInstances = filterByVDCandEnvironmentInstance(
+    			applicationInstances, 
+    			criteria.getVdc(), criteria.getEnvironmentInstance());
+        
+        
 
         return applicationInstances;
 	}
@@ -80,6 +85,27 @@ public class ApplicationInstanceDaoJpaImpl
         for (ApplicationInstance applicationInstance : applicationInstances) {
             if (applicationInstance.getApplicationRelease().getId().equals(
             		applicationRelease.getId())) {
+                result.add(applicationInstance);
+            }
+        }
+        return result;
+    }
+    
+    
+    /**
+     * Filter the result by product instance
+     *
+     * @param applications
+     * @param product
+     * @return
+     */
+    private List<ApplicationInstance> filterByVDCandEnvironmentInstance(
+            List<ApplicationInstance> applicationInstances, 
+            String vdc, String environmentInstanceName) {
+        List<ApplicationInstance> result = new ArrayList<ApplicationInstance>();
+        for (ApplicationInstance applicationInstance : applicationInstances) {
+            if (applicationInstance.getEnvironmentInstance().getName().equals(
+            		environmentInstanceName) && applicationInstance.getVdc().equals(vdc)) {
                 result.add(applicationInstance);
             }
         }

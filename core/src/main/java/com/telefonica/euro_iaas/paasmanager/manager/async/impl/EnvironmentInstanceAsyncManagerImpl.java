@@ -1,12 +1,22 @@
+/*
+
+  (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights
+  Reserved.
+
+  The copyright to the software program(s) is property of Telefonica I+D.
+  The program(s) may be used and or copied only with the express written
+  consent of Telefonica I+D or in accordance with the terms and conditions
+  stipulated in the agreement/contract under which the program(s) have
+  been supplied.
+
+*/
 package com.telefonica.euro_iaas.paasmanager.manager.async.impl;
 
 import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.ENVIRONMENT_INSTANCE_BASE_URL;
 import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.ENVIRONMENT_BASE_URL;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
@@ -15,77 +25,117 @@ import org.springframework.scheduling.annotation.Async;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.IPNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.NotUniqueResultException;
+import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
+import com.telefonica.euro_iaas.paasmanager.exception.TaskNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
-import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
-import com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager;
-import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
-import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsyncManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance;
-import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.TaskError;
 import com.telefonica.euro_iaas.paasmanager.model.TaskReference;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
-import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
-import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.util.TaskNotificator;
-
-import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 
 public class EnvironmentInstanceAsyncManagerImpl implements
 		EnvironmentInstanceAsyncManager {
 	
 	private static Logger LOGGER =
-		Logger.getLogger(ProductInstanceAsyncManagerImpl.class.getName());
-	private ProductInstanceManager productInstanceManager;
+		Logger.getLogger(EnvironmentInstanceAsyncManagerImpl.class.getName());
+	
 	private EnvironmentInstanceManager environmentInstanceManager;
 	private TaskManager taskManager;
 	private SystemPropertiesProvider propertiesProvider;
-	private TaskNotificator taskNotificator;
-	private EnvironmentManager environmentManager;
-	private InfrastructureManager infrastructureManager;
-	
-	@Override
-	public void create(String vdc, Environment environment, Task task,
-			String callback) {
-		
-		try {
-		
-			EnvironmentInstance environmentInstance 
-				= environmentInstanceManager.create(vdc, environment);
-			
-			updateSuccessTask(task, environmentInstance);
+	private TaskNotificator taskNotificator;	
+
+    @Async
+	public void create (ClaudiaData claudiaData, Environment environment, 
+			Task task, String callback)	{
+		  	
+    	EnvironmentInstance environmentInstance;
+    	try {
+    		environmentInstance = environmentInstanceManager.load(
+    				claudiaData.getVdc(), claudiaData.getService());
+    		updateSuccessTask(task, environmentInstance);
 			LOGGER.info("The Environment Instance "
-	                + environmentInstance.getName()+ " has been CORRECTLY provisioned");
-		} catch (EntityNotFoundException enf){
-			String errorMsg = "The Environment "
-                    + environment.getName()
-                    + " is not in the System";
-            updateErrorTaskOnInstall(environment, vdc, task, errorMsg, enf);
-		} catch (InvalidEntityException iee) {
-			String errorMsg = "The Environment "
-                    + environment.getName()
-                    + " is Invaid";
-            updateErrorTaskOnInstall(environment, vdc, task, errorMsg, iee);	
-		} catch (AlreadyExistsEntityException aee) {
-			String errorMsg = "The Environment "
-                    + environment.getName()
-                    + " already exists";
-            updateErrorTaskOnInstall(environment, vdc, task, errorMsg, aee);
-		} catch (NotUniqueResultException nue) {
-			String errorMsg = "There is a Product Instance already INSTALLED" +
-					"in the system";
-            updateErrorTaskOnInstall(environment, vdc, task, errorMsg, nue);
-		}
-		finally {
-            notifyTask(callback, task);
+	                + environmentInstance.getName()+ " is ALREADY in the system");
+    	}catch (TaskNotFoundException tnfe){
+    		String errorMsg = "Unable to update task: " 
+					+ tnfe.getTask().getHref() + ". Description: " + 
+					 tnfe.getMessage();
+			updateErrorTaskOnInstall(environment, claudiaData.getVdc(), 
+					task, errorMsg, tnfe);
+    	}catch (EntityNotFoundException  e) {
+    		try {	
+    			environmentInstance 
+    				= environmentInstanceManager.create(claudiaData, 
+    						environment);
+    			updateSuccessTask(task, environmentInstance);
+    			LOGGER.info("The Environment Instance "
+    	                + environmentInstance.getName()+ " has been CORRECTLY provisioned");
+    		} catch (EntityNotFoundException enf){
+    			String errorMsg = "The Environment "
+                        + environment.getName()
+                        + " is not in the System";
+                updateErrorTaskOnInstall(environment, claudiaData.getVdc(), 
+                		task, errorMsg, enf);
+    		} catch (InvalidEntityException iee) {
+    			String errorMsg = "The Environment "
+                        + environment.getName()
+                        + " is Invalid";
+                updateErrorTaskOnInstall(environment, claudiaData.getVdc(), task, 
+                		errorMsg, iee);	
+    		} catch (AlreadyExistsEntityException aee) {
+    			String errorMsg = "The Environment "
+                        + environment.getName()
+                        + " already exists";
+                updateErrorTaskOnInstall(environment, claudiaData.getVdc(), task, 
+                		errorMsg, aee);
+    		} catch (NotUniqueResultException nue) {
+    			String errorMsg = "There is a Product Instance already INSTALLED" +
+    					"in the system";
+                updateErrorTaskOnInstall(environment, claudiaData.getVdc(), task, 
+                		errorMsg, nue);
+    		} catch (InfrastructureException ie)  {
+    			String errorMsg = " An error has ocurred in the process of creating VMs ";
+    			updateErrorTaskOnInstall(environment, claudiaData.getVdc(), task, 
+    					errorMsg, ie);
+    		} catch (IPNotRetrievedException ipe)  {
+    			String errorMsg = " The ip of a VM could not be retrieved ";
+    			 updateErrorTaskOnInstall(environment, claudiaData.getVdc(), task, 
+    					 errorMsg, ipe);
+    		} catch (ProductInstallatorException pie) {
+    			String errorMsg = "Error installing a product. Description:" + 
+    					e.getMessage();
+    			updateErrorTaskOnInstall(environment, claudiaData.getVdc(), task, 
+    					errorMsg, pie);
+    		} catch (TaskNotFoundException tne) {
+    			String errorMsg = "Unable to update task: " 
+    					+ tne.getTask().getHref() + ". Description: " + 
+    					 tne.getMessage();
+    			updateErrorTaskOnInstall(environment, claudiaData.getVdc(), task, 
+    					errorMsg, tne);
+    		}catch (Exception e2) {
+    			String errorMsg = "Unexpected error creating environment: " 
+    					+ environment + ". Description:" + 
+    					e2.getMessage();
+    			updateErrorTaskOnInstall(environment, claudiaData.getVdc(), task,
+    					errorMsg, e2);
+    		}
+    		finally {
+    			notifyTask(callback, task);
+            }		
+    	}
+    	finally {
+			notifyTask(callback, task);
         }
 	}
 
@@ -93,28 +143,52 @@ public class EnvironmentInstanceAsyncManagerImpl implements
 	public EnvironmentInstance load(String name) throws EntityNotFoundException {
 		return environmentInstanceManager.load(name);
 	}*/
-
-	@Override
-	public void destroy(EnvironmentInstance environmentInstance, Task task,
-			String callback) {
-		// TODO Auto-generated method stub
-
+	
+	@Async
+	public void destroy(ClaudiaData claudiaData, 
+			EnvironmentInstance environmentInstance, 
+			Task task, String callback) {		
+		try {			
+			environmentInstanceManager.destroy(claudiaData, environmentInstance);
+			updateSuccessTask(task, environmentInstance);
+			LOGGER.info("The Environment Instance "
+					+ environmentInstance.getName()+ " has been CORRECTLY destroyed");
+		}catch (Exception e) {
+			String errorMsg = "Unexpected error destroying  environmentInstance: " 
+					+ environmentInstance.getName() + ". Description:" + 
+					e.getMessage();
+			updateErrorTaskOnInstall(environmentInstance.getEnvironment(), 
+					claudiaData.getVdc(), task, errorMsg, e);
+		}
+		finally {
+			notifyTask(callback, task);
+        }
 	}
-
 	
     /*
      * Update the task with necessary information when the task is success.
      */
-    private void updateSuccessTask(Task task, EnvironmentInstance environmentInstance) {
+    private void updateSuccessTask(Task task, EnvironmentInstance environmentInstance) 
+    	throws TaskNotFoundException {
         InstallableInstance productInstance;
-		String piResource = MessageFormat.format(
+        Task loadedTask ;
+        String piResource = MessageFormat.format(
                 propertiesProvider.getProperty(ENVIRONMENT_INSTANCE_BASE_URL),
                 environmentInstance.getVdc(), 
                 environmentInstance.getName()); // the vdc
-        task.setResult(new TaskReference(piResource));
-        task.setEndTime(new Date());
-        task.setStatus(TaskStates.SUCCESS);
-        taskManager.updateTask(task);
+		
+		try {
+			loadedTask = taskManager.load(task.getId());
+		} catch (EntityNotFoundException e) {
+			throw new TaskNotFoundException(e.getMessage(), task);
+		}
+		
+		//Uncommented - Could not commit JPA transaction; nested exception is 
+		//javax.persistence.RollbackException: Transaction marked as rollbackOnly
+		//loadedTask.setResult(new TaskReference(piResource));
+		loadedTask.setEndTime(new Date());
+		loadedTask.setStatus(TaskStates.SUCCESS);
+        taskManager.updateTask(loadedTask);
     }
     
     /*
@@ -161,17 +235,9 @@ public class EnvironmentInstanceAsyncManagerImpl implements
             taskNotificator.notify(url, task);
         }
     }
+    
+
     //////////// I.O.C ////////////
-
-    /**
-     * @param productInstanceManager
-     *            the productInstanceManager to set
-     */
-    public void setProductInstanceManager(
-            ProductInstanceManager productInstanceManager) {
-        this.productInstanceManager = productInstanceManager;
-    }
-
     /**
      * @param taskManager
      *            the taskManager to set
@@ -191,18 +257,9 @@ public class EnvironmentInstanceAsyncManagerImpl implements
 
     /**
      * @param taskNotificator the taskNotificator to set
-     */
+      */
     public void setTaskNotificator(TaskNotificator taskNotificator) {
-        this.taskNotificator = taskNotificator;
-    }
-    
-    /**
-     * @param environmentManager
-     *            the environmentManager to set
-     */
-    public void setEnvironmentManager(
-            EnvironmentManager environmentManager) {
-        this.environmentManager = environmentManager;
+       this.taskNotificator = taskNotificator;
     }
  
     /**
@@ -212,14 +269,5 @@ public class EnvironmentInstanceAsyncManagerImpl implements
     public void setEnvironmentInstanceManager(
             EnvironmentInstanceManager environmentInstanceManager) {
         this.environmentInstanceManager = environmentInstanceManager;
-    }
-
-    /**
-     * @param infrastructureManager
-     *            the infrastructureManager to set
-     */
-    public void setInfrastructureManager(
-            InfrastructureManager infrastructureManager) {
-        this.infrastructureManager = infrastructureManager;
     }
 }

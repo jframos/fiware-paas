@@ -7,9 +7,14 @@ package com.telefonica.euro_iaas.paasmanager.client;
  *
  */
 public class ClientConstants {
-
-	public static final String BASE_ENVIRONMENT_INSTANCE_PATH = "/vdc/{0}/environmentInstance";
+	public static final String BASE_ENVIRONMENT_INSTANCE_PATH  = "/org/{0}/vdc/{1}/environmentInstance";
+	public static final String BASE_PRODUCT_INSTANCE_PATH  = "/org/{0}/vdc/{1}/environmentInstance/{2}/productInstance";
+	public static final String BASE_APPLICATION_INSTANCE_PATH ="/org/{0}/vdc/{1}/applicationInstance";
+	public static final String BASE_TASK_PATH = "/vdc/{0}/task";
 	
+	public static final String TASK_PATH = BASE_TASK_PATH + "/{1}";
+    public static final String ENVIRONMENT_INSTANCE_PATH  
+    	= BASE_ENVIRONMENT_INSTANCE_PATH  + "/{1}";
 	/*public static final String BASE_PRODUCT_INSTANCE_PATH = "/vdc/{0}/product";
 	public static final String INSTALL_PRODUCT_INSTANCE_PATH =
 	            BASE_PRODUCT_INSTANCE_PATH + "/";
@@ -56,4 +61,5 @@ public class ClientConstants {
 	            BASE_PRODUCT_PATH + "/release";
 	public static final String ALL_APPLICATION_RELEASE_PATH =
 	            BASE_APPLICATION_PATH + "/release";*/
+
 }

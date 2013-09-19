@@ -18,44 +18,45 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TaskSearchCrite
 
 /**
  * Default TaskResource implementation.
+ * 
  * @author Jesus M. Movilla
- *
+ * 
  */
 @Path("/vdc/{vdc}/task")
 @Component
 @Scope("request")
 public class TaskResourceImpl implements TaskResource {
 
-    @InjectParam("taskManager")
-    private TaskManager taskManager;
+	@InjectParam("taskManager")
+	private TaskManager taskManager;
 
-    @Override
-    public Task load(Long id) throws EntityNotFoundException {
-        return taskManager.load(id);
-    }
+	// Errores con el Override
 
-    @Override
-    public List<Task> findAll(Integer page, Integer pageSize, String orderBy,
-            String orderType, List<TaskStates> states, String resource,
-            String owner, Date fromDate, Date toDate, String vdc) {
-        TaskSearchCriteria criteria = new TaskSearchCriteria();
-        criteria.setVdc(vdc);
-        if (page != null && pageSize != null) {
-            criteria.setPage(page);
-            criteria.setPageSize(pageSize);
-        }
-        if (!StringUtils.isEmpty(orderBy)) {
-            criteria.setOrderBy(orderBy);
-        }
-        if (!StringUtils.isEmpty(orderType)) {
-            criteria.setOrderBy(orderType);
-        }
-        criteria.setStates(states);
-        criteria.setResource(resource);
-        criteria.setOwner(owner);
-        criteria.setFromDate(fromDate);
-        criteria.setToDate(toDate);
-        return taskManager.findByCriteria(criteria);
-    }
+	public Task load(Long id) throws EntityNotFoundException {
+		return taskManager.load(id);
+	}
+
+	public List<Task> findAll(Integer page, Integer pageSize, String orderBy,
+			String orderType, List<TaskStates> states, String resource,
+			String owner, Date fromDate, Date toDate, String vdc) {
+		TaskSearchCriteria criteria = new TaskSearchCriteria();
+		criteria.setVdc(vdc);
+		if (page != null && pageSize != null) {
+			criteria.setPage(page);
+			criteria.setPageSize(pageSize);
+		}
+		if (!StringUtils.isEmpty(orderBy)) {
+			criteria.setOrderBy(orderBy);
+		}
+		if (!StringUtils.isEmpty(orderType)) {
+			criteria.setOrderBy(orderType);
+		}
+		criteria.setStates(states);
+		criteria.setResource(resource);
+		criteria.setOwner(owner);
+		criteria.setFromDate(fromDate);
+		criteria.setToDate(toDate);
+		return taskManager.findByCriteria(criteria);
+	}
 
 }

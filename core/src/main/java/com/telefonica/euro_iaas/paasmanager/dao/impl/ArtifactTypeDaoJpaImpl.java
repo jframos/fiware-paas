@@ -32,7 +32,6 @@ public class ArtifactTypeDaoJpaImpl extends AbstractBaseDao<ArtifactType, String
      * Find all the ArtifactTypes in paas-manager database
      * @return artifactTypes, the list of artifactTypes
      */
-	@Override
 	public List<ArtifactType> findAll() {
 		return super.findAll(ArtifactType.class);
 	}
@@ -42,7 +41,6 @@ public class ArtifactTypeDaoJpaImpl extends AbstractBaseDao<ArtifactType, String
      * @param name, the name of the artifactType
      * @return artifactType, the artifactType
      */
-	@Override
 	public ArtifactType load(String arg0) throws EntityNotFoundException {
         return super.loadByField(ArtifactType.class, "name", arg0);
 	}
