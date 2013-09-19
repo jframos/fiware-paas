@@ -42,8 +42,7 @@ public class ApplicationRelease  {
     @ManyToOne
 	private ApplicationType applicationType;
 	
-	@OneToMany(cascade=CascadeType.ALL)
-	private List<Attribute> attributes;
+
 	  
 	@XmlTransient
 	@ManyToMany
@@ -80,7 +79,6 @@ public class ApplicationRelease  {
 	 */
 		public ApplicationRelease(String name, String version,
 				String description, ApplicationType applicationType,
-				List<Attribute> attributes,
 				List<ApplicationRelease> transitableReleases,
 				List<Artifact> artifacts) {
 		this.id = name + "-" + version;
@@ -88,9 +86,8 @@ public class ApplicationRelease  {
 		this.version = version;
 		this.description = description;
 		this.applicationType = applicationType;
-		this.attributes = attributes;
-		this.transitableReleases = transitableReleases;
 		this.artifacts = artifacts;
+		this.transitableReleases = transitableReleases;
 	}
 
 	/**
@@ -163,19 +160,7 @@ public class ApplicationRelease  {
 		this.applicationType = applicationType;
 	}
 
-	/**
-	 * @return the attributes
-	 */
-	public List<Attribute> getAttributes() {
-		return attributes;
-	}
 
-	/**
-	 * @param attributes the attributes to set
-	 */
-	public void setAttributes(List<Attribute> attributes) {
-		this.attributes = attributes;
-	}
 
 	/**
 	 * @return the transitableReleases

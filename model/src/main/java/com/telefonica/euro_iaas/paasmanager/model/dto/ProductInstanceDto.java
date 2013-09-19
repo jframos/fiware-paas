@@ -15,14 +15,15 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
  * @author Jesus M. Movilla
  *
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+//@XmlRootElement
+//@XmlAccessorType(XmlAccessType.FIELD)
 public class ProductInstanceDto {
 
-    private ProductReleaseDto product;
-    private VM vm;
+    private ProductReleaseDto productReleaseDto;
+   
     private List<Attribute> attributes;
     private String vdc;
+    private String name;
 
     /**
      */
@@ -33,34 +34,24 @@ public class ProductInstanceDto {
      * @param product
      * @param vm
      */
-    public ProductInstanceDto(ProductReleaseDto product, VM vm) {
-        this.product = product;
-        this.vm = vm;
+   public ProductInstanceDto(ProductReleaseDto productReleaseDto) {
+        this.productReleaseDto = productReleaseDto;
+      
     }
+    
     /**
      * @return the product
      */
-    public ProductReleaseDto getProduct() {
-        return product;
+    public ProductReleaseDto getProductReleaseDto() {
+        return productReleaseDto;
     }
     /**
      * @param product the product to set
      */
-    public void setProduct(ProductReleaseDto product) {
-        this.product = product;
+    public void setProductReleaseDto(ProductReleaseDto productReleaseDto) {
+        this.productReleaseDto = productReleaseDto;
     }
-    /**
-     * @return the vm
-     */
-    public VM getVm() {
-        return vm;
-    }
-    /**
-     * @param vm the vm to set
-     */
-    public void setVm(VM vm) {
-        this.vm = vm;
-    }
+   
 
     /**
      * @return the attributes
@@ -88,5 +79,16 @@ public class ProductInstanceDto {
      */
     public void setVdc(String vdc) {
         this.vdc = vdc;
+    }
+    
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param vdc the vdc to set
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 }

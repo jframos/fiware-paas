@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<InstantiateVDCParams name="${vdcName}" Id="3">
+
+    <Description>${vdcDescription}</Description>
+
+    <Topology>
+        <Zone type="public-protected">
+            <VirtualNetwork id="1" name="TestNet Vlan 273">
+                <Description>Public network</Description>
+                <Mode>routed</Mode>
+
+                <Bandwidth units="Mb">6</Bandwidth>
+                <Size>2</Size>
+            </VirtualNetwork>
+        </Zone>
+    </Topology>
+
+    <StorageCapacity>
+
+        <Disk>
+            <Units>byte * 2 * ^ 30</Units>
+            <Limit>${diskLimit}</Limit>
+        </Disk>
+    </StorageCapacity>
+    <ComputeCapacity>
+        <Cpu>
+            <Units># CPUs</Units>
+
+            <Limit>${cpuLimit}</Limit>
+        </Cpu>
+        <Memory>
+            <Units>byte * 2 * ^ 30</Units>
+            <Limit>${memLimit}</Limit>
+        </Memory>
+    </ComputeCapacity>
+
+
+</InstantiateVDCParams>

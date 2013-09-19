@@ -10,12 +10,10 @@ import com.telefonica.euro_iaas.paasmanager.model.ApplicationType;
 public class ApplicationTypeDaoJpaImpl extends AbstractBaseDao<ApplicationType, String> implements
 		ApplicationTypeDao {
 
-	@Override
 	public List<ApplicationType> findAll() {
 		return super.findAll(ApplicationType.class);
 	}
 
-	@Override
 	public ApplicationType load(String arg0) throws EntityNotFoundException {
         return super.loadByField(ApplicationType.class, "name", arg0);
 	}

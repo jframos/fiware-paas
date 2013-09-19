@@ -27,7 +27,6 @@ public class TaskDaoJpaImpl extends AbstractBaseDao<Task, Long>
     /**
      * {@inheritDoc}
      */
-    @Override
     public List<Task> findAll() {
         return super.findAll(Task.class);
     }
@@ -35,7 +34,6 @@ public class TaskDaoJpaImpl extends AbstractBaseDao<Task, Long>
     /**
      * {@inheritDoc}
      */
-    @Override
     public Task load(Long arg0) throws EntityNotFoundException {
         return super.loadByField(Task.class, "id", arg0);
     }
@@ -44,7 +42,6 @@ public class TaskDaoJpaImpl extends AbstractBaseDao<Task, Long>
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
-    @Override
     public List<Task> findByCriteria(TaskSearchCriteria criteria) {
         Session session = (Session) getEntityManager().getDelegate();
         Criteria baseCriteria = session

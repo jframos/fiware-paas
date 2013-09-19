@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
+import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 
 
@@ -21,9 +23,10 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
      * of entities<i>).
      */
     private List<Status> status;
-    private VM vm;
-    private ProductRelease productRelease;
+    private EnvironmentInstance environmentInstance;
+    private TierInstance tierInstance;
     private String productName;
+    private ProductRelease productRelease;
     
     /**
      * Default constructor
@@ -42,10 +45,9 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
      */
     public ProductInstanceSearchCriteria(Integer page, Integer pageSize,
             String orderBy, String orderType, List<Status> status,
-            VM vm, ProductRelease productRelease) {
+            ProductRelease productRelease) {
         super(page, pageSize, orderBy, orderType);
         this.status = status;
-        this.vm = vm;
         this.productRelease = productRelease;
     }
 
@@ -58,40 +60,14 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
      */
     public ProductInstanceSearchCriteria(String orderBy, String orderType,
     		List<Status> status,
-            VM vm, ProductRelease productRelease) {
+            EnvironmentInstance environmentInstance, TierInstance tierInstance) {
         super(orderBy, orderType);
         this.status = status;
-        this.vm = vm;
-        this.productRelease = productRelease;
+        this.environmentInstance = environmentInstance;
+        this.tierInstance = tierInstance;
     }
 
-    /**
-     * @param page
-     * @param pagesize
-     * @param status
-     * @param vm
-     * @param productRelease
-     */
-    public ProductInstanceSearchCriteria(Integer page, Integer pageSize,
-    		List<Status> status,
-            VM vm, ProductRelease productRelease) {
-        super(page, pageSize);
-        this.status = status;
-        this.vm = vm;
-        this.productRelease = productRelease;
-    }
 
-    /**
-     * @param status
-     * @param vm
-     * @param productRelease
-     */
-    public ProductInstanceSearchCriteria(List<Status> status, VM vm, 
-    		ProductRelease productReleaseName) {
-        this.status = status;
-        this.vm = vm;
-        this.productRelease = productRelease;
-    }
 
     /**
      * @return the status
@@ -110,15 +86,26 @@ public class ProductInstanceSearchCriteria extends AbstractSearchCriteria {
     /**
      * @return the vm
      */
-    public VM getVm() {
-        return vm;
+    public EnvironmentInstance getEnvironmentInstance() {
+        return environmentInstance;
     }
 
     /**
      * @param vm the vm to set
      */
-    public void setVm(VM vm) {
-        this.vm = vm;
+    public void setEnvironmentInstance(EnvironmentInstance environmentInstance) {
+        this.environmentInstance = environmentInstance;
+    }
+    
+    public TierInstance getTierInstance() {
+        return tierInstance;
+    }
+
+    /**
+     * @param vm the vm to set
+     */
+    public void setTierInstance(TierInstance tierInstance) {
+        this.tierInstance = tierInstance;
     }
 
     /**

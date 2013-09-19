@@ -41,4 +41,6 @@
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.TaskDaoJpaImpl"/>
     <bean id="environmentInstanceDao" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.EnvironmentInstanceDaoJpaImpl"/>
+    <bean id="templateDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.paasmanager.dao.impl.TemplateDaoJpaImpl"/>
 </beans>

@@ -12,7 +12,9 @@
 */
 package com.telefonica.euro_iaas.paasmanager.manager.async;
 
+import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 
 public interface ApplicationInstanceAsyncManager {
@@ -20,6 +22,7 @@ public interface ApplicationInstanceAsyncManager {
 
     /**
      * Install an applicationRelease on an already existent EnvironmentInstance
+     * @param org the org where the instance will be installed
      * @param vdc the vdc where the instance will be installed
      * @param environmentInstanceName on which applicationRelease is going to be
      * deployed 
@@ -28,6 +31,11 @@ public interface ApplicationInstanceAsyncManager {
      * @param callback if not empty, contains the url where the result of the
      * execution will be sent
      */
-    void install(String vdc, String environmentInstanceName,
+    void install(String org, String vdc, String environmentInstanceName,
     		ApplicationRelease applicationRelease, Task task, String callback);
+    
+    void uninstall(String org, String vdc, String envInstance, String appInstance,
+    		Task task, String callback);
+    
+  
 }

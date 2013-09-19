@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentType;
+import com.telefonica.euro_iaas.paasmanager.model.OS;
+import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentSearchCriteria;
 
@@ -30,30 +32,18 @@ public class EnvironmentDaoJpaImplTest extends AbstractJpaDaoTest {
     /**
      * Test the create and load method
      */
-    public void testCreate1() throws Exception {
-    	TierDaoJpaImplTest tierDaoJpaImplTest  = new TierDaoJpaImplTest();
-    	tierDaoJpaImplTest.setOsDao(osDao);
-    	tierDaoJpaImplTest.setProductReleaseDao(productReleaseDao);
-    	tierDaoJpaImplTest.setProductTypeDao(productTypeDao);
-    	tierDaoJpaImplTest.setServiceDao(serviceDao);
-    	tierDaoJpaImplTest.setTierDao(tierDao);
-    	tierDaoJpaImplTest.testCreate1();
+  /*  public void testCreate1() throws Exception {
+    	
 
     	Tier tier = tierDao.findAll().get(0);
     	List <Tier> tiers = new ArrayList<Tier> ();
     	
-    	EnvironmentTypeDaoJpaImplTest environmentTypeDaoJpaImplTest  
-    		= new EnvironmentTypeDaoJpaImplTest();
-    	environmentTypeDaoJpaImplTest.setEnvironmentTypeDao(environmentTypeDao);
+    	
     	
     	List<EnvironmentType> environmentTypes = environmentTypeDao.findAll();
     	
     	EnvironmentType environmentType;
-    	if (environmentTypes.size() == 0)
-    		environmentType 
-    		= environmentTypeDaoJpaImplTest.create(new EnvironmentType ("Env1Name", "Env1Desc"));
-    	else
-    		environmentType = environmentTypes.get(0);
+    	
     	
     	Environment environment = new Environment (ENVIRONMENT_NAME
     			, environmentType
@@ -65,14 +55,7 @@ public class EnvironmentDaoJpaImplTest extends AbstractJpaDaoTest {
     }
     
     public void testCreate2() throws Exception {
-    	TierDaoJpaImplTest tierDaoJpaImplTest  = new TierDaoJpaImplTest();
-    	tierDaoJpaImplTest.setOsDao(osDao);
-    	tierDaoJpaImplTest.setProductReleaseDao(productReleaseDao);
-    	tierDaoJpaImplTest.setProductTypeDao(productTypeDao);
-    	tierDaoJpaImplTest.setServiceDao(serviceDao);
-    	tierDaoJpaImplTest.setTierDao(tierDao);
-    	tierDaoJpaImplTest.testCreate2();
-
+    	
     	Tier tier = tierDao.findAll().get(0);
     	List <Tier> tiers = new ArrayList<Tier> ();
     	
@@ -101,7 +84,7 @@ public class EnvironmentDaoJpaImplTest extends AbstractJpaDaoTest {
     /**
      * Test the create and load method
      */
-    public void testFindAllAndUpdate() throws Exception {
+ /*   public void testFindAllAndUpdate() throws Exception {
         assertEquals(0, environmentDao.findAll().size());
         testCreate1();
         List<Environment> environments = environmentDao.findAll();
@@ -112,6 +95,40 @@ public class EnvironmentDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(0, environmentDao.findAll().size());
     }
 
+    /**
+     * Test the recovery of a full environment object
+     */
+   /* public void testRecoverFullEnvironmentObject() throws Exception {
+        System.out.println("**********testRecoverFullEnvironmentObject.START***");
+    	testCreate1();
+        //Environment environment = environmentDao.load(ENVIRONMENT_NAME);
+        Environment environment = environmentDao.findAll().get(0);
+    	List<Tier> tiers = environment.getTiers();
+        //assertEquals(1, tiers.size());
+        
+        for (int i=0; i < tiers.size(); i++) {
+        	List<ProductRelease> productReleases = tiers.get(i).getProductReleases();
+        	assertEquals(1, productReleases.size());
+            System.out.println(" tier[" + i + "]" + tiers.get(i).getName());
+    		
+        	for (int j=0; j < productReleases.size(); j++) {
+        		ProductRelease pRelease = productReleases.get(j);
+        		System.out.println(" pRelease[" + j + "]" + pRelease.getProduct());
+        		List<OS> supportedOOSS = 
+        				pRelease.getSupportedOOSS();    		
+        		assertEquals(1, supportedOOSS.size());
+                
+        		for (int k=0; k < supportedOOSS.size(); k++) {
+        			System.out.println(" OS[" + k + "]" + supportedOOSS.get(k).getName());
+        		}
+            	
+        	}
+        }
+        assertEquals(1, environmentDao.findAll().size());
+        System.out.println("**********testRecoverFullEnvironmentObject.FINISH***");
+    	
+    }
+    
     public void testFindByCriteria() throws Exception {
     	testCreate1();
     	testCreate2();
@@ -123,53 +140,7 @@ public class EnvironmentDaoJpaImplTest extends AbstractJpaDaoTest {
         environments = environmentDao.findByCriteria(criteria);
         assertEquals(2, environments.size());
         
-    }
+    }*/
  
-    /**
-     * @param productReleaseDao the productReleaseDao to set
-     */
-    public void setProductReleaseDao(ProductReleaseDao productReleaseDao) {
-        this.productReleaseDao = productReleaseDao;
-    }
-    
-    /**
-     * @param soDao the osDao to set
-     */
-    public void setOsDao(OSDao osDao) {
-        this.osDao = osDao;
-    }
-
-    /**
-     * @param tierDao the tierDao to set
-     */
-    public void setTierDao(TierDao tierDao) {
-        this.tierDao = tierDao;
-    }
-    
-    /**
-     * @param environmentDao the environmentDao to set
-     */
-    public void setEnvironmentDao(EnvironmentDao environmentDao) {
-        this.environmentDao = environmentDao;
-    }
-    
-    /**
-     * @param environmentTypeDao the environmentTypeDao to set
-     */
-    public void setEnvironmentTypeDao(EnvironmentTypeDao environmentTypeDao) {
-        this.environmentTypeDao = environmentTypeDao;
-    }
-    
-    /**
-     * @param serviceDao the serviceDao to set
-     */
-    public void setServiceDao(ServiceDao serviceDao) {
-        this.serviceDao = serviceDao;
-    }
-    /**
-     * @param productTypeDao the productTypeDao to set
-     */
-    public void setProductTypeDao(ProductTypeDao productTypeDao) {
-        this.productTypeDao = productTypeDao;
-    }
+   
 }

@@ -30,9 +30,14 @@ public interface SystemPropertiesProvider {
     public final static String ENVIRONMENT_BASE_URL = "environmentBaseUrl";
     public final static String APPLICATION_RELEASE_BASE_URL = "applicationReleaseBaseUrl";
     public final static String APPLICATION_TYPE_BASE_URL = "applicationTypeBaseUrl";
-       
+    public final static String VIRTUAL_SERVICE_BASE_URL =  "virtualServiceBaseUrl";
+    public final static String TIER_INSTANCE_BASE_URL = "tierInstanceBaseUrl";
+      
     public final static String SDC_SERVER_URL = "sdcServerUrl";
     public final static String SDC_SERVER_MEDIATYPE = "sdcServerMediaType";
+    
+    public final static String REC_SERVER_URL = "recServerUrl";
+    public final static String REC_SERVER_MEDIATYPE = "recServerMediaType";
     
     public final static String FQN1 = "fqn1";
     public final static String FQN2 = "fqn2";
@@ -43,56 +48,58 @@ public interface SystemPropertiesProvider {
     public final static String DOMAINNAME1 = "domainname1";
     public final static String DOMAINNAME2 = "domainname2";
     public final static String OSTYPE = "osType";
-    /*
-    // CHEF PROPERTIES //
-    public final static String EXECUTE_RECIPES_SCRIPT = "executeRecipesScript";
-    public final static String UPLOAD_RECIPES_SCRIPT = "uploadRecipesScript";
-    public final static String DELETE_RECIPES_SCRIPT = "deleteRecipesScript";
+    
+    public final static String NEOCLAUDIA_IP = "neoclaudiaIP";
+    public final static String NEOCLAUDIA_PORT = "neoclaudiaPort";
+    public final static String NEOCLAUDIA_BASEURL = "neoclaudiaBaseUrl";
+    public final static String NEOCLAUDIA_ORG = "neoclaudiaOrg";
+    public final static String NEOCLAUDIA_SERVICE = "neoclaudiaService";
+    public final static String VM_NAME_PREFIX = "vmNamePrefix";
+    public final static String COLLECTOR_IP = "collectorIP";
+    public final static String COLLECTOR_PORT = "collectorPORT";
+    public final static String COLLECTOR_BASEURL = "collectorBaseUrl";
+    
+    public final static String NEOCLAUDIA_VDC_CPU = "neoclaudiaVDCcpu";
+    public final static String NEOCLAUDIA_VDC_MEM = "neoclaudiaVDCmem";
+    public final static String NEOCLAUDIA_VDC_DISK = "neoclaudiaVDCdisk";
+    public final static String NEOCLAUDIA_NETWORK_NAME ="neoClaudiaNetworkName";
+    
+    public final static String NEOCLAUDIA_VDCTEMPLATE_LOCATION 
+		= "neoclaudiaVDCTemplateLocation";
+    public final static String NEOCLAUDIA_OVFSERVICE_LOCATION 
+    	= "neoclaudiaOvfServiceLocation";
+    public final static String NEOCLAUDIA_OVFVM_LOCATION 
+		= "neoclaudiaOvfVMLocation";
+    public final static String CLAUDIA_RESOURCE_NOTEXIST_PATTERN 
+    	= "claudiaResourceNotExistPattern";   
+    public final static String ENVELOPE_TEMPLATE_LOCATION 
+    	= "envelopeTemplateRECManager";
+    public final static String OVF_TEMPLATE_LOCATION 
+		= "ovfTemplateLocation";
+    
+    public final static String VM_DEPLOYMENT_DELAY = "vmDeploymentDelay";
+    public final static String TCLOUD_METADATA_TOKEN = "tcloud_metadata_token";
+    public final static String TCLOUD_METADATA_TENANT = "tcloud_metadata_tenant";
+    public final static String TCLOUD_METADATA_USER = "tcloud_metadata_user";
+    
+    /** The Constant KEYSTONE_URL. */
+    public final static String KEYSTONE_URL = "openstack-tcloud.keystone.url";
+ 
+    /** The Constant CLOUD_SYSTEM. */
+    public final static String CLOUD_SYSTEM = "openstack-tcloud.cloudSystem";
+    
+    /** The Constant KEYSTONE_USER. */
+    public final static String KEYSTONE_USER = "openstack-tcloud.keystone.user";
 
-    public final static String COPY_APP_FILES_FROM_SERVER_TO_NODE = "copyAppFilesFromServerToNode";
-    public final static String DEFAULT_APP_FILES_SOURCE_FOLDER = "defaultAppFilesSourceFolder";
-    public final static String DEFAULT_APP_FILES_DESTINATION_FOLDER = "defaultAppFilesDestinationFolder";
+    /** The Constant KEYSTONE_PASS. */
+    public final static String KEYSTONE_PASS = "openstack-tcloud.keystone.pass";
 
-    public final static String DEFAULT_HOST_DOMAIN = "defaultHostDomain";
-
-    ////////// RECIPE TEMPLATES ///////////
-    public final static String INSTALL_PRODUCT_RECIPE_TEMPLATE = "installProductRecipeTemplate";
-    public final static String UNINSTALL_PRODUCT_RECIPE_TEMPLATE = "uninstallProductRecipeTemplate";
-    public final static String BACKUP_PRODUCT_RECIPE_TEMPLATE = "backupProductRecipeTemplate";
-    public final static String RESTORE_PRODUCT_RECIPE_TEMPLATE = "restoreProductRecipeTemplate";
-
-    public final static String INSTALL_APPLICATION_RECIPE_TEMPLATE = "installApplicationRecipeTemplate";
-    public final static String UNINSTALL_APPLICATION_RECIPE_TEMPLATE = "uninstallApplicationRecipeTemplate";
-    public final static String BACKUP_APPLICATION_RECIPE_TEMPLATE = "backupApplicationRecipeTemplate";
-    public final static String RESTORE_APPLICATION_RECIPE_TEMPLATE = "restoreApplicationRecipeTemplate";
-
-    public final static String PRODUCT_LIST_TEMPLATE = "productListTemplate";
-    public final static String PRODUCT_LIST_SEPARATOR = "productListSeparator";
-
-    public final static String CHEF_SERVER_URL = "chefServerUrl";
-    public final static String CHEF_SERVER_NODES_PATH = "chefServerNodesPath";
-    public final static String CHEF_CLIENT_ID = "chefClientId";
-    public final static String CHEF_CLIENT_PASS = "chefClientPass";
-
-    public final static String CHEF_DATE_FORMAT = "chefDateFormat";
-    public final static String CHEF_TIME_ZONE = "chefTimeZone";
-
-    public final static String CHEF_DIRECTORY_COOKBOOK = "chefDirectoryCookbook";
-    public final static String CHEF_CLIENT_URL_TEMPLATE = "chefClientUrlTemplate";
-
-    //WEBDAV
-    public final static String WEBDAV_BASE_URL = "webdavBaseUrl";
-    public final static String WEBDAV_FILE_URL = "webdavFileUrl";
-    public final static String WEBDAV_USERNAME = "webdavUsername";
-    public final static String WEBDAV_PASSWD = "webdavPassword";
-    public final static String WEBDAV_PRODUCT_BASEDIR = "webdavProductBaseDir";
-    public final static String WEBDAV_APPLICATION_BASEDIR = "webdavApplicationBasedir";
-
-    public final static String PRODUCT_INSTANCE_BASE_URL = "productInstanceBaseUrl";
-    public final static String APPLICATION_INSTANCE_BASE_URL = "applicationInstanceBaseUrl";
-    public final static String TASK_BASE_URL = "taskBaseUrl";
-
-    public final static String UNTAR_COMMAND = "untarCommand"; */
+    /** The Constant KEYSTONE_TENANT. */
+    public final static String KEYSTONE_TENANT = "openstack-tcloud.keystone.tenant";
+    
+    /** The Constant SYSTEM_FASTTRACK. */
+    public final static String VALIDATION_TIME_THRESHOLD = "openstack-tcloud.keystone.threshold";
+    
     /**
      * Get the property for a given key.
      *

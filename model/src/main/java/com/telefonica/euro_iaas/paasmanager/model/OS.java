@@ -40,7 +40,15 @@ public class OS {
      */
     public OS() {
     }
-
+    
+    /**
+     * 
+     * @param osType
+     */
+    public OS(String osType) {
+    	this.osType = osType;
+    }
+    
     /**
      * <p>Constructor for SO.</p>
      *
@@ -130,7 +138,10 @@ public class OS {
         return id;
     }
 
-    @Override
+    /* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -138,7 +149,10 @@ public class OS {
 		return result;
 	}
 
-    @Override
+    /* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

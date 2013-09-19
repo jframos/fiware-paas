@@ -1,14 +1,12 @@
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 /**
  * Represents a host where a OS is running. It is formed by
@@ -17,18 +15,46 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  */
 
+@Embeddable
 public class VM {
     
 	/** The ip where the host is located. */
-    private String ip;
+    //@Column(name="ip", length=128)
+	@Column(length=128)
+	private String ip;
+    
     /** The computer's hostname. */
-    private String hostname;
+    //@Column(name="hostname", length=128)
+	@Column(length=128)
+	private String hostname;
+    
     /** The domain. */
-    private String domain;
+    //@Column(name="domain", length=128)
+	@Column(length=128)
+	private String domain;
+    
     /** the fqn ***/
-    private String fqn;
+    //@Column(name="fqn", length=512)
+	@Column(length=512)
+	private String fqn;
+    
+	@Column(length=512)
+	private String networks;
+	
     /** the OSType ***/
-    private String osType;
+    //@Column(name="osType", length=8)
+	@Column(length=8)
+	private String osType;
+    
+    /** the vmOVF ***/
+    //@Column(name="vmOVF", length=10000)
+	@Column(length=100000)
+	private String vmOVF;
+    
+    /** the VAPP ***/
+    //@Column(name="vapp", length=10000)
+	@Column(length=10000)
+	private String vapp;
     
     public VM() {
         this.ip = "";
@@ -36,6 +62,8 @@ public class VM {
         this.hostname = "";
         this.domain = "";
         this.osType = "";
+        this.vmOVF= "";
+        this.vapp= "";
     }
 
     /**
@@ -61,6 +89,8 @@ public class VM {
         }
         this.ip = "";
         this.osType = "";
+        this.vmOVF = "";
+        this.vapp = "";
     }
     
     /**
@@ -71,7 +101,9 @@ public class VM {
      */
     public VM(String fqn, String ip, String hostname, String domain) {
         this.osType = "";
-    	if (ip == null) {
+        this.vmOVF = "";
+        this.vapp = "";
+        if (ip == null) {
             this.ip = "";
         } else {
             this.ip = ip;
@@ -93,25 +125,7 @@ public class VM {
         }
     }
     
-    /**
-     * @param hostname
-     * @param domain
-     */
-    /*public VM(String hostname, String domain) {
-        this.ip = "";
-        this.fqn = "";
-        if (hostname == null) {
-            this.hostname = "";
-        } else {
-            this.hostname = hostname;
-        }
-        if (domain == null) {
-            this.domain = "";
-        } else {
-            this.domain = domain;
-        }
-    }*/
-    
+ 
     /**
      * @param fqn
      * @param ip
@@ -120,6 +134,8 @@ public class VM {
         this.hostname = "";
         this.domain = "";
         this.osType = "";
+        this.vmOVF = "";
+        this.vapp = "";
         if (fqn == null) {
             this.fqn = "";
         } else {
@@ -145,15 +161,60 @@ public class VM {
         this.hostname = "";
         this.domain = "";
         this.osType = "";
+        this.vmOVF = "";
+        this.vapp = "";
     }
     
     /**
+	 * @param ip
+	 * @param hostname
+	 * @param domain
+	 * @param fqn
+	 * @param osType
+	 */
+	public VM(String ip, String hostname, String domain, String fqn,
+			String osType) {
+		if (ip == null) {
+            this.ip = "";
+        } else {
+            this.ip = ip;
+        }
+        if (fqn == null) {
+            this.fqn = "";
+        } else {
+            this.fqn = fqn;
+        }
+        if (hostname == null) {
+            this.hostname = "";
+        } else {
+            this.hostname = hostname;
+        }
+        if (domain == null) {
+            this.domain = "";
+        } else {
+            this.domain = domain;
+        }
+        if (osType == null) {
+            this.osType = "";
+        } else {
+            this.osType = osType;
+        }
+        this.vmOVF = "";
+        this.vapp = "";
+	}
+
+	/**
      * @param ip
      * @param fqn
      * @param hostname
      * @param domain
-     */
-    public VM(String fqn, String ip, String hostname, String domain, String osType) {
+     * @param osType
+     * @param vmOVF
+     * @param vapp
+     **/
+   
+    public VM(String fqn, String ip, String hostname, String domain, 
+    		String osType, String vmOVF, String vapp) {
     	if (ip == null) {
             this.ip = "";
         } else {
@@ -178,6 +239,16 @@ public class VM {
             this.osType = "";
         } else {
             this.osType = osType;
+        }
+        if (vmOVF == null) {
+            this.vmOVF = "";
+        } else {
+            this.vmOVF = vmOVF;
+        }
+        if (vapp == null) {
+            this.vapp = "";
+        } else {
+            this.vapp = vapp;
         }
     }
     
@@ -259,6 +330,47 @@ public class VM {
 		this.osType = osType;
 	}
 	
+	/**
+	 * @return the vmOVF
+	 */
+	public String getVmOVF() {
+		return vmOVF;
+	}
+
+	/**
+	 * @param vmOVF the vmOVF to set
+	 */
+	public void setVmOVF(String vmOVF) {
+		this.vmOVF = vmOVF;
+	}
+	
+	/**
+	 * @return the vapp
+	 */
+	public String getVapp() {
+		return vapp;
+	}
+
+	/**
+	 * @param vapp the vapp to set
+	 */
+	public void setVapp(String vapp) {
+		this.vapp = vapp;
+	}
+	
+	/**
+	 * @return the network
+	 */
+	public String getNetworks() {
+		return networks;
+	}
+
+	/**
+	 * @param network the network to set
+	 */
+	public void setNetworks(String networks) {
+		this.networks = networks;
+	}
     /*
      * (non-Javadoc)
      *
@@ -323,6 +435,7 @@ public class VM {
         return "VM [domain=" + domain + ", hostname=" + hostname + ", ip=" + ip
                 + ", fqn=" + fqn + ", osType=" + osType + "]";
     }
+
 }
 
 

@@ -14,7 +14,7 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductInstance
  * @author Jesus M. Movilla
  * @version $Id: $
  */
-public interface ApplicationInstanceDao extends BaseDAO<ApplicationInstance, Long> {
+public interface ApplicationInstanceDao extends BaseDAO<ApplicationInstance, String> {
     /**
      * Find the applicationInstancs that matches with the given criteria.
      * @param criteria the search criteria

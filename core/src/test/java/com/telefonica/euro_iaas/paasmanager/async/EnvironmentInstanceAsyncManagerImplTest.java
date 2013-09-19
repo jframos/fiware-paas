@@ -4,12 +4,16 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.telefonica.euro_iaas.paasmanager.installator.ProductInstallator;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager;
@@ -30,7 +34,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
-import com.telefonica.euro_iaas.paasmanager.util.ProductInstallator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.util.TaskNotificator;
 
@@ -42,7 +45,7 @@ import com.telefonica.euro_iaas.paasmanager.util.TaskNotificator;
  */
 public class EnvironmentInstanceAsyncManagerImplTest {
 
-	private EnvironmentManager environmentManager;
+	/*private EnvironmentManager environmentManager;
 	private EnvironmentInstanceManager environmentInstanceManager;
 	private TierInstanceManager tierInstanceManager;
 	private ProductInstanceManager productInstanceManager;
@@ -55,13 +58,29 @@ public class EnvironmentInstanceAsyncManagerImplTest {
     private VM host = new VM("fqn","ip","hostname", "domain");
     private VM host2 = new VM ("fqn2","ip2","hostname2", "domain2");
     private String vdc = "VDC";
+    private String extendedOVF;
     private String callback = "callback";
     private Task task;
     private OS os;
     
+    private List<VM> vmtestings;
+    
     @Before
     public void setUp() throws Exception {
 
+    	InputStream is = 
+			ClassLoader.getSystemClassLoader()
+				.getResourceAsStream("4caastovfexample_attributes.xml");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuffer ruleFile = new StringBuffer();
+        String actualString;
+
+        while ((actualString = reader.readLine()) != null) {
+            ruleFile.append(actualString).append("\n");
+        }
+        
+        extendedOVF = ruleFile.toString();
+    			
     	task= mock(Task.class);
     	
     	taskNotificator = mock (TaskNotificator.class);
@@ -69,7 +88,7 @@ public class EnvironmentInstanceAsyncManagerImplTest {
     	when(taskManager.updateTask(any(Task.class))).thenReturn(task);
     	
     	
-    	List<VM> vmtestings = new ArrayList<VM>(); 
+    	vmtestings = new ArrayList<VM>(); 
     	vmtestings.add(host);
     	
     	List<VM> vmproductions = new ArrayList<VM>(); 
@@ -77,8 +96,8 @@ public class EnvironmentInstanceAsyncManagerImplTest {
     	vmproductions.add(host2);
     	
     	infrastructureManager = mock(InfrastructureManager.class);
-        when(infrastructureManager.getVMs(new Integer(1))).thenReturn(vmtestings);
-        when(infrastructureManager.getVMs(new Integer(2))).thenReturn(vmproductions);
+        //when(infrastructureManager.getVMs(vdc, new Integer(1))).thenReturn(vmtestings);
+        //when(infrastructureManager.getVMs(vdc, new Integer(2))).thenReturn(vmproductions);
         
         os = new OS("os1", "1", "os1 description", "v1");
         List<OS> supportedOOSS = new ArrayList<OS>();
@@ -140,30 +159,13 @@ public class EnvironmentInstanceAsyncManagerImplTest {
         tierInstances.add(expectedTierInstance);
         
         environmentInstanceManager = mock(EnvironmentInstanceManager.class);
-        when(environmentInstanceManager.create(any(String.class), any(Environment.class))).thenReturn(new EnvironmentInstance(expectedEnvironment, tierInstances));
-        //when(environmentInstanceManager.create(any(EnvironmentInstance.class)))
-        //.thenReturn(new EnvironmentInstance(expectedEnvironment, tierInstances));
+        when(environmentInstanceManager.create(any(String.class), 
+        		any(String.class),any(String.class),
+        		any(Environment.class))).thenReturn(new EnvironmentInstance(expectedEnvironment, tierInstances));
         
         propertiesProvider = mock(SystemPropertiesProvider.class);
         when(propertiesProvider.getProperty(any(String.class))).thenReturn("blablablablba");
       
-        /*ProductType productType = new ProductType ("type A", "Type A desc");
-        
-        productRelease = new ProductRelease(
-                "productPrueba", "1.0", "Product Prueba desc", null,
-                null, Arrays.asList(os), true, productType);
-       
-       expectedProductInstance = new ProductInstance(
-                productRelease, Status.INSTALLED, host, "vdc");
-
-        productInstanceDao = mock(ProductInstanceDao.class);
-        when(productInstanceDao.create(any(ProductInstance.class))).thenReturn(
-        		expectedProductInstance);
-        when(productInstanceDao.update(any(ProductInstance.class))).thenReturn(
-        		expectedProductInstance);
-        when(productInstanceDao.findUniqueByCriteria(
-                any(ProductInstanceSearchCriteria.class)))
-                .thenThrow(new NotUniqueResultException());*/
     }
     
     @Test
@@ -171,27 +173,14 @@ public class EnvironmentInstanceAsyncManagerImplTest {
         EnvironmentInstanceAsyncManagerImpl manager 
         	= new EnvironmentInstanceAsyncManagerImpl();
         manager.setEnvironmentInstanceManager(environmentInstanceManager);
-        manager.setEnvironmentManager(environmentManager);
-        manager.setProductInstanceManager(productInstanceManager);
-        manager.setInfrastructureManager(infrastructureManager);
         manager.setTaskNotificator(taskNotificator);
         manager.setPropertiesProvider(propertiesProvider);
         manager.setTaskManager(taskManager);
 
-        manager.create(vdc, expectedEnvironment, task, callback);
+        manager.create("org", vdc, "vmtestings", expectedEnvironment, task, callback);
         
         
         // make verifications
-        
-       /* assertEquals(expectedProductInstance, installedProduct);
-
-        verify(productInstallator, times(1)).install(
-                any(ProductInstance.class));
-        
-        // only one product will be installed, the other one causes error.
-        verify(productInstanceDao, times(1)).update(any(ProductInstance.class));
-        verify(productInstanceDao, times(1)).findUniqueByCriteria(
-                any(ProductInstanceSearchCriteria.class));*/
-       
-    }
+               
+    }*/
 }

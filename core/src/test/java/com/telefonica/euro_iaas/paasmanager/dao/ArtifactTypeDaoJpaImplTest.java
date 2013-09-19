@@ -19,53 +19,49 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.model.ArtifactType;
 
-public class ArtifactTypeDaoJpaImplTest extends AbstractJpaDaoTest implements
-		ArtifactTypeDao {
+public class ArtifactTypeDaoJpaImplTest extends AbstractJpaDaoTest {
+	//implements ArtifactTypeDao {
 
-	private ArtifactTypeDao artifactTypeDao;
+	//private ArtifactTypeDao artifactTypeDao;
 	
 	/**
 	 * Create the artifactType row in the database
 	 * @param, the artifactType to be inserted
 	 * @return artifactType
 	 */
-	@Override
-	public ArtifactType create(ArtifactType artifactType)
+	/*public ArtifactType create(ArtifactType artifactType)
 			throws InvalidEntityException, AlreadyExistsEntityException {
 		artifactType = artifactTypeDao.create(artifactType);
 		assertNotNull(artifactType.getId());
 		return artifactType;
-	}
+	}*/
 	
 	/**
 	 *  List all the artifactTypes stored in the paas-maager system
 	 * @return artifactTypes
 	 */
-	@Override
-	public List<ArtifactType> findAll() {
+	/*public List<ArtifactType> findAll() {
 		return artifactTypeDao.findAll();
-	}
+	}*/
 
 	/**
 	 * Load an artifactTpe by the name
 	 * @param name, the name
 	 * @return artifactType
 	 */
-	@Override
-	public ArtifactType load(String arg0) throws EntityNotFoundException {
+	/*public ArtifactType load(String arg0) throws EntityNotFoundException {
 		ArtifactType artifactType = 
 				artifactTypeDao.load(artifactTypeDao.findAll().get(0).getName());
 		assertNotNull(artifactType.getId());
 		return artifactType;
-	}
+	}*/
 
 	/**
 	 *  Update the artifactType object in paas-manager system
 	 * @param artifactType, the artifactType object
 	 * @return artifactType
 	 */
-	@Override
-	public ArtifactType update(ArtifactType arg0) throws InvalidEntityException {
+	/*public ArtifactType update(ArtifactType arg0) throws InvalidEntityException {
 		ArtifactType artifactType = artifactTypeDao.findAll().get(0);
 		artifactType.setDescription("Description2");	
 		
@@ -73,22 +69,21 @@ public class ArtifactTypeDaoJpaImplTest extends AbstractJpaDaoTest implements
 		assertEquals(artifactType.getDescription(), "Description2");
 		
 		return artifactType;
-	}
+	}*/
 	
 	/**
 	 * Remove the artifactType object from the paas-manager system
 	 * @param artifactType, the artifactType object
 	 */
-	@Override
-	public void remove(ArtifactType artifactType) {
+	/*public void remove(ArtifactType artifactType) {
 		artifactTypeDao.remove(artifactType);
-	}
+	}*/
 	
 	/**
      * @param artifactTypeDao the artifactTypeDao to set
     */
-    public void setArtifactTypeDao(ArtifactTypeDao artifactTypeDao) {
+   /* public void setArtifactTypeDao(ArtifactTypeDao artifactTypeDao) {
         this.artifactTypeDao = artifactTypeDao;
-    }
+    }*/
 
 }

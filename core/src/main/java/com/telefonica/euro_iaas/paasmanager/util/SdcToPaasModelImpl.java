@@ -5,7 +5,6 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 
 public class SdcToPaasModelImpl implements SdcToPaasModel {
 
-	@Override
 	public ProductInstance getPassProductInstance(
 			com.telefonica.euro_iaas.sdc.model.ProductInstance sdcProductInstance) {
 		
@@ -22,7 +21,6 @@ public class SdcToPaasModelImpl implements SdcToPaasModel {
 		return paasProductInstance;
 	}
 
-	@Override
 	public ProductRelease getPassProductRelease(
 			com.telefonica.euro_iaas.sdc.model.ProductRelease sdcProductRelease) {
 		

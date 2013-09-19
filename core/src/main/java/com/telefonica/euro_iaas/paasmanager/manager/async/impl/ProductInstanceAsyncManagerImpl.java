@@ -16,12 +16,14 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
+import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.impl.ProductInstanceAsyncManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.util.TaskNotificator;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidProductInstanceRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.paasmanager.model.TaskError;
 import com.telefonica.euro_iaas.paasmanager.model.TaskReference;
@@ -38,45 +40,43 @@ public class ProductInstanceAsyncManagerImpl implements
     private SystemPropertiesProvider propertiesProvider;
     private TaskNotificator taskNotificator;
 	
-    @Override
-	public void install(VM vm, String vdc, ProductRelease productRelease,
+    public void install(TierInstance tierInstance, String vdc, ProductRelease productRelease,
 			List<Attribute> attributes, Task task, String callback) {
 		
 		try {
 			ProductInstance productInstance = productInstanceManager.install(
-			        vm, vdc, productRelease, attributes);
-			LOGGER.info("Product " + productRelease.getName() + '-'
+					tierInstance, vdc, productRelease, attributes);
+			LOGGER.info("Product " + productRelease.getProduct() + '-'
                     + productRelease.getVersion() + " installed successfully");
-		} catch (InvalidEntityException e) {
-			 String errorMsg = e.getMessage();
-	            ProductInstance instance = getInstalledProduct(productRelease, vm);
-	            if (instance != null) {
-	            	updateErrorTask(instance, task, errorMsg, e);
-	            } else {
-	            	updateErrorTask(task, errorMsg, e);
+		} catch (InvalidProductInstanceRequestException e) {
+			String errorMsg = e.getMessage();
+	        ProductInstance instance = getInstalledProduct(productRelease, tierInstance.getVM());
+	        if (instance != null) {
+	        	updateErrorTask(instance, task, errorMsg, e);
+	        } else {
+	          	updateErrorTask(task, errorMsg, e);
 	            }
-	        }catch (Throwable e) {
-	            String errorMsg = "The product " + productRelease.getName()
-	                    + "-" + productRelease.getVersion() + " can not be installed in" + vm;
-	            ProductInstance instance = getInstalledProduct(productRelease, vm);
-	            if (instance != null) {
-	                updateErrorTask(instance, task, errorMsg, e);
-	            } else {
-	                updateErrorTask(task, errorMsg, e);
-	            }
-	        } finally {
-	            notifyTask(callback, task);
-	        }
-	}
+	   }catch (Throwable e) {
+		   String errorMsg = "The product " + productRelease.getProduct()
+				   + "-" + productRelease.getVersion() + " can not be installed in" + tierInstance.getVM();
+		   ProductInstance instance = getInstalledProduct(productRelease, tierInstance.getVM());
+	       if (instance != null) {
+	    	   updateErrorTask(instance, task, errorMsg, e);
+	       } else {
+	    	   updateErrorTask(task, errorMsg, e);
+	       }
+	   } finally {
+		   notifyTask(callback, task);
+	   }
+    }
 
-	@Override
 	public void uninstall(ProductInstance productInstance, Task task,
 			String callback) {
 	     
 		  productInstanceManager.uninstall(productInstance);
           updateSuccessTask(task, productInstance);
           LOGGER.info("Product Release " 
-                  + productInstance.getProductRelease().getName() +
+                  + productInstance.getProductRelease().getProduct() +
                   "-" + productInstance.getProductRelease().getVersion()
                   + " uninstalled successfully");
           notifyTask(callback, task);
@@ -111,10 +111,9 @@ public class ProductInstanceAsyncManagerImpl implements
 
 	}
 
-	@Override
-	public ProductInstance load(String vdc, Long id)
+	public ProductInstance load(String vdc, String name)
 			throws EntityNotFoundException {
-		return productInstanceManager.load(vdc, id);
+		return productInstanceManager.load(vdc, name);
 	}
 
     ////////// PRIVATE METHODS ///////////
@@ -126,9 +125,8 @@ public class ProductInstanceAsyncManagerImpl implements
         String piResource = MessageFormat.format(
                 propertiesProvider.getProperty(PRODUCT_INSTANCE_BASE_URL),
                 productInstance.getId(), // the id
-                productInstance.getVm().getHostname(), // the hostname
-                productInstance.getVm().getDomain(), // the domain
-                productInstance.getProductRelease().getName(),
+              
+                productInstance.getProductRelease().getProduct(),
                 productInstance.getVdc()); // the product
         task.setResult(new TaskReference(piResource));
         task.setEndTime(new Date());
@@ -146,9 +144,8 @@ public class ProductInstanceAsyncManagerImpl implements
         String piResource = MessageFormat.format(
                 propertiesProvider.getProperty(PRODUCT_INSTANCE_BASE_URL),
                 productInstance.getId(), // the id
-                productInstance.getVm().getHostname(), // the hostname
-                productInstance.getVm().getDomain(), // the domain
-                productInstance.getProductRelease().getName(),
+               
+                productInstance.getProductRelease().getProduct(),
                 productInstance.getVdc()); // the product
         task.setResult(new TaskReference(piResource));
         updateErrorTask(task, message, t);
@@ -171,7 +168,7 @@ public class ProductInstanceAsyncManagerImpl implements
 
     private ProductInstance getInstalledProduct(ProductRelease productRelease, VM vm) {
         ProductInstanceSearchCriteria criteria = new ProductInstanceSearchCriteria();
-        criteria.setVm(vm);
+     //   criteria.setVm(vm);
         criteria.setProductRelease(productRelease);
         try {
             return productInstanceManager.loadByCriteria(criteria);

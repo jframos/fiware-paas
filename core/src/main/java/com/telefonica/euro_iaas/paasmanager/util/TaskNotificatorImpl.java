@@ -18,7 +18,6 @@ public class TaskNotificatorImpl implements TaskNotificator {
     /**
      * {@inheritDoc}
      */
-    @Override
     public void notify(String url, Task task) {
         WebResource webResource = client.resource(url);
         webResource.type(MediaType.APPLICATION_XML)

@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.3">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>20</x>
+      <y>90</y>
+      <w>210</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>_Artifact_
+--
+name: String
+path: String
+productType: ProductType
+bg=red
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>300</y>
+      <w>230</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>_ApplicationRelease_
+--
+id: String (name-version)
+name: String
+Version: String
+info: String
+List&lt;Attribute&gt;
+List&lt;Artifact&gt;
+List&lt;Environment&gt;
+transitRel:List&lt;ApplicationRelease&gt;
+bg=red
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>330</x>
+      <y>80</y>
+      <w>180</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>_ProductRelease_
+--
+id: String (name-version)
+name: String
+version: String
+productType: ProductType
+transitRel: ProductRelease
+oss: List&lt;OS&gt;
+bg=red
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>900</x>
+      <y>90</y>
+      <w>120</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>_VM_
+--
+ip: String
+fqn:String
+hostname: String
+domain: String
+osType: String
+bg=red
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>200</x>
+      <y>110</y>
+      <w>150</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m2=1
+m1=1..n</panel_attributes>
+    <additional_attributes>130;30;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>600</x>
+      <y>240</y>
+      <w>270</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>_TierInstance_
+--
+name: String
+tier: Tier
+service:  &lt;List&gt; Service
+ProductInstance: &lt;List&gt; ProductInstance
+estado: Status
+bg=green
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>910</x>
+      <y>260</y>
+      <w>140</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>_Service_
+--
+bg=green
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>840</x>
+      <y>280</y>
+      <w>90</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>30;30;70;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>810</x>
+      <y>120</y>
+      <w>110</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>30;30;90;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>620</x>
+      <y>90</y>
+      <w>220</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>_ProductInstance_
+--
+name: String
+productRelease: ProductRelease
+vm: VM
+estado: Status
+bg=green
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>480</x>
+      <y>110</y>
+      <w>160</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m2=1
+m1=1..n</panel_attributes>
+    <additional_attributes>140;30;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>690</x>
+      <y>160</y>
+      <w>50</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>30;80;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>390</x>
+      <y>20</y>
+      <w>730</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&gt;&gt;
+</panel_attributes>
+    <additional_attributes>710;70;710;30;30;30;30;60</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1050</x>
+      <y>90</y>
+      <w>120</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>_OS_
+--
+Name: String
+OSType: String
+bg=red
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>990</x>
+      <y>130</y>
+      <w>80</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>30;30;60;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>300</x>
+      <y>240</y>
+      <w>240</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>_Tier_
+--
+name: String
+Maximun_number_instances: Integer
+Minimun_number_instances: Integer
+Initial_number_instances: Integer
+ProductRelease: productRelease
+bg=red
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>320</x>
+      <y>420</y>
+      <w>200</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>_Environment_
+--
+name: String
+tiers: List&lt;Tier&gt;
+type: EnvironmentType
+bg=red
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>390</x>
+      <y>160</y>
+      <w>50</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m2=1
+m1=1..n</panel_attributes>
+    <additional_attributes>30;80;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>390</x>
+      <y>330</y>
+      <w>50</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m2=1
+m1=1..n</panel_attributes>
+    <additional_attributes>30;90;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>510</x>
+      <y>280</y>
+      <w>110</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m2=1
+m1=1..n</panel_attributes>
+    <additional_attributes>90;30;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>550</y>
+      <w>230</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>_ApplicationInstance_
+--
+name: String
+appRelease: ApplicationRelease
+environment: Environment
+vdc: String
+user: String
+Owner: String
+estado: Status
+bg=green
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>80</x>
+      <y>0</y>
+      <w>150</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m2=1
+m1=1..n</panel_attributes>
+    <additional_attributes>30;90;130;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>310</x>
+      <y>0</y>
+      <w>120</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m2=1
+m1=1..n</panel_attributes>
+    <additional_attributes>100;80;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>70</x>
+      <y>150</y>
+      <w>50</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m2=1..n
+m1=1</panel_attributes>
+    <additional_attributes>30;150;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>70</x>
+      <y>430</y>
+      <w>50</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m2=1
+m1=1..n</panel_attributes>
+    <additional_attributes>30;120;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>340</x>
+      <y>600</y>
+      <w>130</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>_EnvironmentType_
+--
+name: String
+bg=red
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>380</x>
+      <y>480</y>
+      <w>50</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m2=1
+m1=1..n</panel_attributes>
+    <additional_attributes>30;30;30;120</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>200</x>
+      <y>480</y>
+      <w>170</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m2=1
+m1=1..n</panel_attributes>
+    <additional_attributes>30;120;150;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>200</x>
+      <y>350</y>
+      <w>140</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m2=1..n
+m1=1..n</panel_attributes>
+    <additional_attributes>30;30;120;110</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>210</x>
+      <y>0</y>
+      <w>130</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>_ProductReleaseType_
+--
+name: String
+bg=red
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

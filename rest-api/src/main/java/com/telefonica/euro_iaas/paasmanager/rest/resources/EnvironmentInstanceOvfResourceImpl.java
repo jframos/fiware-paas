@@ -1,0 +1,261 @@
+/*
+
+  (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights
+  Reserved.
+
+  The copyright to the software program(s) is property of Telefonica I+D.
+  The program(s) may be used and or copied only with the express written
+  consent of Telefonica I+D or in accordance with the terms and conditions
+  stipulated in the agreement/contract under which the program(s) have
+  been supplied.
+
+ */
+package com.telefonica.euro_iaas.paasmanager.rest.resources;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.ws.rs.Path;
+import javax.ws.rs.WebApplicationException;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
+
+import com.sun.jersey.api.core.InjectParam;
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentTypeDao;
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
+import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
+import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsyncManager;
+import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
+import com.telefonica.euro_iaas.paasmanager.manager.async.VirtualServiceAsyncManager;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.Environment;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentType;
+import com.telefonica.euro_iaas.paasmanager.model.Task;
+import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
+import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceOvfDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
+import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
+import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
+import com.telefonica.euro_iaas.paasmanager.rest.util.OVFMacro;
+import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentInstanceResourceValidator;
+
+/**
+ * @author jesus.movilla
+ * 
+ */
+@Path("/ovf/org/{org}/vdc/{vdc}/environmentInstance")
+@Component
+@Scope("request")
+public class EnvironmentInstanceOvfResourceImpl implements
+		EnvironmentInstanceOvfResource {
+
+	private static Logger log = Logger
+			.getLogger(EnvironmentInstanceResourceImpl.class.getName());
+
+	@InjectParam("environmentInstanceAsyncManager")
+	private EnvironmentInstanceAsyncManager environmentInstanceAsyncManager;
+	@InjectParam("environmentInstanceManager")
+	private EnvironmentInstanceManager environmentInstanceManager;
+
+	@InjectParam("taskManager")
+	private TaskManager taskManager;
+	@InjectParam("virtualServiceAsyncManager")
+	private VirtualServiceAsyncManager virtualServiceAsyncManager;
+	
+	private EnvironmentInstanceResourceValidator validator;
+
+	private ExtendedOVFUtil extendedOVFUtil;
+	private OVFMacro ovfMacro;
+
+	private EnvironmentTypeDao environmentTypeDao;
+
+	public Task create(String org, String vdc, String payload, String callback)
+			throws InvalidEnvironmentRequestException, EntityNotFoundException,
+			InvalidEntityException, AlreadyExistsEntityException,
+			InfrastructureException, InvalidOVFException {
+
+		Task task = null;
+		List<String> virtualServices = new ArrayList<String>();
+		ClaudiaData claudiaData = new ClaudiaData(org,vdc);
+	
+	/*	Collection<? extends GrantedAuthority> dd = new ArrayList () ;
+		PaasManagerUser manUser  = new PaasManagerUser(vdc, "76e13d0cac13473c9541129475bca240", dd);
+		manUser.setTenantId(vdc);
+		claudiaData.setUser(manUser);*/
+		
+		if (!extendedOVFUtil.isVirtualServicePayload(payload)) {
+			EnvironmentType environmentType;
+			// Validations
+			validator.validateCreatePayload(payload);
+			
+			Environment environment = new Environment();
+			environment.setOvf(payload);
+			environment = ovfMacro.resolveMacros(environment);
+
+			payload = environment.getOvf();
+
+			environment.setName(extendedOVFUtil.getEnvironmentName(payload));
+			environment.setTiers(extendedOVFUtil.getTiers(payload));
+
+			try {
+				environmentType = environmentTypeDao.load("Generic");
+			} catch (EntityNotFoundException e) {
+				environmentType = environmentTypeDao
+						.create(new EnvironmentType("Generic", "Generic"));
+			}
+			environment.setEnvironmentType(environmentType);
+
+			String envInstanceName = extendedOVFUtil
+					.getEnvironmentName(payload);
+			
+			claudiaData.setService(envInstanceName);
+			claudiaData.setUser(extendedOVFUtil.getCredentials());
+			
+			task = createTask(MessageFormat.format("Create environment {0}",
+					environment.getName()), vdc);
+
+			environmentInstanceAsyncManager.create(claudiaData,environment, 
+					task, callback);
+		} else {
+			virtualServices = extendedOVFUtil.getVirtualServices(payload);
+
+			task = createTask(MessageFormat.format(
+					"Install Virtual Service environment {0}",
+					"virtualServiceCollection"), "VirtualService");
+
+			for (int i = 0; i < virtualServices.size(); i++) {
+				String virtualServiceName = extendedOVFUtil
+						.getVirtualServiceName(virtualServices.get(i));
+
+				virtualServiceAsyncManager.create(virtualServiceName,
+						virtualServices.get(i), task, callback);
+			}
+		}
+		return task;
+	}
+
+	/**
+	 * 
+	 */
+	public List<EnvironmentInstanceOvfDto> findAll(Integer page,
+			Integer pageSize, String orderBy, String orderType,
+			List<Status> status, String vdc) {
+
+		EnvironmentInstanceSearchCriteria criteria = new EnvironmentInstanceSearchCriteria();
+
+		criteria.setVdc(vdc);
+		criteria.setStatus(status);
+
+		if (page != null && pageSize != null) {
+			criteria.setPage(page);
+			criteria.setPageSize(pageSize);
+		}
+		if (!StringUtils.isEmpty(orderBy)) {
+			criteria.setOrderBy(orderBy);
+		}
+		if (!StringUtils.isEmpty(orderType)) {
+			criteria.setOrderBy(orderType);
+		}
+
+		List<EnvironmentInstance> envInstances = environmentInstanceManager
+				.findByCriteria(criteria);
+
+		List<EnvironmentInstanceOvfDto> environmentInstanceOvfDtos = new ArrayList<EnvironmentInstanceOvfDto>();
+		for (int i = 0; i < envInstances.size(); i++) {
+
+			environmentInstanceOvfDtos.add(new EnvironmentInstanceOvfDto(
+					envInstances.get(i).getVapp()));
+		}
+		return environmentInstanceOvfDtos;
+	}
+
+	/**
+     * 
+     */
+	public String load(String vdc, String name) {
+		try {
+			EnvironmentInstance envInstance = environmentInstanceManager.load(
+					vdc, name);
+			return envInstance.getVapp();
+		} catch (EntityNotFoundException e) {
+			throw new WebApplicationException(e, 404);
+		}
+	}
+
+	public Task destroy(String org, String vdc, String name, String callback) {
+		try {
+			EnvironmentInstance environmentInstance = environmentInstanceManager
+					.load(vdc, name);
+			ClaudiaData claudiaData = new ClaudiaData(org,vdc,
+				environmentInstance.getName());
+			
+			Task task = createTask(MessageFormat.format(
+					"Destroying EnvironmentInstance {0} ", name), vdc);
+			environmentInstanceAsyncManager.destroy(claudiaData,
+					environmentInstance, task, callback);
+			return task;
+		} catch (EntityNotFoundException e) {
+			throw new WebApplicationException(e, 404);
+		}
+	}
+
+	/**
+	 * createTask
+	 * 
+	 * @param description
+	 * @param vdc
+	 * @return
+	 */
+	private Task createTask(String description, String vdc) {
+		Task task = new Task(TaskStates.RUNNING);
+		task.setDescription(description);
+		task.setVdc(vdc);
+		return taskManager.createTask(task);
+	}
+
+	/**
+	 * @param validator
+	 *            the validator to set
+	 */
+	public void setValidator(EnvironmentInstanceResourceValidator validator) {
+		this.validator = validator;
+	}
+
+	/**
+	 * @param extendedOVFUtil
+	 *            the extendedOVFUtil to set
+	 */
+	public void setExtendedOVFUtil(ExtendedOVFUtil extendedOVFUtil) {
+		this.extendedOVFUtil = extendedOVFUtil;
+	}
+
+	/**
+	 * @param ovfMacro
+	 *            the ovfMacro to set
+	 */
+	public void setOvfMacro(OVFMacro ovfMacro) {
+		this.ovfMacro = ovfMacro;
+	}
+
+	/**
+	 * @param environmentTypeDao
+	 *            the environmentTypeDao to set
+	 */
+	public void setEnvironmentTypeDao(EnvironmentTypeDao environmentTypeDao) {
+		this.environmentTypeDao = environmentTypeDao;
+	}
+
+}

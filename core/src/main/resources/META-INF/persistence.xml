@@ -25,7 +25,8 @@
         <class>com.telefonica.euro_iaas.paasmanager.model.TierInstance</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance</class> 
         <class>com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance</class>
-        <class>com.telefonica.euro_iaas.paasmanager.model.Task</class> 
+        <class>com.telefonica.euro_iaas.paasmanager.model.Template</class>
+        <class>com.telefonica.euro_iaas.paasmanager.model.Task</class>  
         <exclude-unlisted-classes></exclude-unlisted-classes>
     </persistence-unit>
 </persistence>

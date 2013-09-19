@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<!-- POST http://tcloud.com/api/org/1/vdc/1/action/instantiateOvf -->
+<!--
+
+   BB->Mngt
+
+   Aditional comments:
+      * This example is based on TCloud API Core spec. Therefore, it lacks some ponteally important information, such
+        as contract information, etc. The Enterprise-Class VDC Management extension has to be reviewed in order to check
+        how this example would be modified.
+-->
+    <ovf:Envelope   xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" 
+            xmlns="http://schemas.dmtf.org/ovf/envelope/1" 
+            xmlns:rsrvr="http://schemas.telefonica.com/claudia/ovf" 
+            xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" 
+            xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+            xsi:schemaLocation="http://schemas.telefonica.com/claudia/ovf reservoir.xsd">
+        <ovf:References>
+            <File ovf:id="tomcat" ovf:href="file:///DCEURO01/vm/Templates/UbuntuV" rsrvr:digest="8f1643c4fdf83ab3827190ab771f76e1"/>
+        </ovf:References>
+        <ovf:DiskSection>
+            <ovf:Info>Disk section</ovf:Info>
+            <Disk ovf:diskId="tomcat" ovf:fileRef="tomcat" ovf:capacity="512" ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html"/>
+        </ovf:DiskSection>
+        <NetworkSection>
+            <Info>The SGE service uses one one public network (admin_net) and one internal network (sge_net)</Info>
+            <Network ovf:name="servicio" rsrvr:public="true">
+                <Description>Network to provide administrative access to VEEMaster</Description>
+            </Network>  
+        </NetworkSection>   
+        <rsrvr:KPISection><Info>SGE only uses one KPI: the length of the jobs queue</Info><rsrvr:KPI KPIname="requestDelay" KPItype="VEEHW" KPIVmname="tomcat"/></rsrvr:KPISection>
+        <!--  VM descriptions -->
+	 <!-- Neoclaudia no acepta el tag VirtualSsytemCollection - hay que eliminarlo -->
+       <!-- <VirtualSystemCollection ovf:id="TPCW">
+            <Info>4caast demo</Info>
+            <StartupSection>-->
+            <!--Orden de llamada a cada maquina virtual-->
+                <!--<Item ovf:id="tomcat" ovf:order="1" ovf:waitingForGuest="true"/>
+               </StartupSection>-->
+           <VirtualSystem ovf:id="tomcat" rsrvr:min="1" rsrvr:max="5" rsrvr:initial="1" rsrvr:balanced="haproxy">
+                <Info>Tomcat for the TPCW demo</Info>
+                <OperatingSystemSection ovf:id="94">
+                    <Info>Specifies the operating system installed</Info>
+                    <Description>tomcat</Description>
+                </OperatingSystemSection>           
+                <ovf:Name>Apache</ovf:Name>
+                <ProductSection>
+                    <Info>tomcat</Info>
+                    <Product>tomcat</Product>
+                    <Version>7</Version>                
+                    <Category msgid="org.fourcaast.instancecomponent">Instance Component Metadata</Category>
+                    <Property key="org.fourcaast.instancecomponent.id" value="tomcat" />
+                    <Property key="org.fourcaast.instancecomponent.id" value="tomcat"/>
+                    <Property key="org.fourcaast.instancecomponent.recipe" value="tomcat"/>
+                    <Property key="org.fourcaast.instancecomponent.type" value="PIC"/>
+                    <Category msgid="org.fourcaast.instancecomponent.attributes">Product Specific Attributes</Category>
+                    <Property key="port" value="8080"/>
+                </ProductSection>
+                <ProductSection>
+                    <Info>war application</Info>
+                    <Product>application</Product>
+                    <Version>1.0</Version>
+                    <Category msgid="org.fourcaast.instancecomponent">Instance Component Metadata</Category>
+                    <Property key="org.fourcaast.instancecomponent.id" value="mywebapplication"/>
+                    <Property key="org.fourcaast.instancecomponent.recipe" value="javawebapplication"/>
+                    <Property key="org.fourcaast.instancecomponent.type" value="AC"/>
+                    <Property key="org.fourcaast.instancecomponent.parent" value="tomcat"/>
+                    <Category msgid="org.fourcaast.instancecomponent.attributes">Product Specific Attributes</Category>
+                    <Property key="warurl" value="http://svn.forge.morfeo-project.org/4caast/trunk/WP7/TaxiScenario/myapplication.war"/>   
+                    <Property key="IPmysql" value="@IP(mysql,public)"/>
+                    <Property key="login" value="@login(mysql)"/>
+                    <Property key="password" value="@password(mysql)"/>
+                </ProductSection>
+                <rsrvr:ElasticArraySection>
+                    <Info>There are two elasticity rules, to scale up and down VEEExecutor components</Info>
+                    <rsrvr:Rule>
+                        <rsrvr:KPIName>requestDelay</rsrvr:KPIName>
+                        <rsrvr:KPIType>VEEHW</rsrvr:KPIType>
+                        <rsrvr:Window unit="minute">5</rsrvr:Window>
+                        <rsrvr:Frequency>20</rsrvr:Frequency>
+                        <rsrvr:Quota>45</rsrvr:Quota>
+                        <rsrvr:Tolerance>55.55</rsrvr:Tolerance>
+                    </rsrvr:Rule>
+                </rsrvr:ElasticArraySection>        
+                <ovf:VirtualHardwareSection>
+                    <ovf:Info>Virtual Hardware Requirements: 512Mb, 2 CPU, 1 disk, 1 nic</ovf:Info>             
+                    <ovf:System>
+                        <vssd:ElementName>Virtual Hardware Family</vssd:ElementName>
+                        <vssd:InstanceID>0</vssd:InstanceID>
+                        <vssd:VirtualSystemIdentifier>deploy-tcloud</vssd:VirtualSystemIdentifier>
+                        <vssd:VirtualSystemType>vmx-07</vssd:VirtualSystemType>
+                    </ovf:System>
+                    <ovf:Item>
+                        <rasd:Description>Number of virtual CPUs</rasd:Description>
+                        <rasd:ElementName>1 virtual CPU</rasd:ElementName>
+                        <rasd:InstanceID>1</rasd:InstanceID>
+                        <rasd:ResourceType>3</rasd:ResourceType>
+                        <rasd:VirtualQuantity>1</rasd:VirtualQuantity>
+                    </ovf:Item>
+                    <ovf:Item>
+                        <rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
+                        <rasd:Description>Memory Size</rasd:Description>
+                        <rasd:ElementName>128 MB of memory</rasd:ElementName>
+                        <rasd:InstanceID>2</rasd:InstanceID>
+                        <rasd:ResourceType>4</rasd:ResourceType>
+                        <rasd:VirtualQuantity>128</rasd:VirtualQuantity>
+                    </ovf:Item>
+                    <ovf:Item>
+                        <rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+                        <rasd:Connection>public</rasd:Connection>
+                        <rasd:ElementName>Ethernet adapter on admin_net network</rasd:ElementName>
+                        <rasd:InstanceID>3</rasd:InstanceID>
+                        <rasd:ResourceType>10</rasd:ResourceType>
+                    </ovf:Item>
+                    <ovf:Item>
+                        <rasd:ElementName>Harddisk 1</rasd:ElementName>
+                        <rasd:HostResource>ovf://disk/tomcat</rasd:HostResource>
+                        <rasd:InstanceID>tomcat</rasd:InstanceID>
+                        <rasd:Parent>4</rasd:Parent>
+                        <rasd:ResourceType>17</rasd:ResourceType>
+                    </ovf:Item> 
+                </ovf:VirtualHardwareSection>
+            </VirtualSystem>
+    <!--</VirtualSystemCollection>-->
+</ovf:Envelope>

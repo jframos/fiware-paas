@@ -36,6 +36,13 @@ public class ArtifactType {
 	private ProductType productType;
 
 	/**
+	 * Default Constructor
+	 */
+	public ArtifactType(){
+		
+	}
+	
+	/**
 	 * @param name
 	 * @param description
 	 * @param productType

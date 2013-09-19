@@ -1,0 +1,42 @@
+<VApp href="@HOSTNAME/api/org/es_tid/vdc/cc1/vapp/pmS16/tomcat/1" name="es.tid.customers.cc1.services.pmS16.vees.tomcat.replicas.1">
+<Link href="@HOSTNAME/api/org/es_tid/vdc/cc1/vapp/pmS16/tomcat/1/monitor" rel="monitor:measures" type="application/vnc.telefonica.tcloud. measureDescriptorList+xml"/>
+<ProductSection>
+<Category msgid="org.fourcaast.rec">REC Attribute</Category>
+<Property key="org.fourcaast.rec.username" value="root"/>
+<Property key="org.fourcaast.rec.password" value="zH7xIg2w83Q2E9vr"/>
+</ProductSection>
+<VirtualHardwareSection>
+<Link href="@HOSTNAME/api/org/es_tid/vdc/cc1/vapp/pmS16/tomcat/1/hw/" rel="add" type="application/ovf.item+xml"/>
+<Item>
+<Link href="@HOSTNAME/api/org/es_tid/vdc/cc1/vapp/pmS16/tomcat/1/hw/1" rel="edit" type="application/ovf.item+xml+xml"/>
+<Description>Number of virtual data</Description>
+<InstanceID>1</InstanceID>
+<ResourceType>3</ResourceType>
+<VirtualQuantity>1</VirtualQuantity>
+</Item>
+<Item>
+<Link href="@HOSTNAME/api/org/es_tid/vdc/cc1/vapp/pmS16/tomcat/1/hw/2" rel="edit" type="application/ovf.item+xml+xml"/>
+<Description>Number of virtual data</Description>
+<InstanceID>2</InstanceID>
+<ResourceType>4</ResourceType>
+<VirtualQuantity>512</VirtualQuantity>
+</Item>
+<Item>
+<Link href="@HOSTNAME/api/org/es_tid/vdc/cc1/vapp/pmS16/tomcat/1/hw/3" rel="edit" type="application/ovf.item+xml+xml"/>
+<Description>Number of virtual data</Description>
+<InstanceID>3</InstanceID>
+<ResourceType>17</ResourceType>
+<HostResource>ovf://disk/disk</HostResource>
+<Parent>4</Parent>
+<VirtualQuantity>2</VirtualQuantity>
+</Item>
+<Item>
+<Link href="@HOSTNAME/api/org/es_tid/vdc/cc1/vapp/pmS16/tomcat/1/hw/4" rel="edit" type="application/ovf.item+xml+xml"/>
+<Description>Number of virtual data</Description>
+<InstanceID>4</InstanceID>
+<ResourceType>10</ResourceType>
+<IPv4Address>109.231.86.171</IPv4Address>
+<Connection>public</Connection>
+</Item>
+</VirtualHardwareSection>
+</VApp>

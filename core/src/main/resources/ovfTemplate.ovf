@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<InstantiateOvfParams xmlns="http://schemas.tcloud.telefonica.com/tcloud/1" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" 
+xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://schemas.tcloud.telefonica.com/tcloud/1 ../../../tags/core/v0.11/tcloud.xsd" name="${envInstanceName}">
+<Description>This VApp is for illustring use cases in REC</Description>
+<ovf:Envelope   name="admin.template.snapshotpaas" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" 
+          xmlns="http://schemas.dmtf.org/ovf/envelope/1"
+          xmlns:ovfenvelope="http://schemas.dmtf.org/ovf/envelope/1" 
+          xmlns:rsrvr="http://schemas.telefonica.com/claudia/ovf" 
+          xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" 
+          xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+          xsi:schemaLocation="http://schemas.telefonica.com/claudia/ovf reservoir.xsd">		
+      <ovf:References>
+	  	${ovfFile}
+     </ovf:References>
+     <ovf:DiskSection>
+     		<ovf:Info>Disk section</ovf:Info>
+	    	${ovfDisk}
+      </ovf:DiskSection>
+      <NetworkSection>
+      	<Info>The SGE service uses one one public network (admin_net) and one internal network (sge_net)</Info>
+          	<Network ovf:name="service" rsrvr:public="true">
+            	<Description>Network to provide administrative access to VEEMaster</Description>
+          	</Network>
+          	<ovf:Network ovf:name="management">
+                <ovf:Description>Network to provide administrative access</ovf:Description>
+            </ovf:Network>  
+      </NetworkSection>   
+      <ovf:VirtualSystemCollection ovf:id="${envInstanceName}">
+      	<Info>fiware demo</Info>		  
+		${virtualSystemTemplate} 
+  	</ovf:VirtualSystemCollection>
+</ovf:Envelope>
+</InstantiateOvfParams>

@@ -23,10 +23,10 @@ public class ProductReleaseDto {
 	private String productName;
 	private String productDescription;
 	private String version;
-	private String releaseNotes;
-	private List<Attribute> privateAttributes;
-	private List<OS> supportedOS;
-	private List<ProductRelease> transitableReleases; 
+//	private String releaseNotes;
+	private List<Attribute> attributes;
+//	private List<OS> supportedOS;
+	//private List<ProductRelease> transitableReleases; 
 	
 	
 	/**
@@ -50,11 +50,9 @@ public class ProductReleaseDto {
     	this.productName = productName;
     	this.productDescription = productDescription;
     	this.version = version;
-    	this.releaseNotes = releaseNotes;
-    	this.privateAttributes = privateAttributes;
-    	this.supportedOS = supportedOS;
-        this.transitableReleases = transitableReleases;
     }
+    
+
 	
     
     public String getProductName() {
@@ -75,19 +73,19 @@ public class ProductReleaseDto {
 	public void setVersion(String version) {
 		this.version = version;
 	}
-	public String getReleaseNotes() {
+/*	public String getReleaseNotes() {
 		return releaseNotes;
 	}
 	public void setReleaseNotes(String releaseNotes) {
 		this.releaseNotes = releaseNotes;
-	}
+	}*/
 	public List<Attribute> getPrivateAttributes() {
-		return privateAttributes;
+		return attributes;
 	}
-	public void setPrivateAttributes(List<Attribute> privateAttributes) {
-		this.privateAttributes = privateAttributes;
+	public void setPrivateAttributes(List<Attribute> attributes) {
+		this.attributes = attributes;
 	}
-	public List<OS> getSupportedOS() {
+/*	public List<OS> getSupportedOS() {
 		return supportedOS;
 	}
 	public void setSupportedOS(List<OS> supportedOS) {
@@ -98,7 +96,7 @@ public class ProductReleaseDto {
 	}
 	public void setTransitableReleases(List<ProductRelease> transitableReleases) {
 		this.transitableReleases = transitableReleases;
-	}
+	}*/
 	
 	
 }

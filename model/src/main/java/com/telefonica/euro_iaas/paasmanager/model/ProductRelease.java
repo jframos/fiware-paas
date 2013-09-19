@@ -6,10 +6,15 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -19,22 +24,36 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.OS;
 
 
+
 /**
  * A product release is a concrete version of a given product.
  * @author Jesus M. Movilla
  *
  */
+
+@SuppressWarnings("serial")
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
+@Table(name = "ProductRelease")
 public class ProductRelease  {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id", unique = true, nullable = false)
 	@XmlTransient
-	private String id;
-	    
+	private Long id;
+	
+	/*@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @XmlTransient
+    private Long id;
+    */
+	
 	@Column(nullable=false, length=256)
 	private String name;
+	@Column(nullable=false, length=256)
+	private String product;	  
 	@Column(nullable=false, length=256)
 	private String version;	  
 	  
@@ -49,30 +68,46 @@ public class ProductRelease  {
 	private List<ProductRelease> transitableReleases;
 
     @ManyToMany
+    @JoinTable(name = "productRelease_has_ooss")
     private List<OS> supportedOOSS;
     
+    @Column(nullable=true)
     private Boolean withArtifact;
     
     @ManyToOne
     private ProductType productType;
+    
+    @XmlTransient
+	@ManyToMany
+	private List<Tier> tiers;
+    
+    
+    
+ //   @ManyToMany(fetch = FetchType.LAZY, mappedBy = "productReleases")
+  //  private List<Tier> tiers;
+    
+
+    
+    public ProductRelease() {
 	
-    /**
-	 */
-	public ProductRelease() {
 	}
 	
-    /**
-	 * @param name
+     /**
+	 * @param product
 	 * @param version
+     * @param object2 
+     * @param list 
+     * @param product2 
+     * @param object 
 	 */
-	public ProductRelease(String name, String version) {
-		this.id =name + "-" + version;
-		this.name = name;
+	public ProductRelease(String product, String version) {
+		this.name =product + "-" + version;
+		this.product = product;
 		this.version = version;
 	}
 	
 	/**
-	 * @param name
+	 * @param product
 	 * @param version
 	 * @param description
 	 * @param attributes
@@ -81,12 +116,12 @@ public class ProductRelease  {
 	 * @param withArtifact
 	 * @param productType
 	 */
-	public ProductRelease(String name, String version, String description,
+	public ProductRelease(String product, String version, String description,
 			List<Attribute> attributes,
 			List<ProductRelease> transitableReleases, List<OS> supportedOOSS,
 			Boolean withArtifact, ProductType productType) {
-		this.id =name + "-" + version;
-		this.name = name;
+		this.name = product + "-" + version;
+		this.product = product;
 		this.version = version;
 		this.description = description;
 		this.attributes = attributes;
@@ -97,32 +132,47 @@ public class ProductRelease  {
 	}
 
 
+
 	/**
 	 * @return the id
 	 */
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
-
+	
 	/**
-	 * @return the name
+	 * @return the id
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param id the id to set
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * @return the product
+	 */
+	public String getProduct() {
+		return product;
+	}
+
+	/**
+	 * @param product the product to set
+	 */
+	public void setProduct(String product) {
+		this.product = product;
 	}
 
 	/**
@@ -234,7 +284,6 @@ public class ProductRelease  {
 		this.productType = productType;
 	}
 
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -259,5 +308,7 @@ public class ProductRelease  {
 			return false;
 		return true;
 	}
-    
+
+
+
 }

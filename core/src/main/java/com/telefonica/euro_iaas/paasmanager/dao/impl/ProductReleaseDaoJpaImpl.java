@@ -3,6 +3,12 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
+import javax.persistence.Query;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -10,24 +16,26 @@ import org.hibernate.criterion.Restrictions;
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
+import com.telefonica.euro_iaas.paasmanager.model.OS;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductReleaseSearchCriteria;
-import com.telefonica.euro_iaas.paasmanager.model.OS;
 
 public class ProductReleaseDaoJpaImpl 
 	extends AbstractBaseDao<ProductRelease, String> implements ProductReleaseDao {
 
-	@Override
+	@PersistenceContext(unitName = "paasmanager", type=PersistenceContextType.EXTENDED)
+	private EntityManager entityManager;
+
 	public List<ProductRelease> findAll() {
 		return super.findAll(ProductRelease.class);
 	}
 
-	@Override
-	public ProductRelease load(String arg0) throws EntityNotFoundException {
-        return super.loadByField(ProductRelease.class, "name", arg0);
+	public ProductRelease load(String name) throws EntityNotFoundException {
+        return super.loadByField(ProductRelease.class, "name", name);
 	}
+	
 
-	@Override
+
 	public List<ProductRelease> findByCriteria(
 			ProductReleaseSearchCriteria criteria) {
 		Session session = (Session) getEntityManager().getDelegate();
@@ -47,10 +55,11 @@ public class ProductReleaseDaoJpaImpl
 	    return productReleases;
 	}
 
-	@Override
-	public ProductRelease load(String productName, String version)
+	public ProductRelease load(String product, String version)
 			throws EntityNotFoundException {
-        Session session = (Session) getEntityManager().getDelegate();
+		return super.loadByField(ProductRelease.class, "name", product + "-" + version);
+		//return findByProductReleaseName(product + "-" + version);
+		/*Session session = (Session) getEntityManager().getDelegate();
         Criteria baseCriteria = session.createCriteria(
                 ProductRelease.class);
         baseCriteria.add(Restrictions.eq("name", productName));
@@ -63,7 +72,26 @@ public class ProductReleaseDaoJpaImpl
             throw new EntityNotFoundException(ProductRelease.class,
                     keys, values);
         }
-        return release;
+        return release;*/
+	}
+
+	/* (non-Javadoc)
+	 * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang.String)
+	 */
+	private ProductRelease findByProductReleaseName(String id) throws EntityNotFoundException {
+		Query query = entityManager.createQuery("select p from ProductRelease p join " 
+				+ "fetch p.supportedOOSS where p.id = :id" );
+		query.setParameter("id", id);
+		ProductRelease productRelease = null;
+		try {
+			productRelease = (ProductRelease) query.getSingleResult();
+		 } catch (NoResultException  e) {
+			 String message = " No ProductRelease found in the database with id: " +
+					 id + " Exception: " + e.getMessage();
+			 System.out.println (message);
+			 throw new EntityNotFoundException (ProductRelease.class, "id", id);
+		 } 
+		 return productRelease;
 	}
 
 	 /**

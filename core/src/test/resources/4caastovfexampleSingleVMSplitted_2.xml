@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- POST http://tcloud.com/api/org/1/vdc/1/action/instantiateOvf --><!--
+
+   BB->Mngt
+
+   Aditional comments:
+      * This example is based on TCloud API Core spec. Therefore, it lacks some ponteally important information, such
+        as contract information, etc. The Enterprise-Class VDC Management extension has to be reviewed in order to check
+        how this example would be modified.
+--><ovf:Envelope xmlns="http://schemas.dmtf.org/ovf/envelope/1" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" xmlns:rsrvr="http://schemas.telefonica.com/claudia/ovf" xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.telefonica.com/claudia/ovf reservoir.xsd">
+        <References> 
+<File ovf:href="file:///DCEURO01/vm/Templates/UbuntuV" ovf:id="postgresql" rsrvr:digest="8080eaaa7f4912314c0362129877c1f9"/>
+</References>
+        <DiskSection>
+<Disk ovf:capacity="512" ovf:diskId="postgresql" ovf:fileRef="postgresql" ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html"/>
+</DiskSection>
+        <!-- <ovf:NetworkSection>
+            <ovf:Info>Logical description of networks</ovf:Info>
+            <ovf:Network ovf:name="net-01"/>
+        </ovf:NetworkSection>-->
+        <NetworkSection>
+            <Info>The SGE service uses one one public network (admin_net) and one internal network (sge_net)</Info>
+            <Network ovf:name="public" rsrvr:public="true">
+                <Description>Network to provide administrative access to VEEMaster</Description>
+            </Network>  
+        </NetworkSection>   
+        <rsrvr:KPISection>
+<Info>SGE only uses one KPI: the length of the jobs queue</Info>
+<rsrvr:KPI KPIVmname="tomcat" KPIname="requestDelay" KPItype="VEEHW"/>
+</rsrvr:KPISection>
+        <VirtualSystem ovf:id="postgresql" rsrvr:initial="1" rsrvr:max="1" rsrvr:min="1">
+            <Info>VM for the 4caast demo</Info>
+                <OperatingSystemSection ovf:id="94">
+                <Info>Specifies the operating system installed</Info>
+                <Description>mysql</Description>
+            </OperatingSystemSection>
+            <!--  Master daemon configuration parameters -->        
+            <ProductSection>
+                <Info>mysql</Info>
+                <Product>mysql</Product>
+                <Version>5.1</Version>                      
+                <Category msgid="org.fourcaast.instancecomponent">Instance Component Metadata</Category>
+                <Property key="org.fourcaast.instancecomponent.id" value="mysql"/>
+                <Property key="org.fourcaast.instancecomponent.recipe" value="mysql"/>
+                <Property key="org.fourcaast.instancecomponent.type" value="PIC"/>
+                <Category msgid="org.fourcaast.instancecomponent.attributes">Product Specific Attributes</Category>
+                <Property key="passwordroot" value="root"/>
+            </ProductSection>
+            <ProductSection>
+                <Info>.sql script</Info>
+                <Product>mysqlsql</Product>
+                <Version>1.0</Version>
+                <Category msgid="org.fourcaast.instancecomponent">Instance Component Metadata</Category>
+                <Property key="org.fourcaast.instancecomponent.id" value="mysqlsql"/>
+                <Property key="org.fourcaast.instancecomponent.recipe" value="mysqlsql"/>
+                <Property key="org.fourcaast.instancecomponent.type" value="AC"/>
+                <Property key="org.fourcaast.instancecomponent.parent" value="mysql"/>
+                <Category msgid="org.fourcaast.instancecomponent.attributes">Product Specific Attributes</Category>
+                <Property key="sqlurl" value="http://svn.forge.morfeo-project.org/4caast/trunk/WP7/TaxiScenario/script.sql"/>
+            </ProductSection>           
+            <VirtualHardwareSection>
+                <Info>Virtual Hardware Requirements: 512Mb, 2 CPU, 1 disk, 1 nic</Info>             
+                 <ovf:System>
+                        <vssd:ElementName>Virtual Hardware Family</vssd:ElementName>
+                        <vssd:InstanceID>0</vssd:InstanceID>
+                        <vssd:VirtualSystemIdentifier>deploy-tcloud</vssd:VirtualSystemIdentifier>
+                        <vssd:VirtualSystemType>vmx-07</vssd:VirtualSystemType>
+                </ovf:System>
+                <Item>
+                    <rasd:Description>Number of virtual CPUs</rasd:Description>
+                    <rasd:ElementName>1 virtual CPU</rasd:ElementName>
+                    <rasd:InstanceID>1</rasd:InstanceID>
+                    <rasd:ResourceType>3</rasd:ResourceType>
+                    <rasd:VirtualQuantity>1</rasd:VirtualQuantity>
+                </Item>
+                <Item>
+                    <rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
+                    <rasd:Description>Memory Size</rasd:Description>
+                    <rasd:ElementName>512 MB of memory</rasd:ElementName>
+                    <rasd:InstanceID>2</rasd:InstanceID>
+                    <rasd:ResourceType>4</rasd:ResourceType>
+                    <rasd:VirtualQuantity>512</rasd:VirtualQuantity>
+                </Item>
+                <Item>
+                <rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+                    <rasd:Connection>public</rasd:Connection>
+                    <rasd:ElementName>Ethernet adapter on admin_net network</rasd:ElementName>
+                    <rasd:InstanceID>3</rasd:InstanceID>
+                    <rasd:ResourceType>10</rasd:ResourceType>
+                </Item>
+                  <Item>
+                    <rasd:ElementName>Harddisk 1</rasd:ElementName>
+                    <rasd:HostResource>ovf://disk/mysql</rasd:HostResource>
+                    <rasd:InstanceID>postgresql</rasd:InstanceID>
+                    <rasd:Parent>4</rasd:Parent>
+                    <rasd:ResourceType>17</rasd:ResourceType>
+                </Item>             
+            </VirtualHardwareSection>
+        </VirtualSystem>
+</ovf:Envelope>

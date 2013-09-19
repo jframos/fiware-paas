@@ -16,19 +16,14 @@ public class ConfigurationDaoJpaImpl extends AbstractBaseDao<Configuration, Long
 	public Configuration create(Configuration configuration)
 			throws InvalidEntityException, AlreadyExistsEntityException {
 		return super.create(configuration);
-		//return null;
 	}
 
-	@Override
 	public List<Configuration> findAll() {
 		return super.findAll(Configuration.class);
-		//return null;
 	}
 
-	@Override
 	public Configuration load(Long id) throws EntityNotFoundException {
 		return super.loadByField(Configuration.class, "id", id);
-		//return null;
 	}
 
 	@Override
@@ -40,13 +35,6 @@ public class ConfigurationDaoJpaImpl extends AbstractBaseDao<Configuration, Long
 	public Configuration update(Configuration configuration)
 			throws InvalidEntityException {
 		return super.update(configuration);
-		//return null;
 	}
 	
-	/*public String suma(String a, String b) {
-		//return a + b;
-		//return "ab";
-		return null;
-	}*/
-
 }

@@ -1,3 +1,15 @@
+/*
+
+  (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights
+  Reserved.
+
+  The copyright to the software program(s) is property of Telefonica I+D.
+  The program(s) may be used and or copied only with the express written
+  consent of Telefonica I+D or in accordance with the terms and conditions
+  stipulated in the agreement/contract under which the program(s) have
+  been supplied.
+
+*/
 package com.telefonica.euro_iaas.paasmanager.manager.async.impl;
 
 import java.text.MessageFormat;
@@ -28,7 +40,6 @@ public class TaskManagerImpl implements TaskManager {
     /**
      * {@inheritDoc}
      */
-    @Override
     public Task createTask(Task task) {
         try {
             task = taskDao.create(task);
@@ -45,7 +56,6 @@ public class TaskManagerImpl implements TaskManager {
     /**
      * {@inheritDoc}
      */
-    @Override
     public Task updateTask(Task task) {
         try {
             task = taskDao.update(task);
@@ -61,7 +71,6 @@ public class TaskManagerImpl implements TaskManager {
     /**
      * {@inheritDoc}
      */
-    @Override
     public Task load(Long id) throws EntityNotFoundException {
         Task task =  taskDao.load(id);
         task.setHref(MessageFormat.format(
@@ -73,7 +82,6 @@ public class TaskManagerImpl implements TaskManager {
     /**
      * {@inheritDoc}
      */
-    @Override
     public List<Task> findByCriteria(TaskSearchCriteria criteria) {
         List<Task> tasks =  taskDao.findByCriteria(criteria);
         String taskUrl = propertiesProvider.getProperty(TASK_BASE_URL);

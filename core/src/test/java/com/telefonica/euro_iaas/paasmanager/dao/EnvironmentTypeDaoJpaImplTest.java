@@ -7,12 +7,10 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentType;
 
-public class EnvironmentTypeDaoJpaImplTest extends AbstractJpaDaoTest implements
-		EnvironmentTypeDao {
+public class EnvironmentTypeDaoJpaImplTest extends AbstractJpaDaoTest {
 
 	private EnvironmentTypeDao environmentTypeDao;
 	
-	@Override
 	public EnvironmentType create(EnvironmentType environmentType)
 			throws InvalidEntityException, AlreadyExistsEntityException {
 		environmentType = environmentTypeDao.create(environmentType);
@@ -20,25 +18,21 @@ public class EnvironmentTypeDaoJpaImplTest extends AbstractJpaDaoTest implements
 		return environmentType;
 	}
 
-	@Override
 	public List<EnvironmentType> findAll() {
 		return environmentTypeDao.findAll();
 	}
 
-	@Override
 	public EnvironmentType load(Long arg0) throws EntityNotFoundException {
 		EnvironmentType environmentType = 
-				environmentTypeDao.load(environmentTypeDao.findAll().get(0).getId());
+				environmentTypeDao.load(environmentTypeDao.findAll().get(0).getName());
 		assertNotNull(environmentType.getId());
 		return environmentType;
 	}
 
-	@Override
 	public void remove(EnvironmentType environmentType) {
 		environmentTypeDao.remove(environmentType);
 	}
 
-	@Override
 	public EnvironmentType update(EnvironmentType arg0)
 			throws InvalidEntityException {
 		// TODO Auto-generated method stub
@@ -51,4 +45,5 @@ public class EnvironmentTypeDaoJpaImplTest extends AbstractJpaDaoTest implements
     public void setEnvironmentTypeDao(EnvironmentTypeDao environmentTypeDao) {
         this.environmentTypeDao = environmentTypeDao;
     }
+
 }
