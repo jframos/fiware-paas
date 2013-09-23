@@ -9,6 +9,7 @@
 
     <bean id="configurationDao" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.ConfigurationDaoJpaImpl"/>
+  
     <bean id="osDao" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.OSDaoJpaImpl"/>
     <bean id="productReleaseDao" lazy-init="true"
@@ -43,4 +44,11 @@
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.EnvironmentInstanceDaoJpaImpl"/>
     <bean id="templateDao" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.TemplateDaoJpaImpl"/>
+    <bean id="ruleDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.paasmanager.dao.impl.RuleDaoJpaImpl"/>
+    <bean id="securityGroupDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.paasmanager.dao.impl.SecurityGroupDaoJpaImpl"/>
+     <bean id="attributeDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.paasmanager.dao.impl.AttributeDaoJpaImpl"/>
+
 </beans>

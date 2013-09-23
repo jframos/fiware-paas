@@ -10,7 +10,7 @@ import com.telefonica.euro_iaas.paasmanager.model.EnvironmentType;
 public class EnvironmentTypeDaoJpaImplTest extends AbstractJpaDaoTest {
 
 	private EnvironmentTypeDao environmentTypeDao;
-	
+
 	public EnvironmentType create(EnvironmentType environmentType)
 			throws InvalidEntityException, AlreadyExistsEntityException {
 		environmentType = environmentTypeDao.create(environmentType);
@@ -23,8 +23,8 @@ public class EnvironmentTypeDaoJpaImplTest extends AbstractJpaDaoTest {
 	}
 
 	public EnvironmentType load(Long arg0) throws EntityNotFoundException {
-		EnvironmentType environmentType = 
-				environmentTypeDao.load(environmentTypeDao.findAll().get(0).getName());
+		EnvironmentType environmentType = environmentTypeDao
+				.load(environmentTypeDao.findAll().get(0).getName());
 		assertNotNull(environmentType.getId());
 		return environmentType;
 	}
@@ -40,10 +40,11 @@ public class EnvironmentTypeDaoJpaImplTest extends AbstractJpaDaoTest {
 	}
 
 	/**
-     * @param environmentTypeDao the environmentTypeDao to set
-    */
-    public void setEnvironmentTypeDao(EnvironmentTypeDao environmentTypeDao) {
-        this.environmentTypeDao = environmentTypeDao;
-    }
+	 * @param environmentTypeDao
+	 *            the environmentTypeDao to set
+	 */
+	public void setEnvironmentTypeDao(EnvironmentTypeDao environmentTypeDao) {
+		this.environmentTypeDao = environmentTypeDao;
+	}
 
 }

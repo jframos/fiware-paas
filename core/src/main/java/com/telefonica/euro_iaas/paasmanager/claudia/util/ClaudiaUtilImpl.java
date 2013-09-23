@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.claudia.util;
 
 import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_BASEURL;
@@ -62,123 +62,77 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
-
 /**
  * @author jesus.movilla
- *
+ * 
  */
-public class ClaudiaUtilImpl implements ClaudiaUtil{
+public class ClaudiaUtilImpl implements ClaudiaUtil {
 
 	private SystemPropertiesProvider systemPropertiesProvider;
-	
-	 /** The log. */
-    private static Logger log = Logger.getLogger(InfrastructureManagerClaudiaImpl.class);
-   
+
+	/** The log. */
+	private static Logger log = Logger
+			.getLogger(InfrastructureManagerClaudiaImpl.class);
+
 	/**
 	 * Return the url of the corresponding Claudia Resource
+	 * 
 	 * @param parameters
 	 * @return the URL where to invoke to obtain info about Claudia Resources
 	 * @throws URLNotRetrievedException
 	 */
-	public String getUrl (List<String> parameters) throws URLNotRetrievedException {
-		
+	public String getUrl(List<String> parameters)
+			throws URLNotRetrievedException {
+
 		CommandFactory cf = new CommandFactory();
 		cf.initiateFactory();
 		RestCommand cr;
-		
+
 		String command = "";
-	
+
 		if (parameters.size() == 2)
 			command = command + "browseVDC ";
 		else if (parameters.size() == 3)
 			command = command + "browseService ";
 		else if (parameters.size() == 4)
 			command = command + "browseVM ";
-		
+
 		for (int i = 0; i < parameters.size(); i++) {
 			command = command + parameters.get(i) + " ";
 		}
-		command = command.substring(0, command.length()-1);
-		
+		command = command.substring(0, command.length() - 1);
+
 		try {
 			cr = (RestCommand) cf.createCommand(command);
 			String actionUri = cr.getActionUri();
-			
-			return MessageFormat.format(
-					systemPropertiesProvider.getProperty(NEOCLAUDIA_BASEURL), 
-					systemPropertiesProvider.getProperty(NEOCLAUDIA_IP),
-					systemPropertiesProvider.getProperty(NEOCLAUDIA_PORT),
-	                actionUri);
+
+			return MessageFormat.format(systemPropertiesProvider
+					.getProperty(NEOCLAUDIA_BASEURL), systemPropertiesProvider
+					.getProperty(NEOCLAUDIA_IP), systemPropertiesProvider
+					.getProperty(NEOCLAUDIA_PORT), actionUri);
 		} catch (CommandCreationException e) {
 			throw new URLNotRetrievedException();
 		}
 	}
-	
+
 	/**
-	 * Obtain the xml corresponding to the GET  to a url
+	 * Obtain the xml corresponding to the GET to a url
+	 * 
 	 * @param url
 	 * @return the xml corresponding to do a GET to the url
 	 * @throws ClaudiaRetrieveInfoException
 	 */
-	public String getClaudiaResource (PaasManagerUser user, String url, String type) throws 
-		ClaudiaResourceNotFoundException, ClaudiaRetrieveInfoException {
-			Client client = new Client();
-			String output = "";
-			System.out.println("url: " + url);
-			try {      
-				
-				WebResource wr = client.resource(url);
-				Builder builder = wr.accept(type);
-				
-				if (systemPropertiesProvider.getProperty(
-						SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-					Map<String, String> header = getHeaders(user);
-					for (String key : header.keySet()) {
-						builder = builder.header(key, header.get(key));
-					}
-				}
-				ClientResponse response = builder.get(ClientResponse.class);
-				output = response.getEntity(String.class);
-				
-				/*ClientResponse response = wr.accept(type)
-		                   .get(ClientResponse.class);
-				output = response.getEntity(String.class);*/
-
-			} catch (UniformInterfaceException e) {
-				//if (e.getMessage().contains("status of 404")){
-					String errorMessage = "UniformInterfaceException: " +
-							" Desc: " + e.getMessage();
-					log.error(errorMessage);
-					throw new ClaudiaResourceNotFoundException(errorMessage);
-				//}
-			} catch (Exception e) {
-				String errorMessage = "Error performing GET on the resource " +
-						url;
-				log.error(errorMessage);
-				throw new ClaudiaRetrieveInfoException(errorMessage);
-			}
-			return output;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil#postClaudia(java.lang.String, java.lang.String)
-	 */
-	public ClientResponse postClaudiaResource(PaasManagerUser user, 
-			String url, String payload) 
-			throws ClaudiaRetrieveInfoException {
+	public String getClaudiaResource(PaasManagerUser user, String url,
+			String type) throws ClaudiaResourceNotFoundException,
+			ClaudiaRetrieveInfoException {
 		Client client = new Client();
-		System.out.println("url: " + url);
-		ClientResponse response = null;
-		
-		try {      
-			/*WebResource wr = client.resource(url);
-				response = wr.accept("application/xml").type("application/xml").
-					entity(payload).post(ClientResponse.class);*/
-			
+		String output = "";
+		log.debug("url: " + url);
+		try {
+
 			WebResource wr = client.resource(url);
-			Builder builder = wr.accept(MediaType.APPLICATION_XML)
-	                .type(MediaType.APPLICATION_XML).entity(payload);
-			
+			Builder builder = wr.accept(type);
+
 			if (systemPropertiesProvider.getProperty(
 					SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
 				Map<String, String> header = getHeaders(user);
@@ -186,40 +140,90 @@ public class ClaudiaUtilImpl implements ClaudiaUtil{
 					builder = builder.header(key, header.get(key));
 				}
 			}
-			
-			response = builder.post(ClientResponse.class);
-	        
+			ClientResponse response = builder.get(ClientResponse.class);
+			output = response.getEntity(String.class);
+
+			/*
+			 * ClientResponse response = wr.accept(type)
+			 * .get(ClientResponse.class); output =
+			 * response.getEntity(String.class);
+			 */
+
+		} catch (UniformInterfaceException e) {
+			// if (e.getMessage().contains("status of 404")){
+			String errorMessage = "UniformInterfaceException: " + " Desc: "
+					+ e.getMessage();
+			log.error(errorMessage);
+			throw new ClaudiaResourceNotFoundException(errorMessage);
+			// }
 		} catch (Exception e) {
-			String errorMessage = "Error performing post on the resource: " +
-					url + " with payload: " + payload;
+			String errorMessage = "Error performing GET on the resource " + url;
+			log.error(errorMessage);
+			throw new ClaudiaRetrieveInfoException(errorMessage);
+		}
+		return output;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil#postClaudia
+	 * (java.lang.String, java.lang.String)
+	 */
+	public ClientResponse postClaudiaResource(PaasManagerUser user, String url,
+			String payload) throws ClaudiaRetrieveInfoException {
+		Client client = new Client();
+		log.debug("url: " + url);
+		ClientResponse response = null;
+
+		try {
+			/*
+			 * WebResource wr = client.resource(url); response =
+			 * wr.accept("application/xml").type("application/xml").
+			 * entity(payload).post(ClientResponse.class);
+			 */
+
+			WebResource wr = client.resource(url);
+			Builder builder = wr.accept(MediaType.APPLICATION_XML).type(
+					MediaType.APPLICATION_XML).entity(payload);
+
+			if (systemPropertiesProvider.getProperty(
+					SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+				Map<String, String> header = getHeaders(user);
+				for (String key : header.keySet()) {
+					builder = builder.header(key, header.get(key));
+				}
+			}
+
+			response = builder.post(ClientResponse.class);
+
+		} catch (Exception e) {
+			String errorMessage = "Error performing post on the resource: "
+					+ url + " with payload: " + payload;
 			log.error(errorMessage);
 			throw new ClaudiaRetrieveInfoException(errorMessage);
 		}
 		return response;
 	}
-	
-	public void deleteClaudiaResource(String url) 
+
+	public void deleteClaudiaResource(PaasManagerUser user, String url)
 			throws ClaudiaRetrieveInfoException {
 		Client client = new Client();
-		System.out.println("url: " + url);
-		try {      
+		log.debug("url: " + url);
+		try {
 			WebResource wr = client.resource(url);
-			wr.accept("application/xml").type("application/xml").delete(ClientResponse.class);
-	        
-			
-			/*WebResource wr = client.resource(url);
-			Builder builder = wr.accept(MediaType.APPLICATION_XML)
-	                .type(MediaType.APPLICATION_XML);
-			
-			if (systemPropertiesProvider.getProperty(
-					SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-				Map<String, String> header = getHeaders(user);
-				for (String key : header.keySet()) {
-					builder = builder.header(key, header.get(key));
-				}
+			Builder builder = wr.accept(MediaType.APPLICATION_XML).type(
+					MediaType.APPLICATION_XML);
+			// if
+			// (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE"))
+			// {
+			Map<String, String> header = getHeaders(user);
+			for (String key : header.keySet()) {
+				builder = builder.header(key, header.get(key));
+				// }
 			}
-			builder.delete(ClientResponse.class);*/
-			
+			builder.delete(ClientResponse.class);
 		} catch (Exception e) {
 			String errorMessage = "Error performing DELETE on the resource: "
 					+ url;
@@ -227,61 +231,61 @@ public class ClaudiaUtilImpl implements ClaudiaUtil{
 			throw new ClaudiaRetrieveInfoException(errorMessage);
 		}
 	}
-	
-	public  Document stringToDom(String xmlSource) 
-            throws SAXException, ParserConfigurationException, IOException {
+
+	public Document stringToDom(String xmlSource) throws SAXException,
+			ParserConfigurationException, IOException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        return builder.parse(new InputSource(new StringReader(xmlSource)));
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		return builder.parse(new InputSource(new StringReader(xmlSource)));
 	}
- 
-	public String domToString(Document doc) 
-			throws TransformerException { 
-		TransformerFactory tFactory = TransformerFactory.newInstance(); 
+
+	public String domToString(Document doc) throws TransformerException {
+		TransformerFactory tFactory = TransformerFactory.newInstance();
 		Transformer transformer;
 		transformer = tFactory.newTransformer();
-		        
-		DOMSource source = new DOMSource(doc); 
-        
-		StringWriter sw=new StringWriter(); 
-		StreamResult result = new StreamResult(sw); 
 
-		transformer.transform(source, result); 
-		return sw.toString(); 
-	}  
- 
+		DOMSource source = new DOMSource(doc);
+
+		StringWriter sw = new StringWriter();
+		StreamResult result = new StreamResult(sw);
+
+		transformer.transform(source, result);
+		return sw.toString();
+	}
+
 	public String nodeToString(Node node) {
-        StringWriter sw = new StringWriter();
+		StringWriter sw = new StringWriter();
 		try {
 			Transformer t = TransformerFactory.newInstance().newTransformer();
 			t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			t.transform(new DOMSource(node), new StreamResult(sw));
 		} catch (TransformerException te) {
-			System.out.println("nodeToString Transformer Exception");
+			log.error("nodeToString Transformer Exception");
 		}
 		return sw.toString();
 	}
-    /**
-     * @param systemPropertiesProvider
-     *            the systemPropertiesProvider to set
-     */
-    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
-        this.systemPropertiesProvider = systemPropertiesProvider;
-    }
-   
- 
+
+	/**
+	 * @param systemPropertiesProvider
+	 *            the systemPropertiesProvider to set
+	 */
+	public void setSystemPropertiesProvider(
+			SystemPropertiesProvider systemPropertiesProvider) {
+		this.systemPropertiesProvider = systemPropertiesProvider;
+	}
+
 	public ClientResponse postClaudiaResource(PaasManagerUser user, String url)
 			throws ClaudiaRetrieveInfoException {
-		
+
 		Client client = new Client();
-		System.out.println("url: " + url);
+		log.debug("url: " + url);
 		ClientResponse response = null;
-		try { 
-			
+		try {
+
 			WebResource wr = client.resource(url);
-			Builder builder = wr.accept(MediaType.APPLICATION_XML)
-	                .type(MediaType.TEXT_PLAIN);
-			
+			Builder builder = wr.accept(MediaType.APPLICATION_XML).type(
+					MediaType.TEXT_PLAIN);
+
 			if (systemPropertiesProvider.getProperty(
 					SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
 				Map<String, String> header = getHeaders(user);
@@ -289,57 +293,62 @@ public class ClaudiaUtilImpl implements ClaudiaUtil{
 					builder = builder.header(key, header.get(key));
 				}
 			}
-			
+
 			response = builder.post(ClientResponse.class);
-	        
-	        //WebResource wr = client.resource(url);
-	        //response = wr.accept("application/xml").type("text/plain").post(ClientResponse.class);
+
+			// WebResource wr = client.resource(url);
+			// response =
+			// wr.accept("application/xml").type("text/plain").post(ClientResponse.class);
 
 		} catch (Exception e) {
 
-			String errorMessage = "Error performing post on the resource: " + url;
+			String errorMessage = "Error performing post on the resource: "
+					+ url;
 			log.error(errorMessage);
 			throw new ClaudiaRetrieveInfoException(errorMessage);
 		}
 		return response;
 	}
 
-	public ClientResponse putClaudiaResource(String url, String fqn) throws ClaudiaPutException {
+	public ClientResponse putClaudiaResource(String url, String fqn)
+			throws ClaudiaPutException {
 		Client client = new Client();
-		System.out.println("url: " + url);
+		log.debug("url: " + url);
 		ClientResponse response = null;
-		try {    
-	        WebResource wr = client.resource(url);
+		try {
+			WebResource wr = client.resource(url);
 
-			response = wr.accept("text/plain").type("text/plain").entity(fqn).put(ClientResponse.class);
+			response = wr.accept("text/plain").type("text/plain").entity(fqn)
+					.put(ClientResponse.class);
 
-	        System.out.println(response);
-			
+			log.debug(response);
+
 		} catch (Exception e) {
-			String errorMessage = "Error performing put on the resource: " +
-					url + " with fqn: " + fqn;
+			String errorMessage = "Error performing put on the resource: "
+					+ url + " with fqn: " + fqn;
 			log.error(errorMessage);
 			throw new ClaudiaPutException(errorMessage);
 		}
 		return response;
 
 	}
-	
+
 	private Map<String, String> getHeaders(PaasManagerUser user) {
-			
-		/*PaasManagerUser user = (PaasManagerUser) SecurityContextHolder
-				 .getContext().getAuthentication().getPrincipal();
+
+		/*
+		 * PaasManagerUser user = (PaasManagerUser) SecurityContextHolder
+		 * .getContext().getAuthentication().getPrincipal();
 		 */
-		
+
 		Map<String, String> headers = new HashMap<String, String>();
-        
-		headers.put(SystemPropertiesProvider.TCLOUD_METADATA_USER, 
-				user.getUsername());
-        headers.put(SystemPropertiesProvider.TCLOUD_METADATA_TOKEN, 
-				user.getToken());
-		headers.put(SystemPropertiesProvider.TCLOUD_METADATA_TENANT, 
-				user.getTenantId());
-		
+
+		headers.put(SystemPropertiesProvider.TCLOUD_METADATA_USER, user
+				.getUsername());
+		headers.put(SystemPropertiesProvider.TCLOUD_METADATA_TOKEN, user
+				.getToken());
+		headers.put(SystemPropertiesProvider.TCLOUD_METADATA_TENANT, user
+				.getTenantId());
+
 		return headers;
 
 	}

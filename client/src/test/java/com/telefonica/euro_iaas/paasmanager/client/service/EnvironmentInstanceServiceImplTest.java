@@ -73,9 +73,9 @@ public class EnvironmentInstanceServiceImplTest {
 		List<TierDto> tierDtos = new ArrayList<TierDto>();
 		
 		TierDto tierDto = new TierDto();
-		tierDto.setInitial_number_instances(1);
-		tierDto.setMaximum_number_instances(1);
-		tierDto.setMinimum_number_instances(1);
+		tierDto.setInitialNumberInstances(1);
+		tierDto.setMaximumNumberInstances(1);
+		tierDto.setMinimumNumberInstances(1);
 		tierDto.setName("tierName");
 		tierDto.setProductReleaseDtos(productReleaseDtos);
 		environmentDto.setTierDtos(tierDtos);

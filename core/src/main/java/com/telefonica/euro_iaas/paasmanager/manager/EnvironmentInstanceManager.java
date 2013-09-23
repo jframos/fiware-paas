@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import java.util.List;
@@ -22,6 +22,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.IPNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidProductInstanceRequestException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidVappException;
 import com.telefonica.euro_iaas.paasmanager.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -33,6 +34,7 @@ public interface EnvironmentInstanceManager {
 
 	/**
 	 * Create an environentInstance
+	 * 
 	 * @param vdc
 	 * @param environment
 	 * @param envInstanceName
@@ -45,74 +47,79 @@ public interface EnvironmentInstanceManager {
 	 * @throws IPNotRetrievedException
 	 * @throws ProductInstallatorException
 	 * @throws InvalidEnvironmentRequestException
-	 * 	 */
-	/*EnvironmentInstance create(String org, String vdc, PaasManagerUser user,
-			String envInstanceName,	
-			Environment environment) 
-			throws EntityNotFoundException, InvalidEntityException, 
-    		AlreadyExistsEntityException, NotUniqueResultException,
-    		InfrastructureException, IPNotRetrievedException, ProductInstallatorException,
-    		InvalidEnvironmentRequestException, 
-    		InvalidProductInstanceRequestException, InvalidOVFException;*/
-	EnvironmentInstance create(ClaudiaData claudiaData,	Environment environment) 
-			throws EntityNotFoundException, InvalidEntityException, 
-    		AlreadyExistsEntityException, NotUniqueResultException,
-    		InfrastructureException, IPNotRetrievedException, ProductInstallatorException,
-    		InvalidEnvironmentRequestException, 
-    		InvalidProductInstanceRequestException, InvalidOVFException;
-	
+	 * */
+	/*
+	 * EnvironmentInstance create(String org, String vdc, PaasManagerUser user,
+	 * String envInstanceName, Environment environment) throws
+	 * EntityNotFoundException, InvalidEntityException,
+	 * AlreadyExistsEntityException, NotUniqueResultException,
+	 * InfrastructureException, IPNotRetrievedException,
+	 * ProductInstallatorException, InvalidEnvironmentRequestException,
+	 * InvalidProductInstanceRequestException, InvalidOVFException;
+	 */
+	EnvironmentInstance create(ClaudiaData claudiaData,
+			EnvironmentInstance environmentInstance)
+			throws EntityNotFoundException, InvalidEntityException,
+			AlreadyExistsEntityException, NotUniqueResultException,
+			InfrastructureException, IPNotRetrievedException,
+			ProductInstallatorException, InvalidEnvironmentRequestException,
+			InvalidProductInstanceRequestException, InvalidOVFException,
+			InvalidVappException;
+
 	/**
-     * Load an environentInstance
-     * @param vdc
-     * @param name
-     * @return the environentInstance
-     */
-	public EnvironmentInstance load (String vdc, String name) 
+	 * Load an environentInstance
+	 * 
+	 * @param vdc
+	 * @param name
+	 * @return the environentInstance
+	 */
+	public EnvironmentInstance load(String vdc, String name)
 			throws EntityNotFoundException;
-	
+
 	/**
 	 * 
 	 * @param envInst
 	 * @return
 	 * @throws InvalidEntityException
 	 */
-	public EnvironmentInstance update(EnvironmentInstance envInst) 
+	public EnvironmentInstance update(EnvironmentInstance envInst)
 			throws InvalidEntityException;
-	
+
 	/**
-	 * Find all EnvironmentInstances 
+	 * Find all EnvironmentInstances
+	 * 
 	 * @return the environentInstances
 	 */
 	List<EnvironmentInstance> findAll();
-	
-    /**
-     * Find the environment instances that match with the given criteria.
-     *
-     * @param criteria
-     *            the search criteria
-     * @return the list of elements that match with the criteria.
-     */
-    List<EnvironmentInstance> findByCriteria(
-            EnvironmentInstanceSearchCriteria criteria);
-    
-    
-    /**
-     * Destroy the Environment (Infrastructure + environment in Database)
-     * @param envInstance
-     * @param org
-     * @param vdc
-     */
-    void destroy (ClaudiaData claudiaData, EnvironmentInstance envInstance) 
-    		throws InvalidEntityException;
-	
-    /**
-     * 
-     * @param vdc
-     * @param name
-     * @return
-     * @throws EntityNotFoundException
-     */
-    EnvironmentInstance loadForDelete(String vdc, String name) 
-    		throws EntityNotFoundException;
+
+	/**
+	 * Find the environment instances that match with the given criteria.
+	 * 
+	 * @param criteria
+	 *            the search criteria
+	 * @return the list of elements that match with the criteria.
+	 */
+	List<EnvironmentInstance> findByCriteria(
+			EnvironmentInstanceSearchCriteria criteria);
+
+	/**
+	 * Destroy the Environment (Infrastructure + environment in Database)
+	 * 
+	 * @param envInstance
+	 * @param org
+	 * @param vdc
+	 */
+	void destroy(ClaudiaData claudiaData, EnvironmentInstance envInstance)
+			throws InvalidEntityException;
+
+	/**
+	 * 
+	 * @param vdc
+	 * @param name
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
+	EnvironmentInstance loadForDelete(String vdc, String name)
+			throws EntityNotFoundException;
 
 }

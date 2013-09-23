@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.installator.rec.services;
 
 import org.restlet.data.Response;
@@ -19,14 +19,14 @@ import com.telefonica.euro_iaas.paasmanager.exception.ProductReconfigurationExce
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public interface RECServiceService {
-	
-	void createService (String serviceFile, String appId, String callback) 
+
+	void createService(String serviceFile, String appId, String callback)
 			throws ProductInstallatorException;
 
-	void configureService(String envelopeVapp, String appId, Object object) 
+	void configureService(String envelopeVapp, String appId, Object object)
 			throws ProductReconfigurationException;
 
 }

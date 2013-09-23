@@ -151,16 +151,16 @@ public class OVFMacroImplTest {
 
 		// Tier
 		tierMysql = new Tier();
-		tierMysql.setInitial_number_instances(new Integer(1));
-		tierMysql.setMaximum_number_instances(new Integer(5));
-		tierMysql.setMinimum_number_instances(new Integer(1));
+		tierMysql.setInitialNumberInstances(new Integer(1));
+		tierMysql.setMaximumNumberInstances(new Integer(5));
+		tierMysql.setMinimumNumberInstances(new Integer(1));
 		tierMysql.setName("mysql");
 		tierMysql.setProductReleases(productReleasesMysql);
 
 		tierTomcat = new Tier();
-		tierTomcat.setInitial_number_instances(new Integer(1));
-		tierTomcat.setMaximum_number_instances(new Integer(5));
-		tierTomcat.setMinimum_number_instances(new Integer(1));
+		tierMysql.setInitialNumberInstances(new Integer(1));
+		tierMysql.setMaximumNumberInstances(new Integer(5));
+		tierMysql.setMinimumNumberInstances(new Integer(1));
 		tierTomcat.setName("tomcat");
 		tierTomcat.setProductReleases(productReleasesTomcat);
 
@@ -168,7 +168,8 @@ public class OVFMacroImplTest {
 		tiers.add(tierMysql);
 		tiers.add(tierTomcat);
 
-		when(extendedOVFUtil.getTiers(any(String.class))).thenReturn(tiers);
+		when(extendedOVFUtil.getTiers(any(String.class), any(String.class)))
+				.thenReturn(tiers);
 
 		// Environment
 		/*

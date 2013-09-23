@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -17,16 +17,19 @@ import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public interface ArtifactManager {
 
-	 /**
-     * Find the Artifact using the given name.
-     * @param name the product identifier
-     * @return the productRelease
-     * @throws EntityNotFoundException if the product instance does not exists
-     */
+	/**
+	 * Find the Artifact using the given name.
+	 * 
+	 * @param name
+	 *            the product identifier
+	 * @return the productRelease
+	 * @throws EntityNotFoundException
+	 *             if the product instance does not exists
+	 */
 	Artifact load(String name) throws EntityNotFoundException;
 
 }

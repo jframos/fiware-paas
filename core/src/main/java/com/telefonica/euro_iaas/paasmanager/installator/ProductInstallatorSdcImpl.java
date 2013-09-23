@@ -4,264 +4,531 @@ import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider
 import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.SDC_SERVER_URL;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.installator.sdc.util.SDCUtil;
+import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
+import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.client.SDCClient;
+import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
+
+import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
+import com.telefonica.euro_iaas.sdc.model.dto.OpenStackUser;
+import com.telefonica.euro_iaas.sdc.client.services.ChefClientService;
 
 public class ProductInstallatorSdcImpl implements ProductInstallator {
 
 	private SDCClient sDCClient;
-    private SystemPropertiesProvider systemPropertiesProvider;
-    private SDCUtil sDCUtil;
-    
-    private static Logger log = Logger.getLogger(ProductInstallatorSdcImpl.class);
-    
-	public ProductInstance install(TierInstance tierInstance, ProductRelease productRelease) 
-		throws ProductInstallatorException {
-		
-		String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
-		String sdcMediaType =  systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
-		    
-		//SDCClient client = new SDCClient();
-        com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService pIService =
-        		sDCClient.getProductInstanceService(sdcServerUrl, sdcMediaType);
-        
-        com.telefonica.euro_iaas.sdc.model.Task task = null;
-        
-        //From Paasmanager ProductRelease To SDC ProductInstanceDto
-        com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto productInstanceDto 
-        	= new com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto();
-
-        productInstanceDto.setVm(
-        		new com.telefonica.euro_iaas.sdc.model.dto.VM(
-        				tierInstance.getVM().getFqn(), 
-        				tierInstance.getVM().getIp(),
-        				tierInstance.getVM().getHostname(), 
-        				tierInstance.getVM().getDomain(), 
-        				tierInstance.getVM().getOsType()));
-        
-        productInstanceDto.setProduct(
-        		new com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto(
-        				productRelease.getProduct(), 
-        				productRelease.getVersion(),
-        				"product"));
-        
-        if (tierInstance.getVdc() != null)
-        	productInstanceDto.setVdc(tierInstance.getVdc());
-        
-        productInstanceDto.setAttributes(
-        		new ArrayList<com.telefonica.euro_iaas.sdc.model.Attribute>());
-        
-        if (productRelease.getAttributes() != null) {
-        	for (Attribute attribute : productRelease.getAttributes()) {
-            	productInstanceDto.getAttributes().add(
-                        new com.telefonica.euro_iaas.sdc.model.Attribute(
-                        		attribute.getKey(), attribute.getValue()));
-            }
-        }
-        
-        productInstanceDto.getAttributes().add(
-                new com.telefonica.euro_iaas.sdc.model.Attribute(
-                		"id_web_server",tierInstance.getVM().getFqn().substring(0,tierInstance.getVM().getFqn().indexOf(".vees."))));
-        productInstanceDto.getAttributes().add(
-                new com.telefonica.euro_iaas.sdc.model.Attribute(
-                		"app_server_role", tierInstance.getVM().getFqn().substring(0,tierInstance.getVM().getFqn().indexOf(".vees."))));
-                
-        //Installing product with SDC
-        ProductInstance productInstance = new ProductInstance ();
-        productInstance.setStatus(Status.INSTALLING);
-        try{ 
-        	task = pIService.install(tierInstance.getVdc(), productInstanceDto, null);
-        } catch (Exception e) {
-        	String errorMessage = " Error invokg SDC to Install Product" + 
-        			productRelease.getName() + " " + productRelease.getVersion();
-        	log.error(errorMessage);
-        	throw new ProductInstallatorException (errorMessage);
-        }
-        
-        
-        productInstance.setName(tierInstance.getName()+"_"+productRelease.getProduct()+"_"+productRelease.getVersion());
-        productInstance.setProductRelease(productRelease);
-      //  productInstance.setTierInstance(tierInstance);
-        productInstance.setVdc(tierInstance.getVdc());
-        
-        sDCUtil.checkTaskStatus(task, productInstance.getVdc());
-        
-        productInstance.setStatus(Status.INSTALLED);
-
-        return productInstance;
-
-	}
-
-	public void installArtifact (ProductInstance productInstance, Artifact artifact)  throws 
-	ProductInstallatorException
-	{
-		String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
-		String sdcMediaType =  systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
-		    
-		//SDCClient client = new SDCClient();
-        com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService service =
-        		sDCClient.getProductInstanceService(sdcServerUrl, sdcMediaType);
-        
-        List<com.telefonica.euro_iaas.sdc.model.Attribute> atts = new ArrayList ();
-        
-        
-        for (Attribute att: artifact.getAttributes())
-        {
-        	com.telefonica.euro_iaas.sdc.model.Attribute attsdc = 
-        		new com.telefonica.euro_iaas.sdc.model.Attribute (att.getKey(), att.getValue(), att.getDescription()); 
-        	atts.add(attsdc);
-        }
-        
-        com.telefonica.euro_iaas.sdc.model.Artifact sdcArtifact= new com.telefonica.euro_iaas.sdc.model.Artifact 
-        (artifact.getName(), atts);
-                       
-        //Installing product with SDC
-        productInstance.setStatus(Status.DEPLOYING_ARTEFACT);
-        com.telefonica.euro_iaas.sdc.model.Task task = service.installArtifact(productInstance.getVdc(), productInstance.getName(), sdcArtifact,null);
-        /*How to catch an productInstallation error */
-         if (task.getStatus()== com.telefonica.euro_iaas.sdc.model.Task.TaskStates.ERROR)
-        	throw new ProductInstallatorException ("Error installing artefact " + artifact.getName() + " in product instance " + 
-        			 productInstance.getProductRelease().getProduct() + ". Description: "
-        			+ task.getError());
-        
-        productInstance.setStatus(Status.ARTEFACT_DEPLOYED);
-
-	}
+	private SystemPropertiesProvider systemPropertiesProvider;
+	private ProductReleaseManager productReleaseManager;
+	private TierInstanceManager tierInstanceManager;
 	
+	private SDCUtil sDCUtil;
+
+	private static Logger log = Logger
+			.getLogger(ProductInstallatorSdcImpl.class);
+
+	public ProductInstance install(ClaudiaData claudiaData, String envName, TierInstance tierInstance,
+			ProductRelease productRelease, List<Attribute> attributes) throws ProductInstallatorException {
+
+		String sdcServerUrl = systemPropertiesProvider
+				.getProperty(SDC_SERVER_URL);
+		String sdcMediaType = systemPropertiesProvider
+				.getProperty(SDC_SERVER_MEDIATYPE);
+
+		log.debug("Install software " + productRelease.getProduct() + "-"
+				+ productRelease.getVersion());
+		// From Paasmanager ProductRelease To SDC ProductInstanceDto
+		com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto productInstanceDto = new com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto();
+		// sDCUtil.checkIfSdcNodeIsReady(tierInstance.getVM().getIp());
+		try {
+			productRelease = productReleaseManager.load(productRelease
+					.getProduct()
+					+ "-" + productRelease.getVersion());
+			if (productRelease.getAttributes() != null) {
+				List<com.telefonica.euro_iaas.sdc.model.Attribute> attrs 
+					= new ArrayList<com.telefonica.euro_iaas.sdc.model.Attribute>();
+				
+				for (Attribute attribute : productRelease.getAttributes()) {
+					com.telefonica.euro_iaas.sdc.model.Attribute attr = 
+							new com.telefonica.euro_iaas.sdc.model.Attribute(
+									attribute.getKey(), attribute.getValue());
+					
+					attrs.add(attr);
+					//productInstanceDto.getAttributes().add(
+						//	new com.telefonica.euro_iaas.sdc.model.Attribute(
+							//		attribute.getKey(), attribute.getValue()));
+				}
+				
+				//Attributes from the external request
+				for (Attribute attrib : attributes) {
+					com.telefonica.euro_iaas.sdc.model.Attribute sdcAttr = 
+							new com.telefonica.euro_iaas.sdc.model.Attribute(
+									attrib.getKey(), attrib.getValue());
+					attrs.add(sdcAttr);
+				}
+				productInstanceDto.setAttributes(attrs);
+			}
+
+
+		} catch (com.telefonica.euro_iaas.commons.dao.EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			log.warn("No product release. NO attributes");
+			throw new ProductInstallatorException("No product release. "
+					+ productRelease.getProduct() + "-"
+					+ productRelease.getVersion() + " NO attributes");
+		}
+
+		// SDCClient client = new SDCClient();
+		com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService pIService = sDCClient
+				.getProductInstanceService(sdcServerUrl, sdcMediaType);
+
+		com.telefonica.euro_iaas.sdc.model.Task task = null;
+
+		
+
+		productInstanceDto.setVm(new com.telefonica.euro_iaas.sdc.model.dto.VM(
+				tierInstance.getVM().getFqn(), tierInstance.getVM().getIp(),
+				tierInstance.getVM().getHostname(), tierInstance.getVM()
+						.getDomain(), tierInstance.getVM().getOsType()));
+
+		productInstanceDto
+				.setProduct(new com.telefonica.euro_iaas.sdc.model.dto.ReleaseDto(
+						productRelease.getProduct(), productRelease
+								.getVersion(), "product"));
+
+		if (tierInstance.getVdc() != null)
+			productInstanceDto.setVdc(tierInstance.getVdc());
+
+		productInstanceDto
+				.setAttributes(new ArrayList<com.telefonica.euro_iaas.sdc.model.Attribute>());
+
+		
+		Attribute attSdcGroup = getAttribute(productRelease.getAttributes(),
+				"sdcgroupid");
+		if (attSdcGroup != null) {
+
+			productInstanceDto.getAttributes().add(
+
+					new com.telefonica.euro_iaas.sdc.model.Attribute(
+							attSdcGroup.getValue(), tierInstance.getVM()
+									.getFqn().substring(
+											0,
+											tierInstance.getVM().getFqn()
+													.indexOf(".vees."))));
+		}
+
+		Attribute attCoreSdcGroup = getAttribute(
+				productRelease.getAttributes(), "sdccoregroupid");
+		if (attCoreSdcGroup != null) {
+
+			productInstanceDto.getAttributes().add(
+
+					new com.telefonica.euro_iaas.sdc.model.Attribute(
+							attCoreSdcGroup.getValue(), tierInstance.getVM()
+									.getFqn().substring(
+											0,
+											tierInstance.getVM().getFqn()
+													.indexOf(".vees."))));
+		}
+
+		Attribute attId_web_server = getAttribute(productRelease
+				.getAttributes(), "id_web_server");
+		if (attId_web_server != null) {
+
+			productInstanceDto.getAttributes().add(
+
+					new com.telefonica.euro_iaas.sdc.model.Attribute(
+							attId_web_server.getValue(), tierInstance.getVM()
+									.getFqn().substring(
+											0,
+											tierInstance.getVM().getFqn()
+													.indexOf(".vees."))));
+		}
+
+		Attribute attApp_server_role = getAttribute(productRelease
+				.getAttributes(), "app_server_role");
+		if (attId_web_server != null) {
+
+			productInstanceDto.getAttributes().add(
+
+					new com.telefonica.euro_iaas.sdc.model.Attribute(
+							attApp_server_role.getValue(), tierInstance.getVM()
+									.getFqn().substring(
+											0,
+											tierInstance.getVM().getFqn()
+													.indexOf(".vees."))));
+		}
+
+		// Installing product with SDC
+		ProductInstance productInstance = new ProductInstance();
+		
+		productInstanceDto.getVm().setFqn(tierInstance.getVM().getVmid());
+		
+		productInstance.setStatus(Status.INSTALLING);
+		try {
+			task = pIService.install(tierInstance.getVdc(), productInstanceDto,
+					null);
+			
+			
+			StringTokenizer tokens=new StringTokenizer(task.getHref(), "/");
+			String id="";
+			
+			while(tokens.hasMoreTokens())
+			{
+				id = tokens.nextToken();
+			}
+			log.debug("Install software in productInstance "
+					+ productInstanceDto.getProduct().getName() + " task id " + id + " " + task.getHref());
+			
+			productInstance.setTaskId(id);
+			tierInstance.setTaskId(id);
+			tierInstanceManager.update(claudiaData, envName, tierInstance);
+			
+			
+			sDCUtil.checkTaskStatus(task, tierInstance.getVdc());
+			
+			com.telefonica.euro_iaas.sdc.model.ProductInstance pInstanceSDC 
+				= pIService.load(tierInstance.getVdc(), 
+						productInstanceDto.getVm().getFqn() + "_" + 
+								productInstanceDto.getProduct().getName() +  "_" +
+								productInstanceDto.getProduct().getVersion());
+			//Set the domain
+			tierInstance.getVM().setDomain(pInstanceSDC.getVm().getDomain());
+			tierInstanceManager.update(claudiaData, envName, tierInstance);
+			
+		} catch (Exception e) {
+			String errorMessage = " Error invokg SDC to Install Product"
+					+ productRelease.getName() + " "
+					+ productRelease.getVersion() +" " + e.getMessage();
+			log.error(errorMessage);
+			throw new ProductInstallatorException(errorMessage);
+		}
+
+		productInstance.setName(tierInstance.getName() + "_"
+				+ productRelease.getProduct() + "_"
+				+ productRelease.getVersion());
+		productInstance.setProductRelease(productRelease);
+		productInstance.setVdc(tierInstance.getVdc());
+
+
+		//sDCUtil.checkTaskStatus(task, productInstance.getVdc());
+
+		productInstance.setStatus(Status.INSTALLED);
+
+		return productInstance;
+
+	}
+
+	public void installArtifact(ProductInstance productInstance,
+			Artifact artifact) throws ProductInstallatorException {
+		String sdcServerUrl = systemPropertiesProvider
+				.getProperty(SDC_SERVER_URL);
+		String sdcMediaType = systemPropertiesProvider
+				.getProperty(SDC_SERVER_MEDIATYPE);
+
+		// SDCClient client = new SDCClient();
+		com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService service = sDCClient
+				.getProductInstanceService(sdcServerUrl, sdcMediaType);
+
+		List<com.telefonica.euro_iaas.sdc.model.Attribute> atts = new ArrayList();
+
+		for (Attribute att : artifact.getAttributes()) {
+			com.telefonica.euro_iaas.sdc.model.Attribute attsdc = new com.telefonica.euro_iaas.sdc.model.Attribute(
+					att.getKey(), att.getValue(), att.getDescription());
+			atts.add(attsdc);
+		}
+
+		com.telefonica.euro_iaas.sdc.model.Artifact sdcArtifact = new com.telefonica.euro_iaas.sdc.model.Artifact(
+				artifact.getName(), atts);
+
+		// Installing product with SDC
+		productInstance.setStatus(Status.DEPLOYING_ARTEFACT);
+		com.telefonica.euro_iaas.sdc.model.Task task = service.installArtifact(
+				productInstance.getVdc(), productInstance.getName(),
+				sdcArtifact, null);
+		/* How to catch an productInstallation error */
+		if (task.getStatus() == com.telefonica.euro_iaas.sdc.model.Task.TaskStates.ERROR)
+			throw new ProductInstallatorException("Error installing artefact "
+					+ artifact.getName() + " in product instance "
+					+ productInstance.getProductRelease().getProduct()
+					+ ". Description: " + task.getError());
+
+		productInstance.setStatus(Status.ARTEFACT_DEPLOYED);
+
+	}
+
 	public void uninstallArtifact(ProductInstance productInstance,
 			Artifact artifact) throws ProductInstallatorException {
-		String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
-		String sdcMediaType =  systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
-		    
-		//SDCClient client = new SDCClient();
-        com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService service =
-        		sDCClient.getProductInstanceService(sdcServerUrl, sdcMediaType);
-        
-        List<com.telefonica.euro_iaas.sdc.model.Attribute> atts = new ArrayList ();
-        
-        
-        for (Attribute att: artifact.getAttributes())
-        {
-        	com.telefonica.euro_iaas.sdc.model.Attribute attsdc = 
-        		new com.telefonica.euro_iaas.sdc.model.Attribute (att.getKey(), att.getValue(), att.getDescription()); 
-        	atts.add(attsdc);
-        }
-        
-        com.telefonica.euro_iaas.sdc.model.Artifact sdcArtifact= new com.telefonica.euro_iaas.sdc.model.Artifact 
-        (artifact.getName(), atts);
-                       
-        //Installing product with SDC
-        productInstance.setStatus(Status.UNDEPLOYING_ARTEFACT);
-        com.telefonica.euro_iaas.sdc.model.Task task = service.uninstallArtifact(productInstance.getVdc(), productInstance.getName(), sdcArtifact,null);
-        /*How to catch an productInstallation error */
-         if (task.getStatus()== com.telefonica.euro_iaas.sdc.model.Task.TaskStates.ERROR)
-        	throw new ProductInstallatorException ("Error uninstalling artefact " + artifact.getName() + " in product instance " + 
-        			 productInstance.getProductRelease().getProduct() + ". Description: "
-        			+ task.getError());
-        
-        productInstance.setStatus(Status.ARTEFACT_UNDEPLOYED);
-		
+		String sdcServerUrl = systemPropertiesProvider
+				.getProperty(SDC_SERVER_URL);
+		String sdcMediaType = systemPropertiesProvider
+				.getProperty(SDC_SERVER_MEDIATYPE);
+
+		// SDCClient client = new SDCClient();
+		com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService service = sDCClient
+				.getProductInstanceService(sdcServerUrl, sdcMediaType);
+
+		List<com.telefonica.euro_iaas.sdc.model.Attribute> atts = new ArrayList();
+
+		for (Attribute att : artifact.getAttributes()) {
+			com.telefonica.euro_iaas.sdc.model.Attribute attsdc = new com.telefonica.euro_iaas.sdc.model.Attribute(
+					att.getKey(), att.getValue(), att.getDescription());
+			atts.add(attsdc);
+		}
+
+		com.telefonica.euro_iaas.sdc.model.Artifact sdcArtifact = new com.telefonica.euro_iaas.sdc.model.Artifact(
+				artifact.getName(), atts);
+
+		// Installing product with SDC
+		productInstance.setStatus(Status.UNDEPLOYING_ARTEFACT);
+		com.telefonica.euro_iaas.sdc.model.Task task = service
+				.uninstallArtifact(productInstance.getVdc(), productInstance
+						.getName(), sdcArtifact, null);
+		/* How to catch an productInstallation error */
+		if (task.getStatus() == com.telefonica.euro_iaas.sdc.model.Task.TaskStates.ERROR)
+			throw new ProductInstallatorException(
+					"Error uninstalling artefact " + artifact.getName()
+							+ " in product instance "
+							+ productInstance.getProductRelease().getProduct()
+							+ ". Description: " + task.getError());
+
+		productInstance.setStatus(Status.ARTEFACT_UNDEPLOYED);
+
 	}
-	public void uninstall(ProductInstance productInstance) {
+
+	public void uninstall(ProductInstance productInstance)
+			throws ProductInstallatorException {
+
+		String sdcServerUrl = systemPropertiesProvider
+				.getProperty(SDC_SERVER_URL);
+		String sdcMediaType = systemPropertiesProvider
+				.getProperty(SDC_SERVER_MEDIATYPE);
+
+		// SDCClient client = new SDCClient();
+		com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService productService = sDCClient
+				.getProductInstanceService(sdcServerUrl, sdcMediaType);
+
+		// TODO check if the product to be uninstalled supports a current
+		// application instance:
+		/*
+		 * List<InstallableInstanceDto> applicationInstances =
+		 * supportedApplicationInstanceInstalled(fqn, instance);
+		 * 
+		 * if (applicationInstances.size() > 0) throw new
+		 * SupportedApplicationInstanceInstalledException(applicationInstances,
+		 * instance); else
+		 */
+
+		try {
+			productService.uninstall(productInstance.getVdc(), productInstance
+					.getName(), null);
+		} catch (Exception e) {
+			String errorMessage = " Error invokg SDC to UnInstall Product"
+					+ productInstance.getName();
+			log.error(errorMessage);
+			throw new ProductInstallatorException(errorMessage);
+		}
+
+		// productService.uninstall(productInstance.getVdc(),
+		// productInstance.getId(), null);
+
+	}
+
+	public void configure(ClaudiaData claudiaData, ProductInstance productInstance,
+			List<Attribute> properties) throws ProductInstallatorException {
+		log.info("Configure product " + productInstance.getName() + " " + productInstance.getProductRelease().getProduct() );
+		String sdcServerUrl = systemPropertiesProvider
+				.getProperty(SDC_SERVER_URL);
+		String sdcMediaType = systemPropertiesProvider
+				.getProperty(SDC_SERVER_MEDIATYPE);
+
+		// SDCClient client = new SDCClient();
+		com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService pIService = sDCClient
+				.getProductInstanceService(sdcServerUrl, sdcMediaType);
+
+		List<com.telefonica.euro_iaas.sdc.model.Attribute> arguments = new ArrayList();
+
+		if (properties != null && properties.size () != 0) {
+		for (Attribute attri : properties) {
+
+			com.telefonica.euro_iaas.sdc.model.Attribute att = new com.telefonica.euro_iaas.sdc.model.Attribute();
+			att.setKey(attri.getKey());
+			att.setKey(attri.getValue());
+			arguments.add(att);
+		}
+		}
+
+		com.telefonica.euro_iaas.sdc.model.Task task = null;
+
 		
-		String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
-		String sdcMediaType =  systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
+		String name = getProductInstanceName ( claudiaData, productInstance);
+	
+
+		//FIWARE.customers.60b4125450fc4a109f50357894ba2e28.services.deploytm.vees.contextbrokr.replicas.1_mongos_2.2.3
+		//deploytm-contextbrokr-1_mongos_2.2.3
+		try {
+			task = pIService.configure(productInstance.getVdc(),
+					name, null, arguments);
+		} catch (Exception e) {
+			String errorMessage = " Error invokg SDC to configure Product"
+					+ productInstance.getName() + " "+ e.getMessage();
+			log.error(errorMessage);
+			throw new ProductInstallatorException(errorMessage);
+		}
+
+		sDCUtil.checkTaskStatus(task, productInstance.getVdc());
+
+		return;
+
+	}
+
+	// Borrado del nodo en el ChefServer
+	public void deleteNode(String vdc, String sdcNodeName)
+			throws ProductInstallatorException {
+
+		String sdcServerUrl = systemPropertiesProvider
+				.getProperty(SDC_SERVER_URL);
+		String sdcMediaType = systemPropertiesProvider
+				.getProperty(SDC_SERVER_MEDIATYPE);
+
+		// SDCClient client = new SDCClient();
+		ChefClientService chefClientService = sDCClient.getChefClientService(sdcServerUrl, sdcMediaType);
 		
-		//SDCClient client = new SDCClient();
-        com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService productService =
-        		sDCClient.getProductInstanceService(sdcServerUrl, sdcMediaType);
-        
-        //TODO check if the product to be uninstalled supports a current application instance:
-        /*List<InstallableInstanceDto> applicationInstances =         
-        		supportedApplicationInstanceInstalled(fqn, instance);
-        
-       if (applicationInstances.size() > 0)
-        	throw new SupportedApplicationInstanceInstalledException(applicationInstances, instance);
-        else*/
-        	productService.uninstall(productInstance.getVdc(), productInstance.getName(), null);    
-        	//productService.uninstall(productInstance.getVdc(), productInstance.getId(), null);    
-    		
+		com.telefonica.euro_iaas.sdc.model.Task task = null;
+
+		// Borrado del Nodo en el chef Server
+		try {
+			task = chefClientService.delete(vdc, sdcNodeName);
+		} catch (Exception e) {
+			String errorMessage = " Error invokg SDC to delete Chef Server Node "
+					+ sdcNodeName + " " + e.getMessage();
+			log.error(errorMessage);
+			throw new ProductInstallatorException(errorMessage);
+		}
+
+		sDCUtil.checkTaskStatus(task, vdc);
+
+		return;
 	}
 	
-    // //////////// I.O.C /////////////
-    /**
-     * @param sDCClient
-     *            the sDCClient to set
-     */
-    public void setSDCClient(SDCClient sDCClient) {
-        this.sDCClient = sDCClient;
-    }
+	// Load a node from the nodename
+	public ChefClient loadNode(String vdc, String hostname)
+				throws ProductInstallatorException, EntityNotFoundException {
 
-    /**
-     * @param systemPropertiesProvider
-     *            the systemPropertiesProvider to set
-     */
-    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
-        this.systemPropertiesProvider = systemPropertiesProvider;
-    }
+			String sdcServerUrl = systemPropertiesProvider
+					.getProperty(SDC_SERVER_URL);
+			String sdcMediaType = systemPropertiesProvider
+					.getProperty(SDC_SERVER_MEDIATYPE);
 
-    public void setSDCUtil(SDCUtil sDCUtil) {
-        this.sDCUtil = sDCUtil;
-    }
+			// SDCClient client = new SDCClient();
+			com.telefonica.euro_iaas.sdc.client.services.ChefClientService chefClientService = sDCClient
+					.getChefClientService(sdcServerUrl, sdcMediaType);
+			
+			com.telefonica.euro_iaas.sdc.model.Task task = null;
 
-	public void configure(ProductInstance productInstance,
-			 List<Attribute> properties) throws ProductInstallatorException {
-		String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
-		String sdcMediaType =  systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
-		    
-		//SDCClient client = new SDCClient();
-        com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService pIService =
-        		sDCClient.getProductInstanceService(sdcServerUrl, sdcMediaType);
-        
-        List<com.telefonica.euro_iaas.sdc.model.Attribute> arguments = new ArrayList ();
-        
-     
-       for (Attribute attri: properties ){
-         
-          com.telefonica.euro_iaas.sdc.model.Attribute att =
-        		  new com.telefonica.euro_iaas.sdc.model.Attribute ();
-          att.setKey(attri.getKey());
-         att.setKey(attri.getValue());
-          arguments.add(att);
-        }
-        
-        
-        
-        com.telefonica.euro_iaas.sdc.model.Task task = null;
-        
-        
-        //Installing product with SDC
-       
-        try{ 
-        	task = pIService.configure(productInstance.getVdc(), productInstance.getName(), null, arguments);
-        } catch (Exception e) {
-        	String errorMessage = " Error invokg SDC to configure Product" + 
-        	productInstance.getName();
-        	log.error(errorMessage);
-        	throw new ProductInstallatorException (errorMessage);
-        }
-        
-      
-        sDCUtil.checkTaskStatus(task, productInstance.getVdc());
-        
-        return;
-		
+			// Borrado del Nodo en el chef Server
+			try {
+				return chefClientService.loadByHostname(vdc, hostname);
+			} catch (ResourceNotFoundException rnfe) {
+				throw new EntityNotFoundException(ChefClient.class, rnfe.getMessage(),rnfe);
+			} catch (Exception e) {
+				String errorMessage = " Error invokg SDC to delete Chef Server Node "
+						+ hostname + " " + e.getMessage();
+				log.error(errorMessage);
+				throw new ProductInstallatorException(errorMessage);
+			}
 	}
 
+	public Attribute getAttribute(List<Attribute> attributes, String key) {
+		if (attributes == null)
+			return null;
+		for (Attribute attribute : attributes) {
+			if (attribute.getKey().equals(key))
+				return attribute;
+		}
+		return null;
+	}
 
+	
+	// //////////// I.O.C /////////////
+	/**
+	 * @param sDCClient
+	 *            the sDCClient to set
+	 */
+	public void setSDCClient(SDCClient sDCClient) {
+		this.sDCClient = sDCClient;
+	}
 
+	/**
+	 * @param systemPropertiesProvider
+	 *            the systemPropertiesProvider to set
+	 */
+	public void setSystemPropertiesProvider(
+			SystemPropertiesProvider systemPropertiesProvider) {
+		this.systemPropertiesProvider = systemPropertiesProvider;
+	}
 
+	public void setProductReleaseManager(
+			ProductReleaseManager productReleaseManager) {
+		this.productReleaseManager = productReleaseManager;
+	}
 
+	public void setTierInstanceManager(TierInstanceManager tierInstanceManager) {
+		this.tierInstanceManager = tierInstanceManager;
+	}
+	
+	public void setSDCUtil(SDCUtil sDCUtil) {
+		this.sDCUtil = sDCUtil;
+	}
+	
+	public String getProductInstanceName (ClaudiaData claudiaData, ProductInstance productInstance )
+	{
+		String tierName= "";
+		String productName = "";
+		// Installing product with SDC
+		StringTokenizer st = new StringTokenizer(productInstance.getName(), "-");
+
+		   while(st.hasMoreTokens()) {
+
+		   st.nextToken();
+		   tierName = st.nextToken();
+
+		   productName = st.nextToken();
+		   }
+			String name = claudiaData.getOrg() + ".customers." + claudiaData.getVdc()+".services."+claudiaData.getService()+
+			".vees."+ tierName  + ".replicas."+ productName;
+			return name;
+
+	}
+	
+
+	/*private Map<String, String> getHeaders(ClaudiaData claudiaData) {
+
+		Map<String, String> headers = new HashMap<String, String>();
+		headers.put("X-Auth-Token", claudiaData.getUser().getToken());
+		headers.put("Tenant-ID", claudiaData.getUser().getTenantId());
+	} */
+	
 }

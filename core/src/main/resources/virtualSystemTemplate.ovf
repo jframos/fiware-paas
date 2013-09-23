@@ -1,10 +1,11 @@
-	<ovf:VirtualSystem ovf:id="${tierInstanceName}" rsrvr:min="1" rsrvr:max="1" rsrvr:initial="1" rsrvr:balancer="true" rsrvr:lbport="8088">
-              <Info>Haproxy for the TPCW demo</Info>
+	<ovf:VirtualSystem ovf:id="${tierName}" rsrvr:min="${num_min}" rsrvr:max="${num_max}" rsrvr:initial="${num_initial}">
+              <Info>${tierName} tier</Info>
               <ovf:OperatingSystemSection ovf:id="76">
               <Info>Specifies the operating system installed</Info>
               <Description>4CaastHaproxyNoSetup</Description>
               </ovf:OperatingSystemSection>           
               	${productSectionTemplate}
+                ${info}
               <ovf:VirtualHardwareSection>
                   <Info>Virtual Hardware Requirements: 2048Mb, 2 CPU, 1 disk, 1 nic</Info>         
                   <ovf:System>
@@ -44,11 +45,11 @@
                   </Item>
                   <Item>
                       <rasd:ElementName>Harddisk 1</rasd:ElementName>
-                      <rasd:HostResource>ovf://disk/disks-2000</rasd:HostResource>
-                      <rasd:InstanceID>disks-2000</rasd:InstanceID>
+                      <rasd:HostResource>ovf://disk/${tierName}</rasd:HostResource>
+                      <rasd:InstanceID>${tierName}</rasd:InstanceID>
                       <rasd:Parent>4</rasd:Parent>
                       <rasd:ResourceType>17</rasd:ResourceType>
 		              <rasd:VirtualQuantity>10</rasd:VirtualQuantity>
                   </Item>
               </ovf:VirtualHardwareSection>
-          </ovf:VirtualSystem>   
+          </ovf:VirtualSystem>  

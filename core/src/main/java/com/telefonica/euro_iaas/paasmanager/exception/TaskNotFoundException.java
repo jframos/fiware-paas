@@ -9,23 +9,23 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.exception;
 
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public class TaskNotFoundException extends Exception {
 
 	private Task task;
-	
+
 	public TaskNotFoundException(String msg) {
 		super(msg);
 	}
-	
+
 	public TaskNotFoundException(String msg, Task task) {
 		super(msg);
 		this.task = task;
@@ -39,10 +39,11 @@ public class TaskNotFoundException extends Exception {
 	}
 
 	/**
-	 * @param task the task to set
+	 * @param task
+	 *            the task to set
 	 */
 	public void setTask(Task task) {
 		this.task = task;
 	}
-	
+
 }

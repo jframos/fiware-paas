@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import javax.persistence.Column;
@@ -21,24 +21,24 @@ import javax.persistence.OneToOne;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 @Entity
 public class Template {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-	
-	@Column(unique=true, nullable=false, length=256)
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+
+	@Column(unique = true, nullable = false, length = 256)
 	private String name;
-	  
+
 	@OneToOne
 	private TierInstance tierInstance;
 
-	
-	public Template (){}
-	
+	public Template() {
+	}
+
 	/**
 	 * @param name
 	 * @param tierInstance
@@ -47,8 +47,7 @@ public class Template {
 		this.name = name;
 		this.tierInstance = tierInstance;
 	}
-	
-	
+
 	/**
 	 * @return the id
 	 */
@@ -57,7 +56,8 @@ public class Template {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(Long id) {
 		this.id = id;
@@ -71,7 +71,8 @@ public class Template {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -85,11 +86,11 @@ public class Template {
 	}
 
 	/**
-	 * @param tierInstance the tierInstance to set
+	 * @param tierInstance
+	 *            the tierInstance to set
 	 */
 	public void setTierInstance(TierInstance tierInstance) {
 		this.tierInstance = tierInstance;
 	}
-	
 
 }

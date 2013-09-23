@@ -9,14 +9,17 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.exception;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class ApplicationInstanceNotFoundException extends Exception {
 
+	public ApplicationInstanceNotFoundException(Throwable e) {
+		super(e);
+	}
 }

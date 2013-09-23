@@ -9,13 +9,20 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.exception;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public class URLNotRetrievedException extends Exception {
 
+	public URLNotRetrievedException() {
+		super();
+	}
+
+	public URLNotRetrievedException(Throwable e) {
+		super(e);
+	}
 }

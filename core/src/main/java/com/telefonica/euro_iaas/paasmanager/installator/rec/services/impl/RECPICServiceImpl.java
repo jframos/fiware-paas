@@ -9,13 +9,13 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.installator.rec.services.impl;
 
 /*import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.WebResource.Builder;
-*/
+ import com.sun.jersey.api.client.WebResource;
+ import com.sun.jersey.api.client.WebResource.Builder;
+ */
 import org.apache.log4j.Logger;
 import org.restlet.Client;
 import org.restlet.data.MediaType;
@@ -44,94 +44,91 @@ import org.w3c.dom.Document;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
-public class RECPICServiceImpl extends AbstractBaseService 
-	implements RECPICService {
+public class RECPICServiceImpl extends AbstractBaseService implements
+		RECPICService {
 
 	private MediaType APPLICATION_OVF_XML;
 	private static Logger log = Logger.getLogger(RECPICServiceImpl.class);
-	
+
 	public RECPICServiceImpl(Client client, String baseUrl, String mediaType) {
-	    APPLICATION_OVF_XML = MediaType.register(mediaType,
-	    		"XML OVF document");
+		APPLICATION_OVF_XML = MediaType.register(mediaType, "XML OVF document");
 		setBaseHost(baseUrl);
-        setType(APPLICATION_OVF_XML);
-        setClient(client);
-	}
-	public void configurePIC(String vapp, String appId, String picId, String vmName) 
-			throws ProductReconfigurationException, ProductInstallatorException {
-		
-		log.info("reconfigurePIC.START");		
-		
-		vapp = vapp.replace("<ovfenvelope:ProductSection>", 
-				"<ovfenvelope:ProductSection xmlns:ovfenvelope=\"http://schemas.dmtf" +
-				".org/ovf/envelope/1\" ovfenvelope:class=\"4caast.vm" +
-				".application\">");
-		
-		DomRepresentation data = null;
-		Response putResponse = null;
-		
-		Reference urlPut = new Reference(getBaseHost() + MessageFormat.format(
-                ClientConstants.BASE_PIC_PATH, 
-                appId,
-                vmName)+"/" + picId);
-		
-		Reference urlGet = new Reference(getBaseHost() + MessageFormat.format(
-                ClientConstants.BASE_PIC_PATH, 
-                appId,
-                vmName) + "/" + picId);
-		
-		
-        Response getResponse = client.get(urlGet);
-		
-		if (getResponse.getStatus().equals(Status.SUCCESS_OK)){
-			Document doc = getDocument(vapp);
-			data = new DomRepresentation(APPLICATION_OVF_XML, doc);
-			log.info("createPIC.url():" + urlPut);		
-			putResponse = client.put(urlPut, data);
-			
-			checkRECTaskStatus (putResponse);
-		}else{
-			throw new ProductReconfigurationException("The PIC is not" +
-					"created before");
-		}
-		
+		setType(APPLICATION_OVF_XML);
+		setClient(client);
 	}
 
-	public void createPIC(String vapp, String appId, String picId, String vmName) 
-			throws ProductInstallatorException {
-		
-		log.info("createPIC.START");		
-		
-		vapp = vapp.replace("<ovfenvelope:ProductSection>", 
-				"<ovfenvelope:ProductSection xmlns:ovfenvelope=\"http://schemas.dmtf" +
-				".org/ovf/envelope/1\" ovfenvelope:class=\"4caast.vm" +
-				".application\">");
-		
+	public void configurePIC(String vapp, String appId, String picId,
+			String vmName) throws ProductReconfigurationException,
+			ProductInstallatorException {
+
+		log.info("reconfigurePIC.START");
+
+		vapp = vapp.replace("<ovfenvelope:ProductSection>",
+				"<ovfenvelope:ProductSection xmlns:ovfenvelope=\"http://schemas.dmtf"
+						+ ".org/ovf/envelope/1\" ovfenvelope:class=\"4caast.vm"
+						+ ".application\">");
+
 		DomRepresentation data = null;
-		Response postResponse = null;
-		
-		Reference urlPost = new Reference(getBaseHost() + MessageFormat.format(
-                ClientConstants.BASE_PIC_PATH, 
-                appId,
-                vmName));
-		
-		Reference urlGet = new Reference(getBaseHost() + MessageFormat.format(
-                ClientConstants.BASE_PIC_PATH, 
-                appId,
-                vmName) + "/" + picId);
-		
-		
-        Response getResponse = client.get(urlGet);
-		
-		if (!getResponse.getStatus().equals(Status.SUCCESS_OK)){
+		Response putResponse = null;
+
+		Reference urlPut = new Reference(getBaseHost()
+				+ MessageFormat.format(ClientConstants.BASE_PIC_PATH, appId,
+						vmName) + "/" + picId);
+
+		Reference urlGet = new Reference(getBaseHost()
+				+ MessageFormat.format(ClientConstants.BASE_PIC_PATH, appId,
+						vmName) + "/" + picId);
+
+		Response getResponse = client.get(urlGet);
+
+		if (getResponse.getStatus().equals(Status.SUCCESS_OK)) {
 			Document doc = getDocument(vapp);
 			data = new DomRepresentation(APPLICATION_OVF_XML, doc);
-			log.info("createPIC.url():" + urlPost);		
-			postResponse = client.post(urlPost, data);
-			
-			checkRECTaskStatus (postResponse);
+			log.info("createPIC.url():" + urlPut);
+			putResponse = client.put(urlPut, data);
+
+			checkRECTaskStatus(putResponse);
+		} else {
+			throw new ProductReconfigurationException("The PIC is not"
+					+ "created before");
 		}
-   }
+
+	}
+
+	public void createPIC(String vapp, String appId, String picId, String vmName)
+			throws ProductInstallatorException {
+
+		log.info("createPIC.START");
+
+		vapp = vapp.replace("<ovfenvelope:ProductSection>",
+				"<ovfenvelope:ProductSection xmlns:ovfenvelope=\"http://schemas.dmtf"
+						+ ".org/ovf/envelope/1\" ovfenvelope:class=\"4caast.vm"
+						+ ".application\">");
+		log.debug(vapp);
+
+		DomRepresentation data = null;
+		Response postResponse = null;
+
+		Reference urlPost = new Reference(getBaseHost()
+				+ MessageFormat.format(ClientConstants.BASE_PIC_PATH, appId,
+						vmName));
+
+		Reference urlGet = new Reference(getBaseHost()
+				+ MessageFormat.format(ClientConstants.BASE_PIC_PATH, appId,
+						vmName) + "/" + picId);
+
+		Response getResponse = client.get(urlGet);
+		log.debug ("Result " + getResponse.getStatus());
+
+		if (!getResponse.getStatus().equals(Status.SUCCESS_OK)) {
+			Document doc = getDocument(vapp);
+			data = new DomRepresentation(APPLICATION_OVF_XML, doc);
+			log.info("createPIC.url():" + urlPost);
+			postResponse = client.post(urlPost, data);
+
+			checkRECTaskStatus(postResponse);
+		}
+	}
 }

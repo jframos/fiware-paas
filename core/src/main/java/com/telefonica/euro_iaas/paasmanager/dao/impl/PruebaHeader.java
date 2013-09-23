@@ -9,12 +9,12 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public class PruebaHeader {
 

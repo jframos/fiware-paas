@@ -9,13 +9,12 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.installator.rec.client;
 
 //import com.sun.jersey.api.client.Client;
 import org.restlet.Client;
-import org.restlet.data.Protocol;
-/*import org.restlet.data.MediaType;
+import org.restlet.data.Protocol; /*import org.restlet.data.MediaType;
 import org.restlet.data.Protocol;
 import org.restlet.data.Reference;
 import org.restlet.data.Response;
@@ -33,7 +32,7 @@ import com.telefonica.euro_iaas.paasmanager.installator.rec.services.impl.RECVir
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public class RECManagerClient {
 
@@ -41,56 +40,60 @@ public class RECManagerClient {
 
 	/**
 	 * Get the service to work with RECService
-	 * @param baseUrl the base url where the RECManager is
-	 * @param mediaType the media type (application/xml or application/json)
+	 * 
+	 * @param baseUrl
+	 *            the base url where the RECManager is
+	 * @param mediaType
+	 *            the media type (application/xml or application/json)
 	 * @return the RECService service.
-	*/
-	public RECServiceService getRECServiceService(
-			String baseUrl, String mediaType) {
-	        return new RECServiceServiceImpl(client, baseUrl, mediaType);
+	 */
+	public RECServiceService getRECServiceService(String baseUrl,
+			String mediaType) {
+		return new RECServiceServiceImpl(client, baseUrl, mediaType);
 	}
 
 	/**
 	 * Ge tthe service to work with RECPIC
+	 * 
 	 * @param baseUrl
 	 * @param mediaType
 	 * @return
 	 */
-	public RECPICService getRECPICService(
-			String baseUrl, String mediaType) {
-	        return new RECPICServiceImpl(client, baseUrl, mediaType);
+	public RECPICService getRECPICService(String baseUrl, String mediaType) {
+		return new RECPICServiceImpl(client, baseUrl, mediaType);
 	}
-	
+
 	/**
 	 * Ge tthe service to work withA RECVM
+	 * 
 	 * @param baseUrl
 	 * @param mediaType
 	 * @return
 	 */
-	public RECVMService getRECVMService(
-			String baseUrl, String mediaType) {
-	        return new RECVMServiceImpl(client, baseUrl, mediaType);
+	public RECVMService getRECVMService(String baseUrl, String mediaType) {
+		return new RECVMServiceImpl(client, baseUrl, mediaType);
 	}
-	
+
 	/**
 	 * Get the service to work with REC ACs
+	 * 
 	 * @param baseUrl
 	 * @param mediaType
 	 * @return
 	 */
-	public RECACService getRECACService(
-			String baseUrl, String mediaType) {
-	        return new RECACServiceImpl(client, baseUrl, mediaType);
+	public RECACService getRECACService(String baseUrl, String mediaType) {
+		return new RECACServiceImpl(client, baseUrl, mediaType);
 	}
-	
+
 	/**
 	 * Get the service to work with Virtual Services
+	 * 
 	 * @param baseUrl
 	 * @param mediaType
 	 * @return
 	 */
-	public RECVirtualServiceService getRECVirtualServiceService(
-			String baseUrl, String mediaType) {
-	        return new RECVirtualServiceServiceImpl(client, baseUrl, mediaType);
+	public RECVirtualServiceService getRECVirtualServiceService(String baseUrl,
+			String mediaType) {
+		return new RECVirtualServiceServiceImpl(client, baseUrl, mediaType);
 	}
 }

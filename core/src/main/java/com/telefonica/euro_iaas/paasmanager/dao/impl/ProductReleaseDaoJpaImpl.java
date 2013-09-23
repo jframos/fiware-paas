@@ -20,10 +20,10 @@ import com.telefonica.euro_iaas.paasmanager.model.OS;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductReleaseSearchCriteria;
 
-public class ProductReleaseDaoJpaImpl 
-	extends AbstractBaseDao<ProductRelease, String> implements ProductReleaseDao {
+public class ProductReleaseDaoJpaImpl extends
+		AbstractBaseDao<ProductRelease, String> implements ProductReleaseDao {
 
-	@PersistenceContext(unitName = "paasmanager", type=PersistenceContextType.EXTENDED)
+	@PersistenceContext(unitName = "paasmanager", type = PersistenceContextType.EXTENDED)
 	private EntityManager entityManager;
 
 	public List<ProductRelease> findAll() {
@@ -31,87 +31,119 @@ public class ProductReleaseDaoJpaImpl
 	}
 
 	public ProductRelease load(String name) throws EntityNotFoundException {
-        return super.loadByField(ProductRelease.class, "name", name);
+		try{
+			return findByProductReleaseName(name);
+		}catch (Exception e) {
+			return super.loadByField(ProductRelease.class, "name", name);
+		}
+		// return super.loadByField(ProductRelease.class, "name", name);
 	}
 	
-
+	/*public ProductRelease load(String name) throws EntityNotFoundException {
+		ProductReleaseSearchCriteria criteria = new ProductReleaseSearchCriteria();
+		criteria.setProductName(name);
+		
+		List<ProductRelease> productReleases = findByCriteria(criteria);
+		if (productReleases.size() != 1) {
+			throw new EntityNotFoundException(ProductRelease.class,  "name", name);
+		}
+		ProductRelease pRelease = productReleases.get(0);	
+		return pRelease;
+		//return super.loadByField(ProductRelease.class, "name", name);
+	}*/
 
 	public List<ProductRelease> findByCriteria(
 			ProductReleaseSearchCriteria criteria) {
-		Session session = (Session) getEntityManager().getDelegate();
-	    Criteria baseCriteria = session.createCriteria(ProductRelease.class);
-	    
-	    if (criteria.getProductName() != null) {
-	    	baseCriteria.add(Restrictions.eq("name", criteria.getProductName()));
-	    }
-	    
-	    List<ProductRelease> productReleases = setOptionalPagination(criteria, 
-	        		baseCriteria).list();
-	        
-        if (criteria.getOSType() != null) {
-        	productReleases = filterByOSType(productReleases, criteria.getOSType());
-        }
-       
-	    return productReleases;
+		//Session session = (Session) getEntityManager().getDelegate();
+		Session session = (Session) entityManager.getDelegate();
+		Criteria baseCriteria = session.createCriteria(ProductRelease.class);
+		
+		if (criteria.getProductName() != null) {
+			baseCriteria.add(Restrictions.eq("name", criteria.getProductName()));
+		}
+
+		List<ProductRelease> productReleases = setOptionalPagination(criteria,
+				baseCriteria).list();
+
+		if (criteria.getOSType() != null) {
+			productReleases = filterByOSType(productReleases, criteria
+					.getOSType());
+		}
+
+		return productReleases;
 	}
+
+	/*public ProductRelease load(String product, String version)
+			throws EntityNotFoundException {	
+		return load(product + "-"+ version);
+	}*/
+	
+	/*public ProductRelease load(String product, String version)
+			throws EntityNotFoundException {
+		return super.loadByField(ProductRelease.class, "name", product + "-"+ version);
+	}*/
 
 	public ProductRelease load(String product, String version)
 			throws EntityNotFoundException {
-		return super.loadByField(ProductRelease.class, "name", product + "-" + version);
-		//return findByProductReleaseName(product + "-" + version);
-		/*Session session = (Session) getEntityManager().getDelegate();
-        Criteria baseCriteria = session.createCriteria(
-                ProductRelease.class);
-        baseCriteria.add(Restrictions.eq("name", productName));
-        baseCriteria.add(Restrictions.eq("version", version));
+		// return super.loadByField(ProductRelease.class, "name", product + "-"
+		// + version);
 
-        ProductRelease release = (ProductRelease) baseCriteria.uniqueResult();
-        if (release == null) {
-            String[] keys = {"productName", "version"};
-            Object[] values = {productName, version};
-            throw new EntityNotFoundException(ProductRelease.class,
-                    keys, values);
-        }
-        return release;*/
+		try
+		{
+		return findByProductReleaseName(product + "-" + version);
+		}
+		catch (Exception e)
+		{
+			return load (product+"-"+version);
+		}
+		// return findByProductReleaseName(product + "-" + version)
 	}
 
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang
+	 * .String)
 	 */
-	private ProductRelease findByProductReleaseName(String id) throws EntityNotFoundException {
-		Query query = entityManager.createQuery("select p from ProductRelease p join " 
-				+ "fetch p.supportedOOSS where p.id = :id" );
-		query.setParameter("id", id);
+	private ProductRelease findByProductReleaseName(String name)
+			throws EntityNotFoundException {
+		Query query = entityManager
+				.createQuery("select p from ProductRelease p join "
+						+ "fetch p.attributes where p.name = :name");
+		query.setParameter("name", name);
 		ProductRelease productRelease = null;
 		try {
 			productRelease = (ProductRelease) query.getSingleResult();
-		 } catch (NoResultException  e) {
-			 String message = " No ProductRelease found in the database with id: " +
-					 id + " Exception: " + e.getMessage();
-			 System.out.println (message);
-			 throw new EntityNotFoundException (ProductRelease.class, "id", id);
-		 } 
-		 return productRelease;
+		} catch (NoResultException e) {
+			String message = " No ProductRelease found in the database with id: "
+					+ name + " Exception: " + e.getMessage();
+			System.out.println(message);
+			throw new EntityNotFoundException(ProductRelease.class, "name",
+					name);
+		}
+		return productRelease;
 	}
 
-	 /**
-     * Filter the result by product release
-     *
-     * @param applications
-     * @param product Release
-     * @return
-     */
-    private List<ProductRelease> filterByOSType(
-            List<ProductRelease> productReleases, String osType) {
-        List<ProductRelease> result = new ArrayList<ProductRelease>();
-        for (ProductRelease productRelease : productReleases) {
-        	for (OS os : productRelease.getSupportedOOSS()) {
-            	if (os.getOsType().equals(osType)) {
-                    result.add(productRelease);
-                }
-            }
-        	
-        }
-        return result;
-    }
+	/**
+	 * Filter the result by product release
+	 * 
+	 * @param applications
+	 * @param product
+	 *            Release
+	 * @return
+	 */
+	private List<ProductRelease> filterByOSType(
+			List<ProductRelease> productReleases, String osType) {
+		List<ProductRelease> result = new ArrayList<ProductRelease>();
+		for (ProductRelease productRelease : productReleases) {
+			for (OS os : productRelease.getSupportedOOSS()) {
+				if (os.getOsType().equals(osType)) {
+					result.add(productRelease);
+				}
+			}
+
+		}
+		return result;
+	}
 }

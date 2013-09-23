@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.dao;
 
 import java.util.ArrayList;
@@ -21,43 +21,40 @@ import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public class TaskDaoJpaImplTest extends AbstractJpaDaoTest {
 
-	//private TaskDao taskDao;
-	
+	// private TaskDao taskDao;
+
 	/**
-     * Test the create and load method
-     */
-   /* public void testCreate() throws Exception {
-	
-    	Task task = new Task();
-    	task.setDescription("description");
-    	task.setHref("href");
-    	task.setVdc("vdc");
-    	task.setStatus(TaskStates.RUNNING);
-    	List<Task> tasks = new ArrayList<Task>();
-    	
-    	//Task createdTask = taskDao.create(task);
-    	
-    	tasks = taskDao.findAll();
-        
-        Task createdTask;
-        if (tasks.size() == 0)
-        	createdTask = taskDao.create(task);
-        else
-        	createdTask = tasks.get(0);
-        
-        assertNotNull(createdTask.getId());
-        Task foundTask = taskDao.load(createdTask.getId());
-        assertEquals(createdTask, foundTask);        
-    }*/
-    
-	/**
-	 * @param taskDao the taskDao to set
+	 * Test the create and load method
 	 */
-	/*public void setTaskDao(TaskDao taskDao) {
-		this.taskDao = taskDao;
-	}*/
+	/*
+	 * public void testCreate() throws Exception {
+	 * 
+	 * Task task = new Task(); task.setDescription("description");
+	 * task.setHref("href"); task.setVdc("vdc");
+	 * task.setStatus(TaskStates.RUNNING); List<Task> tasks = new
+	 * ArrayList<Task>();
+	 * 
+	 * //Task createdTask = taskDao.create(task);
+	 * 
+	 * tasks = taskDao.findAll();
+	 * 
+	 * Task createdTask; if (tasks.size() == 0) createdTask =
+	 * taskDao.create(task); else createdTask = tasks.get(0);
+	 * 
+	 * assertNotNull(createdTask.getId()); Task foundTask =
+	 * taskDao.load(createdTask.getId()); assertEquals(createdTask, foundTask);
+	 * }
+	 */
+
+	/**
+	 * @param taskDao
+	 *            the taskDao to set
+	 */
+	/*
+	 * public void setTaskDao(TaskDao taskDao) { this.taskDao = taskDao; }
+	 */
 }

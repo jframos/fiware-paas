@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import static org.junit.Assert.assertEquals;
@@ -22,10 +22,14 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mockito;
+import org.springframework.security.core.GrantedAuthority;
 
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentDao;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
@@ -46,157 +50,171 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
+
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public class EnvironmentInstanceManagerImplTest {
-	
+
 	private EnvironmentTypeDao environmentTypeDao;
 	private EnvironmentInstanceDao environmentInstanceDao;
 	private EnvironmentDao environmentDao;
 	private TierDao tierDao;
 	private ProductReleaseDao productReleaseDao;
 	private ProductInstanceManager productInstanceManager;
-	
+
 	private ProductInstance productInstance;
 	private TierInstance tierInstance;
 	private EnvironmentInstance environmentInstance;
-	
+
 	private EnvironmentManager environmentManager;
 	private InfrastructureManager infrastructureManager;
-	
+
 	private ProductRelease productRelease;
 	private Tier tier;
 	private Environment environment;
 
-    private List<VM> vms;
-    
-    private PaasManagerUser user;
-    private ClaudiaData claudiaData;
-    
-	@Before
-	public void setUp() throws Exception{
-		//OVF
-		InputStream is = 
-				ClassLoader.getSystemClassLoader()
-					.getResourceAsStream("4caastovfexample_attributes.xml");
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-	    StringBuffer ruleFile = new StringBuffer();
-	    String actualString;
+	private List<VM> vms;
 
-	    while ((actualString = reader.readLine()) != null) {
-	    	ruleFile.append(actualString).append("\n");
-	    }
+	private PaasManagerUser user;
+	private ClaudiaData claudiaData;
+	
+	Collection<? extends GrantedAuthority> authorities;
+	
+	@Before
+	public void setUp() throws Exception {
+		// OVF
+		InputStream is = ClassLoader.getSystemClassLoader()
+				.getResourceAsStream("4caastovfexample_attributes.xml");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		StringBuffer ruleFile = new StringBuffer();
+		String actualString;
+
+		while ((actualString = reader.readLine()) != null) {
+			ruleFile.append(actualString).append("\n");
+		}
+
+		claudiaData = new ClaudiaData("org", "vdc", "service");
+		//Collection<GrantedAuthority> authorities = null;
+		authorities = Mockito.anyCollection();
 		
-	    claudiaData = new ClaudiaData("org", "vdc", "service");
-	    
-	    user = new PaasManagerUser("user", "paasword", null);
-	    claudiaData.setUser(user);
-	    
-	    //Environment
-		productRelease = new ProductRelease ("product", "2.0");
+		user = new PaasManagerUser("user", "paasword", authorities);
+		claudiaData.setUser(user);
+
+		// Environment
+		productRelease = new ProductRelease("product", "2.0");
 		ProductType productType = new ProductType("Generic", "Generic");
 		productRelease.setProductType(productType);
-		OS os = new OS ("94", "ip", "hostname", "domain");
+		OS os = new OS("94", "ip", "hostname", "domain");
 		List<OS> oss = new ArrayList<OS>();
 		oss.add(os);
 		productRelease.setSupportedOOSS(oss);
-		
+
 		List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
 		productReleases.add(productRelease);
-		
+
 		tier = new Tier();
-		tier.setInitial_number_instances(new Integer(1));
-		tier.setMaximum_number_instances(new Integer(5));
-		tier.setMinimum_number_instances(new Integer(1));
+		tier.setInitialNumberInstances(new Integer(1));
+		tier.setMaximumNumberInstances(new Integer(5));
+		tier.setMinimumNumberInstances(new Integer(1));
 		tier.setName("tierName");
 		tier.setProductReleases(productReleases);
-		
+
 		List<Tier> tiers = new ArrayList<Tier>();
 		tiers.add(tier);
 		tiers.add(tier);
-		
+
 		environmentTypeDao = mock(EnvironmentTypeDao.class);
-		when(environmentTypeDao.load(any(String.class)))
-			.thenReturn(new EnvironmentType("Generic","Generic"));
-		
+		when(environmentTypeDao.load(any(String.class))).thenReturn(
+				new EnvironmentType("Generic", "Generic"));
+
 		productReleaseDao = mock(ProductReleaseDao.class);
-		when(productReleaseDao.load(any(String.class))).thenReturn(productRelease);
-		
+		when(productReleaseDao.load(any(String.class))).thenReturn(
+				productRelease);
+
 		tierDao = mock(TierDao.class);
 		when(tierDao.load(any(String.class))).thenReturn(tier);
 
 		environment = new Environment();
 		environment.setName("environemntName");
-		environment.setEnvironmentType(new EnvironmentType("Generic","Generic"));
+		environment
+				.setEnvironmentType(new EnvironmentType("Generic", "Generic"));
 		environment.setTiers(tiers);
-		
+
 		environmentDao = mock(EnvironmentDao.class);
-		when(environmentDao.create(any(Environment.class))).thenReturn(environment);
-	
+		when(environmentDao.create(any(Environment.class))).thenReturn(
+				environment);
+
 		environmentManager = mock(EnvironmentManager.class);
-		when(environmentManager.load(any(String.class))).thenReturn(environment);
-		
-		//Instance
+		when(environmentManager.load(any(String.class), any(String.class)))
+				.thenReturn(environment);
+
+		// Instance
 		vms = new ArrayList<VM>();
-		vms.add(new VM("fqn1", "ip1", "hostname1", "domain1", "osType1",
-				"vmOVF1", "vapp1"));
-		vms.add(new VM("fqn2", "ip2", "hostname2", "domain2", "osType2",
-				"vmOVF2", "vapp2"));
-		
-		
+		vms.add(new VM("fqn1", "ip1", "hostname1", "domain"));
+		vms.add(new VM("fqn2", "ip2", "hostname2", "domain2"));
+
 		productInstance = new ProductInstance();
 		productInstance.setProductRelease(productRelease);
-	//	productInstance.setVm(vms.get(0));
+		// productInstance.setVm(vms.get(0));
 		productInstance.setStatus(Status.INSTALLED);
 		productInstance.setName("name");
 		productInstance.setVdc("vdc");
-		
+
 		productInstanceManager = mock(ProductInstanceManager.class);
-		when(productInstanceManager.install(any(TierInstance.class), any(String.class), 
-				any(ProductRelease.class), anyList()))
+		when(
+				productInstanceManager
+						.install(any(TierInstance.class),any(ClaudiaData.class), any(String.class),  
+								any(ProductRelease.class), anyList()))
 				.thenReturn(productInstance);
-		
+
 		List<ProductInstance> productInstances = new ArrayList<ProductInstance>();
 		productInstances.add(productInstance);
-		
+
 		tierInstance = new TierInstance();
 		tierInstance.setName("nametierInstance");
 		tierInstance.setTier(tier);
 		tierInstance.setVdc("vdc");
 		tierInstance.setStatus(Status.INSTALLED);
 		tierInstance.setProductInstances(productInstances);
-		
+
 		List<TierInstance> tierInstances = new ArrayList<TierInstance>();
 		tierInstances.add(tierInstance);
-		
+
 		environmentInstance = new EnvironmentInstance();
 		environmentInstance.setName("name");
 		environmentInstance.setTierInstances(tierInstances);
 		environmentInstance.setVdc("vdc");
 		environmentInstance.setStatus(Status.INSTALLED);
 		environmentInstance.setEnvironment(environment);
-		
+
 		environmentInstanceDao = mock(EnvironmentInstanceDao.class);
-		when(environmentInstanceDao.load(any(String.class)))
-			.thenReturn(environmentInstance);		
+		when(environmentInstanceDao.load(any(String.class))).thenReturn(
+				environmentInstance);
 	}
-	
-	@Test
-	public void testCreateEnvironment() throws Exception{
-		EnvironmentInstanceManagerImpl manager 
-			= new EnvironmentInstanceManagerImpl();
-	    
+
+	/*@Test
+	public void testCreateEnvironment() throws Exception {
+		EnvironmentInstanceManagerImpl manager = new EnvironmentInstanceManagerImpl();
+
 		manager.setEnvironmentInstanceDao(environmentInstanceDao);
 		manager.setEnvironmentManager(environmentManager);
 		manager.setInfrastructureManager(infrastructureManager);
 		manager.setProductInstanceManager(productInstanceManager);
-   
-		EnvironmentInstance environmentInstanceCreated = manager
-				.create(claudiaData, environment);
-		
-		assertEquals(environmentInstanceCreated.getEnvironment().getName()
-				, environment.getName());
-	}
+
+		EnvironmentInstance environmentInstanceCreated = manager.create(
+				claudiaData, environmentInstance);
+
+		assertEquals(environmentInstanceCreated.getEnvironment().getName(),
+				environment.getName());
+		assertEquals(environmentInstanceCreated.getTierInstances().size(), 1);
+		assertEquals(environmentInstanceCreated.getTierInstances().get(0)
+				.getVM().getHostname(), "hostname1");
+		assertEquals(environmentInstanceCreated.getTierInstances().get(0)
+				.getVM().getFqn(), "fqn1");
+		assertEquals(environmentInstanceCreated.getTierInstances().get(0)
+				.getVM().getIp(), "ip1");
+
+	}*/
 }

@@ -9,22 +9,26 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.installator.sdc.util;
 
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
+import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.sdc.model.Task;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public interface SDCUtil {
 
 	/**
 	 * check the status of the productInstance install task
+	 * 
 	 * @param task
 	 * @throws ProductInstallatorException
 	 */
-	public void checkTaskStatus (Task task, String vdc) throws ProductInstallatorException;
+	public void checkTaskStatus(Task task, String vdc)
+			throws ProductInstallatorException;
+
 }

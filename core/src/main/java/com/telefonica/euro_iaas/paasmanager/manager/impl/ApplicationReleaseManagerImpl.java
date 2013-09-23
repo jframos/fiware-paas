@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
@@ -20,39 +20,48 @@ import com.telefonica.euro_iaas.paasmanager.manager.ApplicationReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationReleaseSearchCriteria;
 
-
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public class ApplicationReleaseManagerImpl implements ApplicationReleaseManager {
 
 	private ApplicationReleaseDao applicationReleaseDao;
-	
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.manager.ApplicationReleaseManager#load(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.manager.ApplicationReleaseManager
+	 * #load(java.lang.String)
 	 */
 	public ApplicationRelease load(String name) throws EntityNotFoundException {
 		return applicationReleaseDao.load(name);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.manager.ApplicationReleaseManager#findAll()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.manager.ApplicationReleaseManager
+	 * #findAll()
 	 */
 	public List<ApplicationRelease> findAll() {
 		return applicationReleaseDao.findAll();
 	}
-	
-	public List<ApplicationRelease> findByCriteria(ApplicationReleaseSearchCriteria criteria) {
-        return applicationReleaseDao.findByCriteria(criteria);
-    }
-    
-	
-    /**
-     * @param productDao the applicationDao to set
-     */
-    public void setApplicationReleaseDao(ApplicationReleaseDao applicationReleaseDao) {
-        this.applicationReleaseDao = applicationReleaseDao;
-    }
+
+	public List<ApplicationRelease> findByCriteria(
+			ApplicationReleaseSearchCriteria criteria) {
+		return applicationReleaseDao.findByCriteria(criteria);
+	}
+
+	/**
+	 * @param productDao
+	 *            the applicationDao to set
+	 */
+	public void setApplicationReleaseDao(
+			ApplicationReleaseDao applicationReleaseDao) {
+		this.applicationReleaseDao = applicationReleaseDao;
+	}
 
 }

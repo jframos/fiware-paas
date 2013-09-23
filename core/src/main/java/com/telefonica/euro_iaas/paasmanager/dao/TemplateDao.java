@@ -9,11 +9,10 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.dao;
 
 import java.util.List;
-
 
 import com.telefonica.euro_iaas.commons.dao.BaseDAO;
 import com.telefonica.euro_iaas.paasmanager.model.Template;
@@ -21,9 +20,9 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TemplateSearchC
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public interface TemplateDao extends BaseDAO<Template, String> {
 
-	 List<Template> findByCriteria(TemplateSearchCriteria criteria);
+	List<Template> findByCriteria(TemplateSearchCriteria criteria);
 }

@@ -9,17 +9,21 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.exception;
 
 /**
  * @author bmmanso
- *
+ * 
  */
 @SuppressWarnings("serial")
-public class ClaudiaGetException extends Exception{
+public class ClaudiaGetException extends Exception {
 
 	public ClaudiaGetException(String msg) {
 		super(msg);
+	}
+
+	public ClaudiaGetException(Throwable e) {
+		super(e);
 	}
 }

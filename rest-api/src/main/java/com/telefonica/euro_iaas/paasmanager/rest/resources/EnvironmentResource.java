@@ -13,7 +13,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.EnvironmentInstanceNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 
 /*
@@ -34,6 +36,9 @@ public interface EnvironmentResource {
 	 *            product</li>
 	 *            </ol>
 	 * @return the environment.
+	 * @throws InvalidEnvironmentRequestException
+	 * @throws InvalidEntityException
+	 * @throws AlreadyExistEntityException
 	 * @throws AlreadyExistsProductReleaseException
 	 *             if the Product Release exists
 	 * @throws InvalidProductReleaseException
@@ -50,7 +55,10 @@ public interface EnvironmentResource {
 	@Path("/")
 	// @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Consumes( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	void insert(EnvironmentDto environmentDto);
+	void insert(@PathParam("org") String org, @PathParam("vdc") String vdc,
+			EnvironmentDto environmentDto)
+			throws InvalidEnvironmentRequestException,
+			AlreadyExistEntityException, InvalidEntityException;
 
 	/**
 	 * Retrieve all Environments available created in the system.
@@ -71,7 +79,8 @@ public interface EnvironmentResource {
 	@GET
 	@Path("/")
 	@Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	List<EnvironmentDto> findAll(@QueryParam("page") Integer page,
+	List<EnvironmentDto> findAll(@PathParam("org") String org,
+			@PathParam("vdc") String vdc, @QueryParam("page") Integer page,
 			@QueryParam("pageSize") Integer pageSize,
 			@QueryParam("orderBy") String orderBy,
 			@QueryParam("orderType") String orderType);
@@ -89,7 +98,8 @@ public interface EnvironmentResource {
 	@GET
 	@Path("/{envName}")
 	@Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	EnvironmentDto load(@PathParam("envName") String name)
+	EnvironmentDto load(@PathParam("org") String org,
+			@PathParam("vdc") String vdc, @PathParam("envName") String name)
 			throws EnvironmentInstanceNotFoundException;
 
 	/**
@@ -98,6 +108,8 @@ public interface EnvironmentResource {
 	 * @param name
 	 *            the env name
 	 * @throws InvalidEntityException
+	 * @throws AlreadyExistEntityException 
+	 * @throws InvalidEnvironmentRequestException 
 	 * @throws EnvironmentNotFoundException
 	 *             if the Environment does not exists
 	 * @throws ProductReleaseStillInstalledException
@@ -107,8 +119,9 @@ public interface EnvironmentResource {
 	@DELETE
 	@Path("/{envName}")
 	@Consumes( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	void delete(@PathParam("envName") String envName)
-			throws EnvironmentInstanceNotFoundException, InvalidEntityException;
+	void delete(@PathParam("org") String org, @PathParam("vdc") String vdc,
+			@PathParam("envName") String envName)
+			throws EnvironmentInstanceNotFoundException, InvalidEntityException, InvalidEnvironmentRequestException, AlreadyExistEntityException;
 
 	/**
 	 * Update the Environment in BBDD,

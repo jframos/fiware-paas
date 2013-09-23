@@ -9,17 +9,20 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.exception;
 
 /**
  * @author bmmanso
- *
+ * 
  */
-public class InvalidTierInstanceScaleException extends Exception{
-
+public class InvalidTierInstanceScaleException extends Exception {
 
 	public InvalidTierInstanceScaleException(String msg) {
 		super(msg);
+	}
+
+	public InvalidTierInstanceScaleException(Throwable e) {
+		super(e);
 	}
 }

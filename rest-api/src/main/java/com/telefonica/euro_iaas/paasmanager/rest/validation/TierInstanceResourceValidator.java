@@ -36,7 +36,7 @@ public interface TierInstanceResourceValidator {
 			EnvironmentInstance environmentInstance, String tierInstance)
 			throws InvalidTierInstanceRequestException,
 			InvalidEnvironmentRequestException;
-	
+
 	public void validateScaleDownTierInstance(String org, String vdc,
 			EnvironmentInstance environmentInstance, String tierInstance)
 			throws InvalidTierInstanceRequestException,

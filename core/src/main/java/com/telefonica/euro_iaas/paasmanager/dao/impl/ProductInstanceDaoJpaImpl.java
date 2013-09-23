@@ -23,53 +23,46 @@ import com.telefonica.euro_iaas.paasmanager.exception.PaasManagerServerRuntimeEx
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.exception.NotUniqueResultException;
 
-public class ProductInstanceDaoJpaImpl extends AbstractBaseDao<ProductInstance, String>implements ProductInstanceDao {
-
+public class ProductInstanceDaoJpaImpl extends
+		AbstractBaseDao<ProductInstance, String> implements ProductInstanceDao {
 
 	public List<ProductInstance> findAll() {
 		return super.findAll(ProductInstance.class);
 	}
 
 	public ProductInstance load(Long arg0) throws EntityNotFoundException {
-        return super.loadByField(ProductInstance.class, "id", arg0);
+		return super.loadByField(ProductInstance.class, "id", arg0);
 	}
-	
+
 	public ProductInstance load(String name) throws EntityNotFoundException {
 		return super.loadByField(ProductInstance.class, "name", name);
 	}
-	
-	
-	
-	
 
-	public List<ProductInstance> findByCriteria(ProductInstanceSearchCriteria criteria) {
+	public List<ProductInstance> findByCriteria(
+			ProductInstanceSearchCriteria criteria) {
 		Session session = (Session) getEntityManager().getDelegate();
-        Criteria baseCriteria = session
-                .createCriteria(ProductInstance.class);
+		Criteria baseCriteria = session.createCriteria(ProductInstance.class);
 
-        List<ProductInstance> productInstance = setOptionalPagination(
-                criteria, baseCriteria).list();
-        
-      
-        
-        if (criteria.getTierInstance() != null) {
-        	productInstance = filterByTierInstance(productInstance, criteria.getTierInstance());
-        }
-        
-      
+		List<ProductInstance> productInstance = setOptionalPagination(criteria,
+				baseCriteria).list();
 
-        return productInstance;
+		if (criteria.getTierInstance() != null) {
+			productInstance = filterByTierInstance(productInstance, criteria
+					.getTierInstance());
+		}
+
+		return productInstance;
 	}
-	
+
 	private List<ProductInstance> filterByTierInstance(
 			List<ProductInstance> productInstances, TierInstance tierInstance) {
-           List<ProductInstance> result = new ArrayList<ProductInstance>();
-        
-        for (ProductInstance productInstance : productInstances) {         
-        	if (tierInstance.getProductInstances().contains(productInstance))
-        		result.add(productInstance);
-        }
-        return result;
+		List<ProductInstance> result = new ArrayList<ProductInstance>();
+
+		for (ProductInstance productInstance : productInstances) {
+			if (tierInstance.getProductInstances().contains(productInstance))
+				result.add(productInstance);
+		}
+		return result;
 	}
 
 	private List<ProductInstance> filterByEnvironment(
@@ -80,48 +73,47 @@ public class ProductInstanceDaoJpaImpl extends AbstractBaseDao<ProductInstance, 
 	}
 
 	public Criterion getVMCriteria(Criteria baseCriteria, VM vm) {
-        if (!StringUtils.isEmpty(vm.getFqn()) && !StringUtils.isEmpty(vm.getIp()) 
-        		&& !StringUtils.isEmpty(vm.getDomain())
-                && !StringUtils.isEmpty(vm.getHostname())) {
-            return Restrictions.eq(ProductInstance.VM_FIELD,
-                    vm);
-        } else if (!StringUtils.isEmpty(vm.getFqn())) {
-            return Restrictions.eq("vm.fqn", vm.getFqn());
-        } else if (!StringUtils.isEmpty(vm.getIp())) {
-            return Restrictions.eq("vm.ip", vm.getIp());
-        } else if (!StringUtils.isEmpty(vm.getDomain())
-                && !StringUtils.isEmpty(vm.getHostname())) {
-            return Restrictions.and(
-                    Restrictions.eq("vm.hostname", vm.getHostname()),
-                    Restrictions.eq("vm.domain", vm.getDomain()));
-        } else {
-            throw new PaasManagerServerRuntimeException(
-                    "Invalid VM while finding products by criteria");
-        }
-    }
-	
-    public ProductInstance findUniqueByCriteria(
-            ProductInstanceSearchCriteria criteria)
-                    throws NotUniqueResultException {
-    	List<ProductInstance> instances = findByCriteria(criteria);
-        if (instances.size() > 1) {
-            throw new NotUniqueResultException();
-        }
-        if (instances.size() == 0)
-        	throw new NoSuchElementException();
-        
-        return instances.iterator().next();
-    }
-    
+		if (!StringUtils.isEmpty(vm.getFqn())
+				&& !StringUtils.isEmpty(vm.getIp())
+				&& !StringUtils.isEmpty(vm.getDomain())
+				&& !StringUtils.isEmpty(vm.getHostname())) {
+			return Restrictions.eq(ProductInstance.VM_FIELD, vm);
+		} else if (!StringUtils.isEmpty(vm.getFqn())) {
+			return Restrictions.eq("vm.fqn", vm.getFqn());
+		} else if (!StringUtils.isEmpty(vm.getIp())) {
+			return Restrictions.eq("vm.ip", vm.getIp());
+		} else if (!StringUtils.isEmpty(vm.getDomain())
+				&& !StringUtils.isEmpty(vm.getHostname())) {
+			return Restrictions.and(Restrictions.eq("vm.hostname", vm
+					.getHostname()), Restrictions.eq("vm.domain", vm
+					.getDomain()));
+		} else {
+			throw new PaasManagerServerRuntimeException(
+					"Invalid VM while finding products by criteria");
+		}
+	}
+
+	public ProductInstance findUniqueByCriteria(
+			ProductInstanceSearchCriteria criteria)
+			throws NotUniqueResultException {
+		List<ProductInstance> instances = findByCriteria(criteria);
+		if (instances.size() > 1) {
+			throw new NotUniqueResultException();
+		}
+		if (instances.size() == 0)
+			throw new NoSuchElementException();
+
+		return instances.iterator().next();
+	}
+
 	private Criterion addStatus(Criterion statusCr, Status status) {
 		SimpleExpression expression = Restrictions.eq("status", status);
 		if (statusCr == null) {
 			statusCr = expression;
 		} else {
 			statusCr = Restrictions.or(statusCr, expression);
-	    }
-	        return statusCr;
+		}
+		return statusCr;
 	}
-
 
 }

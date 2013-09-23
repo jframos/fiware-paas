@@ -9,18 +9,24 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.exception;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
-public class OSNotRetrievedException extends Exception{
+public class OSNotRetrievedException extends Exception {
 
-	 
-	 public OSNotRetrievedException(String msg) {
-		 super(msg);
-	 }
+	public OSNotRetrievedException(String msg) {
+		super(msg);
+	}
+
+	public OSNotRetrievedException(Throwable e) {
+		super(e);
+	}
+
+	public OSNotRetrievedException(String msg, Throwable e) {
+		super(msg, e);
+	}
 }
-

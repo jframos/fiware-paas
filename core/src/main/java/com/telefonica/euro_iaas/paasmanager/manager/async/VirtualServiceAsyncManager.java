@@ -9,17 +9,17 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.manager.async;
 
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public interface VirtualServiceAsyncManager {
 
-    void create(String virtualServiceName, String virtualService, 
-    		Task task, String callback) ;
+	void create(String virtualServiceName, String virtualService, Task task,
+			String callback);
 }

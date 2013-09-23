@@ -9,17 +9,24 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.exception;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
-public class ProductInstallatorException extends Exception{
+public class ProductInstallatorException extends Exception {
 
 	public ProductInstallatorException(String msg) {
 		super(msg);
 	}
 
+	public ProductInstallatorException(Throwable e) {
+		super(e);
+	}
+
+	public ProductInstallatorException( String message, Throwable e) {
+		super(message, e);
+	}
 }

@@ -9,18 +9,18 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.installator.rec.services;
 
 import com.telefonica.euro_iaas.paasmanager.exception.VirtualServiceInstallationException;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public interface RECVirtualServiceService {
 
-	void createVirtualService(String appId, String vmId, String picId, String acId, 
-			String payload) 
+	void createVirtualService(String appId, String vmId, String picId,
+			String acId, String payload)
 			throws VirtualServiceInstallationException;
 }

@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Represents an instance of a application
- *
+ * 
  * @author Jesus M. Movilla
  * @version $Id: $
  */
@@ -19,11 +19,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ApplicationInstance extends InstallableInstance {
-	
+
 	public final static String VDC_FIELD = "vdc";
 	@ManyToOne
 	private ApplicationRelease applicationRelease;
-	
+
 	@ManyToOne
 	private EnvironmentInstance environmentInstance;
 
@@ -32,7 +32,7 @@ public class ApplicationInstance extends InstallableInstance {
 	 */
 	public ApplicationInstance() {
 	}
-	
+
 	/**
 	 * @param applicationRelease
 	 * @param environmentInstance
@@ -43,7 +43,7 @@ public class ApplicationInstance extends InstallableInstance {
 		this.environmentInstance = environmentInstance;
 		setName();
 	}
-	
+
 	/**
 	 * @param applicationRelease
 	 * @param environmentInstance
@@ -56,7 +56,7 @@ public class ApplicationInstance extends InstallableInstance {
 		this.setVdc(vdc);
 		setName();
 	}
-	
+
 	/**
 	 * @param applicationRelease
 	 * @param environmentInstance
@@ -80,7 +80,8 @@ public class ApplicationInstance extends InstallableInstance {
 	}
 
 	/**
-	 * @param applicationRelease the applicationRelease to set
+	 * @param applicationRelease
+	 *            the applicationRelease to set
 	 */
 	public void setApplicationRelease(ApplicationRelease applicationRelease) {
 		this.applicationRelease = applicationRelease;
@@ -94,18 +95,20 @@ public class ApplicationInstance extends InstallableInstance {
 	}
 
 	/**
-	 * @param environmentInstance the environmentInstance to set
+	 * @param environmentInstance
+	 *            the environmentInstance to set
 	 */
 	public void setEnvironmentInstance(EnvironmentInstance environmentInstance) {
 		this.environmentInstance = environmentInstance;
 	}
-	
+
 	/*
-	 * setting the name as fuction of applicationRelease.name 
-	 * and environmentInstance.name
+	 * setting the name as fuction of applicationRelease.name and
+	 * environmentInstance.name
 	 */
 	private void setName() {
-		this.name = applicationRelease.getName() + "-" + environmentInstance.getName();
+		this.name = applicationRelease.getName() + "-"
+				+ environmentInstance.getName();
 	}
 
 }

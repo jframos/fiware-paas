@@ -11,38 +11,39 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * A product Type(ex: web server, databases...
+ * 
  * @author Jesus M. Movilla
- *
+ * 
  */
 
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ProductType {
-    
+
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-	
-	@Column(unique=true, nullable=false, length=256)
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+
+	@Column(unique = true, nullable = false, length = 256)
 	private String name;
-	  
-	@Column(length=2048)
+
+	@Column(length = 2048)
 	private String description;
-	
+
 	/**
-     * Default constructor
-     */
-    public ProductType() {
-    }
-    
+	 * Default constructor
+	 */
+	public ProductType() {
+	}
+
 	/**
-     * Default constructor
-     */
-    public ProductType(String name, String description) {
-    	this.name = name;
-    	this.description = description;
-    }
+	 * Default constructor
+	 */
+	public ProductType(String name, String description) {
+		this.name = name;
+		this.description = description;
+	}
 
 	/**
 	 * @return the id
@@ -66,20 +67,24 @@ public class ProductType {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *            the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -90,7 +95,9 @@ public class ProductType {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -109,8 +116,5 @@ public class ProductType {
 			return false;
 		return true;
 	}
-	
-	
-    
-    
+
 }

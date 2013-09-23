@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.List;
@@ -22,12 +22,14 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TemplateSearchC
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
-public class TemplateDaoJpaImpl extends AbstractBaseDao<Template, String> 
-	implements TemplateDao {
+public class TemplateDaoJpaImpl extends AbstractBaseDao<Template, String>
+		implements TemplateDao {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.telefonica.euro_iaas.commons.dao.BaseDAO#findAll()
 	 */
 	public List<Template> findAll() {
@@ -35,20 +37,27 @@ public class TemplateDaoJpaImpl extends AbstractBaseDao<Template, String>
 		return super.findAll(Template.class);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.commons.dao.BaseDAO#load(java.io.Serializable)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.commons.dao.BaseDAO#load(java.io.Serializable)
 	 */
 	public Template load(String arg0) throws EntityNotFoundException {
 		return super.loadByField(Template.class, "name", arg0);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.dao.TemplateDao#findByCriteria(com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TemplateSearchCriteria)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.dao.TemplateDao#findByCriteria(com
+	 * .telefonica
+	 * .euro_iaas.paasmanager.model.searchcriteria.TemplateSearchCriteria)
 	 */
 	public List<Template> findByCriteria(TemplateSearchCriteria criteria) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 }

@@ -21,29 +21,31 @@ import com.telefonica.euro_iaas.paasmanager.model.ArtifactType;
 
 /**
  * Defines the methods needed to persist/to manage Artifact Type objects.
- *
+ * 
  * @author Jesus M. Movilla.
  */
 
-public class ArtifactTypeDaoJpaImpl extends AbstractBaseDao<ArtifactType, String> implements
-		ArtifactTypeDao {
+public class ArtifactTypeDaoJpaImpl extends
+		AbstractBaseDao<ArtifactType, String> implements ArtifactTypeDao {
 
-    /*
-     * Find all the ArtifactTypes in paas-manager database
-     * @return artifactTypes, the list of artifactTypes
-     */
+	/*
+	 * Find all the ArtifactTypes in paas-manager database
+	 * 
+	 * @return artifactTypes, the list of artifactTypes
+	 */
 	public List<ArtifactType> findAll() {
 		return super.findAll(ArtifactType.class);
 	}
 
 	/*
-     * Find an artifactType by name-searching
-     * @param name, the name of the artifactType
-     * @return artifactType, the artifactType
-     */
+	 * Find an artifactType by name-searching
+	 * 
+	 * @param name, the name of the artifactType
+	 * 
+	 * @return artifactType, the artifactType
+	 */
 	public ArtifactType load(String arg0) throws EntityNotFoundException {
-        return super.loadByField(ArtifactType.class, "name", arg0);
+		return super.loadByField(ArtifactType.class, "name", arg0);
 	}
-
 
 }

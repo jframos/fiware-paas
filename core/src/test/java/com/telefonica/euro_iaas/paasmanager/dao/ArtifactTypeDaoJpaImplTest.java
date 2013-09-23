@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.dao;
 
 import java.util.List;
@@ -20,70 +20,83 @@ import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.model.ArtifactType;
 
 public class ArtifactTypeDaoJpaImplTest extends AbstractJpaDaoTest {
-	//implements ArtifactTypeDao {
+	// implements ArtifactTypeDao {
 
-	//private ArtifactTypeDao artifactTypeDao;
-	
+	// private ArtifactTypeDao artifactTypeDao;
+
 	/**
 	 * Create the artifactType row in the database
+	 * 
 	 * @param, the artifactType to be inserted
 	 * @return artifactType
 	 */
-	/*public ArtifactType create(ArtifactType artifactType)
-			throws InvalidEntityException, AlreadyExistsEntityException {
-		artifactType = artifactTypeDao.create(artifactType);
-		assertNotNull(artifactType.getId());
-		return artifactType;
-	}*/
-	
+	/*
+	 * public ArtifactType create(ArtifactType artifactType) throws
+	 * InvalidEntityException, AlreadyExistsEntityException { artifactType =
+	 * artifactTypeDao.create(artifactType);
+	 * assertNotNull(artifactType.getId()); return artifactType; }
+	 */
+
 	/**
-	 *  List all the artifactTypes stored in the paas-maager system
+	 * List all the artifactTypes stored in the paas-maager system
+	 * 
 	 * @return artifactTypes
 	 */
-	/*public List<ArtifactType> findAll() {
-		return artifactTypeDao.findAll();
-	}*/
+	/*
+	 * public List<ArtifactType> findAll() { return artifactTypeDao.findAll(); }
+	 */
 
 	/**
 	 * Load an artifactTpe by the name
-	 * @param name, the name
+	 * 
+	 * @param name
+	 *            , the name
 	 * @return artifactType
 	 */
-	/*public ArtifactType load(String arg0) throws EntityNotFoundException {
-		ArtifactType artifactType = 
-				artifactTypeDao.load(artifactTypeDao.findAll().get(0).getName());
-		assertNotNull(artifactType.getId());
-		return artifactType;
-	}*/
+	/*
+	 * public ArtifactType load(String arg0) throws EntityNotFoundException {
+	 * ArtifactType artifactType =
+	 * artifactTypeDao.load(artifactTypeDao.findAll().get(0).getName());
+	 * assertNotNull(artifactType.getId()); return artifactType; }
+	 */
 
 	/**
-	 *  Update the artifactType object in paas-manager system
-	 * @param artifactType, the artifactType object
+	 * Update the artifactType object in paas-manager system
+	 * 
+	 * @param artifactType
+	 *            , the artifactType object
 	 * @return artifactType
 	 */
-	/*public ArtifactType update(ArtifactType arg0) throws InvalidEntityException {
-		ArtifactType artifactType = artifactTypeDao.findAll().get(0);
-		artifactType.setDescription("Description2");	
-		
-		artifactType = artifactTypeDao.update(artifactType);
-		assertEquals(artifactType.getDescription(), "Description2");
-		
-		return artifactType;
-	}*/
-	
+	/*
+	 * public ArtifactType update(ArtifactType arg0) throws
+	 * InvalidEntityException { ArtifactType artifactType =
+	 * artifactTypeDao.findAll().get(0);
+	 * artifactType.setDescription("Description2");
+	 * 
+	 * artifactType = artifactTypeDao.update(artifactType);
+	 * assertEquals(artifactType.getDescription(), "Description2");
+	 * 
+	 * return artifactType; }
+	 */
+
 	/**
 	 * Remove the artifactType object from the paas-manager system
-	 * @param artifactType, the artifactType object
+	 * 
+	 * @param artifactType
+	 *            , the artifactType object
 	 */
-	/*public void remove(ArtifactType artifactType) {
-		artifactTypeDao.remove(artifactType);
-	}*/
-	
+	/*
+	 * public void remove(ArtifactType artifactType) {
+	 * artifactTypeDao.remove(artifactType); }
+	 */
+
 	/**
-     * @param artifactTypeDao the artifactTypeDao to set
-    */
-   /* public void setArtifactTypeDao(ArtifactTypeDao artifactTypeDao) {
-        this.artifactTypeDao = artifactTypeDao;
-    }*/
+	 * @param artifactTypeDao
+	 *            the artifactTypeDao to set
+	 */
+	/*
+	 * public void setArtifactTypeDao(ArtifactTypeDao artifactTypeDao) {
+	 * this.artifactTypeDao = artifactTypeDao; }
+	 */
 
 }

@@ -11,12 +11,12 @@ public class ProductTypeDaoJpaImplTest extends AbstractJpaDaoTest {
 
 	private String PRODUCTTYPE_NAME = "ProductType_name";
 	private String PRODUCTTYPE_DESC = "ProductType_desc";
-	
+
 	private ProductTypeDao productTypeDao;
-	
-	public ProductType create(ProductType productType) throws InvalidEntityException,
-			AlreadyExistsEntityException {
-		System.out.println("Inserting ProductTypeObject in DB");  	
+
+	public ProductType create(ProductType productType)
+			throws InvalidEntityException, AlreadyExistsEntityException {
+		System.out.println("Inserting ProductTypeObject in DB");
 		productType = productTypeDao.create(productType);
 		assertNotNull(productType.getId());
 		return productType;
@@ -27,32 +27,33 @@ public class ProductTypeDaoJpaImplTest extends AbstractJpaDaoTest {
 	}
 
 	public ProductType load(Long arg0) throws EntityNotFoundException {
-		ProductType productType = 
-				productTypeDao.load(productTypeDao.findAll().get(0).getName());
+		ProductType productType = productTypeDao.load(productTypeDao.findAll()
+				.get(0).getName());
 		assertNotNull(productType.getId());
 		return productType;
 	}
 
 	public ProductType update(ProductType arg0) throws InvalidEntityException {
 		ProductType productType = productTypeDao.findAll().get(0);
-		productType.setDescription("Description2");	
-		
+		productType.setDescription("Description2");
+
 		productType = productTypeDao.update(productType);
 		assertEquals(productType.getDescription(), "Description2");
-		
+
 		return productType;
 	}
-	
+
 	public void remove(ProductType arg0) {
 		productTypeDao.remove(productTypeDao.findAll().get(0));
 
 	}
-	
+
 	/**
-     * @param productTypeDao the productTypeDao to set
-    */
-    public void setProductTypeDao(ProductTypeDao productTypeDao) {
-        this.productTypeDao = productTypeDao;
-    }
+	 * @param productTypeDao
+	 *            the productTypeDao to set
+	 */
+	public void setProductTypeDao(ProductTypeDao productTypeDao) {
+		this.productTypeDao = productTypeDao;
+	}
 
 }

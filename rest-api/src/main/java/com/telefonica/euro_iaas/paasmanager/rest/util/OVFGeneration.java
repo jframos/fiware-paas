@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.rest.util;
 
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
@@ -17,25 +17,23 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public interface OVFGeneration {
 
-	public String OVFFILE_SECTION =
-			"<ovf:File ovf:id=\"8195dcf5-32a6-4a20-ae93-ccde5e3b459d\""
-					+ " ovf:href=\"file:///admin.template.snapshotpaas\"" 
-					+ " rsrvr:digest=\"8f1643c4fdf83ab3827190ab771f76e1\"/>";
-	
-	public String OVFDISKFILE_SECTION =
-			"<ovf:Disk ovf:diskId=\"disks-2000\"" +
-			" ovf:fileRef=\"8195dcf5-32a6-4a20-ae93-ccde5e3b459d\"" +
-			" ovf:capacity=\"0\"" +
-			" ovf:format=\"http://www.gnome.org/~markmc/qcow-image-format.html\"/>";
-	
-	public String PRODUCTATTRIBUTE_SECTION =
-			"<ovfenvelope:Property ovfenvelope:key=\"${attributeKey}\"" +
-			" ovfenvelope:value=\"${attributeValue}\"/>";
-	
-	public String createOvf(EnvironmentInstanceDto environmentInstanceDto);
-	public String createOvf(EnvironmentDto environmentInstanceDto);
+	String OVFFILE_SECTION = "<ovf:File ovf:id=\"8195dcf5-32a6-4a20-ae93-ccde5e3b459d\""
+			+ " ovf:href=\"file:///admin.template.snapshotpaas\""
+			+ " rsrvr:digest=\"8f1643c4fdf83ab3827190ab771f76e1\"/>";
+
+	String OVFDISKFILE_SECTION = "<ovf:Disk ovf:diskId=\"disks-2000\""
+			+ " ovf:fileRef=\"8195dcf5-32a6-4a20-ae93-ccde5e3b459d\""
+			+ " ovf:capacity=\"0\""
+			+ " ovf:format=\"http://www.gnome.org/~markmc/qcow-image-format.html\"/>";
+
+	String PRODUCTATTRIBUTE_SECTION = "<ovfenvelope:Property ovfenvelope:key=\"${attributeKey}\""
+			+ " ovfenvelope:value=\"${attributeValue}\"/>";
+
+	String createOvf(EnvironmentInstanceDto environmentInstanceDto);
+
+	String createOvf(EnvironmentDto environmentInstanceDto);
 }

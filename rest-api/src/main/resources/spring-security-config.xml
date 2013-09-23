@@ -23,7 +23,7 @@
     <beans:bean id="http403EntryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"> 
         </beans:bean>
 
-    <beans:bean id="openStackFilter"
+     <beans:bean id="openStackFilter"
         class="com.telefonica.euro_iaas.paasmanager.rest.auth.OpenStackAuthenticationFilter">
         <beans:property name="authenticationManager" ref="authenticationManager" />
         <beans:property name="authenticationEntryPoint" ref="http401EntryPoint" />

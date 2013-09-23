@@ -21,8 +21,8 @@ import com.telefonica.euro_iaas.paasmanager.model.Environment;
  */
 public interface OVFMacro {
 
-	public final static String MACRO_PATTERN = "@{0}({1})";
-	public final static String MACRO_NAME_IP = "ip";
+	static final String MACRO_PATTERN = "@{0}({1})";
+	static final String MACRO_NAME_IP = "ip";
 
 	/**
 	 * Convert the macros present in the Ovf for their corresponding values

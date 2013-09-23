@@ -12,8 +12,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * A Artifact Type(ex: web server, databases...
+ * 
  * @author Jesus M. Movilla
- *
+ * 
  */
 
 @Entity
@@ -22,26 +23,26 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ArtifactType {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-	
-	@Column(unique=true, nullable=false, length=256)
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+
+	@Column(unique = true, nullable = false, length = 256)
 	private String name;
-	  
-	@Column(length=2048)
+
+	@Column(length = 2048)
 	private String description;
-	
-	//Could it be removed?
+
+	// Could it be removed?
 	@OneToOne
 	private ProductType productType;
 
 	/**
 	 * Default Constructor
 	 */
-	public ArtifactType(){
-		
+	public ArtifactType() {
+
 	}
-	
+
 	/**
 	 * @param name
 	 * @param description
@@ -60,7 +61,6 @@ public class ArtifactType {
 		return id;
 	}
 
-
 	/**
 	 * @return the name
 	 */
@@ -69,7 +69,8 @@ public class ArtifactType {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -83,7 +84,8 @@ public class ArtifactType {
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *            the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -97,13 +99,16 @@ public class ArtifactType {
 	}
 
 	/**
-	 * @param productType the productType to set
+	 * @param productType
+	 *            the productType to set
 	 */
 	public void setProductType(ProductType productType) {
 		this.productType = productType;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -114,7 +119,9 @@ public class ArtifactType {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -133,6 +140,5 @@ public class ArtifactType {
 			return false;
 		return true;
 	}
-	
-	
+
 }

@@ -23,7 +23,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
-import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 
 /**
@@ -57,7 +56,8 @@ public class OVFMacroImpl implements OVFMacro {
 		String ovf = environment.getOvf();
 
 		environment.setName(extendedOVFUtil.getEnvironmentName(ovf));
-		environment.setTiers(extendedOVFUtil.getTiers(ovf));
+		environment.setTiers(extendedOVFUtil
+				.getTiers(ovf, environment.getVdc()));
 
 		if (ovf == null) {
 			String error = "The VApp to be macro-treated is not present "
@@ -155,11 +155,11 @@ public class OVFMacroImpl implements OVFMacro {
 			// = tierInstance.getProductInstances().get(j);
 
 			if ((tierInstance.getVM().getFqn().contains(vmname))
-					&& (tierInstance.getVM().getNetworks().contains(network))) {
+					&& (tierInstance.getVM().getNetworks().get(network))!= null) {
 
-				if (tierInstance.getVM().getIp() != null)
-					ip = tierInstance.getVM().getIp();
-				else {
+				if (tierInstance.getVM().getNetworks().get(network) != null) {
+					ip = tierInstance.getVM().getNetworks().get(network);
+				} else {
 					String errorMessage = "The VM does not have an ip associated";
 					log.error(errorMessage);
 					throw new InvalidEnvironmentRequestException(errorMessage);
@@ -192,15 +192,13 @@ public class OVFMacroImpl implements OVFMacro {
 				ProductRelease productRelease = tier.getProductReleases()
 						.get(j);
 
-				if (productRelease.getName().contains(macroProductName)) {
-					if (productRelease.getAttributes() != null) {
-						List<Attribute> attributes = productRelease
-								.getAttributes();
+				if ((productRelease.getName().contains(macroProductName))
+						&& (productRelease.getAttributes() != null)) {
+					List<Attribute> attributes = productRelease.getAttributes();
 
-						for (int k = 0; k < attributes.size(); k++) {
-							if (attributes.get(k).getKey().equals(
-									macroAttribute))
-								macroValue = attributes.get(k).getValue();
+					for (int k = 0; k < attributes.size(); k++) {
+						if (attributes.get(k).getKey().equals(macroAttribute)) {
+							macroValue = attributes.get(k).getValue();
 						}
 					}
 				}

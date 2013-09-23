@@ -22,7 +22,8 @@ public interface ApplicationInstanceResourceValidator {
 	 * @throws EnvironmentInstanceNotFoundException
 	 *             , InvalidApplicationReleaseException
 	 */
-	void validateInstall(ApplicationReleaseDto applicationInstanceDto)
+	void validateInstall(String vdc, String environmentInstance,
+			ApplicationReleaseDto applicationReleaseDto)
 			throws InvalidApplicationReleaseException,
 			ApplicationInstanceNotFoundException;
 

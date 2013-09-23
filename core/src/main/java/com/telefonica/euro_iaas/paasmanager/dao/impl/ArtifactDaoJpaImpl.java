@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.List;
@@ -27,45 +27,52 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ArtifactSearchC
 
 /**
  * Defines the methods needed to persist/to manage Artifact objects.
- *
+ * 
  * @author Jesus M. Movilla.
  */
 
-public class ArtifactDaoJpaImpl 
-	extends AbstractBaseDao<Artifact, String>  implements ArtifactDao {
+public class ArtifactDaoJpaImpl extends AbstractBaseDao<Artifact, String>
+		implements ArtifactDao {
 
-    /*
-     * Find all the Artifacts in paas-manager database
-     * @return artifacts, the list of artifacts
-     */
+	/*
+	 * Find all the Artifacts in paas-manager database
+	 * 
+	 * @return artifacts, the list of artifacts
+	 */
 	public List<Artifact> findAll() {
 		return super.findAll(Artifact.class);
 	}
-	
+
 	/*
-     * Find an artifact by name-searching
-     * @param name, the name of the artifact
-     * @return artifact, the artifact
-     */
+	 * Find an artifact by name-searching
+	 * 
+	 * @param name, the name of the artifact
+	 * 
+	 * @return artifact, the artifact
+	 */
 	public Artifact load(String name) throws EntityNotFoundException {
-        return super.loadByField(Artifact.class, "name", name);
+		return super.loadByField(Artifact.class, "name", name);
 	}
+
 	/*
-     * Find a list of Artifacts from the paas-manager database
-     * @param crteria, the criteria to perform the search
-     * @return artifacts, the list of artifacts
-     */
+	 * Find a list of Artifacts from the paas-manager database
+	 * 
+	 * @param crteria, the criteria to perform the search
+	 * 
+	 * @return artifacts, the list of artifacts
+	 */
 	public List<Artifact> findByCriteria(ArtifactSearchCriteria criteria) {
 		Session session = (Session) getEntityManager().getDelegate();
-	    Criteria baseCriteria = session.createCriteria(ProductRelease.class);
-	    
-	    if (criteria.getProductRelease() != null) {
-	    	baseCriteria.add(Restrictions.eq("tier", criteria.getProductRelease()));
-	    }
-	    
-	    List<Artifact> artifacts = setOptionalPagination(criteria, 
-	        		baseCriteria).list();
-	        
-	    return artifacts;
+		Criteria baseCriteria = session.createCriteria(ProductRelease.class);
+
+		if (criteria.getProductRelease() != null) {
+			baseCriteria.add(Restrictions.eq("tier", criteria
+					.getProductRelease()));
+		}
+
+		List<Artifact> artifacts = setOptionalPagination(criteria, baseCriteria)
+				.list();
+
+		return artifacts;
 	}
 }

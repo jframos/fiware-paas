@@ -16,34 +16,32 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 
-
 /**
  * An application Release is a concrete version of a given application.
+ * 
  * @author Jesus M. Movilla
- *
+ * 
  */
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ApplicationRelease  {
+public class ApplicationRelease {
 
 	@Id
 	@XmlTransient
 	private String id;
-	    
-	@Column(nullable=false, length=256)
-	private String name;
-	@Column(nullable=false, length=256)
-	private String version;	  
-	  
-	@Column(length=2048)
-	private String description;
-	
-    @ManyToOne
-	private ApplicationType applicationType;
-	
 
-	  
+	@Column(nullable = false, length = 256)
+	private String name;
+	@Column(nullable = false, length = 256)
+	private String version;
+
+	@Column(length = 2048)
+	private String description;
+
+	@ManyToOne
+	private ApplicationType applicationType;
+
 	@XmlTransient
 	@ManyToMany
 	private List<ApplicationRelease> transitableReleases;
@@ -51,12 +49,11 @@ public class ApplicationRelease  {
 	@ManyToMany
 	private List<Artifact> artifacts;
 
-	
 	/**
 	 */
 	public ApplicationRelease() {
 	}
-	
+
 	/**
 	 * @param name
 	 * @param version
@@ -77,10 +74,10 @@ public class ApplicationRelease  {
 	 * @param transitableReleases
 	 * @param artifacts
 	 */
-		public ApplicationRelease(String name, String version,
-				String description, ApplicationType applicationType,
-				List<ApplicationRelease> transitableReleases,
-				List<Artifact> artifacts) {
+	public ApplicationRelease(String name, String version, String description,
+			ApplicationType applicationType,
+			List<ApplicationRelease> transitableReleases,
+			List<Artifact> artifacts) {
 		this.id = name + "-" + version;
 		this.name = name;
 		this.version = version;
@@ -98,7 +95,8 @@ public class ApplicationRelease  {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(String id) {
 		this.id = id;
@@ -112,7 +110,8 @@ public class ApplicationRelease  {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -126,7 +125,8 @@ public class ApplicationRelease  {
 	}
 
 	/**
-	 * @param version the version to set
+	 * @param version
+	 *            the version to set
 	 */
 	public void setVersion(String version) {
 		this.version = version;
@@ -140,7 +140,8 @@ public class ApplicationRelease  {
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *            the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -154,13 +155,12 @@ public class ApplicationRelease  {
 	}
 
 	/**
-	 * @param applicationType the applicationType to set
+	 * @param applicationType
+	 *            the applicationType to set
 	 */
 	public void setApplicationType(ApplicationType applicationType) {
 		this.applicationType = applicationType;
 	}
-
-
 
 	/**
 	 * @return the transitableReleases
@@ -170,9 +170,11 @@ public class ApplicationRelease  {
 	}
 
 	/**
-	 * @param transitableReleases the transitableReleases to set
+	 * @param transitableReleases
+	 *            the transitableReleases to set
 	 */
-	public void setTransitableReleases(List<ApplicationRelease> transitableReleases) {
+	public void setTransitableReleases(
+			List<ApplicationRelease> transitableReleases) {
 		this.transitableReleases = transitableReleases;
 	}
 
@@ -184,13 +186,16 @@ public class ApplicationRelease  {
 	}
 
 	/**
-	 * @param artifacts the artifacts to set
+	 * @param artifacts
+	 *            the artifacts to set
 	 */
 	public void setArtifacts(List<Artifact> artifacts) {
 		this.artifacts = artifacts;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -201,7 +206,9 @@ public class ApplicationRelease  {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -221,6 +228,4 @@ public class ApplicationRelease  {
 		return true;
 	}
 
-	
-	
 }

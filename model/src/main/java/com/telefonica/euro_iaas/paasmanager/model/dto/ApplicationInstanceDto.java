@@ -11,24 +11,25 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 
 /**
  * DTO for application Instance to receive rest request
- * @author  Jesus M. Movilla
- *
+ * 
+ * @author Jesus M. Movilla
+ * 
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ApplicationInstanceDto {
 
-    private String applicationName;
-    private String version;
-    private List<Attribute> attributes;
-    private List<Artifact> artifacts;
-    private String environmentInstanceName;
-    private String applicationType;
+	private String applicationName;
+	private String version;
+	private List<Attribute> attributes;
+	private List<Artifact> artifacts;
+	private String environmentInstanceName;
+	private String applicationType;
 
-    /**
+	/**
      */
-    public ApplicationInstanceDto() {
-    }
+	public ApplicationInstanceDto() {
+	}
 
 	/**
 	 * @param applicationName
@@ -56,7 +57,8 @@ public class ApplicationInstanceDto {
 	}
 
 	/**
-	 * @param applicationName the applicationName to set
+	 * @param applicationName
+	 *            the applicationName to set
 	 */
 	public void setApplicationName(String applicationName) {
 		this.applicationName = applicationName;
@@ -70,7 +72,8 @@ public class ApplicationInstanceDto {
 	}
 
 	/**
-	 * @param version the version to set
+	 * @param version
+	 *            the version to set
 	 */
 	public void setVersion(String version) {
 		this.version = version;
@@ -84,7 +87,8 @@ public class ApplicationInstanceDto {
 	}
 
 	/**
-	 * @param attributes the attributes to set
+	 * @param attributes
+	 *            the attributes to set
 	 */
 	public void setAttributes(List<Attribute> attributes) {
 		this.attributes = attributes;
@@ -98,7 +102,8 @@ public class ApplicationInstanceDto {
 	}
 
 	/**
-	 * @param artifacts the artifacts to set
+	 * @param artifacts
+	 *            the artifacts to set
 	 */
 	public void setArtifacts(List<Artifact> artifacts) {
 		this.artifacts = artifacts;
@@ -112,7 +117,8 @@ public class ApplicationInstanceDto {
 	}
 
 	/**
-	 * @param environmentInstanceName the environmentInstanceName to set
+	 * @param environmentInstanceName
+	 *            the environmentInstanceName to set
 	 */
 	public void setEnvironmentInstanceName(String environmentInstanceName) {
 		this.environmentInstanceName = environmentInstanceName;
@@ -126,11 +132,11 @@ public class ApplicationInstanceDto {
 	}
 
 	/**
-	 * @param applicationType the applicationType to set
+	 * @param applicationType
+	 *            the applicationType to set
 	 */
 	public void setApplicationType(String applicationType) {
 		this.applicationType = applicationType;
 	}
 
 }
-

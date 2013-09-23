@@ -1,1 +1,1 @@
-<ovf:File ovf:id="8195dcf5-32a6-4a20-ae93-ccde5e3b459d" ovf:href="file:///admin.template.snapshotpaas" rsrvr:digest="8f1643c4fdf83ab3827190ab771f76e1"/>
+<ovf:File ovf:id="${file_id}" ovf:href="file:///FIWARE.customers.6571e3422ad84f7d828ce2f30373b3d4.template.sdc-template-paas" rsrvr:digest="${href_file}"/>

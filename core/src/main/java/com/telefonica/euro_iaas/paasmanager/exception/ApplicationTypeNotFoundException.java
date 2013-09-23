@@ -9,14 +9,14 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.exception;
 
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationType;
 
 /**
  * Exception thrown when the application type is not found.
- *
+ * 
  * @author Jesus M. Movilla
  * @version $Id: $
  */
@@ -24,7 +24,7 @@ import com.telefonica.euro_iaas.paasmanager.model.ApplicationType;
 public class ApplicationTypeNotFoundException extends Exception {
 
 	private ApplicationType applicationType;
-	
+
 	public ApplicationTypeNotFoundException() {
 		super();
 	}
@@ -36,7 +36,7 @@ public class ApplicationTypeNotFoundException extends Exception {
 	public ApplicationTypeNotFoundException(ApplicationType applicationType) {
 		this.applicationType = applicationType;
 	}
-	
+
 	public ApplicationTypeNotFoundException(Throwable e) {
 		super(e);
 	}
@@ -51,6 +51,5 @@ public class ApplicationTypeNotFoundException extends Exception {
 	public ApplicationType getApplicationType() {
 		return applicationType;
 	}
-	
-	
+
 }

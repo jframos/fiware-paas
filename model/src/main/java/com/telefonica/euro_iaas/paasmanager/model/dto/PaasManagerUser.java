@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.Collection;
@@ -20,90 +20,114 @@ import org.springframework.security.core.userdetails.User;
 
 /**
  * @author dbermejo
- *
+ * 
  */
 public class PaasManagerUser extends User {
 
-    /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
-    /** The tenantId. */
-    private String tenantId = "";
+	/** The tenantId. */
+	private String tenantId = "";
 
-    /** The tenantName. */
-    private String tenantName = "";
+	/** The tenantName. */
+	private String tenantName = "";
 
-    /** The token. */
-    private String token = "";
+	/** The token. */
+	private String token = "";
 
-  
-    /**
-     * Instantiates a new open stack user.
-     *
-     * @param username the username
-     * @param password the password
-     * @param authorities the authorities
-     */
-    public PaasManagerUser(final String username, final String password,
-            final Collection<? extends GrantedAuthority> authorities) {
-        super(username, password, authorities);
-        this.token = password;
-    }
+	/** The username. */
+	private String username = "";
 
-//    /**
-//     * Constructor.
-//     */
-//    public OpenStackUser() {
-//        super("a", "a", new HashSet<GrantedAuthority>());
-////        super(((OpenStackUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername(),
-////                ((OpenStackUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getToken(),
-////                ((OpenStackUser) SecurityContextHolder.getContext()
-////                        .getAuthentication().getPrincipal()).getAuthorities());
-////        this.tenant = ((OpenStackUser) SecurityContextHolder.getContext()
-////                .getAuthentication().getPrincipal()).getTenant();
-//    }
+	/**
+	 * Instantiates a new open stack user.
+	 * 
+	 * @param username
+	 *            the username
+	 * @param password
+	 *            the password
+	 * @param authorities
+	 *            the authorities
+	 */
+	public PaasManagerUser(final String username, final String password,
+			final Collection<? extends GrantedAuthority> authorities) {
+		super(username, password, authorities);
+		this.token = password;
+		this.username = username;
+	}
 
-    /**
-     * @return the token
-     */
-    public String getToken() {
-        return token;
-    }
+	// /**
+	// * Constructor.
+	// */
+	// public OpenStackUser() {
+	// super("a", "a", new HashSet<GrantedAuthority>());
+	// // super(((OpenStackUser)
+	// SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername(),
+	// // ((OpenStackUser)
+	// SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getToken(),
+	// // ((OpenStackUser) SecurityContextHolder.getContext()
+	// // .getAuthentication().getPrincipal()).getAuthorities());
+	// // this.tenant = ((OpenStackUser) SecurityContextHolder.getContext()
+	// // .getAuthentication().getPrincipal()).getTenant();
+	// }
 
-    /**
-     * @param token the token to set
-     */
-    public void setToken(String token) {
-        this.token = token;
-    }
+	/**
+	 * @return the token
+	 */
+	public String getToken() {
+		return token;
+	}
 
-    /**
-     * @return the tenantId
-     */
-    public String getTenantId() {
-        return tenantId;
-    }
+	/**
+	 * @param token
+	 *            the token to set
+	 */
+	public void setToken(String token) {
+		this.token = token;
+	}
 
-    /**
-     * @param tenantId the tenantId to set
-     */
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
-    }
+	/**
+	 * @return the tenantId
+	 */
+	public String getTenantId() {
+		return tenantId;
+	}
 
-    /**
-     * @return the tenantName
-     */
-    public String getTenantName() {
-        return tenantName;
-    }
+	/**
+	 * @param tenantId
+	 *            the tenantId to set
+	 */
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
 
-    /**
-     * @param tenantName the tenantName to set
-     */
-    public void setTenantName(String tenantName) {
-        this.tenantName = tenantName;
-    }
+	/**
+	 * @return the tenantName
+	 */
+	public String getTenantName() {
+		return tenantName;
+	}
 
+	/**
+	 * @param tenantName
+	 *            the tenantName to set
+	 */
+	public void setTenantName(String tenantName) {
+		this.tenantName = tenantName;
+	}
+
+	/**
+	 * @return the username
+	 */
+	public String getUserName() {
+		return username;
+	}
+
+	/**
+	 * @param username
+	 *            the username to set
+	 */
+	public void setUsername(String username) {
+		this.username = username;
+	}
 }
-

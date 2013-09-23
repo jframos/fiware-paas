@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import java.util.List;
@@ -20,30 +20,35 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationRele
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public interface ApplicationReleaseManager {
 
-	 /**
-     * Find the ApplicationRelease using the given id.
-     * @param name the product identifier
-     * @return the productRelease
-     * @throws EntityNotFoundException if the product instance does not exists
-     */
+	/**
+	 * Find the ApplicationRelease using the given id.
+	 * 
+	 * @param name
+	 *            the product identifier
+	 * @return the productRelease
+	 * @throws EntityNotFoundException
+	 *             if the product instance does not exists
+	 */
 	ApplicationRelease load(String name) throws EntityNotFoundException;
 
-    /**
-     * Retrieve all ApplicationRelease created in the system.
-     * @return the existent product instances.
-     */
-    List<ApplicationRelease> findAll();
-    
-    /**
-     * Retrieve the applicationReselease followiong the established criteria
-     * @param criteria
-     * @return
-     */
-    List<ApplicationRelease> findByCriteria(ApplicationReleaseSearchCriteria criteria); 
-    
+	/**
+	 * Retrieve all ApplicationRelease created in the system.
+	 * 
+	 * @return the existent product instances.
+	 */
+	List<ApplicationRelease> findAll();
+
+	/**
+	 * Retrieve the applicationReselease followiong the established criteria
+	 * 
+	 * @param criteria
+	 * @return
+	 */
+	List<ApplicationRelease> findByCriteria(
+			ApplicationReleaseSearchCriteria criteria);
 
 }

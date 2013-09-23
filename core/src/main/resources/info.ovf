@@ -1,0 +1,6 @@
+
+<ovf:ProductSection> 
+        <ovf:Property ovf:key="security_group0" ovf:value="${security_group}"/>
+        <ovf:Property ovf:key="key_name" ovf:value="${key_name}"/>
+        <ovf:Property ovf:key="floating_ip" ovf:value="${floating_ip}"/>
+</ovf:ProductSection>                           

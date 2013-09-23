@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.installator.rec.services.impl;
 
 import java.text.MessageFormat;
@@ -30,50 +30,46 @@ import com.telefonica.euro_iaas.paasmanager.installator.rec.services.RECACServic
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public class RECACServiceImpl extends AbstractBaseService implements
 		RECACService {
 
 	private MediaType APPLICATION_OVF_XML;
 	private static Logger log = Logger.getLogger(RECACServiceImpl.class);
-	
-	public RECACServiceImpl(Client client, String baseUrl, String mediaType) {
-	    APPLICATION_OVF_XML = MediaType.register(mediaType,
-	    		"XML OVF document");
-		setBaseHost(baseUrl);
-        setType(APPLICATION_OVF_XML);
-        setClient(client);
-	}
-	
 
-	public void createAC(String vapp, String appId, String picId, String vmName,
-			String acId) 
-			throws ProductInstallatorException {
-		
-		log.info("createAC.STAR ");		
-		
+	public RECACServiceImpl(Client client, String baseUrl, String mediaType) {
+		APPLICATION_OVF_XML = MediaType.register(mediaType, "XML OVF document");
+		setBaseHost(baseUrl);
+		setType(APPLICATION_OVF_XML);
+		setClient(client);
+	}
+
+	public void createAC(String vapp, String appId, String picId,
+			String vmName, String acId) throws ProductInstallatorException {
+
+		log.info("createAC.STAR ");
+
 		DomRepresentation data = null;
 		Response postResponse = null;
-		
-		Reference urlPost = new Reference(getBaseHost() + MessageFormat.format(
-                ClientConstants.BASE_AC_PATH, 
-                appId, vmName, picId));
-		
-		Reference urlGet = new Reference(getBaseHost() + MessageFormat.format(
-                ClientConstants.BASE_PIC_PATH, 
-                appId, vmName, picId) + "/" + acId);
-		
-		
-        Response getResponse = client.get(urlGet);
-		
-		if (!getResponse.getStatus().equals(Status.SUCCESS_OK)){
+
+		Reference urlPost = new Reference(getBaseHost()
+				+ MessageFormat.format(ClientConstants.BASE_AC_PATH, appId,
+						vmName, picId));
+
+		Reference urlGet = new Reference(getBaseHost()
+				+ MessageFormat.format(ClientConstants.BASE_PIC_PATH, appId,
+						vmName, picId) + "/" + acId);
+
+		Response getResponse = client.get(urlGet);
+
+		if (!getResponse.getStatus().equals(Status.SUCCESS_OK)) {
 			Document doc = getDocument(vapp);
 			data = new DomRepresentation(APPLICATION_OVF_XML, doc);
 			log.info("createAC().url: " + urlPost);
 			postResponse = client.post(urlPost, data);
-			
-			checkRECTaskStatus (postResponse);
+
+			checkRECTaskStatus(postResponse);
 		}
-   }
+	}
 }

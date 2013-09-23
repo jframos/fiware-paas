@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
@@ -23,44 +23,59 @@ import com.telefonica.euro_iaas.paasmanager.model.Template;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public class TemplateManagerImpl implements TemplateManager {
 
 	private TemplateDao templateDao;
-	
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.manager.TemplateManager#load(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.manager.TemplateManager#load(java
+	 * .lang.String)
 	 */
 	public Template load(String name) throws EntityNotFoundException {
 		return templateDao.load(name);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.manager.TemplateManager#findAll()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.manager.TemplateManager#findAll()
 	 */
 	public List<Template> findAll() {
 		return templateDao.findAll();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.manager.TemplateManager#insert(com.telefonica.euro_iaas.paasmanager.model.Template)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.manager.TemplateManager#insert(com
+	 * .telefonica.euro_iaas.paasmanager.model.Template)
 	 */
-	public Template insert(Template template) 
-			throws InvalidEntityException, AlreadyExistsEntityException {
+	public Template insert(Template template) throws InvalidEntityException,
+			AlreadyExistsEntityException {
 		return templateDao.create(template);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.manager.TemplateManager#update(com.telefonica.euro_iaas.paasmanager.model.Template)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.manager.TemplateManager#update(com
+	 * .telefonica.euro_iaas.paasmanager.model.Template)
 	 */
 	public Template update(Template template) throws InvalidEntityException {
 		return templateDao.update(template);
 	}
 
-
 	/**
-	 * @param templateDao the templateDao to set
+	 * @param templateDao
+	 *            the templateDao to set
 	 */
 	public void setTemplateDao(TemplateDao templateDao) {
 		this.templateDao = templateDao;

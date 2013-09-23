@@ -17,6 +17,7 @@ import static com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil.PRO
 import static com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil.VIRTUALSYSTEMCOLLECTION;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -26,10 +27,21 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
+import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
+
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
+import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
+import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * * @author jesus.movilla
@@ -40,6 +52,8 @@ public class EnvironmentInstanceResourceValidatorImpl implements
 
 	private ClaudiaUtil claudiaUtil;
 	private ExtendedOVFUtil extendedOVFUtil;
+	private EnvironmentInstanceDao environmentInstanceDao;
+	private TierResourceValidator tierResourceValidator;
 	/** The log. */
 	private static Logger log = Logger
 			.getLogger(EnvironmentInstanceResourceValidatorImpl.class);
@@ -112,20 +126,107 @@ public class EnvironmentInstanceResourceValidatorImpl implements
 	 * #validateCreate(com.telefonica.euro_iaas
 	 * .paasmanager.model.dto.EnvironmentDto)
 	 */
-	public void validateCreate(EnvironmentDto environmentDto)
+	public void validateCreate(EnvironmentInstanceDto environmentInstanceDto,
+			SystemPropertiesProvider systemPropertiesProvider)
 			throws InvalidEnvironmentRequestException {
-		if (environmentDto.getName() == null)
-			throw new InvalidEnvironmentRequestException("EnvironamentName "
-					+ "from EnviromentDto is null");
 
-		if (environmentDto.getEnvironmentType() == null)
-			throw new InvalidEnvironmentRequestException("EnvironamentType "
-					+ "from EnviromentDto is null");
+		log.debug("Validate enviornment instance blueprint "
+				+ environmentInstanceDto.getBlueprintName() + " description "
+				+ environmentInstanceDto.getDescription() + " environment "
+				+ environmentInstanceDto.getEnvironmentDto());
+		if (environmentInstanceDto.getBlueprintName() == null) {
+			log.error("EnvironamentBlueprintName "
+					+ "from EnviromentDto BlueprintName is null");
+			throw new InvalidEnvironmentRequestException(
+					"EnvironamentBlueprintName "
+							+ "from EnviromentDto BlueprintName is null");
+		}
 
-		if (environmentDto.getTierDtos() == null)
-			throw new InvalidEnvironmentRequestException("There are no tiers "
-					+ "defined in EnviromentDto object");
+		if (environmentInstanceDto.getEnvironmentDto() == null) {
+			log.error("The environment to be deployed is null ");
+			throw new InvalidEnvironmentRequestException(
+					"The environment to be deployed is null ");
+		}
+
+		
+			EnvironmentInstanceSearchCriteria criteria = new EnvironmentInstanceSearchCriteria();
+
+			  criteria.setVdc(environmentInstanceDto.getVdc());
+			  criteria.setEnviromentName(environmentInstanceDto.getBlueprintName());
+				
+
+			 List<EnvironmentInstance> envInstances = environmentInstanceDao.findByCriteria(criteria);
+			
+			 if (envInstances.size() != 0) {
+				 throw new InvalidEnvironmentRequestException(
+					new AlreadyExistsEntityException(EnvironmentInstance.class, new Exception ("The enviornment instance "
+							+ environmentInstanceDto.getBlueprintName())));
+			 }
+		
+			if (environmentInstanceDto.getDescription() == null) {
+				log.error("EnvironamentDescription "
+						+ "from EnviromentDto Description is null");
+				throw new InvalidEnvironmentRequestException(
+						"EnvironamentDescription "
+								+ "from EnviromentDto Description is null");
+			}
+
+			if (environmentInstanceDto.getEnvironmentDto().getTierDtos() == null) {
+				log.error("There are no tiers "
+						+ "defined in EnviromentDto object");
+				throw new InvalidEnvironmentRequestException(
+						"There are no tiers "
+								+ "defined in EnviromentDto object");
+			}
+
+			String system = systemPropertiesProvider
+					.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
+			if ("FIWARE".equals(system)) {
+				for (TierDto tierDto : environmentInstanceDto
+						.getEnvironmentDto().getTierDtos())
+					validateTiers(tierDto);
+			}
+		
+			//Validating length of hostname (maximum =64)
+			for (int i=0; i < environmentInstanceDto.getEnvironmentDto().getTierDtos().size(); 
+					i++){
+				TierDto tierDto = environmentInstanceDto.getEnvironmentDto()
+						.getTierDtos().get(i);
+				//String hostname = (claudiaData.getService() + "-"
+				//					 + tier.getName() + "-"
+				//					+ numReplica).toLowerCase();
+				int hostnameLength = 
+						environmentInstanceDto.getBlueprintName().length() + 
+						tierDto.getName().length() + 5;
+				if ( hostnameLength > 64 ) {
+					int exceed = hostnameLength - 64;
+					String message = "Hostname is too long (over 64) Exceded by " 
+							+ exceed + " characters . " +
+							"Please revise the length of " +
+							"BluePrint Instance Name " + environmentInstanceDto.getBlueprintName() +
+							" and tierName " + tierDto.getName();
+					log.error(message);
+					throw new InvalidEnvironmentRequestException(message);
+				}
+			}
 	}
+
+	public void validateTiers(TierDto tierDto)
+			throws InvalidEnvironmentRequestException {
+
+		if (tierDto.getName() == null)
+			throw new InvalidEnvironmentRequestException("Tier Name "
+					+ "from tierDto is null");
+		if (tierDto.getImage() == null)
+			throw new InvalidEnvironmentRequestException("Tier Image "
+					+ "from tierDto is null");
+		if (tierDto.getFlavour() == null)
+			throw new InvalidEnvironmentRequestException("Tier Flavour "
+					+ "from tierDto is null");
+
+	}
+	
+
 
 	/**
 	 * @param claudiaUtil
@@ -133,6 +234,16 @@ public class EnvironmentInstanceResourceValidatorImpl implements
 	 */
 	public void setClaudiaUtil(ClaudiaUtil claudiaUtil) {
 		this.claudiaUtil = claudiaUtil;
+	}
+
+	public void setEnvironmentInstanceDao(
+			EnvironmentInstanceDao environmentInstanceDao) {
+		this.environmentInstanceDao = environmentInstanceDao;
+	}
+
+	public void setTierResourceValidator(
+			TierResourceValidator tierResourceValidator) {
+		this.tierResourceValidator = tierResourceValidator;
 	}
 
 }

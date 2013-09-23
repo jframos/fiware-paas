@@ -6,27 +6,27 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 
 /**
  * DTO for application Instance to receive rest request
- * @author  Jesus M. Movilla
- *
+ * 
+ * @author Jesus M. Movilla
+ * 
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ApplicationReleaseDto {
 
-    private String applicationName;
-    private String version;
-    private List<Artifact> artifacts;
-    private String applicationType;
+	private String applicationName;
+	private String version;
+	private List<ArtifactDto> artifactsDto;
+	private String applicationType;
 
-    /**
+	/**
      */
-    public ApplicationReleaseDto() {
-    }
+	public ApplicationReleaseDto() {
+	}
 
 	/**
 	 * @param applicationName
@@ -36,19 +36,18 @@ public class ApplicationReleaseDto {
 	 * @param environmentInstanceName
 	 */
 	public ApplicationReleaseDto(String applicationName, String version,
-			 List<Artifact> artifacts,
-			 String applicationType) {
+			List<ArtifactDto> artifactsDto, String applicationType) {
 		this.applicationName = applicationName;
 		this.version = version;
-		this.artifacts = artifacts;
+		this.artifactsDto = artifactsDto;
 		this.applicationType = applicationType;
 	}
-	
+
 	public ApplicationReleaseDto(String applicationName, String version,
-			 List<Artifact> artifacts) {
+			List<ArtifactDto> artifactsDto) {
 		this.applicationName = applicationName;
 		this.version = version;
-		this.artifacts = artifacts;
+		this.artifactsDto = artifactsDto;
 
 	}
 
@@ -60,7 +59,8 @@ public class ApplicationReleaseDto {
 	}
 
 	/**
-	 * @param applicationName the applicationName to set
+	 * @param applicationName
+	 *            the applicationName to set
 	 */
 	public void setApplicationName(String applicationName) {
 		this.applicationName = applicationName;
@@ -74,28 +74,28 @@ public class ApplicationReleaseDto {
 	}
 
 	/**
-	 * @param version the version to set
+	 * @param version
+	 *            the version to set
 	 */
 	public void setVersion(String version) {
 		this.version = version;
 	}
 
-
 	/**
 	 * @return the artifacts
 	 */
-	public List<Artifact> getArtifacts() {
-		return artifacts;
+	public List<ArtifactDto> getArtifactsDto() {
+		return artifactsDto;
 	}
 
 	/**
-	 * @param artifacts the artifacts to set
+	 * @param artifacts
+	 *            the artifacts to set
 	 */
-	public void setArtifacts(List<Artifact> artifacts) {
-		this.artifacts = artifacts;
+	public void setArtifactsDto(List<ArtifactDto> artifactsDto) {
+		this.artifactsDto = artifactsDto;
 	}
 
-	
 	/**
 	 * @return the applicationType
 	 */
@@ -104,11 +104,11 @@ public class ApplicationReleaseDto {
 	}
 
 	/**
-	 * @param applicationType the applicationType to set
+	 * @param applicationType
+	 *            the applicationType to set
 	 */
 	public void setApplicationType(String applicationType) {
 		this.applicationType = applicationType;
 	}
 
 }
-

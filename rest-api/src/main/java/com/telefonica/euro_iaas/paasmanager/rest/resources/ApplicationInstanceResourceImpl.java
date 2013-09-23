@@ -1,6 +1,7 @@
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Path;
@@ -25,11 +26,15 @@ import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationType;
+import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.ArtifactDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.ApplicationInstanceResourceValidator;
@@ -73,7 +78,8 @@ public class ApplicationInstanceResourceImpl implements
 
 		Task task = null;
 
-		validator.validateInstall(applicationReleaseDto);
+		validator.validateInstall(vdc, environmentInstance,
+				applicationReleaseDto);
 
 		ApplicationRelease applicationRelease = new ApplicationRelease();
 
@@ -81,9 +87,10 @@ public class ApplicationInstanceResourceImpl implements
 			applicationRelease.setName(applicationReleaseDto
 					.getApplicationName());
 
-		if (applicationReleaseDto.getArtifacts() != null)
-			applicationRelease.setArtifacts(applicationReleaseDto
-					.getArtifacts());
+		if (applicationReleaseDto.getArtifactsDto() != null)
+			applicationRelease
+					.setArtifacts(this.convertToArtifact(applicationReleaseDto
+							.getArtifactsDto()));
 
 		if (applicationReleaseDto.getVersion() != null)
 			applicationRelease.setVersion(applicationReleaseDto.getVersion());
@@ -199,6 +206,31 @@ public class ApplicationInstanceResourceImpl implements
 	 */
 	public void setExtendedOVFUtil(ExtendedOVFUtil extendedOVFUtil) {
 		this.extendedOVFUtil = extendedOVFUtil;
+	}
+
+	public List<Artifact> convertToArtifact(List<ArtifactDto> artifactsDto) {
+		List<Artifact> artifacts = new ArrayList();
+
+		for (ArtifactDto artifactDto : artifactsDto) {
+			Artifact artifact = new Artifact();
+			artifact.setName(artifactDto.getName());
+			if (artifactDto.getPath() != null)
+				artifact.setPath(artifactDto.getPath());
+			if (artifactDto.getProductReleaseDto() != null) {
+				artifact.setProductRelease(convertProductRelease(artifactDto
+						.getProductReleaseDto()));
+			}
+
+		}
+		return artifacts;
+	}
+
+	public ProductRelease convertProductRelease(
+			ProductReleaseDto productReleaseDto) {
+		ProductRelease productRelease = new ProductRelease();
+		productRelease.setProduct(productReleaseDto.getProductName());
+		productRelease.setVersion(productReleaseDto.getVersion());
+		return productRelease;
 	}
 
 }

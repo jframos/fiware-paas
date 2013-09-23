@@ -19,75 +19,82 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.telefonica.euro_iaas.paasmanager.model.dto.ProductInstanceDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 
 /**
  * Represents an instance of a tier
- *
+ * 
  * @author Jesus M. Movilla
  * @version $Id: $
  */
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TierInstance  extends InstallableInstance{
-	
-	
-//	@Column(nullable=false, length=256)
-//	private String name;
-	
+public class TierInstance extends InstallableInstance {
+
+	// @Column(nullable=false, length=256)
+	// private String name;
+
 	@ManyToOne
 	private Tier tier;
-	//private int currentNumberInstances;
-	@Column(length=30000)
-	private String ovf;
-	
-	private int numberReplica;
-	
+	// private int currentNumberInstances;
+	/** the vmOVF ***/
+	@Column(length = 100000)
+	private String ovf = "";
+
+	/** the VAPP ***/
+	@Column(length = 10000)
+	private String vapp = "";
+	private String taskId ="";
+
+	private int numberReplica = 0;
+
 	@Embedded
 	private VM vm;
-	
-/*	@JoinColumn(name = "environmentinstance_id", referencedColumnName = "id", nullable = false)
-	@ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private EnvironmentInstance environmentInstance= null;*/
-	
-	
-//	@ManyToMany
-//	@JoinTable(name = "tierInstance_has_productInstances")
-	
-	//@OneToMany(targetEntity = ProductInstance.class, mappedBy = "tierInstance", fetch = FetchType.LAZY)
-	//@OneToMany(targetEntity = Artifact.class, mappedBy = "productInstance", fetch = FetchType.LAZY)
+
+	/*
+	 * @JoinColumn(name = "environmentinstance_id", referencedColumnName = "id",
+	 * nullable = false)
+	 * 
+	 * @ManyToOne(optional = false, fetch = FetchType.LAZY) private
+	 * EnvironmentInstance environmentInstance= null;
+	 */
+
+	// @ManyToMany
+	// @JoinTable(name = "tierInstance_has_productInstances")
+
+	// @OneToMany(targetEntity = ProductInstance.class, mappedBy =
+	// "tierInstance", fetch = FetchType.LAZY)
+	// @OneToMany(targetEntity = Artifact.class, mappedBy = "productInstance",
+	// fetch = FetchType.LAZY)
 	// cascade = CascadeType.ALL
-	
+
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "tierinstance_has_productinstances",  joinColumns = { 
-			@JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) }, 
-			inverseJoinColumns = { @JoinColumn(name = "productinstance_ID", 
-					nullable = false, updatable = false) })
-					
+	@JoinTable(name = "tierinstance_has_productinstances", joinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "productinstance_ID", nullable = false, updatable = false) })
 	private List<ProductInstance> productInstances;
-	
 
-
-	public TierInstance(Tier tier2, List<ProductInstance> productInstances2, VM vm){
+	public TierInstance(Tier tier2, List<ProductInstance> productInstances2,
+			VM vm) {
 		this.tier = tier2;
 		this.productInstances = productInstances2;
 		this.vm = vm;
 	}
-	
-	public TierInstance(){
-		
+
+	public TierInstance() {
+
 	}
-	 
+
 	/**
 	 * @param tier
 	 * @param productInstances
 	 * @param currentNumberInstances
-	 * @param ovf 
+	 * @param ovf
 	 * @param fqn
 	 */
-	public TierInstance(Tier tier, List<ProductInstance> productInstances, 
-			String ovf, String name, VM vm) {
+	public TierInstance(Tier tier, List<ProductInstance> productInstances,
+			String name, VM vm, String ovf) {
 		super();
 		this.tier = tier;
 		this.productInstances = productInstances;
@@ -95,9 +102,8 @@ public class TierInstance  extends InstallableInstance{
 		this.name = name;
 		this.vm = vm;
 	}
-	
-	public TierInstance(Tier tier,
-			String ovf, String name, VM vm) {
+
+	public TierInstance(Tier tier, String ovf, String name, VM vm) {
 		super();
 		this.tier = tier;
 		this.ovf = ovf;
@@ -113,12 +119,13 @@ public class TierInstance  extends InstallableInstance{
 	}
 
 	/**
-	 * @param tier the tier to set
+	 * @param tier
+	 *            the tier to set
 	 */
 	public void setTier(Tier tier) {
 		this.tier = tier;
 	}
-	
+
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -131,24 +138,25 @@ public class TierInstance  extends InstallableInstance{
 	}
 
 	/**
-	 * @param productInstances the productInstances to set
+	 * @param productInstances
+	 *            the productInstances to set
 	 */
 	public void setProductInstances(List<ProductInstance> productInstances) {
 		this.productInstances = productInstances;
 	}
-	
+
 	public void addProductInstance(ProductInstance productInstance) {
-		if (productInstances == null)
-		{
-			productInstances = new ArrayList ();
+		if (productInstances == null) {
+			productInstances = new ArrayList();
 		}
 		this.productInstances.add(productInstance);
 	}
-	
+
 	public void deleteProductInstance(ProductInstance productInstance) {
 		if (productInstances.contains(productInstance))
-		this.productInstances.remove(productInstance);
+			this.productInstances.remove(productInstance);
 	}
+
 	/**
 	 * @return the tier
 	 */
@@ -157,12 +165,25 @@ public class TierInstance  extends InstallableInstance{
 	}
 
 	/**
-	 * @param tier the tier to set
+	 * @param tier
+	 *            the tier to set
 	 */
 	public void setOvf(String ovf) {
 		this.ovf = ovf;
 	}
-	
+
+	public String getVApp() {
+		return vapp;
+	}
+
+	/**
+	 * @param tier
+	 *            the tier to set
+	 */
+	public void setVapp(String vapp) {
+		this.vapp = vapp;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -170,7 +191,7 @@ public class TierInstance  extends InstallableInstance{
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public VM getVM() {
 		return vm;
 	}
@@ -178,7 +199,7 @@ public class TierInstance  extends InstallableInstance{
 	public void setVM(VM vm) {
 		this.vm = vm;
 	}
-	
+
 	public int getNumberReplica() {
 		return numberReplica;
 	}
@@ -187,17 +208,47 @@ public class TierInstance  extends InstallableInstance{
 		this.numberReplica = numberReplica;
 	}
 	
-	/*public EnvironmentInstance getEnvironmentInstance() {
-		return environmentInstance;
+	public void setTaskId(String id) {
+		taskId = id;
+		
+	}
+	
+	public String getTaskId() {
+		return taskId;
+		
 	}
 
-	public void setEnvironmentInstance(EnvironmentInstance environmentInstance) {
-		this.environmentInstance = environmentInstance;
-	}*/
-	
-	
-	
-	
-	
-	
+	/*
+	 * public EnvironmentInstance getEnvironmentInstance() { return
+	 * environmentInstance; }
+	 * 
+	 * public void setEnvironmentInstance(EnvironmentInstance
+	 * environmentInstance) { this.environmentInstance = environmentInstance; }
+	 */
+
+	public TierInstanceDto toDto() {
+		TierInstanceDto tierInstanceDto = new TierInstanceDto();
+		tierInstanceDto.setTierInstanceName(getName());
+		tierInstanceDto.setTierDto(getTier().toDto());
+		tierInstanceDto.setReplicaNumber(getNumberReplica());
+		if (this.getVM() != null) {
+			tierInstanceDto.setVM(getVM().toDto());
+		}
+
+		List<ProductInstanceDto> lProductInstanceDto = new ArrayList<ProductInstanceDto>();
+		if (getProductInstances() != null) {
+			for (ProductInstance productInstance : getProductInstances()) {
+				ProductInstanceDto productInstanceDto = productInstance.toDto();
+				lProductInstanceDto.add(productInstanceDto);
+			}
+		}
+
+		tierInstanceDto.setProductInstanceDtos(lProductInstanceDto);
+
+		if (getPrivateAttributes() != null)
+			tierInstanceDto.setAttributes(getPrivateAttributes());
+
+		return tierInstanceDto;
+	}
+
 }
