@@ -94,7 +94,7 @@ public class TierManagerImpl implements TierManager {
 				+ tier.getInitialNumberInstances() + " maximum_number_instances "
 				+ tier.getMaximumNumberInstances() + " minimum_number_instances "
 				+ tier.getMinimumNumberInstances()+ " floatingip " + tier.getFloatingip()
-				+ " keypair " + tier.getKeypair() + " icono " + tier.getIcono() + " product releases " + tier.getProductReleases());
+				+ " keypair " + tier.getKeypair() + " icono " + tier.getIcono() + " product releases " + tier.getProductReleases() + "  vdc " + claudiaData.getVdc());
 		try {
 			tier = load(tier.getName(), claudiaData.getVdc(), envName);
 			return tier;

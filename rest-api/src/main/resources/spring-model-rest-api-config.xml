@@ -54,6 +54,15 @@
           <property name="tierManager" ref="tierManager"/> 
            <property name="productReleaseDao" ref="productReleaseDao"/>
    </bean>
+   
+    <bean id="abstractTierResource" lazy-init="true"
+        class="com.telefonica.euro_iaas.paasmanager.rest.resources.AbstractTierResourceImpl">
+        <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>  
+         <property name="tierResourceValidator" ref="tierResourceValidator"/> 
+         <property name="environmentManager" ref="environmentManager"/> 
+          <property name="tierManager" ref="tierManager"/> 
+           <property name="productReleaseDao" ref="productReleaseDao"/>
+   </bean>
    <bean id="environmentInstanceOvfResource" lazy-init="true"
         class="com.telefonica.euro_iaas.paasmanager.rest.resources.EnvironmentInstanceOvfResourceImpl">
         <property name="validator" ref="environmentInstanceResourceValidator"/>

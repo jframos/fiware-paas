@@ -107,7 +107,7 @@ public class AbstractEnvironmentResourceImpl implements
 	}
 
 	public void insert(String org, EnvironmentDto environmentDto) {
-		ClaudiaData claudiaData = new ClaudiaData(org, null, null);
+		ClaudiaData claudiaData = new ClaudiaData(org, "", "");
 
 		if (systemPropertiesProvider.getProperty(
 				SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {

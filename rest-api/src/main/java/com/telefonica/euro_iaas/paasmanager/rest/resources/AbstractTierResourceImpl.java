@@ -134,8 +134,9 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 			TierDto tierDto) throws EntityNotFoundException, InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException {
 
 		log.debug("Insert tier " + tierDto.getName() + " from env "
-				+ environmentName );
+				+ environmentName + " with product release " + tierDto.getProductReleaseDtos());
 		ClaudiaData claudiaData = new ClaudiaData(org, "", environmentName);
+		
 
 		try {
 			tierResourceValidator.validateCreate(tierDto, "",environmentName,
@@ -154,6 +155,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 			claudiaData.setUser(getCredentials());
 		}
 		Tier tier = tierDto.fromDto();
+		log.debug ("vdc " + claudiaData.getVdc());
 
 	
 		Environment environment = environmentManager.load(environmentName);
