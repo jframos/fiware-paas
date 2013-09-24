@@ -94,7 +94,7 @@ public class TierManagerImpl implements TierManager {
 				+ tier.getInitialNumberInstances() + " maximum_number_instances "
 				+ tier.getMaximumNumberInstances() + " minimum_number_instances "
 				+ tier.getMinimumNumberInstances()+ " floatingip " + tier.getFloatingip()
-				+ " keypair " + tier.getKeypair() + " icono " + tier.getIcono());
+				+ " keypair " + tier.getKeypair() + " icono " + tier.getIcono() + " product releases " + tier.getProductReleases());
 		try {
 			tier = load(tier.getName(), claudiaData.getVdc(), envName);
 			return tier;
@@ -131,6 +131,10 @@ public class TierManagerImpl implements TierManager {
 					productReleases.add(p);
 				}
 			}
+			else
+			{
+				log.warn("There is not any product release associated to the tier " + tier.getName());
+			}
 			
 			try {
 				tier.setProductReleases(null);
@@ -151,7 +155,8 @@ public class TierManagerImpl implements TierManager {
 						prod = productReleaseManager
 								.load(prod.getProduct() + "-"
 										+ prod.getVersion());
-
+						log.debug("Adding product release " + prod.getProduct() + "-"
+										+ prod.getVersion() + " to tier " + tier.getName());
 						tier.addProductRelease(prod);
 						update(tier);
 					} catch (Exception e2) {
