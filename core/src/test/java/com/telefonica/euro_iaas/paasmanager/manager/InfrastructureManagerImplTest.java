@@ -12,28 +12,6 @@
  */
 package com.telefonica.euro_iaas.paasmanager.manager;
 
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_ORG;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_SERVICE;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.VM_NAME_PREFIX;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_CPU;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_MEM;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_DISK;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_OVFSERVICE_LOCATION;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_OVFVM_LOCATION;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.List;
-
 import junit.framework.TestCase;
 
 import org.junit.Before;
@@ -43,47 +21,39 @@ import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
 import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.InfrastructureManagerClaudiaImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
-import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
-import com.telefonica.claudia.clotho.commons.model.Task;
-import com.telefonica.claudia.clotho.commons.model.Task.TaskStates;
-
 /**
  * @author jesus.movilla
- * 
  */
 public class InfrastructureManagerImplTest extends TestCase {
 
-	private String vdc, org;
-	private int number_vms;
-	private SystemPropertiesProvider propertiesProvider;
-	private ClaudiaClient claudiaClient;
-	private ClaudiaUtil claudiaUtil;
-	private ClaudiaResponseAnalyser claudiaResponseAnalyser;
+    private String vdc, org;
+    private int number_vms;
+    private SystemPropertiesProvider propertiesProvider;
+    private ClaudiaClient claudiaClient;
+    private ClaudiaUtil claudiaUtil;
+    private ClaudiaResponseAnalyser claudiaResponseAnalyser;
 
-	private Task vdcResponseTask, serviceResponseTask, vmResponseTask;
+    private String vdcResponse = "vdcResponse";
 
-	private String vdcResponse = "vdcResponse";
+    private String vdcNotFoundResponse = "ElementNotFound";
 
-	private String vdcNotFoundResponse = "ElementNotFound";
+    private String serviceResponse = "serviceResponse";
 
-	private String serviceResponse = "serviceResponse";
+    // private String ovfname = "Case01-01-initial-vapp-creation.xml";
+    private String ovfname = "4caastovfexample.xml";
+    private String ovf = "ovf";
+    private PaasManagerUser user;
+    private ClaudiaData claudiaData;
+    private InfrastructureManagerClaudiaImpl manager;
 
-	// private String ovfname = "Case01-01-initial-vapp-creation.xml";
-	private String ovfname = "4caastovfexample.xml";
-	private String ovf = "ovf";
-	private PaasManagerUser user;
-	private ClaudiaData claudiaData;
-	private InfrastructureManagerClaudiaImpl manager;
+    @Before
+    public void setUp() throws Exception {
 
-	@Before
-	public void setUp() throws Exception {
-
-		/*
+        /*
 		 * vdc = "paasmanagerVDC"; org = "ORG"; number_vms = 2; claudiaData =
 		 * new ClaudiaData(org, vdc);
 		 * 
@@ -164,51 +134,50 @@ public class InfrastructureManagerImplTest extends TestCase {
 		 * .thenReturn("OK");
 		 * when(claudiaResponseAnalyser.getTaskStatus(any(String.class)))
 		 * .thenReturn("success");
-		 */
+         */
 
-		manager = new InfrastructureManagerClaudiaImpl();
-		manager.setSystemPropertiesProvider(propertiesProvider);
-		manager.setClaudiaClient(claudiaClient);
-		manager.setClaudiaUtil(claudiaUtil);
-		manager.setClaudiaResponseAnalyser(claudiaResponseAnalyser);
+        manager = new InfrastructureManagerClaudiaImpl();
+        manager.setSystemPropertiesProvider(propertiesProvider);
+        manager.setClaudiaClient(claudiaClient);
+        manager.setClaudiaUtil(claudiaUtil);
+        manager.setClaudiaResponseAnalyser(claudiaResponseAnalyser);
 
-	}
+    }
 
-	/**
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	public void testGetVMsIsOk() throws Exception {
-		InfrastructureManagerClaudiaImpl manager = new InfrastructureManagerClaudiaImpl();
+    /**
+     * @throws Exception
+     */
+    @Test
+    public void testGetVMsIsOk() throws Exception {
+        InfrastructureManagerClaudiaImpl manager = new InfrastructureManagerClaudiaImpl();
 
-		manager.setSystemPropertiesProvider(propertiesProvider);
-		manager.setClaudiaClient(claudiaClient);
-		manager.setClaudiaUtil(claudiaUtil);
-		manager.setClaudiaResponseAnalyser(claudiaResponseAnalyser);
+        manager.setSystemPropertiesProvider(propertiesProvider);
+        manager.setClaudiaClient(claudiaClient);
+        manager.setClaudiaUtil(claudiaUtil);
+        manager.setClaudiaResponseAnalyser(claudiaResponseAnalyser);
 
-		// List<VM> vms = manager.getVMs(vdc, number_vms);
-		// assertEquals(number_vms, vms.size());
-	}
+        // List<VM> vms = manager.getVMs(vdc, number_vms);
+        // assertEquals(number_vms, vms.size());
+    }
 
-	@Test
-	public void testGetVMsIsOkCreateVDC() throws Exception {
-		InfrastructureManagerClaudiaImpl manager = new InfrastructureManagerClaudiaImpl();
+    @Test
+    public void testGetVMsIsOkCreateVDC() throws Exception {
+        InfrastructureManagerClaudiaImpl manager = new InfrastructureManagerClaudiaImpl();
 
-		manager.setSystemPropertiesProvider(propertiesProvider);
-		manager.setClaudiaClient(claudiaClient);
-		manager.setClaudiaUtil(claudiaUtil);
-		manager.setClaudiaResponseAnalyser(claudiaResponseAnalyser);
+        manager.setSystemPropertiesProvider(propertiesProvider);
+        manager.setClaudiaClient(claudiaClient);
+        manager.setClaudiaUtil(claudiaUtil);
+        manager.setClaudiaResponseAnalyser(claudiaResponseAnalyser);
 
-		// List<VM> vms = manager.getVMs(vdc, number_vms);
-		// assertEquals(number_vms, vms.size());
-	}
+        // List<VM> vms = manager.getVMs(vdc, number_vms);
+        // assertEquals(number_vms, vms.size());
+    }
 
-	@Test
-	public void testCreateEnvironment() throws Exception {
+    @Test
+    public void testCreateEnvironment() throws Exception {
 
-		// List<VM> vms = manager.createEnvironment(ovf, org, vdc);
+        // List<VM> vms = manager.createEnvironment(ovf, org, vdc);
 
-	}
+    }
 
 }
