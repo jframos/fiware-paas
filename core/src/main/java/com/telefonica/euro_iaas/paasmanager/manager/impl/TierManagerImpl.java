@@ -101,7 +101,7 @@ public class TierManagerImpl implements TierManager {
 		} catch (EntityNotFoundException e) {
 			
 			if (systemPropertiesProvider.getProperty(
-					SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE") && claudiaData.getVdc()!=null) {
+					SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE") && claudiaData.getVdc()!=null && claudiaData.getVdc().length()>0) {
 
 				SecurityGroup securityGroup = createSecurityGroup(claudiaData, tier);
 				tier.setSecurityGroup(securityGroup);
