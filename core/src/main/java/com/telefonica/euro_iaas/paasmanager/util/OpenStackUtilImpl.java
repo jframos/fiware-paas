@@ -819,7 +819,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
      */
 
-    @Override
     public String getNetworkDetails(String networkId, PaasManagerUser user) throws OpenStackException {
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
         // -H "Accept: application/xml"
@@ -852,7 +851,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
      */
 
-    @Override
     public String getNetworks(PaasManagerUser user) throws OpenStackException {
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
         // -H "Content-Type: application/xml" -H "Accept: application/json"
@@ -887,7 +885,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
      */
 
-    @Override
     public String deleteNetwork(String networkId, PaasManagerUser user) throws OpenStackException {
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757...'
         // -H "Accept: application/json"
@@ -921,7 +918,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
      */
 
-    @Override
     public String createNetwork(String name, PaasManagerUser user) throws OpenStackException {
         // throw new UnsupportedOperationException("Not supported yet.");
         // I need to know X-Auth-Token, orgID-Tennat, IP and Port
@@ -962,7 +958,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * @see com.telefonica.claudia.smi.OpenStackClient#createSubNet(java.lang.String,
      * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
      */
-    @Override
     public String createSubNet(String name, String networkId, PaasManagerUser user) throws OpenStackException {
         // throw new UnsupportedOperationException("Not supported yet.");
         // I need to know X-Auth-Token, orgID-Tennat, IP and Port
@@ -1009,7 +1004,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * @see com.telefonica.claudia.smi.OpenStackClient#createRouter(java.lang.String,
      * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser )
      */
-    @Override
     public String createRouter(String name, String networkId, PaasManagerUser user) throws OpenStackException {
         // throw new UnsupportedOperationException("Not supported yet.");
         // I need to know X-Auth-Token, orgID-Tennat, IP and Port
@@ -1054,7 +1048,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * @see com.telefonica.claudia.smi.OpenStackClient#addRouterInterface(java.lang.String,
      * java.lang.String, com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser )
      */
-    @Override
     public String addRouterInterface(String routerId, String subNetId, PaasManagerUser user) throws OpenStackException {
         // throw new UnsupportedOperationException("Not supported yet.");
         // I need to know X-Auth-Token, orgID-Tennat, IP and Port
