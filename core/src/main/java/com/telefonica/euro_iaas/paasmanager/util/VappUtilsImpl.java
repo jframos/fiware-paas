@@ -320,6 +320,7 @@ public class VappUtilsImpl implements VappUtils {
 		
         if (!ovf.toLowerCase().contains("@ip"))
         	return ovf;
+        log.info("Get macro ip");
 		DocumentBuilder builder;
 		Document doc;
 
@@ -351,8 +352,11 @@ public class VappUtilsImpl implements VappUtils {
 							
 						String ip = getIpfromMacro (property.getAttributes().getNamedItem(
 						"ovfenvelope:value").getTextContent(), envIns);
+						log.debug ("IP value in macro : " + property.getAttributes().getNamedItem(
+						"ovfenvelope:value").getTextContent() + " " + ip);
 						property.getAttributes().getNamedItem(
 						"ovfenvelope:value").setTextContent(ip);
+						
 					}
 				
 				

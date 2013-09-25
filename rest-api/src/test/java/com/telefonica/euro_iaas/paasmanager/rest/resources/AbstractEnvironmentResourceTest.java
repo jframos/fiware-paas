@@ -91,5 +91,28 @@ public class AbstractEnvironmentResourceTest extends TestCase {
 
 		environmentResource.insert("org", environmentDto);
 	}
+	
+	@Test
+	public void testInsertEnvironmentAndTiers() throws Exception {
+		Environment environment = new Environment();
+		environment.setName("Name");
+		environment.setDescription("Description");
+
+		EnvironmentDto environmentDto = new EnvironmentDto();
+		environmentDto.setName("Name2");
+		environmentDto.setDescription("Description");
+		
+		when(environmentManager.load(any(String.class))).thenThrow(
+				new EntityNotFoundException(Environment.class, "",
+						environment));
+		
+		environmentResource.insert("org", environmentDto);
+
+		
+		
+		
+
+		
+	}
 
 }
