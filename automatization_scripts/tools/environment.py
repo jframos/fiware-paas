@@ -22,11 +22,22 @@ class Environment:
 
         return environment_dto
 
+    def to_string (self):
+        var = str(self.name).upper()
+        for tier in self.tiers:
+            var = var+  '\t' + tier.name
+            for product in tier.products:
+                var = var + '\t' + product.name + '\t' + product.version
+        print var
+
     ##
     ## get_images - Obtiene la lista de imagenes --- Detalle images/detail
     ##
     def add_attribute(self, attribute):
         self.attributes.append(attribute)
+
+    def add_tier(self, tier):
+        self.tiers.append(tier)
 
 
 
