@@ -1,8 +1,7 @@
 #! /usr/bin/env python
 __author__ = 'henar'
-import sys
 
-from productrequest import ProductRequest
+from tools.productrequest import ProductRequest
 
 if __name__ == "__main__":
 

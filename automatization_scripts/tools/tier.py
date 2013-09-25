@@ -19,8 +19,7 @@ class Tier:
         self.products=[]
 
     def add_product (self,product):
-        print 'apeend product '
-        print product
+
         self.products.append(product)
 
     def delete_product (self,product):
@@ -50,7 +49,7 @@ class Tier:
         if self.products:
             for product in self.products:
                 prod = product.to_product_xml_env()
-                print prod
+
                 tier_dtos.append(prod)
         return tier_dtos
 

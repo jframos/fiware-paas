@@ -3,14 +3,9 @@ Created on 16/04/2013
 
 @author: henar
 '''
-import httplib
 import sys
-import os
-from xml.dom.minidom import parse, parseString
-from xml.dom.minidom import getDOMImplementation
-from xml.etree.ElementTree import Element, SubElement, tostring
-import httplib, urllib
-import utils
+from xml.etree.ElementTree import tostring
+from tools import utils
 
 
 vm_fqn = 'fqn6'

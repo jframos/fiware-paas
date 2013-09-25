@@ -1,17 +1,12 @@
+from tools import http
+
 __author__ = 'henar'
 
+from tools.productrelease import ProductRelease
+import sys
 
-from xml.dom.minidom import parse, parseString
-from productrelease import ProductRelease
-import sys, http
-
-
-
-
-from urlparse import urlparse
-import httplib, json
-from productrelease import ProductRelease
-from productrelease import Attribute
+import json
+from tools.productrelease import Attribute
 
 ###
 ### http://docs.openstack.org/developer/glance/glanceapi.html
@@ -40,16 +35,16 @@ class ProductRequest:
         )
 
         for att in attributes:
-            print att
+
 
             product.add_attribute(att)
 
         payload=product.to_product_xml()
-        print payload
 
-        response=http.post(url,headers, payload)
 
-        print response.status
+        response= http.post(url,headers, payload)
+
+
 
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
         if response.status!=200:
@@ -65,7 +60,7 @@ class ProductRequest:
         for att in atts:
 
             a = att.split ('=')
-            print a[0] + ' ' + a[1]
+
             attribute = Attribute (a[0],a[1])
             attributes.append(attribute)
         return attributes
@@ -75,8 +70,8 @@ class ProductRequest:
                  'Accept': "application/json"}
         #get product release
         url="%s/%s/%s/%s" %(self.sdc_url,"catalog/product", product_name,"release" )
-        print url
-        response=http.get(url, headers)
+
+        response= http.get(url, headers)
 
         if response.status!=200:
             print 'error to get the product ' + product_name + ' ' + str(response.status)
@@ -93,8 +88,8 @@ class ProductRequest:
                  'Accept': "application/json"}
         #get product release
         url="%s/%s/%s/%s/%s" %(self.sdc_url,"catalog/product", product_name,"release",product_version )
-        print url
-        response=http.get(url, headers)
+
+        response= http.get(url, headers)
 
         if response.status!=200:
             print 'error to get the product ' + product_name + ' ' + str(response.status)
@@ -110,8 +105,7 @@ class ProductRequest:
                     product.add_attribute(attribute)
             except:
                 pass
-            print product.to_string()
-            print product
+
             return product
 
 
@@ -120,8 +114,8 @@ class ProductRequest:
                  'Accept': "application/json"}
         #get product release
         url="%s/%s/%s/%s/%s" %(self.sdc_url,"catalog/product", product_name, "release",version)
-        print url
-        response=http.delete(url, headers)
+
+        response= http.delete(url, headers)
 
         if response.status!=200 and response.status!=204:
             print 'error to delete the product release ' + product_name + ' ' + str(response.status)
@@ -132,14 +126,14 @@ class ProductRequest:
 
     def delete_product(self,product_name):
         version = self.get_product_release (product_name);
-        print version
+
         if version != None:
             self.delete_product_release (product_name,version);
         headers={'X-Auth-Token': self.token,
                  'Accept': "application/json"}
         #get product release
         url="%s/%s" %(self.sdc_url,"catalog/product/"+product_name)
-        response=http.delete(url, headers)
+        response= http.delete(url, headers)
 
         if response.status!=200 and response.status!=204:
             print 'error to delete the product ' + product_name + ' ' + str(response.status)
@@ -154,7 +148,7 @@ class ProductRequest:
 
         headers={'X-Auth-Token': self.token,
              'Accept': "application/json"}
-        response=http.get(url, headers)
+        response= http.get(url, headers)
 
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
         if response.status!=200:

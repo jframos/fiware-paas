@@ -1,10 +1,5 @@
 __author__ = 'henar'
-from xml.dom.minidom import parse, parseString
-from xml.etree.ElementTree import Element, SubElement,tostring,fromstring
-import http
-from tier import Tier;
-import sys
-
+from xml.etree.ElementTree import Element, SubElement, fromstring
 
 
 class Environment:

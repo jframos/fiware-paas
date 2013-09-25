@@ -3,18 +3,9 @@ Created on 16/04/2013
 
 @author: henar
 '''
-import httplib
 import sys
-import os
-from xml.dom.minidom import parse, parseString
-from xml.dom.minidom import getDOMImplementation
-from xml.etree.ElementTree import Element, SubElement, tostring
-import httplib, urllib
-import utils
-
-
-
-
+from xml.etree.ElementTree import tostring
+from tools import utils
 
 
 vm_fqn = 'fqn6'
@@ -60,7 +51,7 @@ get_resource_blueprint = "/paasmanager/rest/catalog/org/FIWARE/vdc/"+vdc+"/envir
 
 resource_environment_instance = "/paasmanager/rest/envInst/org/"+org+"/vdc/"+vdc+"/environmentInstance"
 
-environmentInstaneDto =utils.createEnvironmentInstanceDto (tostring(environmentDto), bluerprintname)
+environmentInstaneDto = utils.createEnvironmentInstanceDto (tostring(environmentDto), bluerprintname)
 
 print('Deploy an environment ' + environment_name )  
 task = utils.doRequestHttpOperation(domine,port,resource_environment_instance, 'POST',tostring(environmentInstaneDto),headers)

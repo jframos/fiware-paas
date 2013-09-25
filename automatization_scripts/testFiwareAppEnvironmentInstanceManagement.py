@@ -3,14 +3,9 @@ Created on 04/06/2013
 
 @author: jmms392
 '''
-import httplib
 import sys
-import os
-from xml.dom.minidom import parse, parseString
-from xml.dom.minidom import getDOMImplementation
-from xml.etree.ElementTree import Element, SubElement, tostring
-import httplib, urllib
-import utils
+from xml.etree.ElementTree import tostring
+from tools import utils
 
 
 domine = "localhost"
