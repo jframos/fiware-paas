@@ -44,7 +44,6 @@ class Tier:
         floating_ip= SubElement(tier_dtos, "floatingip")
         floating_ip.text=self.tier_floatingip
 
-        print self.products
 
         if self.products:
             for product in self.products:

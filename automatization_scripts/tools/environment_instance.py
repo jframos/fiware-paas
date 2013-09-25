@@ -18,7 +18,8 @@ class EnvironmentInstance:
         name.text = self.blueprint_name
         description = SubElement(blueprint_dto, "description")
         description.text = self.blueprint_description
-        blueprint_dto.append (self.environment.to_env_xml)
+        blueprint_dto.append (self.environment.to_env_xml())
+        return blueprint_dto
 
 
     def to_string (self):

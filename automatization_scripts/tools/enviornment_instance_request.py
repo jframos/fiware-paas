@@ -34,11 +34,14 @@ class EnvironmentInstanceRequest:
 
     def add_blueprint_instance (self, environment_instance):
 
-        url="%s/%s%s/%s" %(self.paasmanager_url,"envInst/org/FIWARE/vdc", self.vdc,"environmentInstance")
-        headers={'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+        url="%s/%s/%s/%s" %(self.paasmanager_url,"envInst/org/FIWARE/vdc", self.vdc,"environmentInstance")
+
+        print url
+        headers={'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Content-Type': "application/xml",
                  'Accept': "application/json"}
-        payload = environment_instance.to_xml()
-        response= http.post(url, headers,tostring(payload))
+        payload = tostring(environment_instance.to_xml())
+        print payload
+        response= http.post(url, headers,payload)
 
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
         if response.status!=200 and response.status!=204:

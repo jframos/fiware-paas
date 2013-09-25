@@ -17,7 +17,7 @@ class Environment:
         description.text = self.description
 
         for tier in self.tiers:
-            tier_dto = fromstring(tier.to_product_xml())
+            tier_dto = tier.to_tier_xml()
             environment_dto.append(tier_dto)
 
         return environment_dto
