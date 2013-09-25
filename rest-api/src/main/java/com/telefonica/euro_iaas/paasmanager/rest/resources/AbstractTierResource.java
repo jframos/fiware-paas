@@ -19,52 +19,45 @@ import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityExceptio
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidSecurityGroupRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
-import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 
 /*
- * Provides a rest api to works with Environment.
+ * Provides a rest api to works with Abstract Tier.
  * 
- * @author Jesus M. Movilla
+ * @author Henar Muñoz Frutos
  * 
  */
 public interface AbstractTierResource {
 
 	/**
-	 * Add the selected Environment in to the SDC's catalog. If the Environment
-	 * already exists, then add the new Release.
+	 * Add the selected Tier for the abstract enviornmetn into the PaaS Manager
+	 * catalog.
 	 * 
 	 * @param TierDto
 	 *            <ol>
-	 *            <li>The TierDto: contains the information about the product</li>
+	 *            <li>The TierDto: contains the information about the tier</li>
 	 *            </ol>
+	 * @param org
+	 *            The organization where the abstract template belongs
+	 * @param environment
+	 *            The environment where this tier belongs to
 	 * @return the Tier.
 	 * @throws AlreadyExistEntityException
 	 * @throws InvalidEntityException
 	 * @throws EntityNotFoundException
 	 * @throws InvalidSecurityGroupRequestException
-	 * @throws InfrastructureException 
-	 * @throws AlreadyExistsProductReleaseException
-	 *             if the Product Release exists
-	 * @throws InvalidProductReleaseException
-	 *             if the Product Release is invalid due to either OS, Product
-	 *             or Product Release
-	 * @throws InvalidMultiPartRequestException
-	 *             when the MUltipart object in the request is null, or its size
-	 *             is different to three or the type sof the different parts are
-	 *             not ProductReleaseDto, File and File
+	 * @throws InfrastructureException
 	 * 
 	 */
 
 	@POST
 	@Path("/")
-	// @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Consumes( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	void insert(@PathParam("org") String org, 
+	void insert(@PathParam("org") String org,
 			@PathParam("environment") String environment, TierDto TierDto)
 			throws InvalidEntityException, AlreadyExistEntityException,
-			EntityNotFoundException, InvalidSecurityGroupRequestException, InfrastructureException;
+			EntityNotFoundException, InvalidSecurityGroupRequestException,
+			InfrastructureException;
 
 	/**
 	 * Retrieve all Tiers available created in the system.
@@ -95,9 +88,9 @@ public interface AbstractTierResource {
 	 * Retrieve the selected Tier.
 	 * 
 	 * @param name
-	 *            the Tier name
+	 *            the abstract Tier name
 	 * @return the Tier.
-	 * @throws TierNotFoundException
+	 * @throws EntityNotFoundException
 	 *             if the Tier does not exist
 	 */
 
@@ -114,17 +107,15 @@ public interface AbstractTierResource {
 	 * 
 	 * @param name
 	 *            the env name
-	 * @throws InvalidEntityException 
+	 * @throws InvalidEntityException
 	 * @throws TierNotFoundException
 	 *             if the Tier does not exists
-	 * @throws ProductReleaseStillInstalledException
-	 * @thorws ProductReleaseInApplicationReleaseException
 	 */
 
 	@DELETE
 	@Path("/{tierName}")
 	@Consumes( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	void delete(@PathParam("org") String org, 
+	void delete(@PathParam("org") String org,
 			@PathParam("environment") String environment,
 			@PathParam("tierName") String tierName)
 			throws EntityNotFoundException, InvalidEntityException;
@@ -140,14 +131,12 @@ public interface AbstractTierResource {
 	 *             if the Tier is not valid
 	 * @throws ProductReleaseNotFoundException
 	 *             if the ProductRelease does not exists
-	 * @throws ProductReleaseNotFoundException
-	 *             if the ProductRelease does not exists
 	 */
 
 	@PUT
 	@Path("/{tierName}")
 	@Consumes( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	void update(@PathParam("org") String org, 
+	void update(@PathParam("org") String org,
 			@PathParam("environment") String environment, TierDto TierDto)
 			throws EntityNotFoundException, InvalidEntityException,
 			ProductReleaseNotFoundException;

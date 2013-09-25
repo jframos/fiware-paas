@@ -60,8 +60,8 @@ public class AbstractTierResourceTest extends TestCase {
 		tierResource.setTierResourceValidator(validator);
 
 		Mockito.doNothing().doThrow(new RuntimeException()).when(validator)
-				.validateCreate(any(TierDto.class), any(String.class),any(String.class),
-						any(SystemPropertiesProvider.class));
+				.validateCreate(any(TierDto.class), any(String.class),
+						any(String.class), any(SystemPropertiesProvider.class));
 
 		List<ProductRelease> productRelease = new ArrayList<ProductRelease>();
 		productRelease.add(new ProductRelease("test", "0.1"));
@@ -74,16 +74,18 @@ public class AbstractTierResourceTest extends TestCase {
 		tier.setKeypair("keypair");
 
 		Environment environment = new Environment("name", null, "description");
-		
 
-		when(tierManager.create(any(ClaudiaData.class), any(String.class),any(Tier.class)))
-				.thenReturn(tier);
+		when(
+				tierManager.create(any(ClaudiaData.class), any(String.class),
+						any(Tier.class))).thenReturn(tier);
 		when(environmentManager.load(any(String.class), any(String.class)))
 				.thenReturn(environment);
 		when(environmentManager.update(any(Environment.class))).thenReturn(
 				environment);
 
-		when(tierManager.load(any(String.class), any(String.class),any(String.class))).thenThrow(
+		when(
+				tierManager.load(any(String.class), any(String.class),
+						any(String.class))).thenThrow(
 				new EntityNotFoundException(Tier.class, "", tier));
 		when(systemPropertiesProvider.getProperty(any(String.class)))
 				.thenReturn("FIWARE2");
@@ -93,16 +95,16 @@ public class AbstractTierResourceTest extends TestCase {
 	@Test
 	public void testInsertTier() throws Exception {
 
-       Environment environment = new Environment("name", null, "description");
+		Environment environment = new Environment("name", null, "description");
 
 		try {
-			when(environmentManager.load(any(String.class)))
-					.thenReturn(environment);
+			when(environmentManager.load(any(String.class))).thenReturn(
+					environment);
 		} catch (EntityNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		List<ProductReleaseDto> productReleaseDto = new ArrayList<ProductReleaseDto>();
 		productReleaseDto.add(new ProductReleaseDto("test", "0.1"));
 		TierDto tierDto = new TierDto("tiername", new Integer(1),
@@ -115,28 +117,24 @@ public class AbstractTierResourceTest extends TestCase {
 
 		List<TierDto> tiers = new ArrayList<TierDto>();
 		tiers.add(tierDto);
-		
-		
-		tierResource.insert("org", "name",tierDto);
-		
-		
+
+		tierResource.insert("org", "name", tierDto);
 
 	}
-	
+
 	@Test
 	public void testInsertTierNoProducts() throws Exception {
 
-       Environment environment = new Environment("name", null, "description");
+		Environment environment = new Environment("name", null, "description");
 
 		try {
-			when(environmentManager.load(any(String.class)))
-					.thenReturn(environment);
+			when(environmentManager.load(any(String.class))).thenReturn(
+					environment);
 		} catch (EntityNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-	
+
 		TierDto tierDto = new TierDto("tiername", new Integer(1),
 				new Integer(1), new Integer(1), null);
 		tierDto.setImage("image");
@@ -147,14 +145,9 @@ public class AbstractTierResourceTest extends TestCase {
 
 		List<TierDto> tiers = new ArrayList<TierDto>();
 		tiers.add(tierDto);
-		
-		
-		tierResource.insert("org", "name",tierDto);
-		
-		
+
+		tierResource.insert("org", "name", tierDto);
 
 	}
-
-
 
 }

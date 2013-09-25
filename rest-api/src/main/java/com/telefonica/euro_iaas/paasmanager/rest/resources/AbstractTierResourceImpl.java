@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 
@@ -30,7 +29,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
-import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.TierResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
@@ -45,7 +43,6 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 @Scope("request")
 public class AbstractTierResourceImpl implements AbstractTierResource {
 
-
 	private TierManager tierManager;
 
 	private EnvironmentManager environmentManager;
@@ -53,18 +50,19 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 	private SystemPropertiesProvider systemPropertiesProvider;
 
 	private TierResourceValidator tierResourceValidator;
-	
+
 	private ProductReleaseDao productReleaseDao;
 
-	private static Logger log = Logger.getLogger(AbstractTierResourceImpl.class);
+	private static Logger log = Logger
+			.getLogger(AbstractTierResourceImpl.class);
 
 	public void delete(String org, String envName, String tierName)
 			throws EntityNotFoundException, InvalidEntityException {
 		ClaudiaData claudiaData = new ClaudiaData(org, "", envName);
 		log.debug("Deleting tier " + tierName + " from env " + envName);
-		
-		tierResourceValidator.validateDelete("", envName, systemPropertiesProvider);
 
+		tierResourceValidator.validateDelete("", envName,
+				systemPropertiesProvider);
 
 		if (systemPropertiesProvider.getProperty(
 				SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
@@ -85,8 +83,6 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 			log.error("Error deleting the tier " + e.getMessage());
 			throw new WebApplicationException(e, 500);
 		}
-
-		// throw new WebApplicationException(e, 500);
 
 	}
 
@@ -130,36 +126,33 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
 	}
 
-	public void insert(String org,  String environmentName,
-			TierDto tierDto) throws EntityNotFoundException, InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException {
+	public void insert(String org, String environmentName, TierDto tierDto)
+			throws EntityNotFoundException, InvalidEntityException,
+			InvalidSecurityGroupRequestException, InfrastructureException {
 
 		log.debug("Insert tier " + tierDto.getName() + " from env "
-				+ environmentName + " with product release " + tierDto.getProductReleaseDtos());
+				+ environmentName + " with product release "
+				+ tierDto.getProductReleaseDtos());
 		ClaudiaData claudiaData = new ClaudiaData(org, "", environmentName);
-		
 
 		try {
-			tierResourceValidator.validateCreate(tierDto, "",environmentName,
+			tierResourceValidator.validateCreate(tierDto, "", environmentName,
 					systemPropertiesProvider);
 		} catch (InvalidEntityException e1) {
-			throw new
-			  WebApplicationException(e1, 500); 
+			throw new WebApplicationException(e1, 500);
+		} catch (AlreadyExistEntityException e1) {
+			throw new WebApplicationException(e1, 500);
 		}
-		catch (AlreadyExistEntityException e1) {
-			throw new
-			  WebApplicationException(e1, 500); 
-			}
 
 		if (systemPropertiesProvider.getProperty(
 				SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
 			claudiaData.setUser(getCredentials());
 		}
 		Tier tier = tierDto.fromDto();
-		log.debug ("vdc " + claudiaData.getVdc());
+		log.debug("vdc " + claudiaData.getVdc());
 
-	
 		Environment environment = environmentManager.load(environmentName);
-		Tier newTier = tierManager.create(claudiaData,environmentName, tier);
+		Tier newTier = tierManager.create(claudiaData, environmentName, tier);
 		environment.addTier(newTier);
 		environmentManager.update(environment);
 	}
@@ -176,14 +169,14 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 		}
 	}
 
-	public void update(String org, String environmentName,
-			TierDto tierDto) throws EntityNotFoundException,
-			InvalidEntityException, ProductReleaseNotFoundException {
+	public void update(String org, String environmentName, TierDto tierDto)
+			throws EntityNotFoundException, InvalidEntityException,
+			ProductReleaseNotFoundException {
 		log.debug("Update tier " + tierDto.getName() + " from env "
 				+ environmentName);
 		ClaudiaData claudiaData = new ClaudiaData(org, "", environmentName);
 
-		tierResourceValidator.validateUpdate(tierDto, "",environmentName,
+		tierResourceValidator.validateUpdate(tierDto, "", environmentName,
 				systemPropertiesProvider);
 		log.debug("Validated tier " + tierDto.getName() + " from env "
 				+ environmentName);
@@ -192,40 +185,38 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 				SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
 			claudiaData.setUser(getCredentials());
 		}
-		
-		
+
 		Tier newtier = tierDto.fromDto();
 
 		try {
 			Environment environment = environmentManager.load(environmentName);
-			List<Tier> tiers = new ArrayList ();
-			for (Tier tier: environment.getTiers())
-			{
+			List<Tier> tiers = new ArrayList();
+			for (Tier tier : environment.getTiers()) {
 				tiers.add(tier);
 			}
 			environment.setTiers(null);
 			environmentManager.update(environment);
-			for (Tier tier: tiers) {
+			for (Tier tier : tiers) {
 				if (tier.getName().equals(newtier.getName())) {
 					log.debug("load tier " + tierDto.getName());
-					tier = tierManager.load(tierDto.getName(), "", environmentName);
+					tier = tierManager.load(tierDto.getName(), "",
+							environmentName);
 					updateTier(tier, newtier);
-					
+
 				}
 				environment.addTier(tier);
 				environmentManager.update(environment);
 			}
-			
+
 			log.debug("update tier " + tierDto.getName());
-			
-		//	environmentManager.update(environment);
 
 		} catch (EntityNotFoundException e) {
 			throw new WebApplicationException(e, 404);
 		}
 	}
 
-	public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException {
+	public void updateTier(Tier tierold, Tier tiernew)
+			throws InvalidEntityException {
 		tierold.setFlavour(tiernew.getFlavour());
 		tierold.setFloatingip(tiernew.getFloatingip());
 		tierold.setIcono(tiernew.getIcono());
@@ -234,18 +225,21 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 		tierold.setKeypair(tiernew.getKeypair());
 		tierold.setMaximumNumberInstances(tiernew.getMaximumNumberInstances());
 		tierold.setMinimumNumberInstances(tiernew.getMinimumNumberInstances());
-		
+
 		tierold.setProductReleases(null);
 		tierManager.update(tierold);
 		if (tiernew.getProductReleases() == null)
 			return;
-		
-		for (ProductRelease productRelease: tiernew.getProductReleases()) {
+
+		for (ProductRelease productRelease : tiernew.getProductReleases()) {
 			try {
-				productRelease = productReleaseDao.load(productRelease.getProduct()+"-"+ productRelease.getVersion());
+				productRelease = productReleaseDao.load(productRelease
+						.getProduct()
+						+ "-" + productRelease.getVersion());
 			} catch (EntityNotFoundException e) {
-				log.error("The new software " + productRelease.getProduct() + "-" + productRelease.getVersion() +" is not found");
-				
+				log.error("The new software " + productRelease.getProduct()
+						+ "-" + productRelease.getVersion() + " is not found");
+
 			}
 			tierold.addProductRelease(productRelease);
 			tierManager.update(tierold);
@@ -274,13 +268,11 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 			TierResourceValidator tierResourceValidator) {
 		this.tierResourceValidator = tierResourceValidator;
 	}
-	
-	public void setProductReleaseDao(
-			ProductReleaseDao productReleaseDao) {
+
+	public void setProductReleaseDao(ProductReleaseDao productReleaseDao) {
 		this.productReleaseDao = productReleaseDao;
 	}
 
-	
 	private PaasManagerUser getCredentials() {
 		if (systemPropertiesProvider.getProperty(
 				SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE"))
