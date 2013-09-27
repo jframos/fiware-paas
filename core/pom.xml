@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.telefonica.euro_iaas</groupId>
     <artifactId>paas-manager-core</artifactId>
     <packaging>jar</packaging>
     <name>paas-manager-core</name>
-  
-    <parent> 
-      <groupId>com.telefonica.euro_iaas</groupId>
-      <artifactId>paas-manager-server</artifactId>
-      <version>0.0.4-SNAPSHOT</version>
+
+    <parent>
+        <groupId>com.telefonica.euro_iaas</groupId>
+        <artifactId>paas-manager-server</artifactId>
+        <version>0.0.4-SNAPSHOT</version>
     </parent>
-    
-    <properties>
-        <!-- <spring.version>3.0.5.RELEASE</spring.version>-->
-        <spring.version>3.1.0.RELEASE</spring.version>
-    </properties>
+
 
     <dependencies>
         <!--  XPathAPI -->
@@ -29,14 +25,9 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.1.1</version>
-        </dependency>   
+        </dependency>
+        <!--  restlet libraries for REC Manager -->
         <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-test</artifactId>
-        <version>2.5</version>
-      </dependency>
-        <!--  restlet librries for REC Manager -->
-       <dependency>
             <groupId>com.noelios.restlet</groupId>
             <artifactId>com.noelios.restlet</artifactId>
             <version>1.1.7</version>
@@ -49,7 +40,7 @@
         <dependency>
             <groupId>org.restlet</groupId>
             <artifactId>org.restlet.ext.json</artifactId>
-            <version>1.1.7</version> 
+            <version>1.1.7</version>
         </dependency>
         <!-- tcloud apis -->
         <!-- <dependency>
@@ -68,38 +59,30 @@
             <version>0.1</version>
         </dependency>-->
         <!-- CLAUDIA -->
-         <dependency>
+
+        <dependency>
             <groupId>com.telefonica.claudia</groupId>
             <artifactId>claudia-commons</artifactId>
-             <version>0.3.21</version>
+            <version>0.3.21</version>
         </dependency>
         <!-- Introduce hibernate-core-3.6.0 -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-             <version>3.3.0.SP1</version>
-        </dependency>  
+            <version>3.3.0.SP1</version>
+        </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-             <version>3.4.0.GA</version>
-        </dependency>     
-         <dependency>
+            <version>3.4.0.GA</version>
+        </dependency>
+        <dependency>
             <groupId>com.telefonica.claudia</groupId>
             <artifactId>claudia-client</artifactId>
             <version>0.3.33</version>
         </dependency>
-       <dependency>
-            <groupId>com.telefonica.claudia</groupId>
-            <artifactId>clotho-commons</artifactId>
-            <version>0.3.33</version>
-        </dependency>
-         <dependency>
-            <groupId>com.telefonica.claudia</groupId>
-            <artifactId>tcloud-schemas</artifactId>
-            <version>0.11</version>
-        </dependency>
-         <!-- Claudia TCloud-schemas needed or RECManager-->
+
+        <!-- Claudia TCloud-schemas needed or RECManager-->
         <dependency>
             <groupId>com.telefonica.claudia</groupId>
             <artifactId>ovf-generated-schemas</artifactId>
@@ -115,26 +98,27 @@
             <type>ejb</type>
         </dependency>
         <!--   -->
-         <dependency>
+        <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-client</artifactId>
             <!--<version>1.9.50</version>-->
-            <version>1.9.51-SNAPSHOT</version>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-server-model</artifactId>
             <!--<version>1.9.50</version>-->
-            <version>1.9.51-SNAPSHOT</version>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>paas-manager-model</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <!-- Persistence -->
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
-            <artifactId>commons-dao</artifactId>          
+            <artifactId>commons-dao</artifactId>
         </dependency>
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
@@ -147,7 +131,7 @@
             <version>1.4.2</version>
         </dependency>
         <!-- concrete Log4J Implementation for SLF4J API -->
-       <dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.4.2</version>
@@ -164,19 +148,19 @@
             <version>2.0.1</version>
         </dependency>
         <dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>1.4</version>
-		</dependency>
-        
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+        </dependency>
+
         <!-- MYSQL DEPENDENCIES  -->
         <dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.24</version>
-		</dependency>
-        
-        <!-- SPRING DEPENDENCIES --> 
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.24</version>
+        </dependency>
+
+        <!-- SPRING DEPENDENCIES -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
@@ -239,10 +223,10 @@
             <version>1.6.0</version>
             <scope>compile</scope>
         </dependency>
-        
+
         <!-- /SPRING DEPENDENCIES -->
 
-         <!-- SPRINC SECURITY DEPENDENCIES -->
+        <!-- SPRINC SECURITY DEPENDENCIES -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
@@ -266,7 +250,7 @@
             <version>${spring.version}</version>
         </dependency>
         <!-- FIN SPRINC SECURITY DEPENDENCIES -->
-        
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -281,9 +265,7 @@
         </dependency>
 
         <!-- TEST DEPENDENCIES -->
-        
-       
-        
+
 
         <dependency>
             <groupId>junit</groupId>
@@ -293,13 +275,7 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
         </dependency>
-        <dependency>
-            <!-- To get test datasource -->
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
-            <scope>test</scope>
-        </dependency>
+
 
         <dependency>
             <groupId>hsqldb</groupId>
@@ -333,44 +309,41 @@
             <classifier>jdk15</classifier>
         </dependency>
 
-       <dependency>
+        <dependency>
             <groupId>net.sourceforge.xuse</groupId>
             <artifactId>xuse-annotation-tool</artifactId>
             <version>01.00.00-RC2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>sun.jdk</groupId>
+                    <artifactId>tools</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-                <dependency>
+        <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>openstack-tcloud-schemas</artifactId>
         </dependency>
     </dependencies>
-    <repositories>
-    <repository>
-        <id>springsource-milestones</id>
-        <name>SpringSource Milestones Proxy</name>
-        <url>https://oss.sonatype.org/content/repositories/springsource-milestones</url>
-      </repository>
-      </repositories>
+
 
     <build>
-      <plugins>
-             <plugin>
+        <plugins>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-             
-                  <configuration>
+
+                <configuration>
                     <reportPlugins>
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-project-info-reports-plugin</artifactId>
-                   
+
                         </plugin>
-                     </reportPlugins>
-                  </configuration>  
+                    </reportPlugins>
+                </configuration>
             </plugin>
-             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>       
-            </plugin> 
-       </plugins>
+
+        </plugins>
     </build>
 </project>
