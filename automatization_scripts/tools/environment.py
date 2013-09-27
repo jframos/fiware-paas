@@ -22,6 +22,19 @@ class Environment:
 
         return environment_dto
 
+    def to_xml (self):
+        environment_dto = Element('environmentDto')
+        name = SubElement(environment_dto, "name")
+        name.text = self.name
+        description = SubElement(environment_dto, "description")
+        description.text = self.description
+
+        for tier in self.tiers:
+            tier_dto = tier.to_xml()
+            environment_dto.append(tier_dto)
+
+        return environment_dto
+
     def to_string (self):
         var = str(self.name).upper()
         for tier in self.tiers:

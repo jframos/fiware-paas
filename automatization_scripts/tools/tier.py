@@ -52,4 +52,31 @@ class Tier:
                 tier_dtos.append(prod)
         return tier_dtos
 
+    def to_xml (self):
+        tier_dtos = Element("tierDtos")
+        min_num_inst = SubElement(tier_dtos, "minimumNumberInstances")
+        min_num_inst.text=self.tier_num_min
+        ini_num_inst = SubElement(tier_dtos, "initialNumberInstances")
+        ini_num_inst.text=self.tier_num_initial
+        max_mum_inst = SubElement(tier_dtos, "maximumNumberInstances")
+        max_mum_inst.text=self.tier_num_max
+        name_tier= SubElement(tier_dtos, "name")
+        name_tier.text=self.name
+        image_tier= SubElement(tier_dtos, "image")
+        image_tier.text=self.tier_image
+        flavour_tier= SubElement(tier_dtos, "flavour")
+        flavour_tier.text=self.tier_flavour
+        keypair= SubElement(tier_dtos, "keypair")
+        keypair.text=self.tier_keypair
+        floating_ip= SubElement(tier_dtos, "floatingip")
+        floating_ip.text=self.tier_floatingip
+
+
+        if self.products:
+            for product in self.products:
+                prod = product.to_product_xml_env()
+
+                tier_dtos.append(prod)
+        return tier_dtos
+
 

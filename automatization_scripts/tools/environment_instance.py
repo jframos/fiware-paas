@@ -14,11 +14,11 @@ class EnvironmentInstance:
 
     def to_xml (self):
         blueprint_dto = Element('environmentInstanceDto')
-        name = SubElement(blueprint_dto, "name")
+        name = SubElement(blueprint_dto, "blueprintName")
         name.text = self.blueprint_name
         description = SubElement(blueprint_dto, "description")
         description.text = self.blueprint_description
-        blueprint_dto.append (self.environment.to_env_xml())
+        blueprint_dto.append (self.environment.to_xml())
         return blueprint_dto
 
 

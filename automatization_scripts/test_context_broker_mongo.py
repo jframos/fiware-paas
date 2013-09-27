@@ -15,11 +15,11 @@ g=EnvironmentRequest(config['keystone_url'], config['paasmanager_url'], config['
                      config['vdc'],config['sdc_url'])
 
 
-environment_name = "context_broker_temp1"
-bluename = "blue_context"
+environment_name = "context3"
+bluename = "blue2"
 
 
-g.delete_environment(environment_name)
+
 print('Create a blueprint Template No tiers for contextbroker: ')
 g.add_environment(environment_name,'description')
 
