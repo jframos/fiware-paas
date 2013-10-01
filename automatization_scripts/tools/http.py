@@ -105,6 +105,7 @@ def get_token(keystone_url, tenant, user, password):
 
 def processTask (headers,taskdom):
     try:
+        print taskdom
         href = taskdom["@href"]
         status = taskdom["@status"]
         while status == 'RUNNING':

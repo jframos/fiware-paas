@@ -10,6 +10,7 @@ import json
 from tools.productinstance import ProductInstance
 from tools.productrelease import Attribute
 from tools.productinstancedto import ProductInstanceDto
+from tools.productinstancedto import ProductReleaseDto
 from tools.productrequest import ProductRequest
 from xml.etree.ElementTree import tostring
 
@@ -31,27 +32,28 @@ class ProductInstanceRequest:
     def __get__token (self):
         self.token = http.get_token(self.keystone_url+'/tokens',self.tenant, self.user, self.password)
 
-    def deploy_product(self, ip, product_name, product_version, attributes):
+    def deploy_product(self, ip, product_name, product_version, attributes_string):
         url="%s/%s/%s/%s" %(self.sdc_url,"vdc", self.vdc,"productInstance")
-        headers={'Content-Type': 'application/xml'}
+        headers={'Content-Type': 'application/xml', 'Accept': 'application/json'}
 
         productrequest=ProductRequest(self.keystone_url, self.sdc_url,self.tenant, self.user, self.password)
 
-        product_release = productrequest.get_product_info ( product_name, product_version)
-        attributes = self.__process_attributes(attributes)
+        productrequest.get_product_info ( product_name, product_version)
+        attributes = self.__process_attributes(attributes_string)
+
+        product_release = ProductReleaseDto (product_name, product_version)
 
         productInstanceDto = ProductInstanceDto(ip,product_release,attributes)
-
-
         payload=productInstanceDto.to_xml()
-        print payload
 
         response= http.post(url,headers, tostring(payload))
 
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
         if response.status!=200:
-            print 'error to add the product sdc'
+            print 'error to add the product sdc ' + str (response.status)
             sys.exit(1)
+        else:
+            http.processTask (headers,json.loads(response.read()))
 
     def __process_attributes (self, attributes_string):
         attributes = []
@@ -80,10 +82,16 @@ class ProductInstanceRequest:
             data = json.loads(response.read())
 
             products=data["productInstance"]
+            print products
 
-            for product in products:
-                product_release = ProductRelease (product['productRelease']['product']['name'],product['productRelease']['version'], product['productRelease']['product']['description'])
-                productInstance = ProductInstance (product['vm']['hostname'], product['status'],product['vm']['ip'], product_release)
+            if isinstance(products,list):
+                for product in products:
+                    print product
+                    product_release = ProductRelease (product['productRelease']['product']['name'],product['productRelease']['version'], product['productRelease']['product']['description'])
+                    productInstance = ProductInstance (product['vm']['hostname'], product['status'],product['vm']['ip'], product_release)
+                    productInstance.to_string()
+            else:
+                product_release = ProductRelease (products['productRelease']['product']['name'],products['productRelease']['version'], products['productRelease']['product']['description'])
+                productInstance = ProductInstance (products['vm']['hostname'], products['status'],products['vm']['ip'], product_release)
                 productInstance.to_string()
-
 

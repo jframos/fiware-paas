@@ -33,7 +33,7 @@ public class VM {
 	private String fqn = "";
 
 
-	private HashMap<String,String> networks = new HashMap<String,String> ();
+	private HashMap<String,String> networks = null;
 
 	/** the OSType ***/
 	@Column(length = 8)
@@ -246,6 +246,10 @@ public class VM {
 	}
 	
 	public void addNetwork(String network, String ip) {
+		if (networks==null){
+			networks = new HashMap<String,String>();
+		}
+			
 		this.networks.put(network, ip);
 	}
 	
