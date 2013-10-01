@@ -18,6 +18,9 @@ class ProductRelease:
     def add_attribute(self, attribute):
         self.attributes.append(attribute)
 
+    def add_attributes(self, attributes):
+        self.attributes = attributes
+
     def to_product_xml (self):
 
         product = Element('productReleaseDto')
@@ -37,7 +40,7 @@ class ProductRelease:
             key.text = att.key
             value = SubElement(attribute, "value")
             value.text = att.value
-
+        print product
         return product
 
     def to_product_xml_env (self):

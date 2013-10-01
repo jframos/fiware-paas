@@ -36,10 +36,11 @@ class EnvironmentRequest:
         #url="%s/%s" %(self.paasmanager_url,"catalog/org/FIWARE/environment")
         headers={'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
              'Accept': "application/json"}
+        print headers
         response= http.get(url, headers)
          ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
         if response.status!=200:
-            print 'error to obtain the environment'
+            print 'error to obtain the environment '+ str(response.status)
             sys.exit(1)
         else:
             data = json.loads(response.read())
@@ -98,6 +99,7 @@ class EnvironmentRequest:
         if response.status!=200 and response.status!=204:
             print 'error to add an environment ' + str(response.status)
             sys.exit(1)
+
 
     def __add_tier_environment(self, url, tier_payload):
         headers={'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,

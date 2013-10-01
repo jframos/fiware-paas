@@ -7,6 +7,7 @@ import sys
 
 import json
 from tools.productrelease import Attribute
+from xml.etree.ElementTree import tostring
 
 ###
 ### http://docs.openstack.org/developer/glance/glanceapi.html
@@ -31,18 +32,14 @@ class ProductRequest:
 
         attributes = self.__process_attributes(attributes)
 
-        product = ProductRelease(product_name,product_version,product_description
-        )
-
+        product = ProductRelease(product_name,product_version,product_description)
         for att in attributes:
-
-
             product.add_attribute(att)
 
         payload=product.to_product_xml()
+        print payload
 
-
-        response= http.post(url,headers, payload)
+        response= http.post(url,headers, tostring(payload))
 
 
 

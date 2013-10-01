@@ -4,6 +4,7 @@ import httplib
 from xml.dom.minidom import parse, parseString
 from urlparse import urlparse
 import sys
+import json
 
 import httplib
 import mimetypes
@@ -101,3 +102,35 @@ def get_token(keystone_url, tenant, user, password):
         except:
             print ("Error in the processing enviroment")
             sys.exit(1)
+
+def processTask (headers,taskdom):
+    try:
+        href = taskdom["@href"]
+        status = taskdom["@status"]
+        while status == 'RUNNING':
+            data1 = get_task (href,headers)
+            data = json.loads (data1)
+            status = data["@status"]
+
+        if status == 'ERROR':
+            error = taskdom["error"]
+            message = error["message"]
+            majorErrorCode = error["majorErrorCode"]
+            print "ERROR : " + message + " " + majorErrorCode
+        return status
+    except:
+        print ("Error in parsing the taskId " )
+        sys.exit(1)
+
+def get_task(url, headers):
+
+# url="%s/%s" %(keystone_url,"v2.0/tokens")
+    response=get(url, headers)
+
+    ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
+    if response.status!=200:
+        print 'error to obtain the token ' + str (response.status)
+        sys.exit(1)
+    else:
+        data = response.read()
+        return data

@@ -1,6 +1,6 @@
 __author__ = 'henar'
 
-from xml.etree.ElementTree import Element, SubElement,tostring,fromstring
+from xml.etree.ElementTree import Element, SubElement
 
 
 class Tier:

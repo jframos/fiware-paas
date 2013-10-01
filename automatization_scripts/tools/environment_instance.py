@@ -5,14 +5,21 @@ from xml.etree.ElementTree import Element, SubElement, fromstring
 class EnvironmentInstance:
 
 
-    def __init__(self, blueprint_name,blueprint_description, environment):
+    def __init__(self, blueprint_name,blueprint_description, environment=None, status='INIT' ):
         self.blueprint_name=blueprint_name
         self.blueprint_description=blueprint_description
+        self.status = status
         self.environment = environment
         self.tiers_instances=[]
 
+    def add_environment (self, environment):
+        self.environment = environment
+
+    def get_tier_environment (self, environment):
+        self.environment = environment
 
     def to_xml (self):
+
         blueprint_dto = Element('environmentInstanceDto')
         name = SubElement(blueprint_dto, "blueprintName")
         name.text = self.blueprint_name

@@ -5,6 +5,7 @@ __author__ = 'henar'
 import sys
 from xml.etree.ElementTree import tostring
 import json
+from tools.environment_instance import EnvironmentInstance
 
 from tools.environment import Environment
 from tools.tier import Tier
@@ -32,18 +33,62 @@ class EnvironmentInstanceRequest:
     def __get__token (self):
         return http.get_token(self.keystone_url+'/tokens',self.tenant, self.user, self.password)
 
+    def __process_env_inst (self, data):
+        envIns = EnvironmentInstance (data['blueprintName'],data['description'],None, data['status'])
+        return envIns
+
+
+
+
     def add_blueprint_instance (self, environment_instance):
 
         url="%s/%s/%s/%s" %(self.paasmanager_url,"envInst/org/FIWARE/vdc", self.vdc,"environmentInstance")
-
-        print url
         headers={'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Content-Type': "application/xml",
                  'Accept': "application/json"}
         payload = tostring(environment_instance.to_xml())
-        print payload
         response= http.post(url, headers,payload)
 
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
         if response.status!=200 and response.status!=204:
             print 'error to deploy the environment ' + str(response.status)
             sys.exit(1)
+        else:
+
+            http.processTask (headers,json.loads(response.read()))
+
+    def delete_blueprint_instance (self, environment_instance):
+
+        url="%s/%s/%s/%s/%s" %(self.paasmanager_url,"envInst/org/FIWARE/vdc", self.vdc,"environmentInstance", environment_instance)
+
+        headers={'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Content-Type': "application/xml",
+                 'Accept': "application/json"}
+
+        response= http.delete(url, headers)
+
+        ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
+        if response.status!=200 and response.status!=204:
+            print 'error to delete the environment ' + str(response.status)
+            sys.exit(1)
+        else:
+            http.processTask (headers,json.loads(response.read()))
+
+    def get_blueprint_instance (self, environment_instance_name):
+
+        url="%s/%s/%s/%s/%s" %(self.paasmanager_url,"envInst/org/FIWARE/vdc", self.vdc,"environmentInstance",environment_instance_name)
+
+        print url
+        headers={'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Content-Type': "application/xml",
+                 'Accept': "application/json"}
+
+        response= http.get(url, headers)
+
+        ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
+        if response.status!=200 and response.status!=204:
+            print 'error to deploy the environment ' + str(response.status)
+            sys.exit(1)
+        else:
+            envInstance = self.__process_env_inst(json.loads(response.read()))
+            envInstance.to_string()
+
+
+
