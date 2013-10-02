@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 __author__ = 'henar'
 
-from tools.productrequest import ProductRequest
+from tools.productrinstanceequest import ProductInstanceRequest
 
 if __name__ == "__main__":
 
@@ -13,13 +13,13 @@ if __name__ == "__main__":
     total = 3
     cmd_args = []
     cmd_args.append('hola')
-    cmd_args.append('list')
+    cmd_args.append('add')
     #cosmos_injection_node
     #cosmos_master_node
     #cosmos_slave_node
-    cmd_args.append('otro')
-    cmd_args.append('0.1')
-    cmd_args.append('descrition')
+    cmd_args.append('130.206.82.162')
+    cmd_args.append('git')
+    cmd_args.append('1.7')
     cmd_args.append('sdccoregroupid=cluster_name;cluster_name=test;openports=50030 50031 14000')
 
 
@@ -34,16 +34,15 @@ if __name__ == "__main__":
     config = {}
     execfile("sdc.conf", config)
 
-    g=ProductRequest(config['keystone_url'], config['sdc_url'], config['tenant'], config['user'], config['password'])
-
+    g=ProductInstanceRequest(config['keystone_url'], config['sdc_url'], config['tenant'], config['user'], config['password'], config['vdc'])
 
     if cmd_args[1].find("list") != -1:
-        g.get_products()
+        g.get_product_instances()
 
     elif cmd_args[1].find("delete") != -1:
         g.delete_product(cmd_args[2])
     elif cmd_args[1].find("add") != -1:
-        g.add_product(cmd_args[2],cmd_args[3],cmd_args[4],cmd_args[5])
+        g.deploy_product(cmd_args[2],cmd_args[3],cmd_args[4],cmd_args[5])
     elif cmd_args[1].find("show") != -1:
         g.get_product_info(cmd_args[2],cmd_args[3])
 
