@@ -2,9 +2,12 @@ package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 
@@ -18,266 +21,291 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TierDto {
 
-	private String name;
-	private String flavour;
-	private String image;
+    private String name;
+    private String flavour;
+    private String image;
 
-	private Integer maximumNumberInstances;
-	private Integer minimumNumberInstances;
-	private Integer initialNumberInstances;
+    private Integer maximumNumberInstances;
+    private Integer minimumNumberInstances;
+    private Integer initialNumberInstances;
 
-	private List<ProductReleaseDto> productReleaseDtos;
+    private List<ProductReleaseDto> productReleaseDtos;
+    private List<NetworkDto> networkDto;
 
-	private String icono = "";
-	private String security_group = "";
-	private String keypair = "";
-	private String floatingip = "";
-
-
-	/**
-	 * Default Constructor
-	 */
-	public TierDto() {
-	}
-
-	/**
-	 * @param name
-	 * @param maximumNumberInstances
-	 * @param minimumNumberInstances
-	 * @param initial_number_instances
-	 * @param productReleases
-	 */
-	public TierDto(String name, Integer maximumNumberInstances,
-			Integer minimumNumberInstances, Integer initialNumberInstances,
-			List<ProductReleaseDto> productReleaseDtos) {
-		this.name = name;
-		this.maximumNumberInstances = maximumNumberInstances;
-		this.minimumNumberInstances = minimumNumberInstances;
-		this.initialNumberInstances = initialNumberInstances;
-		this.productReleaseDtos = productReleaseDtos;
-	}
-
-	public TierDto(String name, Integer maximumNumberInstances,
-			Integer minimumNumberInstances, Integer initialNumberInstances,
-			List<ProductReleaseDto> productReleaseDtos, String flavour,
-			String image, String icono, String security_group, String keypair,
-			String floatingip) {
-		this.name = name;
-		this.maximumNumberInstances = maximumNumberInstances;
-		this.minimumNumberInstances = minimumNumberInstances;
-		this.initialNumberInstances = initialNumberInstances;
-		this.productReleaseDtos = productReleaseDtos;
-		this.flavour = flavour;
-		this.image = image;
-		this.icono = icono;
-		this.security_group = security_group;
-		this.keypair = keypair;
-		this.floatingip = floatingip;
-	}
-
-	public TierDto(String name, Integer maximumNumberInstances,
-			Integer minimumNumberInstances, Integer initialNumberInstances,
-			List<ProductReleaseDto> productReleaseDtos, String flavour,
-			String image, String icono, String keypair, String floatingip) {
-		this.name = name;
-		this.maximumNumberInstances = maximumNumberInstances;
-		this.minimumNumberInstances = minimumNumberInstances;
-		this.initialNumberInstances = initialNumberInstances;
-		this.productReleaseDtos = productReleaseDtos;
-		this.flavour = flavour;
-		this.image = image;
-		this.icono = icono;
-		this.keypair = keypair;
-		this.floatingip = floatingip;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    private String icono = "";
+    private String securityGroup = "";
+    private String keypair = "";
+    private String floatingip = "";
 
 
-	/**
-	 * @return the maximum_number_instances
-	 */
-	public Integer getMaximumNumberInstances() {
-		return maximumNumberInstances;
-	}
+    /**
+     * Default Constructor
+     */
+    public TierDto() {
+        this.networkDto = new ArrayList<NetworkDto>();
+        this.productReleaseDtos = new ArrayList<ProductReleaseDto>();
+    }
 
-	/**
-	 * @return the minimumNumberInstances
-	 */
-	public Integer getMinimumNumberInstances() {
-		return minimumNumberInstances;
-	}
+    /**
+     * @param name
+     * @param maximumNumberInstances
+     * @param minimumNumberInstances
+     * @param initial_number_instances
+     * @param productReleases
+     */
+    public TierDto(String name, Integer maximumNumberInstances,
+            Integer minimumNumberInstances, Integer initialNumberInstances,
+            List<ProductReleaseDto> productReleaseDtos) {
+        this.name = name;
+        this.maximumNumberInstances = maximumNumberInstances;
+        this.minimumNumberInstances = minimumNumberInstances;
+        this.initialNumberInstances = initialNumberInstances;
+        this.productReleaseDtos = productReleaseDtos;
+        this.networkDto = new ArrayList<NetworkDto>();
+    }
 
-	/**
-	 * @return the initialNumberInstances
-	 */
-	public Integer getInitialNumberInstances() {
-		return initialNumberInstances;
-	}
+    public TierDto(String name, Integer maximumNumberInstances,
+            Integer minimumNumberInstances, Integer initialNumberInstances,
+            List<ProductReleaseDto> productReleaseDtos, String flavour,
+            String image, String icono, String keypair, String floatingip) {
+        this.name = name;
+        this.maximumNumberInstances = maximumNumberInstances;
+        this.minimumNumberInstances = minimumNumberInstances;
+        this.initialNumberInstances = initialNumberInstances;
+        this.productReleaseDtos = productReleaseDtos;
+        this.flavour = flavour;
+        this.image = image;
+        this.icono = icono;
+        this.keypair = keypair;
+        this.floatingip = floatingip;
+        this.networkDto = new ArrayList<NetworkDto>();
+    }
 
-	/**
-	 * @return the productReleases
-	 */
-	public List<ProductReleaseDto> getProductReleaseDtos() {
-		return productReleaseDtos;
-	}
+    public TierDto(String name, Integer maximumNumberInstances,
+            Integer minimumNumberInstances, Integer initialNumberInstances,
+            List<ProductReleaseDto> productReleaseDtos, String flavour,
+            String image, String icono, String securityGroup, String keypair,
+            String floatingip) {
+        this.name = name;
+        this.maximumNumberInstances = maximumNumberInstances;
+        this.minimumNumberInstances = minimumNumberInstances;
+        this.initialNumberInstances = initialNumberInstances;
+        this.productReleaseDtos = productReleaseDtos;
+        this.flavour = flavour;
+        this.image = image;
+        this.icono = icono;
+        this.securityGroup = securityGroup;
+        this.keypair = keypair;
+        this.floatingip = floatingip;
+        this.networkDto = new ArrayList<NetworkDto>();
+    }
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * Add network dto.
+     * @param networkDto the network do to be add to the array.
+     */
+    public void addNetworkDto(NetworkDto networkDto) {
+        if (networkDto == null) {
+            this.networkDto = new ArrayList<NetworkDto>();
+        }
+        this.networkDto.add(networkDto);
+    }
 
-	/**
-	 * @param maximumNumberInstances
-	 *            the maximumNumberInstances to set
-	 */
-	public void setMaximumNumberInstances(Integer maximumNumberInstances) {
-		this.maximumNumberInstances = maximumNumberInstances;
-	}
+    /**
+     * Add product release.
+     * @param productReleaseDto the product release to be added.
+     */
+    public void addProductRelease(ProductReleaseDto productReleaseDto) {
+        if (this.productReleaseDtos == null) {
+            productReleaseDtos = new ArrayList<ProductReleaseDto>();
+        }
+        productReleaseDtos.add(productReleaseDto);
+    }
 
-	/**
-	 * @param minimumNumberInstances
-	 *            the minimumNumberInstances to set
-	 */
-	public void setMinimumNumberInstances(Integer minimumNumberInstances) {
-		this.minimumNumberInstances = minimumNumberInstances;
-	}
+    /**
+     * It obtains the Tier object associated.
+     * @tier
+     */
+    public Tier fromDto() {
 
-	/**
-	 * @param initialNumberInstances
-	 *            the initialNumberInstances to set
-	 */
-	public void setInitialNumberInstances(Integer initialNumberInstances) {
-		this.initialNumberInstances = initialNumberInstances;
-	}
+        Tier tier = new Tier();
+        tier.setName(getName());
+        tier.setInitialNumberInstances(getInitialNumberInstances());
+        tier.setMaximumNumberInstances(getMaximumNumberInstances());
+        tier.setMinimumNumberInstances(getMinimumNumberInstances());
+        tier.setIcono(getIcono());
+        tier.setFlavour(getFlavour());
+        tier.setImage(getImage());
+        tier.setKeypair(getKeypair());
+        tier.setFloatingip(getFloatingip());
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setFlavour(String flavour) {
-		this.flavour = flavour;
-	}
+        for (ProductReleaseDto pReleaseDto: getProductReleaseDtos()) {
+            ProductRelease pRelease = new ProductRelease();
+            pRelease.setProduct(pReleaseDto.getProductName());
+            pRelease.setVersion(pReleaseDto.getVersion());
 
-	public String getFlavour() {
-		return flavour;
-	}
+            if (pReleaseDto.getProductDescription() != null) {
+                pRelease.setDescription(pReleaseDto.getProductDescription());
+            }
+            tier.addProductRelease(pRelease);
+        }
 
-	public void setImage(String image) {
-		this.image = image;
-	}
+        for (NetworkDto networkDto: this.getNetworksDto()) {
+            Network network = networkDto.fromDto();
+            tier.addNetwork(network);
+        }
+        return tier;
+    }
 
-	public String getImage() {
-		return this.image;
-	}
-
-	/**
-	 * @param productReleases
-	 *            the productReleases to set
-	 */
-	public void setProductReleaseDtos(List<ProductReleaseDto> productReleaseDtos) {
-		this.productReleaseDtos = productReleaseDtos;
-	}
-
-	public void addProductRelease(ProductReleaseDto productReleaseDto) {
-		if (this.productReleaseDtos == null)
-			productReleaseDtos = new ArrayList();
-
-		productReleaseDtos.add(productReleaseDto);
-	}
-
-	public void removeProductRelease(ProductReleaseDto productReleaseDto) {
-
-		productReleaseDtos.remove(productReleaseDto);
-	}
-
-	public void setIcono(String icono) {
-		this.icono = icono;
-	}
-
-	public String getIcono() {
-		return this.icono;
-	}
-
-	public void setSecurity_group(String security_group) {
-		this.security_group = security_group;
-	}
-
-	public String getSecurity_group() {
-		return this.security_group;
-	}
-
-	public void setKeypair(String keypair) {
-		this.keypair = keypair;
-	}
-
-	public String getKeypair() {
-		return this.keypair;
-	}
-
-	public void setFloatingip(String floatingip) {
-		this.floatingip = floatingip;
-	}
-
-	public String getFloatingip() {
-		return this.floatingip;
-	}
-
-	public Tier fromDto() {
-
-		List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
-		Tier tier = new Tier();
-		tier.setName(getName());
-		tier.setInitialNumberInstances(getInitialNumberInstances());
-		tier.setMaximumNumberInstances(getMaximumNumberInstances());
-		tier.setMinimumNumberInstances(getMinimumNumberInstances());
-		tier.setIcono(getIcono());
-		tier.setFlavour(getFlavour());
-		tier.setImage(getImage());
-
-		tier.setKeypair(getKeypair());
-		tier.setFloatingip(getFloatingip());
+    public String getFlavour() {
+        return flavour;
+    }
 
 
-		if (getProductReleaseDtos() == null) {
-			return tier;
-		}
-		for (int i = 0; i < getProductReleaseDtos().size(); i++) {
+    public String getFloatingip() {
+        return this.floatingip;
+    }
 
-			ProductRelease pRelease = new ProductRelease();
-			ProductReleaseDto pReleaseDto = getProductReleaseDtos().get(i);
+    public String getIcono() {
+        return this.icono;
+    }
 
-			pRelease.setProduct(pReleaseDto.getProductName());
-			pRelease.setVersion(pReleaseDto.getVersion());
+    public String getImage() {
+        return this.image;
+    }
 
-			if (pReleaseDto.getProductDescription() != null)
-				pRelease.setDescription(pReleaseDto.getProductDescription());
+    /**
+     * @return the initialNumberInstances
+     */
+    public Integer getInitialNumberInstances() {
+        return initialNumberInstances;
+    }
 
-			/*
-			 * if (pReleaseDto.getPrivateAttributes()!= null)
-			 * pRelease.setAttributes(pReleaseDto.getPrivateAttributes());
-			 * 
-			 * if (pReleaseDto.getSupportedOS() != null)
-			 * pRelease.setSupportedOOSS(pReleaseDto.getSupportedOS());
-			 * 
-			 * if (pReleaseDto.getTransitableReleases() != null)
-			 * pRelease.setTransitableReleases
-			 * (pReleaseDto.getTransitableReleases());
-			 */
+    public String getKeypair() {
+        return this.keypair;
+    }
 
-			productReleases.add(pRelease);
-		}
+    /**
+     * @return the maximum_number_instances
+     */
+    public Integer getMaximumNumberInstances() {
+        return maximumNumberInstances;
+    }
 
-		tier.setProductReleases(productReleases);
-		return tier;
-	}
+    /**
+     * @return the minimumNumberInstances
+     */
+    public Integer getMinimumNumberInstances() {
+        return minimumNumberInstances;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @return the list of networks associated
+     */
+    public List<NetworkDto> getNetworksDto() {
+        return networkDto;
+    }
+
+    /**
+     * @return the productReleases
+     */
+    public List<ProductReleaseDto> getProductReleaseDtos() {
+        return productReleaseDtos;
+    }
+
+    public String getSecurity_group() {
+        return this.securityGroup;
+    }
+
+    public void removeProductRelease(ProductReleaseDto productReleaseDto) {
+
+        productReleaseDtos.remove(productReleaseDto);
+    }
+
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setFlavour(String flavour) {
+        this.flavour = flavour;
+    }
+
+    public void setFloatingip(String floatingip) {
+        this.floatingip = floatingip;
+    }
+
+    public void setIcono(String icono) {
+        this.icono = icono;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    /**
+     * @param initialNumberInstances
+     *            the initialNumberInstances to set
+     */
+    public void setInitialNumberInstances(Integer initialNumberInstances) {
+        this.initialNumberInstances = initialNumberInstances;
+    }
+
+    public void setKeypair(String keypair) {
+        this.keypair = keypair;
+    }
+
+    /**
+     * @param maximumNumberInstances
+     *            the maximumNumberInstances to set
+     */
+    public void setMaximumNumberInstances(Integer maximumNumberInstances) {
+        this.maximumNumberInstances = maximumNumberInstances;
+    }
+
+    /**
+     * @param minimumNumberInstances
+     *            the minimumNumberInstances to set
+     */
+    public void setMinimumNumberInstances(Integer minimumNumberInstances) {
+        this.minimumNumberInstances = minimumNumberInstances;
+    }
+
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @param networkDto the network do to be add to the array
+     */
+    public void setNetworksDto(List<NetworkDto> networkDto) {
+        this.networkDto = networkDto;
+    }
+
+    /**
+     * @param productReleases
+     *            the productReleases to set
+     */
+    public void setProductReleaseDtos(List<ProductReleaseDto> productReleaseDtos) {
+        this.productReleaseDtos = productReleaseDtos;
+    }
+
+    /**
+     * @param securityGroup
+     *            the securityGroup to set
+     */
+    public void setSecurityGroup(String securityGroup) {
+        this.securityGroup = securityGroup;
+    }
 
 }

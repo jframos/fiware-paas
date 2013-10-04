@@ -9,10 +9,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.JoinColumn;
+
 import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 
@@ -25,363 +26,403 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 @Entity
 public class Tier {
 
-	public final static String NAME_FIELD = "name";
-	public final static String VDC_FIELD = "vdc";
-	public final static String ENVIRONMENT_NAME_FIELD = "environmentname";
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+    public final static String NAME_FIELD = "name";
+    public final static String VDC_FIELD = "vdc";
+    public final static String ENVIRONMENT_NAME_FIELD = "environmentname";
 
-	@Column(nullable = false, length = 256)
-	private String name = "";
-	private String vdc = "";
-	private String environmentname = "";
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-	private String flavour = "";
-	private String image = "";
-	private String icono = "";
-	// private String securityGroupName;
-	private String keypair = "";
-	private String floatingip = "false";
+    @Column(nullable = false, length = 256)
+    private String name = "";
+    private String vdc = "";
+    private String environmentname = "";
 
-	private Integer maximumNumberInstances = new Integer(0);
-	private Integer minimumNumberInstances = new Integer(0);
-	private Integer initialNumberInstances = new Integer(0);
+    private String flavour = "";
+    private String image = "";
+    private String icono = "";
+    // private String securityGroupName;
+    private String keypair = "";
+    private String floatingip = "false";
 
-	@Column(length = 90000)
-	private String payload;
+    private Integer maximumNumberInstances = new Integer(0);
+    private Integer minimumNumberInstances = new Integer(0);
+    private Integer initialNumberInstances = new Integer(0);
 
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "tier_has_productReleases", joinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "productRelease_ID", nullable = false, updatable = false) })
-	private List<ProductRelease> productReleases;
+    @Column(length = 90000)
+    private String payload;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	private SecurityGroup securityGroup;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tier_has_productReleases", joinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "productRelease_ID", nullable = false, updatable = false) })
+    private List<ProductRelease> productReleases;
 
-	/**
-	 * Default Constructor
-	 */
-	public Tier() {
-	}
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tier_has_networks", joinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "network_ID", nullable = false, updatable = false) })
+    private List<Network> networks;
 
-	public Tier(String name) {
-		this.name = name;
-	}
+    @ManyToOne(fetch = FetchType.EAGER)
+    private SecurityGroup securityGroup;
 
-	/**
-	 * @param name
-	 * @param maximum_number_instances
-	 * @param minimum_number_instances
-	 * @param initial_number_instances
-	 * @param productReleases
-	 */
-	public Tier(String name, Integer maximumNumberInstances,
-			Integer minimumNumberInstances, Integer initialNumberInstances,
-			List<ProductRelease> productReleases, String flavour, String image,
-			String icono) {
-		this.name = name;
-		this.maximumNumberInstances = maximumNumberInstances;
-		this.minimumNumberInstances = minimumNumberInstances;
-		this.initialNumberInstances = initialNumberInstances;
-		this.productReleases = productReleases;
-		this.flavour = flavour;
-		this.image = image;
-		this.icono = icono;
-	}
+    /**
+     * Default Constructor
+     */
+    public Tier() {
+    }
 
-	public Tier(String name, Integer maximumNumberInstances,
-			Integer minimumNumberInstances, Integer initialNumberInstances,
-			List<ProductRelease> productReleases, String flavour, String image,
-			String icono, String keypair, String floatingip, String payload) {
-		this.name = name;
-		this.maximumNumberInstances = maximumNumberInstances;
-		this.minimumNumberInstances = minimumNumberInstances;
-		this.initialNumberInstances = initialNumberInstances;
-		this.productReleases = productReleases;
+    /**
+     * @arg name
+     */
+    public Tier(String name) {
+        this.name = name;
+    }
 
-		this.flavour = flavour;
-		this.image = image;
-		this.icono = icono;
-		// this.securityGroupName = securityGroupName;
-		this.keypair = keypair;
-		this.floatingip = floatingip;
-		this.payload = payload;
-	}
+    public Tier(String name, Integer maximumNumberInstances,
+            Integer minimumNumberInstances, Integer initialNumberInstances,
+            List<ProductRelease> productReleases) {
+        this.name = name;
+        this.maximumNumberInstances = maximumNumberInstances;
+        this.minimumNumberInstances = minimumNumberInstances;
+        this.initialNumberInstances = initialNumberInstances;
+        this.productReleases = productReleases;
 
-	public Tier(String name, Integer maximumNumberInstances,
-			Integer minimumNumberInstances, Integer initialNumberInstances,
-			List<ProductRelease> productReleases) {
-		this.name = name;
-		this.maximumNumberInstances = maximumNumberInstances;
-		this.minimumNumberInstances = minimumNumberInstances;
-		this.initialNumberInstances = initialNumberInstances;
-		this.productReleases = productReleases;
+    }
 
-	}
+    /**
+     * @param name
+     * @param maximum_number_instances
+     * @param minimum_number_instances
+     * @param initial_number_instances
+     * @param productReleases
+     */
+    public Tier(String name, Integer maximumNumberInstances,
+            Integer minimumNumberInstances, Integer initialNumberInstances,
+            List<ProductRelease> productReleases, String flavour, String image,
+            String icono) {
+        this.name = name;
+        this.maximumNumberInstances = maximumNumberInstances;
+        this.minimumNumberInstances = minimumNumberInstances;
+        this.initialNumberInstances = initialNumberInstances;
+        this.productReleases = productReleases;
+        this.flavour = flavour;
+        this.image = image;
+        this.icono = icono;
+    }
 
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
-	
-	public void setEnviromentName(String environmentname) {
-		this.environmentname = environmentname;
-	}
-	
-	
+    public Tier(String name, Integer maximumNumberInstances,
+            Integer minimumNumberInstances, Integer initialNumberInstances,
+            List<ProductRelease> productReleases, String flavour, String image,
+            String icono, String keypair, String floatingip, String payload) {
+        this.name = name;
+        this.maximumNumberInstances = maximumNumberInstances;
+        this.minimumNumberInstances = minimumNumberInstances;
+        this.initialNumberInstances = initialNumberInstances;
+        this.productReleases = productReleases;
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+        this.flavour = flavour;
+        this.image = image;
+        this.icono = icono;
+        // this.securityGroupName = securityGroupName;
+        this.keypair = keypair;
+        this.floatingip = floatingip;
+        this.payload = payload;
+    }
 
-	public String getVdc() {
-		return vdc;
-	}
+    /**
+     * @param network
+     *            the network list
+     */
+    public void addNetwork(Network network) {
+        if (this.networks  == null) {
+            this.networks = new ArrayList<Network>();
+        }
+        networks.add(network);
 
-	public void setVdc(String vdc) {
-		this.vdc = vdc;
-	}
+    }
 
-	/**
-	 * @return the maximum_number_instances
-	 */
-	public Integer getMaximumNumberInstances() {
-		return maximumNumberInstances;
-	}
+    public void addProductRelease(ProductRelease productRelease) {
+        if (this.productReleases == null) {
+            productReleases = new ArrayList<ProductRelease>();
+        }
+        productReleases.add(productRelease);
+    }
 
-	/**
-	 * @return the minimum_number_instances
-	 */
-	public Integer getMinimumNumberInstances() {
-		return minimumNumberInstances;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Tier other = (Tier) obj;
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
+            return false;
+        }
+        return true;
+    }
 
-	/**
-	 * @return the initial_number_instances
-	 */
-	public Integer getInitialNumberInstances() {
-		return initialNumberInstances;
-	}
+    public String getFlavour() {
+        return flavour;
+    }
 
-	/**
-	 * @return the productReleases
-	 */
-	public List<ProductRelease> getProductReleases() {
-		return productReleases;
-	}
+    public String getFloatingip() {
+        return this.floatingip;
+    }
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getIcono() {
+        return this.icono;
+    }
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setFlavour(String flavour) {
-		this.flavour = flavour;
-	}
+    /**
+     * @return the id
+     */
+    public Long getId() {
+        return id;
+    }
 
-	public String getFlavour() {
-		return flavour;
-	}
+    public String getImage() {
+        return this.image;
+    }
 
-	public void setImage(String image) {
-		this.image = image;
-	}
+    /**
+     * @return the initial_number_instances
+     */
+    public Integer getInitialNumberInstances() {
+        return initialNumberInstances;
+    }
 
-	public String getImage() {
-		return this.image;
-	}
+    public String getKeypair() {
+        return this.keypair;
+    }
 
-	/**
-	 * @param maximum_number_instances
-	 *            the maximum_number_instances to set
-	 */
-	public void setMaximumNumberInstances(Integer maximumNumberInstances) {
-		this.maximumNumberInstances = maximumNumberInstances;
-	}
+    /**
+     * @return the maximum_number_instances
+     */
+    public Integer getMaximumNumberInstances() {
+        return maximumNumberInstances;
+    }
 
-	/**
-	 * @param minimum_number_instances
-	 *            the minimum_number_instances to set
-	 */
-	public void setMinimumNumberInstances(Integer minimumNumberInstances) {
-		this.minimumNumberInstances = minimumNumberInstances;
-	}
+    /**
+     * @return the minimum_number_instances
+     */
+    public Integer getMinimumNumberInstances() {
+        return minimumNumberInstances;
+    }
 
-	/**
-	 * @param initial_number_instances
-	 *            the initial_number_instances to set
-	 */
-	public void setInitialNumberInstances(Integer initialNumberInstances) {
-		this.initialNumberInstances = initialNumberInstances;
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @param productReleases
-	 *            the productReleases to set
-	 */
-	public void setProductReleases(List<ProductRelease> productReleases) {
-		this.productReleases = productReleases;
-	}
+    /**
+     * @return networks
+     *            the network list
+     */
+    public List<Network> getNetworks() {
+        return this.networks;
+    }
 
-	public void addProductRelease(ProductRelease productRelease) {
-		if (this.productReleases == null) {
-			productReleases = new ArrayList<ProductRelease>();
-		}
+    public String getPayload() {
+        return this.payload;
+    }
 
-		productReleases.add(productRelease);
-	}
+    public String getProductNameBalanced ()
+    {
+        if (getProductReleases() != null)
+        {
+            for (ProductRelease productRelease: getProductReleases()) {
+                Attribute attBalancer = productRelease.getAttribute("balancer");
+                return attBalancer.getValue();
+            }
+        }
+        return null;
+    }
 
-	public void removeProductRelease(ProductRelease productRelease) {
+    /**
+     * @return the productReleases
+     */
+    public List<ProductRelease> getProductReleases() {
+        return productReleases;
+    }
 
-		productReleases.remove(productRelease);
-	}
+    public SecurityGroup getSecurityGroup() {
+        return this.securityGroup;
+    }
 
-	public void setIcono(String icono) {
-		this.icono = icono;
-	}
+    public String getVdc() {
+        return vdc;
+    }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
 
-	public String getIcono() {
-		return this.icono;
-	}
+    /**
+     * @param network
+     *            the network to remove
+     */
+    public void removeNetwork(Network network) {
+        if (networks.contains(network)) {
+            networks.remove(network);
+        }
+    }
 
-	/*
-	 * public void setSecurity_group(String securityGroupName) {
-	 * this.securityGroupName = securityGroupName; }
-	 * 
-	 * public String getSecurity_group() { return this.securityGroupName; }
-	 */
+    public void removeProductRelease(ProductRelease productRelease) {
+        productReleases.remove(productRelease);
+    }
 
-	public void setKeypair(String keypair) {
-		this.keypair = keypair;
-	}
+    public void setEnviromentName(String environmentname) {
+        this.environmentname = environmentname;
+    }
 
-	public String getKeypair() {
-		return this.keypair;
-	}
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setFlavour(String flavour) {
+        this.flavour = flavour;
+    }
 
-	public void setFloatingip(String floatingip) {
-		this.floatingip = floatingip;
-	}
+    public void setFloatingip(String floatingip) {
+        this.floatingip = floatingip;
+    }
 
-	public String getFloatingip() {
-		return this.floatingip;
-	}
+    public void setIcono(String icono) {
+        this.icono = icono;
+    }
 
-	public void setPayload(String payload) {
-		this.payload = payload;
-	}
+    /*
+     * public void setSecurity_group(String securityGroupName) {
+     * this.securityGroupName = securityGroupName; }
+     * 
+     * public String getSecurity_group() { return this.securityGroupName; }
+     */
 
-	public String getPayload() {
-		return this.payload;
-	}
+    public void setImage(String image) {
+        this.image = image;
+    }
 
-	public SecurityGroup getSecurityGroup() {
-		return this.securityGroup;
-	}
+    /**
+     * @param initial_number_instances
+     *            the initial_number_instances to set
+     */
+    public void setInitialNumberInstances(Integer initialNumberInstances) {
+        this.initialNumberInstances = initialNumberInstances;
+    }
 
-	public void setSecurityGroup(SecurityGroup securityGroup) {
-		this.securityGroup = securityGroup;
-	}
-	
-	public String getProductNameBalanced ()
-	{
-		if (getProductReleases() != null)
-		{
-			for (ProductRelease productRelease: getProductReleases()) {
-				Attribute attBalancer = productRelease.getAttribute("balancer");
-				return attBalancer.getValue();
-			}
-		}
-		return null;
-	}
+    public void setKeypair(String keypair) {
+        this.keypair = keypair;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
+    /**
+     * @param maximum_number_instances
+     *            the maximum_number_instances to set
+     */
+    public void setMaximumNumberInstances(Integer maximumNumberInstances) {
+        this.maximumNumberInstances = maximumNumberInstances;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Tier other = (Tier) obj;
-		if (id == null) {
-			if (other.id != null) {
-				return false;
-			}
-		} else if (!id.equals(other.id)) {
-			return false;
-		}
-		return true;
-	}
+    /**
+     * @param minimum_number_instances
+     *            the minimum_number_instances to set
+     */
+    public void setMinimumNumberInstances(Integer minimumNumberInstances) {
+        this.minimumNumberInstances = minimumNumberInstances;
+    }
 
-	public TierDto toDto() {
-		List<ProductReleaseDto> productReleasesDto = new ArrayList<ProductReleaseDto>();
-		TierDto tierDto = new TierDto();
-		tierDto.setName(getName());
-		tierDto.setInitialNumberInstances(getInitialNumberInstances());
-		tierDto.setMaximumNumberInstances(getMaximumNumberInstances());
-		tierDto.setMinimumNumberInstances(getMinimumNumberInstances());
-		tierDto.setIcono(getIcono());
-		tierDto.setFlavour(getFlavour());
-		tierDto.setImage(getImage());
-		if (this.getSecurityGroup() != null)
-			tierDto.setSecurity_group(this.getSecurityGroup().getName());
-		tierDto.setKeypair(getKeypair());
-		tierDto.setFloatingip(getFloatingip());
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-		if (getProductReleases() != null) {
-			for (ProductRelease pRelease : getProductReleases()) {
+    /**
+     * @param networks
+     *            the network list
+     */
+    public void setNetworks(List<Network> networks) {
+        this.networks = networks;
+    }
 
-				ProductReleaseDto pReleaseDto = new ProductReleaseDto();
-				pReleaseDto.setProductName(pRelease.getProduct());
-				pReleaseDto.setVersion(pRelease.getVersion());
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
 
-				if (pRelease.getDescription() != null) {
-					pReleaseDto
-							.setProductDescription(pRelease.getDescription());
-				}
-				if (!productReleasesDto.contains(pReleaseDto)) {
-				productReleasesDto.add(pReleaseDto);
-				}
-			}
-		}
+    /**
+     * @param productReleases
+     *            the productReleases to set
+     */
+    public void setProductReleases(List<ProductRelease> productReleases) {
+        this.productReleases = productReleases;
+    }
 
-		tierDto.setProductReleaseDtos(productReleasesDto);
-		return tierDto;
-	}
+    public void setSecurityGroup(SecurityGroup securityGroup) {
+        this.securityGroup = securityGroup;
+    }
+
+    public void setVdc(String vdc) {
+        this.vdc = vdc;
+    }
+
+    public TierDto toDto() {
+        List<ProductReleaseDto> productReleasesDto = new ArrayList<ProductReleaseDto>();
+        TierDto tierDto = new TierDto();
+        tierDto.setName(getName());
+        tierDto.setInitialNumberInstances(getInitialNumberInstances());
+        tierDto.setMaximumNumberInstances(getMaximumNumberInstances());
+        tierDto.setMinimumNumberInstances(getMinimumNumberInstances());
+        tierDto.setIcono(getIcono());
+        tierDto.setFlavour(getFlavour());
+        tierDto.setImage(getImage());
+        if (this.getSecurityGroup() != null)
+            tierDto.setSecurityGroup(this.getSecurityGroup().getName());
+        tierDto.setKeypair(getKeypair());
+        tierDto.setFloatingip(getFloatingip());
+
+        if (getProductReleases() != null) {
+            for (ProductRelease pRelease : getProductReleases()) {
+
+                ProductReleaseDto pReleaseDto = new ProductReleaseDto();
+                pReleaseDto.setProductName(pRelease.getProduct());
+                pReleaseDto.setVersion(pRelease.getVersion());
+
+                if (pRelease.getDescription() != null) {
+                    pReleaseDto
+                    .setProductDescription(pRelease.getDescription());
+                }
+                if (!productReleasesDto.contains(pReleaseDto)) {
+                    productReleasesDto.add(pReleaseDto);
+                }
+            }
+        }
+
+        tierDto.setProductReleaseDtos(productReleasesDto);
+        return tierDto;
+    }
 
 }
