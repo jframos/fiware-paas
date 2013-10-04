@@ -8,6 +8,10 @@ import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 
+/**
+ * @author henar
+ * 
+ */
 public interface NetworkManager {
     /**
      * Create a network.
@@ -15,9 +19,10 @@ public interface NetworkManager {
      * @param claudiaData
      * @param network
      * @return the tierInstance created
+     * @throws InfrastructureException
      */
     Network create(ClaudiaData claudiaData, Network network)
-    throws InvalidEntityException;
+    throws InvalidEntityException, InfrastructureException;
 
 
     /**
