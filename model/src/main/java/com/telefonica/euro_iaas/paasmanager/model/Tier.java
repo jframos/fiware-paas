@@ -257,6 +257,9 @@ public class Tier {
      * @return the productReleases
      */
     public List<ProductRelease> getProductReleases() {
+        if (productReleases == null){
+            this.productReleases = new ArrayList<ProductRelease>();
+        }
         return productReleases;
     }
 

@@ -217,6 +217,9 @@ public class TierDto {
      * @return the productReleases
      */
     public List<ProductReleaseDto> getProductReleaseDtos() {
+        if (productReleaseDtos == null){
+            this.productReleaseDtos = new ArrayList<ProductReleaseDto>();
+        }
         return productReleaseDtos;
     }
 
