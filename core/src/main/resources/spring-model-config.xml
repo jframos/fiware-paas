@@ -150,6 +150,24 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         <property name="ruleDao" ref="ruleDao"/>   
         <property name="firewallingClient" ref="firewallingClient"/>   
     </bean>
+    <bean id="subNetworkManager" lazy-init="true" 
+        class="com.telefonica.euro_iaas.paasmanager.manager.impl.SubNetworkManagerImpl">
+        <property name="subnetworkDao" ref="subnetworkDao"/>   
+        <property name="networkClient" ref="networkClient"/>   
+    </bean>
+    <bean id="routerManager" lazy-init="true" 
+        class="com.telefonica.euro_iaas.paasmanager.manager.impl.RouterManagerImpl">
+        <property name="routerDao" ref="routerDao"/>   
+        <property name="networkClient" ref="networkClient"/>   
+    </bean>
+    
+    <bean id="networkManager" lazy-init="true" 
+        class="com.telefonica.euro_iaas.paasmanager.manager.impl.NetworkManagerImpl">
+        <property name="networkDao" ref="networkDao"/>   
+        <property name="networkClient" ref="networkClient"/>   
+        <property name="subNetworkManager" ref="subNetworkManager"/>  
+        <property name="routerManager" ref="routerManager"/> 
+    </bean>
     
  </beans>
  

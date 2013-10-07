@@ -45,6 +45,7 @@ import com.telefonica.claudia.util.JAXBUtils;
 import com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientImpl;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
 /**
@@ -292,7 +293,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         }
     }
 
-    public String createNetwork(String name, PaasManagerUser user) throws OpenStackException {
+    public String createNetwork(Network network, PaasManagerUser user) throws OpenStackException {
         // throw new UnsupportedOperationException("Not supported yet.");
         // I need to know X-Auth-Token, orgID-Tennat, IP and Port
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
@@ -303,24 +304,18 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         String response = null;
 
         try {
-            String payload = "{"
-                + " \"network\":{"
-                + "    \"name\": \"" + name + "\","
-                + "    \"admin_state_up\": false,"
-                + "    \"shared\": false"
-                + "  }"
-                + "}";
+            String payload = network.toJson();
 
             HttpUriRequest request = createQuantumPostRequest(RESOURCE_NETWORKS, payload, APPLICATION_JSON, user);
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error creating network " + name + ": "
+            String errorMessage = "Error creating network " + network.getNetworkName() + ": "
             + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error creating network " + name
+            String errorMessage = "Error creating network " + network.getNetworkName()
             + " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);

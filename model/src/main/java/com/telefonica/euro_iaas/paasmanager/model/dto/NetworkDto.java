@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 
 /**
  * Represents the data about the network to be invoke in the request.
@@ -50,7 +51,14 @@ public class NetworkDto {
      * @return the network
      */
     public Network fromDto() {
-        return null;
+
+        Network net = new Network (this.getNetworkName());
+
+        if (this.getSubNetName()!= null) {
+            SubNetwork subnet = new SubNetwork (this.getSubNetName(), ""+net.getSubNetCounts());
+            net.addSubNet(subnet);
+        }
+        return net;
     }
 
     /**

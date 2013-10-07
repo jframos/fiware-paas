@@ -17,6 +17,14 @@ import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 public interface NetworkClient {
 
     /**
+     * Add the network to the router.
+     * @param claudiaData
+     * @param router
+     * @param network
+     */
+    void addNetworkToRouter(ClaudiaData claudiaData, Router router, Network network) throws InfrastructureException;
+
+    /**
      * Deploy the network in the infrastructure.
      * @param claudiaData
      * @param network
@@ -47,6 +55,9 @@ public interface NetworkClient {
      */
     void destroyNetwork(ClaudiaData claudiaData, Network network) throws InfrastructureException;
 
+    void destroyRouter(ClaudiaData claudiaData, Router router);
+
+
     /**
      * Destroy a subnet in OpenStack.
      * @param claudiaData
@@ -62,7 +73,6 @@ public interface NetworkClient {
      * @return List<Network>
      */
     List<Network> loadAllNetwork(ClaudiaData claudiaData) throws OpenStackException;
-
 
     /**
      * Load a Network from OpenStack.

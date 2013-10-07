@@ -6,6 +6,7 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.Router;
 
 /**
@@ -13,6 +14,14 @@ import com.telefonica.euro_iaas.paasmanager.model.Router;
  * 
  */
 public interface RouterManager {
+
+    /**
+     * It adds a network to the router.
+     * 
+     */
+    void addNetwork(ClaudiaData claudiaData, Router router, Network network) throws InfrastructureException;
+
+
     /**
      * Create a router.
      * 
@@ -23,7 +32,6 @@ public interface RouterManager {
      */
     Router create(ClaudiaData claudiaData, Router subNetwork)
     throws InvalidEntityException, InfrastructureException;
-
 
     /**
      * Delete a router.
@@ -49,6 +57,7 @@ public interface RouterManager {
      * @return the router.
      */
     Router load(String name) throws EntityNotFoundException;
+
 
     /**
      * Update a router.

@@ -71,6 +71,7 @@ public class Network {
         if (subNets == null) {
             subNets = new ArrayList<SubNetwork>();
         }
+        subNet.setIdNetwork("" + subNetCount);
         subNets.add(subNet);
         subNetCount++;
     }
@@ -90,11 +91,19 @@ public class Network {
     }
 
     /**
-     * It gets the id for the subnet to specify the cidr
+     * It gets the id for the subnet to specify the cidr.
      * @return
      */
-    public int getSubNetCounts () {
+    public int getSubNetCounts() {
         return subNetCount;
+    }
+
+    /**
+     * It gets the subnets.
+     * @return List<SubNetwork>
+     */
+    public List<SubNetwork> getSubNets() {
+        return this.subNets;
     }
 
     /**
@@ -102,6 +111,22 @@ public class Network {
      */
     public void setIdNetwork(String id) {
         this.idNetwork = id;
+    }
+
+    /**
+     * It returns the string representations for rest rerquest.
+     * @return the json representation
+     */
+    public String toJson ()
+    {
+        return "{"
+        + " \"network\":{"
+        + "    \"name\": \"" + this.name + "\","
+        + "    \"admin_state_up\": false,"
+        + "    \"shared\": false"
+        + "  }"
+        + "}";
+
     }
 
 

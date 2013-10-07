@@ -25,6 +25,25 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
     private OpenStackUtil openStackUtil = null;
     private static Logger log = Logger.getLogger(OpenstackNetworkClientImpl.class);
     /**
+     * It adds the network to the router.
+     * @params claudiaData
+     * @params router
+     * @params network
+     * @return network information
+     * @throws InfrastructureException
+     */
+    public void addNetworkToRouter(ClaudiaData claudiaData, Router router, Network network) throws InfrastructureException {
+        try {
+            openStackUtil.addRouterInterface(router.getIdRouter(),network.getSubNets().get(0).getIdSubNet(), claudiaData.getUser());
+        } catch (OpenStackException e) {
+            String msm = "Error to add the network " + network.getNetworkName() + "to the router " + router.getName() + ":" + e.getMessage();
+            log.error(msm);
+            throw new InfrastructureException( msm, e);
+        }
+
+    }
+
+    /**
      * The deploy the network in Openstack.
      * @params claudiaData
      * @params network
@@ -33,7 +52,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         log.info("Deploy network " + network.getNetworkName() + " for user " + claudiaData.getUser().getTenantName());
         String response;
         try {
-            response = openStackUtil.createNetwork(network.getNetworkName(), claudiaData.getUser());
+            response = openStackUtil.createNetwork(network, claudiaData.getUser());
             // "network-" + claudiaData.getUser().getTenantName()
             JSONObject networkString = new JSONObject(response);
             String id = networkString.getJSONObject("network").getString("id");
@@ -102,7 +121,6 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             throw new InfrastructureException(msm, e);
         }
     }
-
     /**
      * It destroys the network.
      * @params claudiaData
@@ -118,6 +136,12 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             throw new InfrastructureException(msm, e);
         }
     }
+
+    public void destroyRouter(ClaudiaData claudiaData, Router router) {
+        // TODO Auto-generated method stub
+
+    }
+
     /**
      * It destroys the network.
      * @params claudiaData

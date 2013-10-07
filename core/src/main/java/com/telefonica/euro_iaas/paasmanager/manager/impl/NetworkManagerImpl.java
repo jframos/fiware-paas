@@ -10,6 +10,7 @@ import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
 import com.telefonica.euro_iaas.paasmanager.dao.NetworkDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
+import com.telefonica.euro_iaas.paasmanager.manager.RouterManager;
 import com.telefonica.euro_iaas.paasmanager.manager.SubNetworkManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
@@ -25,6 +26,7 @@ public class NetworkManagerImpl implements NetworkManager {
     private  NetworkDao networkDao = null;
     private  NetworkClient networkClient = null;
     private  SubNetworkManager subNetworkManager = null;
+    private  RouterManager routerManager = null;
     private static Logger log = Logger.getLogger(NetworkManagerImpl.class);
 
     /**
@@ -42,14 +44,17 @@ public class NetworkManagerImpl implements NetworkManager {
         } catch (EntityNotFoundException e1) {
             try {
                 networkClient.deployNetwork(claudiaData, network);
-                SubNetwork subNet = new SubNetwork ("sub-net-"+network.getNetworkName()+"-"+network.getSubNetCounts(), ""+network.getSubNetCounts());
+                SubNetwork subNet = new SubNetwork("sub-net-" + network.getNetworkName() + "-"
+                        + network.getSubNetCounts(), "" + network.getSubNetCounts());
                 subNet.setIdNetwork(network.getIdNetwork());
                 network.addSubNet(subNet);
                 subNetworkManager.create(claudiaData, subNet);
 
-                Router router = new Router ("router-"+network.getNetworkName());
+                Router router = new Router("router-" + network.getNetworkName());
+                // This network id can be the internet network...
                 router.setIdNetwork(network.getIdNetwork());
-                networkClient.deployRouter(claudiaData, router);
+                routerManager.create(claudiaData, router);
+                routerManager.addNetwork(claudiaData, router, network);
                 networkDao.create(network);
             } catch (Exception e) {
                 log.error("Error to create the network in BD " + e.getMessage());
@@ -101,6 +106,9 @@ public class NetworkManagerImpl implements NetworkManager {
     }
     public void setNetworkDao(NetworkDao networkDao) {
         this.networkDao = networkDao;
+    }
+    public void setRouterManager(RouterManager routerManager) {
+        this.routerManager = routerManager;
     }
     public void setSubNetworkManager(SubNetworkManager subNetworkManager) {
         this.subNetworkManager = subNetworkManager;

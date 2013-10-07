@@ -17,7 +17,7 @@ if __name__ == "__main__":
     #cosmos_injection_node
     #cosmos_master_node
     #cosmos_slave_node
-    cmd_args.append('henar5')
+    cmd_args.append('enviornmentname3')
     cmd_args.append('mas10')
 
     cmd_args.append('tomcat=6;mysql=1.2.4')

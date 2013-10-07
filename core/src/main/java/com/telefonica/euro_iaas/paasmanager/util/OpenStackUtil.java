@@ -14,6 +14,7 @@ package com.telefonica.euro_iaas.paasmanager.util;
 
 //import org.openstack.docs.compute.api.v1.Server;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
 /**
@@ -126,7 +127,7 @@ public interface OpenStackUtil {
     // public String allocateFloatingIP(String payload) throws
     // OpenStackException;
     /**
-     * Assign FloatingIP to a serverId
+     * Assign FloatingIP to a serverId.
      *
      * @param serverId
      * @param floatingIP
@@ -139,12 +140,12 @@ public interface OpenStackUtil {
     /**
      * Method to create a new network.
      *
-     * @param name the name of the network
+     * @param network the network
      * @param user the user
      * @return the result
      * @throws OpenStackException OpenStackException
      */
-    String createNetwork(String name, PaasManagerUser user) throws OpenStackException;
+    String createNetwork(Network network, PaasManagerUser user) throws OpenStackException;
 
     /**
      * Method to create a new router.

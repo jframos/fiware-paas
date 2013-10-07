@@ -30,6 +30,8 @@
         <class>com.telefonica.euro_iaas.paasmanager.model.SecurityGroup</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.Rule</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.Network</class>
+        <class>com.telefonica.euro_iaas.paasmanager.model.SubNetwork</class>
+        <class>com.telefonica.euro_iaas.paasmanager.model.Router</class>
         <exclude-unlisted-classes></exclude-unlisted-classes>
     </persistence-unit>
 </persistence>
