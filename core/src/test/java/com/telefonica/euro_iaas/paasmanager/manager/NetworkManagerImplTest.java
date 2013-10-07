@@ -72,8 +72,7 @@ public class NetworkManagerImplTest extends TestCase {
         ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
 
         //When
-        Mockito.doThrow(new EntityNotFoundException(Network.class, "test", net)).when(networkDao).
-        load(any(String.class));
+        when(networkDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
         Mockito.doNothing().when(networkClient).deployNetwork(any(ClaudiaData.class), any(Network.class));
         Mockito.doNothing().when(subNetworkManager.create(any(ClaudiaData.class), any(SubNetwork.class)));
         Mockito.doNothing().when(routerManager.create(any(ClaudiaData.class), any(Router.class)));

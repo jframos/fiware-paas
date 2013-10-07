@@ -62,6 +62,7 @@ public class TierInstanceManagerImplTest extends TestCase {
     private ProductReleaseManager productReleaseManager;
     private ProductInstanceManager productInstanceManager;
     private TierManager tierManager;
+    private NetworkManager networkManager;
     private EnvironmentManager enviromentManager;
     private EnvironmentInstanceManager environmentInstanceManager;
 
@@ -96,6 +97,7 @@ public class TierInstanceManagerImplTest extends TestCase {
         productReleaseManager = mock(ProductReleaseManager.class);
         productInstanceManager = mock(ProductInstanceManager.class);
         environmentInstanceManager = mock(EnvironmentInstanceManager.class);
+        networkManager = mock (NetworkManager.class);
         tierManager = mock(TierManager.class);
         enviromentManager = mock (EnvironmentManager.class);
 
@@ -107,6 +109,7 @@ public class TierInstanceManagerImplTest extends TestCase {
         manager.setTierManager(tierManager);
         manager.setEnvironmentInstanceManager(environmentInstanceManager);
         manager.setEnvironmentManager(enviromentManager);
+        manager.setNetworkManager(networkManager);
 
         host = new VM(null, "hostname", "domain");
 
@@ -254,12 +257,13 @@ public class TierInstanceManagerImplTest extends TestCase {
         tierProductConfig.addNetwork(new Network(NETWORK_NAME));
         TierInstance tierInstance = new TierInstance(tierProductConfig, "tierInsatnce",
                 "nametierInstance-tier-1", host);
-        TierInstance tierfound = manager.create(claudiaData, "env", tierInstance);
 
-        assertNotNull(tierfound);
-        assertEquals(tierfound.getTier().getNetworks().size(), 1);
-        assertEquals(tierfound.getTier().getNetworks().get(0).getNetworkName(), NETWORK_NAME);
-        assertEquals(tierfound.getTier().getNetworks().get(0).getSubNets().size(), 1);
+        manager.create(claudiaData, tierInstance, environmentInstance, null);
+
+        assertNotNull(tierInstance);
+        assertEquals(tierInstance.getTier().getNetworks().size(), 1);
+        assertEquals(tierInstance.getTier().getNetworks().get(0).getNetworkName(), NETWORK_NAME);
+        assertEquals(tierInstance.getTier().getNetworks().get(0).getSubNets().size(), 1);
     }
 
     @Test
