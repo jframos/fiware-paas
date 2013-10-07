@@ -1,14 +1,10 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -16,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * A network.
+ * A sub network.
  * 
  * @author Henar Munoz
  * 
@@ -26,9 +22,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@Table(name = "Network")
+@Table(name = "SubNetwork")
 
-public class Network {
+public class SubNetwork {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", unique = true, nullable = false)
@@ -38,70 +34,79 @@ public class Network {
     // the network name //
     private String name;
 
+    private String idSubNet;
+
     private String idNetwork;
 
-    private int subNetCount;
+    private String cidr;
 
-    @OneToMany
-    private List<SubNetwork> subNets;
+    private String allocationPoolsStart ;
+
+    private String allocationPoolsEnd ;
 
     /**
      * Constructor.
      */
-    public Network() {
-        subNetCount = 1;
-        subNets = new ArrayList<SubNetwork>();
+    public SubNetwork() {
     }
 
     /**
      * @param networkName
      */
-    public Network(String name) {
+    public SubNetwork(String name) {
         this.name = name;
-        subNets = new ArrayList<SubNetwork>();
-        subNetCount = 1;
     }
 
     /**
-     * It gets the id for the subnet to specify the cidr.
-     * @param subNet
-     * @return
+     * @param networkName
      */
-    public void addSubNet(SubNetwork subNet) {
-        if (subNets == null) {
-            subNets = new ArrayList<SubNetwork>();
-        }
-        subNets.add(subNet);
-        subNetCount++;
+    public SubNetwork(String name, String id) {
+        this.name = name;
+        this.cidr = "10.100." + id + ".0/24";
     }
 
     /**
-     * @return the networkName
+     * @return the id
+     */
+    public String getCidr() {
+        return cidr;
+    }
+
+    /**
+     * @return the id
      */
     public String getIdNetwork() {
         return idNetwork;
     }
 
+
+
+    /**
+     * @return the id
+     */
+    public String getIdSubNet() {
+        return idSubNet;
+    }
+
     /**
      * @return the networkName
      */
-    public String getNetworkName() {
+    public String getName() {
         return name;
     }
 
     /**
-     * It gets the id for the subnet to specify the cidr
-     * @return
-     */
-    public int getSubNetCounts () {
-        return subNetCount;
-    }
-
-    /**
-     * @param networkName
+     * @param id
      */
     public void setIdNetwork(String id) {
         this.idNetwork = id;
+    }
+
+    /**
+     * @param id
+     */
+    public void setIdSubNet(String id) {
+        this.idSubNet = id;
     }
 
 
