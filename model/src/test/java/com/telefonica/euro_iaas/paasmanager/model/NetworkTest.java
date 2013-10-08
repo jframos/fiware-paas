@@ -17,7 +17,9 @@ public class NetworkTest extends TestCase {
 
     public static String NETWORK_NAME ="name";
     public static String SUBNETWORK_NAME ="subname";
+    public static String ROUTER_NAME ="router";
     public static String CIDR ="10.100.1.0/24";
+    public static String ID ="id";
 
     public static String NETWORK_STRING = "{"
         + " \"network\":{"
@@ -58,6 +60,21 @@ public class NetworkTest extends TestCase {
         Network network = new Network(NETWORK_NAME);
         SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, "" + network.getSubNetCounts());
         network.addSubNet(subnet);
+        assertEquals(network.getNetworkName(), NETWORK_NAME);
+        assertEquals(network.getSubNets().size(), 1);
+        assertEquals(network.getSubNets().get(0).getName(), SUBNETWORK_NAME);
+        assertEquals(network.getSubNets().get(0).getCidr(), CIDR);
+    }
+
+    @Test
+    public void testCreateNetworkAndSubNetAndRouter() throws Exception {
+
+        Network network = new Network(NETWORK_NAME);
+        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, "" + network.getSubNetCounts());
+        network.addSubNet(subnet);
+        Router router = new Router (ROUTER_NAME);
+        router.setIdNetwork(network.getIdNetwork());
+        router.setIdRouter(ID);
         assertEquals(network.getNetworkName(), NETWORK_NAME);
         assertEquals(network.getSubNets().size(), 1);
         assertEquals(network.getSubNets().get(0).getName(), SUBNETWORK_NAME);

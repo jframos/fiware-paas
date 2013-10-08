@@ -55,14 +55,14 @@ public class NetworkManagerImpl implements NetworkManager {
                 router.setIdNetwork(network.getIdNetwork());
                 routerManager.create(claudiaData, router);
                 routerManager.addNetwork(claudiaData, router, network);
-                networkDao.create(network);
+                network = networkDao.create(network);
             } catch (Exception e) {
                 log.error("Error to create the network in BD " + e.getMessage());
                 throw new InvalidEntityException(network);
             }
         }
 
-        return null;
+        return network;
     }
 
     /**

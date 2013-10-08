@@ -30,7 +30,7 @@ public interface RouterManager {
      * @return the tierInstance created
      * @throws InfrastructureException
      */
-    Router create(ClaudiaData claudiaData, Router subNetwork)
+    void create(ClaudiaData claudiaData, Router subNetwork)
     throws InvalidEntityException, InfrastructureException;
 
     /**

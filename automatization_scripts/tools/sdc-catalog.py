@@ -13,14 +13,15 @@ if __name__ == "__main__":
     total = 3
     cmd_args = []
     cmd_args.append('hola')
-    cmd_args.append('list')
+    cmd_args.append('add')
     #cosmos_injection_node
     #cosmos_master_node
     #cosmos_slave_node
     cmd_args.append('otro')
     cmd_args.append('0.1')
     cmd_args.append('descrition')
-    cmd_args.append('sdccoregroupid=cluster_name;cluster_name=test;openports=50030 50031 14000')
+    cmd_args.append(None)
+ #   cmd_args.append('sdccoregroupid=cluster_name;cluster_name=test;openports=50030 50031 14000')
 
 
 
@@ -43,7 +44,7 @@ if __name__ == "__main__":
     elif cmd_args[1].find("delete") != -1:
         g.delete_product(cmd_args[2])
     elif cmd_args[1].find("add") != -1:
-        g.add_product(cmd_args[2],cmd_args[3],cmd_args[4],cmd_args[5])
+        g.add_product(cmd_args[2],cmd_args[4],cmd_args[5], None)
     elif cmd_args[1].find("show") != -1:
         g.get_product_info(cmd_args[2],cmd_args[3])
 

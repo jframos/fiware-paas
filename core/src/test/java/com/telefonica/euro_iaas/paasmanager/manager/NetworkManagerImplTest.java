@@ -74,17 +74,37 @@ public class NetworkManagerImplTest extends TestCase {
         //When
         when(networkDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
         Mockito.doNothing().when(networkClient).deployNetwork(any(ClaudiaData.class), any(Network.class));
-        Mockito.doNothing().when(subNetworkManager.create(any(ClaudiaData.class), any(SubNetwork.class)));
-        Mockito.doNothing().when(routerManager.create(any(ClaudiaData.class), any(Router.class)));
+        Mockito.doNothing().when(subNetworkManager).create(any(ClaudiaData.class), any(SubNetwork.class));
+        Mockito.doNothing().when(routerManager).create(any(ClaudiaData.class), any(Router.class));
         when(networkDao.create(any(Network.class))).thenReturn(net);
 
 
         //Verity
-        Network net2 = networkManager.create(claudiaData, net);
-        assertEquals(net2.getNetworkName(), net.getNetworkName());
-        assertEquals(net2.getSubNets().size(), 1);
-        assertEquals(net2.getSubNets().get(0).getName(), "sub-net-" + NETWORK_NAME + "-1");
-        assertEquals(net2.getSubNets().get(0).getCidr(), CIDR);
+        networkManager.create(claudiaData, net);
+        assertEquals(net.getNetworkName(), NETWORK_NAME);
+        assertEquals(net.getSubNets().size(), 1);
+        assertEquals(net.getSubNets().get(0).getName(), "sub-net-" + NETWORK_NAME + "-1");
+        assertEquals(net.getSubNets().get(0).getCidr(), CIDR);
+
+    }
+
+    @Test
+    public void testDestroyNetwork() throws Exception {
+        // Given
+        Network net = new Network (NETWORK_NAME);
+        //  SubNetwork subNet = new SubNetwork (SUBNETWORK_NAME);
+        // net.addSubNet(subNet);
+        ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
+
+        //When
+        when(networkDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
+        Mockito.doNothing().when(networkClient).deployNetwork(any(ClaudiaData.class), any(Network.class));
+        Mockito.doNothing().when(subNetworkManager).delete(any(ClaudiaData.class), any(SubNetwork.class));
+        Mockito.doNothing().when(networkDao).remove(any(Network.class));
+        when(networkDao.create(any(Network.class))).thenReturn(net);
+
+        //Verity
+        networkManager.delete(claudiaData, net);
 
     }
 

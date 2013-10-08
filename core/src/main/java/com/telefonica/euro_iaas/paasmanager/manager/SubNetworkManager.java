@@ -21,7 +21,7 @@ public interface SubNetworkManager {
      * @return the tierInstance created
      * @throws InfrastructureException
      */
-    SubNetwork create(ClaudiaData claudiaData, SubNetwork subNetwork)
+    void create(ClaudiaData claudiaData, SubNetwork subNetwork)
     throws InvalidEntityException, InfrastructureException;
 
 

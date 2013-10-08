@@ -257,13 +257,18 @@ public class TierInstanceManagerImplTest extends TestCase {
         tierProductConfig.addNetwork(new Network(NETWORK_NAME));
         TierInstance tierInstance = new TierInstance(tierProductConfig, "tierInsatnce",
                 "nametierInstance-tier-1", host);
+        when(tierManager.load(any(String.class), any(String.class),any(String.class)))
+        .thenReturn(tierProductConfig);
+        when(tierInstanceDao.create(any(TierInstance.class))).thenReturn(
+                tierInstance);
+        when(tierInstanceDao.update(any(TierInstance.class))).thenReturn(
+                tierInstance);
 
         manager.create(claudiaData, tierInstance, environmentInstance, null);
 
         assertNotNull(tierInstance);
         assertEquals(tierInstance.getTier().getNetworks().size(), 1);
         assertEquals(tierInstance.getTier().getNetworks().get(0).getNetworkName(), NETWORK_NAME);
-        assertEquals(tierInstance.getTier().getNetworks().get(0).getSubNets().size(), 1);
     }
 
     @Test

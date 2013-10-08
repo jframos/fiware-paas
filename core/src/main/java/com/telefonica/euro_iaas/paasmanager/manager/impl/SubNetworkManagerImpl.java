@@ -28,7 +28,7 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
      * @params claudiaData
      * @params network
      */
-    public SubNetwork create(ClaudiaData claudiaData, SubNetwork subNetwork)
+    public void create(ClaudiaData claudiaData, SubNetwork subNetwork)
     throws InvalidEntityException,InfrastructureException {
         log.debug("Create subnetwork " + subNetwork.getName());
 
@@ -38,13 +38,13 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
         } catch (EntityNotFoundException e1) {
             try {
                 networkClient.deploySubNetwork(claudiaData, subNetwork);
-                subNetworkDao.create(subNetwork);
+                subNetwork = subNetworkDao.create(subNetwork);
             } catch (Exception e) {
                 log.error("Error to create the subnetwork in BD " + e.getMessage());
                 throw new InvalidEntityException(subNetwork);
             }
         }
-        return subNetwork;
+        // return subNetwork;
     }
 
     /**
