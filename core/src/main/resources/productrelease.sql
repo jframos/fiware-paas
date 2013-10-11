@@ -16,6 +16,16 @@ CREATE TABLE productrelease (
 	producttype_id int8,
 	PRIMARY KEY (id)
 );
+
+CREATE TABLE network (
+    id int8 NOT NULL AUTO_INCREMENT,
+    name varchar(256) NOT NULL,
+    idNetwork varchar(256) NOT NULL,
+    subNetCount int8,
+    PRIMARY KEY (id)
+);
+
+    
 CREATE TABLE productrelease_attribute (
 	productrelease_id int8 NOT NULL,
 	attributes_id int8 NOT NULL
@@ -56,6 +66,11 @@ CREATE TABLE tier (
 CREATE TABLE tier_has_productreleases (
 	tier_id int8 NOT NULL,
 	productrelease_id int8 NOT NULL
+);
+
+CREATE TABLE tier_has_networks (
+    tier_id int8 NOT NULL,
+    network_id int8 NOT NULL
 );
 
 

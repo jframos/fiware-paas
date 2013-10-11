@@ -68,6 +68,7 @@ public class Tier {
      * Default Constructor
      */
     public Tier() {
+        networks = new ArrayList<Network>();
     }
 
     /**
@@ -75,6 +76,7 @@ public class Tier {
      */
     public Tier(String name) {
         this.name = name;
+        networks = new ArrayList<Network>();
     }
 
     public Tier(String name, Integer maximumNumberInstances,
@@ -85,6 +87,7 @@ public class Tier {
         this.minimumNumberInstances = minimumNumberInstances;
         this.initialNumberInstances = initialNumberInstances;
         this.productReleases = productReleases;
+        networks = new ArrayList<Network>();
 
     }
 
@@ -107,6 +110,7 @@ public class Tier {
         this.flavour = flavour;
         this.image = image;
         this.icono = icono;
+        networks = new ArrayList<Network>();
     }
 
     public Tier(String name, Integer maximumNumberInstances,
@@ -126,6 +130,7 @@ public class Tier {
         this.keypair = keypair;
         this.floatingip = floatingip;
         this.payload = payload;
+        networks = new ArrayList<Network>();
     }
 
     /**
@@ -270,6 +275,7 @@ public class Tier {
     public String getVdc() {
         return vdc;
     }
+
     /*
      * (non-Javadoc)
      * 
@@ -282,7 +288,6 @@ public class Tier {
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
-
     /**
      * @param network
      *            the network to remove
@@ -317,16 +322,16 @@ public class Tier {
         this.icono = icono;
     }
 
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     /*
      * public void setSecurity_group(String securityGroupName) {
      * this.securityGroupName = securityGroupName; }
      * 
      * public String getSecurity_group() { return this.securityGroupName; }
      */
-
-    public void setImage(String image) {
-        this.image = image;
-    }
 
     /**
      * @param initial_number_instances
@@ -424,8 +429,32 @@ public class Tier {
             }
         }
 
+        for (Network net : this.getNetworks()) {
+
+            tierDto.addNetworkDto(net.toDto());
+        }
+
         tierDto.setProductReleaseDtos(productReleasesDto);
         return tierDto;
+    }
+
+    /**
+     * @param network
+     *            the network list
+     */
+    public void updateNetwork(Network network) {
+        if (this.networks  == null) {
+            this.networks = new ArrayList<Network>();
+        }
+        for (Network net: this.networks)
+        {
+            if (net.getNetworkName().equals(network.getNetworkName())){
+                networks.remove(net);
+                networks.add(network);
+            }
+        }
+
+
     }
 
 }

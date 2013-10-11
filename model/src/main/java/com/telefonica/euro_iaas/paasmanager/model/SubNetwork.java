@@ -55,6 +55,7 @@ public class SubNetwork {
      */
     public SubNetwork(String name) {
         this.name = name;
+        this.cidr = "10.100." + 1 + ".0/24";
     }
 
     /**

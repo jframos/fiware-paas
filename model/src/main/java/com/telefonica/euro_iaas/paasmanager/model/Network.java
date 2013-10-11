@@ -15,6 +15,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.telefonica.euro_iaas.paasmanager.model.dto.NetworkDto;
+
 /**
  * A network.
  * 
@@ -111,6 +113,13 @@ public class Network {
      */
     public void setIdNetwork(String id) {
         this.idNetwork = id;
+    }
+
+    public NetworkDto toDto()
+    {
+        NetworkDto networkDto = new NetworkDto (this.name);
+        return networkDto;
+
     }
 
     /**

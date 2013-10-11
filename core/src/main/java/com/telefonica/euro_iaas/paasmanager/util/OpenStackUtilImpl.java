@@ -629,6 +629,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // -H "Content-Type: application/xml" -H "Accept: application/json"
         // -X GET
         // "http://10.95.171.115:8774/v2/30c60771b6d144d2861b21e442f0bef9/images/88y6ga216ad4s33ra6asd5fgrg7"
+        log.debug ("Create server " + payload);
         HttpUriRequest request;
         String response = null;
         Server server = null;
@@ -662,6 +663,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         if (getResponse.contains("ERROR")) {
             throw new OpenStackException("Error to deploy the VM " + server.getId());
         }
+        log.debug ("Server Id " + server.getId());
         return server.getId();
     }
 
@@ -694,6 +696,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             "   }" +
             "}";
 
+            log.debug("Create subnet " + payload);
+
             HttpUriRequest request = createQuantumPostRequest(RESOURCE_SUBNETS, payload, APPLICATION_JSON, user);
             response = executeNovaRequest(request);
 
@@ -716,6 +720,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757...'
         // -H "Accept: application/json"
         // -X DELETE "http://10.95.171.115:9696/v2/networks/5867b6bd-ba18-4ae3-a34f-dd0f2e189eb6"
+        log.debug("Deleting network " + networkId);
         HttpUriRequest request = createQuantumDeleteRequest(RESOURCE_NETWORKS + "/"
                 + networkId, user);
 
@@ -755,6 +760,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // -X POST
         // "http://10.95.171.115:8774/v2/30c60771b6d144d2861b21e442f0bef9/servers/6570eca2-21e2-4942-bede-f556c57af2b4/action"
 
+        log.debug("Deleting server " + serverId);
         String response = null;
         // TaskResult deletion = new TaskResult();
 

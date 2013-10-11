@@ -78,58 +78,33 @@ class Product:
         print var
 
 class ProductRelease:
-    def __init__(self, product_name,product_version, product_description=''):
-        self.name=product_name
-        self.description=product_description
+    def __init__(self, product,product_version):
         self.version=product_version
-        self.attributes=[]
+        self.product=product
 
-    def add_attribute(self, attribute):
-        self.attributes.append(attribute)
-
-    def add_attributes(self, attributes):
-        self.attributes = attributes
 
     def to_product_xml (self):
-
-        product = Element('productReleaseDto')
-        name = SubElement(product, 'productName')
-        name.text = self.name
-        description = SubElement(product, "productDescription")
-        description.text = self.description
-        version = SubElement(product, 'version')
+        product_release = Element('productReleaseDto')
+        version = SubElement(product_release, 'version')
         version.text = self.version
-        print product
-        if self.attributes == None:
-            return tostring(product)
-        for att in self.attributes:
-
-            attribute = SubElement(product, "privateAttributes")
-            key = SubElement(attribute, "key")
-            key.text = att.key
-            value = SubElement(attribute, "value")
-            value.text = att.value
-        print product
-        return product
+        return product_release
 
     def to_product_xml_env (self):
 
         product = Element('productReleaseDtos')
         name = SubElement(product, 'productName')
-        name.text = self.name
-        description = SubElement(product, "productDescription")
-        description.text = self.description
+        name.text = self.product
         version = SubElement(product, 'version')
         version.text = self.version
 
-        if self.attributes == None:
-            return product
-        for att in self.attributes:
-            attribute = SubElement(product, "privateAttributes")
-            key = SubElement(attribute, "key")
-            key.text = att.key
-            value = SubElement(attribute, "value")
-            value.text = att.value
+     #   if self.product.attributes == None:
+     #       return product
+     #   for att in self.product.attributes:
+     #       attribute = SubElement(product, "privateAttributes")
+     #       key = SubElement(attribute, "key")
+     #       key.text = att.key
+     #       value = SubElement(attribute, "value")
+     #       value.text = att.value
 
         return product
 

@@ -12,18 +12,13 @@
  */
 package com.telefonica.euro_iaas.paasmanager.claudia.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.json.JSONArray;
 
 import org.apache.log4j.Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openstack.quantum.api.v2.Networks;
 
-import com.telefonica.claudia.util.JAXBUtils;
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
 import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaResourceNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaRetrieveInfoException;
@@ -34,7 +29,6 @@ import com.telefonica.euro_iaas.paasmanager.exception.OSNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.exception.VMStatusNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
@@ -286,7 +280,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         String payload = buildCreateServerPayload(claudiaData, tier, replica);
 
         try {
-            log.debug("Deploying network ");
+            /*   log.debug("Deploying network ");
             String networksResponse = openStackUtil.getNetworks(claudiaData.getUser());
             if (networksResponse != null) {
                 Networks networks = JAXBUtils.unmarshall(networksResponse, false, Networks.class);
@@ -299,7 +293,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
                     openStackUtil.addRouterInterface(router.getJSONObject("router").getString("id"),subnet.getJSONObject("subnet").getString("id"), claudiaData.getUser());
 
                 }
-            }
+            }*/
 
             String serverId = openStackUtil.createServer(payload, claudiaData
                     .getUser());
@@ -313,14 +307,6 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 
         } catch (OpenStackException e) {
             String errorMessage = "Error interacting with OpenStack ";
-            log.error(errorMessage);
-            throw new InfrastructureException(errorMessage);
-        } catch (IOException ex) {
-            String errorMessage = "Error unmarshalling class: " + ex.getMessage();
-            log.error(errorMessage);
-            throw new InfrastructureException(errorMessage);
-        } catch (JSONException ex) {
-            String errorMessage = "Error unmarshalling JSON class: " + ex.getMessage();
             log.error(errorMessage);
             throw new InfrastructureException(errorMessage);
         }
