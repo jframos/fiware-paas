@@ -178,7 +178,7 @@
                     <!-- rse: to avoid tag in master -->
                     <noTag>false</noTag>
                     <!-- rse: to avoid push changes to git -->
-                    <pushReleases>true</pushReleases>
+                    <pushChanges>false</pushChanges>
                     <!-- rse: To keep release branch -->
                     <keepBranch>true</keepBranch>
                     <!-- rse:  If set to true, the plugin sets the property "performRelease" to true,
