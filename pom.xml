@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.telefonica.euro_iaas</groupId>
     <artifactId>paas-manager-server</artifactId>
@@ -501,24 +500,23 @@
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <taskdef resource="tasks.properties"/>
-                                        <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
-                                        <echo message="::PROCESS CLASSES: ${project.artifactId}"/>
+                                        <taskdef resource="tasks.properties" />
+                                        <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+                                        <echo message="::PROCESS CLASSES: ${project.artifactId}" />
 
                                         <if>
-                                            <equals arg1="${project.artifactId}"
-                                                    arg2="web-test-driver-for-code-coverage"/>
+                                            <equals arg1="${project.artifactId}" arg2="web-test-driver-for-code-coverage" />
                                             <then>
-                                                <echo message="::SKIPPING PHASE for integration test"/>
+                                                <echo message="::SKIPPING PHASE for integration test" />
                                             </then>
                                             <else>
                                                 <if>
-                                                    <available file="${project.build.outputDirectory}"/>
+                                                    <available file="${project.build.outputDirectory}" />
                                                     <then>
-                                                        <echo message="::BEFORE INSTRUMENT"/>
+                                                        <echo message="::BEFORE INSTRUMENT" />
                                                         <cobertura-instrument>
                                                             <fileset dir="${project.build.outputDirectory}">
-                                                                <include name="**/*.class"/>
+                                                                <include name="**/*.class" />
                                                             </fileset>
                                                         </cobertura-instrument>
                                                     </then>
@@ -538,39 +536,36 @@
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <taskdef resource="tasks.properties"/>
-                                        <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
-                                        <echo message=":::generate-test-sources"/>
+                                        <taskdef resource="tasks.properties" />
+                                        <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+                                        <echo message=":::generate-test-sources" />
 
 
                                         <if>
-                                            <equals arg1="${project.artifactId}"
-                                                    arg2="web-test-driver-for-code-coverage"/>
+                                            <equals arg1="${project.artifactId}" arg2="web-test-driver-for-code-coverage" />
                                             <then>
-                                                <echo message="::SHORT CIRCUIT COMBINE PHASE for integration test"/>
-                                                <echo message="source - ${cobertura.complete.ser.file} dest - ${basedir}/cobertura.ser"/>
-                                                <copy file="${cobertura.complete.ser.file}"
-                                                      tofile="${basedir}/cobertura.ser"/>
+                                                <echo message="::SHORT CIRCUIT COMBINE PHASE for integration test" />
+                                                <echo message="source - ${cobertura.complete.ser.file} dest - ${basedir}/cobertura.ser" />
+                                                <copy file="${cobertura.complete.ser.file}" tofile="${basedir}/cobertura.ser" />
                                             </then>
                                             <else>
                                                 <if>
-                                                    <available file="${basedir}/cobertura.ser"/>
+                                                    <available file="${basedir}/cobertura.ser" />
                                                     <then>
-                                                        <echo message="::: Is available ${basedir}/cobertura.ser"/>
+                                                        <echo message="::: Is available ${basedir}/cobertura.ser" />
                                                     </then>
                                                 </if>
 
                                                 <if>
-                                                    <available file="${cobertura.complete.ser.file}"/>
+                                                    <available file="${cobertura.complete.ser.file}" />
                                                     <then>
-                                                        <echo message="before merge1"/>
+                                                        <echo message="before merge1" />
                                                         <cobertura-merge datafile="${basedir}/tmp.ser">
-                                                            <fileset file="${cobertura.complete.ser.file}"/>
-                                                            <fileset file="${basedir}/cobertura.ser"/>
+                                                            <fileset file="${cobertura.complete.ser.file}" />
+                                                            <fileset file="${basedir}/cobertura.ser" />
                                                         </cobertura-merge>
-                                                        <echo message="move temp.ser to ${basedir}/cobertura.ser"/>
-                                                        <move file="${basedir}/tmp.ser"
-                                                              tofile="${basedir}/cobertura.ser"/>
+                                                        <echo message="move temp.ser to ${basedir}/cobertura.ser" />
+                                                        <move file="${basedir}/tmp.ser" tofile="${basedir}/cobertura.ser" />
                                                     </then>
                                                 </if>
                                             </else>
@@ -586,32 +581,29 @@
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <taskdef resource="tasks.properties"/>
-                                        <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+                                        <taskdef resource="tasks.properties" />
+                                        <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
 
-                                        <echo message=":::copyResultSerFileAndSources -beforeIf"/>
+                                        <echo message=":::copyResultSerFileAndSources -beforeIf" />
                                         <if>
-                                            <available file="${basedir}/cobertura.ser"/>
+                                            <available file="${basedir}/cobertura.ser" />
                                             <then>
-                                                <echo message="move1"/>
-                                                <move file="${basedir}/cobertura.ser"
-                                                      tofile="${cobertura.complete.ser.file}"/>
-                                                <mkdir dir="${cobertura.working.dir}/source"/>
+                                                <echo message="move1" />
+                                                <move file="${basedir}/cobertura.ser" tofile="${cobertura.complete.ser.file}" />
+                                                <mkdir dir="${cobertura.working.dir}/source" />
                                                 <if>
-                                                    <available file="${basedir}/src/main/java"/>
+                                                    <available file="${basedir}/src/main/java" />
                                                     <then>
                                                         <copy todir="${cobertura.working.dir}/source">
                                                             <fileset dir="src/main/java">
-                                                                <include name="**/*.java"/>
+                                                                <include name="**/*.java" />
                                                             </fileset>
                                                         </copy>
                                                     </then>
                                                 </if>
-                                                <echo message="runreport"/>
-                                                <cobertura-report datafile="${cobertura.complete.ser.file}"
-                                                                  format="${cobertura.format}"
-                                                                  destdir="${cobertura.working.dir}/report">
-                                                    <fileset dir="${cobertura.working.dir}/source"/>
+                                                <echo message="runreport" />
+                                                <cobertura-report datafile="${cobertura.complete.ser.file}" format="${cobertura.format}" destdir="${cobertura.working.dir}/report">
+                                                    <fileset dir="${cobertura.working.dir}/source" />
                                                 </cobertura-report>
                                             </then>
                                         </if>
