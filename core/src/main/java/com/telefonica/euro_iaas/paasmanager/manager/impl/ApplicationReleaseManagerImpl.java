@@ -1,14 +1,8 @@
 /*
-
-  (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights
-  Reserved.
-
-  The copyright to the software program(s) is property of Telefonica I+D.
-  The program(s) may be used and or copied only with the express written
-  consent of Telefonica I+D or in accordance with the terms and conditions
-  stipulated in the agreement/contract under which the program(s) have
-  been supplied.
-
+ * (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved. The copyright to the software
+ * program(s) is property of Telefonica I+D. The program(s) may be used and or copied only with the express written
+ * consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the agreement/contract under
+ * which the program(s) have been supplied.
  */
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
@@ -22,46 +16,37 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationRele
 
 /**
  * @author jesus.movilla
- * 
  */
 public class ApplicationReleaseManagerImpl implements ApplicationReleaseManager {
 
-	private ApplicationReleaseDao applicationReleaseDao;
+    private ApplicationReleaseDao applicationReleaseDao;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.telefonica.euro_iaas.paasmanager.manager.ApplicationReleaseManager
-	 * #load(java.lang.String)
-	 */
-	public ApplicationRelease load(String name) throws EntityNotFoundException {
-		return applicationReleaseDao.load(name);
-	}
+    /*
+     * (non-Javadoc)
+     * @see com.telefonica.euro_iaas.paasmanager.manager.ApplicationReleaseManager #load(java.lang.String)
+     */
+    public ApplicationRelease load(String name) throws EntityNotFoundException {
+        return applicationReleaseDao.load(name);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.telefonica.euro_iaas.paasmanager.manager.ApplicationReleaseManager
-	 * #findAll()
-	 */
-	public List<ApplicationRelease> findAll() {
-		return applicationReleaseDao.findAll();
-	}
+    /*
+     * (non-Javadoc)
+     * @see com.telefonica.euro_iaas.paasmanager.manager.ApplicationReleaseManager #findAll()
+     */
+    public List<ApplicationRelease> findAll() {
+        return applicationReleaseDao.findAll();
+    }
 
-	public List<ApplicationRelease> findByCriteria(
-			ApplicationReleaseSearchCriteria criteria) {
-		return applicationReleaseDao.findByCriteria(criteria);
-	}
+    public List<ApplicationRelease> findByCriteria(ApplicationReleaseSearchCriteria criteria) {
+        return applicationReleaseDao.findByCriteria(criteria);
+    }
 
-	/**
-	 * @param productDao
-	 *            the applicationDao to set
-	 */
-	public void setApplicationReleaseDao(
-			ApplicationReleaseDao applicationReleaseDao) {
-		this.applicationReleaseDao = applicationReleaseDao;
-	}
+    /**
+     * @param productDao
+     *            the applicationDao to set
+     */
+    public void setApplicationReleaseDao(ApplicationReleaseDao applicationReleaseDao) {
+        this.applicationReleaseDao = applicationReleaseDao;
+    }
 
 }

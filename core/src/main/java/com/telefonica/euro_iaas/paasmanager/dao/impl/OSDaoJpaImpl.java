@@ -9,13 +9,13 @@ import com.telefonica.euro_iaas.paasmanager.model.OS;
 
 public class OSDaoJpaImpl extends AbstractBaseDao<OS, String> implements OSDao {
 
-	public List<OS> findAll() {
-		return super.findAll(OS.class);
-	}
+    public List<OS> findAll() {
+        return super.findAll(OS.class);
+    }
 
-	/** {@inheritDoc} */
-	public OS load(String osType) throws EntityNotFoundException {
-		return super.loadByField(OS.class, "osType", osType);
-	}
+    /** {@inheritDoc} */
+    public OS load(String osType) throws EntityNotFoundException {
+        return super.loadByField(OS.class, "osType", osType);
+    }
 
 }

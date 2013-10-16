@@ -9,51 +9,49 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductType;
 
 public class ProductTypeDaoJpaImplTest extends AbstractJpaDaoTest {
 
-	private String PRODUCTTYPE_NAME = "ProductType_name";
-	private String PRODUCTTYPE_DESC = "ProductType_desc";
+    private String PRODUCTTYPE_NAME = "ProductType_name";
+    private String PRODUCTTYPE_DESC = "ProductType_desc";
 
-	private ProductTypeDao productTypeDao;
+    private ProductTypeDao productTypeDao;
 
-	public ProductType create(ProductType productType)
-			throws InvalidEntityException, AlreadyExistsEntityException {
-		System.out.println("Inserting ProductTypeObject in DB");
-		productType = productTypeDao.create(productType);
-		assertNotNull(productType.getId());
-		return productType;
-	}
+    public ProductType create(ProductType productType) throws InvalidEntityException, AlreadyExistsEntityException {
+        System.out.println("Inserting ProductTypeObject in DB");
+        productType = productTypeDao.create(productType);
+        assertNotNull(productType.getId());
+        return productType;
+    }
 
-	public List<ProductType> findAll() {
-		return productTypeDao.findAll();
-	}
+    public List<ProductType> findAll() {
+        return productTypeDao.findAll();
+    }
 
-	public ProductType load(Long arg0) throws EntityNotFoundException {
-		ProductType productType = productTypeDao.load(productTypeDao.findAll()
-				.get(0).getName());
-		assertNotNull(productType.getId());
-		return productType;
-	}
+    public ProductType load(Long arg0) throws EntityNotFoundException {
+        ProductType productType = productTypeDao.load(productTypeDao.findAll().get(0).getName());
+        assertNotNull(productType.getId());
+        return productType;
+    }
 
-	public ProductType update(ProductType arg0) throws InvalidEntityException {
-		ProductType productType = productTypeDao.findAll().get(0);
-		productType.setDescription("Description2");
+    public ProductType update(ProductType arg0) throws InvalidEntityException {
+        ProductType productType = productTypeDao.findAll().get(0);
+        productType.setDescription("Description2");
 
-		productType = productTypeDao.update(productType);
-		assertEquals(productType.getDescription(), "Description2");
+        productType = productTypeDao.update(productType);
+        assertEquals(productType.getDescription(), "Description2");
 
-		return productType;
-	}
+        return productType;
+    }
 
-	public void remove(ProductType arg0) {
-		productTypeDao.remove(productTypeDao.findAll().get(0));
+    public void remove(ProductType arg0) {
+        productTypeDao.remove(productTypeDao.findAll().get(0));
 
-	}
+    }
 
-	/**
-	 * @param productTypeDao
-	 *            the productTypeDao to set
-	 */
-	public void setProductTypeDao(ProductTypeDao productTypeDao) {
-		this.productTypeDao = productTypeDao;
-	}
+    /**
+     * @param productTypeDao
+     *            the productTypeDao to set
+     */
+    public void setProductTypeDao(ProductTypeDao productTypeDao) {
+        this.productTypeDao = productTypeDao;
+    }
 
 }

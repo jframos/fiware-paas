@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
   http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
-    version="1.0">
-	
-	<persistence-unit name="paasmanager" transaction-type="RESOURCE_LOCAL">
+             version="1.0">
+
+    <persistence-unit name="paasmanager" transaction-type="RESOURCE_LOCAL">
         <class>com.telefonica.euro_iaas.commons.properties.PersistentProperty</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.Configuration</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.OS</class>
@@ -20,16 +20,16 @@
         <class>com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.Service</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.Tier</class>
-        <class>com.telefonica.euro_iaas.paasmanager.model.Environment</class>  
+        <class>com.telefonica.euro_iaas.paasmanager.model.Environment</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.InstallableInstance</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.ProductInstance</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.TierInstance</class>
-        <class>com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance</class> 
+        <class>com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.Template</class>
-        <class>com.telefonica.euro_iaas.paasmanager.model.Task</class>  
-        <class>com.telefonica.euro_iaas.paasmanager.model.SecurityGroup</class>  
-        <class>com.telefonica.euro_iaas.paasmanager.model.Rule</class>  
+        <class>com.telefonica.euro_iaas.paasmanager.model.Task</class>
+        <class>com.telefonica.euro_iaas.paasmanager.model.SecurityGroup</class>
+        <class>com.telefonica.euro_iaas.paasmanager.model.Rule</class>
         <exclude-unlisted-classes></exclude-unlisted-classes>
     </persistence-unit>
 </persistence>

@@ -21,7 +21,7 @@
                 <Size>254</Size>
             </VirtualNetwork>
         </Zone>
-	</Topology>
+    </Topology>
 
     <StorageCapacity>
 

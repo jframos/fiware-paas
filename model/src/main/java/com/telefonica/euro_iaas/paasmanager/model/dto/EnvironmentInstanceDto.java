@@ -1,14 +1,9 @@
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
@@ -19,152 +14,151 @@ import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class EnvironmentInstanceDto {
 
-	private String environmentInstanceName;
-	private String vdc;
-	private String description;
-	private Status status;
-	private String blueprintName;
+    private String environmentInstanceName;
+    private String vdc;
+    private String description;
+    private Status status;
+    private String blueprintName;
 
-	private EnvironmentDto environmentDto;
+    private EnvironmentDto environmentDto;
 
-	private List<TierInstanceDto> tierInstanceDtos;
+    private List<TierInstanceDto> tierInstanceDtos;
 
-	private List<Attribute> attributes;
+    private List<Attribute> attributes;
 
-	/**
-	 * @param environmentInstanceName
-	 * @param vdc
-	 * @param environment
-	 * @param tierInstances
-	 */
-	public EnvironmentInstanceDto(String environmentInstanceName,
-			EnvironmentDto environmentDto,
-			List<TierInstanceDto> tierInstanceDtos, String vdc) {
-		this.environmentInstanceName = environmentInstanceName;
-		this.environmentDto = environmentDto;
-		this.tierInstanceDtos = tierInstanceDtos;
-		this.vdc = vdc;
-	}
+    /**
+     * @param environmentInstanceName
+     * @param vdc
+     * @param environment
+     * @param tierInstances
+     */
+    public EnvironmentInstanceDto(String environmentInstanceName, EnvironmentDto environmentDto,
+            List<TierInstanceDto> tierInstanceDtos, String vdc) {
+        this.environmentInstanceName = environmentInstanceName;
+        this.environmentDto = environmentDto;
+        this.tierInstanceDtos = tierInstanceDtos;
+        this.vdc = vdc;
+    }
 
-	/**
+    /**
 	 * 
 	 */
-	public EnvironmentInstanceDto() {
-	}
+    public EnvironmentInstanceDto() {
+    }
 
-	/**
-	 * @return the environmentInstanceName
-	 */
-	public String getEnvironmentInstanceName() {
-		return environmentInstanceName;
-	}
+    /**
+     * @return the environmentInstanceName
+     */
+    public String getEnvironmentInstanceName() {
+        return environmentInstanceName;
+    }
 
-	/**
-	 * @param environmentInstanceName
-	 *            the environmentInstanceName to set
-	 */
-	public void setEnvironmentInstanceName(String environmentInstanceName) {
-		this.environmentInstanceName = environmentInstanceName;
-	}
+    /**
+     * @param environmentInstanceName
+     *            the environmentInstanceName to set
+     */
+    public void setEnvironmentInstanceName(String environmentInstanceName) {
+        this.environmentInstanceName = environmentInstanceName;
+    }
 
-	public void setBlueprintName(String blueprintName) {
-		this.blueprintName = blueprintName;
-	}
+    public void setBlueprintName(String blueprintName) {
+        this.blueprintName = blueprintName;
+    }
 
-	public String getBlueprintName() {
-		return blueprintName;
-	}
+    public String getBlueprintName() {
+        return blueprintName;
+    }
 
-	/**
-	 * @return the vdc
-	 */
-	public String getVdc() {
-		return vdc;
-	}
+    /**
+     * @return the vdc
+     */
+    public String getVdc() {
+        return vdc;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public Status getStatus() {
-		return status;
-	}
+    public Status getStatus() {
+        return status;
+    }
 
-	public void setStatus(Status status) {
-		this.status = status;
-	}
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
-	/**
-	 * @param vdc
-	 *            the vdc to set
-	 */
-	public void setVdc(String vdc) {
-		this.vdc = vdc;
-	}
+    /**
+     * @param vdc
+     *            the vdc to set
+     */
+    public void setVdc(String vdc) {
+        this.vdc = vdc;
+    }
 
-	/**
-	 * @return the environment
-	 */
+    /**
+     * @return the environment
+     */
 
-	public EnvironmentDto getEnvironmentDto() {
-		return environmentDto;
-	}
+    public EnvironmentDto getEnvironmentDto() {
+        return environmentDto;
+    }
 
-	/**
-	 * @param environment
-	 *            the environment to set
-	 */
+    /**
+     * @param environment
+     *            the environment to set
+     */
 
-	public void setEnvironmentDto(EnvironmentDto environmentDto) {
-		this.environmentDto = environmentDto;
-	}
+    public void setEnvironmentDto(EnvironmentDto environmentDto) {
+        this.environmentDto = environmentDto;
+    }
 
-	/**
-	 * @return the tierInstances
-	 */
-	public List<TierInstanceDto> getTierInstances() {
-		return tierInstanceDtos;
-	}
+    /**
+     * @return the tierInstances
+     */
+    public List<TierInstanceDto> getTierInstances() {
+        return tierInstanceDtos;
+    }
 
-	/**
-	 * @param tierInstances
-	 *            the tierInstances to set
-	 */
-	public void setTierInstances(List<TierInstanceDto> tierInstanceDtos) {
-		this.tierInstanceDtos = tierInstanceDtos;
-	}
+    /**
+     * @param tierInstances
+     *            the tierInstances to set
+     */
+    public void setTierInstances(List<TierInstanceDto> tierInstanceDtos) {
+        this.tierInstanceDtos = tierInstanceDtos;
+    }
 
-	/**
-	 * @return the attributes
-	 */
-	public List<Attribute> getAttributes() {
-		return attributes;
-	}
+    /**
+     * @return the attributes
+     */
+    public List<Attribute> getAttributes() {
+        return attributes;
+    }
 
-	/**
-	 * @param attributes
-	 *            the attributes to set
-	 */
-	public void setAttributes(List<Attribute> attributes) {
-		this.attributes = attributes;
-	}
+    /**
+     * @param attributes
+     *            the attributes to set
+     */
+    public void setAttributes(List<Attribute> attributes) {
+        this.attributes = attributes;
+    }
 
-	public EnvironmentInstance fromDto() {
-		EnvironmentInstance environmentInstance = new EnvironmentInstance();
-		environmentInstance.setBlueprintName(getBlueprintName());
-		environmentInstance.setDescription(getDescription());
-		if (getEnvironmentDto() != null) {
-			String envInstanceName = vdc + "-" + getEnvironmentDto().getName();
-			environmentInstance.setName(envInstanceName);
-		}
-		if (getEnvironmentDto() != null) {
-			Environment environment = getEnvironmentDto().fromDto();
-			environmentInstance.setEnvironment(environment);
-		}
-		return environmentInstance;
-	}
+    public EnvironmentInstance fromDto() {
+        EnvironmentInstance environmentInstance = new EnvironmentInstance();
+        environmentInstance.setBlueprintName(getBlueprintName());
+        environmentInstance.setDescription(getDescription());
+        if (getEnvironmentDto() != null) {
+            String envInstanceName = vdc + "-" + getEnvironmentDto().getName();
+            environmentInstance.setName(envInstanceName);
+        }
+        if (getEnvironmentDto() != null) {
+            Environment environment = getEnvironmentDto().fromDto();
+            environmentInstance.setEnvironment(environment);
+        }
+        return environmentInstance;
+    }
 }

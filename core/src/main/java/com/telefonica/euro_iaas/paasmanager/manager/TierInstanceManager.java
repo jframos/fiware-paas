@@ -19,123 +19,106 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 public interface TierInstanceManager {
 
-	/**
-	 * Update an tierInstance
-	 * 
-	 * @param tierInstance
-	 * @return the tierInstance created
-	 */
-	TierInstance update(ClaudiaData claudiaData, String envName, TierInstance tierInstance)
-			throws EntityNotFoundException, InvalidEntityException,
-			AlreadyExistsEntityException;
+    /**
+     * Update an tierInstance
+     * 
+     * @param tierInstance
+     * @return the tierInstance created
+     */
+    TierInstance update(ClaudiaData claudiaData, String envName, TierInstance tierInstance)
+            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException;
 
-	/**
-	 * Scale a TierInstance
-	 * 
-	 * @param org
-	 * @param vdc
-	 * @param payload
-	 * @param tierInstance
-	 * @throws InfrastructureException
-	 * @throws EntityNotFoundException
-	 * @throws AlreadyExistsEntityException
-	 * @throws InvalidEntityException
-	 * @throws NotUniqueResultException
-	 * @throws InvalidProductInstanceRequestException
-	 */
-	void create(ClaudiaData claudiaData, TierInstance tierInstance,
-			EnvironmentInstance envInstance,
-			SystemPropertiesProvider propertiesProvider)
-			throws InfrastructureException, EntityNotFoundException,
-			InvalidEntityException, AlreadyExistsEntityException,
-			NotUniqueResultException, InvalidProductInstanceRequestException,
-			ProductInstallatorException;
+    /**
+     * Scale a TierInstance
+     * 
+     * @param org
+     * @param vdc
+     * @param payload
+     * @param tierInstance
+     * @throws InfrastructureException
+     * @throws EntityNotFoundException
+     * @throws AlreadyExistsEntityException
+     * @throws InvalidEntityException
+     * @throws NotUniqueResultException
+     * @throws InvalidProductInstanceRequestException
+     */
+    void create(ClaudiaData claudiaData, TierInstance tierInstance, EnvironmentInstance envInstance,
+            SystemPropertiesProvider propertiesProvider) throws InfrastructureException, EntityNotFoundException,
+            InvalidEntityException, AlreadyExistsEntityException, NotUniqueResultException,
+            InvalidProductInstanceRequestException, ProductInstallatorException;
 
-	/**
-	 * 
-	 * @param criteria
-	 * @return
-	 * @throws EntityNotFoundException
-	 */
-	List<TierInstance> findByCriteria(TierInstanceSearchCriteria criteria)
-			throws EntityNotFoundException;
+    /**
+     * @param criteria
+     * @return
+     * @throws EntityNotFoundException
+     */
+    List<TierInstance> findByCriteria(TierInstanceSearchCriteria criteria) throws EntityNotFoundException;
 
-	/**
-	 * 
-	 * @param vdc
-	 * @param environmentInstance
-	 * @return
-	 * @throws EntityNotFoundException
-	 */
-	List<TierInstance> findByEnvironment(String vdc,
-			EnvironmentInstance environmentInstance)
-			throws EntityNotFoundException;
+    /**
+     * @param vdc
+     * @param environmentInstance
+     * @return
+     * @throws EntityNotFoundException
+     */
+    List<TierInstance> findByEnvironment(String vdc, EnvironmentInstance environmentInstance)
+            throws EntityNotFoundException;
 
-	/**
-	 * Load a TierInstance by its name
-	 * 
-	 * @param name
-	 * @return
-	 * @throws EntityNotFoundException
-	 */
-	TierInstance load(String name) throws EntityNotFoundException;
+    /**
+     * Load a TierInstance by its name
+     * 
+     * @param name
+     * @return
+     * @throws EntityNotFoundException
+     */
+    TierInstance load(String name) throws EntityNotFoundException;
 
-	/**
-	 * 
-	 * @param name
-	 * @return
-	 * @throws EntityNotFoundException
-	 */
-	TierInstance loadByName(String name) throws EntityNotFoundException;
+    /**
+     * @param name
+     * @return
+     * @throws EntityNotFoundException
+     */
+    TierInstance loadByName(String name) throws EntityNotFoundException;
 
-	/**
-	 * 
-	 * @param tierInstance
-	 * @throws InvalidEntityException
-	 */
-	void remove(TierInstance tierInstance) throws InvalidEntityException;
+    /**
+     * @param tierInstance
+     * @throws InvalidEntityException
+     */
+    void remove(TierInstance tierInstance) throws InvalidEntityException;
 
-	/**
-	 * 
-	 * @param tierInstance
-	 * @return
-	 * @throws InvalidEntityException
-	 */
-	TierInstance create(ClaudiaData claudiaa,String envName, TierInstance tierInstance)
-			throws InvalidEntityException;
+    /**
+     * @param tierInstance
+     * @return
+     * @throws InvalidEntityException
+     */
+    TierInstance create(ClaudiaData claudiaa, String envName, TierInstance tierInstance) throws InvalidEntityException;
 
-	/**
-	 * 
-	 * @param org
-	 * @param service
-	 * @param tierInstance
-	 * @throws InfrastructureException
-	 * @throws InvalidEntityException
-	 * @throws EntityNotFoundException
-	 * @throws TierInstanceNotFoundException
-	 */
-	void delete(ClaudiaData claudiaData, TierInstance tierInstance,
-			EnvironmentInstance envInstan) throws InfrastructureException,
-			InvalidEntityException, EntityNotFoundException;
+    /**
+     * @param org
+     * @param service
+     * @param tierInstance
+     * @throws InfrastructureException
+     * @throws InvalidEntityException
+     * @throws EntityNotFoundException
+     * @throws TierInstanceNotFoundException
+     */
+    void delete(ClaudiaData claudiaData, TierInstance tierInstance, EnvironmentInstance envInstan)
+            throws InfrastructureException, InvalidEntityException, EntityNotFoundException;
 
-	/**
-	 * 
-	 * @param claudiaData
-	 * @param tierInstance
-	 * @param envInstance
-	 * @throws InvalidEntityException
-	 * @throws NotUniqueResultException
-	 * @throws InvalidProductInstanceRequestException
-	 * @throws ProductInstallatorException
-	 * @throws AlreadyExistsEntityException
-	 * @throws ProductReconfigurationException
-	 * @throws EntityNotFoundException
-	 */
-	void update(ClaudiaData claudiaData, TierInstance tierInstance,
-			EnvironmentInstance envInstance)
-			throws ProductInstallatorException,
-			InvalidProductInstanceRequestException, NotUniqueResultException,
-			InvalidEntityException, AlreadyExistsEntityException,
-			EntityNotFoundException, ProductReconfigurationException;
+    /**
+     * @param claudiaData
+     * @param tierInstance
+     * @param envInstance
+     * @throws InvalidEntityException
+     * @throws NotUniqueResultException
+     * @throws InvalidProductInstanceRequestException
+     * @throws ProductInstallatorException
+     * @throws AlreadyExistsEntityException
+     * @throws ProductReconfigurationException
+     * @throws EntityNotFoundException
+     */
+    void update(ClaudiaData claudiaData, TierInstance tierInstance, EnvironmentInstance envInstance)
+            throws ProductInstallatorException, InvalidProductInstanceRequestException, NotUniqueResultException,
+            InvalidEntityException, AlreadyExistsEntityException, EntityNotFoundException,
+            ProductReconfigurationException;
 
 }

@@ -9,11 +9,11 @@ package com.telefonica.euro_iaas.paasmanager.exception;
 @SuppressWarnings("serial")
 public class NotUniqueResultException extends Exception {
 
-	public NotUniqueResultException() {
-		super();
-	}
+    public NotUniqueResultException() {
+        super();
+    }
 
-	public NotUniqueResultException(Throwable e) {
-		super(e);
-	}
+    public NotUniqueResultException(Throwable e) {
+        super(e);
+    }
 }

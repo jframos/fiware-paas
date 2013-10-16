@@ -1,7 +1,5 @@
 package com.telefonica.euro_iaas.paasmanager.dao;
 
-import java.util.List;
-
 import com.telefonica.euro_iaas.commons.dao.BaseDAO;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 

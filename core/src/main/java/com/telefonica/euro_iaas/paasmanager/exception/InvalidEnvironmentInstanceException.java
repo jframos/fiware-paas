@@ -3,8 +3,7 @@ package com.telefonica.euro_iaas.paasmanager.exception;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 
 /**
- * Exception thrown when trying to insert a ProductRelease that does not have
- * the right information
+ * Exception thrown when trying to insert a ProductRelease that does not have the right information
  * 
  * @author Jesus M. Movilla
  */

@@ -14,13 +14,13 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ArtifactSearchC
  */
 public interface ArtifactDao extends BaseDAO<Artifact, String> {
 
-	/**
-	 * Find the artifacts that matches with the given criteria.
-	 * 
-	 * @param criteria
-	 *            the search criteria
-	 * @return the list of elements that match with the criteria.
-	 */
-	List<Artifact> findByCriteria(ArtifactSearchCriteria criteria);
+    /**
+     * Find the artifacts that matches with the given criteria.
+     * 
+     * @param criteria
+     *            the search criteria
+     * @return the list of elements that match with the criteria.
+     */
+    List<Artifact> findByCriteria(ArtifactSearchCriteria criteria);
 
 }

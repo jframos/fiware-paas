@@ -12,17 +12,15 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationRele
  * @author Jesus M. Movilla
  * @version $Id: $
  */
-public interface ApplicationReleaseDao extends
-		BaseDAO<ApplicationRelease, String> {
+public interface ApplicationReleaseDao extends BaseDAO<ApplicationRelease, String> {
 
-	/**
-	 * Find the application releases that match with the given criteria.
-	 * 
-	 * @param criteria
-	 *            the search criteria
-	 * @return the list of elements that match with the criteria.
-	 */
-	List<ApplicationRelease> findByCriteria(
-			ApplicationReleaseSearchCriteria criteria);
+    /**
+     * Find the application releases that match with the given criteria.
+     * 
+     * @param criteria
+     *            the search criteria
+     * @return the list of elements that match with the criteria.
+     */
+    List<ApplicationRelease> findByCriteria(ApplicationReleaseSearchCriteria criteria);
 
 }

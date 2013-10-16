@@ -10,10 +10,9 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TaskSearchCrite
  * Default the persistence operations for Task elements.
  * 
  * @author Jesus M. Movilla
- * 
  */
 public interface TaskDao extends BaseDAO<Task, Long> {
 
-	List<Task> findByCriteria(TaskSearchCriteria criteria);
+    List<Task> findByCriteria(TaskSearchCriteria criteria);
 
 }

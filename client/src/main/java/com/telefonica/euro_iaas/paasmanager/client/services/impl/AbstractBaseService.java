@@ -3,10 +3,11 @@ package com.telefonica.euro_iaas.paasmanager.client.services.impl;
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.sun.jersey.api.client.Client;
+
 /**
  * Provides common functionallity and fields to every service.
+ * 
  * @author serch
- *
  */
 public class AbstractBaseService {
 
@@ -22,7 +23,8 @@ public class AbstractBaseService {
     }
 
     /**
-     * @param client the client to set
+     * @param client
+     *            the client to set
      */
     public void setClient(Client client) {
         this.client = client;
@@ -36,7 +38,8 @@ public class AbstractBaseService {
     }
 
     /**
-     * @param baseHost the baseHost to set
+     * @param baseHost
+     *            the baseHost to set
      */
     public void setBaseHost(String baseHost) {
         this.baseHost = baseHost;
@@ -50,18 +53,17 @@ public class AbstractBaseService {
     }
 
     /**
-     * @param type the type to set
+     * @param type
+     *            the type to set
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    public MultivaluedMap<String, String> addParam(
-            MultivaluedMap<String, String> queryparams, String key, Object value) {
+    public MultivaluedMap<String, String> addParam(MultivaluedMap<String, String> queryparams, String key, Object value) {
         if (value != null) {
             queryparams.add(key, value.toString());
         }
         return queryparams;
     }
 }
-

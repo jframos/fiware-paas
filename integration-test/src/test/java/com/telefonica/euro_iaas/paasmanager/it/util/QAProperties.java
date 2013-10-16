@@ -7,15 +7,12 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
 
-
 /**
  * Provides a set of methods to get the parameters properties to run test.
- *
+ * 
  * @author Sergio Arroyo
- *
  */
 public class QAProperties {
-
 
     public static final String BASE_URL = "base.url";
     public static final String MIME_TYPE = "mime.type";
@@ -27,21 +24,18 @@ public class QAProperties {
     public static final String ORG = "org";
     public static final String VM = "vm";
     public static final String PAYLOAD_LOATION = "payloadLocation";
-    
+
     private static Properties properties;
 
-
     private static Properties getProperties() {
-        if(properties == null) {
+        if (properties == null) {
             properties = new Properties();
             InputStream file;
             try {
                 if (System.getProperty("properties") != null) {
-                    file = new FileInputStream(
-                            System.getProperty("properties"));
+                    file = new FileInputStream(System.getProperty("properties"));
                 } else {
-                    file = QAProperties.class.getResourceAsStream(
-                    "/paasmanager-qa.properties");
+                    file = QAProperties.class.getResourceAsStream("/paasmanager-qa.properties");
                 }
                 properties.load(file);
 
@@ -55,10 +49,10 @@ public class QAProperties {
     }
 
     /**
-     * Get the property from system parameter if exists. Otherwise get
-     * from a properties file.
-     *
-     * @param key key of the property.
+     * Get the property from system parameter if exists. Otherwise get from a properties file.
+     * 
+     * @param key
+     *            key of the property.
      * @return the property
      */
     public static String getProperty(String key) {
@@ -75,7 +69,6 @@ public class QAProperties {
 
     /**
      * @return the list of keys
-     *
      */
     public static String[] getConfigurationPropertiesKeys() {
         Set<Object> keyset = getProperties().keySet();

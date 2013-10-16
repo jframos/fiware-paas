@@ -8,19 +8,19 @@ package com.telefonica.euro_iaas.paasmanager.exception;
 @SuppressWarnings("serial")
 public class PaasManagerServerRuntimeException extends RuntimeException {
 
-	public PaasManagerServerRuntimeException() {
-		super();
-	}
+    public PaasManagerServerRuntimeException() {
+        super();
+    }
 
-	public PaasManagerServerRuntimeException(String msg) {
-		super(msg);
-	}
+    public PaasManagerServerRuntimeException(String msg) {
+        super(msg);
+    }
 
-	public PaasManagerServerRuntimeException(Throwable e) {
-		super(e);
-	}
+    public PaasManagerServerRuntimeException(Throwable e) {
+        super(e);
+    }
 
-	public PaasManagerServerRuntimeException(String msg, Throwable e) {
-		super(msg, e);
-	}
+    public PaasManagerServerRuntimeException(String msg, Throwable e) {
+        super(msg, e);
+    }
 }

@@ -15,25 +15,22 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCrite
  */
 public interface TierDao extends BaseDAO<Tier, String> {
 
+    /**
+     * @param TierId
+     * @return
+     * @throws EntityNotFoundException
+     * @throws InvalidEntityException
+     */
+    Tier load(String name, String vdc, String environmentName) throws EntityNotFoundException;
 
-	/**
-	 * 
-	 * @param TierId
-	 * @return
-	 * @throws EntityNotFoundException
-	 * @throws InvalidEntityException
-	 */
-	Tier load(String name, String vdc, String environmentName) throws EntityNotFoundException;
-
-	/**
-	 * Find the environment that matches with the given criteria.
-	 * 
-	 * @param criteria
-	 *            the search criteria
-	 * @return the list of elements that match with the criteria.
-	 * @throws EntityNotFoundException
-	 */
-	List<Tier> findByCriteria(TierSearchCriteria criteria)
-			throws EntityNotFoundException;
+    /**
+     * Find the environment that matches with the given criteria.
+     * 
+     * @param criteria
+     *            the search criteria
+     * @return the list of elements that match with the criteria.
+     * @throws EntityNotFoundException
+     */
+    List<Tier> findByCriteria(TierSearchCriteria criteria) throws EntityNotFoundException;
 
 }
