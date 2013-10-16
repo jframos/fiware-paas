@@ -9,16 +9,23 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.exception;
+
 /**
  * Exception thrown when the application release is invalid.
- *
+ * 
  * @author Jesus M. Movilla
  * @version $Id: $
  */
 @SuppressWarnings("serial")
 public class InvalidApplicationReleaseException extends Exception {
 
-}
+	public InvalidApplicationReleaseException(String string) {
+		super(string);
+	}
 
+	public InvalidApplicationReleaseException(Throwable e) {
+		super(e);
+	}
+}

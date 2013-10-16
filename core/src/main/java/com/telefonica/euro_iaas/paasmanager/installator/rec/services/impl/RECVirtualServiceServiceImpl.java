@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.installator.rec.services.impl;
 
 import java.text.MessageFormat;
@@ -30,56 +30,65 @@ import com.telefonica.euro_iaas.paasmanager.installator.rec.services.RECVirtualS
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public class RECVirtualServiceServiceImpl extends AbstractBaseService implements
 		RECVirtualServiceService {
 
 	private MediaType APPLICATION_OVF_XML;
-	private static Logger log = Logger.getLogger(RECVirtualServiceServiceImpl.class);
-	
-	public RECVirtualServiceServiceImpl(Client client, String baseUrl, String mediaType) {
-	    APPLICATION_OVF_XML = MediaType.register(mediaType,
-	    		"XML OVF document");
+	private static Logger log = Logger
+			.getLogger(RECVirtualServiceServiceImpl.class);
+
+	public RECVirtualServiceServiceImpl(Client client, String baseUrl,
+			String mediaType) {
+		APPLICATION_OVF_XML = MediaType.register(mediaType, "XML OVF document");
 		setBaseHost(baseUrl);
-        setType(APPLICATION_OVF_XML);
-        setClient(client);
+		setType(APPLICATION_OVF_XML);
+		setClient(client);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.installator.rec.services.RECVirtualServiceService#createVirtualService(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seecom.telefonica.euro_iaas.paasmanager.installator.rec.services.
+	 * RECVirtualServiceService#createVirtualService(java.lang.String)
 	 */
-	public void createVirtualService(String appId, String vmId, String picId, String acId, String payload)
+	public void createVirtualService(String appId, String vmId, String picId,
+			String acId, String payload)
 			throws VirtualServiceInstallationException {
 		
+		log.debug("Virtual service payload " + payload);
+
 		DomRepresentation data = null;
 		Response postResponse = null;
-		
-		Reference urlGet = new Reference(getBaseHost() + MessageFormat.format(
-                ClientConstants.BASE_VIRTUALSERVICE_PATH, appId, vmId,
-                picId)+ "/" + acId);
-		
-		Reference urlPost = new Reference(getBaseHost() + MessageFormat.format(
-                ClientConstants.BASE_VIRTUALSERVICE_PATH, appId, vmId,
-                picId));
-		
+
+		Reference urlGet = new Reference(getBaseHost()
+				+ MessageFormat.format(
+						ClientConstants.BASE_VIRTUALSERVICE_PATH, appId, vmId,
+						picId) + "/" + acId);
+
+		Reference urlPost = new Reference(getBaseHost()
+				+ MessageFormat.format(
+						ClientConstants.BASE_VIRTUALSERVICE_PATH, appId, vmId,
+						picId));
+
 		Response getResponse = client.get(urlGet);
-		
-		if (!getResponse.getStatus().equals(Status.SUCCESS_OK)){
+
+		if (!getResponse.getStatus().equals(Status.SUCCESS_OK)) {
 			Document doc;
 			try {
 				doc = getDocument(payload);
-				
+
 				data = new DomRepresentation(APPLICATION_OVF_XML, doc);
-				log.info("createVirtualService.url():" + urlPost);		
+				log.info("createVirtualService.url():" + urlPost);
 				postResponse = client.post(urlPost, data);
-				
-				checkRECTaskStatus (postResponse);
+
+				checkRECTaskStatus(postResponse);
 			} catch (ProductInstallatorException e) {
 				String msg = " Error agregating a Virtual Service. Desc: "
 						+ e.getMessage();
-				throw new VirtualServiceInstallationException (msg);
-			}		
+				throw new VirtualServiceInstallationException(msg);
+			}
 		}
 	}
 }

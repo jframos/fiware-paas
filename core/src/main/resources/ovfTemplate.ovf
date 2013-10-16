@@ -3,7 +3,7 @@
 xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 xsi:schemaLocation="http://schemas.tcloud.telefonica.com/tcloud/1 ../../../tags/core/v0.11/tcloud.xsd" name="${envInstanceName}">
 <Description>This VApp is for illustring use cases in REC</Description>
-<ovf:Envelope   name="admin.template.snapshotpaas" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" 
+<ovf:Envelope   name="admin.template.sdc-template-paas" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" 
           xmlns="http://schemas.dmtf.org/ovf/envelope/1"
           xmlns:ovfenvelope="http://schemas.dmtf.org/ovf/envelope/1" 
           xmlns:rsrvr="http://schemas.telefonica.com/claudia/ovf" 
@@ -26,7 +26,7 @@ xsi:schemaLocation="http://schemas.tcloud.telefonica.com/tcloud/1 ../../../tags/
           	<ovf:Network ovf:name="management">
                 <ovf:Description>Network to provide administrative access</ovf:Description>
             </ovf:Network>  
-      </NetworkSection>   
+      </NetworkSection>
       <ovf:VirtualSystemCollection ovf:id="${envInstanceName}">
       	<Info>fiware demo</Info>		  
 		${virtualSystemTemplate} 

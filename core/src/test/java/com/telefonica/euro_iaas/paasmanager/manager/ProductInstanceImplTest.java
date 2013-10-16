@@ -9,9 +9,8 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.manager;
-
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -28,6 +27,7 @@ import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.BaseDAO;
@@ -44,6 +44,8 @@ import com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.InfrastructureManagerClaudiaImpl;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.ProductInstanceManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.TierInstanceManagerImpl;
+import com.telefonica.euro_iaas.paasmanager.model.Attribute;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentType;
 import com.telefonica.euro_iaas.paasmanager.model.OS;
@@ -59,79 +61,85 @@ import com.telefonica.euro_iaas.sdc.client.model.ProductInstances;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
-public class ProductInstanceImplTest extends TestCase{
-
-
+public class ProductInstanceImplTest extends TestCase {
 
 	private ProductInstanceDao productInstanceDao;
-	
+
 	private ProductReleaseManager productReleaseManager;
 	private ProductInstallator productInstallator;
-		
+
 	private ProductInstanceManagerImpl manager = null;
-	
+
 	private ProductRelease productRelease = null;
 	private TierInstance tierInstance = null;
-	
 
-	
 	@Before
-	public void setUp() throws Exception{
-		
-		productInstanceDao = mock (ProductInstanceDao.class);
-		
-		productReleaseManager = mock (ProductReleaseManager.class);
-		productInstallator = mock (ProductInstallator.class);
-			
+	public void setUp() throws Exception {
+
+		productInstanceDao = mock(ProductInstanceDao.class);
+
+		productReleaseManager = mock(ProductReleaseManager.class);
+		productInstallator = mock(ProductInstallator.class);
+
 		manager = new ProductInstanceManagerImpl();
-	    
+
 		manager.setProductInstallator(productInstallator);
 		manager.setProductInstanceDao(productInstanceDao);
 		manager.setProductReleaseManager(productReleaseManager);
 
-		productRelease = new ProductRelease ("product", "2.0");
-		
+		productRelease = new ProductRelease("product", "2.0");
+
 		List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
 		productReleases.add(productRelease);
-		
+
 		VM host = new VM(null, "hostname", "domain");
-		
+
 		Tier tier = new Tier();
-		tier.setInitial_number_instances(new Integer(1));
-		tier.setMaximum_number_instances(new Integer(5));
-		tier.setMinimum_number_instances(new Integer(1));
+		tier.setInitialNumberInstances(new Integer(1));
+		tier.setMaximumNumberInstances(new Integer(5));
+		tier.setMinimumNumberInstances(new Integer(1));
 		tier.setName("tierName");
 		tier.setProductReleases(productReleases);
-		
-		tierInstance = new TierInstance (tier, "tierInsatnce", "nametierInstance", host);	
-		ProductInstance productInstance = new ProductInstance (productRelease, Status.INSTALLING, "vdc");
-		
-		when(productReleaseManager.load(any(String.class))).thenReturn(productRelease);
-		when(productInstanceDao.load(any(String.class))).thenReturn(productInstance);
-		when(productInstallator.install(any(TierInstance.class), any(ProductRelease.class))).thenReturn(productInstance);
+
+		tierInstance = new TierInstance(tier, "tierInsatnce",
+				"nametierInstance", host);
+		ProductInstance productInstance = new ProductInstance(productRelease,
+				Status.INSTALLING, "vdc");
+
+		when(productReleaseManager.load(any(String.class))).thenReturn(
+				productRelease);
+		when(productInstanceDao.load(any(String.class))).thenReturn(
+				productInstance);
+		when(
+				productInstallator.install(any(ClaudiaData.class), any(String.class), any(TierInstance.class),
+						any(ProductRelease.class), Matchers.<List<Attribute>>any())).thenReturn(productInstance);
 	}
-	
+
 	@Test
-	public void testCreateProductInstance() throws Exception{
+	public void testCreateProductInstance() throws Exception {
 
-		ProductInstance productInstance = new ProductInstance (productRelease, Status.INSTALLING, "vdc");
-		ProductInstance productInstanceCreated = manager.create(productInstance);  
-		assertEquals(productInstance.getName(), productInstanceCreated.getName());
+		ProductInstance productInstance = new ProductInstance(productRelease,
+				Status.INSTALLING, "vdc");
+		ProductInstance productInstanceCreated = manager
+				.create(productInstance);
+		assertEquals(productInstance.getName(), productInstanceCreated
+				.getName());
 
 	}
-	
+
 	@Test
-	public void testInstallProductInstanceNoAttributes() throws Exception{
+	public void testInstallProductInstanceNoAttributes() throws Exception {
 
-		ProductInstance productInstance = new ProductInstance (productRelease, Status.INSTALLING, "vdc");
-		ProductInstance productInstanceCreated = manager.install(tierInstance, "vdc", productRelease, null);  
-		assertEquals(productInstance.getName(), productInstanceCreated.getName());
+		ProductInstance productInstance = new ProductInstance(productRelease,
+				Status.INSTALLING, "vdc");
+		ClaudiaData data = new ClaudiaData ("ogr", "vdc", "");
+		ProductInstance productInstanceCreated = manager.install(tierInstance, data, " ", 
+				 productRelease, null);
+		assertEquals(productInstance.getName(), productInstanceCreated
+				.getName());
 
 	}
-	
-	
-	
-	
+
 }

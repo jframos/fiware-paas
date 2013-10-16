@@ -9,12 +9,13 @@ import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
+import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
 
-import com.telefonica.euro_iaas.paasmanager.exception.IPNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidProductInstanceRequestException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidVappException;
 import com.telefonica.euro_iaas.paasmanager.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
@@ -22,6 +23,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
+import com.telefonica.euro_iaas.paasmanager.installator.ProductInstallator;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
@@ -33,24 +35,30 @@ import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.util.EnvironmentUtils;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+
+import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 
 public class EnvironmentInstanceManagerImpl implements
 		EnvironmentInstanceManager {
 
 	private EnvironmentInstanceDao environmentInstanceDao;
+	private TierInstanceDao tierInstanceDao;
+	private SystemPropertiesProvider systemPropertiesProvider;
 
 	private ProductInstanceManager productInstanceManager;
 	private EnvironmentManager environmentManager;
 	private InfrastructureManager infrastructureManager;
 	private TierInstanceManager tierInstanceManager;
 	private EnvironmentUtils environmentUtils;
+	private ProductInstallator productInstallator;
 
 	/** The log. */
 	private static Logger log = Logger
 			.getLogger(EnvironmentInstanceManagerImpl.class);
-	
-	/**  Max lenght of an OVF */
-	private static final Integer tam_max = 30000;
+
+	/** Max lenght of an OVF */
+	private static final Integer tam_max = 90000;
 
 	/*
 	 * (non-Javadoc)
@@ -78,47 +86,91 @@ public class EnvironmentInstanceManagerImpl implements
 		return environmentInstanceDao.findAll();
 	}
 
-	public EnvironmentInstance create(ClaudiaData claudiaData,
-			Environment environment) throws InvalidEntityException,
-			AlreadyExistsEntityException, NotUniqueResultException,
-			InfrastructureException, IPNotRetrievedException,
-			ProductInstallatorException, EntityNotFoundException,
-			InvalidEnvironmentRequestException,
-			InvalidProductInstanceRequestException, InvalidOVFException {
+	public EnvironmentInstance create(ClaudiaData claudiaData,EnvironmentInstance environmentInstance) 
+			throws AlreadyExistsEntityException, 
+			InvalidEntityException, EntityNotFoundException, InvalidVappException, InvalidOVFException, 
+			InfrastructureException, ProductInstallatorException {
+			
+		Environment environment = insertEnvironemntInDatabase (claudiaData, environmentInstance.getEnvironment());
+	
+		if (environmentInstance.getEnvironment().getOvf() != null)
+			environment.setOvf(environmentInstance.getEnvironment().getOvf());
+		
+	//	environmentInstance.setVdc(claudiaData.getVdc());
+		environmentInstance.setName(environmentInstance.getVdc() + "-" + environment.getName());
+		
+		environmentInstance.setEnvironment(environment);
+		environmentInstance.setStatus(Status.INIT);
+
+		environmentInstance = insertEnvironenttInstanceInDatabase(environmentInstance);
+
+		log.info("Creating the infrastructure");
+		environmentInstance.setStatus(Status.DEPLOYING);
+		environmentInstanceDao.update(environmentInstance);
 
 		try {
-			environmentInstanceDao.load(claudiaData.getService());
-			throw new AlreadyExistsEntityException("The environment instance "
-					+ claudiaData.getService()
-					+ " already exists in the database, "
-					+ "so that, it is not possible "
-					+ " to create it. Change the name of the name ");
-		} catch (EntityNotFoundException e) {
-			log.info("The environment cannot be loaded:" + e + ". Starting"
-					+ "to create it.");
+			environmentInstance = infrastructureManager
+					.createInfrasctuctureEnvironmentInstance(
+							environmentInstance, environment.getTiers(),
+							claudiaData);
+
+		} catch (InvalidVappException e) {
+			environmentInstance.setStatus(Status.ERROR);
+			environmentInstanceDao.update(environmentInstance);
+			throw new InvalidVappException(e);
+		} catch (InvalidOVFException e) {
+			environmentInstance.setStatus(Status.ERROR);
+			environmentInstanceDao.update(environmentInstance);
+			throw new InvalidOVFException(e);
+		} catch (InfrastructureException e) {
+			environmentInstance.setStatus(Status.ERROR);
+			environmentInstanceDao.update(environmentInstance);
+			throw new InfrastructureException(e);
 		}
 
-		EnvironmentInstance environmentInstance = infrastructureManager
-				.createInfrasctuctureEnvironmentInstance(environment,
-						environment.getOvf(), claudiaData);
+		// environment = environmentUtils.resolveMacros(environmentInstance);
+		// environmentManager.update(environment);
 
-		environmentInstance.setVdc(claudiaData.getVdc());
-		environmentInstance.setName(claudiaData.getService());
+		environmentInstance.setStatus(Status.INSTALLING);
+		environmentInstanceDao.update(environmentInstance);
 
-		environment = environmentUtils.resolveMacros(environmentInstance);
+		log.info("Installing software");
+		boolean bScalableEnvironment;
+		try {
+			bScalableEnvironment = installSoftwareInEnvironmentInstance(
+					claudiaData, environmentInstance);
+		} catch (ProductInstallatorException e) {
+			environmentInstance.setStatus(Status.ERROR);
+			environmentInstanceDao.update(environmentInstance);
+			throw new ProductInstallatorException(e);
+		} catch (InvalidProductInstanceRequestException e) {
+			environmentInstance.setStatus(Status.ERROR);
+			environmentInstanceDao.update(environmentInstance);
+			throw new ProductInstallatorException(e);
+		} catch (NotUniqueResultException e) {
+			environmentInstance.setStatus(Status.ERROR);
+			environmentInstanceDao.update(environmentInstance);
+			throw new ProductInstallatorException(e);
+		}
 
-		boolean bScalableEnvironment = installSoftwareInEnvironmentInstance(
-				claudiaData, environmentInstance);
+		environmentInstance.setStatus(Status.INSTALLED);
+		environmentInstanceDao.update(environmentInstance);
 
 		infrastructureManager.StartStopScalability(claudiaData,
 				bScalableEnvironment);
 
-		EnvironmentInstance environmentInstanceDB = insertEnvironmentInstanceDB(environmentInstance);
+		environmentInstance.setStatus(Status.INSTALLED);
+		environmentInstanceDao.update(environmentInstance);
 
-		return environmentInstanceDB;
+		log.info("Enviroment Instance installed correctly");
+
+		// EnvironmentInstance environmentInstanceDB =
+		// insertEnvironmentInstanceDB( claudiaData, environmentInstance);
+
+		return environmentInstance;
 	}
 
-	private boolean installSoftwareInEnvironmentInstance(
+	public boolean installSoftwareInEnvironmentInstance(
 			ClaudiaData claudiaData, EnvironmentInstance environmentInstance)
 			throws ProductInstallatorException,
 			InvalidProductInstanceRequestException, NotUniqueResultException,
@@ -128,41 +180,65 @@ public class EnvironmentInstanceManagerImpl implements
 		boolean bScalableEnvironment = false;
 
 		for (TierInstance tierInstance : environmentInstance.getTierInstances()) {
+			log.info("Install software in tierInstance "
+					+ tierInstance.getName() + " from tier "
+					+ tierInstance.getTier().getName());
 			// check if the tier is scalable
 			boolean state = checkScalability(tierInstance.getTier());
 			if (!bScalableEnvironment) {
 				bScalableEnvironment = (state) ? true : false;
 			}
+			tierInstance.setStatus(Status.INSTALLING);
+			tierInstanceDao.update(tierInstance);
 			String newOVF = " ";
 			if ((tierInstance.getTier().getProductReleases() != null)
 					&& (tierInstance.getTier().getProductReleases().size() != 0)) {
 
 				for (ProductRelease productRelease : tierInstance.getTier()
 						.getProductReleases()) {
-
-					ProductInstance productInstance = productInstanceManager
-							.install(tierInstance,
-									environmentInstance.getVdc(),
-									productRelease,
-									productRelease.getAttributes());
-					tierInstance.addProductInstance(productInstance);
-				}
-
-				if (state && tierInstance.getNumberReplica() == 1) {
-					String image_Name;
-					claudiaData.setFqn(tierInstance.getVM().getFqn());
-					image_Name = infrastructureManager
-							.ImageScalability(claudiaData);
-
-					newOVF = infrastructureManager.updateVmOvf(
-							tierInstance.getVM().getVmOVF(), image_Name);
-					tierInstance.setOvf(newOVF);
+					log.info("Install software " + productRelease.getProduct()
+							+ " " + productRelease.getVersion());
+					
+					try {
+						ProductInstance productInstance = productInstanceManager.install(tierInstance, claudiaData,
+									environmentInstance.getEnvironment().getName(),
+									productRelease, productRelease
+											.getAttributes());
+						log.info("Adding product instance "+ productInstance.getName());
+						tierInstance.setStatus(Status.INSTALLED);
+						tierInstance.addProductInstance(productInstance);
+					} catch (ProductInstallatorException pie) {
+						String message = " Error installing product " + productRelease.getName();
+						tierInstance.setStatus(Status.ERROR);
+						tierInstanceDao.update(tierInstance);
+						log.error(message);
+						throw new ProductInstallatorException (message, pie);
+					}
 				}
 				
-				if (state && tierInstance.getNumberReplica()>1){
+				if (state && tierInstance.getNumberReplica() == 1) {
+					log.info("Setup scalabiliy ");
+					String image_Name;
+					// claudiaData.setFqn(tierInstance.getVM().getFqn());
+
+					image_Name = infrastructureManager.ImageScalability(
+							claudiaData, tierInstance);
+					log.info("Generating image " + image_Name);
+					log.info("Updating OVF ");
+					newOVF = environmentUtils.updateVmOvf(
+							tierInstance.getOvf(), image_Name);
+					tierInstance.setOvf(newOVF);
+					// tierInstance.setOvf(newOVF);
+				}
+
+				if (state && tierInstance.getNumberReplica() > 1) {
+					log.info("Updating OVF replica more than 1 ");
 					if (!newOVF.equals(" "))
 						tierInstance.setOvf(newOVF);
 				}
+				
+				tierInstance.setStatus(Status.INSTALLED);
+				tierInstanceDao.update(tierInstance);
 			}
 		}
 		return bScalableEnvironment;
@@ -170,8 +246,7 @@ public class EnvironmentInstanceManagerImpl implements
 
 	private boolean checkScalability(Tier tier) {
 		boolean state;
-		if (tier.getMaximum_number_instances() > tier
-				.getMinimum_number_instances()) {
+		if (tier.getMaximumNumberInstances() > tier.getMinimumNumberInstances()) {
 			state = true;
 		} else {
 			state = false;
@@ -181,7 +256,16 @@ public class EnvironmentInstanceManagerImpl implements
 
 	public EnvironmentInstance load(String vdc, String name)
 			throws EntityNotFoundException {
-		EnvironmentInstance instance = environmentInstanceDao.load(name);
+		EnvironmentInstance instance = null;
+		try
+		{
+		 instance = environmentInstanceDao.load(name);
+		}
+		catch (Exception e)
+		{
+			throw new EntityNotFoundException(EnvironmentInstance.class, "vdc",
+					vdc);
+		}
 		if (!instance.getVdc().equals(vdc)) {
 			throw new EntityNotFoundException(EnvironmentInstance.class, "vdc",
 					vdc);
@@ -207,9 +291,10 @@ public class EnvironmentInstanceManagerImpl implements
 			return environmentInstanceDao.update(envInst);
 		} catch (InvalidEntityException e) {
 			// TODO Auto-generated catch block
-			throw new InvalidEntityException(
-					"It is not possible to update the environment "
-							+ envInst.getName() + " : " + e.getMessage());
+			log.error("It is not possible to update the environment "
+					+ envInst.getName() + " : " + e.getMessage());
+			throw new InvalidEntityException(EnvironmentInstance.class, e);
+
 		}
 	}
 
@@ -222,120 +307,181 @@ public class EnvironmentInstanceManagerImpl implements
 	 */
 	public void destroy(ClaudiaData claudiaData, EnvironmentInstance envInstance)
 			throws InvalidEntityException {
-		try {
-			infrastructureManager.deleteEnvironment(claudiaData, envInstance);
-		} catch (InfrastructureException e) {
-			// TODO Auto-generated catch block
-			throw new InvalidEntityException(
-					"It is not possible to delete the environment "
-							+ envInstance.getName() + " : " + e.getMessage());
-		}
-		List<TierInstance> tierInstances = envInstance.getTierInstances();
-
-		if (tierInstances != null) {
-			envInstance.setTierInstances(null);
-			try {
+		log.info("Destroying enviornment isntance "
+				+ envInstance.getBlueprintName() + " with environment "
+				+ envInstance.getEnvironment().getName() + " vdc " + envInstance.getVdc());
+		
+		try {			
+			// Borrado de nodos en el chefServer
+			envInstance.setStatus(Status.UNINSTALLING);
+			envInstance = environmentInstanceDao.update(envInstance);
+			for (int i = 0; i < envInstance.getTierInstances().size(); i++) {
+				TierInstance tierInstance = envInstance.getTierInstances().get(i);
+				log.info("Deleting node "
+					+ tierInstance.getVM().getHostname());			
+				tierInstance.setStatus(Status.UNINSTALLING);
+				tierInstanceDao.update(tierInstance);			
+				try{
+					ChefClient chefClient = productInstallator.loadNode(
+						tierInstance.getVdc(), 
+						tierInstance.getVM().getHostname());
+					
+					productInstallator.deleteNode(tierInstance.getVdc(),
+							chefClient.getName());
+					
+					tierInstance.setStatus(Status.UNINSTALLED);
+					tierInstanceDao.update(tierInstance);
+				} catch (EntityNotFoundException enfe) {
+					String errorMsg = "The ChefClient " +
+							tierInstance.getVM().getHostname() + 
+							" is not at ChefServer";
+					log.error(errorMsg);
+				} catch (Exception e) {
+					String errorMsg = "Error deleting node from Node Manager : "
+							+ tierInstance.getVM().getFqn() + "" + e.getMessage();
+					log.error(errorMsg);
+					throw new InvalidEntityException(EnvironmentInstance.class, e);
+				}
+			//}
+			
+				envInstance.setStatus(Status.UNINSTALLED);
 				envInstance = environmentInstanceDao.update(envInstance);
-			} catch (InvalidEntityException e) {
-				throw new InvalidEntityException(e.getMessage());
+
+				// Borrado de VMs
+				try {
+					log.info("Deleting Virtual Machines for environmetn instance "
+					+ envInstance.getBlueprintName());
+					envInstance.setStatus(Status.UNDEPLOYING);
+					envInstance = environmentInstanceDao.update(envInstance);
+					infrastructureManager.deleteEnvironment(claudiaData, envInstance);
+				} catch (InfrastructureException e) {
+					log.error("It is not possible to delete the environment "
+					+ envInstance.getName() + " : " + e.getMessage());
+					throw new InvalidEntityException(EnvironmentInstance.class, e);
+				}
+
+				envInstance.setStatus(Status.UNDEPLOYED);
 			}
-			for (TierInstance tierInstance : tierInstances) {
-				tierInstanceManager.remove(tierInstance);
+			
+			// Borrado del registro en BBDD paasmanager
+			log.info("Deleting the environment instance "
+					+ envInstance.getBlueprintName() + " in the database ");
+		
+			List<TierInstance> tierInstances = envInstance.getTierInstances();
+
+			if (tierInstances != null) {
+				envInstance.setTierInstances(null);
+				try {
+					envInstance = environmentInstanceDao.update(envInstance);
+				} catch (InvalidEntityException e) {
+					log.error(e.getMessage());
+					throw new InvalidEntityException(EnvironmentInstance.class, e);
+				}
+				for (TierInstance tierInstance : tierInstances) {
+					tierInstanceManager.remove(tierInstance);
+				}
 			}
+		} catch (NullPointerException ne){
+			log.info("Environment Instance " + envInstance.getBlueprintName()
+					+ " does not have any TierInstances associated");
+		} finally {
+			environmentInstanceDao.remove(envInstance);
+			log.info("Environment Instance " + envInstance.getBlueprintName()
+					+ " DESTROYED");
 		}
-		environmentInstanceDao.remove(envInstance);
+		
 	}
 
 	// PRVATE METHODS
-	private EnvironmentInstance insertEnvironmentInstanceDB(
-			EnvironmentInstance environmentInstance)
-			throws InvalidEntityException, AlreadyExistsEntityException,
-			EntityNotFoundException {
 
-		Environment environment = environmentInstance.getEnvironment();
+	private Environment insertEnvironemntInDatabase(ClaudiaData claudiaData,
+			Environment env) throws InvalidEntityException,
+			EntityNotFoundException {
+		log.info("Insert in database");
+		Environment environment = null;
+		if (env.getVdc()== null) {
+			env.setVdc(claudiaData.getVdc());
+		}
+		if (env.getOrg()== null) {
+			env.setOrg(claudiaData.getOrg());
+		}
+
+		if (systemPropertiesProvider.getProperty(
+				SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+			try {
+				environment = environmentManager.load(env.getName(), env.getVdc()); 
+				if (environment.getOvf() == null && env.getOvf() != null) {
+					environment.setOvf(env.getOvf());
+					environment = environmentManager.update(environment);
+				}
+				return environment;
+			} catch (EntityNotFoundException e1) {
+				throw new EntityNotFoundException(Environment.class,
+						"The environment should have been already created", e1);
+			}
+		}
+
 		try {
-			environment = environmentManager.load(environment.getName());
+			environment = environmentManager.load(env.getName(), env.getVdc()); 
+			if (environment.getOvf() == null && env.getOvf() != null) {
+				environment.setOvf(env.getOvf());
+				environment =environmentManager.update (environment);
+			}
+			return environment;
 		} catch (EntityNotFoundException e1) {
 			try {
-				environment = environmentManager.create(environment);
+				environment = environmentManager.create(claudiaData,
+						env);
 			} catch (InvalidEnvironmentRequestException e) {
 				// TODO Auto-generated catch block
 				String errorMessage = " Error to create the environment . "
 						+ environment.getName() + ". " + "Desc: "
 						+ e.getMessage();
 				log.error(errorMessage);
-				throw new InvalidEntityException(errorMessage);
+				throw new InvalidEntityException(Environment.class, e);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				String errorMessage = " Error to create the environment . "
+						+ environment.getName() + ". " + "Desc: "
+						+ e.getMessage();
+				log.error(errorMessage);
+				throw new InvalidEntityException(Environment.class, e);
 			}
 		}
+		return environment;
+	}
 
-		environmentInstance.setEnvironment(environment);
-
-		List<TierInstance> tierInstances = insertTierInstancesBD(environmentInstance
-				.getTierInstances());
-
-		environmentInstance.setTierInstances(tierInstances);
-		environmentInstance.setStatus(Status.INSTALLED);
-		environmentInstance.setVdc(environmentInstance.getVdc());
-		environmentInstance.setName(environmentInstance.getName());
-
+	private EnvironmentInstance insertEnvironenttInstanceInDatabase(
+			EnvironmentInstance environmentInstance)
+			throws InvalidEntityException {
 		try {
 			environmentInstance = environmentInstanceDao
-					.load(environmentInstance.getName());
-		} catch (EntityNotFoundException e) {
-			try {
-				environmentInstance = environmentInstanceDao
-						.create(environmentInstance);
-			} catch (InvalidEntityException e1) {
-				String errorMessage = " Invalid environmentInstance objetc . Desc: "
-						+ e.getMessage();
-				log.error(errorMessage);
-				throw new InvalidEntityException(errorMessage);
-			} catch (AlreadyExistsEntityException e1) {
-				String errorMessage = " Already exists environmentInstance objetc . "
-						+ environmentInstance.getName()
-						+ ". "
-						+ "Desc: "
-						+ e.getMessage();
-				log.error(errorMessage);
-				throw new InvalidEntityException(errorMessage);
-			} catch (Exception e1) {
-				String errorMessage = " Generic Exception inserting . "
-						+ environmentInstance.getName() + ". " + "Desc: "
-						+ e.getMessage();
-				log.error(errorMessage);
-				throw new InvalidEntityException(errorMessage);
-			}
+					.create(environmentInstance);
+		} catch (InvalidEntityException e) {
+			String errorMessage = " Invalid environmentInstance objetc . Desc: "
+					+ e.getMessage();
+			log.error(errorMessage);
+			throw new InvalidEntityException(EnvironmentInstance.class, e);
+		} catch (AlreadyExistsEntityException e) {
+			String errorMessage = " Already exists environmentInstance objetc . "
+					+ environmentInstance.getName()
+					+ ". "
+					+ "Desc: "
+					+ e.getMessage();
+			log.error(errorMessage);
+			throw new InvalidEntityException(EnvironmentInstance.class, e);
 		}
+
 		return environmentInstance;
 	}
 
-	private List<TierInstance> insertTierInstancesBD(
-			List<TierInstance> tierInstances) throws EntityNotFoundException,
-			InvalidEntityException, AlreadyExistsEntityException {
-
-		TierInstance tierInstanceDB = null;
-		List<TierInstance> tierInstancesDB = new ArrayList<TierInstance>();
-		for (TierInstance tierInstance : tierInstances) {
-			//Max length of an OVF. Delete the product Instances
-			
-			if (tierInstance.getOvf() != null && tierInstance.getOvf().length()>tam_max){
-				String vmOVF = tierInstance.getOvf();
-				while (vmOVF.contains("ovfenvelope:ProductSection"))
-					vmOVF = infrastructureManager.deleteProductSection(vmOVF);
-				tierInstance.setOvf(vmOVF);
-			}
-			try {
-				tierInstanceDB = tierInstanceManager.load(tierInstance
-						.getName());
-			} catch (EntityNotFoundException e) {
-				tierInstanceDB = tierInstanceManager.create(tierInstance);
-				//El ovf no puede superar un máximo de caracteres
-
-			}
-			tierInstancesDB.add(tierInstanceDB);
-		}
-
-		return tierInstancesDB;
+	/**
+	 * @param tierInstanceDao
+	 *            the tierInstanceDao to set
+	 */
+	public void setTierInstanceDao(
+			TierInstanceDao tierInstanceDao) {
+		this.tierInstanceDao = tierInstanceDao;
 	}
 
 	/**
@@ -388,4 +534,18 @@ public class EnvironmentInstanceManagerImpl implements
 	public void setEnvironmentUtils(EnvironmentUtils environmentUtils) {
 		this.environmentUtils = environmentUtils;
 	}
+
+	/**
+	 * @param productInstallator
+	 *            the productInstallator to set
+	 */
+	public void setProductInstallator(ProductInstallator productInstallator) {
+		this.productInstallator = productInstallator;
+	}
+
+	public void setSystemPropertiesProvider(
+			SystemPropertiesProvider systemPropertiesProvider) {
+		this.systemPropertiesProvider = systemPropertiesProvider;
+	}
+
 }

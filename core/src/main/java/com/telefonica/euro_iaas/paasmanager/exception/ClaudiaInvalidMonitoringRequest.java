@@ -9,20 +9,23 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.exception;
 
 /**
  * Exception thrown when the application type is not found.
- *
+ * 
  * @author Jesus M. Movilla
  * @version $Id: $
  */
 @SuppressWarnings("serial")
 public class ClaudiaInvalidMonitoringRequest extends Exception {
 
-
 	public ClaudiaInvalidMonitoringRequest(String msg) {
 		super(msg);
+	}
+
+	public ClaudiaInvalidMonitoringRequest(Throwable e) {
+		super(e);
 	}
 }

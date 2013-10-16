@@ -5,12 +5,83 @@
     <artifactId>paas-manager-server</artifactId>
     <packaging>pom</packaging>
     <name>paas-manager-server</name>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
+
+
+    <url>${ciURI}/sites/fiware/${project.artifactId}</url>
+
+    <properties>
+
+        <repoName>fiware-paas</repoName>
+
+        <scmURI>git@pdihub.hi.inet:fiware</scmURI>
+        <ciURI>http://ci-cpr02.hi.inet</ciURI>
+        <issueURI>https://jirapdi.tid.es/browse</issueURI>
+        <nexusRepositories>${ciURI}/nexus/content/repositories</nexusRepositories>
+        <continousIntegrationSystemUrl>${ciURI}/jenkins</continousIntegrationSystemUrl>
+        <continousIntegrationSystemProjectName>${repoName}</continousIntegrationSystemProjectName>
+
+        <!-- repositories for distribution -->
+        <!-- snapshots -->
+        <repoMavenSnapshotId>repo-snapshot</repoMavenSnapshotId>
+        <repoMavenSnapshotName>repo-snapshot</repoMavenSnapshotName>
+        <repoMavenSnapshotUrl>${nexusRepositories}/snapshots</repoMavenSnapshotUrl>
+        <!-- releases -->
+        <repoMavenId>repo-release</repoMavenId>
+        <repoMavenName>repo-release</repoMavenName>
+        <repoMavenUrl>${nexusRepositories}/releases</repoMavenUrl>
+        <!-- thirdparty -->
+        <repoMavenThirdpartyId>repo-third-party-release</repoMavenThirdpartyId>
+        <repoMavenThirdpartyName>repo-third-party-release</repoMavenThirdpartyName>
+        <repoMavenThirdpartyUrl>${nexusRepositories}/thirdparty</repoMavenThirdpartyUrl>
+        <!-- site -->
+        <repoSiteId>nexus-site-repository</repoSiteId>
+        <repoSiteName>repo-site</repoSiteName>
+        <repoSiteUrl>${ciURI}</repoSiteUrl>
+
+        <!-- Quality -->
+        <sonar-maven-plugin.version>2.0</sonar-maven-plugin.version>
+        <cobertura-maven-plugin.version>2.6</cobertura-maven-plugin.version>
+
+        <!-- encoding -->
+
+        <encoding>utf-8</encoding>
+        <encoding.build.source>${encoding}</encoding.build.source>
+        <encoding.report.out>${encoding}</encoding.report.out>
+        <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
+
+        <sonar.jacoco.itReportPath>${project.build.directory}/../integration-test/jacoco.exec
+        </sonar.jacoco.itReportPath>
+
+        <!-- <spring.version>3.0.5.RELEASE</spring.version>-->
+        <spring.version>3.1.0.RELEASE</spring.version>
+
+        <seleniumserver.version>2.19.0</seleniumserver.version>
+        <jacoco.agent.version>0.5.4.201111111111</jacoco.agent.version>
+        <copyright.year>2012</copyright.year>
+        <junit.version>4.10</junit.version>
+        <jmock.version>2.5.1</jmock.version>
+        <jvm.version>1.5</jvm.version>
+        <tomcat.version>6</tomcat.version>
+        <maven-surefire-plugin.version>2.12.2</maven-surefire-plugin.version>
+        <tomcat.home>/usr/share/tomcat${tomcat.version}</tomcat.home>
+
+        <sonar.host.url>http://ci-cpr02.hi.inet:9000</sonar.host.url>
+
+        <!-- Release generation -->
+        <maven-jgitflow-plugin.version>1.0-alpha21.1</maven-jgitflow-plugin.version>
+
+    </properties>
+
+
     <scm>
-        <connection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/paas-manager-server-0.0.3</connection>
-        <developerConnection>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/paas-manager-server-0.0.3</developerConnection>
-        <url>scm:svn:https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags/paas-manager-server-0.0.3</url>
+        <connection>scm:git:${scmURI}/${repoName}.git</connection>
+        <developerConnection>scm:git:${scmURI}/${repoName}.git</developerConnection>
+        <url>${scmURI}/${repoName}.git</url>
+        <tag>HEAD</tag>
     </scm>
+
     <developers>
         <developer>
             <name>Jesus Movilla</name>
@@ -25,25 +96,15 @@
 
     <issueManagement>
         <system>Jira</system>
-        <url>https://jira.tid.es/browse/CLAUDIA</url>
+        <url>${issueURI}/CLAUDIA</url>
     </issueManagement>
 
-
-    <modules>
-        <module>model</module>
-        <module>core</module>
-        <module>rest-api</module>
-        <module>client</module>
-        <module>integration-test</module>
-    </modules>
-    
     <dependencyManagement>
         <dependencies>
-
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.8.2</version>
+                <version>4.11</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -52,16 +113,12 @@
                 <version>1.8.1</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>com.telefonica.euro_iaas</groupId>
-                <artifactId>paas-manager-model</artifactId>
-                <version>0.0.3</version>
-            </dependency>
 
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
-                <artifactId>paas-manager-core</artifactId>
-                <version>0.0.3</version>
+                <artifactId>openstack-tcloud-schemas</artifactId>
+                <version>2.3.3</version>
+                <type>jar</type>
             </dependency>
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
@@ -86,48 +143,64 @@
         <!-- Recursos sobre los que se van a aplicar los filtros -->
         <resources>
             <resource>
-                <!-- SÃ³lo se filtran los contenidos textuales. Si se filtra una imagen(*.png,*.gif), 
-                estÃ¡ quedarÃ¡ corrupta -->
+                <!-- SÃ³lo se filtran los contenidos textuales. Si se filtra una imagen(*.png,*.gif),
+                    estÃ¡ quedarÃ¡ corrupta -->
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <!-- 	<includes>
+                        <include>**/*.xml</include>
+                        <include>**/*.txt</include>
+                        <include>**/*.properties</include>
+                    </includes>-->
             </resource>
             <resource>
                 <!-- El contenido textual ya se ha aÃ±adido y filtrado en el paso anterior -->
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
+                <!--  <excludes>
+                       <exclude>**/*.xml</exclude>
+                       <exclude>**/*.txt</exclude>
+                       <exclude>**/*.properties</exclude>
+                   </excludes>-->
             </resource>
         </resources>
         <plugins>
-            <!-- integraciÃ³n con SVN -->
+            <!-- jgitflow -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-scm-plugin</artifactId>
-                <version>1.3</version>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>maven-jgitflow-plugin</artifactId>
+                <version>${maven-jgitflow-plugin.version}</version>
                 <configuration>
-                    <goals>install</goals>
-                    <checkoutDirectory>${scmCheckoutDirectory}</checkoutDirectory>
-                    <tagBase>https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags</tagBase>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <!-- to test a release set to true -->
+                    <noDeploy>true</noDeploy>
+                    <!-- rse: to avoid tag in master -->
+                    <noTag>false</noTag>
+                    <!-- rse: to avoid push changes to git -->
+                    <pushChanges>false</pushChanges>
+                    <!-- rse: To keep release branch -->
+                    <keepBranch>true</keepBranch>
+                    <!-- rse:  If set to true, the plugin sets the property "performRelease" to true,
+                    which activates the profile "release-profile", which is
+                    inherited from the super pom -->
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <allowSnapshots>true</allowSnapshots>
                 </configuration>
             </plugin>
-			
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.2.2</version>
-                <configuration>
-                    <tagBase>https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/tags</tagBase>
-                </configuration>
-            </plugin>
+
+
             <!-- Plugin HUDSON -->
             <plugin>
                 <groupId>org.jvnet.hudson.tools</groupId>
                 <artifactId>maven-hudson-plugin</artifactId>
                 <version>2.0-alpha-4</version>
                 <configuration>
-                    <subversionURL>https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/trunk/${project.artifactId}</subversionURL>
+                    <subversionURL>
+                        https://barricada.hi.inet/repositorio/boi/europ-iaas/app-conf/sdc-server/trunk/${project.artifactId}
+                    </subversionURL>
                     <includeCobertura>false</includeCobertura>
-                    <!-- Cada vez que se actualice el proyecto en hudson se contruirÃ¡ el 
-                    site -->
+                    <!-- Cada vez que se actualice el proyecto en hudson se contruirÃ¡ el
+                        site -->
                     <additionalGoals>site:site site:deploy</additionalGoals>
                     <!-- Para aÃ±adir la integraciÃ³n con sonar. AÃ±adir org.codehaus.sonar:sonar-maven-plugin:1.8:sonar -->
                 </configuration>
@@ -147,22 +220,7 @@
                     <verbose>${compilerVerbose}</verbose>
                 </configuration>
             </plugin>
-			
-            <!-- modificar las opciones del compilador -->
-            <!-- <plugin>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>2.3.2</version>
-                    <configuration>
-                            <source>${jvm.version}</source>
-                            <target>${jvm.version}</target>
-                            <encoding>${project.build.sourceEncoding}</encoding>
-                            <debug>${compilerInfoDebug}</debug>
-                            <optimize>${compilerOptimize}</optimize>
-                            <showWarnings>${compilerShowWarnings}</showWarnings>
-                            <showDeprecation>${compilerShowDeprecation}</showDeprecation>
-                            <verbose>${compilerVerbose}</verbose>
-                    </configuration>
-            </plugin>-->
+
 
             <!-- GeneraciÃ³n de test -->
             <plugin>
@@ -196,41 +254,41 @@
                             <id>it-test</id>
                             <phase>integration-test</phase>
                             <goals>
-                                    <goal>test</goal>
+                                <goal>test</goal>
                             </goals>
                             <configuration>
-                                    <excludes>
-                                            <exclude>**/test/Component.java</exclude>
-                                    </excludes>
-                                    <includes>
-                                            <include>**/test/acceptance/*.java</include>
-                                    </includes>
-                                    <systemPropertyVariables>
-                                            <concordion.output.dir>target/site/concordion</concordion.output.dir>
-                                    </systemPropertyVariables>
+                                <excludes>
+                                    <exclude>**/test/Component.java</exclude>
+                                </excludes>
+                                <includes>
+                                    <include>**/test/acceptance/*.java</include>
+                                </includes>
+                                <systemPropertyVariables>
+                                    <concordion.output.dir>target/site/concordion</concordion.output.dir>
+                                </systemPropertyVariables>
                             </configuration>
-                    </execution>-->
+                        </execution>-->
                 </executions>
-            </plugin>	
-            <!-- En modo SNAPSHOT se hace coincidir con el nÃºmero de revisiÃ³n del 
-            SVN -->
-            <plugin>			
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>1.0</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <doCheck>false</doCheck>
-                    <doUpdate>true</doUpdate>
-                </configuration>
             </plugin>
+            <!-- En modo SNAPSHOT se hace coincidir con el nÃºmero de revisiÃ³n del
+                    SVN -->
+            <!--  	<plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>buildnumber-maven-plugin</artifactId>
+                  <version>1.0</version>
+                  <executions>
+                      <execution>
+                          <phase>validate</phase>
+                          <goals>
+                              <goal>create</goal>
+                          </goals>
+                      </execution>
+                  </executions>
+                  <configuration>
+                      <doCheck>false</doCheck>
+                      <doUpdate>true</doUpdate>
+                  </configuration>
+              </plugin>-->
             <!-- Enviar un mail con las releases notes descritas en el src/changes/changes.xml -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -253,7 +311,7 @@
                         <id>announcement-mail</id>
                     </execution>
                 </executions>
-				
+
                 <configuration>
                     <mailSender>
                         <name>Henar</name>
@@ -264,42 +322,8 @@
                         <toAddress implementation="java.lang.String">henar@tid.es</toAddress>
                     </toAddresses>
                 </configuration>
-            </plugin> 
-            <!-- Cobertura de los test -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin
-                </artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <check>
-                        <haltOnFailure>false</haltOnFailure>
-                    </check>
-                    <instrumentation>
-                        <excludes>
-                            <exclude>**/main/Bootstrap.class</exclude>
-                        </excludes>
-                    </instrumentation>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>clean</id>
-                        <phase>pre-site</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>instrument</id>
-                        <phase>site</phase>
-                        <goals>
-                            <!--   	<goal>instrument</goal> -->
-                            <goal>cobertura</goal>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
+
             <!--Agregador de informes -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -307,14 +331,122 @@
                 </artifactId>
                 <version>1.0.0-beta-1</version>
             </plugin>
-				 
+            <!-- Plugin para generar los javadocs -->
+            <!--  <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.8</version>
+
+                    <configuration>
+
+
+            </configuration>
+            <executions>
+              <execution>
+                <id>aggregate</id>
+                <goals>
+                  <goal>aggregate</goal>
+                </goals>
+                <phase>site</phase>
+                <configuration>
+
+
+                </configuration>
+              </execution>
+
+            </executions>
+                </plugin> -->
+
+
+            <!--   <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-antrun-plugin</artifactId>
+                 <executions>
+                     <execution>
+                         <id>copy-subprojects-sites</id>
+                         <phase>site</phase>
+                         <configuration>
+                             <tasks>
+
+                                 <mkdir dir="./target/site/core-site" />
+                                 <copy todir="./target/site/core-site">
+                                     <fileset dir="./core/target/site/" />
+                                 </copy>
+                                 <mkdir dir="./target/site/rest-api" />
+                                 <copy todir="./target/site/rest-api">
+                                     <fileset dir="./rest-api/target/site/" />
+                                 </copy>
+                             </tasks>
+                         </configuration>
+                         <goals>
+                             <goal>run</goal>
+                         </goals>
+                     </execution>
+                 </executions>
+             </plugin>-->
+
+            <!--     <plugin>
+                    <groupId>net.sourceforge.xuse</groupId>
+                    <artifactId>maven-xuse-m2-plugin</artifactId>
+                    <version>01.00.00-RC2</version>
+                    <executions>
+                        <execution>
+                            <phase>site</phase>
+                            <id>gendocs</id>
+                            <goals>
+                                <goal>xuse</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>-->
+
+
         </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <!-- QA -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                    <version>${cobertura-maven-plugin.version}</version>
+                    <configuration>
+                        <formats>
+                            <format>xml</format>
+                        </formats>
+                        <instrumentation>
+                            <ignores>
+                                <ignore>com.tdigital.kdaf.platform.coretest*</ignore>
+                                <ignore>com.tdigital.kdaf.platform.proxy*</ignore>
+                                <ignore>test*</ignore>
+                            </ignores>
+                            <excludes>
+                                <exclude>**/*Test*.class</exclude>
+                            </excludes>
+                        </instrumentation>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>cobertura</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>${sonar-maven-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
     </build>
 
 
-
     <profiles>
-   
+
         <profile>
             <id>runCobertura</id>
             <activation>
@@ -355,8 +487,6 @@
                     </plugin>
 
 
-
-
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
@@ -372,10 +502,10 @@
                                     <target>
                                         <taskdef resource="tasks.properties" />
                                         <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
-                                        <echo message="::PROCESS CLASSES: ${artifactId}" />
+                                        <echo message="::PROCESS CLASSES: ${project.artifactId}" />
 
                                         <if>
-                                            <equals arg1="${artifactId}" arg2="web-test-driver-for-code-coverage" />
+                                            <equals arg1="${project.artifactId}" arg2="web-test-driver-for-code-coverage" />
                                             <then>
                                                 <echo message="::SKIPPING PHASE for integration test" />
                                             </then>
@@ -412,7 +542,7 @@
 
 
                                         <if>
-                                            <equals arg1="${artifactId}" arg2="web-test-driver-for-code-coverage" />
+                                            <equals arg1="${project.artifactId}" arg2="web-test-driver-for-code-coverage" />
                                             <then>
                                                 <echo message="::SHORT CIRCUIT COMBINE PHASE for integration test" />
                                                 <echo message="source - ${cobertura.complete.ser.file} dest - ${basedir}/cobertura.ser" />
@@ -510,8 +640,8 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
                 <file>
-                    <!-- This employs that the basedir expression is only recognized by 
-                    Maven 3.x (see MNG-2363) -->
+                    <!-- This employs that the basedir expression is only recognized by
+                        Maven 3.x (see MNG-2363) -->
                     <exists>${basedir}</exists>
                 </file>
 
@@ -522,34 +652,7 @@
                 <compilerOptimize>false</compilerOptimize>
             </properties>
         </profile>
-                
-        <!-- fla: resolve MAC problem with tools.jar -->
-        <profile>
-            <id>mac-tools</id>
-            <activation>
-                <os>
-                    <name>mac os x</name>
-                    <family>mac</family>
-                    <arch>x86_64</arch>
-                </os>
-            </activation>
-            <properties>
-                <env>development</env>
-                <compilerInfoDebug>true</compilerInfoDebug>
-                <compilerOptimize>false</compilerOptimize>
-            </properties>
-            <dependencies>
-                <dependency> 
-                    <groupId>sun.jdk</groupId> 
-                    <artifactId>tools</artifactId> 
-                    <version>1.5.0</version> 
-                    <systemPath>/System/Library/Frameworks/JavaVM.framework/Versions/1.5/Classes/classes.jar</systemPath> 
-                    <scope>system</scope> 
-                </dependency> 
-            </dependencies>                    
-        </profile>
-        <!-- fin fla -->
-                    
+
         <!-- IntegraciÃ³n -->
         <profile>
             <id>integration</id>
@@ -582,6 +685,8 @@
             <build>
                 <pluginManagement>
                     <plugins>
+
+
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-site-plugin</artifactId>
@@ -606,7 +711,7 @@
                                         <report>project-team</report>
                                         <report>license</report>
                                         <report>mailing-list</report>
-                                        <!--  <report>dependencies</report>-->	 
+                                        <!--  <report>dependencies</report>-->
                                         <report>dependency-convergence</report>
                                         <report>plugin-management</report>
                                         <report>cim</report>
@@ -617,7 +722,7 @@
                                 </plugin>
                             </reportPlugins>
                         </configuration>
-				
+
                     </plugin>
                 </plugins>
             </build>
@@ -641,9 +746,9 @@
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>changelog-maven-plugin</artifactId>
                         <version>2.0-beta-1</version>
-                    </plugin> 
-                    <!-- Plugin para generar los reports de calidad de cÃ³digo. FaltarÃ­a 
-                    definir las mÃ©tricas a aplicar -->
+                    </plugin>
+                    <!-- Plugin para generar los reports de calidad de cÃ³digo. FaltarÃ­a
+                        definir las mÃ©tricas a aplicar -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-pmd-plugin</artifactId>
@@ -681,8 +786,8 @@
                         <artifactId>maven-project-info-reports-plugin</artifactId>
                         <version>2.1.2</version>
                     </plugin>
-                    <!-- Plugin para analizar las tags en el cÃ³digo, por ejemplo para generar 
-                    un informe con todos los TODO -->
+                    <!-- Plugin para analizar las tags en el cÃ³digo, por ejemplo para generar
+                        un informe con todos los TODO -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>taglist-maven-plugin</artifactId>
@@ -738,6 +843,38 @@
                         <artifactId>jdepend-maven-plugin</artifactId>
                         <version>2.0-beta-2</version>
                     </plugin>
+                    <!-- 		<plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-javadoc-plugin</artifactId>
+                                <version>2.8</version>
+
+
+                                                    <configuration>
+
+                </configuration>
+                <reportSets>
+                  <reportSet>
+                    <id>non-aggregate</id>
+                    <configuration>
+
+                    </configuration>
+                    <reports>
+                      <report>javadoc</report>
+                    </reports>
+                  </reportSet>
+                  <reportSet>
+                    <id>aggregate</id>
+                    <configuration>
+
+
+                    </configuration>
+                    <reports>
+                      <report>aggregate</report>
+                    </reports>
+                  </reportSet>
+
+                </reportSets>
+                            </plugin> -->
                 </plugins>
             </reporting>
         </profile>
@@ -746,8 +883,8 @@
             <id>maven-3</id>
             <activation>
                 <file>
-                    <!-- This employs that the basedir expression is only recognized by 
-                    Maven 3.x (see MNG-2363) -->
+                    <!-- This employs that the basedir expression is only recognized by
+                        Maven 3.x (see MNG-2363) -->
                     <exists>${basedir}</exists>
                 </file>
             </activation>
@@ -758,7 +895,7 @@
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-site-plugin</artifactId>
                             <version>3.0</version>
-							
+
                             <configuration>
                                 <reportPlugins>
                                     <plugin>
@@ -770,7 +907,7 @@
                                             <report>project-team</report>
                                             <report>license</report>
                                             <report>mailing-list</report>
-                                            <!--    <report>dependencies</report> --> 
+                                            <!--    <report>dependencies</report> -->
                                             <report>dependency-convergence</report>
                                             <report>plugin-management</report>
                                             <report>cim</report>
@@ -778,7 +915,7 @@
                                             <report>scm</report>
                                             <report>summary</report>
                                         </reports>
-                                    </plugin>  
+                                    </plugin>
                                     <plugin>
                                         <groupId>org.apache.maven.plugins</groupId>
                                         <artifactId>maven-changes-plugin</artifactId>
@@ -786,14 +923,14 @@
                                         <reportSets>
                                             <reportSet>
                                                 <reports>
-                                                    <!--   <report>changes-report</report>--> 
+                                                    <!--   <report>changes-report</report>-->
                                                 </reports>
-                                            </reportSet>    
+                                            </reportSet>
                                         </reportSets>
-                                    </plugin> 
+                                    </plugin>
                                 </reportPlugins>
-                            </configuration> 
-                        </plugin> 
+                            </configuration>
+                        </plugin>
                     </plugins>
                 </pluginManagement>
                 <plugins>
@@ -803,7 +940,7 @@
                             <locales>es</locales>
                             <outputEncoding>${project.reporting.outputEncoding}</outputEncoding>
                             <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
-				
+
 
                             <reportPlugins>
                                 <plugin>
@@ -815,7 +952,7 @@
                                         <report>project-team</report>
                                         <report>license</report>
                                         <report>mailing-list</report>
-                                        <!--  <report>dependencies</report> --> 
+                                        <!--  <report>dependencies</report> -->
                                         <report>dependency-convergence</report>
                                         <report>plugin-management</report>
                                         <report>cim</report>
@@ -824,6 +961,35 @@
                                         <report>summary</report>
                                     </reports>
                                 </plugin>
+                                <!--  	<plugin>
+                                       <groupId>org.apache.maven.plugins</groupId>
+                                       <artifactId>maven-javadoc-plugin</artifactId>
+                                       <version>2.8</version>
+                                       <configuration>
+
+           </configuration>
+           <reportSets>
+             <reportSet>
+               <id>non-aggregate</id>
+               <configuration>
+
+               </configuration>
+               <reports>
+                 <report>javadoc</report>
+               </reports>
+             </reportSet>
+             <reportSet>
+               <id>aggregate</id>
+               <configuration>
+
+               </configuration>
+               <reports>
+                 <report>aggregate</report>
+               </reports>
+             </reportSet>
+
+   </reportSets>
+                                   </plugin>  -->
                                 <!-- plugin para reports de sonar -->
                                 <plugin>
                                     <groupId>org.codehaus.sonar-plugins</groupId>
@@ -877,8 +1043,17 @@
                                 <!-- Plugin para generar los informes del JUNIT -->
                                 <plugin>
                                     <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-surefire-report-plugin</artifactId>
-                                    <version>${maven-surefire-plugin.version}</version>
+                                    <artifactId>maven-surefire-plugin</artifactId>
+                                    <version>2.8</version>
+                                    <dependencies>
+                                        <dependency>
+                                            <groupId>org.apache.maven.surefire</groupId>
+                                            <!-- Use the older JUnit 4 provider -->
+                                            <artifactId>surefire-junit4</artifactId>
+                                            <version>2.8</version>
+                                        </dependency>
+                                    </dependencies>
+
                                 </plugin>
                                 <!-- Plugin para analizar las tags en el cÃ³digo, por ejemplo para 
                                 generar un informe con todos los TODO -->
@@ -948,83 +1123,132 @@
         </profile>
     </profiles>
 
-		
-       
+
     <repositories>
-        <!--  Dejar hasta que haya releases del sdc en el repositorio nexus -->
+        <!-- ci-cpr02 Nexus Repositories -->
         <repository>
-            <id>thirdparty</id>
-            <name>3rd party</name>
-            <url>http://ci-cpr02.hi.inet/nexus/content/repositories/thirdparty/</url>
-        </repository>  
-        <repository>
-            <id>nexus</id>
-            <name>nexus</name>
-            <url>http://ci-cpr02.hi.inet/nexus/content/repositories/releases/</url>
+            <id>${repoMavenSnapshotId}</id>
+            <name>${repoMavenSnapshotName}</name>
+            <url>${repoMavenSnapshotUrl}</url>
         </repository>
-        <!--   <repository>
-            <id>ReleasesClaudia</id>
-            <name>Releases Claudia</name>
-            <url>http://ci-cpr01.hi.inet/nexus/content/repositories/releases/</url>
-        </repository>-->
-        <repository>
-            <id>snapshots</id>
-            <name>snapshots</name>
-            <url>http://ci-cpr02.hi.inet/nexus/content/repositories/snapshots/</url>
-        </repository>
-        
-        <!-- fla: Repo to find the bcprov-jdk16.jar -->  
-        <repository>
-            <id>bouncycastle</id>
-            <name>bouncycastle</name>
-            <url>http://repo2.maven.org/maven2</url>
-        </repository>
-        <!-- end fla -->  
-       
-        <repository>  
-            <id>maven-restlet</id>  
-            <name>Public online Restlet repository</name>  
-            <url>http://maven.restlet.org</url>  
-        </repository> 
-    </repositories>
-    
-   
-    <!-- ===================================== Distribution Management ==== -->
-    <distributionManagement>
         <repository>
             <id>${repoMavenId}</id>
             <name>${repoMavenName}</name>
             <url>${repoMavenUrl}</url>
         </repository>
-		
+        <repository>
+            <id>${repoMavenThirdpartyId}</id>
+            <name>${repoMavenThirdpartyName}</name>
+            <url>${repoMavenThirdpartyUrl}</url>
+        </repository>
+
+        <!-- Remote Repositories -->
+        <repository>
+            <id>central</id>
+            <name>central-repository</name>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+            <id>central2</id>
+            <name>central2-repository</name>
+            <url>http://repo2.maven.org/maven2</url>
+        </repository>
+
+        <!-- SpringSource repositories -->
+        <repository>
+            <id>com.springsource.repository.libraries.release</id>
+            <name>SpringSource Enterprise Bundle Repository - SpringSource Library Releases</name>
+            <url>http://repository.springsource.com/maven/libraries/release</url>
+        </repository>
+        <repository>
+            <id>com.springsource.repository.libraries.external</id>
+            <name>SpringSource Enterprise Bundle Repository - External Library Releases</name>
+            <url>http://repository.springsource.com/maven/libraries/external</url>
+        </repository>
+
+
+        <!-- Restlet repository-->
+        <repository>
+            <id>maven-restlet</id>
+            <name>Public online Restlet repository</name>
+            <url>http://maven.restlet.org</url>
+        </repository>
+
+    </repositories>
+
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>${repoMavenSnapshotId}</id>
+            <name>${repoMavenSnapshotName}</name>
+            <url>${repoMavenSnapshotUrl}</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>${repoMavenId}</id>
+            <name>${repoMavenName}</name>
+            <url>${repoMavenUrl}</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>${repoMavenThirdpartyId}</id>
+            <name>${repoMavenThirdpartyName}</name>
+            <url>${repoMavenThirdpartyUrl}</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>central</id>
+            <name>central-repository</name>
+            <url>http://repo1.maven.org/maven2</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>java.net</id>
+            <name>java.net</name>
+            <url>http://download.java.net/maven/2/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>stat-scm</id>
+            <name>stat-scm</name>
+            <url>http://stat-scm.sourceforge.net/maven2/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>codehaus</id>
+            <name>codehaus</name>
+            <url>http://repository.codehaus.org</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <distributionManagement>
+
+        <!-- RPM Releases Repository -->
+        <repository>
+            <id>${repoMavenId}</id>
+            <name>${repoMavenName}</name>
+            <url>${repoMavenUrl}</url>
+            <uniqueVersion>false</uniqueVersion>
+        </repository>
+
+        <!-- RPM Snapshots Repository -->
         <snapshotRepository>
             <id>${repoMavenSnapshotId}</id>
             <name>${repoMavenSnapshotName}</name>
             <url>${repoMavenSnapshotUrl}</url>
+            <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
-	
+
+        <!-- Project Site -->
         <site>
             <id>${repoSiteId}</id>
             <name>${repoSiteName}</name>
-            <url>${repoSiteUrl}/${project.groupId}/${project.artifactId}</url>
-        </site>  
+            <url>${repoSiteUrl}/fiware/${project.artifactId}</url>
+        </site>
+
     </distributionManagement>
-  
-    <properties>
-        <!-- Forzamos a los plugins a utilizar UTF-8, para evitar problemas con 
-        los encodings por defectos de los diferentes sistemas operativos -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <sonar.jacoco.itReportPath>${project.build.directory}/itest.jacoco</sonar.jacoco.itReportPath>
-        <seleniumserver.version>2.19.0</seleniumserver.version>
-        <jacoco.agent.version>0.5.4.201111111111</jacoco.agent.version>
-        <copyright.year>2012</copyright.year>
-        <junit.version>4.10</junit.version>
-        <jmock.version>2.5.1</jmock.version>
-        <jvm.version>1.5</jvm.version>
-        <tomcat.version>6</tomcat.version>
-        <maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
-        <tomcat.home>/usr/share/tomcat${tomcat.version}</tomcat.home>
-    </properties>
-  
+
+    <modules>
+        <module>model</module>
+        <module>core</module>
+        <module>rest-api</module>
+        <module>client</module>
+        <module>integration-test</module>
+    </modules>
+
+
 </project>

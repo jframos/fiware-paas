@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.rest.auth;
 
 import java.io.IOException;
@@ -18,35 +18,35 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 /**
  * The Class RestAuthenticationEntryPoint.
- *
+ * 
  * @author dbermejo
  */
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    /** The Constant LOG. */
-    private static final Logger LOG = Logger.getLogger(OpenStackAuthenticationProvider.class);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.springframework.security.web.AuthenticationEntryPoint#commence(
+	 * javax.servlet.http.HttpServletRequest,
+	 * javax.servlet.http.HttpServletResponse,
+	 * org.springframework.security.core.AuthenticationException)
+	 */
+	public final void commence(final HttpServletRequest request,
+			final HttpServletResponse response,
+			final AuthenticationException authException) throws IOException,
+			ServletException {
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.web.AuthenticationEntryPoint#commence(
-     * javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse,
-     * org.springframework.security.core.AuthenticationException)
-     */
-    public final void commence(final HttpServletRequest request,
-            final HttpServletResponse response, final AuthenticationException authException)
-                    throws IOException, ServletException {
+		// if (authException instanceof AuthenticationServiceException) {
+		// LOG.error(authException);
+		// response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+		// authException.getMessage());
+		// }
 
-//        if (authException instanceof AuthenticationServiceException) {
-//            LOG.error(authException);
-//            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, authException.getMessage());
-//        }
-
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-    }
+		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+	}
 }
-

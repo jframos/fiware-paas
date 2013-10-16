@@ -12,9 +12,10 @@
  */
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
-import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * @author jesus.movilla
@@ -38,6 +39,7 @@ public interface EnvironmentInstanceResourceValidator {
 	 * @param EnvironmentDto
 	 * @throws InvalidEnvironmentRequestException
 	 */
-	void validateCreate(EnvironmentDto EnvironmentDto)
+	void validateCreate(EnvironmentInstanceDto EnvironmentDto,
+			SystemPropertiesProvider systemPropertiesProvider)
 			throws InvalidEnvironmentRequestException;
 }

@@ -9,37 +9,40 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.exception;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
-public class IPNotRetrievedException extends Exception{
+public class IPNotRetrievedException extends Exception {
 
 	private String fqn;
-	
-	public IPNotRetrievedException() {
-		 super();
-	 }
-	 
-	 public IPNotRetrievedException(String fqn) {
-		 this.fqn = fqn;
-	 }
-	 
-	 /**
-	     * @return the fqn
-	 */
-	 public String getFqn() {
-		 return fqn;
-	 }
-	 
-	 /**
-	     * @return the productVersion
-	 */
-	 public void setFqn(String fqn) {
-		 this.fqn = fqn;
-	 }
-}
 
+	public IPNotRetrievedException() {
+		super();
+	}
+
+	public IPNotRetrievedException(Throwable e) {
+		super(e);
+	}
+
+	public IPNotRetrievedException(String fqn) {
+		this.fqn = fqn;
+	}
+
+	/**
+	 * @return the fqn
+	 */
+	public String getFqn() {
+		return fqn;
+	}
+
+	/**
+	 * @return the productVersion
+	 */
+	public void setFqn(String fqn) {
+		this.fqn = fqn;
+	}
+}

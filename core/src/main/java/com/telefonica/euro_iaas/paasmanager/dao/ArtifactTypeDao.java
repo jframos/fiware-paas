@@ -5,7 +5,7 @@ import com.telefonica.euro_iaas.paasmanager.model.ArtifactType;
 
 /**
  * Defines the methods needed to persist Artifact Type objects.
- *
+ * 
  * @author Jesus M. Movilla
  * @version $Id: $
  */

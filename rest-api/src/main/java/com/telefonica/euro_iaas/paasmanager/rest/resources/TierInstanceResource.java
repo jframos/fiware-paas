@@ -15,10 +15,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidTierInstanceRequestException;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
+
 import com.telefonica.euro_iaas.paasmanager.model.Task;
+import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
 
 /**
@@ -28,10 +31,10 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
  * 
  */
 public interface TierInstanceResource {
-	
 
 	/**
 	 * Create a new TierInstance
+	 * 
 	 * @param org
 	 * @param vdc
 	 * @param environment
@@ -40,23 +43,19 @@ public interface TierInstanceResource {
 	 * @return
 	 * @throws InvalidTierInstanceRequestException
 	 * @throws InvalidEnvironmentRequestException
+	 * @throws InvalidEntityException
 	 */
 
-	
 	@POST
 	@Path("/")
 	// @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Consumes( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	Task insert(@PathParam("org") String org,
-			@PathParam("vdc") String vdc,
+	Task insert(@PathParam("org") String org, @PathParam("vdc") String vdc,
 			@PathParam("environmentInstance") String environment,
-			TierInstanceDto tierInstanceDto,
-			@HeaderParam("callback") String callback)
-			throws InvalidTierInstanceRequestException, 
-			InvalidEnvironmentRequestException;
-	
+			TierDto tierDto, @HeaderParam("callback") String callback)
+			throws InvalidTierInstanceRequestException,
+			InvalidEnvironmentRequestException, InvalidEntityException, EntityNotFoundException;
 
-	
 	@PUT
 	@Path("/")
 	// @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -66,7 +65,7 @@ public interface TierInstanceResource {
 			@PathParam("environmentInstance") String environment,
 			TierInstanceDto tierInstanceDto,
 			@HeaderParam("callback") String callback);
-	
+
 	/**
 	 * 
 	 * @param page

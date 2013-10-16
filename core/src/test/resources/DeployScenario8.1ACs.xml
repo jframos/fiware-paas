@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<InstantiateOvfParams name="jonastest5"
-xsi:schemaLocation="http://schemas.tcloud.telefonica.com/tcloud/1 tcloud.xsd"
+<InstantiateOvfParams name="jonastest5" xsi:schemaLocation="http://schemas.tcloud.telefonica.com/tcloud/1 tcloud.xsd"
 xmlns="http://schemas.tcloud.telefonica.com/tcloud/1"
 xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"
 xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData"

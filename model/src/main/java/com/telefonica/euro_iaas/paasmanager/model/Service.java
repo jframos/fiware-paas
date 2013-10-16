@@ -15,9 +15,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * A Service 
+ * A Service
+ * 
  * @author Jesus M. Movilla
- *
+ * 
  */
 
 @Entity
@@ -26,24 +27,24 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Service {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	    
-	@Column(unique=true, nullable=false, length=256)
+
+	@Column(unique = true, nullable = false, length = 256)
 	private String name;
-	
-	@Column(length=2048)
+
+	@Column(length = 2048)
 	private String description;
-	
-	@OneToMany(cascade=CascadeType.ALL)
+
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<Attribute> attributes;
 
 	/**
 	 * Default Constructor
-	*/
+	 */
 	public Service() {
 	}
-	
+
 	/**
 	 * @param name
 	 * @param description
@@ -70,7 +71,8 @@ public class Service {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -84,7 +86,8 @@ public class Service {
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *            the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -98,13 +101,16 @@ public class Service {
 	}
 
 	/**
-	 * @param attributes the attributes to set
+	 * @param attributes
+	 *            the attributes to set
 	 */
 	public void setAttributes(List<Attribute> attributes) {
 		this.attributes = attributes;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -115,7 +121,9 @@ public class Service {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

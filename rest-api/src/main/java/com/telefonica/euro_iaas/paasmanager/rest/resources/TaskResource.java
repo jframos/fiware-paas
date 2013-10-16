@@ -73,4 +73,63 @@ public interface TaskResource {
 			@QueryParam("fromDate") Date fromDate,
 			@QueryParam("toDate") Date toDate, @PathParam("vdc") String vdc);
 
+	/**
+	 * 
+	 * @param page
+	 * @param pageSize
+	 * @param orderBy
+	 * @param orderType
+	 * @param states
+	 * @param resource
+	 * @param owner
+	 * @param fromDate
+	 * @param toDate
+	 * @param vdc
+	 * @param environment
+	 * @return
+	 */
+	@GET
+	@Path("/environmentInstance/{name}")
+	@Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	List<Task> findEnvironment(@QueryParam("page") Integer page,
+			@QueryParam("pageSize") Integer pageSize,
+			@QueryParam("orderBy") String orderBy,
+			@QueryParam("orderType") String orderType,
+			@QueryParam("states") List<TaskStates> states,
+			@QueryParam("result") String resource,
+			@QueryParam("owner") String owner,
+			@QueryParam("fromDate") Date fromDate,
+			@QueryParam("toDate") Date toDate, @PathParam("vdc") String vdc,
+			@PathParam("name") String environment);
+
+	/**
+	 * 
+	 * @param page
+	 * @param pageSize
+	 * @param orderBy
+	 * @param orderType
+	 * @param states
+	 * @param resource
+	 * @param owner
+	 * @param fromDate
+	 * @param toDate
+	 * @param vdc
+	 * @param environment
+	 * @param tierInstance
+	 * @return
+	 */
+	@GET
+	@Path("/environmentInstance/{name}/tierInstance/{tierName}")
+	@Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	List<Task> findTierInstance(@QueryParam("page") Integer page,
+			@QueryParam("pageSize") Integer pageSize,
+			@QueryParam("orderBy") String orderBy,
+			@QueryParam("orderType") String orderType,
+			@QueryParam("states") List<TaskStates> states,
+			@QueryParam("result") String resource,
+			@QueryParam("owner") String owner,
+			@QueryParam("fromDate") Date fromDate,
+			@QueryParam("toDate") Date toDate, @PathParam("vdc") String vdc,
+			@PathParam("name") String environment,
+			@PathParam("tierName") String tierInstance);
 }

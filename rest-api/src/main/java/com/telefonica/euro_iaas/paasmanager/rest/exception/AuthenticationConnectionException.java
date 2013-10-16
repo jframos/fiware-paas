@@ -9,24 +9,24 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.rest.exception;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
 /**
- *
+ * 
  * @author fernandolopezaguilar
  */
 @SuppressWarnings("serial")
 public class AuthenticationConnectionException extends WebApplicationException {
 
-    public AuthenticationConnectionException(final String message) {
-        super(Response.status(Status.SERVICE_UNAVAILABLE).type(MediaType.APPLICATION_XHTML_XML)
-                .entity(message).build());
-    }
+	public AuthenticationConnectionException(final String message) {
+		super(Response.status(Status.SERVICE_UNAVAILABLE).type(
+				MediaType.APPLICATION_XHTML_XML).entity(message).build());
+	}
 
 }
-

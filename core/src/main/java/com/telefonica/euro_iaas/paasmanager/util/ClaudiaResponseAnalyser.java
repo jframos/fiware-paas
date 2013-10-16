@@ -9,26 +9,26 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.util;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public interface ClaudiaResponseAnalyser {
-	
+
 	/**
 	 * 
 	 * @param xmlTask
 	 * @return the taskUrl
 	 */
-	String getTaskUrl (String xmlTask);
-	
+	String getTaskUrl(String xmlTask);
+
 	/**
 	 * 
 	 * @param xmlTask
 	 * @return the task status
 	 */
-	String getTaskStatus (String xmlTask);
+	String getTaskStatus(String xmlTask);
 }

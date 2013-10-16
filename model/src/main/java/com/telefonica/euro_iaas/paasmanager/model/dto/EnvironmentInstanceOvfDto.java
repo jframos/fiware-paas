@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -26,16 +26,16 @@ public class EnvironmentInstanceOvfDto {
 
 	private String ovf;
 
-	public EnvironmentInstanceOvfDto(){}
-	
+	public EnvironmentInstanceOvfDto() {
+	}
+
 	/**
 	 * @param ovf
 	 */
 	public EnvironmentInstanceOvfDto(String ovf) {
 		this.ovf = ovf;
 	}
-	
-	
+
 	/**
 	 * @return the ovf
 	 */
@@ -44,12 +44,11 @@ public class EnvironmentInstanceOvfDto {
 	}
 
 	/**
-	 * @param ovf the ovf to set
+	 * @param ovf
+	 *            the ovf to set
 	 */
 	public void setOvf(String ovf) {
 		this.ovf = ovf;
 	}
 
-
-	
 }

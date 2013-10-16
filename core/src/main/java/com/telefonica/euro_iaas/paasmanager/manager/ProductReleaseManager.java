@@ -9,43 +9,57 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import java.util.List;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidSecurityGroupRequestException;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
+import com.telefonica.euro_iaas.paasmanager.model.Tier;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public interface ProductReleaseManager {
 
-  /**
-     * Find the ProductRelease using the given id.
-     * @param name the product identifier
-     * @return the productRelease
-     * @throws EntityNotFoundException if the product instance does not exists
-     */
+	/**
+	 * Find the ProductRelease using the given id.
+	 * 
+	 * @param name
+	 *            the product identifier
+	 * @return the productRelease
+	 * @throws EntityNotFoundException
+	 *             if the product instance does not exists
+	 */
 	ProductRelease load(String name) throws EntityNotFoundException;
 
-    /**
-     * Retrieve all ProductRelease created in the system.
-     * @return the existent product instances.
-     */
-    List<ProductRelease> findAll();
+	/**
+	 * Retrieve all ProductRelease created in the system.
+	 * 
+	 * @return the existent product instances.
+	 */
+	List<ProductRelease> findAll();
 
-   /**
-     * Retrieve a Product release for a given product and version.
-     * @param product the product
-     * @param version the version
-     * @return the product release that match with the criteria
-     * @throws EntityNotFoundException if the product release does not exists
-     */
-    ProductRelease load(String productName, String productVersion)
-        throws EntityNotFoundException;
+	/**
+	 * Retrieve a Product release for a given product and version.
+	 * 
+	 * @param product
+	 *            the product
+	 * @param version
+	 *            the version
+	 * @return the product release that match with the criteria
+	 * @throws EntityNotFoundException
+	 *             if the product release does not exists
+	 */
+	ProductRelease load(String productName, String productVersion)
+			throws EntityNotFoundException;
 
-   
+	ProductRelease create(ProductRelease tomcat6) throws InvalidEntityException, AlreadyExistsEntityException;
+
 }

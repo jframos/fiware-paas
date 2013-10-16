@@ -53,7 +53,6 @@ public class FileUtilsImpl implements FileUtils {
 
 	}
 
-	
 	public String readFile(String property) throws FileUtilsException {
 		BufferedReader reader = null;
 		try {
@@ -61,7 +60,8 @@ public class FileUtilsImpl implements FileUtils {
 					new FileInputStream(new File(property))));
 		} catch (FileNotFoundException e) {
 
-			throw new FileUtilsException("The file " + property + "is not found");
+			throw new FileUtilsException("The file " + property
+					+ "is not found");
 		}
 		StringBuffer ruleFile = new StringBuffer();
 		String actualString = null;
@@ -72,7 +72,8 @@ public class FileUtilsImpl implements FileUtils {
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			throw new FileUtilsException("Error in reading the file " + property);
+			throw new FileUtilsException("Error in reading the file "
+					+ property);
 		}
 
 		return ruleFile.toString();

@@ -9,16 +9,20 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.exception;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
-public class InvalidEntityException extends Exception{
+public class InvalidEntityException extends Exception {
 
 	public InvalidEntityException(String msg) {
 		super(msg);
+	}
+
+	public InvalidEntityException(Throwable e) {
+		super(e);
 	}
 }

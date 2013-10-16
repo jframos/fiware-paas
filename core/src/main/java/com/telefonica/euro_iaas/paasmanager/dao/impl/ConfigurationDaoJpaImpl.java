@@ -9,8 +9,8 @@ import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.ConfigurationDao;
 import com.telefonica.euro_iaas.paasmanager.model.Configuration;
 
-public class ConfigurationDaoJpaImpl extends AbstractBaseDao<Configuration, Long> implements
-		ConfigurationDao {
+public class ConfigurationDaoJpaImpl extends
+		AbstractBaseDao<Configuration, Long> implements ConfigurationDao {
 
 	@Override
 	public Configuration create(Configuration configuration)
@@ -36,5 +36,5 @@ public class ConfigurationDaoJpaImpl extends AbstractBaseDao<Configuration, Long
 			throws InvalidEntityException {
 		return super.update(configuration);
 	}
-	
+
 }

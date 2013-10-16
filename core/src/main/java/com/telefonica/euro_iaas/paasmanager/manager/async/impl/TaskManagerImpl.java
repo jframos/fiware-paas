@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.manager.async.impl;
 
 import java.text.MessageFormat;
@@ -28,83 +28,85 @@ import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider
 
 /**
  * Default TaskManager implementation.
- *
+ * 
  * @author Jesus M.Movilla
- *
+ * 
  */
 public class TaskManagerImpl implements TaskManager {
 
-    private TaskDao taskDao;
-    private SystemPropertiesProvider propertiesProvider;
+	private TaskDao taskDao;
+	private SystemPropertiesProvider propertiesProvider;
 
-    /**
-     * {@inheritDoc}
-     */
-    public Task createTask(Task task) {
-        try {
-            task = taskDao.create(task);
-            task.setHref(MessageFormat.format(
-                    propertiesProvider.getProperty(TASK_BASE_URL),
-                    task.getId(), task.getVdc()));
-            return task;
-        } catch (InvalidEntityException e) {
-            throw new PaasManagerServerRuntimeException(e);
-        } catch (AlreadyExistsEntityException e) {
-            throw new PaasManagerServerRuntimeException(e);
-        }
-    }
-    /**
-     * {@inheritDoc}
-     */
-    public Task updateTask(Task task) {
-        try {
-            task = taskDao.update(task);
-            task.setHref(MessageFormat.format(
-                    propertiesProvider.getProperty(TASK_BASE_URL),
-                    task.getId(), task.getVdc()));
-            return task;
-        } catch (InvalidEntityException e) {
-            throw new PaasManagerServerRuntimeException(e);
-        }
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public Task createTask(Task task) {
+		try {
+			task = taskDao.create(task);
+			task.setHref(MessageFormat.format(propertiesProvider
+					.getProperty(TASK_BASE_URL),  Long.valueOf(task.getId()).toString(), task.getVdc()));
+			return task;
+		} catch (InvalidEntityException e) {
+			throw new PaasManagerServerRuntimeException(e);
+		} catch (AlreadyExistsEntityException e) {
+			throw new PaasManagerServerRuntimeException(e);
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public Task load(Long id) throws EntityNotFoundException {
-        Task task =  taskDao.load(id);
-        task.setHref(MessageFormat.format(
-                propertiesProvider.getProperty(TASK_BASE_URL),
-                task.getId(), task.getVdc()));
-        return task;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public Task updateTask(Task task) {
+		try {
+			task = taskDao.update(task);
+			task.setHref(MessageFormat.format(propertiesProvider
+					.getProperty(TASK_BASE_URL), Long.valueOf(task.getId()).toString(), task.getVdc()));
+			return task;
+		} catch (InvalidEntityException e) {
+			throw new PaasManagerServerRuntimeException(e);
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public List<Task> findByCriteria(TaskSearchCriteria criteria) {
-        List<Task> tasks =  taskDao.findByCriteria(criteria);
-        String taskUrl = propertiesProvider.getProperty(TASK_BASE_URL);
-        for (Task task : tasks) {
-            task.setHref(MessageFormat.format(
-                    taskUrl, task.getId(), task.getVdc()));
-        }
-        return tasks;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public Task load(Long id) throws EntityNotFoundException {
+		Task task = taskDao.load(id);
+		task.setHref(MessageFormat.format(propertiesProvider
+				.getProperty(TASK_BASE_URL), Long.valueOf(task.getId()).toString(), task.getVdc()));
+		return task;
+	}
 
-    ////////// I.O.C ////////
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Task> findByCriteria(TaskSearchCriteria criteria) {
+		List<Task> tasks = taskDao.findByCriteria(criteria);
+		String taskUrl = propertiesProvider.getProperty(TASK_BASE_URL);
+		for (Task task : tasks) {
+			task.setHref(MessageFormat.format(taskUrl, Long.valueOf(task.getId()).toString(), task
+					.getVdc()));
+		}
+		return tasks;
+	}
 
-    /**
-     * @param taskDao the taskDao to set
-     */
-    public void setTaskDao(TaskDao taskDao) {
-        this.taskDao = taskDao;
-    }
-    /**
-     * @param propertiesProvider the propertiesProvider to set
-     */
-    public void setPropertiesProvider(SystemPropertiesProvider propertiesProvider) {
-        this.propertiesProvider = propertiesProvider;
-    }
+	// //////// I.O.C ////////
+
+	/**
+	 * @param taskDao
+	 *            the taskDao to set
+	 */
+	public void setTaskDao(TaskDao taskDao) {
+		this.taskDao = taskDao;
+	}
+
+	/**
+	 * @param propertiesProvider
+	 *            the propertiesProvider to set
+	 */
+	public void setPropertiesProvider(
+			SystemPropertiesProvider propertiesProvider) {
+		this.propertiesProvider = propertiesProvider;
+	}
 
 }

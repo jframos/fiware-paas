@@ -24,41 +24,41 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
  */
 public interface ExtendedOVFUtil {
 
-	public final static String INSTANTIATEOVFPARAMS = "InstantiateOvfParams";
-	public final static String INSTANTIATEOVFPARAMS_NAME = "name";
+	static final String INSTANTIATEOVFPARAMS = "InstantiateOvfParams";
+	static final String INSTANTIATEOVFPARAMS_NAME = "name";
 
-	public final static String VIRTUALSYSTEMCOLLECTION = "ovf:VirtualSystemCollection";
+	static final String VIRTUALSYSTEMCOLLECTION = "ovf:VirtualSystemCollection";
 
-	public final static String VIRTUALSYTEM_SECTION = "ovf:VirtualSystem";
-	public final static String GENERAL_ID = "ovf:id";
-	public final static String GENERAL_HREF = "ovf:href";
-	public final static String NUMBER_MAX_INSTANCES = "rsrvr:max";
-	public final static String NUMBER_MIN_INSTANCES = "rsrvr:min";
-	public final static String INITIAL_NUMBER_INSTANCES = "rsrvr:initial";
+	static final String VIRTUALSYTEM_SECTION = "ovf:VirtualSystem";
+	static final String GENERAL_ID = "ovf:id";
+	static final String GENERAL_HREF = "ovf:href";
+	static final String NUMBER_MAX_INSTANCES = "rsrvr:max";
+	static final String NUMBER_MIN_INSTANCES = "rsrvr:min";
+	static final String INITIAL_NUMBER_INSTANCES = "rsrvr:initial";
 
-	public final static String OPERATINGSYTEM_SECTION = "ovf:OperatingSystemSection";
+	static final String OPERATINGSYTEM_SECTION = "ovf:OperatingSystemSection";
 
-	public final static String PRODUCT_SECTION = "ovfenvelope:ProductSection";
-	public final static String PRODUCTNAME_TAG = "ovfenvelope:Product";
-	public final static String PRODUCTVERSION_TAG = "ovfenvelope:Version";
-	public final static String KEYATTRIBUTE_TAG = "ovfenvelope:key";
-	public final static String KEYATTRIBUTE_VALUE = "org.fourcaast.instancecomponent.type";
-	public final static String PROPERTY_TAG = "ovfenvelope:Property";
-	public final static String VALUEATTRIBUTE_TAG = "ovfenvelope:value";
+	static final String PRODUCT_SECTION = "ovfenvelope:ProductSection";
+	static final String PRODUCTNAME_TAG = "ovfenvelope:Product";
+	static final String PRODUCTVERSION_TAG = "ovfenvelope:Version";
+	static final String KEYATTRIBUTE_TAG = "ovfenvelope:key";
+	static final String KEYATTRIBUTE_VALUE = "org.fourcaast.instancecomponent.type";
+	static final String PROPERTY_TAG = "ovfenvelope:Property";
+	static final String VALUEATTRIBUTE_TAG = "ovfenvelope:value";
 
-	public final static String VIRTUALHARDWARE_SECTION = "ovf:VirtualHardwareSection";
+	static final String VIRTUALHARDWARE_SECTION = "ovf:VirtualHardwareSection";
 
-	public final static String FILE_TAG = "ovf:File";
-	public final static String DIGEST_ATTRIBUTE = "rsrvr:digest";
-	public final static String DISK_SECTION = "ovf:DiskSection";
-	public final static String DISK_TAG = "ovf:Disk";
-	public final static String DISKID_ATTRIBUTE = "ovf:diskId";
-	public final static String FILEREF_ATTRIBUTE = "ovf:fileRef";
-	public final static String DISKCAPACITY_ATTRIBUTE = "ovf:capacity";
-	public final static String DISKOVFFORMAT_ATTRIBUTE = "ovf:format";
+	static final String FILE_TAG = "ovf:File";
+	static final String DIGEST_ATTRIBUTE = "rsrvr:digest";
+	static final String DISK_SECTION = "ovf:DiskSection";
+	static final String DISK_TAG = "ovf:Disk";
+	static final String DISKID_ATTRIBUTE = "ovf:diskId";
+	static final String FILEREF_ATTRIBUTE = "ovf:fileRef";
+	static final String DISKCAPACITY_ATTRIBUTE = "ovf:capacity";
+	static final String DISKOVFFORMAT_ATTRIBUTE = "ovf:format";
 
-	public final static String VIRTUALSERVICE_SECTION = "VirtualService";
-	public final static String VIRTUALSERVICE_ID = "ovf:id";
+	static final String VIRTUALSERVICE_SECTION = "VirtualService";
+	static final String VIRTUALSERVICE_ID = "ovf:id";
 
 	/**
 	 * Get the environmentName from payload
@@ -77,7 +77,7 @@ public interface ExtendedOVFUtil {
 	 * @return
 	 * @throws InvalidEnvironmentRequestException
 	 */
-	List<Tier> getTiers(String payload)
+	List<Tier> getTiers(String payload, String vdc)
 			throws InvalidEnvironmentRequestException;
 
 	/**
@@ -111,6 +111,5 @@ public interface ExtendedOVFUtil {
 			throws InvalidEnvironmentRequestException;
 
 	PaasManagerUser getCredentials();
-	
-	
+
 }

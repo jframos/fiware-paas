@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.claudia.util;
 
 import java.io.IOException;
@@ -30,37 +30,34 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public interface ClaudiaUtil {
 
-	
-	//VAPP VM DOCUMENT
-    public final static String IPADRESS_NAMESPACE 
-    	= "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_IPProtocolEndpoint";
-    public final static String IPADDRESS_NODENAME = "IPv4Address";
-    public final static String IPV6ADDRESS_NODENAME = "Address";
-    public final static String OVFITEM_NODENAME = "ovf:Item";
-    public final static String OS_NODENAME = "ovf:OperatingSystemSection";
-    public final static String OS_ID_ATTRIBUTENAME = "ovf:id";
-    public final static String OVF_TYPE = "application/xml";
-    public final static String OVFITEM_CONNECTION_NODENAME = "rasd:Connection";
-    
-    //VAPP Service Document
-    public final static String VAPP_NODENAME = "VApp";
-    public final static String VM_STATUS_ATTRIBUTE = "status";
-    public final static String NETWORK_NODENAME = "ovf:Network";
-    public final static String NETWORK_PUBLIC_ATTRIBUTE =  "rsrvr:public";
-    public final static String NETWORK_NAME_ATTRIBUTE = "ovf:name";
-    
-    
+	// VAPP VM DOCUMENT
+	public final static String IPADRESS_NAMESPACE = "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_IPProtocolEndpoint";
+	public final static String IPADDRESS_NODENAME = "IPv4Address";
+	public final static String IPV6ADDRESS_NODENAME = "Address";
+	public final static String OVFITEM_NODENAME = "ovf:Item";
+	public final static String OS_NODENAME = "ovf:OperatingSystemSection";
+	public final static String OS_ID_ATTRIBUTENAME = "ovf:id";
+	public final static String OVF_TYPE = "application/xml";
+	public final static String OVFITEM_CONNECTION_NODENAME = "rasd:Connection";
+
+	// VAPP Service Document
+	public final static String VAPP_NODENAME = "VApp";
+	public final static String VM_STATUS_ATTRIBUTE = "status";
+	public final static String NETWORK_NODENAME = "ovf:Network";
+	public final static String NETWORK_PUBLIC_ATTRIBUTE = "rsrvr:public";
+	public final static String NETWORK_NAME_ATTRIBUTE = "ovf:name";
+
 	/**
 	 * 
 	 * @param parameters
 	 * @return
 	 * @throws URLNotRetrievedException
 	 */
-	String getUrl (List<String> parameters) throws URLNotRetrievedException;
+	String getUrl(List<String> parameters) throws URLNotRetrievedException;
 
 	/**
 	 * 
@@ -69,9 +66,10 @@ public interface ClaudiaUtil {
 	 * @throws ClaudiaRetrieveInfoException
 	 * @throws ClaudiaResourceNotFoundException
 	 */
-	String getClaudiaResource (PaasManagerUser user, String url, String type) throws ClaudiaRetrieveInfoException,
-		ClaudiaResourceNotFoundException;
-	
+	String getClaudiaResource(PaasManagerUser user, String url, String type)
+			throws ClaudiaRetrieveInfoException,
+			ClaudiaResourceNotFoundException;
+
 	/**
 	 * 
 	 * @param url
@@ -79,21 +77,21 @@ public interface ClaudiaUtil {
 	 * @return
 	 * @throws ClaudiaRetrieveInfoException
 	 */
-	ClientResponse postClaudiaResource (PaasManagerUser user, String url, 
-			String payload) 
+	ClientResponse postClaudiaResource(PaasManagerUser user, String url,
+			String payload) throws ClaudiaRetrieveInfoException;
+
+	// Escalabilidad, sobra uno de los 2
+	ClientResponse postClaudiaResource(PaasManagerUser user, String url)
 			throws ClaudiaRetrieveInfoException;
-	//Escalabilidad, sobra uno de los 2
-	ClientResponse postClaudiaResource (PaasManagerUser user, String url) 
-			throws ClaudiaRetrieveInfoException;
-	
+
 	/**
 	 * 
 	 * @param url
 	 * @throws ClaudiaRetrieveInfoException
 	 */
-	void deleteClaudiaResource(String url) 
+	void deleteClaudiaResource(PaasManagerUser user, String url)
 			throws ClaudiaRetrieveInfoException;
-	
+
 	/**
 	 * 
 	 * @param xmlSource
@@ -102,28 +100,27 @@ public interface ClaudiaUtil {
 	 * @throws ParserConfigurationException
 	 * @throws IOException
 	 */
-	 public Document stringToDom(String xmlSource) 
-	            throws SAXException, ParserConfigurationException, IOException;
-	 
-	 /**
-	  * @param  doc
-	  * @return  the string representation of a doc
-	  * @throws TransformerException
-	  */
-	 public String domToString(Document doc) throws TransformerException;
-	 
-	 /**
-	  * @param  Node
-	  * @return  the string representation of a node
-	  */
-	 public String nodeToString(Node node);
+	public Document stringToDom(String xmlSource) throws SAXException,
+			ParserConfigurationException, IOException;
 
-	 /**
-	  * @param url
-	  * @param fqn
-	  * @return response of the petition
-	  * @throws ClaudiaPutException
-	  */
+	/**
+	 * @param doc
+	 * @return the string representation of a doc
+	 * @throws TransformerException
+	 */
+	public String domToString(Document doc) throws TransformerException;
 
-	 
+	/**
+	 * @param Node
+	 * @return the string representation of a node
+	 */
+	public String nodeToString(Node node);
+
+	/**
+	 * @param url
+	 * @param fqn
+	 * @return response of the petition
+	 * @throws ClaudiaPutException
+	 */
+
 }

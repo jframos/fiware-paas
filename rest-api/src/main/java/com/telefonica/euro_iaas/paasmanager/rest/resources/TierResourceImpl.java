@@ -7,53 +7,86 @@ import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+
+import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
+import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidSecurityGroupRequestException;
+import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
-import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
+import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
+import com.telefonica.euro_iaas.paasmanager.rest.validation.TierResourceValidator;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
- * default Environment implementation
+ * default Tier implementation
  * 
  * @author Henar Muñoz
  * 
  */
-@Path("/catalog/environment/{environment}/tier")
+@Path("/catalog/org/{org}/vdc/{vdc}/environment/{environment}/tier")
 @Component
 @Scope("request")
 public class TierResourceImpl implements TierResource {
 
-	@InjectParam("tierManager")
+
 	private TierManager tierManager;
-	@InjectParam("environmentManager")
+
 	private EnvironmentManager environmentManager;
 
-	public void delete(String envName, String tierName)
-			throws EntityNotFoundException {
+	private SystemPropertiesProvider systemPropertiesProvider;
+
+	private TierResourceValidator tierResourceValidator;
+	
+	private ProductReleaseDao productReleaseDao;
+
+	private static Logger log = Logger.getLogger(TierResourceImpl.class);
+
+	public void delete(String org, String vdc, String envName, String tierName)
+			throws EntityNotFoundException, InvalidEntityException {
+		ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
+		log.debug("Deleting tier " + tierName + " from env " + envName);
+		
+		tierResourceValidator.validateDelete(vdc, envName, systemPropertiesProvider);
+
+
+		if (systemPropertiesProvider.getProperty(
+				SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+			claudiaData.setUser(getCredentials());
+		}
 
 		try {
-
-			Tier tier = tierManager.load(tierName);
+			Tier tier = tierManager.load(tierName, vdc, envName);
 
 			Environment environment = environmentManager.load(envName);
 			environment.deleteTier(tier);
 			environmentManager.update(environment);
-
-			tierManager.delete(tier);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			tierManager.delete(claudiaData, tier);
+		} catch (InvalidEntityException e) {
+			log.error("Error deleting the tier " + e.getMessage());
+			throw new WebApplicationException(e, 500);
+		} catch (InfrastructureException e) {
+			log.error("Error deleting the tier " + e.getMessage());
 			throw new WebApplicationException(e, 500);
 		}
+
+		// throw new WebApplicationException(e, 500);
 
 	}
 
@@ -87,7 +120,7 @@ public class TierResourceImpl implements TierResource {
 			List<Tier> tiers = tierManager.findByCriteria(criteria);
 
 			for (Tier tier : tiers) {
-				tierDto.add(convertToDto(tier));
+				tierDto.add(tier.toDto());
 			}
 			return tierDto;
 
@@ -97,119 +130,162 @@ public class TierResourceImpl implements TierResource {
 
 	}
 
-	public void insert(String environmentName, TierDto tierDto) {
-		// Falta validar que existe un name, environmetType y unos Tiers
-		// validator.validateInsert(multiPart);
-		Tier tier = convertFromDto(tierDto);
+	public void insert(String org, String vdc, String environmentName,
+			TierDto tierDto) throws EntityNotFoundException, InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException {
+
+		log.debug("Insert tier " + tierDto.getName() + " from env "
+				+ environmentName );
+		ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
 
 		try {
-			Environment environment = environmentManager.load(environmentName);
-			Tier newTier = tierManager.create(tier);
-			environment.addTier(newTier);
-			environmentManager.update(environment);
-		} catch (InvalidEntityException e) {
-			throw new WebApplicationException(e, 500);
-		} catch (EntityNotFoundException e) {
-			throw new WebApplicationException(e, 500);
+			tierResourceValidator.validateCreate(tierDto, vdc,environmentName,
+					systemPropertiesProvider);
+		} catch (InvalidEntityException e1) {
+			throw new
+			  WebApplicationException(e1, 500); 
 		}
+		catch (AlreadyExistEntityException e1) {
+			throw new
+			  WebApplicationException(e1, 500); 
+			}
 
+		if (systemPropertiesProvider.getProperty(
+				SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+			claudiaData.setUser(getCredentials());
+		}
+		Tier tier = tierDto.fromDto();
+
+	
+		Environment environment = environmentManager.load(environmentName);
+		Tier newTier = tierManager.create(claudiaData,environmentName, tier);
+		environment.addTier(newTier);
+		environmentManager.update(environment);
 	}
 
-	public TierDto load(String environment, String name)
+	public TierDto load(String vdc, String envName, String name)
 			throws EntityNotFoundException {
 		try {
-			Tier tier = tierManager.load(name);
+			Tier tier = tierManager.load(name, vdc,envName);
 
-			TierDto tierDto = new TierDto();
-			
-			return convertToDto(tier);
+			return tier.toDto();
 
 		} catch (EntityNotFoundException e) {
 			throw new WebApplicationException(e, 404);
 		}
 	}
 
-	private TierDto convertToDto(Tier tier) {
-		
-		List<ProductReleaseDto> productReleasesDto 
-			= new ArrayList<ProductReleaseDto>(); 
-		TierDto tierDto = new TierDto();
-		
-		if (tier.getName() != null)
-			tierDto.setName(tier.getName());	
-		if (tier.getInitial_number_instances() != null)
-			tierDto.setInitial_number_instances(tier.getInitial_number_instances());
-		if (tier.getMaximum_number_instances() != null)
-			tierDto.setMaximum_number_instances(tier.getMaximum_number_instances());
-		if (tier.getMinimum_number_instances() != null)
-			tierDto.setMinimum_number_instances(tier.getMinimum_number_instances());
-		
-		for (int i=0; i < tier.getProductReleases().size(); i++) {
-			
-			ProductReleaseDto pReleaseDto = new ProductReleaseDto ();
-			ProductRelease pRelease = tier.getProductReleases().get(i);
-			
-			pReleaseDto.setProductName(pRelease.getProduct());
-			pReleaseDto.setVersion(pRelease.getVersion());
-			
-			if (pRelease.getDescription()!= null)
-				pReleaseDto.setProductDescription(pRelease.getDescription());
-			
-		/*	if (pRelease.getAttributes()!= null)
-				pReleaseDto.setPrivateAttributes(pRelease.getAttributes());
-			
-			if (pRelease.getSupportedOOSS() != null)
-				pReleaseDto.setSupportedOS(pRelease.getSupportedOOSS());
-			
-			if (pRelease.getTransitableReleases() != null)
-				pReleaseDto.setTransitableReleases(pRelease.getTransitableReleases());*/
-			
-			productReleasesDto.add(pReleaseDto);
+	public void update(String org, String vdc, String environmentName,
+			TierDto tierDto) throws EntityNotFoundException,
+			InvalidEntityException, ProductReleaseNotFoundException {
+		log.debug("Update tier " + tierDto.getName() + " from env "
+				+ environmentName);
+		ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
+
+		tierResourceValidator.validateUpdate(tierDto, vdc,environmentName,
+				systemPropertiesProvider);
+		log.debug("Validated tier " + tierDto.getName() + " from env "
+				+ environmentName);
+
+		if (systemPropertiesProvider.getProperty(
+				SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+			claudiaData.setUser(getCredentials());
 		}
 		
-		tierDto.setProductReleaseDtos(productReleasesDto);
-		return tierDto;
+		
+		Tier newtier = tierDto.fromDto();
+
+		try {
+			Environment environment = environmentManager.load(environmentName);
+			List<Tier> tiers = new ArrayList ();
+			for (Tier tier: environment.getTiers())
+			{
+				tiers.add(tier);
+			}
+			environment.setTiers(null);
+			environmentManager.update(environment);
+			for (Tier tier: tiers) {
+				if (tier.getName().equals(newtier.getName())) {
+					log.debug("load tier " + tierDto.getName());
+					tier = tierManager.load(tierDto.getName(), vdc, environmentName);
+					updateTier(tier, newtier);
+					
+				}
+				environment.addTier(tier);
+				environmentManager.update(environment);
+			}
+			
+			log.debug("update tier " + tierDto.getName());
+			
+		//	environmentManager.update(environment);
+
+		} catch (EntityNotFoundException e) {
+			throw new WebApplicationException(e, 404);
+		}
+	}
+
+	public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException {
+		tierold.setFlavour(tiernew.getFlavour());
+		tierold.setFloatingip(tiernew.getFloatingip());
+		tierold.setIcono(tiernew.getIcono());
+		tierold.setImage(tiernew.getImage());
+		tierold.setInitialNumberInstances(tiernew.getInitialNumberInstances());
+		tierold.setKeypair(tiernew.getKeypair());
+		tierold.setMaximumNumberInstances(tiernew.getMaximumNumberInstances());
+		tierold.setMinimumNumberInstances(tiernew.getMinimumNumberInstances());
+		
+		tierold.setProductReleases(null);
+		tierManager.update(tierold);
+		if (tiernew.getProductReleases() == null)
+			return;
+		
+		for (ProductRelease productRelease: tiernew.getProductReleases()) {
+			try {
+				productRelease = productReleaseDao.load(productRelease.getProduct()+"-"+ productRelease.getVersion());
+			} catch (EntityNotFoundException e) {
+				log.error("The new software " + productRelease.getProduct() + "-" + productRelease.getVersion() +" is not found");
+				
+			}
+			tierold.addProductRelease(productRelease);
+			tierManager.update(tierold);
+		}
+
+	}
+
+	/**
+	 * @param systemPropertiesProvider
+	 *            the systemPropertiesProvider to set
+	 */
+	public void setSystemPropertiesProvider(
+			SystemPropertiesProvider systemPropertiesProvider) {
+		this.systemPropertiesProvider = systemPropertiesProvider;
+	}
+
+	public void setTierManager(TierManager tierManager) {
+		this.tierManager = tierManager;
+	}
+
+	public void setEnvironmentManager(EnvironmentManager environmentManager) {
+		this.environmentManager = environmentManager;
+	}
+
+	public void setTierResourceValidator(
+			TierResourceValidator tierResourceValidator) {
+		this.tierResourceValidator = tierResourceValidator;
 	}
 	
-	private Tier convertFromDto(TierDto tierDto) {
-		
-		List<ProductRelease> productReleases 
-			= new ArrayList<ProductRelease>(); 
-		Tier tier = new Tier();
-		
-		if (tierDto.getName() != null)
-			tier.setName(tierDto.getName());	
-		if (tierDto.getInitial_number_instances() != null)
-			tier.setInitial_number_instances(tierDto.getInitial_number_instances());
-		if (tierDto.getMaximum_number_instances() != null)
-			tier.setMaximum_number_instances(tierDto.getMaximum_number_instances());
-		if (tierDto.getMinimum_number_instances() != null)
-			tier.setMinimum_number_instances(tierDto.getMinimum_number_instances());
-		
-		for (int i=0; i < tierDto.getProductReleaseDtos().size(); i++) {
-			
-			ProductRelease pRelease = new ProductRelease ();
-			ProductReleaseDto pReleaseDto = tierDto.getProductReleaseDtos().get(i);
-			
-			pRelease.setProduct(pReleaseDto.getProductName());
-			pRelease.setVersion(pReleaseDto.getVersion());
-			
-			if (pReleaseDto.getProductDescription()!= null)
-				pRelease.setDescription(pReleaseDto.getProductDescription());
-			
-		/*	if (pReleaseDto.getPrivateAttributes()!= null)
-				pRelease.setAttributes(pReleaseDto.getPrivateAttributes());
-			
-			if (pReleaseDto.getSupportedOS() != null)
-				pRelease.setSupportedOOSS(pReleaseDto.getSupportedOS());
-			
-			if (pReleaseDto.getTransitableReleases() != null)
-				pRelease.setTransitableReleases(pReleaseDto.getTransitableReleases());*/
-			
-			productReleases.add(pRelease);
-		}
-		
-		tier.setProductReleases(productReleases);
-		return tier;
+	public void setProductReleaseDao(
+			ProductReleaseDao productReleaseDao) {
+		this.productReleaseDao = productReleaseDao;
 	}
+
+	
+	private PaasManagerUser getCredentials() {
+		if (systemPropertiesProvider.getProperty(
+				SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE"))
+			return (PaasManagerUser) SecurityContextHolder.getContext()
+					.getAuthentication().getPrincipal();
+		else
+			return null;
+	}
+
 }

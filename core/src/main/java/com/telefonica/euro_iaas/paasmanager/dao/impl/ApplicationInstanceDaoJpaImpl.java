@@ -18,109 +18,108 @@ import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationInstanceSearchCriteria;
 
-public class ApplicationInstanceDaoJpaImpl 
-	extends AbstractBaseDao<ApplicationInstance, String>  implements ApplicationInstanceDao {
+public class ApplicationInstanceDaoJpaImpl extends
+		AbstractBaseDao<ApplicationInstance, String> implements
+		ApplicationInstanceDao {
 
 	public List<ApplicationInstance> findAll() {
 		return super.findAll(ApplicationInstance.class);
 	}
 
 	public ApplicationInstance load(String arg0) throws EntityNotFoundException {
-        return super.loadByField(ApplicationInstance.class, "name", arg0);
+		return super.loadByField(ApplicationInstance.class, "name", arg0);
 	}
 
 	public List<ApplicationInstance> findByCriteria(
 			ApplicationInstanceSearchCriteria criteria) {
 		Session session = (Session) getEntityManager().getDelegate();
-        Criteria baseCriteria = session
-                .createCriteria(ApplicationInstance.class);
-        
-        if (criteria.getStatus() != null && !criteria.getStatus().isEmpty()) {
-            Criterion statusCr = null;
-            for (Status status : criteria.getStatus()) {
-                statusCr = addStatus(statusCr, status);
-            }
-            baseCriteria.add(statusCr);
-        }
+		Criteria baseCriteria = session
+				.createCriteria(ApplicationInstance.class);
 
-        if (!StringUtils.isEmpty(criteria.getVdc())) {
-            baseCriteria.add(Restrictions.eq(ApplicationInstance.VDC_FIELD,
-                    criteria.getVdc()));
-        }
-  /*      if (!StringUtils.isEmpty(criteria.getEnvironmentInstance())) {
-            baseCriteria.add(Restrictions.eq(ApplicationInstance.ENVIRONMENT_INSTANCE_FIELD,
-                    criteria.getEnvironmentInstance()));
-        }*/
-                
-        List<ApplicationInstance> applicationInstances = setOptionalPagination(
-                criteria, baseCriteria).list();
-        
-     // TODO sarroyo: try to do this filter using hibernate criteria.
-        if (criteria.getApplicatonRelease() != null) {
-        	applicationInstances = filterByApplicationRelease(
-        			applicationInstances, 
-        			criteria.getApplicatonRelease());
-        }
-        
-        applicationInstances = filterByVDCandEnvironmentInstance(
-    			applicationInstances, 
-    			criteria.getVdc(), criteria.getEnvironmentInstance());
-        
-        
+		if (criteria.getStatus() != null && !criteria.getStatus().isEmpty()) {
+			Criterion statusCr = null;
+			for (Status status : criteria.getStatus()) {
+				statusCr = addStatus(statusCr, status);
+			}
+			baseCriteria.add(statusCr);
+		}
 
-        return applicationInstances;
+		if (!StringUtils.isEmpty(criteria.getVdc())) {
+			baseCriteria.add(Restrictions.eq(ApplicationInstance.VDC_FIELD,
+					criteria.getVdc()));
+		}
+		/*
+		 * if (!StringUtils.isEmpty(criteria.getEnvironmentInstance())) {
+		 * baseCriteria
+		 * .add(Restrictions.eq(ApplicationInstance.ENVIRONMENT_INSTANCE_FIELD,
+		 * criteria.getEnvironmentInstance())); }
+		 */
+
+		List<ApplicationInstance> applicationInstances = setOptionalPagination(
+				criteria, baseCriteria).list();
+
+		// TODO sarroyo: try to do this filter using hibernate criteria.
+		if (criteria.getApplicatonRelease() != null) {
+			applicationInstances = filterByApplicationRelease(
+					applicationInstances, criteria.getApplicatonRelease());
+		}
+
+		applicationInstances = filterByVDCandEnvironmentInstance(
+				applicationInstances, criteria.getVdc(), criteria
+						.getEnvironmentInstance());
+
+		return applicationInstances;
 	}
-	
-    /**
-     * Filter the result by product instance
-     *
-     * @param applications
-     * @param product
-     * @return
-     */
-    private List<ApplicationInstance> filterByApplicationRelease(
-            List<ApplicationInstance> applicationInstances, 
-            ApplicationRelease applicationRelease) {
-        List<ApplicationInstance> result = new ArrayList<ApplicationInstance>();
-        for (ApplicationInstance applicationInstance : applicationInstances) {
-            if (applicationInstance.getApplicationRelease().getId().equals(
-            		applicationRelease.getId())) {
-                result.add(applicationInstance);
-            }
-        }
-        return result;
-    }
-    
-    
-    /**
-     * Filter the result by product instance
-     *
-     * @param applications
-     * @param product
-     * @return
-     */
-    private List<ApplicationInstance> filterByVDCandEnvironmentInstance(
-            List<ApplicationInstance> applicationInstances, 
-            String vdc, String environmentInstanceName) {
-        List<ApplicationInstance> result = new ArrayList<ApplicationInstance>();
-        for (ApplicationInstance applicationInstance : applicationInstances) {
-            if (applicationInstance.getEnvironmentInstance().getName().equals(
-            		environmentInstanceName) && applicationInstance.getVdc().equals(vdc)) {
-                result.add(applicationInstance);
-            }
-        }
-        return result;
-    }
-	
-	
-    private Criterion addStatus(Criterion statusCr, Status status) {
-        SimpleExpression expression = Restrictions.eq("status", status);
-        if (statusCr == null) {
-            statusCr = expression;
-        } else {
-            statusCr = Restrictions.or(statusCr, expression);
-        }
-        return statusCr;
-    }
+
+	/**
+	 * Filter the result by product instance
+	 * 
+	 * @param applications
+	 * @param product
+	 * @return
+	 */
+	private List<ApplicationInstance> filterByApplicationRelease(
+			List<ApplicationInstance> applicationInstances,
+			ApplicationRelease applicationRelease) {
+		List<ApplicationInstance> result = new ArrayList<ApplicationInstance>();
+		for (ApplicationInstance applicationInstance : applicationInstances) {
+			if (applicationInstance.getApplicationRelease().getId().equals(
+					applicationRelease.getId())) {
+				result.add(applicationInstance);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Filter the result by product instance
+	 * 
+	 * @param applications
+	 * @param product
+	 * @return
+	 */
+	private List<ApplicationInstance> filterByVDCandEnvironmentInstance(
+			List<ApplicationInstance> applicationInstances, String vdc,
+			String environmentInstanceName) {
+		List<ApplicationInstance> result = new ArrayList<ApplicationInstance>();
+		for (ApplicationInstance applicationInstance : applicationInstances) {
+			if (applicationInstance.getEnvironmentInstance().getName().equals(
+					environmentInstanceName)
+					&& applicationInstance.getVdc().equals(vdc)) {
+				result.add(applicationInstance);
+			}
+		}
+		return result;
+	}
+
+	private Criterion addStatus(Criterion statusCr, Status status) {
+		SimpleExpression expression = Restrictions.eq("status", status);
+		if (statusCr == null) {
+			statusCr = expression;
+		} else {
+			statusCr = Restrictions.or(statusCr, expression);
+		}
+		return statusCr;
+	}
 
 }

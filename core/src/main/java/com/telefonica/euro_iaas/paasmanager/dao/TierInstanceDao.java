@@ -11,24 +11,28 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierInstanceSea
 
 /**
  * Defines the methods needed to persist EnvironmentInstace objects.
- *
+ * 
  * @author Jesus M. Movilla
  */
 public interface TierInstanceDao extends BaseDAO<TierInstance, String> {
-    /**
-     * Find the environment that matches with the given criteria.
-     * @param criteria the search criteria
-     * @return the list of elements that match with the criteria.
-     * @throws EntityNotFoundException 
-     */
-    List<TierInstance> findByCriteria(TierInstanceSearchCriteria criteria) throws EntityNotFoundException;
-    /**
-     * 
-     * @param tierInstanceId
-     * @return
-     * @throws EntityNotFoundException
-     */
-	TierInstance findByTierInstanceId (Long tierInstanceId) 
+	/**
+	 * Find the environment that matches with the given criteria.
+	 * 
+	 * @param criteria
+	 *            the search criteria
+	 * @return the list of elements that match with the criteria.
+	 * @throws EntityNotFoundException
+	 */
+	List<TierInstance> findByCriteria(TierInstanceSearchCriteria criteria)
+			throws EntityNotFoundException;
+
+	/**
+	 * 
+	 * @param tierInstanceId
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
+	TierInstance findByTierInstanceId(Long tierInstanceId)
 			throws EntityNotFoundException;
 
 	/**

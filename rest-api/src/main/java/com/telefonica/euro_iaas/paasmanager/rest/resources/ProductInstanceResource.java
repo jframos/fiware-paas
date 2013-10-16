@@ -43,9 +43,10 @@ public interface ProductInstanceResource {
 	@Path("/")
 	@Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Consumes( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	Task install(@PathParam("org") String org, @PathParam("vdc") String vdc, @PathParam("environmentInstance") String environmentInstance, 
-			@PathParam("tierInstance") String tierInstance, ProductInstanceDto product,
-			@HeaderParam("callback") String callback);
+	Task install(@PathParam("org") String org, @PathParam("vdc") String vdc,
+			@PathParam("environmentInstance") String environmentInstance,
+			@PathParam("tierInstance") String tierInstance,
+			ProductInstanceDto product, @HeaderParam("callback") String callback);
 
 	/**
 	 * Retrieve all ProductInstance created in the system.
@@ -81,8 +82,7 @@ public interface ProductInstanceResource {
 			@QueryParam("orderType") String orderType,
 			@QueryParam("status") Status status, @PathParam("vdc") String vdc,
 			@PathParam("environmentInstance") String environmentInstance,
-			@PathParam("tierInstance") String tierInstance
-	);
+			@PathParam("tierInstance") String tierInstance);
 
 	/**
 	 * Retrieve the selected product instance.
@@ -95,7 +95,8 @@ public interface ProductInstanceResource {
 	@GET
 	@Path("/{name}")
 	@Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	ProductInstanceDto load(@PathParam("vdc") String vdc, @PathParam("name") String name);
+	ProductInstanceDto load(@PathParam("vdc") String vdc,
+			@PathParam("name") String name);
 
 	/**
 	 * Uninstall a previously installed instance.

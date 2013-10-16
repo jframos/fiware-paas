@@ -9,16 +9,25 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.exception;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
-public class ClaudiaResourceNotFoundException extends Exception{
+public class ClaudiaResourceNotFoundException extends Exception {
 
 	public ClaudiaResourceNotFoundException(String msg) {
 		super(msg);
+	}
+
+	public ClaudiaResourceNotFoundException(Throwable e) {
+		super(e);
+	}
+
+	public ClaudiaResourceNotFoundException(String msg, Throwable e) {
+		super(msg, e);
+
 	}
 }

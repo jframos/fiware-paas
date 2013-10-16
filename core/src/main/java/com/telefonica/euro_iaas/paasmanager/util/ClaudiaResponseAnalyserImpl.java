@@ -9,54 +9,65 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.util;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 
 public class ClaudiaResponseAnalyserImpl implements ClaudiaResponseAnalyser {
 
 	private SystemPropertiesProvider systemPropertiesProvider;
-	
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser#existVDC(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser#existVDC
+	 * (java.lang.String)
 	 */
-	/*public boolean existVDC(String browseVDCResponse) {
-		return !(browseVDCResponse.contains(systemPropertiesProvider
-				.getProperty(CLAUDIA_RESOURCE_NOTEXIST_PATTERN)));
-	}*/
-	
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser#getTaskUrl(java.lang.String)
+	/*
+	 * public boolean existVDC(String browseVDCResponse) { return
+	 * !(browseVDCResponse.contains(systemPropertiesProvider
+	 * .getProperty(CLAUDIA_RESOURCE_NOTEXIST_PATTERN))); }
+	 */
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser#getTaskUrl
+	 * (java.lang.String)
 	 */
 	public String getTaskUrl(String xmlTask) {
 		String urlSplit = xmlTask.split("href")[1];
 		String url = urlSplit.split("\"")[1];
-		
+
 		return url;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser#getTaskStatus(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seecom.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser#
+	 * getTaskStatus(java.lang.String)
 	 */
 	public String getTaskStatus(String xmlTask) {
 		String statusSplit = xmlTask.split("status")[1];
 		String status = statusSplit.split("\"")[1];
-		
+		System.out.println("task status: " + status);
 		return status;
 	}
 
-
 	/**
-     * @param systemPropertiesProvider
-     *            the systemPropertiesProvider to set
-     */
-    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
-        this.systemPropertiesProvider = systemPropertiesProvider;
-    }
+	 * @param systemPropertiesProvider
+	 *            the systemPropertiesProvider to set
+	 */
+	public void setSystemPropertiesProvider(
+			SystemPropertiesProvider systemPropertiesProvider) {
+		this.systemPropertiesProvider = systemPropertiesProvider;
+	}
 
-	
 }

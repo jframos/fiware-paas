@@ -9,30 +9,37 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.util;
 
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 
 import java.util.List;
+
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public interface EnvironmentUtils {
 
-
 	public final String IP_MACRO_ID = "@ip";
-	
+
 	/**
-	 * Resolve the macros present in teh attrbutes of the products belonging
-	 * to environment
+	 * Resolve the macros present in teh attrbutes of the products belonging to
+	 * environment
+	 * 
 	 * @param environment
 	 * @param vms
 	 * @return The environment with the values of the attributes resolved
 	 */
-	Environment resolveMacros (Environment environment, List<VM> vms);
-	Environment resolveMacros(EnvironmentInstance envInst) ;
+	Environment resolveMacros(Environment environment, List<VM> vms);
+
+	Environment resolveMacros(EnvironmentInstance envInst, List<Tier> tiers);
+
+	public String updateVmOvf(String ovf, String imageName);
+
+	String deleteProductSection(String vmOVF);
 }

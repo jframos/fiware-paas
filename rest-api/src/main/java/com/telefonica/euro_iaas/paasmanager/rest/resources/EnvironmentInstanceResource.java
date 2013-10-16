@@ -23,6 +23,7 @@ import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstancePDto;
 
 public interface EnvironmentInstanceResource {
 
@@ -72,20 +73,26 @@ public interface EnvironmentInstanceResource {
 	@Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Consumes( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	Task create(@PathParam("org") String org, @PathParam("vdc") String vdc,
-			EnvironmentDto envDto, @HeaderParam("callback") String callback)
+			EnvironmentInstanceDto envInstanceDto,
+			@HeaderParam("callback") String callback)
 			throws InvalidEnvironmentRequestException, EntityNotFoundException,
 			InvalidEntityException, AlreadyExistsEntityException,
 			InfrastructureException, InvalidOVFException;
 
-	/*@POST
-	@Path("/")
-	@Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@Consumes( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	Task create(@PathParam("org") String org, @PathParam("vdc") String vdc,
-			EnvInstDto envInstDto, @HeaderParam("callback") String callback)
-			throws InvalidEnvironmentRequestException, EntityNotFoundException,
-			InvalidEntityException, AlreadyExistsEntityException,
-			InfrastructureException, InvalidOVFException;*/
+	/*
+	 * @POST
+	 * 
+	 * @Path("/")
+	 * 
+	 * @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	 * 
+	 * @Consumes( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	 * Task create(@PathParam("org") String org, @PathParam("vdc") String vdc,
+	 * EnvInstDto envInstDto, @HeaderParam("callback") String callback) throws
+	 * InvalidEnvironmentRequestException, EntityNotFoundException,
+	 * InvalidEntityException, AlreadyExistsEntityException,
+	 * InfrastructureException, InvalidOVFException;
+	 */
 	/**
 	 * Retrieve all EnvironmentInstance that match with a given criteria.
 	 * 
@@ -108,7 +115,7 @@ public interface EnvironmentInstanceResource {
 	@GET
 	@Path("/")
 	@Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	List<EnvironmentInstanceDto> findAll(@QueryParam("page") Integer page,
+	List<EnvironmentInstancePDto> findAll(@QueryParam("page") Integer page,
 			@QueryParam("pageSize") Integer pageSize,
 			@QueryParam("orderBy") String orderBy,
 			@QueryParam("orderType") String orderType,
@@ -167,7 +174,7 @@ public interface EnvironmentInstanceResource {
 	@GET
 	@Path("/{name}")
 	@Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	EnvironmentInstanceDto load(@PathParam("vdc") String vdc,
+	EnvironmentInstancePDto load(@PathParam("vdc") String vdc,
 			@PathParam("name") String name);
 
 	/**

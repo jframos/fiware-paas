@@ -16,15 +16,19 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidTierInstanceRequestException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
@@ -32,22 +36,26 @@ import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.TierInstanceAsyncManager;
+import com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
+
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
-import com.telefonica.euro_iaas.paasmanager.model.dto.ProductInstanceDto;
+
 import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
+import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TaskSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.TierInstanceResourceValidator;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * Default TierInstanceResource implementation.
@@ -60,23 +68,24 @@ import com.telefonica.euro_iaas.paasmanager.rest.validation.TierInstanceResource
 @Scope("request")
 public class TierInstanceResourceImpl implements TierInstanceResource {
 
-	@InjectParam("tierInstanceAsyncManager")
+	
 	private TierInstanceAsyncManager tierInstanceAsyncManager;
-	@InjectParam("tierInstanceManager")
+	
 	private TierInstanceManager tierInstanceManager;
-	@InjectParam("taskManager")
+	
 	private TaskManager taskManager;
-	@InjectParam("environmentInstanceManager")
+
 	private EnvironmentInstanceManager environmentInstanceManager;
-	@InjectParam("tierManager")
+	
 	private TierManager tierManager;
-
-
+	
+	private SystemPropertiesProvider systemPropertiesProvider;
 
 	private TierInstanceResourceValidator validatorTierInstance;
 	private ExtendedOVFUtil extendedOVFUtil;
 
-
+	private static Logger log = Logger
+			.getLogger(TierInstanceResourceImpl.class);
 
 	/**
 	 * @throws EntityNotFoundException
@@ -118,7 +127,7 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
 
 			for (int i = 0; i < tierInstances.size(); i++) {
 
-				tierInstancesDto.add(convertToDto(tierInstances.get(i)));
+				tierInstancesDto.add(tierInstances.get(i).toDto());
 
 			}
 			return tierInstancesDto;
@@ -131,6 +140,8 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
 
 	public TierInstanceDto load(String vdc, String environmentInstanceName,
 			String name) {
+		log.debug("Loading tierinstance " + name + " from environment "
+				+ environmentInstanceName);
 		TierInstanceSearchCriteria criteria = new TierInstanceSearchCriteria();
 		try {
 			EnvironmentInstance envInstance = environmentInstanceManager.load(
@@ -138,74 +149,82 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
 			criteria.setEnvironmentInstance(envInstance);
 			criteria.setVdc(vdc);
 			TierInstance tierInstance = tierInstanceManager.load(name);
-			return convertToDto(tierInstance);
+			return tierInstance.toDto();
 		} catch (EntityNotFoundException e) {
 			throw new WebApplicationException(e, 404);
 		}
 
 	}
-	
+
 	public Task update(String org, String vdc, String environmentInstance,
-			TierInstanceDto tierInstanceDto, String callback){
-		ClaudiaData claudiaData = new ClaudiaData(org,vdc,environmentInstance);
+			TierInstanceDto tierInstanceDto, String callback) {
+		ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentInstance);
 		claudiaData.setUser(extendedOVFUtil.getCredentials());
-		
+
 		Task task = null;
 		try {
 			String tierName = tierInstanceDto.getTierDto().getName();
-			String replicaNumber = tierInstanceDto.getReplicaNumber()+"";
-			String tierInstanceName = getTierInstanceName(environmentInstance, tierName, replicaNumber);
+			String replicaNumber = tierInstanceDto.getReplicaNumber() + "";
+			String tierInstanceName = getTierInstanceName(environmentInstance,
+					tierName, replicaNumber);
 			EnvironmentInstance envInstance = environmentInstanceManager.load(
 					vdc, environmentInstance);
 			validatorTierInstance.validateScaleDownTierInstance(org, vdc,
 					envInstance, tierInstanceName);
-			TierInstance tierInstance = tierInstanceManager.load(tierInstanceName);
-			claudiaData.setOrg(org);
-			claudiaData.setVm(tierInstanceDto.getTierDto().getName());
+			TierInstance tierInstance = tierInstanceManager
+					.load(tierInstanceName);
+
 			task = createTask(MessageFormat.format(
-					"Scale reconfigure Tier Instance {0}", tierInstance.getName()),
-					environmentInstance);
-			tierInstanceAsyncManager.update(claudiaData,
-					tierInstance, envInstance, task, callback);
+					"Scale reconfigure Tier Instance {0}", tierInstance
+							.getName()), vdc, environmentInstance,
+					tierInstanceName);
+			tierInstanceAsyncManager.update(claudiaData, tierInstance,
+					envInstance, task, callback);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			throw new WebApplicationException(e, 500);
 		}
 		return task;
 	}
+
 	public Task removeTierInstance(String org, String vdc,
 			String environmentInstance, String tierInstanceName, String callback)
 			throws EntityNotFoundException,
 			InvalidTierInstanceRequestException,
 			InvalidEnvironmentRequestException {
-		
-		
-			ClaudiaData claudiaData = new ClaudiaData(org,vdc,environmentInstance);
-			claudiaData.setUser(extendedOVFUtil.getCredentials());
-			
-			Task task = null;
+
+		ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentInstance);
+		claudiaData.setUser(extendedOVFUtil.getCredentials());
+
+		Task task = null;
 
 		try {
 			EnvironmentInstance envInstance = environmentInstanceManager.load(
 					vdc, environmentInstance);
-			
 			validatorTierInstance.validateScaleDownTierInstance(org, vdc,
 					envInstance, tierInstanceName);
-			
 			TierInstance tierInstance = tierInstanceManager
 					.load(tierInstanceName);
 
-			claudiaData.setVm(tierInstance.getTier().getName());
-
-			
-			if(tierInstance.getNumberReplica() > tierInstance.getTier().getMinimum_number_instances()){
-				task = createTask(MessageFormat.format(
-						"Scale Down Tier Instance {0}", tierInstance.getName()),
-						environmentInstance);
-				tierInstanceAsyncManager.delete(claudiaData,
-						tierInstance, envInstance, task, callback);
+			if (!(isExecutiongTask(vdc, environmentInstance, tierInstance
+					.getTier().getName()))) {
+				if (tierInstance.getNumberReplica() > tierInstance.getTier()
+						.getMinimumNumberInstances()) {
+					task = createTask(MessageFormat.format(
+							"Scale Down Tier Instance {0}", tierInstance
+									.getName()), vdc, environmentInstance,
+							tierInstanceName);
+					tierInstanceAsyncManager.delete(claudiaData, tierInstance,
+							envInstance, task, callback);
+				} else {
+					throw new WebApplicationException(404);
+				}
 			} else {
-				throw new WebApplicationException(404);
+				task = createTask(MessageFormat.format(
+						"Already in progress: Scale Down Tier Instance {0}",
+						tierInstance.getName()), vdc, environmentInstance,
+						tierInstance.getName());
+				task.setStatus(TaskStates.CANCELLED);
 			}
 
 		} catch (Exception e) {
@@ -215,79 +234,151 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
 
 		return task;
 	}
-	
-	
-	public Task insert(String org, String vdc, String environmentInstance,
-			TierInstanceDto tierInstanceDto, String callback) throws
-			InvalidTierInstanceRequestException, InvalidEnvironmentRequestException {
-		
-		ClaudiaData claudiaData = new ClaudiaData(org,vdc,environmentInstance);
-		claudiaData.setUser(extendedOVFUtil.getCredentials());
-		claudiaData.setVm(tierInstanceDto.getTierDto().getName());
-		
+
+	public Task insert(String org, String vdc, String environmentName,
+			TierDto tierDto, String callback)
+			throws InvalidTierInstanceRequestException,
+			InvalidEnvironmentRequestException, InvalidEntityException, EntityNotFoundException {
+
+		log.debug("Insert tierinstance " + tierDto.getName()
+				+ " from environment " + environmentName);
+		ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
+		if (systemPropertiesProvider.getProperty(
+				SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+			claudiaData.setUser(extendedOVFUtil.getCredentials());
+		}
+
 		Task task = null;
+
 		
-		try {
 			EnvironmentInstance envInstance = environmentInstanceManager.load(
-					vdc, environmentInstance);
+					vdc, environmentName);
 
 			TierInstance tierInstance = new TierInstance();
 			tierInstance.setVdc(vdc);
-			tierInstance.setTier(tierManager.load
-					(tierInstanceDto.getTierDto().getName()));
-			tierInstance.setNumberReplica(tierInstanceDto.getReplicaNumber());
-			tierInstance.setName(envInstance.getName() + "-"
-					+ tierInstanceDto.getTierDto().getName() + "-"
-					+ tierInstanceDto.getReplicaNumber());
+			Tier tier = tierManager.load(tierDto.getName(), vdc, envInstance.getEnvironment().getName());
+			//Tier tier = tierDto.fromDto();
+			/*
+			 * List<ProductRelease> lProductRelease = new ArrayList
+			 * <ProductRelease> (); if (tierDto.getProductReleaseDtos()!= null){
+			 * for (ProductReleaseDto productReleaseDto:
+			 * tierDto.getProductReleaseDtos()) {
+			 * lProductRelease.add(productReleaseDto.fromDto()); }
+			 * 
+			 * } tier.setProductReleases(lProductRelease);
+			 */
+
+			tierInstance.setTier(tier);
+
+			// Obtain replica
+			int replica = obtainReplicaNumber(envInstance, tier) + 1;
+			tierInstance.setNumberReplica(replica);
+			tierInstance.setName(envInstance.getBlueprintName() + "-" + tier.getName()
+					+ "-" + replica);
+			log.debug("New instance " + envInstance.getName() + "-"
+					+ tier.getName() + "-" + replica);
+
 			validatorTierInstance.validateScaleUpTierInstance(org, vdc,
 					envInstance, tierInstance.getName());
-			tierInstance.setOvf(getOVF(envInstance.getName(),
-					tierInstance.getTier().getName(), "1"));
-			tierInstance.setProductInstances(getProductFirst
-					(envInstance.getName(),tierInstance.getTier().getName(), "1"));
 
-			if(tierInstance.getNumberReplica()<= tierInstance.getTier().getMaximum_number_instances()){
-				task = createTask(MessageFormat.format(
-						"Scale Up Tier Instance {0}", tierInstance.getName()),
-						environmentInstance);
-				tierInstanceAsyncManager.create(claudiaData,
-						tierInstance, envInstance, task, callback);
+			tierInstance.setOvf(getOVF(envInstance, tierInstance.getTier()
+					.getName()));
+			tierInstance.setProductInstances(getProductFirst(envInstance,
+					tierInstance.getTier().getName()));
+
+			if (!(isExecutiongTask(vdc, environmentName, tierInstance
+					.getTier().getName()))) {
+				log.debug("Number instances " + tierInstance.getNumberReplica()
+						+ " "
+						+ tierInstance.getTier().getMaximumNumberInstances());
+				if (tierInstance.getNumberReplica() <= tierInstance.getTier()
+						.getMaximumNumberInstances()) {
+					task = createTask(MessageFormat.format(
+							"Scale Up Tier Instance {0}", tierInstance
+									.getName()), vdc, environmentName,
+							tierInstance.getName());
+					log.debug("Creating tier instance "
+							+ tierInstance.getName() + " asyncronous");
+					tierInstanceAsyncManager.create(claudiaData, tierInstance,
+							envInstance, task, callback);
+				} else {
+					log.error("It is not possible to scale. "
+							+ "The number maximun of instances has been got");
+					throw new WebApplicationException(
+							new InvalidTierInstanceRequestException(
+									"It is not possible to scale. "
+											+ "The number maximun of instances has been got"),
+							500);
+				}
 			} else {
-				throw new WebApplicationException(404);
+				log.error("Scaling action in progress. Cancelled");
+				task = createTask(MessageFormat.format(
+						"Already in progress: Scale Up Tier Instance {0}",
+						tierInstance.getName()), vdc, environmentName,
+						tierInstance.getName());
+				task.setStatus(TaskStates.CANCELLED);
 			}
-			
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			throw new WebApplicationException(e, 404);
-		}
+		
 		return task;
 	}
-	
-	
 
-	
-	private String getOVF(String environmentInstanceName, String tierName,
-			String replicaNumber) throws EntityNotFoundException {
-		String name = getTierInstanceName(environmentInstanceName,tierName, replicaNumber);
-		TierInstance tierInstanceFirst = tierInstanceManager.load(name);
-		return tierInstanceFirst.getOvf();
+	private boolean isExecutiongTask(String vdc, String environmentInstance,
+			String name) {
+
+		TaskSearchCriteria criteria = new TaskSearchCriteria();
+		criteria.setEnvironment(environmentInstance);
+		criteria.setVdc(vdc);
+		criteria.setTier(name);
+		List<Task> lTask = null;
+		try {
+			lTask = taskManager.findByCriteria(criteria);
+		} catch (Exception e) {
+			return false;
+		}
+		boolean execution = false;
+		for (Task tarea : lTask) {
+			TaskStates status = tarea.getStatus();
+			if ((status.equals(TaskStates.RUNNING))
+					|| (status.equals(TaskStates.PENDING))
+					|| (status.equals(TaskStates.QUEUED))) {
+				execution = true;
+				break;
+			}
+		}
+		return execution;
 	}
 
-	private  List<ProductInstance> getProductFirst(String environmentInstanceName, String tierName,
-			String replicaNumber) throws EntityNotFoundException {
-		String name = getTierInstanceName(environmentInstanceName,tierName, replicaNumber);
-		TierInstance tierInstanceFirst = tierInstanceManager.load(name);
+	private String getOVF(EnvironmentInstance environmentInstance,
+			String tierName) throws EntityNotFoundException {
+		TierInstance rTierInstance = getTierInstanceFromTier(
+				environmentInstance, tierName);
+
+		if (rTierInstance == null)
+			return "";
+		else
+			return rTierInstance.getOvf();
+		/*
+		 * String name = getTierInstanceName(environmentInstanceName,tierName,
+		 * replicaNumber); TierInstance tierInstanceFirst =
+		 * tierInstanceManager.load(name); return tierInstanceFirst.getOvf();
+		 */
+
+	}
+
+	private List<ProductInstance> getProductFirst(
+			EnvironmentInstance environmentInstance, String tierName)
+			throws EntityNotFoundException {
+
+		TierInstance tierInstanceFirst = getTierInstanceFromTier(
+				environmentInstance, tierName);
 		return tierInstanceFirst.getProductInstances();
 	}
-	
+
 	private String getTierInstanceName(String environmentInstanceName,
 			String tierName, String replicaNumber) {
-		
-		return (environmentInstanceName + "-"+ tierName 
-				+ "-" + replicaNumber);
-		 
-	}
 
+		return (environmentInstanceName + "-" + tierName + "-" + replicaNumber);
+	}
 
 	/**
 	 * 
@@ -299,7 +390,7 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
 			TierInstanceResourceValidator validatorTierInstance) {
 		this.validatorTierInstance = validatorTierInstance;
 	}
-	
+
 	/**
 	 * 
 	 * Setter of the Extended OVF Util
@@ -307,13 +398,29 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
 	 * @param extendedOVFUtil
 	 */
 
-	public void setExtendedOVFUtil(
-			ExtendedOVFUtil extendedOVFUtil) {
+	public void setExtendedOVFUtil(ExtendedOVFUtil extendedOVFUtil) {
 		this.extendedOVFUtil = extendedOVFUtil;
 	}
-	
-	
+	public void setSystemPropertiesProvider (SystemPropertiesProvider systemPropertiesProvider) {
+		this.systemPropertiesProvider = systemPropertiesProvider;
+	}
+	public void setEnvironmentInstanceManager (EnvironmentInstanceManager environmentInstanceManager) {
+		this.environmentInstanceManager = environmentInstanceManager;
+	}
+	public void setTierInstanceAsyncManager(TierInstanceAsyncManager tierInstanceAsyncManager) {
+		this.tierInstanceAsyncManager = tierInstanceAsyncManager;
+	}
+	public void setTierInstanceManager(TierInstanceManager tierInstanceManager) {
+		this.tierInstanceManager = tierInstanceManager;
+	}
+	public void setTierManager(TierManager tierManager) {
+		this.tierManager= tierManager;
+	}
+	public void setTaskManager(TaskManager taskManager) {
+		this.taskManager = taskManager;
+	}
 
+	
 	/**
 	 * createTask
 	 * 
@@ -321,136 +428,42 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
 	 * @param vdc
 	 * @return
 	 */
-	private Task createTask(String description, String enviromentName) {
+	private Task createTask(String description, String vdc,
+			String enviromentName, String tier) {
 		Task task = new Task(TaskStates.RUNNING);
 		task.setDescription(description);
-		task.setVdc(enviromentName);
+		task.setVdc(vdc);
+		task.setEnvironment(enviromentName);
+		task.setTier(tier);
 		return taskManager.createTask(task);
 	}
 
-	private TierInstanceDto convertToDto(TierInstance tierInstance) {
-		TierInstanceDto tierInstanceDto = new TierInstanceDto();
-
-		if (tierInstance.getName() != null)
-			tierInstanceDto.setTierInstanceName(tierInstance.getName());
-		if (tierInstance.getTier() != null)
-			tierInstanceDto.setTierDto(convertToTierDto(tierInstance.getTier()));
-
-		if (tierInstance.getNumberReplica() != 0)
-			tierInstanceDto.setReplicaNumber(tierInstance.getNumberReplica());
-
-		if (tierInstance.getProductInstances() != null)
-			tierInstanceDto.setProductInstanceDtos(convertToProductInstancesDto(
-					tierInstance.getProductInstances()));
-
-		if (tierInstance.getPrivateAttributes() != null)
-			tierInstanceDto.setAttributes(tierInstance.getPrivateAttributes());
-
-		return tierInstanceDto;
-	}
-	
-	/**
-	 * Method to convert Tier to TierDto
-	 * @param tier
-	 * @return
-	 */
-	private TierDto convertToTierDto(Tier tier) {
-		
-		List<ProductReleaseDto> productReleasesDto 
-			= new ArrayList<ProductReleaseDto>(); 
-		TierDto tierDto = new TierDto();
-		
-		if (tier.getName() != null)
-			tierDto.setName(tier.getName());	
-		if (tier.getInitial_number_instances() != null)
-			tierDto.setInitial_number_instances(tier.getInitial_number_instances());
-		if (tier.getMaximum_number_instances() != null)
-			tierDto.setMaximum_number_instances(tier.getMaximum_number_instances());
-		if (tier.getMinimum_number_instances() != null)
-			tierDto.setMinimum_number_instances(tier.getMinimum_number_instances());
-		
-		for (int i=0; i < tier.getProductReleases().size(); i++) {
-			
-			ProductReleaseDto pReleaseDto = new ProductReleaseDto ();
-			ProductRelease pRelease = tier.getProductReleases().get(i);
-			
-			pReleaseDto.setProductName(pRelease.getProduct());
-			pReleaseDto.setVersion(pRelease.getVersion());
-			
-			if (pRelease.getDescription()!= null)
-				pReleaseDto.setProductDescription(pRelease.getDescription());
-			
-			if (pRelease.getAttributes()!= null)
-				pReleaseDto.setPrivateAttributes(pRelease.getAttributes());
-			
-		/*	if (pRelease.getSupportedOOSS() != null)
-				pReleaseDto.setSupportedOS(pRelease.getSupportedOOSS());
-			
-			if (pRelease.getTransitableReleases() != null)
-				pReleaseDto.setTransitableReleases(pRelease.getTransitableReleases());*/
-			
-			productReleasesDto.add(pReleaseDto);
+	private int obtainReplicaNumber(EnvironmentInstance environmentInstance,
+			Tier tier) {
+		int count = 0;
+		if (environmentInstance.getTierInstances() != null) {
+			for (TierInstance tierInstance : environmentInstance
+					.getTierInstances()) {
+				if (tierInstance.getTier().getName().equals(tier.getName())) {
+					count++;
+				}
+			}
 		}
-		
-		tierDto.setProductReleaseDtos(productReleasesDto);
-		return tierDto;
-	}
-	
-	/**
-	 * Convert to a List of ProductReleaseDto to a list of ProductRelease
-	 * @param pReleases
-	 * @return
-	 */
-	private List<ProductInstanceDto> convertToProductInstancesDto (
-		List<ProductInstance> pInstances) {
-		
-		List<ProductInstanceDto> productInstancesDto 
-			= new ArrayList<ProductInstanceDto>(); 
-	
-		for (int i=0; i < pInstances.size(); i++) {
-			
-			ProductInstanceDto pInstanceDto = new ProductInstanceDto ();
-			ProductInstance pInstance = pInstances.get(i);
-			
-			pInstanceDto.setName(pInstance.getName());
-			
-			if (pInstance.getProductRelease()!= null)
-				pInstanceDto.setProductReleaseDto(
-					convertToProductReleaseDto(pInstance.getProductRelease()));
-			
-			if (pInstance.getPrivateAttributes()!= null)
-				pInstanceDto.setAttributes(pInstance.getPrivateAttributes());
-			
-			productInstancesDto.add(pInstanceDto);
-		}
-		
-		return productInstancesDto;
+		return count;
 	}
 
-	/**
-	 * Converto To ProductReleaseDto
-	 * @param pRelease
-	 * @return
-	 */
-	private ProductReleaseDto convertToProductReleaseDto (ProductRelease pRelease) {
-	
-		ProductReleaseDto pReleaseDto = new ProductReleaseDto ();
-		
-		pReleaseDto.setProductName(pRelease.getProduct());
-		pReleaseDto.setVersion(pRelease.getVersion());
-		
-		if (pRelease.getDescription()!= null)
-			pReleaseDto.setProductDescription(pRelease.getDescription());
-		
-		if (pRelease.getAttributes()!= null)
-			pReleaseDto.setPrivateAttributes(pRelease.getAttributes());
-		
-/*		if (pRelease.getSupportedOOSS() != null)
-			pReleaseDto.setSupportedOS(pRelease.getSupportedOOSS());
-		
-		if (pRelease.getTransitableReleases() != null)
-			pReleaseDto.setTransitableReleases(pRelease.getTransitableReleases());*/
-		
-		return pReleaseDto;
+	private TierInstance getTierInstanceFromTier(
+			EnvironmentInstance environmentInstance, String tierName) {
+		TierInstance rTierInstance = null;
+		if (environmentInstance.getTierInstances() != null) {
+			for (TierInstance tierInstance : environmentInstance
+					.getTierInstances()) {
+				if (tierInstance.getTier().getName().equals(tierName)) {
+					rTierInstance = tierInstance;
+				}
+			}
+		}
+		return rTierInstance;
 	}
+
 }

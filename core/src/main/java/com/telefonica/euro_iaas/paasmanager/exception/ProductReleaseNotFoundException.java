@@ -9,15 +9,14 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.exception;
 
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 
-
 /**
  * Exception thrown when the product release is not found.
- *
+ * 
  * @author Jesus M. Movilla
  * @version $Id: $
  */
@@ -25,7 +24,7 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 public class ProductReleaseNotFoundException extends Exception {
 
 	private ProductRelease productRelease;
-	
+
 	public ProductReleaseNotFoundException() {
 		super();
 	}
@@ -34,10 +33,12 @@ public class ProductReleaseNotFoundException extends Exception {
 		super(msg);
 	}
 
-	public ProductReleaseNotFoundException(ProductRelease productRelease) {
+	public ProductReleaseNotFoundException(ProductRelease productRelease,
+			String error) {
+		super(error);
 		this.productRelease = productRelease;
 	}
-	
+
 	public ProductReleaseNotFoundException(Throwable e) {
 		super(e);
 	}
@@ -54,10 +55,10 @@ public class ProductReleaseNotFoundException extends Exception {
 	}
 
 	/**
-	 * @param productRelease the productRelease to set
+	 * @param productRelease
+	 *            the productRelease to set
 	 */
 	public void setProductRelease(ProductRelease productRelease) {
 		this.productRelease = productRelease;
 	}
 }
- 

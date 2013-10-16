@@ -27,9 +27,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
         </listener-class>
     </listener>
     <!-- END SPRING -->
-
-   
-    <!-- This way can see lazy initialized objects -->
+  
     <filter>
         <filter-name>jpaFilter</filter-name>
         <filter-class>
@@ -47,14 +45,13 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     </filter-mapping>
 
     <!-- The CORS filter with parameters -->
-    <filter>
+      <filter>
         <filter-name>CORS</filter-name>
         <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
         
         <init-param>
             <param-name>cors.allowOrigin</param-name>
-            <!-- ACHTUNG!!!! In production environment param-value must be -->
-            <!-- ACHTUNG!!!! http://130.206.80.93                          -->
+         
             <param-value>*</param-value>
         </init-param>
         <init-param>
@@ -66,8 +63,8 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     <filter-mapping>
         <filter-name>CORS</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping> 
-    
+    </filter-mapping>   
+ 
     <!-- Jersey Servlet  -->
      <servlet>
         <servlet-name>Paas Manager Server Rest Servlet</servlet-name>
@@ -78,20 +75,20 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     <servlet-mapping>
         <servlet-name>Paas Manager Server Rest Servlet</servlet-name>
           <url-pattern>/rest/*</url-pattern>
-        <!-- <url-pattern>/*</url-pattern> -->
      </servlet-mapping>
 
     <!-- SPRING SECURITY -->
-     <filter>
+    <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class> 
     </filter>
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name> 
         <url-pattern>/*</url-pattern>
-    </filter-mapping>
+  	</filter-mapping>
     
-    <!-- BOOTSTRAP ACTIONS -->
+ 
+          <!-- BOOTSTRAP ACTIONS -->
     <!-- Init the db with some "fake" data...Delete this when preconditions
      are implemented -->
      <listener>
@@ -99,7 +96,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
             com.telefonica.euro_iaas.paasmanager.bootstrap.InitDbBootstrap
         </listener-class>
     </listener>
-   
     <!-- init the properties -->
     <listener>
         <listener-class>
@@ -110,6 +106,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
       <listener>
         <listener-class>
             com.telefonica.euro_iaas.paasmanager.bootstrap.PropertiesMBeanRegisterBootstrap
+        </listener-class>
+    </listener>
+     <listener>
+        <listener-class>
+            com.telefonica.euro_iaas.paasmanager.bootstrap.SynchronizationBoostrap
         </listener-class>
     </listener>   <!-- SECURITY -->
 

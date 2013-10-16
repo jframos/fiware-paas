@@ -8,21 +8,22 @@ import javax.persistence.Id;
 
 /**
  * Class that keeps the application parameters in a database
+ * 
  * @author jesus.movilla
- *
+ * 
  */
 @Entity
 public class Configuration {
 
-	 @Id
-	 @GeneratedValue(strategy = GenerationType.AUTO)
-	 private Long id;
-	 
-	 @Column(unique=true, nullable=false, length=64)
-	 private String key;
-	 
-	 @Column(unique=true, nullable=false, length=256)
-	 private String value;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+
+	@Column(unique = true, nullable = false, length = 64)
+	private String key;
+
+	@Column(unique = true, nullable = false, length = 256)
+	private String value;
 
 	/**
 	 * @param key
@@ -48,7 +49,8 @@ public class Configuration {
 	}
 
 	/**
-	 * @param key the key to set
+	 * @param key
+	 *            the key to set
 	 */
 	public void setKey(String key) {
 		this.key = key;
@@ -62,13 +64,16 @@ public class Configuration {
 	}
 
 	/**
-	 * @param value the value to set
+	 * @param value
+	 *            the value to set
 	 */
 	public void setValue(String value) {
 		this.value = value;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -79,26 +84,30 @@ public class Configuration {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Configuration other = (Configuration) obj;
 		if (id == null) {
-			if (other.id != null)
+			if (other.id != null) {
 				return false;
+			}
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
 	}
-	 
-	 
 
 }

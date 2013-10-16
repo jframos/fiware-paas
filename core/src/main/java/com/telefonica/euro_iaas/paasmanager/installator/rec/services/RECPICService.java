@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.installator.rec.services;
 
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
@@ -18,15 +18,15 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public interface RECPICService {
-	
-	//void createPICs(VM vm, String appId) throws ProductInstallatorException;
-	void createPIC(String vapp, String appId, String picId, String vmName) 
+
+	// void createPICs(VM vm, String appId) throws ProductInstallatorException;
+	void createPIC(String vapp, String appId, String picId, String vmName)
 			throws ProductInstallatorException;
 
-	void configurePIC(String vapp, String appId, String picId, String vmName) 
+	void configurePIC(String vapp, String appId, String picId, String vmName)
 			throws ProductReconfigurationException, ProductInstallatorException;
-	
+
 }

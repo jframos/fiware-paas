@@ -12,7 +12,7 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 
 /**
  * DTO to receive rest request with the product releases objects.
- *
+ * 
  * @author Jesus M. Movilla *
  */
 
@@ -23,80 +23,92 @@ public class ProductReleaseDto {
 	private String productName;
 	private String productDescription;
 	private String version;
-//	private String releaseNotes;
+
+	// private String releaseNotes;
 	private List<Attribute> attributes;
-//	private List<OS> supportedOS;
-	//private List<ProductRelease> transitableReleases; 
-	
-	
+
+	// private List<OS> supportedOS;
+	// private List<ProductRelease> transitableReleases;
+
 	/**
      */
-    public ProductReleaseDto() {
-    }
-    /**
-     * @param productName
-     * @param version
-     * @param releaseNotes
-     * @param privateAttributes
-     * @param supportedOS
-     * @param transitableReleases
-     */
-    public ProductReleaseDto(String productName, String productDescription,
-    		String version, 
-    		String releaseNotes,
-    		List<Attribute> privateAttributes,
-            List<OS> supportedOS,
-            List<ProductRelease> transitableReleases) {
-    	this.productName = productName;
-    	this.productDescription = productDescription;
-    	this.version = version;
-    }
-    
+	public ProductReleaseDto() {
+	}
 
-	
-    
-    public String getProductName() {
+	/**
+	 * @param productName
+	 * @param version
+	 * @param releaseNotes
+	 * @param privateAttributes
+	 * @param supportedOS
+	 * @param transitableReleases
+	 */
+	public ProductReleaseDto(String productName, String productDescription,
+			String version, String releaseNotes,
+			List<Attribute> privateAttributes, List<OS> supportedOS,
+			List<ProductRelease> transitableReleases) {
+		this.productName = productName;
+		this.productDescription = productDescription;
+		this.version = version;
+	}
+
+	public ProductReleaseDto(String productName, String version) {
+		this.productName = productName;
+		this.version = version;
+	}
+
+	public String getProductName() {
 		return productName;
 	}
+
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
+
 	public String getProductDescription() {
 		return productDescription;
 	}
+
 	public void setProductDescription(String productDescription) {
 		this.productDescription = productDescription;
 	}
+
 	public String getVersion() {
 		return version;
 	}
+
 	public void setVersion(String version) {
 		this.version = version;
 	}
-/*	public String getReleaseNotes() {
-		return releaseNotes;
-	}
-	public void setReleaseNotes(String releaseNotes) {
-		this.releaseNotes = releaseNotes;
-	}*/
+	
+	
+
+	/*
+	 * public String getReleaseNotes() { return releaseNotes; } public void
+	 * setReleaseNotes(String releaseNotes) { this.releaseNotes = releaseNotes;
+	 * }
+	 */
 	public List<Attribute> getPrivateAttributes() {
 		return attributes;
 	}
+
 	public void setPrivateAttributes(List<Attribute> attributes) {
 		this.attributes = attributes;
 	}
-/*	public List<OS> getSupportedOS() {
-		return supportedOS;
+
+	/*
+	 * public List<OS> getSupportedOS() { return supportedOS; } public void
+	 * setSupportedOS(List<OS> supportedOS) { this.supportedOS = supportedOS; }
+	 * public List<ProductRelease> getTransitableReleases() { return
+	 * transitableReleases; } public void
+	 * setTransitableReleases(List<ProductRelease> transitableReleases) {
+	 * this.transitableReleases = transitableReleases; }
+	 */
+
+	public ProductRelease fromDto() {
+		ProductRelease productRelease = new ProductRelease(this
+				.getProductName(), this.getVersion());
+		return productRelease;
 	}
-	public void setSupportedOS(List<OS> supportedOS) {
-		this.supportedOS = supportedOS;
-	}
-	public List<ProductRelease> getTransitableReleases() {
-		return transitableReleases;
-	}
-	public void setTransitableReleases(List<ProductRelease> transitableReleases) {
-		this.transitableReleases = transitableReleases;
-	}*/
-	
-	
+
 }

@@ -9,15 +9,19 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.exception;
+
 /**
  * Exception thrown when the environment instance is not found.
- *
+ * 
  * @author Jesus M. Movilla
  * @version $Id: $
  */
 @SuppressWarnings("serial")
 public class TierInstanceNotFoundException extends Exception {
 
+	public TierInstanceNotFoundException(Throwable e) {
+		super(e);
+	}
 }

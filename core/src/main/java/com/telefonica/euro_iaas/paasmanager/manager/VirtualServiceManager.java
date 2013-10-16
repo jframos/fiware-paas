@@ -9,25 +9,25 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import com.telefonica.euro_iaas.paasmanager.exception.VirtualServiceInstallationException;
 
-
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public interface VirtualServiceManager {
 
-	 /**
-     * Create an environent
-     * @param name
-     * @param tiers
-     * @param environmentType
-     * @return the of installed product.
-     */
-    void create(String virtualServiceName, String virtualService) throws 
-			VirtualServiceInstallationException;
+	/**
+	 * Create an environent
+	 * 
+	 * @param name
+	 * @param tiers
+	 * @param environmentType
+	 * @return the of installed product.
+	 */
+	void create(String virtualServiceName, String virtualService)
+			throws VirtualServiceInstallationException;
 }

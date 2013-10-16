@@ -9,10 +9,9 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.rest.auth;
 
-import com.telefonica.euro_iaas.paasmanager.rest.exception.AuthenticationConnectionException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,212 +40,220 @@ import org.apache.http.impl.client.DefaultHttpClient;
 /**
  * The Class OpenStackAuthenticationProvider.
  */
-public class OpenStackAuthenticationProvider
-        extends AbstractUserDetailsAuthenticationProvider {
+public class OpenStackAuthenticationProvider extends
+		AbstractUserDetailsAuthenticationProvider {
 
-    /**
-     * The system properties provider.
-     */
-    private SystemPropertiesProvider systemPropertiesProvider;
-    /**
-     * The Constant SYSTEM_FIWARE.
-     */
-    public static final String SYSTEM_FIWARE = "FIWARE";
-    /**
-     * The Constant SYSTEM_FASTTRACK.
-     */
-    public static final String SYSTEM_FASTTRACK = "FASTTRACK";
-    /**
-     * The Constant CODE_401.
-     */
-    public static final int CODE_401 = 401;
-    /**
-     * The Constant CODE_403.
-     */
-    public static final int CODE_403 = 403;
-    /**
-     * The Constant CODE_404.
-     */
-    public static final int CODE_404 = 404;
-    /**
-     * The max number of reintent.
-     */
-    public static final int MAX_REINTENT = 5;
-    /**
-     * The log.
-     */
-    private static Logger log = Logger.getLogger(
-            OpenStackAuthenticationProvider.class);
-    /**
-     * Thread to recover a valid X-Auth-Token each 24 hour
-     */
-    OpenStackAuthenticationToken OSAuthToken = null;
+	/**
+	 * The system properties provider.
+	 */
+	private SystemPropertiesProvider systemPropertiesProvider;
+	/**
+	 * The Constant SYSTEM_FIWARE.
+	 */
+	public static final String SYSTEM_FIWARE = "FIWARE";
+	/**
+	 * The Constant SYSTEM_FASTTRACK.
+	 */
+	public static final String SYSTEM_FASTTRACK = "FASTTRACK";
+	/**
+	 * The Constant CODE_401.
+	 */
+	public static final int CODE_401 = 401;
+	/**
+	 * The Constant CODE_403.
+	 */
+	public static final int CODE_403 = 403;
+	/**
+	 * The Constant CODE_404.
+	 */
+	public static final int CODE_404 = 404;
+	/**
+	 * The max number of reintent.
+	 */
+	public static final int MAX_REINTENT = 5;
+	/**
+	 * The log.
+	 */
+	private static Logger log = Logger
+			.getLogger(OpenStackAuthenticationProvider.class);
+	/**
+	 * Thread to recover a valid X-Auth-Token each 24 hour
+	 */
+	OpenStackAuthenticationToken oSAuthToken = null;
 
-    /*
-     * (non-Javadoc) @see
-     * org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider
-     * #additionalAuthenticationChecks(org.springframework.security.core.userdetails.UserDetails,
-     * org.springframework.security.authentication.UsernamePasswordAuthenticationToken)
-     */
-    @Override
-    protected void additionalAuthenticationChecks(UserDetails userDetails,
-            UsernamePasswordAuthenticationToken authentication) {
-    }
+	/*
+	 * (non-Javadoc) @seeorg.springframework.security.authentication.dao.
+	 * AbstractUserDetailsAuthenticationProvider
+	 * #additionalAuthenticationChecks(
+	 * org.springframework.security.core.userdetails.UserDetails,
+	 * org.springframework
+	 * .security.authentication.UsernamePasswordAuthenticationToken)
+	 */
+	@Override
+	protected void additionalAuthenticationChecks(UserDetails userDetails,
+			UsernamePasswordAuthenticationToken authentication) {
+	}
 
-    /*
-     * (non-Javadoc) @see
-     * org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider
-     * #retrieveUser(java.lang.String,
-     * org.springframework.security.authentication.UsernamePasswordAuthenticationToken)
-     */
-    @Override
-    protected final UserDetails retrieveUser(final String username,
-            final UsernamePasswordAuthenticationToken authentication) {
-        String system = systemPropertiesProvider
-                .getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
-        
-        PaasManagerUser user = null;
-        
-        String tenantId = authentication.getCredentials().toString();
+	/*
+	 * (non-Javadoc) @seeorg.springframework.security.authentication.dao.
+	 * AbstractUserDetailsAuthenticationProvider #retrieveUser(java.lang.String,
+	 * org
+	 * .springframework.security.authentication.UsernamePasswordAuthenticationToken
+	 * )
+	 */
+	@Override
+	protected final UserDetails retrieveUser(final String username,
+			final UsernamePasswordAuthenticationToken authentication) {
+		String system = systemPropertiesProvider
+				.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
 
-        if (SYSTEM_FIWARE.equals(system)) {
-            user = authenticationFiware(username, tenantId);
-        } else if (SYSTEM_FASTTRACK.equals(system)) {
-            user = authenticationFastTrack(username, tenantId);
-        }
+		PaasManagerUser user = null;
 
-        return user;
-    }
+		String tenantId = authentication.getCredentials().toString();
 
-    /**
-     * Authentication fast track.
-     *
-     * @param username the username
-     * @param tenantId the tenantId
-     * @return the open stack user
-     */
-    private PaasManagerUser authenticationFastTrack(
-            String username, String tenantId) {
-        return null;
+		if (SYSTEM_FIWARE.equals(system)) {
+			user = authenticationFiware(username, tenantId);
+		} else if (SYSTEM_FASTTRACK.equals(system)) {
+			user = authenticationFastTrack(username, tenantId);
+		}
 
-    }
+		return user;
+	}
 
-    /**
-     * Authentication fiware.
-     *
-     * @param token the token
-     * @param tenantId the tenantId
-     * @return the open stack user
-     */
-    @SuppressWarnings("deprecation")
-    private PaasManagerUser authenticationFiware(String token, String tenantId) {
+	/**
+	 * Authentication fast track.
+	 * 
+	 * @param username
+	 *            the username
+	 * @param tenantId
+	 *            the tenantId
+	 * @return the open stack user
+	 */
+	private PaasManagerUser authenticationFastTrack(String username,
+			String tenantId) {
+		return null;
 
-        String keystoneURL = systemPropertiesProvider
-                .getProperty(SystemPropertiesProvider.KEYSTONE_URL);
+	}
 
-        String adminUser   = systemPropertiesProvider
-                .getProperty(SystemPropertiesProvider.KEYSTONE_USER);
-        
-        String adminPass   = systemPropertiesProvider
-                .getProperty(SystemPropertiesProvider.KEYSTONE_PASS);
+	/**
+	 * Authentication fiware.
+	 * 
+	 * @param token
+	 *            the token
+	 * @param tenantId
+	 *            the tenantId
+	 * @return the open stack user
+	 */
+	@SuppressWarnings("deprecation")
+	private PaasManagerUser authenticationFiware(String token, String tenantId) {
 
-        String adminTenant = systemPropertiesProvider
-                .getProperty(SystemPropertiesProvider.KEYSTONE_TENANT);
-        
-        String thresholdString = systemPropertiesProvider
-                .getProperty(SystemPropertiesProvider.VALIDATION_TIME_THRESHOLD);
+		String keystoneURL = systemPropertiesProvider
+				.getProperty(SystemPropertiesProvider.KEYSTONE_URL);
 
-        DefaultHttpClient httpClient = new DefaultHttpClient();
-        
-        if ( OSAuthToken == null ) {
-            ArrayList<Object> params = new ArrayList();
-            
-            Long threshold = Long.parseLong(thresholdString);
-            
-            params.add(keystoneURL);
-            params.add(adminTenant);
-            params.add(adminUser);
-            params.add(adminPass);
-            params.add(httpClient);
-            params.add(threshold);
+		String adminUser = systemPropertiesProvider
+				.getProperty(SystemPropertiesProvider.KEYSTONE_USER);
 
-            OSAuthToken = new OpenStackAuthenticationToken( params );
-        }
+		String adminPass = systemPropertiesProvider
+				.getProperty(SystemPropertiesProvider.KEYSTONE_PASS);
 
-        String[] credential = OSAuthToken.getCredentials();
+		String adminTenant = systemPropertiesProvider
+				.getProperty(SystemPropertiesProvider.KEYSTONE_TENANT);
 
-        log.debug("Keystone URL : " + keystoneURL);
-        log.debug("adminToken : " + credential[0]);
+		String thresholdString = systemPropertiesProvider
+				.getProperty(SystemPropertiesProvider.VALIDATION_TIME_THRESHOLD);
 
-        Client client = Client.create();
-        WebResource webResource = client.resource(keystoneURL);
-        try {
+		DefaultHttpClient httpClient = new DefaultHttpClient();
 
-            //Validate user's token
-            AuthenticateResponse responseAuth = webResource.path("tokens")
-                    .path(token).header("Accept", "application/xml")
-                    .header("X-Auth-Token", credential[0])
-                    .get(AuthenticateResponse.class);
+		if (oSAuthToken == null) {
+			ArrayList<Object> params = new ArrayList();
 
-            if (!tenantId.equals(responseAuth.getToken().getTenant().getId())) {
-                throw new AuthenticationServiceException(
-                       "Token not valid for the tenantId provided:" + tenantId);
-            }
+			Long threshold = Long.parseLong(thresholdString);
 
-            Set<GrantedAuthority> authsSet = new HashSet<GrantedAuthority>();
+			params.add(keystoneURL);
+			params.add(adminTenant);
+			params.add(adminUser);
+			params.add(adminPass);
+			params.add(httpClient);
+			params.add(threshold);
 
-            if (responseAuth.getUser().getRoles() != null) {
-                for (Role role : responseAuth.getUser().getRoles().getRole()) {
-                    authsSet.add(new GrantedAuthorityImpl(role.getName()));
-                }
-            }
+			oSAuthToken = new OpenStackAuthenticationToken(params);
+		}
+                
+		String[] credential = oSAuthToken.getCredentials();
 
-            PaasManagerUser user = new PaasManagerUser(
-                    responseAuth.getUser().getOtherAttributes()
-                                  .get(new QName("username")), token, authsSet);
+		log.debug("Keystone URL : " + keystoneURL);
+		log.debug("adminToken : " + credential[0]);
 
-            user.setTenantId(tenantId);
-            user.setTenantName(responseAuth.getToken().getTenant().getName());
-            return user;
+		Client client = Client.create();
+		WebResource webResource = client.resource(keystoneURL);
+		try {
 
-        } catch (UniformInterfaceException e) {
-            //this.OSAuthToken.close();
-            //this.OSAuthToken = null;
+			// Validate user's token
+			AuthenticateResponse responseAuth = webResource.path("tokens")
+					.path(token).header("Accept", "application/xml").header(
+							"X-Auth-Token", credential[0]).get(
+							AuthenticateResponse.class);
 
-            log.error("response status:" + e.getResponse().getStatus());
+			if (!tenantId.equals(responseAuth.getToken().getTenant().getId())) {
+				throw new AuthenticationServiceException(
+						"Token not valid for the tenantId provided:" + tenantId);
+			}
 
-            if ((e.getResponse().getStatus() == CODE_401)
-                    || (e.getResponse().getStatus() == CODE_403)
-                    || (e.getResponse().getStatus() == CODE_404)) {
-                throw new BadCredentialsException("Token not valid", e);
-            }
+			Set<GrantedAuthority> authsSet = new HashSet<GrantedAuthority>();
 
-            throw new AuthenticationServiceException("Token not valid", e);
-        } catch (Exception e) {
-            //this.OSAuthToken.close();
-            //this.OSAuthToken = null;
+			if (responseAuth.getUser().getRoles() != null) {
+				for (Role role : responseAuth.getUser().getRoles().getRole()) {
+					authsSet.add(new GrantedAuthorityImpl(role.getName()));
+				}
+			}
 
-            throw new AuthenticationServiceException("unknown problem", e);
-        }
-    }
+			PaasManagerUser user = new PaasManagerUser(responseAuth.getUser()
+					.getOtherAttributes().get(new QName("username")), token,
+					authsSet);
 
-    /**
-     * Gets the system properties provider.
-     *
-     * @return the systemPropertiesProvider
-     */
-    public final SystemPropertiesProvider getSystemPropertiesProvider() {
-        return systemPropertiesProvider;
-    }
+			user.setTenantId(tenantId);
+			user.setTenantName(responseAuth.getToken().getTenant().getName());
+			return user;
 
-    /**
-     * Sets the system properties provider.
-     *
-     * @param pSystemPropertiesProvider the systemPropertiesProvider to set
-     */
-    public final void setSystemPropertiesProvider(
-            final SystemPropertiesProvider pSystemPropertiesProvider) {
-        this.systemPropertiesProvider = pSystemPropertiesProvider;
-    }
+		} catch (UniformInterfaceException e) {
+			// this.OSAuthToken.close();
+			// this.OSAuthToken = null;
+
+			log.error("response status:" + e.getResponse().getStatus());
+
+			if ((e.getResponse().getStatus() == CODE_401)
+					|| (e.getResponse().getStatus() == CODE_403)
+					|| (e.getResponse().getStatus() == CODE_404)) {
+				throw new BadCredentialsException("Token not valid", e);
+			}
+
+			throw new AuthenticationServiceException("Token not valid", e);
+		} catch (Exception e) {
+			// this.OSAuthToken.close();
+			// this.OSAuthToken = null;
+
+			throw new AuthenticationServiceException("unknown problem", e);
+		}
+	}
+
+	/**
+	 * Gets the system properties provider.
+	 * 
+	 * @return the systemPropertiesProvider
+	 */
+	public final SystemPropertiesProvider getSystemPropertiesProvider() {
+		return systemPropertiesProvider;
+	}
+
+	/**
+	 * Sets the system properties provider.
+	 * 
+	 * @param pSystemPropertiesProvider
+	 *            the systemPropertiesProvider to set
+	 */
+	public final void setSystemPropertiesProvider(
+			final SystemPropertiesProvider pSystemPropertiesProvider) {
+		this.systemPropertiesProvider = pSystemPropertiesProvider;
+	}
 
 }

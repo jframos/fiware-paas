@@ -8,12 +8,12 @@ public interface SdcToPaasModel {
 	/*
 	 * Converting SDC ProductInstance To Paas ProductInstance
 	 */
-	ProductInstance getPassProductInstance ( 
+	ProductInstance getPassProductInstance(
 			com.telefonica.euro_iaas.sdc.model.ProductInstance productInstance);
-	
+
 	/*
 	 * Converting SDC ProductRelease To Paas ProductRelease
 	 */
-	ProductRelease getPassProductRelease ( 
+	ProductRelease getPassProductRelease(
 			com.telefonica.euro_iaas.sdc.model.ProductRelease productRelease);
 }

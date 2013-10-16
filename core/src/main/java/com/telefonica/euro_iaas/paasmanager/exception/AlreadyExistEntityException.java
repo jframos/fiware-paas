@@ -9,16 +9,24 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.exception;
 
 /**
  * @author jesus.movilla
- *
+ * 
  */
-public class AlreadyExistEntityException extends Exception{
+public class AlreadyExistEntityException extends Exception {
 
 	public AlreadyExistEntityException(String msg) {
 		super(msg);
+	}
+
+	public AlreadyExistEntityException(Throwable e) {
+		super(e);
+	}
+
+	public AlreadyExistEntityException(String msg, Throwable e) {
+		super(msg, e);
 	}
 }

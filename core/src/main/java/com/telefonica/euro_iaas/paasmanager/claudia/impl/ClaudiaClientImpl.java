@@ -9,7 +9,7 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.claudia.impl;
 
 import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_BASEURL;
@@ -51,129 +51,170 @@ import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaResourceNotFoundExc
 import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaRetrieveInfoException;
 import com.telefonica.euro_iaas.paasmanager.exception.IPNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+
 import com.telefonica.euro_iaas.paasmanager.exception.NetworkNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.OSNotRetrievedException;
+import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.exception.URLNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.VMStatusNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.installator.rec.util.VappUtils;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.Tier;
+import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
+import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.monitoring.MonitoringClient;
+import com.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+
 /**
  * @author jesus.movilla
- *
+ * 
  */
 public class ClaudiaClientImpl implements ClaudiaClient {
 
-    private static final String PRIVATE_NETWORK="gestion";
-    private static final String PUBLIC_NETWORK="Internet";
-    private static final String RESOURCE_NOTFOUND_PATTERN = "ErrorSet";
-    
-    private static final String MIME_TYPE =
-            "?mime_type=application/vnd.telefonica.tcloudx.VDC+xml";
-    
+	private static final long POLLING_INTERVAL = 10000;
+	private static final String RESOURCE_NOTFOUND_PATTERN = "ErrorSet";
+
 	private ClaudiaUtil claudiaUtil;
 	private VappUtils vappUtils;
+	private ClaudiaResponseAnalyser claudiaResponseAnalyser;
 	private SystemPropertiesProvider systemPropertiesProvider;
 	private MonitoringClient monitoringClient;
-	
+
 	private static final String type = MediaType.WILDCARD;
-	
-    /** The log. */
-    private static Logger log = Logger.getLogger(ClaudiaClientImpl.class);
-    
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#browseVDC(java.lang.String, java.lang.String)
+
+	/** The log. */
+	private static Logger log = Logger.getLogger(ClaudiaClientImpl.class);
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#browseVDC(
+	 * java.lang.String, java.lang.String)
 	 */
-	public String browseVDC(ClaudiaData claudiaData) throws 
-		ClaudiaResourceNotFoundException {
-		
+	public String browseVDC(ClaudiaData claudiaData)
+			throws ClaudiaResourceNotFoundException {
+
 		String vdcUrl = null;
 		String vdcResponse = null;
 		List<String> parameters = new ArrayList<String>();
 		parameters.add(claudiaData.getOrg());
 		parameters.add(claudiaData.getVdc());
-		
+
 		try {
 			vdcUrl = claudiaUtil.getUrl(parameters);
+			log.debug("browseVDC " + vdcUrl);
 		} catch (URLNotRetrievedException e) {
-			String errorMessage = "URL Not Provided for org " 
-					+ claudiaData.getOrg() + " and vdc "
-					+ claudiaData.getVdc();
+			String errorMessage = "URL Not Provided for org "
+					+ claudiaData.getOrg() + " and vdc " + claudiaData.getVdc();
 			log.error(errorMessage);
-			throw new ClaudiaResourceNotFoundException(errorMessage);
+			throw new ClaudiaResourceNotFoundException(errorMessage, e);
 		}
-		
+
 		try {
-			vdcResponse = claudiaUtil.getClaudiaResource(claudiaData.getUser(), 
-					vdcUrl, type);			
-			if (vdcResponse.contains(RESOURCE_NOTFOUND_PATTERN)){
-				String errorMessage = "VDC " + claudiaData.getVdc() + " is not present in the"
-						+ " system";
+			vdcResponse = claudiaUtil.getClaudiaResource(claudiaData.getUser(),
+					vdcUrl, type);
+			log.debug("vdcResponse " + vdcResponse);
+			if (vdcResponse.contains(RESOURCE_NOTFOUND_PATTERN)) {
+				String errorMessage = "VDC " + claudiaData.getVdc()
+						+ " is not present in the" + " system";
 				log.error(errorMessage);
 				throw new ClaudiaResourceNotFoundException(errorMessage);
 			}
-				
+
 		} catch (ClaudiaRetrieveInfoException e) {
 			String errorMessage = "Could not perform GET operation on Claudia";
 			log.error(errorMessage);
-			throw new ClaudiaResourceNotFoundException(errorMessage);
+			throw new ClaudiaResourceNotFoundException(errorMessage, e);
 		}
 		return vdcResponse;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#browseService(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#browseService
+	 * (java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public String browseService(ClaudiaData claudiaData) throws 
-		ClaudiaResourceNotFoundException {
-		
+	public String browseService(ClaudiaData claudiaData)
+			throws ClaudiaResourceNotFoundException {
+
 		String serviceUrl = null;
 		String serviceResponse = null;
 		List<String> parameters = new ArrayList<String>();
 		parameters.add(claudiaData.getOrg());
 		parameters.add(claudiaData.getVdc());
 		parameters.add(claudiaData.getService());
-		
+
 		try {
 			serviceUrl = claudiaUtil.getUrl(parameters);
+			log.debug("browseService " + serviceUrl);
+
 		} catch (URLNotRetrievedException e) {
-			String errorMessage = "URL Not Provided for org " 
-					+ claudiaData.getOrg() + "  vdc "
-					+ claudiaData.getVdc() + " service " 
-					+ claudiaData.getService();
+			String errorMessage = "URL Not Provided for org "
+					+ claudiaData.getOrg() + "  vdc " + claudiaData.getVdc()
+					+ " service " + claudiaData.getService();
 			log.error(errorMessage);
-			throw new ClaudiaResourceNotFoundException(errorMessage);
+			throw new ClaudiaResourceNotFoundException(errorMessage, e);
 		}
-		
+
 		try {
-			serviceResponse = 
-					claudiaUtil.getClaudiaResource(claudiaData.getUser(), 
-							serviceUrl, type);		
-			if (serviceResponse.contains(RESOURCE_NOTFOUND_PATTERN)){
-				String errorMessage = "Service " + claudiaData.getService() 
-						+ " is not present in the"
-						+ " system org " + claudiaData.getOrg() + 
-						" vdc " + claudiaData.getVdc();
+			serviceResponse = claudiaUtil.getClaudiaResource(claudiaData
+					.getUser(), serviceUrl, type);
+
+			log.debug("serviceResponse " + serviceResponse);
+			if (serviceResponse.contains(RESOURCE_NOTFOUND_PATTERN)) {
+				String errorMessage = "Service " + claudiaData.getService()
+						+ " is not present in the" + " system org "
+						+ claudiaData.getOrg() + " vdc " + claudiaData.getVdc();
 				log.error(errorMessage);
 				throw new ClaudiaResourceNotFoundException(errorMessage);
-			}			
+			}
 		} catch (ClaudiaRetrieveInfoException e) {
 			String errorMessage = "Could not perform GET operation on Claudia";
 			log.error(errorMessage);
-			throw new ClaudiaResourceNotFoundException(errorMessage);
+			throw new ClaudiaResourceNotFoundException(errorMessage, e);
 		}
 		return serviceResponse;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#browseVM(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	public void undeployService(ClaudiaData claudiaData,
+			TierInstance tierInstance) throws InfrastructureException {
+
+		ClaudiaUtilImpl claudiaUtil = new ClaudiaUtilImpl();
+		// String actionUri = URICreation.getURIVapp(claudiaData.getFqn());
+		String actionUri = URICreation.getURIService(tierInstance.getVM()
+				.getFqn());
+		String serviceUrl = MessageFormat.format(systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_BASEURL), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_IP), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_PORT), actionUri);
+
+		log.info("serviceUrl: " + serviceUrl);
+		try {
+			claudiaUtil
+					.deleteClaudiaResource(claudiaData.getUser(), serviceUrl);
+		} catch (ClaudiaRetrieveInfoException e) {
+			String errorUndeployVM = "An error ocurred undeploying VM "
+					+ tierInstance.getVM().getFqn();
+			log.error(errorUndeployVM);
+			throw new InfrastructureException(errorUndeployVM, e);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#browseVM(java
+	 * .lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public String browseVM(String org, String vdc, String service, String vm,
-			PaasManagerUser user) 
-		throws ClaudiaResourceNotFoundException {
-		
+			PaasManagerUser user) throws ClaudiaResourceNotFoundException {
+
 		String vmUrl = null;
 		String vmResponse = null;
 		List<String> parameters = new ArrayList<String>();
@@ -181,422 +222,526 @@ public class ClaudiaClientImpl implements ClaudiaClient {
 		parameters.add(vdc);
 		parameters.add(service);
 		parameters.add(vm);
-		
+
 		try {
 			vmUrl = claudiaUtil.getUrl(parameters);
 		} catch (URLNotRetrievedException e) {
 			String errorMessage = "URL Not Provided for org " + org + "  vdc "
 					+ vdc + " service " + service + " vm " + vm;
 			log.error(errorMessage);
-			throw new ClaudiaResourceNotFoundException(errorMessage);
+			throw new ClaudiaResourceNotFoundException(errorMessage, e);
 		}
-		
+
 		try {
 			vmResponse = claudiaUtil.getClaudiaResource(user, vmUrl, type);
 		} catch (ClaudiaRetrieveInfoException e) {
 			String errorMessage = "Could not perform GET operation on Claudia";
 			log.error(errorMessage);
-			throw new ClaudiaResourceNotFoundException(errorMessage);
+			throw new ClaudiaResourceNotFoundException(errorMessage, e);
 		}
 		return vmResponse;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#browseVMReplica(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#browseVMReplica
+	 * (java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String)
 	 */
-	public String browseVMReplica(ClaudiaData claudiaData, String replica) 
-			throws ClaudiaResourceNotFoundException {
-		
+	public String browseVMReplica(ClaudiaData claudiaData, String tierName,
+			int replica, VM vm)
+
+	throws ClaudiaResourceNotFoundException {
+
 		int cont = 0;
 		String replicaResponse, fqnReplica, actionUri, url = null;
 		List<String> parameters = new ArrayList<String>();
-		
-		//Different url to get the VApp
+
+		// Different url to get the VApp
 		if (systemPropertiesProvider.getProperty(
 				SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-			
+
 			parameters.add(claudiaData.getOrg());
 			parameters.add(claudiaData.getVdc());
 			parameters.add(claudiaData.getService());
-			parameters.add(claudiaData.getVm());
-			
+			parameters.add(tierName);
+
 			try {
 				url = claudiaUtil.getUrl(parameters);
 			} catch (URLNotRetrievedException e) {
-				String errorMessage = "URL Not Provided for org " 
+				String errorMessage = "URL Not Provided for org "
 						+ claudiaData.getOrg() + "  vdc "
-						+ claudiaData.getVdc() + " service " 
-						+ claudiaData.getService() + " vm " + claudiaData.getVm();
-				
+						+ claudiaData.getVdc() + " service "
+						+ claudiaData.getService() + " vm " + tierName;
+
 				log.error(errorMessage);
-				throw new ClaudiaResourceNotFoundException(errorMessage);
+				throw new ClaudiaResourceNotFoundException(errorMessage, e);
 			}
-			
+
 		} else {
-			/*fqnReplica = URICreation.getFQN(
-					claudiaData.getOrg(), claudiaData.getVdc(), 
-					claudiaData.getService(), claudiaData.getVm(), replica);
-					actionUri = URICreation.getVEEReplica(fqnReplica);
-					*/
-			String vapp = URICreation.getFQN(
-					claudiaData.getOrg(), claudiaData.getVdc(), 
-					claudiaData.getService());
-			fqnReplica = URICreation.getFQN(
-					claudiaData.getOrg(), claudiaData.getVdc(), 
-					claudiaData.getService(), claudiaData.getVm()+"_"+replica);
-			actionUri = URICreation.getURIService(vapp)+"/"+claudiaData.getVm()+"_"+replica;
-	
-			url = MessageFormat.format(
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_BASEURL),
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_IP), 
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_PORT),
-                actionUri);	
+
+			String vapp = URICreation.getFQN(claudiaData.getOrg(), claudiaData
+					.getVdc(), claudiaData.getService());
+			fqnReplica = URICreation.getFQN(claudiaData.getOrg(), claudiaData
+					.getVdc(), claudiaData.getService(), tierName + "_"
+					+ replica);
+			actionUri = URICreation.getURIService(vapp) + "/" + tierName + "_"
+					+ replica;
+
+			url = MessageFormat.format(systemPropertiesProvider
+					.getProperty(NEOCLAUDIA_BASEURL), systemPropertiesProvider
+					.getProperty(NEOCLAUDIA_IP), systemPropertiesProvider
+					.getProperty(NEOCLAUDIA_PORT), actionUri);
 		}
-		
+
 		try {
-			
-			replicaResponse = claudiaUtil.getClaudiaResource(
-					claudiaData.getUser(), url, type);
-			
-			while (!(replicaResponse.contains(vappUtils.IPADDRESS_TAG))){
+
+			replicaResponse = claudiaUtil.getClaudiaResource(claudiaData
+					.getUser(), url, type);
+
+			while (!(replicaResponse.contains(VappUtils.IPADDRESS_TAG))) {
 				try {
-		            Thread.sleep(10000);
-		        } catch (InterruptedException e) {
-		            log.warn("Interrupted Exception during polling");
-		        }
-				replicaResponse = claudiaUtil.getClaudiaResource(
-						claudiaData.getUser(), url, type);
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					log.warn("Interrupted Exception during polling");
+				}
+				replicaResponse = claudiaUtil.getClaudiaResource(claudiaData
+						.getUser(), url, type);
 				cont = cont + 1;
-				if (cont >= 10)
+				if (cont >= 25)
 					break;
 			}
-			
-			
+
 		} catch (ClaudiaRetrieveInfoException e) {
-			String errorDeployVDC = "An browsering the replica: " + 
-					claudiaData.getService() + " " + claudiaData.getVm() + ":" + e.getMessage();
+			String errorDeployVDC = "An browsering the replica: "
+					+ claudiaData.getService() + " " + tierName + ":"
+					+ e.getMessage();
 			log.error(errorDeployVDC + " " + e.getMessage());
 			throw new ClaudiaResourceNotFoundException(errorDeployVDC);
-		} 
+		}
 		return replicaResponse;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#undeployVM(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-	 */
-	public void undeployVMReplica(String fqn, String replica) 
-			throws InfrastructureException {
-		
-		ClaudiaUtilImpl claudiaUtil = new ClaudiaUtilImpl();			
-		String actionUri = URICreation.getURIVapp(fqn);	
-		String url = MessageFormat.format(
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_BASEURL),
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_IP), 
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_PORT),
-                actionUri) + "/" + replica;	
-		log.info("url: " + url);		   
+
+	public List<String> getIP(ClaudiaData claudiaData, String tierName,
+			int replica, VM vm) throws InfrastructureException {
+
+		List<String> ips = new ArrayList<String>();
 		try {
-			claudiaUtil.deleteClaudiaResource(url);
-		} catch (ClaudiaRetrieveInfoException e) {
-			String errorUndeployVM = "An error ocurred undeploying VM " +  fqn;
-			log.error(errorUndeployVM);
-			throw new InfrastructureException(errorUndeployVM);	
-		} 		
+			String vAppReplica = browseVMReplica(claudiaData, tierName,
+					replica, vm);
+			ips.add(vappUtils.getIP(vAppReplica));
+			log.debug("IP replica " + ips.get(0));
+		} catch (ClaudiaResourceNotFoundException e) {
+			throw new InfrastructureException(e.getMessage());
+		} catch (ProductInstallatorException pie) {
+			throw new InfrastructureException(pie.getMessage());
+		}
+		return ips;
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#deployVDC(java.lang.String, java.lang.String, int, int, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#undeployVM
+	 * (java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String)
 	 */
-	public String deployVDC(ClaudiaData claudiaData, String cpu, String mem, 
+	public void undeployVMReplica(ClaudiaData claudiaData,
+			TierInstance tierInstance) throws InfrastructureException {
+
+		ClaudiaUtilImpl claudiaUtil = new ClaudiaUtilImpl();
+		String actionUri = URICreation
+				.getURIVapp(tierInstance.getVM().getFqn());
+		String url = MessageFormat.format(systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_BASEURL), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_IP), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_PORT), actionUri)
+				+ "/" + tierInstance.getNumberReplica();
+		log.debug("url: " + url);
+		try {
+			claudiaUtil.deleteClaudiaResource(claudiaData.getUser(), url);
+		} catch (ClaudiaRetrieveInfoException e) {
+			String errorUndeployVM = "An error ocurred undeploying VM "
+					+ tierInstance.getVM().getFqn();
+			log.error(errorUndeployVM);
+			throw new InfrastructureException(errorUndeployVM);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#deployVDC(
+	 * java.lang.String, java.lang.String, int, int, int)
+	 */
+	public String deployVDC(ClaudiaData claudiaData, String cpu, String mem,
 			String disk) throws InfrastructureException {
 		ClientResponse response = null;
-		
-		String  actionUri = URICreation.getURIOrg(URICreation
-				.getFQN(claudiaData.getOrg())) + URICreation.URI_VDC_ADD_MODIFIER;
-		String url = MessageFormat.format(
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_BASEURL),
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_IP), 
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_PORT),
-                actionUri);
-		
+
+		String actionUri = URICreation.getURIOrg(URICreation.getFQN(claudiaData
+				.getOrg()))
+				+ URICreation.URI_VDC_ADD_MODIFIER;
+		String url = MessageFormat.format(systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_BASEURL), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_IP), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_PORT), actionUri);
+
 		try {
-			String payload = readFile(systemPropertiesProvider
-					.getProperty(NEOCLAUDIA_VDCTEMPLATE_LOCATION))
-					.replace("${vdcName}", claudiaData.getVdc())
-					.replace("${vdcDescription}", "vdcDescription")
-					.replace("${cpuLimit}",systemPropertiesProvider
-							.getProperty(NEOCLAUDIA_VDC_CPU))
-					.replace("${memLimit}",systemPropertiesProvider
-							.getProperty(NEOCLAUDIA_VDC_MEM))
-					.replace("${diskLimit}",systemPropertiesProvider
-							.getProperty(NEOCLAUDIA_VDC_DISK));
-			
-			response = claudiaUtil.postClaudiaResource(claudiaData.getUser(), 
+			String payload = readFile(
+					systemPropertiesProvider
+							.getProperty(NEOCLAUDIA_VDCTEMPLATE_LOCATION))
+					.replace("${vdcName}", claudiaData.getVdc()).replace(
+							"${vdcDescription}", "vdcDescription").replace(
+							"${cpuLimit}",
+							systemPropertiesProvider
+									.getProperty(NEOCLAUDIA_VDC_CPU)).replace(
+							"${memLimit}",
+							systemPropertiesProvider
+									.getProperty(NEOCLAUDIA_VDC_MEM)).replace(
+							"${diskLimit}",
+							systemPropertiesProvider
+									.getProperty(NEOCLAUDIA_VDC_DISK));
+
+			response = claudiaUtil.postClaudiaResource(claudiaData.getUser(),
 					url, payload);
 		} catch (ClaudiaRetrieveInfoException e) {
-			String errorDeployVDC = "An error ocurred deploying VDC: " 
+			String errorDeployVDC = "An error ocurred deploying VDC: "
 					+ claudiaData.getVdc();
 			log.error(errorDeployVDC);
-			throw new InfrastructureException(errorDeployVDC);
+			throw new InfrastructureException(errorDeployVDC, e);
 		} catch (IOException e) {
-			String errorDeployVDC = "Error obtaining VDC Template " + 
-					systemPropertiesProvider.getProperty(NEOCLAUDIA_VDCTEMPLATE_LOCATION);
+			String errorDeployVDC = "Error obtaining VDC Template "
+					+ systemPropertiesProvider
+							.getProperty(NEOCLAUDIA_VDCTEMPLATE_LOCATION);
 			log.error(errorDeployVDC);
-			throw new InfrastructureException(errorDeployVDC);
+			throw new InfrastructureException(errorDeployVDC, e);
 		}
 		return response.getEntity(String.class);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#deployService(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#deployService
+	 * (java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public String deployService(ClaudiaData claudiaData, String ovfUrl) 
-		throws InfrastructureException {
-		
+	public String deployService(ClaudiaData claudiaData, String ovfUrl)
+			throws InfrastructureException {
+
 		ClientResponse response = null;
 		String payload = null;
-		String actionUri = URICreation
-				.getURIServiceAdd(URICreation.getFQN(
-						claudiaData.getOrg(),claudiaData.getVdc()));
-		System.out.println("actionUri: " + actionUri);
-		String url = MessageFormat.format(
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_BASEURL),
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_IP), 
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_PORT),
-                actionUri);
+		String actionUri = URICreation.getURIServiceAdd(URICreation.getFQN(
+				claudiaData.getOrg(), claudiaData.getVdc()));
+		log.debug("actionUri: " + actionUri);
+		String url = MessageFormat.format(systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_BASEURL), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_IP), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_PORT), actionUri);
 		String emptyServiceUrl = systemPropertiesProvider
 				.getProperty(NEOCLAUDIA_OVFSERVICE_LOCATION);
-		
+
 		try {
-			payload = new OvfInjector()
-				.injectNameOnOvf(claudiaData.getService(), 
-						emptyServiceUrl, "VirtualSystemCollection");		                                               
-			response = claudiaUtil.postClaudiaResource(claudiaData.getUser(), 
+			payload = new OvfInjector().injectNameOnOvf(claudiaData
+					.getService(), emptyServiceUrl, "VirtualSystemCollection");
+			response = claudiaUtil.postClaudiaResource(claudiaData.getUser(),
 					url, payload);
 		} catch (TransformerException e1) {
-			String errorDeployService = "An error obtaining/parsing " +
-					"serviceOVfFile: " +
-					"Error Description: " + e1.getMessage();
+			String errorDeployService = "An error obtaining/parsing "
+					+ "serviceOVfFile: " + "Error Description: "
+					+ e1.getMessage();
 			log.error(errorDeployService);
-			throw new InfrastructureException(errorDeployService);
-			
+			throw new InfrastructureException(errorDeployService, e1);
+
 		} catch (ParserConfigurationException e1) {
-			String errorDeployService = "An error obtaining/parsing " +
-					"serviceOVfFile: " +
-					"Error Description: " + e1.getMessage();
+			String errorDeployService = "An error obtaining/parsing "
+					+ "serviceOVfFile: " + "Error Description: "
+					+ e1.getMessage();
 			log.error(errorDeployService);
-			throw new InfrastructureException(errorDeployService);
+			throw new InfrastructureException(errorDeployService, e1);
 		} catch (SAXException e1) {
-			String errorDeployService = "An error obtaining/parsing " +
-					"serviceOVfFile: " +
-					"Error Description: " + e1.getMessage();
+			String errorDeployService = "An error obtaining/parsing "
+					+ "serviceOVfFile: " + "Error Description: "
+					+ e1.getMessage();
 			log.error(errorDeployService);
-			throw new InfrastructureException(errorDeployService);
+			throw new InfrastructureException(errorDeployService, e1);
 		} catch (IOException e) {
-			String errorDeployService = "An error obtaining/parsing " +
-					"serviceOVfFile: " +
-					"Error Description: " + e.getMessage();
+			String errorDeployService = "An error obtaining/parsing "
+					+ "serviceOVfFile: " + "Error Description: "
+					+ e.getMessage();
 			log.error(errorDeployService);
-			throw new InfrastructureException(errorDeployService);
+			throw new InfrastructureException(errorDeployService, e);
 		} catch (ClaudiaRetrieveInfoException e) {
-			String errorDeployService = "An error ocurred deploying Service: " 
+			String errorDeployService = "An error ocurred deploying Service: "
 					+ claudiaData.getService();
 			log.error(errorDeployService);
-			throw new InfrastructureException(errorDeployService);
+			throw new InfrastructureException(errorDeployService, e);
 		}
-        
+
 		return response.getEntity(String.class);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#deployVM(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * public String deployServiceFull(ClaudiaData claudiaData, String ovfs)
+	 * throws InfrastructureException {
+	 * 
+	 * ClientResponse response = null; String payload = null; String actionUri =
+	 * URICreation .getURIServiceAdd(URICreation.getFQN(
+	 * claudiaData.getOrg(),claudiaData.getVdc())); log.debug("actionUri: " +
+	 * actionUri); String url = MessageFormat.format(
+	 * systemPropertiesProvider.getProperty(NEOCLAUDIA_BASEURL),
+	 * systemPropertiesProvider.getProperty(NEOCLAUDIA_IP),
+	 * systemPropertiesProvider.getProperty(NEOCLAUDIA_PORT), actionUri);
+	 * 
+	 * try {
+	 * 
+	 * response = claudiaUtil.postClaudiaResource(claudiaData.getUser(), url,
+	 * ovfs); } catch (ClaudiaRetrieveInfoException e) { String
+	 * errorDeployService = "An error ocurred deploying Service: " +
+	 * claudiaData.getService(); log.error(errorDeployService); throw new
+	 * InfrastructureException(errorDeployService); }
+	 * 
+	 * return response.getEntity(String.class); }
 	 */
-	public String deployVM(String org, String vdc, String service, String vmName,
-			PaasManagerUser user, String vmUrl) throws InfrastructureException {
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#deployVM(java
+	 * .lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String)
+	 */
+	public String deployVM(String org, String vdc, String service,
+			String vmName, PaasManagerUser user, String vmUrl)
+			throws InfrastructureException {
 		String payload = null;
 		String vmResponse = null;
 		ClientResponse response = null;
-		String actionUri = URICreation
-				.getURIVEEReplicaAdd(URICreation.getFQN(org, vdc, service));
-		System.out.println("actionUri: " + actionUri);
-		String url = MessageFormat.format(
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_BASEURL),
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_IP), 
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_PORT),
-                actionUri);
+		String actionUri = URICreation.getURIVEEReplicaAdd(URICreation.getFQN(
+				org, vdc, service));
+		log.debug("actionUri: " + actionUri);
+		String url = MessageFormat.format(systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_BASEURL), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_IP), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_PORT), actionUri);
 		try {
-			payload = new OvfInjector().injectNameOnOvf(vmName, vmUrl, 
+			payload = new OvfInjector().injectNameOnOvf(vmName, vmUrl,
 					"VirtualSystem");
 			response = claudiaUtil.postClaudiaResource(user, url, payload);
 			vmResponse = response.getEntity(String.class);
 		} catch (TransformerException e1) {
-			String errorDeployVM = "An error ocurred obtaining/parsing vmOvfFile: " 
+			String errorDeployVM = "An error ocurred obtaining/parsing vmOvfFile: "
 					+ vmUrl;
 			log.error(errorDeployVM);
-			throw new InfrastructureException(errorDeployVM);
+			throw new InfrastructureException(errorDeployVM, e1);
 		} catch (ParserConfigurationException e1) {
-			String errorDeployVM = "An error ocurred obtaining/parsing vmOvfFile: " 
+			String errorDeployVM = "An error ocurred obtaining/parsing vmOvfFile: "
 					+ vmUrl;
 			log.error(errorDeployVM);
-			throw new InfrastructureException(errorDeployVM);
+			throw new InfrastructureException(errorDeployVM, e1);
 		} catch (SAXException e1) {
-			String errorDeployVM = "An error ocurred obtaining/parsing vmOvfFile: " 
+			String errorDeployVM = "An error ocurred obtaining/parsing vmOvfFile: "
 					+ vmUrl;
 			log.error(errorDeployVM);
-			throw new InfrastructureException(errorDeployVM);
+			throw new InfrastructureException(errorDeployVM, e1);
 		} catch (IOException e) {
-			String errorDeployVM = "An error ocurred obtaining/parsing vmOvfFile: " 
+			String errorDeployVM = "An error ocurred obtaining/parsing vmOvfFile: "
 					+ vmUrl;
 			log.error(errorDeployVM);
-			throw new InfrastructureException(errorDeployVM);
+			throw new InfrastructureException(errorDeployVM, e);
 		} catch (ClaudiaRetrieveInfoException e) {
-			String errorDeployVM = "An error ocurred deploying VM: " 
-					+ vmName;
+			String errorDeployVM = "An error ocurred deploying VM: " + vmName;
 			log.error(errorDeployVM);
-			throw new InfrastructureException(errorDeployVM);
+			throw new InfrastructureException(errorDeployVM, e);
 		}
-		
-		return vmResponse;		
+
+		return vmResponse;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#deployVM(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#deployVM(java
+	 * .lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public String deployVM(ClaudiaData claudiaData, String payload) 
+	public void deployVM(ClaudiaData claudiaData, Tier tier, int replica, VM vm)
 			throws InfrastructureException {
+
+		String fqn = claudiaData.getOrg().replace("_", ".") + ".customers."
+				+ claudiaData.getVdc() + ".services."
+				+ claudiaData.getService() + ".vees." + tier.getName()
+				+ ".replicas." + replica;
+		String hostname = claudiaData.getService() + "-" + tier.getName() + "-"
+				+ replica;
+
+		vm.setFqn(fqn);
+		vm.setHostname(hostname);
 
 		String vmResponse = null;
 		ClientResponse response = null;
-		String actionUri = URICreation
-				.getURIVEEReplicaAdd(URICreation.getFQN(claudiaData.getOrg(), 
-						claudiaData.getVdc(),claudiaData.getService()));
+		String actionUri = URICreation.getURIVEEReplicaAdd(URICreation.getFQN(
+				claudiaData.getOrg(), claudiaData.getVdc(), claudiaData
+						.getService()));
 		log.info("actionUri: " + actionUri);
-		String url = MessageFormat.format(
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_BASEURL),
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_IP), 
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_PORT),
-                actionUri);
+		String url = MessageFormat.format(systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_BASEURL), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_IP), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_PORT), actionUri);
 		log.info("url: " + url);
 		try {
-			response = claudiaUtil.postClaudiaResource(claudiaData.getUser(), 
-					url, payload);
+			response = claudiaUtil.postClaudiaResource(claudiaData.getUser(),
+					url, tier.getPayload());
 			vmResponse = response.getEntity(String.class);
 		} catch (ClaudiaRetrieveInfoException e) {
 			String errorDeployVM = "An error ocurred deploying VM ";
 			log.error(errorDeployVM);
-			throw new InfrastructureException(errorDeployVM);
+			throw new InfrastructureException(errorDeployVM, e);
 		}
-		
-		return vmResponse;	
-	}
-	
 
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#undeployVM(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-	 */
-	public void undeployVM(String fqn) throws InfrastructureException {
-		
-		ClaudiaUtilImpl claudiaUtil = new ClaudiaUtilImpl();
-			
-		String actionUri = URICreation.getURIVapp(fqn);
-		
-		String url = MessageFormat.format(
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_BASEURL),
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_IP), 
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_PORT),
-                actionUri);
-		
-		log.info("url: " + url);
-		   
-		try {
-			claudiaUtil.deleteClaudiaResource(url);
-			monitoringClient.stopMonitoring(fqn);
-		} catch (ClaudiaRetrieveInfoException e) {
-			String errorUndeployVM = "An error ocurred undeploying VM " +  fqn;
-			log.error(errorUndeployVM);
-			throw new InfrastructureException(errorUndeployVM);
-		/*} catch (MonitoringException e) {
-		  String errorStoppingMonitoring = "An error ocurred deleting VM " 
-		  +  fqn + "entry from Monitoring System";
-		  log.error(errorStoppingMonitoring);
-		  throw new InfrastructureException(errorStoppingMonitoring); */
+		String taskUrl = claudiaResponseAnalyser.getTaskUrl(vmResponse);
+
+		if (claudiaResponseAnalyser.getTaskStatus(vmResponse).equals("error")) {
+			String errorMsgVM = "Error deploying VM ";
+			log.error(errorMsgVM);
+			throw new InfrastructureException(errorMsgVM);
 		}
-		
+
+		if (!(claudiaResponseAnalyser.getTaskStatus(vmResponse)
+				.equals("success")))
+
+			checkTaskResponse(claudiaData, taskUrl);
+
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#obtainIPFromFqn(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#undeployVM
+	 * (java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String)
 	 */
-	public String obtainIPFromFqn(String org, String vdc, String service, 
-			String vmName, PaasManagerUser user) throws IPNotRetrievedException, 
-			ClaudiaResourceNotFoundException, NetworkNotRetrievedException {
-		String ip = null;
+	public void undeployVM(ClaudiaData claudiaData, TierInstance tierInstance)
+			throws InfrastructureException {
+
+		ClaudiaUtilImpl claudiaUtil = new ClaudiaUtilImpl();
+
+		String actionUri = URICreation
+				.getURIVapp(tierInstance.getVM().getFqn());
+
+		String url = MessageFormat.format(systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_BASEURL), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_IP), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_PORT), actionUri);
+
+		log.info("url: " + url);
+
+		try {
+			claudiaUtil.deleteClaudiaResource(claudiaData.getUser(), url);
+			monitoringClient.stopMonitoring(tierInstance.getVM().getFqn());
+		} catch (ClaudiaRetrieveInfoException e) {
+			String errorUndeployVM = "An error ocurred undeploying VM "
+					+ tierInstance.getVM().getFqn();
+			log.error(errorUndeployVM);
+			throw new InfrastructureException(errorUndeployVM, e);
+			/*
+			 * } catch (MonitoringException e) { String errorStoppingMonitoring
+			 * = "An error ocurred deleting VM " + fqn +
+			 * "entry from Monitoring System";
+			 * log.error(errorStoppingMonitoring); throw new
+			 * InfrastructureException(errorStoppingMonitoring);
+			 */
+		}
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#obtainIPFromFqn
+	 * (java.lang.String)
+	 */
+	public String obtainIPFromFqn(String org, String vdc, String service,
+			String vmName, PaasManagerUser user)
+			throws IPNotRetrievedException, ClaudiaResourceNotFoundException,
+			NetworkNotRetrievedException {
 		int cont = 0;
 
 		String vmResponse = browseVM(org, vdc, service, vmName, user);
-		
-		while (!(vmResponse.contains(claudiaUtil.IPADDRESS_NODENAME))){
+
+		while (!(vmResponse.contains(ClaudiaUtil.IPADDRESS_NODENAME))) {
 			try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                log.warn("Interrupted Exception during polling");
-            }
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				log.warn("Interrupted Exception during polling");
+			}
 			vmResponse = browseVM(org, vdc, service, vmName, user);
 			cont = cont + 1;
 			if (cont >= 10)
 				break;
 		}
 		String network = getPublicNetworkFromDocument(vmResponse);
-		return getIPFromDocument (vmResponse, network);
+		return getIPFromDocument(vmResponse, network);
 	}
-	
 
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#obtainOS(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#obtainOS(java
+	 * .lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public String obtainOS(String org, String vdc, String service, String vmName,
-			PaasManagerUser user)
+	public String obtainOS(String org, String vdc, String service,
+			String vmName, PaasManagerUser user)
 			throws OSNotRetrievedException, ClaudiaResourceNotFoundException {
-		String osType =null;
-		
+
 		int cont = 0;
 
 		String vmResponse = browseVM(org, vdc, service, vmName, user);
-		
-		while (!(vmResponse.contains(claudiaUtil.IPADDRESS_NODENAME))){
+
+		while (!(vmResponse.contains(ClaudiaUtil.IPADDRESS_NODENAME))) {
 			try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                log.warn("Interrupted Exception during polling");
-            }
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				log.warn("Interrupted Exception during polling");
+			}
 			vmResponse = browseVM(org, vdc, service, vmName, user);
 			cont = cont + 1;
 			if (cont >= 10)
 				break;
 		}
 
-		return getOSFromDocument (vmResponse);
+		return getOSFromDocument(vmResponse);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#obtainOS(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#obtainOS(java
+	 * .lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public String getVApp(String org, String vdc, String service, String vmName,
-			PaasManagerUser user)
+	public String getVApp(String org, String vdc, String service,
+			String vmName, PaasManagerUser user)
 			throws OSNotRetrievedException, ClaudiaResourceNotFoundException {
-		String osType =null;
-		
+
 		int cont = 0;
 
 		String vmResponse = browseVM(org, vdc, service, vmName, user);
-		
-		while (!(vmResponse.contains(claudiaUtil.IPADDRESS_NODENAME))){
+
+		while (!(vmResponse.contains(ClaudiaUtil.IPADDRESS_NODENAME))) {
 			try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                log.warn("Interrupted Exception during polling");
-            }
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				log.warn("Interrupted Exception during polling");
+			}
 			vmResponse = browseVM(org, vdc, service, vmName, user);
 			cont = cont + 1;
 			if (cont >= 10)
@@ -605,70 +750,76 @@ public class ClaudiaClientImpl implements ClaudiaClient {
 
 		return vmResponse;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#obtainOS(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#obtainOS(java
+	 * .lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public String obtainVMStatus(String vapp) throws VMStatusNotRetrievedException {
-		
+	public String obtainVMStatus(String vapp)
+			throws VMStatusNotRetrievedException {
+
 		String status = null;
 		Document doc;
 		try {
 			doc = claudiaUtil.stringToDom(vapp);
-			NodeList vappList = doc.getElementsByTagName(claudiaUtil.VAPP_NODENAME);
+			NodeList vappList = doc
+					.getElementsByTagName(ClaudiaUtil.VAPP_NODENAME);
 			for (int j = 0; j < vappList.getLength(); j++) {
 				Element soElement = (Element) vappList.item(j);
-				status = soElement.getAttribute(claudiaUtil.VM_STATUS_ATTRIBUTE);
+				status = soElement
+						.getAttribute(ClaudiaUtil.VM_STATUS_ATTRIBUTE);
 			}
 			if (status == null)
-				throw new VMStatusNotRetrievedException ("VM Status is null");
-		
+				throw new VMStatusNotRetrievedException("VM Status is null");
+
 		} catch (SAXException e) {
-			String errorMessage = "SAXException when obtaining VM Status. Desc: " 
+			String errorMessage = "SAXException when obtaining VM Status. Desc: "
 					+ e.getMessage();
 			log.error(errorMessage);
-			throw new VMStatusNotRetrievedException (errorMessage);
+			throw new VMStatusNotRetrievedException(errorMessage, e);
 		} catch (ParserConfigurationException e) {
-			String errorMessage = "ParserConfigurationException when obtaining " +
-					"VM Status. Desc: " + e.getMessage();
+			String errorMessage = "ParserConfigurationException when obtaining "
+					+ "VM Status. Desc: " + e.getMessage();
 			log.error(errorMessage);
-			throw new VMStatusNotRetrievedException (errorMessage);
+			throw new VMStatusNotRetrievedException(errorMessage, e);
 		} catch (IOException e) {
-			String errorMessage = "IOException when obtaining " +
-					"VM Status. Desc: " + e.getMessage();
+			String errorMessage = "IOException when obtaining "
+					+ "VM Status. Desc: " + e.getMessage();
 			log.error(errorMessage);
-			throw new VMStatusNotRetrievedException (errorMessage);
+			throw new VMStatusNotRetrievedException(errorMessage, e);
 		}
-			
+
 		return status;
 	}
-	
-	public String switchVMOn (String org, String vdc, String service, 
-			String vmName, PaasManagerUser user)
-			throws InfrastructureException{
-		
+
+	public String switchVMOn(String org, String vdc, String service,
+			String vmName, PaasManagerUser user) throws InfrastructureException {
+
 		String vmResponse = null;
 		ClientResponse response = null;
-		String actionUri = URICreation.getURIVapp(URICreation.getFQN(org, vdc, 
-				service, vmName)) +  "/power/action/powerOn";
+		String actionUri = URICreation.getURIVapp(URICreation.getFQN(org, vdc,
+				service, vmName))
+				+ "/power/action/powerOn";
 		log.info("actionUri: " + actionUri);
-		String url = MessageFormat.format(
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_BASEURL),
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_IP), 
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_PORT),
-                actionUri);
+		String url = MessageFormat.format(systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_BASEURL), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_IP), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_PORT), actionUri);
 		log.info("switchVMOn url: " + url);
 		try {
-			response = claudiaUtil.postClaudiaResource(user, url,"");
+			response = claudiaUtil.postClaudiaResource(user, url, "");
 			vmResponse = response.getEntity(String.class);
 		} catch (ClaudiaRetrieveInfoException e) {
-			String errorDeployVM = "An error ocurred switching On VM " +vmName;
+			String errorDeployVM = "An error ocurred switching On VM " + vmName;
 			log.error(errorDeployVM);
-			throw new InfrastructureException(errorDeployVM);
+			throw new InfrastructureException(errorDeployVM, e);
 		}
 		return vmResponse;
 	}
-	
+
 	/**
 	 * 
 	 * @param xmlResource
@@ -678,16 +829,16 @@ public class ClaudiaClientImpl implements ClaudiaClient {
 	private static String readFile(String xmlResource) throws IOException {
 		InputStream is = new FileInputStream(xmlResource);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuffer ruleFile = new StringBuffer();
-        String actualString;
+		StringBuffer ruleFile = new StringBuffer();
+		String actualString;
 
-        while ((actualString = reader.readLine()) != null) {
-            ruleFile.append(actualString).append("\n");
-        }
-        
-        return ruleFile.toString();
+		while ((actualString = reader.readLine()) != null) {
+			ruleFile.append(actualString).append("\n");
+		}
+
+		return ruleFile.toString();
 	}
-	
+
 	/**
 	 * 
 	 * @param xmlSource
@@ -695,260 +846,383 @@ public class ClaudiaClientImpl implements ClaudiaClient {
 	 * @return
 	 * @throws IPNotRetrievedException
 	 */
-	private String getIPFromDocument (String xmlSource, String networkName) 
-			throws IPNotRetrievedException{
-			String ipv4 =null;
-			Document doc;
-			try {
-		        doc = claudiaUtil.stringToDom(xmlSource);
-		        NodeList ovItemList = doc.
-						getElementsByTagName(claudiaUtil.OVFITEM_NODENAME);
-		      
-				for (int j = 0; j < ovItemList.getLength(); j++) {
-					Node ovfItem = ovItemList.item(j);
-					String ovfItemstring = claudiaUtil.nodeToString(ovfItem);
-					NodeList ovfElements = ovfItem.getChildNodes();
-					
-					for (int k=0; k<ovfElements.getLength(); k++) {
-						Node ovfElement = ovfElements.item(k);
-						String ovfElementstring = claudiaUtil.nodeToString(ovfElement);
-							if ((ovfElement.getNodeName().equals(claudiaUtil.OVFITEM_CONNECTION_NODENAME))
-								&& ovfElement.getTextContent().trim().equals(networkName))
-							ipv4 = getIPFromItemElement(ovfItem);
-					}
+	private String getIPFromDocument(String xmlSource, String networkName)
+			throws IPNotRetrievedException {
+		String ipv4 = null;
+		Document doc;
+		try {
+			doc = claudiaUtil.stringToDom(xmlSource);
+			NodeList ovItemList = doc
+					.getElementsByTagName(ClaudiaUtil.OVFITEM_NODENAME);
+
+			for (int j = 0; j < ovItemList.getLength(); j++) {
+				Node ovfItem = ovItemList.item(j);
+
+				NodeList ovfElements = ovfItem.getChildNodes();
+
+				for (int k = 0; k < ovfElements.getLength(); k++) {
+					Node ovfElement = ovfElements.item(k);
+
+					if ((ovfElement.getNodeName()
+							.equals(ClaudiaUtil.OVFITEM_CONNECTION_NODENAME))
+							&& ovfElement.getTextContent().trim().equals(
+									networkName))
+						ipv4 = getIPFromItemElement(ovfItem);
 				}
-				
-				if (ipv4 == null)
-					throw new IPNotRetrievedException ();
-			} catch (SAXException e) {
-				throw new IPNotRetrievedException ();
-			} catch (ParserConfigurationException e) {
-				throw new IPNotRetrievedException ();
-			} catch (IOException e) {
-				throw new IPNotRetrievedException ();
 			}
-			return ipv4;
+
+			if (ipv4 == null)
+				throw new IPNotRetrievedException();
+		} catch (SAXException e) {
+			throw new IPNotRetrievedException();
+		} catch (ParserConfigurationException e) {
+			throw new IPNotRetrievedException();
+		} catch (IOException e) {
+			throw new IPNotRetrievedException();
 		}
-		
-		private String getIPFromItemElement(Node ovfItem) {
-			String ovfItemstring = claudiaUtil.nodeToString(ovfItem);
-			String ipv4 = null;
-			NodeList ovfElements = ovfItem.getChildNodes();
-			
-			for (int j=0; j< ovfElements.getLength(); j++) {
-				Node ovfElement = ovfElements.item(j);
-				String ovfElementstring = claudiaUtil.nodeToString(ovfElement);
-				if (ovfElement.getNodeName().equals(claudiaUtil.IPADDRESS_NODENAME))
-					ipv4 = ovfElement.getTextContent();
-			}
-			return ipv4;
+		return ipv4;
+	}
+
+	private String getIPFromItemElement(Node ovfItem) {
+
+		String ipv4 = null;
+		NodeList ovfElements = ovfItem.getChildNodes();
+
+		for (int j = 0; j < ovfElements.getLength(); j++) {
+			Node ovfElement = ovfElements.item(j);
+
+			if (ovfElement.getNodeName().equals(ClaudiaUtil.IPADDRESS_NODENAME))
+				ipv4 = ovfElement.getTextContent();
 		}
-   
-	/**	
+		return ipv4;
+	}
+
+	/**
 	 * 
 	 * @param xmlSource
 	 * @return
 	 * @throws SONotRetrievedException
 	 */
-	private String getOSFromDocument (String xmlSource) throws OSNotRetrievedException{
-		String so =null;
+	private String getOSFromDocument(String xmlSource)
+			throws OSNotRetrievedException {
+		String so = null;
 		Document doc;
 		try {
 			doc = claudiaUtil.stringToDom(xmlSource);
-			NodeList soList = doc.getElementsByTagName(claudiaUtil.OS_NODENAME);
+			NodeList soList = doc.getElementsByTagName(ClaudiaUtil.OS_NODENAME);
 			for (int j = 0; j < soList.getLength(); j++) {
 				Element soElement = (Element) soList.item(j);
-				so = soElement.getAttribute(claudiaUtil.OS_ID_ATTRIBUTENAME);
+				so = soElement.getAttribute(ClaudiaUtil.OS_ID_ATTRIBUTENAME);
 			}
 			if (so == null)
-				throw new OSNotRetrievedException ("OS is null");
+				throw new OSNotRetrievedException("OS is null");
 		} catch (SAXException e) {
-			String errorMessage = "SAXException when obtaining OS. Desc: " +
-					e.getMessage();
+			String errorMessage = "SAXException when obtaining OS. Desc: "
+					+ e.getMessage();
 			log.error(errorMessage);
-			throw new OSNotRetrievedException (errorMessage);
+			throw new OSNotRetrievedException(errorMessage, e);
 		} catch (ParserConfigurationException e) {
-			String errorMessage = "ParserConfigurationException when obtaining " +
-					"OS. Desc: " + e.getMessage();
+			String errorMessage = "ParserConfigurationException when obtaining "
+					+ "OS. Desc: " + e.getMessage();
 			log.error(errorMessage);
-			throw new OSNotRetrievedException (errorMessage);
+			throw new OSNotRetrievedException(errorMessage, e);
 		} catch (IOException e) {
-			String errorMessage = "IOException when obtaining " +
-					"OS. Desc: " + e.getMessage();
+			String errorMessage = "IOException when obtaining " + "OS. Desc: "
+					+ e.getMessage();
 			log.error(errorMessage);
-			throw new OSNotRetrievedException (errorMessage);
+			throw new OSNotRetrievedException(errorMessage, e);
 		}
-			
+
 		return so;
 	}
-	
+
 	/**
 	 * 
 	 * @param xmlSource
 	 * @return
 	 * @throws NetworkNotRetrievedException
 	 */
-	private String getPublicNetworkFromDocument (String xmlSource) throws NetworkNotRetrievedException{
-		String networkName =null;
+	private String getPublicNetworkFromDocument(String xmlSource)
+			throws NetworkNotRetrievedException {
+		String networkName = null;
 		Document doc;
 		try {
 			doc = claudiaUtil.stringToDom(xmlSource);
-			
-			NodeList networkList = doc.getElementsByTagName(claudiaUtil.NETWORK_NODENAME);
+
+			NodeList networkList = doc
+					.getElementsByTagName(ClaudiaUtil.NETWORK_NODENAME);
 			for (int j = 0; j < networkList.getLength(); j++) {
 				Element networkElement = (Element) networkList.item(j);
-				networkName = networkElement.getAttribute(claudiaUtil.NETWORK_NAME_ATTRIBUTE);
+				networkName = networkElement
+						.getAttribute(ClaudiaUtil.NETWORK_NAME_ATTRIBUTE);
 			}
 			if (networkName == null) {
 				String errorMessage = "Network Name Not Found in VM xml";
 				log.error(errorMessage);
 				throw new NetworkNotRetrievedException(errorMessage);
 			}
-				
+
 		} catch (SAXException e) {
 			String errorMessage = "SAXException obtaining NetworkName.  Desc: "
 					+ e.getMessage();
 			log.error(errorMessage);
-			throw new NetworkNotRetrievedException(errorMessage);
+			throw new NetworkNotRetrievedException(errorMessage, e);
 		} catch (ParserConfigurationException e) {
-			String errorMessage = "ParserConfigurationException obtaining " +
-					"NetworkName.  Desc: " + e.getMessage();
+			String errorMessage = "ParserConfigurationException obtaining "
+					+ "NetworkName.  Desc: " + e.getMessage();
 			log.error(errorMessage);
-			throw new NetworkNotRetrievedException(errorMessage);
+			throw new NetworkNotRetrievedException(errorMessage, e);
 		} catch (IOException e) {
-			String errorMessage = "IOException obtaining " +
-					"NetworkName.  Desc: " + e.getMessage();
+			String errorMessage = "IOException obtaining "
+					+ "NetworkName.  Desc: " + e.getMessage();
 			log.error(errorMessage);
-			throw new NetworkNotRetrievedException (errorMessage);
+			throw new NetworkNotRetrievedException(errorMessage, e);
 		}
-		
+
 		return networkName;
 	}
-	
-	public String OnOffScalability(ClaudiaData claudiaData, 
-			String environmentName, boolean b) 	throws InfrastructureException{
-		
+
+	public String onOffScalability(ClaudiaData claudiaData,
+			String environmentName, boolean b) throws InfrastructureException {
+
 		String vmResponse = null;
 		ClientResponse response = null;
-		
-		// URI del service /api/org/org-id/vdc/vdc-id/vapp/service/action/scale/enable
 
-		String state = (b)?"enable":"disable";
-		String actionUri =  getURIServiceAdd(
-				claudiaData.getOrg(), claudiaData.getVdc(),
-				environmentName, state);
-		
+		// URI del service
+		// /api/org/org-id/vdc/vdc-id/vapp/service/action/scale/enable
+
+		String state = (b) ? "enable" : "disable";
+		String actionUri = getURIServiceAdd(claudiaData.getOrg(), claudiaData
+				.getVdc(), environmentName, state);
+
 		log.info("actionUri: " + actionUri);
-		String uri = MessageFormat.format(
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_BASEURL),
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_IP), 
-				systemPropertiesProvider.getProperty(NEOCLAUDIA_PORT),
-                actionUri);
-        
+		String uri = MessageFormat.format(systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_BASEURL), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_IP), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_PORT), actionUri);
+
 		log.info("url: " + uri);
-		
-		
+
 		try {
-			response = claudiaUtil.postClaudiaResource(claudiaData.getUser(), 
+			response = claudiaUtil.postClaudiaResource(claudiaData.getUser(),
 					uri);
 			vmResponse = response.getEntity(String.class);
 		} catch (ClaudiaRetrieveInfoException e) {
 			String errorManageScalability = "An error ocurred manageScalability ";
 			log.error(errorManageScalability);
-			throw new InfrastructureException(errorManageScalability);
+			throw new InfrastructureException(errorManageScalability, e);
 		}
 
-		return vmResponse;	
+		return vmResponse;
 	}
-	
-	private static String getURIServiceAdd(String org,String vdc,String service, String state){	
-		String Scalability_URI = "/api/org/" + org + "/vdc/" + vdc + "/vapp/" + service +
-				"/action/scale/" + state;  
+
+	private static String getURIServiceAdd(String org, String vdc,
+			String service, String state) {
+		String Scalability_URI = "/api/org/" + org + "/vdc/" + vdc + "/vapp/"
+				+ service + "/action/scale/" + state;
 		return Scalability_URI;
 	}
-	
 
-	
-	public String createImage(ClaudiaData claudiaData) 
-					throws ClaudiaRetrieveInfoException{
-		
-		String actionUri = getURIScalabilityAdd(
-				claudiaData.getOrg(), // org
-				claudiaData.getVdc(),  // vdc
-				claudiaData.getService(),  // servicio (vapp)
-				claudiaData.getVm(), // vee
-				"1");  // nombre del virtual machine
-		
-		String uri = MessageFormat.format(
-			    systemPropertiesProvider.getProperty(NEOCLAUDIA_BASEURL),
-			    systemPropertiesProvider.getProperty(NEOCLAUDIA_IP), 
-			    systemPropertiesProvider.getProperty(NEOCLAUDIA_PORT), actionUri);
-		System.out.println("url: " + uri);
-		
-		String ImageName = getTemplateName(claudiaData);
+	public String createImage(ClaudiaData claudiaData, TierInstance tierInstance)
+			throws ClaudiaRetrieveInfoException {
+
+		String actionUri = getURIScalabilityAdd(claudiaData.getOrg(), // org
+				claudiaData.getVdc(), // vdc
+				claudiaData.getService(), // servicio (vapp)
+				tierInstance.getTier().getName(), // vee
+				"1"); // nombre del virtual machine
+
+		String uri = MessageFormat.format(systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_BASEURL), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_IP), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_PORT), actionUri);
+		log.debug("url: " + uri);
+
+		String ImageName = getTemplateName(claudiaData, tierInstance.getVM());
 		String payload = "<Name>" + ImageName + "</Name>";
 		try {
 			ClientResponse response = claudiaUtil.postClaudiaResource(
-					claudiaData.getUser(),
-					uri,payload);
-			if(response.getStatus()==500){
+					claudiaData.getUser(), uri, payload);
+			if (response.getStatus() == 500) {
 				ImageName = null;
 			}
 		} catch (ClaudiaRetrieveInfoException e) {
 			ImageName = null;
-			String errorCreateImage = "An error ocurred creating" +
-					"the imagen.";
+			String errorCreateImage = "An error ocurred creating"
+					+ "the imagen.";
 			log.error(errorCreateImage);
-			throw new ClaudiaRetrieveInfoException(errorCreateImage);
+			throw new ClaudiaRetrieveInfoException(errorCreateImage, e);
 		}
-		
+
 		return ImageName;
 	}
 
-	private String getTemplateName(ClaudiaData claudiaData) {
-		String fqn = claudiaData.getFqn();
-		String[] imageNameCust = fqn.split("customers.",2);
-		String[] imageNameServ = imageNameCust[1].split("services.",2);
-		String[] imageNameVees = imageNameServ[1].split("vees.",2);
-		String[] imageNameRep = imageNameVees[1].split(".replicas",2);
-		String imagName = imageNameCust[0] +imageNameServ[0] 
-				+imageNameVees[0]+imageNameRep[0];
-		//String imagName = claudiaData.getOrg() + "." +
-		//4caast.customers.test9.services.casoUso4.vees.tomcat.replicas.1
+	private String getTemplateName(ClaudiaData claudiaData, VM vm) {
+		String fqn = vm.getFqn();
+		String[] imageNameCust = fqn.split("customers.", 2);
+		String[] imageNameServ = imageNameCust[1].split("services.", 2);
+		String[] imageNameVees = imageNameServ[1].split("vees.", 2);
+		String[] imageNameRep = imageNameVees[1].split(".replicas", 2);
+		String imagName = imageNameCust[0] + imageNameServ[0]
+				+ imageNameVees[0] + imageNameRep[0];
+		// String imagName = claudiaData.getOrg() + "." +
+		// 4caast.customers.test9.services.casoUso4.vees.tomcat.replicas.1
 		return imagName;
 	}
-	//4caast.test9.casoUsoSAP135.tomcat
-	private static String getURIScalabilityAdd(String org, String vdc, String vapp,
-			String vee, String vmName){	
-		
-		String Scalability_URI = "/api/org/" + org + "/vdc/" + vdc + "/vapp/" + 
-				vapp + "/" + vee + "/" + vmName + "/action/templatize" ;  
+
+	// 4caast.test9.casoUsoSAP135.tomcat
+	private static String getURIScalabilityAdd(String org, String vdc,
+			String vapp, String vee, String vmName) {
+
+		String Scalability_URI = "/api/org/" + org + "/vdc/" + vdc + "/vapp/"
+				+ vapp + "/" + vee + "/" + vmName + "/action/templatize";
 		return Scalability_URI;
 	}
 
 	/**
-     * @param claudiaUtil
-     *            the claudiaUtil to set
-     */
-    public void setClaudiaUtil(ClaudiaUtil claudiaUtil) {
-        this.claudiaUtil = claudiaUtil;
-    }
-    
+	 * 
+	 * @param taskUrl
+	 * @throws InfrastructureException
+	 */
+	private void checkTaskResponse(ClaudiaData claudiaData, String taskUrl)
+			throws InfrastructureException {
+		log.debug("checkTaskResponse");
+		while (true) {
+			String claudiaTask;
+			try {
+				claudiaTask = claudiaUtil.getClaudiaResource(claudiaData
+						.getUser(), taskUrl, MediaType.WILDCARD);
+				log.debug("claudiaTask" + claudiaTask);
+
+				if (claudiaTask.contains("success")) {
+					try {
+						Thread.sleep(POLLING_INTERVAL);
+					} catch (InterruptedException e) {
+						String errorThread = "Thread Interrupted Exception "
+								+ "during polling";
+						log.warn(errorThread);
+						throw new InfrastructureException(errorThread, e);
+					}
+					break;
+				} else if (claudiaTask.contains("error")) {
+					String errorMessage = "Error checking task " + taskUrl;
+					log.error(errorMessage);
+					throw new InfrastructureException(errorMessage);
+				}
+			} catch (ClaudiaRetrieveInfoException e1) {
+				String errorMessage = "Error checking task " + taskUrl;
+				log.error(errorMessage);
+				throw new InfrastructureException(errorMessage, e1);
+			} catch (ClaudiaResourceNotFoundException e) {
+				String errorMessage = "Error checking task " + taskUrl;
+				log.error(errorMessage);
+				throw new InfrastructureException(errorMessage, e);
+			}
+			try {
+				Thread.sleep(POLLING_INTERVAL);
+			} catch (InterruptedException e) {
+				String errorMessage = "Interrupted Exception during polling";
+				log.warn(errorMessage);
+				throw new InfrastructureException(errorMessage);
+			}
+		}
+	}
+
 	/**
-     * @param vappUtils
-     *            the claudiaUtil to set
-     */
-    public void setVappUtils(VappUtils vappUtils) {
-        this.vappUtils = vappUtils;
-    }
-    
-    /**
-     * @param propertiesProvider
-     *            the propertiesProvider to set
-     */
-    public void setSystemPropertiesProvider(
-            SystemPropertiesProvider systemPropertiesProvider) {
-        this.systemPropertiesProvider = systemPropertiesProvider;
-    }
+	 * @param claudiaUtil
+	 *            the claudiaUtil to set
+	 */
+	public void setClaudiaUtil(ClaudiaUtil claudiaUtil) {
+		this.claudiaUtil = claudiaUtil;
+	}
+
+	/**
+	 * @param vappUtils
+	 *            the claudiaUtil to set
+	 */
+	public void setVappUtils(VappUtils vappUtils) {
+		this.vappUtils = vappUtils;
+	}
+
+	/**
+	 * @param propertiesProvider
+	 *            the propertiesProvider to set
+	 */
+	public void setSystemPropertiesProvider(
+			SystemPropertiesProvider systemPropertiesProvider) {
+		this.systemPropertiesProvider = systemPropertiesProvider;
+	}
+
+	/**
+	 * @param ClaudiaResponseAnalyser
+	 *            the ClaudiaResponseAnalyser to set
+	 */
+	public void setClaudiaResponseAnalyser(
+			ClaudiaResponseAnalyser claudiaResponseAnalyser) {
+		this.claudiaResponseAnalyser = claudiaResponseAnalyser;
+	}
+
+	public String deployServiceFull(ClaudiaData claudiaData, String ovf)
+			throws InfrastructureException {
+		String serviceResponse = null;
+		ClientResponse response = null;
+		String actionUri = URICreation.getURIServiceAdd(URICreation.getFQN(
+				claudiaData.getOrg(), claudiaData.getVdc()));
+		log.debug("actionUri: " + actionUri);
+		String url = MessageFormat.format(systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_BASEURL), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_IP), systemPropertiesProvider
+				.getProperty(NEOCLAUDIA_PORT), actionUri);
+
+		try {
+			response = claudiaUtil.postClaudiaResource(claudiaData.getUser(),
+					url, ovf);
+			serviceResponse = response.getEntity(String.class);
+		} catch (ClaudiaRetrieveInfoException e) {
+			String errorDeployVM = "An error ocurred deploying VM ";
+			log.error(errorDeployVM);
+			throw new InfrastructureException(errorDeployVM);
+		}
+		log.debug("serviceResponse: " + serviceResponse);
+
+		String taskUrl = claudiaResponseAnalyser.getTaskUrl(serviceResponse);
+		log.debug("taskUrl: " + taskUrl);
+
+		if (claudiaResponseAnalyser.getTaskStatus(serviceResponse).equals(
+				"error")) {
+			String errorMsgVM = "Error deploying VM ";
+			log.error(errorMsgVM);
+			throw new InfrastructureException(errorMsgVM);
+		}
+
+		try {
+			Thread.sleep(60000);
+		} catch (InterruptedException e) {
+			log.warn("Interrupted Exception during polling");
+		}
+
+		if (!(claudiaResponseAnalyser.getTaskStatus(serviceResponse)
+				.equals("success")))
+
+			checkTaskResponse(claudiaData, taskUrl);
+
+		return "OK";
+
+	}
+
+	public void undeployService(ClaudiaData claudiaData)
+			throws InfrastructureException {
+		// TODO Auto-generated method stub
+
+	}
+
+	/* (non-Javadoc)
+	 * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#findAllVMs(com.telefonica.euro_iaas.paasmanager.model.ClaudiaData)
+	 */
+	public List<String> findAllVMs(ClaudiaData claudiaData)
+			throws ClaudiaResourceNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

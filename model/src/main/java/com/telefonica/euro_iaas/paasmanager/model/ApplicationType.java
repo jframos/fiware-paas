@@ -15,8 +15,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * A Application Type(ex: e-businees, java-spring...
+ * 
  * @author Jesus M. Movilla
- *
+ * 
  */
 
 @Entity
@@ -25,16 +26,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ApplicationType {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-	
-	@Column(unique=true, nullable=false, length=256)
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+
+	@Column(unique = true, nullable = false, length = 256)
 	private String name;
-	  
-	@Column(length=2048)
+
+	@Column(length = 2048)
 	private String description;
-	
-	//OneToMany, ManyToMany?
+
+	// OneToMany, ManyToMany?
 	@OneToMany
 	private List<EnvironmentType> environmentTypes;
 
@@ -43,7 +44,7 @@ public class ApplicationType {
 	 */
 	public ApplicationType() {
 	}
-	
+
 	/**
 	 * @param name
 	 * @param description
@@ -71,7 +72,8 @@ public class ApplicationType {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -85,7 +87,8 @@ public class ApplicationType {
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *            the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -99,13 +102,16 @@ public class ApplicationType {
 	}
 
 	/**
-	 * @param environmentTypes the environmentTypes to set
+	 * @param environmentTypes
+	 *            the environmentTypes to set
 	 */
 	public void setEnvironmentTypes(List<EnvironmentType> environmentTypes) {
 		this.environmentTypes = environmentTypes;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -116,7 +122,9 @@ public class ApplicationType {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -135,6 +143,5 @@ public class ApplicationType {
 			return false;
 		return true;
 	}
-	
-	
+
 }

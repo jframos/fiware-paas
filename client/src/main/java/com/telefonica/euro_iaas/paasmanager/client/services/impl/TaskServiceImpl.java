@@ -60,7 +60,6 @@ public class TaskServiceImpl extends AbstractBaseService implements TaskService 
     /**
      * {@inheritDoc}
      */
-    @Override
     public Task load(String vdc, Long id) {
         String url = getBaseHost()
                 + MessageFormat.format(ClientConstants.TASK_PATH, vdc, id);
@@ -70,7 +69,6 @@ public class TaskServiceImpl extends AbstractBaseService implements TaskService 
     /**
      * {@inheritDoc}
      */
-    @Override
     public Task load(String url) {
         WebResource wr = getClient().resource(url);
         return wr.accept(getType()).get(Task.class);

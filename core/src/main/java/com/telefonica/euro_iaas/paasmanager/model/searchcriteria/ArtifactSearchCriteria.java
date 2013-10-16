@@ -4,74 +4,74 @@ import com.telefonica.euro_iaas.commons.dao.AbstractSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 
 public class ArtifactSearchCriteria extends AbstractSearchCriteria {
-    
-    private ProductRelease productRelease;
 
-    /**
-     * Default constructor
-     */
-    public ArtifactSearchCriteria() {
-    }
+	private ProductRelease productRelease;
 
-    /**
-     * @param page
-     * @param pagesize
-     * @param orderBy
-     * @param orderType
-     * @param vm
-     * @param productRelease
-     */
-    public ArtifactSearchCriteria(Integer page, Integer pageSize,
-            String orderBy, String orderType, ProductRelease productRelease) {
-        super(page, pageSize, orderBy, orderType);
-        this.productRelease = productRelease;
-    }
+	/**
+	 * Default constructor
+	 */
+	public ArtifactSearchCriteria() {
+	}
 
-    /**
-     * @param orderBy
-     * @param orderType
-     * @param vm
-     * @param productRelease
-     */
-    public ArtifactSearchCriteria(String orderBy, String orderType,
-            ProductRelease productRelease) {
-        super(orderBy, orderType);
-        this.productRelease = productRelease;
-    }
+	/**
+	 * @param page
+	 * @param pagesize
+	 * @param orderBy
+	 * @param orderType
+	 * @param vm
+	 * @param productRelease
+	 */
+	public ArtifactSearchCriteria(Integer page, Integer pageSize,
+			String orderBy, String orderType, ProductRelease productRelease) {
+		super(page, pageSize, orderBy, orderType);
+		this.productRelease = productRelease;
+	}
 
-    /**
-     * @param page
-     * @param pagesize
-     * @param vm
-     * @param artifactName
-     * @param productRelease
-     */
-    public ArtifactSearchCriteria(Integer page, Integer pageSize,
-            ProductRelease productRelease) {
-        super(page, pageSize);
-        this.productRelease = productRelease;
-    }
+	/**
+	 * @param orderBy
+	 * @param orderType
+	 * @param vm
+	 * @param productRelease
+	 */
+	public ArtifactSearchCriteria(String orderBy, String orderType,
+			ProductRelease productRelease) {
+		super(orderBy, orderType);
+		this.productRelease = productRelease;
+	}
 
-    /**
-     * @param productRelease
-     */
-    public ArtifactSearchCriteria(ProductRelease productRelease) {
-        this.productRelease = productRelease;
-    }
+	/**
+	 * @param page
+	 * @param pagesize
+	 * @param vm
+	 * @param artifactName
+	 * @param productRelease
+	 */
+	public ArtifactSearchCriteria(Integer page, Integer pageSize,
+			ProductRelease productRelease) {
+		super(page, pageSize);
+		this.productRelease = productRelease;
+	}
 
-    /**
-     * @return the productRelease
-     */
-    public ProductRelease getProductRelease() {
-        return productRelease;
-    }
+	/**
+	 * @param productRelease
+	 */
+	public ArtifactSearchCriteria(ProductRelease productRelease) {
+		this.productRelease = productRelease;
+	}
 
-    /**
-     * @param ProductRelease the productRelease to set
-     */
-    public void setProductRelease(ProductRelease productRelease) {
-        this.productRelease = productRelease;
-    }
+	/**
+	 * @return the productRelease
+	 */
+	public ProductRelease getProductRelease() {
+		return productRelease;
+	}
+
+	/**
+	 * @param ProductRelease
+	 *            the productRelease to set
+	 */
+	public void setProductRelease(ProductRelease productRelease) {
+		this.productRelease = productRelease;
+	}
 
 }
-

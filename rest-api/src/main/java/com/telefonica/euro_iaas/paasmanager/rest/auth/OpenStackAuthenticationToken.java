@@ -1,29 +1,24 @@
 /*
 
-  (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights
-  Reserved.
+ (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights
+ Reserved.
 
-  The copyright to the software program(s) is property of Telefonica I+D.
-  The program(s) may be used and or copied only with the express written
-  consent of Telefonica I+D or in accordance with the terms and conditions
-  stipulated in the agreement/contract under which the program(s) have
-  been supplied.
+ The copyright to the software program(s) is property of Telefonica I+D.
+ The program(s) may be used and or copied only with the express written
+ consent of Telefonica I+D or in accordance with the terms and conditions
+ stipulated in the agreement/contract under which the program(s) have
+ been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.rest.auth;
 
-
-import com.telefonica.euro_iaas.paasmanager.rest.exception.AuthenticationConnectionException;
-import com.telefonica.euro_iaas.paasmanager.rest.util.CompareDates;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -33,6 +28,9 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 
+import com.telefonica.euro_iaas.paasmanager.rest.exception.AuthenticationConnectionException;
+import com.telefonica.euro_iaas.paasmanager.rest.util.CompareDates;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 /**
  *
@@ -43,7 +41,7 @@ public class OpenStackAuthenticationToken {
     /**
      * The log.
      */
-    //private Timer timer;
+    // private Timer timer;
     /**
      * The token ID.
      */
@@ -76,18 +74,17 @@ public class OpenStackAuthenticationToken {
     /**
      * The log.
      */
-    private static org.apache.log4j.Logger log =
-            org.apache.log4j.Logger.getLogger(
-            OpenStackAuthenticationToken.class);
+    private static org.apache.log4j.Logger log = org.apache.log4j.Logger
+            .getLogger(OpenStackAuthenticationToken.class);
     /**
      * The limit to request a new token due to it is not more valid. This means
      * that the token is no more valid after 6m 40sec.
      */
-    private long THRESHOLD;
+    private long threshold;
     /**
      * The Offset between the local time and the remote Date
      */
-    private static long Offset;
+    private static long offset;
 
     OpenStackAuthenticationToken(ArrayList<Object> params) {
         this.token = "";
@@ -99,19 +96,19 @@ public class OpenStackAuthenticationToken {
 
         this.httpClient = (HttpClient) params.get(4);
 
-        this.THRESHOLD = (Long) params.get(5);
-        
-        Offset = 0;
+        this.threshold = (Long) params.get(5);
+
+        offset = 0;
     }
 
     public String[] getCredentials() {
         String[] credential = new String[2];
 
-        CompareDates compare = new CompareDates(this.THRESHOLD);
-        
-        compare.setOffset(Offset);
-        
-        log.info("Offset: "+Offset);
+        CompareDates compare = new CompareDates(this.threshold);
+
+        compare.setOffset(offset);
+
+        log.info("Offset: " + offset);
 
         if (token.equals("")) {
             generateValidToken();
@@ -133,7 +130,6 @@ public class OpenStackAuthenticationToken {
         extractData(response);
     }
 
-
     protected void extractData(ArrayList<Object> response) {
         String payload = (String) response.get(0);
 
@@ -142,37 +138,51 @@ public class OpenStackAuthenticationToken {
         token = payload.substring(i - 1, j + 1);
 
         //token = "<token expires=\"2012-11-13T15:01:51Z\" id=\"783bec9d7d734f1e943986485a90966d\">";
-        // Regular Expression  (<\s*token\s*expires=")(.*?)("\s*id=")(.*)(">)
-        // as a Java string   "(<\\s*token\\s*expires=\")(.*?)(\"\\s*id=\")(.*)(\">)"                
-        String pattern1 = "(<\\s*token\\s*expires=\")(.*?)(\"\\s*id=\")(.*)(\">)";
+        // Regular Expression  <\s*token\s*(issued_at=\".*?\"\s*)?expires=\"(.*?)(\"\s*id=\")(.*)\"\/*>
+        // as a Java string "<\\s*token\\s*(issued_at=\\\".*?\\\"\\s*)?expires=\\\"(.*?)(\\\"\\s*id=\\\")(.*)\\\"\\/*>"
+        String pattern1 = "<\\s*token\\s*(issued_at=\\\".*?\\\"\\s*)?expires=\\\"(.*?)(\\\"\\s*id=\\\")(.*)\\\"\\/*>";
 
-        date = token.replaceAll(pattern1, "$2");
-        token = token.replaceAll(pattern1, "$4");
+        if (token.matches(pattern1)) {
+            date = token.replaceAll(pattern1, "$2");
+            token = token.replaceAll(pattern1, "$4");
 
-        log.info("Valid to: " + date);
-        log.info("token id: " + token);
+            log.info("Valid to: " + date);
+            log.info("token id: " + token);
+        } else {
+            log.error("Token format unknown: " + token);
+
+            throw new RuntimeException("Token format unknown:\n " + token);
+        }
+
 
         i = payload.indexOf("tenant");
         j = payload.indexOf(">", i);
         tenantId = payload.substring(i - 1, j + 1);
 
-        // Regular Expression  (<\s*tenant\s*.*)("\s*id=")(.*?)("\s*.*/>)
-        // as a Java string   "(<\\s*tenant\\s*.*)(\"\\s*id=\")(.*?)(\"\\s*.*/>)"
-        pattern1 = "(<\\s*tenant\\s*.*)(\"\\s*id=\")(.*?)(\"\\s*.*/>)";
-        tenantId = tenantId.replaceAll(pattern1, "$3");
+        // Regular Expression  (<\s*tenant\s*.*)("\s*id=")(.*?)("\s*.*/*>)
+        // as a Java string   "(<\\s*tenant\\s*.*)(\"\\s*id=\")(.*?)(\"\\s*.*/*>)"
+        pattern1 = "(<\\s*tenant\\s*.*)(\"\\s*id=\")(.*?)(\"\\s*.*/*>)";
+
+        if (tenantId.matches(pattern1)) {
+            tenantId = tenantId.replaceAll(pattern1, "$3");
+        } else {
+            log.error("Tenant format unknown:\n " + tenantId);
+
+            throw new RuntimeException("Tenant format unknown:\n " + tenantId);
+        }
 
         CompareDates compare = new CompareDates();
-        
+
         date = compare.validateDates(date, (String) response.get(1));
-        
-        Offset = compare.getTimeDiff((String) response.get(1), (Date) response.get(2));
+
+        offset = compare.getTimeDiff((String) response.get(1), (Date) response.get(2));
 
         log.info("tenant id: " + tenantId);
-        log.info("Offset time: " + Offset);
+        log.info("Offset time: " + offset);
     }
 
     public long getOffset() {
-        return Offset;
+        return offset;
     }
 
     public String getDate() {
@@ -189,12 +199,11 @@ public class OpenStackAuthenticationToken {
 
     private HttpPost createKeystonePostRequest() {
         // curl -d '{"auth": {"tenantName": "demo", "passwordCredentials":
-        //                  {"username": "admin", "password": "temporal"}}}' 
-        //   -H "Content-type: application/json" 
-        //   -H "Accept: application/xml"  
-        //   http://10.95.171.115:35357/v2.0/tokens
+        // {"username": "admin", "password": "temporal"}}}'
+        // -H "Content-type: application/json"
+        // -H "Accept: application/xml"ï¿½
+        // http://10.95.171.115:35357/v2.0/tokens
 
-        HttpUriRequest method;
         HttpEntity entity = null;
         HttpPost postRequest = new HttpPost(url + "tokens");
 
@@ -202,8 +211,8 @@ public class OpenStackAuthenticationToken {
         postRequest.setHeader("Accept", "application/xml");
 
         String msg = "{\"auth\": {\"tenantName\": \"" + tenant + "\", \""
-                + "passwordCredentials\":{\"username\": \""
-                + user + "\"," + " \"password\": \"" + pass + "\"}}}";
+                + "passwordCredentials\":{\"username\": \"" + user + "\","
+                + " \"password\": \"" + pass + "\"}}}";
 
         try {
             entity = new StringEntity(msg);
@@ -221,6 +230,7 @@ public class OpenStackAuthenticationToken {
 
     private ArrayList<Object> executePostRequest(HttpPost postRequest) {
         HttpResponse response;
+        httpClient = new DefaultHttpClient();
 
         ArrayList<Object> message = new ArrayList();
 
@@ -243,9 +253,8 @@ public class OpenStackAuthenticationToken {
                         + response.getStatusLine().getStatusCode());
             }
 
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader((response.getEntity().getContent())));
-
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    (response.getEntity().getContent())));
 
             String temp = "";
 
@@ -256,7 +265,7 @@ public class OpenStackAuthenticationToken {
             message.add(temp);
 
             String aux1 = response.getHeaders("Date")[0].getValue();
-            log.info("Date recibido: "+aux1);
+            log.info("Date recibido: " + aux1);
             message.add(response.getHeaders("Date")[0].getValue());
 
             HttpEntity ent = response.getEntity();
@@ -277,7 +286,7 @@ public class OpenStackAuthenticationToken {
         }
 
         // Calculate the offset between the local date and the remote date
-        log.info("Date local: "+localDate);
+        log.info("Date local: " + localDate);
         message.add(localDate);
 
         return message;

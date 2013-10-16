@@ -9,17 +9,21 @@
   stipulated in the agreement/contract under which the program(s) have
   been supplied.
 
-*/
+ */
 package com.telefonica.euro_iaas.paasmanager.exception;
 
 /**
  * @author bmmanso
- *
+ * 
  */
 @SuppressWarnings("serial")
-public class MonitoringException extends Exception{
+public class MonitoringException extends Exception {
 
 	public MonitoringException(String msg) {
 		super(msg);
+	}
+
+	public MonitoringException(Throwable e) {
+		super(e);
 	}
 }

@@ -12,7 +12,6 @@
  */
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
-
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidTierInstanceRequestException;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
@@ -71,7 +70,5 @@ public class TierInstanceResourceValidatorImpl implements
 					+ " exists in that Enviroment");
 		}
 	}
-	
-	
 
 }
