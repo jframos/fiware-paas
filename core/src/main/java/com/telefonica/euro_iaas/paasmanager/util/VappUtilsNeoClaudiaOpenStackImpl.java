@@ -9,6 +9,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import javax.ws.rs.core.MediaType;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,13 +21,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
-import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaResourceNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaRetrieveInfoException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidVappException;
-import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import org.apache.log4j.Logger;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
@@ -35,6 +29,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
+import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaResourceNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaRetrieveInfoException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidVappException;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 
 /**
  * @author jesus.movilla
@@ -100,8 +102,8 @@ public class VappUtilsNeoClaudiaOpenStackImpl implements VappUtils {
                 }
             }
             // There are always ips present
-            ips.add(privateIP);
-            ips.add(publicIP);
+            ips.add(privateIP.trim());
+            ips.add(publicIP.trim());
 
         } catch (ParserConfigurationException e) {
             String msg = "Error parsing vapp to obtain ip . Desc: " + e.getMessage();

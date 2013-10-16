@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,12 +24,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidVappException;
-import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
-import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import org.apache.log4j.Logger;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
@@ -37,6 +32,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidVappException;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.Tier;
+import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 
 /**
  * @author jesus.movilla
@@ -158,7 +160,7 @@ public class VappUtilsImpl implements VappUtils {
 
             for (int i = 0; i < nodeips.getLength(); i++) {
                 Node ipNnode = doc.getElementsByTagName(ipTag).item(i);
-                ips.add(ipNnode.getTextContent());
+                ips.add(ipNnode.getTextContent().trim());
             }
 
         } catch (ParserConfigurationException e) {

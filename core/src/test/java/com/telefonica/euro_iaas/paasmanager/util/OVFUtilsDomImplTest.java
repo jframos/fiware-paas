@@ -1,8 +1,6 @@
 package com.telefonica.euro_iaas.paasmanager.util;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,10 +25,10 @@ public class OVFUtilsDomImplTest {
     @Before
     public void setUp() throws Exception {
 
-        ovfMultipleVMS = getFile("src/test/resources/OVFFiwareMultipleVM.xml");
-        ovfOnlyVs = getFile("src/test/resources/TomcatOnlyVS.xml");
+        ovfMultipleVMS = getFile("/OVFFiwareMultipleVM.xml");
+        ovfOnlyVs = getFile("/TomcatOnlyVS.xml");
         // ovfTomcatVsNoInitial = getFile("src/test/resources/tomcatVsNoInitial.xml");
-        ovfRECVMName = getFile("src/test/resources/OVFFiwareRecVMName.xml");
+        ovfRECVMName = getFile("/OVFFiwareRecVMName.xml");
     }
 
     @Test
@@ -78,12 +76,11 @@ public class OVFUtilsDomImplTest {
     }
 
     private String getFile(String file) throws IOException {
-        File f = new File(file);
-        System.out.println(f.isFile() + " " + f.getAbsolutePath());
-        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(file);
-        InputStream dd = new FileInputStream(f);
+        // File f = new File(file);
+        // System.out.println(f.isFile() + " " + f.getAbsolutePath());
+        InputStream is = this.getClass().getResourceAsStream(file);
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(dd));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuffer ruleFile = new StringBuffer();
         String actualString;
 

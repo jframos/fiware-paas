@@ -1,13 +1,18 @@
 package com.telefonica.euro_iaas.paasmanager.installator;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidVappException;
@@ -24,16 +29,8 @@ import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.util.OVFUtilsDomImpl;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.util.VappUtilsImpl;
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
 
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-public class ProductInstallatorRECManagerImplTest extends TestCase {
+public class ProductInstallatorRECManagerImplTest {
 
     @Before
     public void setUp() throws Exception {
@@ -46,7 +43,7 @@ public class ProductInstallatorRECManagerImplTest extends TestCase {
         Environment envResult = new Environment();
         envResult.setName("environemntName");
         envResult.setEnvironmentType(new EnvironmentType("Generic", "Generic"));
-        String ovfname = "src/test/resources/SAP83scal.xml";
+        String ovfname = "/SAP83scal.xml";
         String ovfService = null;
         try {
             ovfService = getFile(ovfname);
@@ -80,7 +77,7 @@ public class ProductInstallatorRECManagerImplTest extends TestCase {
         ClaudiaData claudiaData = new ClaudiaData("org", "vdc", envResult.getName());
         environmentInstance.setName(claudiaData.getVdc() + "-" + envResult.getName());
 
-        String vappname = "src/test/resources/vappsap83.xml";
+        String vappname = "/vappsap83.xml";
         String vappService = null;
         try {
             vappService = getFile(vappname);
@@ -135,12 +132,12 @@ public class ProductInstallatorRECManagerImplTest extends TestCase {
     }
 
     private String getFile(String file) throws IOException {
-        File f = new File(file);
-        System.out.println(f.isFile() + " " + f.getAbsolutePath());
-        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(file);
-        InputStream dd = new FileInputStream(f);
+        // File f = new File(file);
+        // System.out.println(f.isFile() + " " + f.getAbsolutePath());
+        InputStream is = this.getClass().getResourceAsStream(file);
+        // InputStream dd = new FileInputStream(f);
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(dd));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuffer ruleFile = new StringBuffer();
         String actualString;
 

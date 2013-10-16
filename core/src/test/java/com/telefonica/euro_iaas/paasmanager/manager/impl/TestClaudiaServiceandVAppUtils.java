@@ -1,8 +1,6 @@
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -62,7 +60,7 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
         envResult = new Environment();
         envResult.setName("environemntName");
         envResult.setEnvironmentType(new EnvironmentType("Generic", "Generic"));
-        String ovfname = "src/test/resources/SAP83scal.xml";
+        String ovfname = "/SAP83scal.xml";
         String ovfService = null;
         try {
             ovfService = getFile(ovfname);
@@ -114,7 +112,7 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
 
         environmentInstance.setName(claudiaData.getVdc() + "-" + envResult.getName());
 
-        String vappname = "src/test/resources/vappsap83.xml";
+        String vappname = "/vappsap83.xml";
         String vappService = null;
         try {
             vappService = getFile(vappname);
@@ -229,7 +227,7 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
 
         environmentInstance.setName(claudiaData.getVdc() + "-" + envResult.getName());
 
-        String vappname = "src/test/resources/vappsap84.xml";
+        String vappname = "/vappsap84.xml";
         String vappService = null;
         try {
             vappService = getFile(vappname);
@@ -333,12 +331,9 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
     }
 
     private String getFile(String file) throws IOException {
-        File f = new File(file);
-        System.out.println(f.isFile() + " " + f.getAbsolutePath());
-        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(file);
-        InputStream dd = new FileInputStream(f);
+        InputStream is = this.getClass().getResourceAsStream(file);
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(dd));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuffer ruleFile = new StringBuffer();
         String actualString;
 

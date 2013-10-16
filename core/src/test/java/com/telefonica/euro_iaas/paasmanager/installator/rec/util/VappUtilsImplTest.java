@@ -6,26 +6,27 @@
  */
 package com.telefonica.euro_iaas.paasmanager.installator.rec.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import junit.framework.TestCase;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * @author jesus.movilla
  */
-public class VappUtilsImplTest extends TestCase {
+public class VappUtilsImplTest {
 
     private String picId;
     private String ovf, vapp4Caast, envelopeTemplate, singleVMOvf;
@@ -136,7 +137,9 @@ public class VappUtilsImplTest extends TestCase {
         assertEquals("YEDwE4KGc7zMiCRd", password);
     }
 
+    @Ignore
     @Test
+    // is integration test with real http connection
     public void testGetIP4Caast() throws Exception {
         VappUtilsImpl vappUtils = new VappUtilsImpl();
         vappUtils.setSystemPropertiesProvider(systemPropertiesProvider);
