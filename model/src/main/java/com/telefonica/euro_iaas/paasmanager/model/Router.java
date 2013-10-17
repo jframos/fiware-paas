@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@Table(name = "Network")
+@Table(name = "Router")
 
 public class Router {
     @Id

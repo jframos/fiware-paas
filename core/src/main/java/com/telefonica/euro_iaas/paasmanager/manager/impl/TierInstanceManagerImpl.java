@@ -26,7 +26,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
-import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
@@ -169,9 +168,9 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         environmentInstanceManager.update(envInstance);
 
         // We need to create the network before deploying the VMs
-        for (Network network: tierInstance.getTier().getNetworks()) {
+        /*  for (Network network: tierInstance.getTier().getNetworks()) {
             networkManager.create(claudiaData, network);
-        }
+        }*/
 
 
         infrastructureManager.deployVM(claudiaData, tierInstance

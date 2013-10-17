@@ -503,13 +503,13 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
         // Check that the authtoken, tenant and user was initialized
         // previously.
-        try {
+        /*    try {
             checkParam(user);
         } catch (OpenStackException ex) {
             java.util.logging.Logger.getLogger(
                     OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null,
                             ex);
-        }
+        }*/
         log.info("Payload " + payload);
 
         request = new HttpPost(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_QUANTUM_PROPERTY)

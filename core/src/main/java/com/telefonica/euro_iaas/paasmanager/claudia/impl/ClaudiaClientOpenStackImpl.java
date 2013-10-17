@@ -29,6 +29,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.OSNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.exception.VMStatusNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
@@ -164,6 +165,10 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         if (tier.getSecurityGroup() != null) {
             payload = payload + "\"security_groups\": [{ \"name\": \""
             + tier.getSecurityGroup().getName() + "\"}], ";
+        }
+        for (Network net: tier.getNetworks()){
+            payload = payload + "\"net-id\": [ "+ net.getIdNetwork()+ ", ";
+
         }
         payload = payload
         + "\"flavorRef\": \"" + tier.getFlavour() + "\", " + "\"imageRef\": \""
