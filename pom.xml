@@ -72,6 +72,7 @@
 
         <!-- Release generation -->
         <maven-jgitflow-plugin.version>1.0-alpha21.1</maven-jgitflow-plugin.version>
+        <maven-license-plugin.version>1.2.5</maven-license-plugin.version>
 
     </properties>
 
@@ -166,6 +167,30 @@
             </resource>
         </resources>
         <plugins>
+
+            <!-- license plugin -->
+
+            <plugin>
+                <groupId>com.google.code.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>${maven-license-plugin.version}</version>
+                <configuration>
+                    <header>src/license/fiware/header.txt</header>
+                    <includes>
+                        <include>src/main/**/*.java</include>
+                        <include>src/test/**/*.java</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
             <!-- jgitflow -->
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>

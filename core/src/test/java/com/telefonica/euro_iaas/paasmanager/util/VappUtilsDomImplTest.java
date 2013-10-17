@@ -1,15 +1,11 @@
-/*
- * (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved. The copyright to the software
- * program(s) is property of Telefonica I+D. The program(s) may be used and or copied only with the express written
- * consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the agreement/contract under
- * which the program(s) have been supplied.
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
  */
-package com.telefonica.euro_iaas.paasmanager.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+package com.telefonica.euro_iaas.paasmanager.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,16 +14,21 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla
@@ -105,7 +106,7 @@ public class VappUtilsDomImplTest {
         return ruleFile.toString();
     }
 
-    @Ignore("file ovfForTier1.xml not found")
+    @Ignore("file ovfForTier2.xml not found")
     @Test
     public void testMacrofuntionality() throws Exception {
 
