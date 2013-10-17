@@ -8,6 +8,10 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
  <beans profile="4caast,4caastvapp,fiware,fiwarevapp,dummy,fiwaredummy">
     <bean id="restClient" class="com.sun.jersey.api.client.Client"  factory-method="create"/>
      
+    <bean id="openStackUtil" lazy-init="true"
+        class="com.telefonica.euro_iaas.paasmanager.util.OpenStackUtilImpl">
+        <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
+    </bean>
     <bean id="sDCClient" lazy-init="true"
         class="com.telefonica.euro_iaas.sdc.client.SDCClient">
     </bean>
@@ -72,6 +76,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         <property name="productReleaseManager" ref="productReleaseManager"/>
         <property name="tierDao" ref="tierDao"/>
         <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
+        <property name="networkManager" ref="networkManager"/>
         <property name="securityGroupManager" ref="securityGroupManager"/>       
     </bean> 
     <bean id="applicationReleaseManager" lazy-init="true" 
@@ -145,6 +150,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>    
     </bean>
 
+
     <bean id="ruleManager" lazy-init="true" 
         class="com.telefonica.euro_iaas.paasmanager.manager.impl.RuleManagerImpl">
         <property name="ruleDao" ref="ruleDao"/>   
@@ -152,7 +158,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
     </bean>
     <bean id="subNetworkManager" lazy-init="true" 
         class="com.telefonica.euro_iaas.paasmanager.manager.impl.SubNetworkManagerImpl">
-        <property name="subnetworkDao" ref="subnetworkDao"/>   
+        <property name="subNetworkDao" ref="subNetworkDao"/>   
         <property name="networkClient" ref="networkClient"/>   
     </bean>
     <bean id="routerManager" lazy-init="true" 
@@ -417,6 +423,10 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         <property name="vappUtils" ref="vappUtils"/>
         <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>     
     </bean> -->
+    <bean id="networkClient" lazy-init="true"
+       class="com.telefonica.euro_iaas.paasmanager.claudia.impl.OpenstackNetworkClientImpl">
+       <property name="openStackUtil" ref="openStackUtil"/>  
+    </bean>
     <bean id="claudiaClient" lazy-init="true"
         class="com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientOpenStackImpl">
         <property name="openStackUtil" ref="openStackUtil"/>   
@@ -475,6 +485,10 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
     </bean>
     
+    <bean id="networkClient" lazy-init="true"
+       class="com.telefonica.euro_iaas.paasmanager.claudia.impl.NetworkClientDummyImpl">
+    </bean>
+    
      <bean id="monitoringClient" lazy-init="true" 
         class="com.telefonica.euro_iaas.paasmanager.monitoring.MonitoringClientCollectdImpl">
         <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
@@ -500,13 +514,13 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         <property name="claudiaUtil" ref="claudiaUtil"/>
         <property name="claudiaResponseAnalyser" ref="claudiaResponseAnalyser"/>      
         <property name="ovfUtils" ref="ovfUtils"/>    
-          <property name="vappUtils" ref="vappUtils2"/>   
+         <property name="vappUtils" ref="vappUtils2"/>   
         <property name="monitoringClient" ref="monitoringClient"/>
         <property name="tierInstanceManager" ref="tierInstanceManager"/>
         <property name="environmentUtils" ref="environmentUtils"/>
           <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
         
-    </bean> 
+    </bean>
 
   </beans>
   
