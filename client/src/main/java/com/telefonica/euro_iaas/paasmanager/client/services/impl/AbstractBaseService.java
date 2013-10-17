@@ -1,12 +1,20 @@
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
+
 package com.telefonica.euro_iaas.paasmanager.client.services.impl;
 
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.sun.jersey.api.client.Client;
+
 /**
  * Provides common functionallity and fields to every service.
+ * 
  * @author serch
- *
  */
 public class AbstractBaseService {
 
@@ -22,7 +30,8 @@ public class AbstractBaseService {
     }
 
     /**
-     * @param client the client to set
+     * @param client
+     *            the client to set
      */
     public void setClient(Client client) {
         this.client = client;
@@ -36,7 +45,8 @@ public class AbstractBaseService {
     }
 
     /**
-     * @param baseHost the baseHost to set
+     * @param baseHost
+     *            the baseHost to set
      */
     public void setBaseHost(String baseHost) {
         this.baseHost = baseHost;
@@ -50,18 +60,17 @@ public class AbstractBaseService {
     }
 
     /**
-     * @param type the type to set
+     * @param type
+     *            the type to set
      */
     public void setType(String type) {
         this.type = type;
     }
 
-    public MultivaluedMap<String, String> addParam(
-            MultivaluedMap<String, String> queryparams, String key, Object value) {
+    public MultivaluedMap<String, String> addParam(MultivaluedMap<String, String> queryparams, String key, Object value) {
         if (value != null) {
             queryparams.add(key, value.toString());
         }
         return queryparams;
     }
 }
-

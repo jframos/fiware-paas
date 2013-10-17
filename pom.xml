@@ -61,9 +61,9 @@
         <seleniumserver.version>2.19.0</seleniumserver.version>
         <jacoco.agent.version>0.5.4.201111111111</jacoco.agent.version>
         <copyright.year>2012</copyright.year>
-        <junit.version>4.10</junit.version>
+        <junit.version>4.11</junit.version>
         <jmock.version>2.5.1</jmock.version>
-        <jvm.version>1.5</jvm.version>
+        <jvm.version>1.6</jvm.version>
         <tomcat.version>6</tomcat.version>
         <maven-surefire-plugin.version>2.12.2</maven-surefire-plugin.version>
         <tomcat.home>/usr/share/tomcat${tomcat.version}</tomcat.home>
@@ -72,6 +72,7 @@
 
         <!-- Release generation -->
         <maven-jgitflow-plugin.version>1.0-alpha21.1</maven-jgitflow-plugin.version>
+        <maven-license-plugin.version>1.2.5</maven-license-plugin.version>
 
     </properties>
 
@@ -105,7 +106,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.11</version>
+                <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -166,6 +167,30 @@
             </resource>
         </resources>
         <plugins>
+
+            <!-- license plugin -->
+
+            <plugin>
+                <groupId>com.google.code.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>${maven-license-plugin.version}</version>
+                <configuration>
+                    <header>src/license/fiware/header.txt</header>
+                    <includes>
+                        <include>src/main/**/*.java</include>
+                        <include>src/test/**/*.java</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
             <!-- jgitflow -->
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>

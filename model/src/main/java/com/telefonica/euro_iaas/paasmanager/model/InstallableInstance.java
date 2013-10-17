@@ -1,8 +1,14 @@
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
+
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,14 +24,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.telefonica.euro_iaas.paasmanager.model.Attribute;
-
 /**
- * InstallableInstance represents an instance of an execution unit that is (or
- * has been) installed.
+ * InstallableInstance represents an instance of an execution unit that is (or has been) installed.
  * 
  * @author Sergio Arroyo
- * 
  */
 @SuppressWarnings("restriction")
 @Entity
@@ -34,187 +36,199 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class InstallableInstance {
 
-	public final static String VM_FIELD = "vm";
-	public final static String STATUS_FIELD = "status";
-	public final static String VDC_FIELD = "vdc";
-	public final static String ENVIRONMENT_INSTANCE_FIELD = "environmentinstance";
+    public final static String VM_FIELD = "vm";
+    public final static String STATUS_FIELD = "status";
+    public final static String VDC_FIELD = "vdc";
+    public final static String ENVIRONMENT_INSTANCE_FIELD = "environmentinstance";
 
-	/**
-	 * Defines the value of the different status the Application could be. See
-	 * the diagram bellow to know the relations between the different states.
-	 * <img src="http://plantuml.com:80/plantuml/img/YzQALT3LjLFmp2ikISp9oSnBv-L2i96bKbFWCgafO8dGl4nCNJ2vWlIYn1Gi4ixvUMcPwQL5O2cuAdIBa5IXIo7RYkeC55ceTT5QiRnS65voBIhABq9t6LGGrKrGGNJtmDIYkmLT7DLeC0Lp5W00"
-	 * >
-	 * 
-	 */
-	public enum Status {
-		INIT, DEPLOYING, DEPLOYED, UNDEPLOYED, UNDEPLOYING, INSTALLING, INSTALLED, ERROR, UNINSTALLING, UNINSTALLED, CONFIGURING, UPGRADING, DEPLOYING_ARTEFACT, UNDEPLOYING_ARTEFACT, ARTEFACT_DEPLOYED, ARTEFACT_UNDEPLOYED
-	};
+    /**
+     * Defines the value of the different status the Application could be. See the diagram bellow to know the relations
+     * between the different states. <img src=
+     * "http://plantuml.com:80/plantuml/img/YzQALT3LjLFmp2ikISp9oSnBv-L2i96bKbFWCgafO8dGl4nCNJ2vWlIYn1Gi4ixvUMcPwQL5O2cuAdIBa5IXIo7RYkeC55ceTT5QiRnS65voBIhABq9t6LGGrKrGGNJtmDIYkmLT7DLeC0Lp5W00"
+     * >
+     */
+    public enum Status {
+        INIT,
+        DEPLOYING,
+        DEPLOYED,
+        UNDEPLOYED,
+        UNDEPLOYING,
+        INSTALLING,
+        INSTALLED,
+        ERROR,
+        UNINSTALLING,
+        UNINSTALLED,
+        CONFIGURING,
+        UPGRADING,
+        DEPLOYING_ARTEFACT,
+        UNDEPLOYING_ARTEFACT,
+        ARTEFACT_DEPLOYED,
+        ARTEFACT_UNDEPLOYED
+    };
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	protected Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    protected Long id;
 
-	private Date date;
+    private Date date;
 
-	@Column(nullable = false, length = 256)
-	protected String name;
+    @Column(nullable = false, length = 256)
+    protected String name;
 
-	@Enumerated(EnumType.STRING)
-	private Status status = Status.INIT;
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.INIT;
 
-	private String vdc;
+    private String vdc;
 
-	/*
-	 * @Column(length=5000) private String vapp;
-	 */
-	@OneToMany(cascade = CascadeType.ALL)
-	private List<Attribute> privateAttributes;
+    /*
+     * @Column(length=5000) private String vapp;
+     */
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Attribute> privateAttributes;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param status
-	 */
-	public InstallableInstance() {
-		this.date = new Date();
-		this.status = Status.INIT;
-	}
+    /**
+     * Constructor
+     * 
+     * @param status
+     */
+    public InstallableInstance() {
+        this.date = new Date();
+        this.status = Status.INIT;
+    }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param status
-	 */
-	public InstallableInstance(Long id) {
-		this();
-		this.id = id;
-	}
+    /**
+     * Constructor
+     * 
+     * @param status
+     */
+    public InstallableInstance(Long id) {
+        this();
+        this.id = id;
+    }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param status
-	 */
-	public InstallableInstance(Status status) {
-		this();
-		this.status = status;
-	}
+    /**
+     * Constructor
+     * 
+     * @param status
+     */
+    public InstallableInstance(Status status) {
+        this();
+        this.status = status;
+    }
 
-	/**
-	 * @return the date
-	 */
-	public Date getDate() {
-		return date;
-	}
+    /**
+     * @return the date
+     */
+    public Date getDate() {
+        return date;
+    }
 
-	/**
-	 * @param date
-	 *            the date to set
-	 */
-	public void setDate(Date date) {
-		this.date = date;
-	}
+    /**
+     * @param date
+     *            the date to set
+     */
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * @return the status
-	 */
-	public Status getStatus() {
-		return status;
-	}
+    /**
+     * @return the status
+     */
+    public Status getStatus() {
+        return status;
+    }
 
-	/**
-	 * @param status
-	 *            the status to set
-	 */
-	public void setStatus(Status status) {
-		this.status = status;
-	}
+    /**
+     * @param status
+     *            the status to set
+     */
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
+    /**
+     * @return the id
+     */
+    public Long getId() {
+        return id;
+    }
 
-	/**
-	 * @return the vdc
-	 */
-	public String getVdc() {
-		return vdc;
-	}
+    /**
+     * @return the vdc
+     */
+    public String getVdc() {
+        return vdc;
+    }
 
-	/**
-	 * @param vdc
-	 *            the vdc to set
-	 */
-	public void setVdc(String vdc) {
-		this.vdc = vdc;
-	}
+    /**
+     * @param vdc
+     *            the vdc to set
+     */
+    public void setVdc(String vdc) {
+        this.vdc = vdc;
+    }
 
-	/**
-	 * @return the privateAttributes
-	 */
-	public List<Attribute> getPrivateAttributes() {
-		return privateAttributes;
-	}
+    /**
+     * @return the privateAttributes
+     */
+    public List<Attribute> getPrivateAttributes() {
+        return privateAttributes;
+    }
 
-	/**
-	 * @param privateAttributes
-	 *            the privateAttributes to set
-	 */
-	public void setPrivateAttributes(List<Attribute> privateAttributes) {
-		this.privateAttributes = privateAttributes;
-	}
+    /**
+     * @param privateAttributes
+     *            the privateAttributes to set
+     */
+    public void setPrivateAttributes(List<Attribute> privateAttributes) {
+        this.privateAttributes = privateAttributes;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		InstallableInstance other = (InstallableInstance) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        InstallableInstance other = (InstallableInstance) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
 
 }
