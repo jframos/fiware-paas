@@ -1,11 +1,23 @@
-/**
- * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
- * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
- * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
- * agreement/contract under which the program(s) have been supplied.
- */
+/*
 
+  (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights
+  Reserved.
+
+  The copyright to the software program(s) is property of Telefonica I+D.
+  The program(s) may be used and or copied only with the express written
+  consent of Telefonica I+D or in accordance with the terms and conditions
+  stipulated in the agreement/contract under which the program(s) have
+  been supplied.
+
+ */
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,6 +27,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import junit.framework.TestCase;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
@@ -32,19 +51,6 @@ import com.telefonica.euro_iaas.paasmanager.monitoring.MonitoringClient;
 import com.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser;
 import com.telefonica.euro_iaas.paasmanager.util.OVFUtils;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Matchers;
-import org.mockito.Mockito;
-
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla
@@ -98,38 +104,86 @@ public class InfrastructureManagerImplTest extends TestCase {
         claudiaData = new ClaudiaData("org", "vdc", "service");
 
         /*
-         * vdc = "paasmanagerVDC"; org = "ORG"; number_vms = 2; claudiaData = new ClaudiaData(org, vdc); //Taking ovf
-         * from a file InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(ovfname); BufferedReader
-         * reader = new BufferedReader(new InputStreamReader(is)); StringBuffer ruleFile = new StringBuffer(); String
-         * actualString; while ((actualString = reader.readLine()) != null) {
-         * ruleFile.append(actualString).append("\n"); } // user = new PaasManagerUser("user", "paasword", null);
-         * //claudiaData.setUser(user); // ovf = ruleFile.toString(); // System.out.println("ovf: " + ovf); //
-         * vdcResponseTask = new Task(); vdcResponseTask.setState(TaskStates.SUCCESS); vdcResponseTask.setResource
-         * ("http://10.95.171.89:8080/rest-api-management/", "resourceType"); serviceResponseTask = new Task();
-         * serviceResponseTask.setState(TaskStates.SUCCESS); serviceResponseTask.
-         * setResource("http://10.95.171.89:8080/rest-api-management/", "resourceType"); vmResponseTask = new Task();
-         * vmResponseTask.setState(TaskStates.SUCCESS); vmResponseTask.setResource
-         * ("http://10.95.171.89:8080/rest-api-management/", "resourceType"); propertiesProvider =
-         * mock(SystemPropertiesProvider.class); when(propertiesProvider
-         * .getProperty(NEOCLAUDIA_SERVICE)).thenReturn("paasmanagerService"); when
-         * (propertiesProvider.getProperty(NEOCLAUDIA_VDC_CPU)).thenReturn("12" );
-         * when(propertiesProvider.getProperty(NEOCLAUDIA_VDC_MEM)).thenReturn ("14");
-         * when(propertiesProvider.getProperty(NEOCLAUDIA_VDC_DISK)).thenReturn ("16");
-         * when(propertiesProvider.getProperty(NEOCLAUDIA_ORG)).thenReturn ("EUROPIAAS-VC1");
-         * when(propertiesProvider.getProperty(NEOCLAUDIA_OVFSERVICE_LOCATION )).thenReturn("empty.ovf");
-         * when(propertiesProvider.getProperty(VM_NAME_PREFIX )).thenReturn("paasManagerVM"); claudiaClient =
-         * mock(ClaudiaClient.class); //when(claudiaClient.browseVDC(any(String.class), any(String.class), user))
-         * //.thenReturn(vdcResponse); when(claudiaClient.browseVDC(any(ClaudiaData .class))).thenReturn(vdcResponse);
-         * when(claudiaClient.deployVDC(any(ClaudiaData.class), any(String.class), any(String.class),
-         * any(String.class))).thenReturn("OK"); when(claudiaClient.browseService
-         * (any(ClaudiaData.class))).thenReturn(vdcResponse); when(claudiaClient.deployService(any(ClaudiaData.class),
-         * any(String.class))) .thenReturn("OK"); when(claudiaClient.deployVM(any(String.class), any(String.class),
-         * any(String.class), any(String.class), user, any(String.class))) .thenReturn("OK");
-         * when(claudiaClient.deployVM(any(ClaudiaData.class),any(Tier.class))) .thenReturn(claudiaData);
-         * when(claudiaClient.obtainIPFromFqn(any(String.class), any(String.class), any(String.class),any(String.class),
-         * user)) .thenReturn("10.95.171.34"); claudiaUtil = mock (ClaudiaUtil.class); claudiaResponseAnalyser =
-         * mock(ClaudiaResponseAnalyser.class); when(claudiaResponseAnalyser.getTaskUrl(any(String.class)))
-         * .thenReturn("OK"); when(claudiaResponseAnalyser.getTaskStatus(any(String.class))) .thenReturn("success");
+		 * vdc = "paasmanagerVDC"; org = "ORG"; number_vms = 2; claudiaData =
+		 * new ClaudiaData(org, vdc);
+		 * 
+		 * //Taking ovf from a file InputStream is =
+		 * ClassLoader.getSystemClassLoader().getResourceAsStream(ovfname);
+		 * BufferedReader reader = new BufferedReader(new
+		 * InputStreamReader(is)); StringBuffer ruleFile = new StringBuffer();
+		 * String actualString;
+		 * 
+		 * while ((actualString = reader.readLine()) != null) {
+		 * ruleFile.append(actualString).append("\n"); }
+		 * 
+		 * // user = new PaasManagerUser("user", "paasword", null);
+		 * //claudiaData.setUser(user);
+		 * 
+		 * // ovf = ruleFile.toString(); // System.out.println("ovf: " + ovf);
+		 * 
+		 * // vdcResponseTask = new Task();
+		 * vdcResponseTask.setState(TaskStates.SUCCESS);
+		 * vdcResponseTask.setResource
+		 * ("http://10.95.171.89:8080/rest-api-management/", "resourceType");
+		 * serviceResponseTask = new Task();
+		 * serviceResponseTask.setState(TaskStates.SUCCESS);
+		 * serviceResponseTask.
+		 * setResource("http://10.95.171.89:8080/rest-api-management/",
+		 * "resourceType");
+		 * 
+		 * vmResponseTask = new Task();
+		 * vmResponseTask.setState(TaskStates.SUCCESS);
+		 * vmResponseTask.setResource
+		 * ("http://10.95.171.89:8080/rest-api-management/", "resourceType");
+		 * 
+		 * propertiesProvider = mock(SystemPropertiesProvider.class);
+		 * when(propertiesProvider
+		 * .getProperty(NEOCLAUDIA_SERVICE)).thenReturn("paasmanagerService");
+		 * when
+		 * (propertiesProvider.getProperty(NEOCLAUDIA_VDC_CPU)).thenReturn("12"
+		 * );
+		 * when(propertiesProvider.getProperty(NEOCLAUDIA_VDC_MEM)).thenReturn
+		 * ("14");
+		 * when(propertiesProvider.getProperty(NEOCLAUDIA_VDC_DISK)).thenReturn
+		 * ("16");
+		 * when(propertiesProvider.getProperty(NEOCLAUDIA_ORG)).thenReturn
+		 * ("EUROPIAAS-VC1");
+		 * when(propertiesProvider.getProperty(NEOCLAUDIA_OVFSERVICE_LOCATION
+		 * )).thenReturn("empty.ovf");
+		 * when(propertiesProvider.getProperty(VM_NAME_PREFIX
+		 * )).thenReturn("paasManagerVM");
+		 * 
+		 * 
+		 * claudiaClient = mock(ClaudiaClient.class);
+		 * //when(claudiaClient.browseVDC(any(String.class), any(String.class),
+		 * user)) //.thenReturn(vdcResponse);
+		 * when(claudiaClient.browseVDC(any(ClaudiaData
+		 * .class))).thenReturn(vdcResponse);
+		 * when(claudiaClient.deployVDC(any(ClaudiaData.class),
+		 * any(String.class), any(String.class),
+		 * any(String.class))).thenReturn("OK");
+		 * when(claudiaClient.browseService
+		 * (any(ClaudiaData.class))).thenReturn(vdcResponse);
+		 * when(claudiaClient.deployService(any(ClaudiaData.class),
+		 * any(String.class))) .thenReturn("OK");
+		 * when(claudiaClient.deployVM(any(String.class), any(String.class),
+		 * any(String.class), any(String.class), user, any(String.class)))
+		 * .thenReturn("OK");
+		 * 
+		 * when(claudiaClient.deployVM(any(ClaudiaData.class),any(Tier.class)))
+		 * .thenReturn(claudiaData);
+		 * 
+		 * when(claudiaClient.obtainIPFromFqn(any(String.class),
+		 * any(String.class), any(String.class),any(String.class), user))
+		 * .thenReturn("10.95.171.34");
+		 * 
+		 * claudiaUtil = mock (ClaudiaUtil.class);
+		 * 
+		 * claudiaResponseAnalyser = mock(ClaudiaResponseAnalyser.class);
+		 * when(claudiaResponseAnalyser.getTaskUrl(any(String.class)))
+		 * .thenReturn("OK");
+		 * when(claudiaResponseAnalyser.getTaskStatus(any(String.class)))
+		 * .thenReturn("success");
          */
 
     }

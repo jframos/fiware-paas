@@ -44,6 +44,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidVappException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 
 /**
  * @author jesus.movilla
@@ -53,6 +54,55 @@ public class VappUtilsNeoClaudiaOpenStackImpl implements VappUtils {
     private SystemPropertiesProvider systemPropertiesProvider;
     private ClaudiaUtil claudiaUtil;
     private static Logger log = Logger.getLogger(VappUtilsImpl.class);
+
+    private Node findNode(Node node, String xql) throws TransformerException {
+        return (XPathAPI.selectSingleNode(node, xql));
+    }
+
+    private NodeList findNodeList(Node node, String xql) throws TransformerException {
+        return (XPathAPI.selectNodeList(node, xql));
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.telefonica.euro_iaas.paasmanager.util.VappUtils#getFqnId(java.lang .String)
+     */
+    public String getFqnId(String vapp) throws InvalidVappException {
+        String fqnId = null;
+
+        if (vapp == null) {
+            return null;
+        }
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder;
+        Document doc;
+        Element root;
+
+        try {
+            builder = factory.newDocumentBuilder();
+            doc = builder.parse(new InputSource(new StringReader(vapp)));
+            root = doc.getDocumentElement();
+
+            Node vaapNode = findNode(root, "/VApp");
+            Element vappElement = (Element) vaapNode;
+            fqnId = vappElement.getAttribute("name");
+
+        } catch (ParserConfigurationException e) {
+            String msg = "Error parsing ovf " + e.getMessage();
+            throw new InvalidVappException(msg);
+        } catch (SAXException e) {
+            String msg = "SAXException with  ovf " + e.getMessage();
+            throw new InvalidVappException(msg);
+        } catch (IOException e) {
+            String msg = "IOException with  ovf " + e.getMessage();
+            throw new InvalidVappException(msg);
+        } catch (TransformerException e) {
+            String msg = "TransformerException with ovf " + e.getMessage();
+            throw new InvalidVappException(msg);
+        }
+        return fqnId;
+    }
 
     /*
      * (non-Javadoc)
@@ -133,6 +183,36 @@ public class VappUtilsNeoClaudiaOpenStackImpl implements VappUtils {
         return ips;
     }
 
+    public String getMacroVapp(String ovf, EnvironmentInstance envIns) throws InvalidOVFException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String getMacroVapp(String ovf, EnvironmentInstance envIns, TierInstance tierInstance)
+    throws InvalidOVFException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public HashMap<String, String> getNetworkAndIP(String vappReplica) throws InvalidVappException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.telefonica.euro_iaas.paasmanager.util.VappUtils#getReplica(java.lang .String)
+     */
+    public String getReplica(String fqnId) {
+        String replicas = null;
+        if (!(fqnId.contains("replicas"))) {
+            replicas = "1";
+        } else {
+            replicas = fqnId.substring(fqnId.indexOf("replicas.") + "replicas.".length());
+        }
+        return replicas;
+    }
+
     /*
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.paasmanager.util.VappUtils#getVappsSingleVM( java.lang.String)
@@ -193,65 +273,10 @@ public class VappUtilsNeoClaudiaOpenStackImpl implements VappUtils {
 
     /*
      * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.util.VappUtils#getFqnId(java.lang .String)
-     */
-    public String getFqnId(String vapp) throws InvalidVappException {
-        String fqnId = null;
-
-        if (vapp == null) {
-            return null;
-        }
-
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder;
-        Document doc;
-        Element root;
-
-        try {
-            builder = factory.newDocumentBuilder();
-            doc = builder.parse(new InputSource(new StringReader(vapp)));
-            root = doc.getDocumentElement();
-
-            Node vaapNode = findNode(root, "/VApp");
-            Element vappElement = (Element) vaapNode;
-            fqnId = vappElement.getAttribute("name");
-
-        } catch (ParserConfigurationException e) {
-            String msg = "Error parsing ovf " + e.getMessage();
-            throw new InvalidVappException(msg);
-        } catch (SAXException e) {
-            String msg = "SAXException with  ovf " + e.getMessage();
-            throw new InvalidVappException(msg);
-        } catch (IOException e) {
-            String msg = "IOException with  ovf " + e.getMessage();
-            throw new InvalidVappException(msg);
-        } catch (TransformerException e) {
-            String msg = "TransformerException with ovf " + e.getMessage();
-            throw new InvalidVappException(msg);
-        }
-        return fqnId;
-    }
-
-    /*
-     * (non-Javadoc)
      * @see com.telefonica.euro_iaas.paasmanager.util.VappUtils#getVMName(java.lang .String)
      */
     public String getVMName(String fqnId) {
         return fqnId.substring(fqnId.indexOf("vees.") + "vees.".length(), fqnId.length());
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.util.VappUtils#getReplica(java.lang .String)
-     */
-    public String getReplica(String fqnId) {
-        String replicas = null;
-        if (!(fqnId.contains("replicas"))) {
-            replicas = "1";
-        } else {
-            replicas = fqnId.substring(fqnId.indexOf("replicas.") + "replicas.".length());
-        }
-        return replicas;
     }
 
     private String nodeToString(Node node) {
@@ -266,22 +291,6 @@ public class VappUtilsNeoClaudiaOpenStackImpl implements VappUtils {
         return sw.toString();
     }
 
-    private Node findNode(Node node, String xql) throws TransformerException {
-        return (XPathAPI.selectSingleNode(node, xql));
-    }
-
-    private NodeList findNodeList(Node node, String xql) throws TransformerException {
-        return (XPathAPI.selectNodeList(node, xql));
-    }
-
-    /**
-     * @param systemPropertiesProvider
-     *            the systemPropertiesProvider to set
-     */
-    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
-        this.systemPropertiesProvider = systemPropertiesProvider;
-    }
-
     /**
      * @param claudiaUtil
      *            the claudiaUtil to set
@@ -290,14 +299,12 @@ public class VappUtilsNeoClaudiaOpenStackImpl implements VappUtils {
         this.claudiaUtil = claudiaUtil;
     }
 
-    public String getMacroVapp(String ovf, EnvironmentInstance envIns) throws InvalidOVFException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public HashMap<String, String> getNetworkAndIP(String vappReplica) throws InvalidVappException {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * @param systemPropertiesProvider
+     *            the systemPropertiesProvider to set
+     */
+    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
+        this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
 }
