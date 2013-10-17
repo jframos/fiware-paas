@@ -79,7 +79,7 @@ public class NetworkDto {
      * @param networkName
      */
     public void setNetworkName(String networkName) {
-        this.networkName =networkName;
+        this.networkName = networkName;
     }
 
     /**

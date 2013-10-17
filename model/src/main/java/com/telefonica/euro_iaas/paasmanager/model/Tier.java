@@ -1,3 +1,10 @@
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
+
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
@@ -57,9 +64,11 @@ public class Tier {
     @JoinTable(name = "tier_has_productReleases", joinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "productRelease_ID", nullable = false, updatable = false) })
     private List<ProductRelease> productReleases;
 
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tier_has_networks", joinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "network_ID", nullable = false, updatable = false) })
     private List<Network> networks;
+
 
     @ManyToOne(fetch = FetchType.EAGER)
     private SecurityGroup securityGroup;
@@ -88,8 +97,8 @@ public class Tier {
         this.initialNumberInstances = initialNumberInstances;
         this.productReleases = productReleases;
         networks = new ArrayList<Network>();
-
     }
+
 
     /**
      * @param name
@@ -98,9 +107,9 @@ public class Tier {
      * @param initial_number_instances
      * @param productReleases
      */
-    public Tier(String name, Integer maximumNumberInstances,
-            Integer minimumNumberInstances, Integer initialNumberInstances,
-            List<ProductRelease> productReleases, String flavour, String image,
+
+    public Tier(String name, Integer maximumNumberInstances, Integer minimumNumberInstances,
+            Integer initialNumberInstances, List<ProductRelease> productReleases, String flavour, String image,
             String icono) {
         this.name = name;
         this.maximumNumberInstances = maximumNumberInstances;
@@ -152,6 +161,7 @@ public class Tier {
         productReleases.add(productRelease);
     }
 
+
     /*
      * (non-Javadoc)
      * 
@@ -179,13 +189,17 @@ public class Tier {
         return true;
     }
 
+
     public String getFlavour() {
         return flavour;
     }
 
+
+
     public String getFloatingip() {
         return this.floatingip;
     }
+
 
     public String getIcono() {
         return this.icono;
@@ -202,6 +216,7 @@ public class Tier {
         return this.image;
     }
 
+
     /**
      * @return the initial_number_instances
      */
@@ -209,18 +224,18 @@ public class Tier {
         return initialNumberInstances;
     }
 
+
     public String getKeypair() {
         return this.keypair;
     }
+
 
     /**
      * @return the maximum_number_instances
      */
     public Integer getMaximumNumberInstances() {
         return maximumNumberInstances;
-    }
-
-    /**
+    }                /**
      * @return the minimum_number_instances
      */
     public Integer getMinimumNumberInstances() {
@@ -258,6 +273,7 @@ public class Tier {
         return null;
     }
 
+
     /**
      * @return the productReleases
      */
@@ -272,11 +288,10 @@ public class Tier {
         return this.securityGroup;
     }
 
+
     public String getVdc() {
         return vdc;
-    }
-
-    /*
+    }                    /*
      * (non-Javadoc)
      * 
      * @see java.lang.Object#hashCode()
@@ -288,6 +303,8 @@ public class Tier {
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
+
+
     /**
      * @param network
      *            the network to remove
@@ -306,6 +323,7 @@ public class Tier {
         this.environmentname = environmentname;
     }
 
+
     /**
      * @param name
      *            the name to set
@@ -318,6 +336,8 @@ public class Tier {
         this.floatingip = floatingip;
     }
 
+
+
     public void setIcono(String icono) {
         this.icono = icono;
     }
@@ -326,13 +346,6 @@ public class Tier {
         this.image = image;
     }
 
-    /*
-     * public void setSecurity_group(String securityGroupName) {
-     * this.securityGroupName = securityGroupName; }
-     * 
-     * public String getSecurity_group() { return this.securityGroupName; }
-     */
-
     /**
      * @param initial_number_instances
      *            the initial_number_instances to set
@@ -340,6 +353,8 @@ public class Tier {
     public void setInitialNumberInstances(Integer initialNumberInstances) {
         this.initialNumberInstances = initialNumberInstances;
     }
+
+
 
     public void setKeypair(String keypair) {
         this.keypair = keypair;
@@ -361,21 +376,26 @@ public class Tier {
         this.minimumNumberInstances = minimumNumberInstances;
     }
 
+
+
     /**
      * @param name
      *            the name to set
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
+    }                                /**
      * @param networks
      *            the network list
      */
     public void setNetworks(List<Network> networks) {
         this.networks = networks;
     }
+    /**
+     * @param initial_number_instances
+     *            the initial_number_instances to set
+     */
+
 
     public void setPayload(String payload) {
         this.payload = payload;
@@ -396,6 +416,8 @@ public class Tier {
     public void setVdc(String vdc) {
         this.vdc = vdc;
     }
+
+
 
     public TierDto toDto() {
         List<ProductReleaseDto> productReleasesDto = new ArrayList<ProductReleaseDto>();
@@ -436,6 +458,7 @@ public class Tier {
 
         tierDto.setProductReleaseDtos(productReleasesDto);
         return tierDto;
+
     }
 
     /**
@@ -456,5 +479,4 @@ public class Tier {
 
 
     }
-
 }

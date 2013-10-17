@@ -1,15 +1,10 @@
-/*
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
 
-  (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights
-  Reserved.
-
-  The copyright to the software program(s) is property of Telefonica I+D.
-  The program(s) may be used and or copied only with the express written
-  consent of Telefonica I+D or in accordance with the terms and conditions
-  stipulated in the agreement/contract under which the program(s) have
-  been supplied.
-
-*/
 package com.telefonica.euro_iaas.paasmanager.client.services.impl;
 
 import java.text.MessageFormat;
@@ -20,10 +15,8 @@ import com.telefonica.euro_iaas.paasmanager.client.ClientConstants;
 import com.telefonica.euro_iaas.paasmanager.client.services.TaskService;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 
-
 /**
  * @author jesus.movilla
- *
  */
 public class TaskServiceImpl extends AbstractBaseService implements TaskService {
 
@@ -48,8 +41,7 @@ public class TaskServiceImpl extends AbstractBaseService implements TaskService 
      * @param waitingPeriod
      * @param maxWaiting
      */
-    public TaskServiceImpl(Client client, String baseHost, String type,
-            Long waitingPeriod, Long maxWaiting) {
+    public TaskServiceImpl(Client client, String baseHost, String type, Long waitingPeriod, Long maxWaiting) {
         setClient(client);
         setBaseHost(baseHost);
         setType(type);
@@ -61,8 +53,7 @@ public class TaskServiceImpl extends AbstractBaseService implements TaskService 
      * {@inheritDoc}
      */
     public Task load(String vdc, Long id) {
-        String url = getBaseHost()
-                + MessageFormat.format(ClientConstants.TASK_PATH, vdc, id);
+        String url = getBaseHost() + MessageFormat.format(ClientConstants.TASK_PATH, vdc, id);
         return this.load(url);
     }
 

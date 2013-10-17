@@ -1,5 +1,13 @@
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
+
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
+<<<<<<< HEAD
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -15,25 +23,47 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+=======
+import java.util.ArrayList;
+import java.util.List;
+
+>>>>>>> 8869d952aa586c4efac07ce7a4426dc7dbe602de
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsyncManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+<<<<<<< HEAD
+=======
+import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
+>>>>>>> 8869d952aa586c4efac07ce7a4426dc7dbe602de
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
+import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
-import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
-import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
 import com.telefonica.euro_iaas.paasmanager.rest.util.OVFMacro;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentInstanceResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+<<<<<<< HEAD
+=======
+import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+>>>>>>> 8869d952aa586c4efac07ce7a4426dc7dbe602de
 
 public class EnvironmentInstanceResourceImplTest extends TestCase {
 
@@ -55,7 +85,10 @@ public class EnvironmentInstanceResourceImplTest extends TestCase {
     public TaskManager taskManager;
     public Task task;
 
+<<<<<<< HEAD
     @Override
+=======
+>>>>>>> 8869d952aa586c4efac07ce7a4426dc7dbe602de
     @Before
     public void setUp() throws Exception {
         environmentInstanceResource = new EnvironmentInstanceResourceImpl();
@@ -73,6 +106,7 @@ public class EnvironmentInstanceResourceImplTest extends TestCase {
         environmentInstanceResource.setExtendedOVFUtil(extendedOVFUtil);
         environmentInstanceResource.setOvfGeneration(ovfGeneration);
 
+<<<<<<< HEAD
         environmentInstanceResource
         .setSystemPropertiesProvider(systemPropertiesProvider);
         environmentInstanceResource
@@ -89,6 +123,19 @@ public class EnvironmentInstanceResourceImplTest extends TestCase {
         Mockito.doNothing().when(environmentInstanceAsyncManager).create(
                 any(ClaudiaData.class), any(EnvironmentInstance.class),
                 any(Task.class), any(String.class));
+=======
+        environmentInstanceResource.setSystemPropertiesProvider(systemPropertiesProvider);
+        environmentInstanceResource.setEnvironmentInstanceAsyncManager(environmentInstanceAsyncManager);
+        environmentInstanceResource.setTaskManager(taskManager);
+        environmentOvfInstanceResource.setValidator(validator);
+        environmentOvfInstanceResource.setExtendedOVFUtil(extendedOVFUtil);
+        environmentOvfInstanceResource.setEnvironmentInstanceAsyncManager(environmentInstanceAsyncManager);
+        environmentOvfInstanceResource.setOvfMacro(ovfMacro);
+        environmentOvfInstanceResource.setTaskManager(taskManager);
+        when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("");
+        Mockito.doNothing().when(environmentInstanceAsyncManager)
+                .create(any(ClaudiaData.class), any(EnvironmentInstance.class), any(Task.class), any(String.class));
+>>>>>>> 8869d952aa586c4efac07ce7a4426dc7dbe602de
 
         // environmentOvfInstanceResource.setOvfGeneration(ovfGeneration);
         // environmentOvfInstanceResource.setProductReleaseManager(productReleaseManager);
@@ -97,9 +144,14 @@ public class EnvironmentInstanceResourceImplTest extends TestCase {
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
         productReleases.add(productRelease);
 
+<<<<<<< HEAD
         Tier tier = new Tier("name", new Integer(1), new Integer(1),
                 new Integer(1), productReleases, "flavour", "image", "icono",
                 "keypair", "floatingip", "payload");
+=======
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
+                "image", "icono", "keypair", "floatingip", "payload");
+>>>>>>> 8869d952aa586c4efac07ce7a4426dc7dbe602de
 
         tiers = new ArrayList<Tier>();
         tiers.add(tier);
@@ -143,6 +195,7 @@ public class EnvironmentInstanceResourceImplTest extends TestCase {
     @Test
     public void testCreateEnviornmentInstance() throws Exception {
 
+<<<<<<< HEAD
         when(extendedOVFUtil.isVirtualServicePayload(any(String.class)))
         .thenReturn(false);
         when(extendedOVFUtil.getEnvironmentName(any(String.class))).thenReturn(
@@ -153,6 +206,13 @@ public class EnvironmentInstanceResourceImplTest extends TestCase {
         .thenReturn(tiers);
         Mockito.doNothing().when(validator).validateCreatePayload(
                 any(String.class));
+=======
+        when(extendedOVFUtil.isVirtualServicePayload(any(String.class))).thenReturn(false);
+        when(extendedOVFUtil.getEnvironmentName(any(String.class))).thenReturn("servicename");
+        when(ovfMacro.resolveMacros(any(Environment.class))).thenReturn(environment);
+        when(extendedOVFUtil.getTiers(any(String.class), any(String.class))).thenReturn(tiers);
+        Mockito.doNothing().when(validator).validateCreatePayload(any(String.class));
+>>>>>>> 8869d952aa586c4efac07ce7a4426dc7dbe602de
 
         String payload = "ovf";
 
@@ -160,11 +220,17 @@ public class EnvironmentInstanceResourceImplTest extends TestCase {
         ClaudiaData data = new ClaudiaData(org, vdc, "servicename");
         data.setUser(null);
 
+<<<<<<< HEAD
         EnvironmentInstance envInst = new EnvironmentInstance("servicename",
                 "description", environment);
         verify(environmentInstanceAsyncManager, times(1)).create(
                 any(ClaudiaData.class), any(EnvironmentInstance.class),
                 any(Task.class), any(String.class));
+=======
+        EnvironmentInstance envInst = new EnvironmentInstance("servicename", "description", environment);
+        verify(environmentInstanceAsyncManager, times(1)).create(any(ClaudiaData.class),
+                any(EnvironmentInstance.class), any(Task.class), any(String.class));
+>>>>>>> 8869d952aa586c4efac07ce7a4426dc7dbe602de
 
     }
 
@@ -175,6 +241,7 @@ public class EnvironmentInstanceResourceImplTest extends TestCase {
         environmentInstanceDto.setDescription("description");
         environmentInstanceDto.setBlueprintName("BlueprintName");
         environmentInstanceDto.setEnvironmentDto(environment.toDto());
+<<<<<<< HEAD
         environmentInstanceResource.create(org, vdc, environmentInstanceDto,
                 callback);
         ClaudiaData data = new ClaudiaData(org, vdc, "servicename");
@@ -185,12 +252,24 @@ public class EnvironmentInstanceResourceImplTest extends TestCase {
         verify(environmentInstanceAsyncManager, times(1)).create(
                 any(ClaudiaData.class), any(EnvironmentInstance.class),
                 any(Task.class), any(String.class));
+=======
+        environmentInstanceResource.create(org, vdc, environmentInstanceDto, callback);
+        ClaudiaData data = new ClaudiaData(org, vdc, "servicename");
+        data.setUser(null);
+
+        EnvironmentInstance envInst = new EnvironmentInstance("servicename", "description", environment);
+        verify(environmentInstanceAsyncManager, times(1)).create(any(ClaudiaData.class),
+                any(EnvironmentInstance.class), any(Task.class), any(String.class));
+>>>>>>> 8869d952aa586c4efac07ce7a4426dc7dbe602de
 
     }
 
     /*
      * @Test public void testLoad() { fail("Not yet implemented"); }
+<<<<<<< HEAD
      * 
+=======
+>>>>>>> 8869d952aa586c4efac07ce7a4426dc7dbe602de
      * @Test public void testDestroy() { fail("Not yet implemented"); }
      */
 

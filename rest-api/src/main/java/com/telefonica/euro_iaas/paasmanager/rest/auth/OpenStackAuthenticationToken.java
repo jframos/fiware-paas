@@ -1,15 +1,10 @@
-/*
-
- (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights
- Reserved.
-
- The copyright to the software program(s) is property of Telefonica I+D.
- The program(s) may be used and or copied only with the express written
- consent of Telefonica I+D or in accordance with the terms and conditions
- stipulated in the agreement/contract under which the program(s) have
- been supplied.
-
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.rest.auth;
 
 import java.io.BufferedReader;
@@ -19,21 +14,18 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.telefonica.euro_iaas.paasmanager.rest.exception.AuthenticationConnectionException;
+import com.telefonica.euro_iaas.paasmanager.rest.util.CompareDates;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import com.telefonica.euro_iaas.paasmanager.rest.exception.AuthenticationConnectionException;
-import com.telefonica.euro_iaas.paasmanager.rest.util.CompareDates;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 /**
- *
  * @author fernandolopezaguilar
  */
 public class OpenStackAuthenticationToken {
@@ -74,11 +66,10 @@ public class OpenStackAuthenticationToken {
     /**
      * The log.
      */
-    private static org.apache.log4j.Logger log = org.apache.log4j.Logger
-            .getLogger(OpenStackAuthenticationToken.class);
+    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(OpenStackAuthenticationToken.class);
     /**
-     * The limit to request a new token due to it is not more valid. This means
-     * that the token is no more valid after 6m 40sec.
+     * The limit to request a new token due to it is not more valid. This means that the token is no more valid after 6m
+     * 40sec.
      */
     private long threshold;
     /**
@@ -137,8 +128,8 @@ public class OpenStackAuthenticationToken {
         int j = payload.indexOf(">", i);
         token = payload.substring(i - 1, j + 1);
 
-        //token = "<token expires=\"2012-11-13T15:01:51Z\" id=\"783bec9d7d734f1e943986485a90966d\">";
-        // Regular Expression  <\s*token\s*(issued_at=\".*?\"\s*)?expires=\"(.*?)(\"\s*id=\")(.*)\"\/*>
+        // token = "<token expires=\"2012-11-13T15:01:51Z\" id=\"783bec9d7d734f1e943986485a90966d\">";
+        // Regular Expression <\s*token\s*(issued_at=\".*?\"\s*)?expires=\"(.*?)(\"\s*id=\")(.*)\"\/*>
         // as a Java string "<\\s*token\\s*(issued_at=\\\".*?\\\"\\s*)?expires=\\\"(.*?)(\\\"\\s*id=\\\")(.*)\\\"\\/*>"
         String pattern1 = "<\\s*token\\s*(issued_at=\\\".*?\\\"\\s*)?expires=\\\"(.*?)(\\\"\\s*id=\\\")(.*)\\\"\\/*>";
 
@@ -154,13 +145,12 @@ public class OpenStackAuthenticationToken {
             throw new RuntimeException("Token format unknown:\n " + token);
         }
 
-
         i = payload.indexOf("tenant");
         j = payload.indexOf(">", i);
         tenantId = payload.substring(i - 1, j + 1);
 
-        // Regular Expression  (<\s*tenant\s*.*)("\s*id=")(.*?)("\s*.*/*>)
-        // as a Java string   "(<\\s*tenant\\s*.*)(\"\\s*id=\")(.*?)(\"\\s*.*/*>)"
+        // Regular Expression (<\s*tenant\s*.*)("\s*id=")(.*?)("\s*.*/*>)
+        // as a Java string "(<\\s*tenant\\s*.*)(\"\\s*id=\")(.*?)(\"\\s*.*/*>)"
         pattern1 = "(<\\s*tenant\\s*.*)(\"\\s*id=\")(.*?)(\"\\s*.*/*>)";
 
         if (tenantId.matches(pattern1)) {
@@ -210,17 +200,15 @@ public class OpenStackAuthenticationToken {
         postRequest.setHeader("Content-Type", "application/json");
         postRequest.setHeader("Accept", "application/xml");
 
-        String msg = "{\"auth\": {\"tenantName\": \"" + tenant + "\", \""
-                + "passwordCredentials\":{\"username\": \"" + user + "\","
-                + " \"password\": \"" + pass + "\"}}}";
+        String msg = "{\"auth\": {\"tenantName\": \"" + tenant + "\", \"" + "passwordCredentials\":{\"username\": \""
+                + user + "\"," + " \"password\": \"" + pass + "\"}}}";
 
         try {
             entity = new StringEntity(msg);
         } catch (UnsupportedEncodingException ex) {
             log.error("Unsupported encoding exception");
 
-            throw new AuthenticationConnectionException(
-                    "Unsupported encoding exception");
+            throw new AuthenticationConnectionException("Unsupported encoding exception");
         }
 
         postRequest.setEntity(entity);
@@ -243,18 +231,14 @@ public class OpenStackAuthenticationToken {
 
             localDate = new Date();
 
-            if ((response.getStatusLine().getStatusCode() != 201)
-                    && (response.getStatusLine().getStatusCode() != 200)) {
+            if ((response.getStatusLine().getStatusCode() != 201) && (response.getStatusLine().getStatusCode() != 200)) {
 
-                log.error("Failed : HTTP error code : "
-                        + response.getStatusLine().getStatusCode());
+                log.error("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
 
-                throw new RuntimeException("Failed : HTTP error code : "
-                        + response.getStatusLine().getStatusCode());
+                throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
             }
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    (response.getEntity().getContent())));
+            BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
 
             String temp = "";
 
@@ -276,13 +260,11 @@ public class OpenStackAuthenticationToken {
         } catch (ClientProtocolException ex) {
             log.error("Client protocol exception");
 
-            throw new AuthenticationConnectionException(
-                    "Client protocol exception");
+            throw new AuthenticationConnectionException("Client protocol exception");
         } catch (IOException ex) {
             log.error("I/O exception of some sort has occurred");
 
-            throw new AuthenticationConnectionException(
-                    "I/O exception of some sort has occurred");
+            throw new AuthenticationConnectionException("I/O exception of some sort has occurred");
         }
 
         // Calculate the offset between the local date and the remote date

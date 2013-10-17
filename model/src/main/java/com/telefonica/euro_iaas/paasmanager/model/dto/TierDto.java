@@ -1,3 +1,10 @@
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
+
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.ArrayList;
@@ -14,7 +21,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 /**
  * Represents an artifact to be installed on a ProductRelease
  * 
- * @author Henar Muñoz
+ * @author Henar Muï¿½oz
  * @version $Id: $
  */
 @XmlRootElement
@@ -30,13 +37,13 @@ public class TierDto {
     private Integer initialNumberInstances;
 
     private List<ProductReleaseDto> productReleaseDtos;
+
     private List<NetworkDto> networkDto;
 
     private String icono = "";
     private String securityGroup = "";
     private String keypair = "";
     private String floatingip = "";
-
 
     /**
      * Default Constructor
@@ -53,14 +60,16 @@ public class TierDto {
      * @param initial_number_instances
      * @param productReleases
      */
-    public TierDto(String name, Integer maximumNumberInstances,
-            Integer minimumNumberInstances, Integer initialNumberInstances,
-            List<ProductReleaseDto> productReleaseDtos) {
+
+    public TierDto(String name, Integer maximumNumberInstances, Integer minimumNumberInstances,
+            Integer initialNumberInstances, List<ProductReleaseDto> productReleaseDtos) {
+
         this.name = name;
         this.maximumNumberInstances = maximumNumberInstances;
         this.minimumNumberInstances = minimumNumberInstances;
         this.initialNumberInstances = initialNumberInstances;
         this.productReleaseDtos = productReleaseDtos;
+
         this.networkDto = new ArrayList<NetworkDto>();
     }
 
@@ -68,6 +77,7 @@ public class TierDto {
             Integer minimumNumberInstances, Integer initialNumberInstances,
             List<ProductReleaseDto> productReleaseDtos, String flavour,
             String image, String icono, String keypair, String floatingip) {
+
         this.name = name;
         this.maximumNumberInstances = maximumNumberInstances;
         this.minimumNumberInstances = minimumNumberInstances;
@@ -81,23 +91,16 @@ public class TierDto {
         this.networkDto = new ArrayList<NetworkDto>();
     }
 
+
     public TierDto(String name, Integer maximumNumberInstances,
             Integer minimumNumberInstances, Integer initialNumberInstances,
             List<ProductReleaseDto> productReleaseDtos, String flavour,
             String image, String icono, String securityGroup, String keypair,
             String floatingip) {
-        this.name = name;
-        this.maximumNumberInstances = maximumNumberInstances;
-        this.minimumNumberInstances = minimumNumberInstances;
-        this.initialNumberInstances = initialNumberInstances;
-        this.productReleaseDtos = productReleaseDtos;
-        this.flavour = flavour;
-        this.image = image;
-        this.icono = icono;
+
         this.securityGroup = securityGroup;
         this.keypair = keypair;
         this.floatingip = floatingip;
-        this.networkDto = new ArrayList<NetworkDto>();
     }
 
     /**
@@ -157,10 +160,10 @@ public class TierDto {
         return tier;
     }
 
+
     public String getFlavour() {
         return flavour;
     }
-
 
     public String getFloatingip() {
         return this.floatingip;
@@ -223,14 +226,17 @@ public class TierDto {
         return productReleaseDtos;
     }
 
+
     public String getSecurity_group() {
         return this.securityGroup;
     }
+
 
     public void removeProductRelease(ProductReleaseDto productReleaseDto) {
 
         productReleaseDtos.remove(productReleaseDto);
     }
+
 
     /**
      * @param name
@@ -240,6 +246,8 @@ public class TierDto {
         this.flavour = flavour;
     }
 
+
+
     public void setFloatingip(String floatingip) {
         this.floatingip = floatingip;
     }
@@ -248,17 +256,18 @@ public class TierDto {
         this.icono = icono;
     }
 
+
+
     public void setImage(String image) {
         this.image = image;
-    }
-
-    /**
+    }                /**
      * @param initialNumberInstances
      *            the initialNumberInstances to set
      */
     public void setInitialNumberInstances(Integer initialNumberInstances) {
         this.initialNumberInstances = initialNumberInstances;
     }
+
 
     public void setKeypair(String keypair) {
         this.keypair = keypair;
@@ -280,6 +289,7 @@ public class TierDto {
         this.minimumNumberInstances = minimumNumberInstances;
     }
 
+
     /**
      * @param name
      *            the name to set
@@ -288,12 +298,14 @@ public class TierDto {
         this.name = name;
     }
 
+
+
     /**
      * @param networkDto the network do to be add to the array
      */
     public void setNetworksDto(List<NetworkDto> networkDto) {
         this.networkDto = networkDto;
-    }
+    }                    /**
 
     /**
      * @param productReleases
@@ -309,6 +321,6 @@ public class TierDto {
      */
     public void setSecurityGroup(String securityGroup) {
         this.securityGroup = securityGroup;
-    }
 
+    }
 }

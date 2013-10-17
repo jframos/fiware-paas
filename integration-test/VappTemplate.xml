@@ -1,43 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<VApp href="@HOSTNAME/api/org/{org}/vdc/{vdc}/vapp/{service}/{vm}/{replica}" name="{org}.customers.{vdc}.services.{service}.vees.{vm}.replicas.{replica}">
-<Link href="@HOSTNAME/api/org/{org}/vdc/{vdc}/vapp/{service}/{vm}/{replica}/monitor" rel="monitor:measures" type="application/vnc.telefonica.tcloud. measureDescriptorList+xml"/>
-<ProductSection>
-<Category msgid="org.fourcaast.rec">REC Attribute</Category>
-<Property key="org.fourcaast.rec.username" value="{user}"/>
-<Property key="org.fourcaast.rec.password" value="{password}"/>
-</ProductSection>
-<VirtualHardwareSection>
-<Link href="@HOSTNAME/api/org/{org}/vdc/{vdc}/vapp/{service}/{vm}/{replica}/hw/" rel="add" type="application/ovf.item+xml"/>
-<Item>
-<Link href="@HOSTNAME/api/org/{org}/vdc/{vdc}/vapp/{service}/{vm}/{replica}/hw/1" rel="edit" type="application/ovf.item+xml+xml"/>
-<Description>Number of virtual data</Description>
-<InstanceID>1</InstanceID>
-<ResourceType>3</ResourceType>
-<VirtualQuantity>1</VirtualQuantity>
-</Item>
-<Item>
-<Link href="@HOSTNAME/api/org/{org}/vdc/{vdc}/vapp/{service}/{vm}/{replica}/hw/2" rel="edit" type="application/ovf.item+xml+xml"/>
-<Description>Number of virtual data</Description>
-<InstanceID>2</InstanceID>
-<ResourceType>4</ResourceType>
-<VirtualQuantity>512</VirtualQuantity>
-</Item>
-<Item>
-<Link href="@HOSTNAME/api/org/{org}/vdc/{vdc}/vapp/{service}/{vm}/{replica}/hw/3" rel="edit" type="application/ovf.item+xml+xml"/>
-<Description>Number of virtual data</Description>
-<InstanceID>3</InstanceID>
-<ResourceType>17</ResourceType>
-<HostResource>ovf://disk/disk</HostResource>
-<Parent>4</Parent>
-<VirtualQuantity>2</VirtualQuantity>
-</Item>
-<Item>
-<Link href="@HOSTNAME/api/org/{org}/vdc/{vdc}/vapp/{service}/{vm}/{replica}/hw/4" rel="edit" type="application/ovf.item+xml+xml"/>
-<Description>Number of virtual data</Description>
-<InstanceID>4</InstanceID>
-<ResourceType>10</ResourceType>
-<IPv4Address>{IP}</IPv4Address>
-<Connection>{org}.customers.{vdc}.network.public</Connection>
-</Item>
-</VirtualHardwareSection>
+<VApp href="@HOSTNAME/api/org/{org}/vdc/{vdc}/vapp/{service}/{vm}/{replica}"
+      name="{org}.customers.{vdc}.services.{service}.vees.{vm}.replicas.{replica}">
+    <Link href="@HOSTNAME/api/org/{org}/vdc/{vdc}/vapp/{service}/{vm}/{replica}/monitor" rel="monitor:measures"
+          type="application/vnc.telefonica.tcloud. measureDescriptorList+xml"/>
+    <ProductSection>
+        <Category msgid="org.fourcaast.rec">REC Attribute</Category>
+        <Property key="org.fourcaast.rec.username" value="{user}"/>
+        <Property key="org.fourcaast.rec.password" value="{password}"/>
+    </ProductSection>
+    <VirtualHardwareSection>
+        <Link href="@HOSTNAME/api/org/{org}/vdc/{vdc}/vapp/{service}/{vm}/{replica}/hw/" rel="add"
+              type="application/ovf.item+xml"/>
+        <Item>
+            <Link href="@HOSTNAME/api/org/{org}/vdc/{vdc}/vapp/{service}/{vm}/{replica}/hw/1" rel="edit"
+                  type="application/ovf.item+xml+xml"/>
+            <Description>Number of virtual data</Description>
+            <InstanceID>1</InstanceID>
+            <ResourceType>3</ResourceType>
+            <VirtualQuantity>1</VirtualQuantity>
+        </Item>
+        <Item>
+            <Link href="@HOSTNAME/api/org/{org}/vdc/{vdc}/vapp/{service}/{vm}/{replica}/hw/2" rel="edit"
+                  type="application/ovf.item+xml+xml"/>
+            <Description>Number of virtual data</Description>
+            <InstanceID>2</InstanceID>
+            <ResourceType>4</ResourceType>
+            <VirtualQuantity>512</VirtualQuantity>
+        </Item>
+        <Item>
+            <Link href="@HOSTNAME/api/org/{org}/vdc/{vdc}/vapp/{service}/{vm}/{replica}/hw/3" rel="edit"
+                  type="application/ovf.item+xml+xml"/>
+            <Description>Number of virtual data</Description>
+            <InstanceID>3</InstanceID>
+            <ResourceType>17</ResourceType>
+            <HostResource>ovf://disk/disk</HostResource>
+            <Parent>4</Parent>
+            <VirtualQuantity>2</VirtualQuantity>
+        </Item>
+        <Item>
+            <Link href="@HOSTNAME/api/org/{org}/vdc/{vdc}/vapp/{service}/{vm}/{replica}/hw/4" rel="edit"
+                  type="application/ovf.item+xml+xml"/>
+            <Description>Number of virtual data</Description>
+            <InstanceID>4</InstanceID>
+            <ResourceType>10</ResourceType>
+            <IPv4Address>{IP}</IPv4Address>
+            <Connection>{org}.customers.{vdc}.network.public</Connection>
+        </Item>
+    </VirtualHardwareSection>
 </VApp>

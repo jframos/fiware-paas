@@ -1,3 +1,10 @@
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
+
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.List;
@@ -25,16 +32,18 @@ public class TierInstanceDto {
     public TierInstanceDto() {
     }
 
-    public TierInstanceDto(String tierInstanceName, int replicaNumber,
-            List<ProductInstanceDto> productInstanceDtos, String fqn) {
+
+    public TierInstanceDto(String tierInstanceName, int replicaNumber, List<ProductInstanceDto> productInstanceDtos,
+            String fqn) {
 
         this.tierInstanceName = tierInstanceName;
         this.productInstanceDtos = productInstanceDtos;
         this.replicaNumber = replicaNumber;
     }
 
-    public TierInstanceDto(String tierInstanceName, int replicaNumber,
-            List<ProductInstanceDto> productInstanceDtos, VMDto vm) {
+
+    public TierInstanceDto(String tierInstanceName, int replicaNumber, List<ProductInstanceDto> productInstanceDtos,
+            VMDto vm) {
 
         this.tierInstanceName = tierInstanceName;
         this.productInstanceDtos = productInstanceDtos;
@@ -45,6 +54,7 @@ public class TierInstanceDto {
     public TierInstanceDto(String tierInstanceName, TierDto tierDto,
             int replicaNumber, List<ProductInstanceDto> productInstanceDtos,
             String fqn) {
+
 
         this.tierInstanceName = tierInstanceName;
         this.tierDto = tierDto;
@@ -62,9 +72,9 @@ public class TierInstanceDto {
     public List<ProductInstanceDto> getProductInstanceDtos() {
         return productInstanceDtos;
     }
-
     public int getReplicaNumber() {
         return replicaNumber;
+
     }
 
     public TierDto getTierDto() {
@@ -79,10 +89,7 @@ public class TierInstanceDto {
         this.attributes = attributes;
     }
 
-
-
-    public void setProductInstanceDtos(
-            List<ProductInstanceDto> productInstanceDtos) {
+    public void setProductInstanceDtos(List<ProductInstanceDto> productInstanceDtos) {
         this.productInstanceDtos = productInstanceDtos;
     }
 
@@ -93,7 +100,6 @@ public class TierInstanceDto {
     public void setTierDto(TierDto tierDto) {
         this.tierDto = tierDto;
     }
-
     public void setTierInstanceName(String tierInstanceName) {
         this.tierInstanceName = tierInstanceName;
     }
