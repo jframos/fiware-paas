@@ -98,9 +98,18 @@ public class TierDto {
             String image, String icono, String securityGroup, String keypair,
             String floatingip) {
 
-        this.securityGroup = securityGroup;
+        this.name = name;
+        this.maximumNumberInstances = maximumNumberInstances;
+        this.minimumNumberInstances = minimumNumberInstances;
+        this.initialNumberInstances = initialNumberInstances;
+        this.productReleaseDtos = productReleaseDtos;
+        this.flavour = flavour;
+        this.image = image;
+        this.icono = icono;
         this.keypair = keypair;
         this.floatingip = floatingip;
+        this.securityGroup=securityGroup;
+        this.networkDto = new ArrayList<NetworkDto>();
     }
 
     /**

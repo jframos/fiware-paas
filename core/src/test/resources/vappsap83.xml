@@ -126,9 +126,7 @@
                                 public
                             </Connection>
                             <IPv4Address
-                                    xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_IPProtocolEndpoint">
-                                109.231.80.84
-                            </IPv4Address>
+                                    xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_IPProtocolEndpoint">109.231.80.84</IPv4Address>
                         </Item>
                     </VirtualHardwareSection>
                 </VApp>

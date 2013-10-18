@@ -9,8 +9,15 @@ package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -30,11 +37,6 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentSear
 import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 
 /**
  * default Environment implementation
@@ -59,8 +61,24 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
 
     private static Logger log = Logger.getLogger(EnvironmentManagerImpl.class);
 
+    /**
+     * Convert a list of tierDtos to a list of Tiers
+     * 
+     * @return
+     */
+    private List<Tier> convertToTiers(List<TierDto> tierDtos, String environmentName, String vdc) {
+        List<Tier> tiers = new ArrayList<Tier>();
+        for (int i = 0; i < tierDtos.size(); i++) {
+            Tier tier = tierDtos.get(i).fromDto();
+            // tier.setSecurity_group("sg_"
+            // +environmentName+"_"+vdc+"_"+tier.getName());
+            tiers.add(tier);
+        }
+        return tiers;
+    }
+
     public void delete(String org, String vdc, String envName) throws EnvironmentInstanceNotFoundException,
-            InvalidEntityException, InvalidEnvironmentRequestException, AlreadyExistEntityException {
+    InvalidEntityException, InvalidEnvironmentRequestException, AlreadyExistEntityException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
         environmentResourceValidator.validateDelete(envName, vdc, systemPropertiesProvider);
 
@@ -77,6 +95,28 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
             throw new WebApplicationException(e, ERROR_REQUEST);
         }
 
+    }
+
+    private List<Environment> filterEqualTiers(List<Environment> environments) {
+        // List<Tier> tierResult = new ArrayList<Tier>();
+        List<Environment> result = new ArrayList<Environment>();
+
+        for (Environment environment : environments) {
+            List<Tier> tierResult = new ArrayList<Tier>();
+            List<Tier> tiers = environment.getTiers();
+            for (int i = 0; i < tiers.size(); i++) {
+                Tier tier = tiers.get(i);
+                List<Tier> tierAux = new ArrayList<Tier>();
+                for (int j = i + 1; j < tiers.size(); j++) {
+                    tierAux.add(tiers.get(j));
+                }
+                if (!tierAux.contains(tier))
+                    tierResult.add(tier);
+            }
+            environment.setTiers(tierResult);
+            result.add(environment);
+        }
+        return result;
     }
 
     public List<EnvironmentDto> findAll(String org, String vdc, Integer page, Integer pageSize, String orderBy,
@@ -110,8 +150,15 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
         return envsDto;
     }
 
+    public PaasManagerUser getCredentials() {
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE"))
+            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        else
+            return null;
+    }
+
     public void insert(String org, String vdc, EnvironmentDto environmentDto)
-            throws InvalidEnvironmentRequestException, AlreadyExistEntityException, InvalidEntityException {
+    throws InvalidEnvironmentRequestException, AlreadyExistEntityException, InvalidEntityException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentDto.getName());
 
         log.debug("Create a environment " + environmentDto.getName() + " " + environmentDto.getDescription() + " "
@@ -133,7 +180,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
         Environment environment = new Environment();
         environment.setName(environmentDto.getName());
         environment.setDescription(environmentDto.getDescription());
-        environment.setEnvironmentType(environmentDto.getEnvironmentType());
+
         /*
          * String payload = ovfGeneration.createOvf(environmentDto); environment.setOvf(payload);
          */
@@ -178,32 +225,8 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
 
     }
 
-    /**
-     * Convert a list of tierDtos to a list of Tiers
-     * 
-     * @return
-     */
-    private List<Tier> convertToTiers(List<TierDto> tierDtos, String environmentName, String vdc) {
-        List<Tier> tiers = new ArrayList<Tier>();
-        for (int i = 0; i < tierDtos.size(); i++) {
-            Tier tier = tierDtos.get(i).fromDto();
-            // tier.setSecurity_group("sg_"
-            // +environmentName+"_"+vdc+"_"+tier.getName());
-            tiers.add(tier);
-        }
-        return tiers;
-    }
-
     public void setEnvironmentManager(EnvironmentManager environmentManager) {
         this.environmentManager = environmentManager;
-    }
-
-    /**
-     * @param systemPropertiesProvider
-     *            the systemPropertiesProvider to set
-     */
-    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
-        this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
     public void setEnvironmentResourceValidator(EnvironmentResourceValidator environmentResourceValidator) {
@@ -218,33 +241,12 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
         this.ovfGeneration = ovfGeneration;
     }
 
-    public PaasManagerUser getCredentials() {
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE"))
-            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        else
-            return null;
-    }
-
-    private List<Environment> filterEqualTiers(List<Environment> environments) {
-        // List<Tier> tierResult = new ArrayList<Tier>();
-        List<Environment> result = new ArrayList<Environment>();
-
-        for (Environment environment : environments) {
-            List<Tier> tierResult = new ArrayList<Tier>();
-            List<Tier> tiers = environment.getTiers();
-            for (int i = 0; i < tiers.size(); i++) {
-                Tier tier = tiers.get(i);
-                List<Tier> tierAux = new ArrayList<Tier>();
-                for (int j = i + 1; j < tiers.size(); j++) {
-                    tierAux.add(tiers.get(j));
-                }
-                if (!tierAux.contains(tier))
-                    tierResult.add(tier);
-            }
-            environment.setTiers(tierResult);
-            result.add(environment);
-        }
-        return result;
+    /**
+     * @param systemPropertiesProvider
+     *            the systemPropertiesProvider to set
+     */
+    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
+        this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
 }
