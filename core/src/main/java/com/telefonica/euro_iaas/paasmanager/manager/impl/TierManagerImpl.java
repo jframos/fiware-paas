@@ -103,8 +103,18 @@ public class TierManagerImpl implements TierManager {
 
 
             for (Network network: tier.getNetworks()) {
-                network = networkManager.create(claudiaData, network);
-                tier.updateNetwork(network);
+
+                try {
+                    network = networkManager.load(network.getNetworkName());
+                } catch (EntityNotFoundException e1) {
+                    try {
+                        network = networkManager.create(claudiaData, network);
+                    } catch (AlreadyExistsEntityException e2) {
+                        throw new InvalidEntityException (network);
+                    }
+                }
+
+
             }
 
             return tierInsertBD(tier, claudiaData);

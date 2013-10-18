@@ -116,6 +116,10 @@ public class SubNetwork {
         this.idSubNet = id;
     }
 
+    /**
+     * the json for the OPenstack request
+     * @return
+     */
     public String toJson () {
         return"{\"subnet\":{" +
         "      \"name\":\"" + name + "\"," +

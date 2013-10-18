@@ -27,8 +27,6 @@
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.TierDaoJpaImpl"/>
     <bean id="environmentDao" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.EnvironmentDaoJpaImpl"/>
-    <bean id="environmentTypeDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.paasmanager.dao.impl.EnvironmentTypeDaoJpaImpl"/>
     <bean id="tierInstanceDao" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.TierInstanceDaoJpaImpl"/>
     <bean id="productInstanceDao" lazy-init="true"

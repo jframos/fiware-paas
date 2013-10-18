@@ -10,8 +10,13 @@ package com.telefonica.euro_iaas.paasmanager.bootstrap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -23,7 +28,6 @@ import com.telefonica.euro_iaas.paasmanager.dao.ArtifactTypeDao;
 import com.telefonica.euro_iaas.paasmanager.dao.AttributeDao;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentDao;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
-import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentTypeDao;
 import com.telefonica.euro_iaas.paasmanager.dao.OSDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
@@ -38,14 +42,10 @@ import com.telefonica.euro_iaas.paasmanager.model.ApplicationType;
 import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 import com.telefonica.euro_iaas.paasmanager.model.ArtifactType;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
-import com.telefonica.euro_iaas.paasmanager.model.EnvironmentType;
 import com.telefonica.euro_iaas.paasmanager.model.OS;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.ProductType;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
-import org.apache.log4j.Logger;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * Populates data base with synthetic data to emulate the preconditions of paas manager
@@ -57,6 +57,11 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 public class InitDbBootstrap implements ServletContextListener {
 
     private static Logger log = Logger.getLogger(InitDbBootstrap.class);
+
+    /** {@inheritDoc} */
+    public void contextDestroyed(ServletContextEvent event) {
+
+    }
 
     /** {@inheritDoc} */
     public void contextInitialized(ServletContextEvent event) {
@@ -75,7 +80,7 @@ public class InitDbBootstrap implements ServletContextListener {
         ArtifactTypeDao artifactTypeDao = (ArtifactTypeDao) ctx.getBean("artifactTypeDao");
         ArtifactDao artifactDao = (ArtifactDao) ctx.getBean("artifactDao");
 
-        EnvironmentTypeDao environmentTypeDao = (EnvironmentTypeDao) ctx.getBean("environmentTypeDao");
+
         EnvironmentDao environmentDao = (EnvironmentDao) ctx.getBean("environmentDao");
         EnvironmentInstanceDao environmentInstanceDao = (EnvironmentInstanceDao) ctx.getBean("environmentInstanceDao");
 
@@ -128,7 +133,7 @@ public class InitDbBootstrap implements ServletContextListener {
             // Taking the ProductRelease from SDC *******************
         } catch (SdcException ex1) {
             String msg = " Impossible to recover ProductReleases from SDC. "
-                    + "Either connection problem or Product Release Resource problem";
+                + "Either connection problem or Product Release Resource problem";
             System.out.println(msg);
             throw new RuntimeException(ex1);
         } catch (AlreadyExistsEntityException ex2) {
@@ -159,7 +164,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 ProductType productTypeFirewall = new ProductType("Firewall", "Firewall description");
                 ProductType productTypeDatabase = new ProductType("Database", "database description");
                 ProductType productTypeAWS = new ProductType("ApplicationWebServer",
-                        "Application Web Server description");
+                "Application Web Server description");
                 ProductType productTypeLoadBalancer = new ProductType("LoadBalancer", "LoadBalancer description");
                 ProductType productTypeNEP = new ProductType("NONEXISTENT", "NONEXISTENT description");
 
@@ -185,10 +190,8 @@ public class InitDbBootstrap implements ServletContextListener {
                 artifactTypeSql = artifactTypeDao.create(artifactTypeSql);
 
                 // EnvironmentType
-                EnvironmentType environmentTypeJavaSpring = new EnvironmentType("Java-Spring Environment",
-                        "Java-Spring Env description");
-                environmentTypeJavaSpring = environmentTypeDao.create(environmentTypeJavaSpring);
-                List<EnvironmentType> environmentTypeJavaSprings = Arrays.asList(environmentTypeJavaSpring);
+
+
 
                 // Taking the ProductRelease from SDC
                 /*
@@ -225,7 +228,7 @@ public class InitDbBootstrap implements ServletContextListener {
                     nodejs0615 = productReleaseDao.load("nodejs-0.6.15");
                 } catch (EntityNotFoundException e1) {
                     String msg = " Impossible to recover ProductReleases from PaasManager Database. "
-                            + "Either connection problem or Product Release Resource problem";
+                        + "Either connection problem or Product Release Resource problem";
                     System.out.println(msg);
                     throw new RuntimeException(e1);
                 }
@@ -408,7 +411,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 tiersTesting2.add(abstractTier);
 
                 Environment abstractEnvironment = new Environment("2testing", tiersTesting2,
-                        "abstractEnvironment for testing ");
+                "abstractEnvironment for testing ");
                 abstractEnvironment.setOrg("FIWARE");
                 abstractEnvironment = environmentDao.create(abstractEnvironment);
 
@@ -460,7 +463,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 Tier tierContextBroker = new Tier("contextbrokr", 1, 1, 1, productReleasesMongoContext);
                 tierContextBroker.setImage("44dcdba3-a75d-46a3-b209-5e9035d2435e");
                 tierContextBroker
-                        .setIcono("http://catalogue.fi-ware.eu/sites/default/files/styles/enabler_icon_large/public/orion.png");
+                .setIcono("http://catalogue.fi-ware.eu/sites/default/files/styles/enabler_icon_large/public/orion.png");
                 tierContextBroker.setFlavour("2");
                 tierContextBroker = tierDao.create(tierContextBroker);
 
@@ -497,7 +500,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 Tier tierContextBroker2 = new Tier("mongoscontextbrokr", 1, 1, 1, productReleasesMongoContext);
                 tierContextBroker2.setImage("44dcdba3-a75d-46a3-b209-5e9035d2435e");
                 tierContextBroker2
-                        .setIcono("http://catalogue.fi-ware.eu/sites/default/files/styles/enabler_icon_large/public/orion.png");
+                .setIcono("http://catalogue.fi-ware.eu/sites/default/files/styles/enabler_icon_large/public/orion.png");
                 tierContextBroker2.setFlavour("2");
                 tierContextBroker2.setVdc("cd593e796acb4ac5821e208ff26802bd");
                 tierContextBroker2.setKeypair("passmanager-fermin");
@@ -522,14 +525,14 @@ public class InitDbBootstrap implements ServletContextListener {
                 tiersSmartcitylights.add(tierApp2);
 
                 Environment contextSmartcitylights = new Environment("smartcity-lights", tiersSmartcitylights,
-                        "Environment smartcity-lights");
+                "Environment smartcity-lights");
                 contextSmartcitylights.setOrg("FIWARE");
                 contextSmartcitylights.setVdc("cd593e796acb4ac5821e208ff26802bd");
                 contextSmartcitylights = environmentDao.create(contextSmartcitylights);
 
                 // AppicationType
                 ApplicationType applicationTypeJavaSpring = new ApplicationType("Java-Spring Application",
-                        "Java-Spring Env description", environmentTypeJavaSprings);
+                "Java-Spring Env description");
                 applicationTypeJavaSpring = applicationTypeDao.create(applicationTypeJavaSpring);
 
                 // *********Application Release*************
@@ -581,10 +584,5 @@ public class InitDbBootstrap implements ServletContextListener {
         }
 
         System.out.println("InitDbBootstrap. END");
-    }
-
-    /** {@inheritDoc} */
-    public void contextDestroyed(ServletContextEvent event) {
-
     }
 }

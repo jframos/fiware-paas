@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
@@ -31,15 +32,17 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
 
     /**
      * To create a network.
+     * @throws AlreadyExistsEntityException, InfrastructureException, InvalidEntityException
      * @params claudiaData
      * @params network
      */
     public void create(ClaudiaData claudiaData, SubNetwork subNetwork)
-    throws InvalidEntityException,InfrastructureException {
+    throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
         log.debug("Create subnetwork " + subNetwork.getName());
 
         try {
             subNetworkDao.load(subNetwork.getName());
+            throw new AlreadyExistsEntityException(subNetwork);
 
         } catch (EntityNotFoundException e1) {
             try {

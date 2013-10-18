@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
@@ -37,15 +38,17 @@ public class NetworkManagerImpl implements NetworkManager {
 
     /**
      * To create a network.
+     * @throws AlreadyExistsEntityException
      * @params claudiaData
      * @params network
      */
     public Network create(ClaudiaData claudiaData, Network network)
-    throws InvalidEntityException,InfrastructureException {
+    throws InvalidEntityException,InfrastructureException, AlreadyExistsEntityException {
         log.debug("Create network " + network.getNetworkName());
 
         try {
             networkDao.load(network.getNetworkName());
+            throw new AlreadyExistsEntityException(network);
 
         } catch (EntityNotFoundException e1) {
             try {
@@ -103,8 +106,8 @@ public class NetworkManagerImpl implements NetworkManager {
      * @param networkName
      * @return the network
      */
-    public Network load(String name, String vdc, String networkName) throws EntityNotFoundException {
-        return networkDao.load(name);
+    public Network load(String networkName) throws EntityNotFoundException {
+        return networkDao.load(networkName);
     }
 
     public void setNetworkClient(NetworkClient networkClient) {

@@ -8,6 +8,7 @@ package com.telefonica.euro_iaas.paasmanager.manager;
 
 import java.util.List;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
@@ -26,9 +27,10 @@ public interface NetworkManager {
      * @param network
      * @return the tierInstance created
      * @throws InfrastructureException
+     * @throws AlreadyExistsEntityException
      */
     Network create(ClaudiaData claudiaData, Network network)
-    throws InvalidEntityException, InfrastructureException;
+    throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException;
 
 
     /**
@@ -54,7 +56,7 @@ public interface NetworkManager {
      * 
      * @return the network.
      */
-    Network load(String name, String vdc, String networkName) throws EntityNotFoundException;
+    Network load(String networkName) throws EntityNotFoundException;
 
     /**
      * Update a network.

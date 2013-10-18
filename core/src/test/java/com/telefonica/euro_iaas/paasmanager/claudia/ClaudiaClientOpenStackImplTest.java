@@ -20,6 +20,8 @@ import org.springframework.security.core.GrantedAuthority;
 import com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientOpenStackImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.Router;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
@@ -86,9 +88,9 @@ public class ClaudiaClientOpenStackImplTest {
                         any(PaasManagerUser.class))).thenReturn("response");
         when(openStackUtil.createNetwork(any(Network.class),
                 any(PaasManagerUser.class))).thenReturn(expectedNetwork);
-        when(openStackUtil.createSubNet(any(String.class), any(String.class), any(String.class),
+        when(openStackUtil.createSubNet(any(SubNetwork.class),
                 any(PaasManagerUser.class))).thenReturn(expectedSubnet);
-        when(openStackUtil.createRouter(any(String.class), any(String.class),
+        when(openStackUtil.createRouter(any(Router.class),
                 any(PaasManagerUser.class))).thenReturn(expectedRouter);
         when(openStackUtil.addRouterInterface(any(String.class), any(String.class),
                 any(PaasManagerUser.class))).thenReturn("OK");

@@ -17,7 +17,6 @@
         <class>com.telefonica.euro_iaas.paasmanager.model.ProductRelease</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.Artifact</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.ArtifactType</class>
-        <class>com.telefonica.euro_iaas.paasmanager.model.EnvironmentType</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.ApplicationType</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.Service</class>

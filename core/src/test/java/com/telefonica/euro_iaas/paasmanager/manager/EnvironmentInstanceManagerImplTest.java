@@ -24,13 +24,11 @@ import org.springframework.security.core.GrantedAuthority;
 
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentDao;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
-import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentTypeDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
-import com.telefonica.euro_iaas.paasmanager.model.EnvironmentType;
 import com.telefonica.euro_iaas.paasmanager.model.OS;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
@@ -47,7 +45,6 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
  */
 public class EnvironmentInstanceManagerImplTest {
 
-    private EnvironmentTypeDao environmentTypeDao;
     private EnvironmentInstanceDao environmentInstanceDao;
     private EnvironmentDao environmentDao;
     private TierDao tierDao;
@@ -115,9 +112,6 @@ public class EnvironmentInstanceManagerImplTest {
         tiers.add(tier);
         tiers.add(tier);
 
-        environmentTypeDao = mock(EnvironmentTypeDao.class);
-        when(environmentTypeDao.load(any(String.class))).thenReturn(
-                new EnvironmentType("Generic", "Generic"));
 
         productReleaseDao = mock(ProductReleaseDao.class);
         when(productReleaseDao.load(any(String.class))).thenReturn(

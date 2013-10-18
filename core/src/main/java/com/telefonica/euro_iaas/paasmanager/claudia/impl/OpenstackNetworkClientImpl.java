@@ -84,8 +84,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         log.info("Deploy router " + router.getName() + " for user " + claudiaData.getUser().getTenantName());
 
         try {
-            String response = openStackUtil.createRouter(router.getName(), router.getIdNetwork(),
-                    claudiaData.getUser());
+            String response = openStackUtil.createRouter(router, claudiaData.getUser());
 
             JSONObject networkString = new JSONObject(response);
             String id = networkString.getJSONObject("router").getString("id");
@@ -111,7 +110,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         log.info("Deploy network " + subNet.getName() + " for user " + claudiaData.getUser().getTenantName());
         String response;
         try {
-            response = openStackUtil.createSubNet(subNet.getName(), subNet.getIdNetwork(), subNet.getCidr(), claudiaData.getUser());
+            response = openStackUtil.createSubNet(subNet, claudiaData.getUser());
             // "network-" + claudiaData.getUser().getTenantName()
             JSONObject networkString = new JSONObject(response);
             String id = networkString.getJSONObject("subnet").getString("id");

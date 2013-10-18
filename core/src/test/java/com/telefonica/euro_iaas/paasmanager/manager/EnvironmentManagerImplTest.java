@@ -21,12 +21,10 @@ import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentDao;
-import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentTypeDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
-import com.telefonica.euro_iaas.paasmanager.model.EnvironmentType;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 
@@ -38,7 +36,7 @@ public class EnvironmentManagerImplTest extends TestCase {
 
     private ProductReleaseDao productReleaseDao;
     private EnvironmentDao environmentDao;
-    private EnvironmentTypeDao environmentTypeDao;
+
     // private TierDao tierDao;
     private TierManager tierManager;
 
@@ -75,9 +73,7 @@ public class EnvironmentManagerImplTest extends TestCase {
         tiers = new ArrayList<Tier>();
         tiers.add(tier);
 
-        environmentTypeDao = mock(EnvironmentTypeDao.class);
-        when(environmentTypeDao.load(any(String.class))).thenReturn(
-                new EnvironmentType("Generic", "Generic"));
+
 
         productReleaseDao = mock(ProductReleaseDao.class);
         when(productReleaseDao.load(any(String.class))).thenReturn(

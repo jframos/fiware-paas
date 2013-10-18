@@ -29,7 +29,6 @@ public class EnvironmentInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
     private ServiceDao serviceDao;
     private TierInstanceDao tierInstanceDao;
     private EnvironmentDao environmentDao;
-    private EnvironmentTypeDao environmentTypeDao;
     private EnvironmentInstanceDaoJpaImpl environmentInstanceDao;
 
     public final static String ENVINSTANCE_NAME = "envInstanceName";
