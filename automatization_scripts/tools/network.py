@@ -2,15 +2,6 @@ __author__ = 'henar'
 
 from xml.etree.ElementTree import Element, SubElement
 
-class Network:
-    def __init__(self, network_name):
-        self.network_name=network_name
-
-    def to_xml(self):
-        networkDto = Element("NetworkDto")
-        network = SubElement(networkDto, "networkName")
-        network.text=self.network_name
-
 
 class Tier:
 
@@ -68,8 +59,7 @@ class Tier:
 
         if self.networks:
             for net in self.networks:
-                print net
-                prod = net.to_xml()
+                prod = net.to__xml()
 
                 tier_dtos.append(prod)
         return tier_dtos

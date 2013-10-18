@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-<<<<<<< HEAD
+
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
     xmlns:jee="http://www.springframework.org/schema/tx"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
@@ -13,18 +13,7 @@
 	
 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName" value="java:comp/env/jdbc/paasmanager" />
-=======
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-              http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
-       default-autowire="no">
 
-
-    <!-- Data Source config	-->
-
-    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-        <property name="jndiName" value="java:comp/env/jdbc/paasmanager"/>
->>>>>>> 8869d952aa586c4efac07ce7a4426dc7dbe602de
     </bean>
 
     <bean id="entityManagerFactory"
@@ -38,11 +27,8 @@
             </bean>
         </property>
     </bean>
-<<<<<<< HEAD
-	
-    <tx:annotation-driven />
-=======
->>>>>>> 8869d952aa586c4efac07ce7a4426dc7dbe602de
+
+
 
 
     <tx:annotation-driven/>
