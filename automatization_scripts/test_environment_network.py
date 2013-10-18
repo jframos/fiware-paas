@@ -19,7 +19,7 @@ g=EnvironmentRequest(config['keystone_url'], config['paasmanager_url'], config['
 instance_request = EnvironmentInstanceRequest (config['keystone_url'], config['paasmanager_url'], config['tenant'], config['user'], config['password'],
                                                config['vdc'],config['sdc_url'])
 
-environment_name = 'networkenv6d'
+environment_name = 'networkenv6deg4'
 
 
 

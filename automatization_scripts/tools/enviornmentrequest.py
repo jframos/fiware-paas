@@ -208,6 +208,7 @@ class EnvironmentRequest:
             for net in networks:
                 tier.add_network(net)
 
+        print tostring(tier.to_tier_xml())
         payload=tostring(tier.to_tier_xml())
         self.__add_tier_environment(url, payload)
 

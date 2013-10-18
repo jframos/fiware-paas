@@ -43,8 +43,12 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
     private static Logger log = Logger.getLogger(OpenstackFirewallingClientImpl.class);
 
-
-
+    /**
+     * Deploy a rule in the security group.
+     * @param claudiaData
+     * @param rule
+     * 
+     */
     public String deployRule(ClaudiaData claudiaData, Rule rule) throws InfrastructureException {
         log.debug("Creating security rule " + rule.getFromPort());
         String url = systemPropertiesProvider.getProperty("openstack.nova.url")
@@ -79,26 +83,11 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
                     || response.getStatus() == 204) {
 
                 log.debug("Operation ok result " + result);
-
-                //              String id = result.substring(result.indexOf(", \"id\":")
-                //                      + ", \"id\":".length() + 1, result.indexOf("}}"));
-
                 org.json.JSONObject network = new org.json.JSONObject(result);
-                String id;
+                String id = network.getJSONObject("security_group_rule").getString("id");
 
-                if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_OPENSTACK_DISTRIBUTION).equals("essex")) {
-                    id = network.getJSONObject("security_group_rule").getString("id");
-                } else {
-                    id = "" + network.getJSONObject("security_group_rule").getInt("id");
-                }
                 log.debug("Operation ok result " + id);
-
-                //                                if (id.startsWith("\"") && id.endsWith("\"")) {
-                //                                    id = id.substring(1, id.length()-1);
-                //                                }
-
                 rule.setIdRule(id);
-
                 return id;
 
             } else {
@@ -164,20 +153,9 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
                 org.json.JSONObject network = new org.json.JSONObject(result);
                 String id;
 
-                //     if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_OPENSTACK_DISTRIBUTION).equals("essex")) {
                 id = network.getJSONObject("security_group").getString("id");
-                //   } else {
-                //     id = "" + network.getJSONObject("security_group").getInt("id");
-                // }
-                //              String id = result.substring(result.indexOf(", \"id\":")
-                //                      + ", \"id\":".length() + 1, result
-                //                      .indexOf(", \"name\": "));
+
                 log.debug("Operation ok id " + id);
-
-                //                                if (id.startsWith("\"") && id.endsWith("\"")) {
-                //                                    id = id.substring(1, id.length()-1);
-                //                                }
-
                 return id;
             } else {
                 log.error("Error to create a security group " + result);
@@ -199,7 +177,11 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
 
 
-
+    /**
+     * Destroy the rule in the security group.
+     * @param claudiaData
+     * @param rule
+     */
     public void destroyRule(ClaudiaData claudiaData, Rule rule)
     throws InfrastructureException {
         log.debug("Destroy security rule " + rule.getFromPort());
@@ -366,8 +348,8 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
         return securityGroups;
     }
 
-    /* (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.claudia.FirewallingClient#load(java.lang.String)
+    /**
+     * Load a security group.
      */
     public SecurityGroup loadSecurityGroup(ClaudiaData claudiaData, String securityGroupId)
     throws EntityNotFoundException {
