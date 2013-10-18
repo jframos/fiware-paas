@@ -435,6 +435,14 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
         }
     }
 
+    /**
+     * 
+     * @param systemPropertiesProvider
+     */
+    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider){
+        this.systemPropertiesProvider = systemPropertiesProvider;
+    }
+
 
 
 
