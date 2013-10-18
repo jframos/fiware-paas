@@ -121,9 +121,12 @@ public class Network {
         this.idNetwork = id;
     }
 
-    public NetworkDto toDto()
-    {
-        NetworkDto networkDto = new NetworkDto (this.name);
+    /**
+     * the dto entity.
+     * @return
+     */
+    public NetworkDto toDto() {
+        NetworkDto networkDto = new NetworkDto(this.name);
         return networkDto;
 
     }
@@ -132,8 +135,7 @@ public class Network {
      * It returns the string representations for rest rerquest.
      * @return the json representation
      */
-    public String toJson ()
-    {
+    public String toJson() {
         return "{"
         + " \"network\":{"
         + "    \"name\": \"" + this.name + "\","
@@ -143,6 +145,7 @@ public class Network {
         + "}";
 
     }
+
 
 
 }

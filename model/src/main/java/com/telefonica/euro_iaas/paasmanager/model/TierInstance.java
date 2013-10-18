@@ -180,7 +180,9 @@ public class TierInstance extends InstallableInstance {
 
     public String getVApp() {
         return vapp;
-    }    public VM getVM() {
+    }
+
+    public VM getVM() {
         return vm;
     }
 

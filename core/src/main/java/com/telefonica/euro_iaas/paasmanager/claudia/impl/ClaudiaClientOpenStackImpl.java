@@ -127,29 +127,18 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             throw new InfrastructureException(errorMsg);
         }
 
-        /*
-         * {"server": {"key_name": "henar", "security_groups": [{"name":
-         * "ssh_ping"}], "flavorRef": "2", "imageRef":
-         * "44dcdba3-a75d-46a3-b209-5e9035d2435e", "name": "mongoconfig2" }}
-         */
         String name = claudiaData.getService() + "-" + tier.getName() + "-"
         + replica;
-        String payload = "{\"server\": " + "{\"key_name\": \""
-        + tier.getKeypair() + "\", ";
-        if (tier.getSecurityGroup() != null) {
-            payload = payload + "\"security_groups\": [{ \"name\": \""
-            + tier.getSecurityGroup().getName() + "\"}], ";
-        }
-        payload = payload
-        + "\"flavorRef\": \"" + tier.getFlavour() + "\", " + "\"imageRef\": \""
-        + tier.getImage() + "\", " + "\"name\": \"" + name + "\"}}";
+        tier.setName(claudiaData.getService() + "-" + tier.getName() + "-"
+                + replica);
+        String payload = tier.toJson();
         log.debug("Payload " + payload);
 
         return payload;
     }
 
     /**
-     * Checks if a certain Server has been finally deleted from OpenStack
+     * Checks if a certain Server has been finally deleted from OpenStack.
      *
      * @param tierInstance
      * @param claudiaData
@@ -407,7 +396,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             checkDeleteServerTaskStatus(tierInstance, claudiaData);
         } catch (OpenStackException oes) {
             String errorMessage = "Error deleting serverId: "
-            + tierInstance.getVM().getVmid();
+                + tierInstance.getVM().getVmid();
             log.error(errorMessage);
             throw new InfrastructureException(errorMessage);
         }

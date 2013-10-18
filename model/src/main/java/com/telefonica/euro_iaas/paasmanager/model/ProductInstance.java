@@ -12,6 +12,11 @@ import javax.persistence.ManyToOne;
 
 import com.telefonica.euro_iaas.paasmanager.model.dto.ProductInstanceDto;
 
+/**
+ * The Product Instance entity.
+ * @author henar
+ *
+ */
 @Entity
 public class ProductInstance extends InstallableInstance implements Comparable<ProductInstance> {
 
@@ -19,33 +24,31 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
     private ProductRelease productRelease;
     private String taskId = "";
 
-    /*
-     * @JoinColumn(name = "tierInstance_id", referencedColumnName = "id")
-     * @ManyToOne(targetEntity = TierInstance.class, optional = true, fetch = FetchType.LAZY)
-     * @XmlTransient private TierInstance tierInstance;
-     */
-
     /**
-     * Default Constructor
+     * Default Constructor.
      */
     public ProductInstance() {
         super();
     }
 
     /**
-     * <p>
-     * Constructor for ProductInstance.
-     * </p>
-     * 
-     * @param application
-     *            a {@link com.telefonica.euro_iaas.sdc.model.Product} object.
+     * Constructor.
+     * @param productRelease
      * @param status
-     *            a {@link com.telefonica.euro_iaas.sdc.model.ProductInstance.Status} object.
+     * @param vdc
      */
     public ProductInstance(ProductRelease productRelease, Status status, String vdc) {
         super(status);
         this.productRelease = productRelease;
         setVdc(vdc);
+    }
+
+    /**
+     * It compares the product instance.
+     */
+    public int compareTo(ProductInstance arg0) {
+        // TODO Auto-generated method stub
+        return 0;
     }
 
     /**
@@ -63,11 +66,14 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
         this.productRelease = productRelease;
     }
 
-    public int compareTo(ProductInstance arg0) {
-        // TODO Auto-generated method stub
-        return 0;
+    public void setTaskId(String id) {
+        taskId = id;
     }
 
+    /**
+     * It returns the dto.
+     * @return ProductInstanceDto.class
+     */
     public ProductInstanceDto toDto() {
         ProductInstanceDto pInstanceDto = new ProductInstanceDto();
         pInstanceDto.setName(getName());
@@ -76,16 +82,7 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
         if (getProductRelease() != null) {
             pInstanceDto.setProductReleaseDto(getProductRelease().toDto());
         }
-
-        /*
-         * if (getPrivateAttributes()!= null){ pInstanceDto.setAttributes(getPrivateAttributes()); }
-         */
         return pInstanceDto;
-
-    }
-
-    public void setTaskId(String id) {
-        taskId = id;
 
     }
 

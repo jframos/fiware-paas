@@ -33,9 +33,9 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 @Entity
 public class Tier {
 
-    public final static String NAME_FIELD = "name";
-    public final static String VDC_FIELD = "vdc";
-    public final static String ENVIRONMENT_NAME_FIELD = "environmentname";
+    public static final String NAME_FIELD = "name";
+    public static final String VDC_FIELD = "vdc";
+    public static final String ENVIRONMENT_NAME_FIELD = "environmentname";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,7 +49,7 @@ public class Tier {
     private String flavour = "";
     private String image = "";
     private String icono = "";
-    // private String securityGroupName;
+
     private String keypair = "";
     private String floatingip = "false";
 
@@ -61,20 +61,24 @@ public class Tier {
     private String payload;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "tier_has_productReleases", joinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "productRelease_ID", nullable = false, updatable = false) })
-    private List<ProductRelease> productReleases;
+    @JoinTable(name = "tier_has_productReleases", joinColumns = { @JoinColumn(name = "tier_ID",
+            nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "productRelease_ID",
+                    nullable = false, updatable = false) })
+                    private List<ProductRelease> productReleases;
 
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "tier_has_networks", joinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "network_ID", nullable = false, updatable = false) })
-    private List<Network> networks;
+    @JoinTable(name = "tier_has_networks", joinColumns = { @JoinColumn(name = "tier_ID",
+            nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "network_ID",
+                    nullable = false, updatable = false) })
+                    private List<Network> networks;
 
 
     @ManyToOne(fetch = FetchType.EAGER)
     private SecurityGroup securityGroup;
 
     /**
-     * Default Constructor
+     * Default Constructor.
      */
     public Tier() {
         networks = new ArrayList<Network>();
@@ -122,6 +126,20 @@ public class Tier {
         networks = new ArrayList<Network>();
     }
 
+    /**
+     * Constructor.
+     * @param name
+     * @param maximumNumberInstances
+     * @param minimumNumberInstances
+     * @param initialNumberInstances
+     * @param productReleases
+     * @param flavour
+     * @param image
+     * @param icono
+     * @param keypair
+     * @param floatingip
+     * @param payload
+     */
     public Tier(String name, Integer maximumNumberInstances,
             Integer minimumNumberInstances, Integer initialNumberInstances,
             List<ProductRelease> productReleases, String flavour, String image,
@@ -154,6 +172,10 @@ public class Tier {
 
     }
 
+    /**
+     * Add the product release for the tier.
+     * @param productRelease
+     */
     public void addProductRelease(ProductRelease productRelease) {
         if (this.productReleases == null) {
             productReleases = new ArrayList<ProductRelease>();
@@ -261,10 +283,12 @@ public class Tier {
         return this.payload;
     }
 
-    public String getProductNameBalanced ()
-    {
-        if (getProductReleases() != null)
-        {
+    /**
+     * 
+     * @return the product name
+     */
+    public String getProductNameBalanced() {
+        if (getProductReleases() != null) {
             for (ProductRelease productRelease: getProductReleases()) {
                 Attribute attBalancer = productRelease.getAttribute("balancer");
                 return attBalancer.getValue();
@@ -278,7 +302,7 @@ public class Tier {
      * @return the productReleases
      */
     public List<ProductRelease> getProductReleases() {
-        if (productReleases == null){
+        if (productReleases == null) {
             this.productReleases = new ArrayList<ProductRelease>();
         }
         return productReleases;
@@ -315,8 +339,14 @@ public class Tier {
         }
     }
 
+    /**
+     * to remove the product release.
+     * @param productRelease
+     */
     public void removeProductRelease(ProductRelease productRelease) {
-        productReleases.remove(productRelease);
+        if (productReleases.contains(productRelease)) {
+            productReleases.remove(productRelease);
+        }
     }
 
     public void setEnviromentName(String environmentname) {
@@ -325,8 +355,8 @@ public class Tier {
 
 
     /**
-     * @param name
-     *            the name to set
+     * @param flavour
+     *            the flavour to set
      */
     public void setFlavour(String flavour) {
         this.flavour = flavour;
@@ -347,8 +377,8 @@ public class Tier {
     }
 
     /**
-     * @param initial_number_instances
-     *            the initial_number_instances to set
+     * @param initialNumberInstances
+     *            the initialNumberInstances to set
      */
     public void setInitialNumberInstances(Integer initialNumberInstances) {
         this.initialNumberInstances = initialNumberInstances;
@@ -361,16 +391,16 @@ public class Tier {
     }
 
     /**
-     * @param maximum_number_instances
-     *            the maximum_number_instances to set
+     * @param maximumNumberInstances
+     *            the maximumNumberInstances to set
      */
     public void setMaximumNumberInstances(Integer maximumNumberInstances) {
         this.maximumNumberInstances = maximumNumberInstances;
     }
 
     /**
-     * @param minimum_number_instances
-     *            the minimum_number_instances to set
+     * @param minimumNumberInstances
+     *            the minimumNumberInstances to set
      */
     public void setMinimumNumberInstances(Integer minimumNumberInstances) {
         this.minimumNumberInstances = minimumNumberInstances;
@@ -392,11 +422,9 @@ public class Tier {
         this.networks = networks;
     }
     /**
-     * @param initial_number_instances
-     *            the initial_number_instances to set
+     * @param payload
+     *            the payload to set
      */
-
-
     public void setPayload(String payload) {
         this.payload = payload;
     }
@@ -419,6 +447,10 @@ public class Tier {
 
 
 
+    /**
+     * To the dto entity.
+     * @return
+     */
     public TierDto toDto() {
         List<ProductReleaseDto> productReleasesDto = new ArrayList<ProductReleaseDto>();
         TierDto tierDto = new TierDto();
@@ -429,8 +461,9 @@ public class Tier {
         tierDto.setIcono(getIcono());
         tierDto.setFlavour(getFlavour());
         tierDto.setImage(getImage());
-        if (this.getSecurityGroup() != null)
+        if (this.getSecurityGroup() != null) {
             tierDto.setSecurityGroup(this.getSecurityGroup().getName());
+        }
         tierDto.setKeypair(getKeypair());
         tierDto.setFloatingip(getFloatingip());
 
@@ -460,6 +493,25 @@ public class Tier {
         return tierDto;
 
     }
+
+    /**
+     * to json.
+     * @return
+     */
+    public String toJson() {
+        String payload = "{\"server\": " + "{\"key_name\": \""
+        + getKeypair() + "\", ";
+        if (getSecurityGroup() != null) {
+            payload = payload + "\"security_groups\": [{ \"name\": \""
+            + getSecurityGroup().getName() + "\"}], ";
+        }
+        payload = payload
+        + "\"flavorRef\": \"" + getFlavour() + "\", " + "\"imageRef\": \""
+        + getImage() + "\", " + "\"name\": \"" + name + "\"}}";
+        return payload;
+
+    }
+
 
     /**
      * @param network

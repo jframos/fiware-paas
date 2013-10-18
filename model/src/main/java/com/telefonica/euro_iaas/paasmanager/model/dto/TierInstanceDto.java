@@ -16,6 +16,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 
+/**
+ * The Dto for the Tier Instance.
+ * @author henar
+ *
+ */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TierInstanceDto {

@@ -19,10 +19,15 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstancePDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 
+/**
+ * Test for environmetn instances.
+ * @author henar
+ *
+ */
 public class EnvironmentInstanceTest extends TestCase {
 
-    EnvironmentInstance envIns = null;
-    Environment envResult;
+    private EnvironmentInstance envIns = null;
+    private Environment envResult;
 
     @Override
     @Before
@@ -89,6 +94,10 @@ public class EnvironmentInstanceTest extends TestCase {
 
     }
 
+    /**
+     * Test for create environment dto.
+     * @throws Exception
+     */
     @Test
     public void testCreateEnvironmentToPDto() throws Exception {
 
@@ -103,6 +112,10 @@ public class EnvironmentInstanceTest extends TestCase {
 
     }
 
+    /**
+     * Create an environment without vm.
+     * @throws Exception
+     */
     @Test
     public void testCreateEnvironmentToPDtoNoVM() throws Exception {
         envIns.getTierInstances().get(0).setVM(null);

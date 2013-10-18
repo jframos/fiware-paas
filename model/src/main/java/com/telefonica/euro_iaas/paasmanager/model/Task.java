@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -56,13 +57,13 @@ public class Task implements Serializable {
     @AttributeOverrides({ @AttributeOverride(name = "href", column = @Column(name = "owner_href")),
         @AttributeOverride(name = "name", column = @Column(name = "owner_name")),
         @AttributeOverride(name = "type", column = @Column(name = "owner_type")) })
-    private TaskReference owner;
+        private TaskReference owner;
     @XmlElement(required = false)
     @Embedded
     @AttributeOverrides({ @AttributeOverride(name = "href", column = @Column(name = "result_href")),
         @AttributeOverride(name = "name", column = @Column(name = "result_name")),
         @AttributeOverride(name = "type", column = @Column(name = "result_type")) })
-    private TaskReference result;
+        private TaskReference result;
 
     @XmlAttribute(required = true)
     private Date startTime;
@@ -106,93 +107,10 @@ public class Task implements Serializable {
     }
 
     /**
-     * @return the id
+     * @return the description
      */
-    public long getId() {
-        return id;
-    }
-
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the href
-     */
-    public String getHref() {
-        return href;
-    }
-
-    /**
-     * @param href
-     *            the href to set
-     */
-    public void setHref(String href) {
-        this.href = href;
-    }
-
-    /**
-     * @return the error
-     */
-    public TaskError getError() {
-        return error;
-    }
-
-    /**
-     * @param error
-     *            the error to set
-     */
-    public void setError(TaskError error) {
-        this.error = error;
-    }
-
-    /**
-     * @return the owner
-     */
-    public TaskReference getOwner() {
-        return owner;
-    }
-
-    /**
-     * @param owner
-     *            the owner to set
-     */
-    public void setOwner(TaskReference owner) {
-        this.owner = owner;
-    }
-
-    /**
-     * @return the result
-     */
-    public TaskReference getResult() {
-        return result;
-    }
-
-    /**
-     * @param result
-     *            the result to set
-     */
-    public void setResult(TaskReference result) {
-        this.result = result;
-    }
-
-    /**
-     * @return the startTime
-     */
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    /**
-     * @param startTime
-     *            the startTime to set
-     */
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+    public String getDescription() {
+        return description;
     }
 
     /**
@@ -203,11 +121,17 @@ public class Task implements Serializable {
     }
 
     /**
-     * @param endTime
-     *            the endTime to set
+     * @return the environment
      */
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+    public String getEnvironment() {
+        return environment;
+    }
+
+    /**
+     * @return the error
+     */
+    public TaskError getError() {
+        return error;
     }
 
     /**
@@ -218,11 +142,38 @@ public class Task implements Serializable {
     }
 
     /**
-     * @param expireTime
-     *            the expireTime to set
+     * @return the href
      */
-    public void setExpireTime(Long expireTime) {
-        this.expireTime = expireTime;
+    public String getHref() {
+        return href;
+    }
+
+    /**
+     * @return the id
+     */
+    public long getId() {
+        return id;
+    }
+
+    /**
+     * @return the owner
+     */
+    public TaskReference getOwner() {
+        return owner;
+    }
+
+    /**
+     * @return the result
+     */
+    public TaskReference getResult() {
+        return result;
+    }
+
+    /**
+     * @return the startTime
+     */
+    public Date getStartTime() {
+        return startTime;
     }
 
     /**
@@ -233,18 +184,17 @@ public class Task implements Serializable {
     }
 
     /**
-     * @param status
-     *            the status to set
+     * @return the tier
      */
-    public void setStatus(TaskStates status) {
-        this.status = status;
+    public String getTier() {
+        return tier;
     }
 
     /**
-     * @return the description
+     * @return the vdc
      */
-    public String getDescription() {
-        return description;
+    public String getVdc() {
+        return vdc;
     }
 
     /**
@@ -256,25 +206,11 @@ public class Task implements Serializable {
     }
 
     /**
-     * @return the vdc
+     * @param endTime
+     *            the endTime to set
      */
-    public String getVdc() {
-        return vdc;
-    }
-
-    /**
-     * @param vdc
-     *            the vdc to set
-     */
-    public void setVdc(String vdc) {
-        this.vdc = vdc;
-    }
-
-    /**
-     * @return the environment
-     */
-    public String getEnvironment() {
-        return environment;
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     /**
@@ -286,18 +222,83 @@ public class Task implements Serializable {
     }
 
     /**
-     * @return the tier
+     * @param error
+     *            the error to set
      */
-    public String getTier() {
-        return tier;
+    public void setError(TaskError error) {
+        this.error = error;
     }
 
     /**
-     * @param environment
-     *            the environment to set
+     * @param expireTime
+     *            the expireTime to set
+     */
+    public void setExpireTime(Long expireTime) {
+        this.expireTime = expireTime;
+    }
+
+    /**
+     * @param href
+     *            the href to set
+     */
+    public void setHref(String href) {
+        this.href = href;
+    }
+
+    /**
+     * @param id
+     *            the id to set
+     */
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    /**
+     * @param owner
+     *            the owner to set
+     */
+    public void setOwner(TaskReference owner) {
+        this.owner = owner;
+    }
+
+    /**
+     * @param result
+     *            the result to set
+     */
+    public void setResult(TaskReference result) {
+        this.result = result;
+    }
+
+    /**
+     * @param startTime
+     *            the startTime to set
+     */
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    /**
+     * @param status
+     *            the status to set
+     */
+    public void setStatus(TaskStates status) {
+        this.status = status;
+    }
+
+    /**
+     * @param tier
+     *            the tier to set
      */
     public void setTier(String tier) {
         this.tier = tier;
+    }
+
+    /**
+     * @param vdc
+     *            the vdc to set
+     */
+    public void setVdc(String vdc) {
+        this.vdc = vdc;
     }
 
 }

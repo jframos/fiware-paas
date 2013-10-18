@@ -33,12 +33,8 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
 
     private SystemPropertiesProvider systemPropertiesProvider;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration#createOvf
-     * (com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto)
+    /**
+     * It creates a OVF from an envioronment.
      */
     public String createOvf(EnvironmentDto environmentDto) {
 
@@ -62,6 +58,9 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
         return ovf;
     }
 
+    /**
+     * It creates a OVF from an envioronment.
+     */
     public String createOvf(EnvironmentInstanceDto environmentInstanceDto) {
 
         String ovf = null;
@@ -85,7 +84,7 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
     }
 
     /**
-     * Loads the ovfTemplate fromdisk
+     * Loads the ovfTemplate fromdisk.
      * 
      * @return
      * @throws IOException
@@ -107,7 +106,7 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
     }
 
     /**
-     * Replace a macro for its value in a ovf
+     * Replace a macro for its value in a ovf.
      * 
      * @param ovf
      * @param macro
@@ -120,7 +119,7 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
 
     /**
      * Set the File and DiskFile Section in ovf based on OVFFILE_SECTION and
-     * OVFDISKFILE_SECTION
+     * OVFDISKFILE_SECTION.
      * 
      * @param ovf
      * @param number
@@ -167,7 +166,7 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
                 .getProperty(SystemPropertiesProvider.OVF_TEMPLATE_LOCATION)
                 + "info.ovf");
         if (tierDto.getKeypair() == null && tierDto.getFloatingip() == null
-                && tierDto.getSecurity_group() == null) {
+                && tierDto.getSecurityGroup() == null) {
             return "";
         }
         infoTemplate = replace(infoTemplate, "\\$\\{key_name\\}", tierDto
@@ -175,13 +174,13 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
         infoTemplate = replace(infoTemplate, "\\$\\{floating_ip\\}", tierDto
                 .getFloatingip());
         infoTemplate = replace(infoTemplate, "\\$\\{security_group\\}", tierDto
-                .getSecurity_group());
+                .getSecurityGroup());
         return infoTemplate;
 
     }
 
     /**
-     * Set the productAttributes section inf the ovf
+     * Set the productAttributes section inf the ovf.
      * 
      * @param ovf
      * @param productInstance
@@ -276,7 +275,7 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
             productSection = productSection + productSectionAux + "\n";
 
         }
-        if (tierDto.getProductReleaseDtos().size () == 0){
+        if (tierDto.getProductReleaseDtos().size() == 0){
             return replace(virtualSystemOvf, "\\$\\{productSectionTemplate\\}",
             "");
         }
@@ -285,7 +284,7 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
     }
 
     /**
-     * Set the productSection in the OVF
+     * Set the productSection in the OVF.
      * 
      * @param ovf
      * @param tierInstanceDto
@@ -373,7 +372,7 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
                         virtualSystemSectionAux, tierDto)
                         + "\n";
             } catch (NullPointerException e) {
-                log.info (tierDto.getName() + " does not have products");
+                log.info(tierDto.getName() + " does not have products");
                 virtualSystemSectionAux = virtualSystemSectionAux.replaceAll("\\$\\{productSectionTemplate\\}","");
             }
             String info = setInfoTier(tierDto) + "\n";

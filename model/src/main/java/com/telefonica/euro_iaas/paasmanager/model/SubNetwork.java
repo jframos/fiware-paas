@@ -117,7 +117,7 @@ public class SubNetwork {
     }
 
     /**
-     * the json for the OPenstack request
+     * the json for the OPenstack request.
      * @return
      */
     public String toJson () {

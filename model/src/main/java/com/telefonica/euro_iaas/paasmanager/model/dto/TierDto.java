@@ -19,7 +19,7 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 
 /**
- * Represents an artifact to be installed on a ProductRelease
+ * Represents an artifact to be installed on a ProductRelease.
  * 
  * @author Henar Mu�oz
  * @version $Id: $
@@ -108,7 +108,7 @@ public class TierDto {
         this.icono = icono;
         this.keypair = keypair;
         this.floatingip = floatingip;
-        this.securityGroup=securityGroup;
+        this.securityGroup = securityGroup;
         this.networkDto = new ArrayList<NetworkDto>();
     }
 
@@ -229,18 +229,26 @@ public class TierDto {
      * @return the productReleases
      */
     public List<ProductReleaseDto> getProductReleaseDtos() {
-        if (productReleaseDtos == null){
+        if (productReleaseDtos == null) {
             this.productReleaseDtos = new ArrayList<ProductReleaseDto>();
         }
         return productReleaseDtos;
     }
 
 
-    public String getSecurity_group() {
+    /**
+     * Get the security group.
+     * @return
+     */
+    public String getSecurityGroup() {
         return this.securityGroup;
     }
 
 
+    /**
+     * It removes the product release.
+     * @param productReleaseDto
+     */
     public void removeProductRelease(ProductReleaseDto productReleaseDto) {
 
         productReleaseDtos.remove(productReleaseDto);
@@ -248,8 +256,8 @@ public class TierDto {
 
 
     /**
-     * @param name
-     *            the name to set
+     * @param flavour
+     *            the flavour to set
      */
     public void setFlavour(String flavour) {
         this.flavour = flavour;

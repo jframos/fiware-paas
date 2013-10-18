@@ -58,10 +58,10 @@ public class NetworkDto {
      */
     public Network fromDto() {
 
-        Network net = new Network (this.getNetworkName());
+        Network net = new Network(this.getNetworkName());
 
-        if (this.getSubNetName()!= null) {
-            SubNetwork subnet = new SubNetwork (this.getSubNetName(), ""+net.getSubNetCounts());
+        if (this.getSubNetName() != null) {
+            SubNetwork subnet = new SubNetwork(this.getSubNetName(), "" + net.getSubNetCounts());
             net.addSubNet(subnet);
         }
         return net;

@@ -142,7 +142,7 @@ public class EnvironmentInstance extends InstallableInstance {
     }
 
     private TierPDto createTierPDto(Tier tier, List<TierInstance> lTierInstance) {
-        List<ProductReleaseDto> productReleasedto = new ArrayList();
+        List<ProductReleaseDto> productReleasedto = new ArrayList<ProductReleaseDto>();
 
         for (ProductRelease productRelease : tier.getProductReleases()) {
             if (!productReleasedto.contains(productRelease.toDto())) {
@@ -201,9 +201,14 @@ public class EnvironmentInstance extends InstallableInstance {
         return vapp;
     }
 
+    /**
+     * It removes a tier instance in the environment
+     * @param tierInstance
+     */
     public void removeTierInstance(TierInstance tierInstance) {
-        if (tierInstances.contains(tierInstance))
+        if (tierInstances.contains(tierInstance)) {
             tierInstances.remove(tierInstance);
+        }
 
     }
 
@@ -240,13 +245,17 @@ public class EnvironmentInstance extends InstallableInstance {
     }
 
     /**
-     * @param envPayload
+     * @param vapp
      *            the vapp to set
      */
     public void setVapp(String vapp) {
         this.vapp = vapp;
     }
 
+    /**
+     * the dto specification.
+     * @return the dto
+     */
     public EnvironmentInstanceDto toDto() {
         EnvironmentInstanceDto envInstanceDto = new EnvironmentInstanceDto();
         envInstanceDto.setEnvironmentInstanceName(getName());
@@ -256,10 +265,7 @@ public class EnvironmentInstance extends InstallableInstance {
         if (this.getStatus() != null) {
             envInstanceDto.setStatus(this.getStatus());
         }
-        /*
-         * if (envInstance.getEnvironment() != null) { EnvironmentDto envDto = convertToDto(envInstance
-         * .getEnvironment()); envInstanceDto.setEnvironmentDto(envDto); }
-         */
+
 
         List<TierInstanceDto> lTierInstanceDto = new ArrayList<TierInstanceDto>();
         if (getTierInstances() != null) {
@@ -269,15 +275,21 @@ public class EnvironmentInstance extends InstallableInstance {
             envInstanceDto.setTierInstances(lTierInstanceDto);
         }
 
-        if (getVdc() != null)
+        if (getVdc() != null) {
             envInstanceDto.setVdc(getVdc());
+        }
 
-        if (getPrivateAttributes() != null)
+        if (getPrivateAttributes() != null) {
             envInstanceDto.setAttributes(getPrivateAttributes());
+        }
 
         return envInstanceDto;
     }
 
+    /**
+     * The dto entity for the portal.
+     * @return
+     */
     public EnvironmentInstancePDto toPDto() {
         EnvironmentInstancePDto envInstanceDto = new EnvironmentInstancePDto();
         envInstanceDto.setEnvironmentInstanceName(getName());
@@ -306,12 +318,17 @@ public class EnvironmentInstance extends InstallableInstance {
 
         }
 
-        if (getVdc() != null)
+        if (getVdc() != null) {
             envInstanceDto.setVdc(getVdc());
+        }
 
         return envInstanceDto;
     }
 
+    /**
+     * The environment instance dto for the portal.
+     * @return
+     */
     public EnvironmentInstancePDto toPDtos() {
         EnvironmentInstancePDto envInstanceDto = new EnvironmentInstancePDto();
         envInstanceDto.setEnvironmentInstanceName(getName());
@@ -331,8 +348,9 @@ public class EnvironmentInstance extends InstallableInstance {
                 }
             }
         }
-        if (getVdc() != null)
+        if (getVdc() != null) {
             envInstanceDto.setVdc(getVdc());
+        }
 
         return envInstanceDto;
     }
