@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -44,7 +45,7 @@ public class ApplicationType {
     private List<EnvironmentType> environmentTypes;
 
     /**
-     * Default Constructor
+     * Default Constructor.
      */
     public ApplicationType() {
     }
@@ -61,6 +62,45 @@ public class ApplicationType {
     }
 
     /**
+     * Equals functionality.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ApplicationType other = (ApplicationType) obj;
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @return the environmentTypes
+     */
+    public List<EnvironmentType> getEnvironmentTypes() {
+        return environmentTypes;
+    }
+
+    /**
      * @return the id
      */
     public Long getId() {
@@ -72,44 +112,6 @@ public class ApplicationType {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * @param name
-     *            the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param description
-     *            the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * @return the environmentTypes
-     */
-    public List<EnvironmentType> getEnvironmentTypes() {
-        return environmentTypes;
-    }
-
-    /**
-     * @param environmentTypes
-     *            the environmentTypes to set
-     */
-    public void setEnvironmentTypes(List<EnvironmentType> environmentTypes) {
-        this.environmentTypes = environmentTypes;
     }
 
     /*
@@ -124,25 +126,28 @@ public class ApplicationType {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
+    /**
+     * @param description
+     *            the description to set
      */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ApplicationType other = (ApplicationType) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @param environmentTypes
+     *            the environmentTypes to set
+     */
+    public void setEnvironmentTypes(List<EnvironmentType> environmentTypes) {
+        this.environmentTypes = environmentTypes;
+    }
+
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

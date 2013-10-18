@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import net.sf.json.JSONObject;
 
 /**
- * Defines an attribute which can be configured
+ * Defines an attribute which can be configured.
  * 
  * @author Jesus M. Movilla
  */
@@ -40,10 +40,10 @@ public class Attribute {
     @XmlTransient
     private Long v;
 
-    /** the attribute key */
+    /** the attribute key. */
     @Column(nullable = false, length = 256)
     private String key;
-    /** the attribute value */
+    /** the attribute value. */
     @Column(nullable = false, length = 2048)
     private String value;
     /* the description of that attribute* */
@@ -75,71 +75,6 @@ public class Attribute {
         this.description = description;
     }
 
-    /**
-     * @return the key
-     */
-    public String getKey() {
-        return key;
-    }
-
-    /**
-     * @return the value
-     */
-    public String getValue() {
-        return value;
-    }
-
-    /**
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param key
-     *            the key to set
-     */
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    /**
-     * @param value
-     *            the value to set
-     */
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    /**
-     * @param description
-     *            the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * @return the id.
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((key == null) ? 0 : key.hashCode());
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
-    }
-
     /*
      * (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
@@ -157,15 +92,19 @@ public class Attribute {
         }
         Attribute other = (Attribute) obj;
         if (key == null) {
-            if (other.key != null)
+            if (other.key != null) {
                 return false;
-        } else if (!key.equals(other.key))
+            }
+        } else if (!key.equals(other.key)) {
             return false;
+        }
         if (value == null) {
-            if (other.value != null)
+            if (other.value != null) {
                 return false;
-        } else if (!value.equals(other.value))
+            }
+        } else if (!value.equals(other.value)) {
             return false;
+        }
         return true;
     }
 
@@ -174,7 +113,73 @@ public class Attribute {
         key = jsonNode.getString("key");
         value = jsonNode.getString("value");
 
-        if (jsonNode.containsKey("description"))
+        if (jsonNode.containsKey("description")) {
             description = jsonNode.getString("description");
+        }
+    }
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @return the id.
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * @return the key
+     */
+    public String getKey() {
+        return key;
+    }
+
+    /**
+     * @return the value
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((key == null) ? 0 : key.hashCode());
+        result = prime * result + ((value == null) ? 0 : value.hashCode());
+        return result;
+    }
+
+    /**
+     * @param description
+     *            the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @param key
+     *            the key to set
+     */
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    /**
+     * @param value
+     *            the value to set
+     */
+    public void setValue(String value) {
+        this.value = value;
     }
 }
