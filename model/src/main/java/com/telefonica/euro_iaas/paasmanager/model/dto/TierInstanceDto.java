@@ -7,6 +7,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -30,18 +31,33 @@ public class TierInstanceDto {
      * the default constructor.
      */
     public TierInstanceDto() {
+        this.productInstanceDtos = new ArrayList<ProductInstanceDto>();
     }
 
 
+    /**
+     * 
+     * @param tierInstanceName
+     * @param replicaNumber
+     * @param productInstanceDtos
+     * @param fqn
+     */
     public TierInstanceDto(String tierInstanceName, int replicaNumber, List<ProductInstanceDto> productInstanceDtos,
             String fqn) {
 
         this.tierInstanceName = tierInstanceName;
         this.productInstanceDtos = productInstanceDtos;
         this.replicaNumber = replicaNumber;
+        this.productInstanceDtos = new ArrayList<ProductInstanceDto>();
     }
 
-
+    /**
+     * 
+     * @param tierInstanceName
+     * @param replicaNumber
+     * @param productInstanceDtos
+     * @param vm
+     */
     public TierInstanceDto(String tierInstanceName, int replicaNumber, List<ProductInstanceDto> productInstanceDtos,
             VMDto vm) {
 
@@ -49,29 +65,47 @@ public class TierInstanceDto {
         this.productInstanceDtos = productInstanceDtos;
         this.replicaNumber = replicaNumber;
         this.vm = vm;
+        this.productInstanceDtos = new ArrayList<ProductInstanceDto>();
     }
 
+    /**
+     * 
+     * @param tierInstanceName
+     * @param tierDto
+     * @param replicaNumber
+     * @param productInstanceDtos
+     * @param fqn
+     */
     public TierInstanceDto(String tierInstanceName, TierDto tierDto,
             int replicaNumber, List<ProductInstanceDto> productInstanceDtos,
             String fqn) {
-
-
         this.tierInstanceName = tierInstanceName;
         this.tierDto = tierDto;
         this.productInstanceDtos = productInstanceDtos;
         this.replicaNumber = replicaNumber;
+        this.productInstanceDtos = new ArrayList<ProductInstanceDto>();
     }
 
+
+    /**
+     * Add the product instance dto object.
+     * @param productInstanceDto
+     */
+    public void addProductInstanceDto(ProductInstanceDto productInstanceDto) {
+        if (this.productInstanceDtos == null) {
+            this.productInstanceDtos = new ArrayList<ProductInstanceDto>();
+        }
+        this.productInstanceDtos.add(productInstanceDto);
+    }
 
 
     public List<Attribute> getAttributes() {
         return attributes;
     }
-
-
     public List<ProductInstanceDto> getProductInstanceDtos() {
         return productInstanceDtos;
     }
+
     public int getReplicaNumber() {
         return replicaNumber;
 

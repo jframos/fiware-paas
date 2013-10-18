@@ -75,9 +75,9 @@ public class Attribute {
         this.description = description;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
+    /**
+     * The equal function.
+     * @see java.lang.Object#
      */
     @Override
     public boolean equals(Object obj) {
@@ -108,6 +108,10 @@ public class Attribute {
         return true;
     }
 
+    /**
+     * from Json.
+     * @param jsonNode
+     */
     @SuppressWarnings("unchecked")
     public void fromJson(JSONObject jsonNode) {
         key = jsonNode.getString("key");

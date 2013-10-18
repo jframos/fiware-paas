@@ -15,13 +15,16 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
-import com.telefonica.euro_iaas.paasmanager.model.EnvironmentType;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
-
+/**
+ * EnvironmentDto for the Environment entity.
+ * @author henar
+ *
+ */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class EnvironmentDto {
-    private EnvironmentType environmentType;
+
     private List<TierDto> tierDtos;
     private String name;
     private String description;
@@ -38,19 +41,16 @@ public class EnvironmentDto {
      * @param tiers
      * @param name
      */
-    public EnvironmentDto(EnvironmentType environmentType, List<TierDto> tierDtos, String name, String description) {
-        this.environmentType = environmentType;
-        this.tierDtos = tierDtos;
-        this.name = name;
-        this.description = description;
-    }
-
     public EnvironmentDto(List<TierDto> tierDtos, String name, String description) {
         this.tierDtos = tierDtos;
         this.name = name;
         this.description = description;
     }
 
+    /**
+     * from Dto.
+     * @return
+     */
     public Environment fromDto() {
 
         Environment environment = new Environment();
@@ -74,13 +74,6 @@ public class EnvironmentDto {
      */
     public String getDescription() {
         return description;
-    }
-
-    /**
-     * @return the environmentType
-     */
-    public EnvironmentType getEnvironmentType() {
-        return environmentType;
     }
 
     /**
@@ -112,21 +105,12 @@ public class EnvironmentDto {
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param description
+     *            the description to set
      */
     public void setDescription(String description) {
         this.description = description;
     }
-
-    /**
-     * @param environmentType
-     *            the environmentType to set
-     */
-    public void setEnvironmentType(EnvironmentType environmentType) {
-        this.environmentType = environmentType;
-    }
-
     /**
      * @param name
      *            the name to set
@@ -136,24 +120,24 @@ public class EnvironmentDto {
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param org
+     *            the org to set
      */
     public void setOrg(String org) {
         this.org = org;
     }
 
     /**
-     * @param tiers
-     *            the tiers to set
+     * @param tierDtos
+     *            the tierDtos to set
      */
     public void setTierDtos(List<TierDto> tierDtos) {
         this.tierDtos = tierDtos;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param vdc
+     *            the vdc to set
      */
     public void setVdc(String vdc) {
         this.vdc = vdc;

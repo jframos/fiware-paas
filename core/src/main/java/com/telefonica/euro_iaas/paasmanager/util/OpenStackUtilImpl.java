@@ -40,6 +40,8 @@ import com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientImpl;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.Router;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
 /**
@@ -298,13 +300,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         String response = null;
 
         try {
-            String payload = "{"
-                + " \"network\":{"
-                + "    \"name\": \"" + net.getNetworkName() + "\","
-                + "    \"admin_state_up\": false,"
-                + "    \"shared\": false"
-                + "  }"
-                + "}";
+            String payload = net.toJson();
 
             HttpUriRequest request = createQuantumPostRequest(RESOURCE_NETWORKS, payload, APPLICATION_JSON, user);
             response = executeNovaRequest(request);
@@ -581,7 +577,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * @see com.telefonica.claudia.smi.OpenStackClient#createRouter(java.lang.String,
      * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser )
      */
-    public String createRouter(String name, String networkId, PaasManagerUser user) throws OpenStackException {
+    public String createRouter(Router router, PaasManagerUser user) throws OpenStackException {
         // throw new UnsupportedOperationException("Not supported yet.");
         // I need to know X-Auth-Token, orgID-Tennat, IP and Port
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
@@ -592,27 +588,18 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         String response = null;
 
         try {
-            String payload = "{" +
-            "    \"router\":" +
-            "    {" +
-            "        \"name\": \"" + name + "\"," +
-            "        \"admin_state_up\": true," +
-            "        \"external_gateway_info\" : {" +
-            "             \"network_id\": \"" + networkId + "\"" +
-            "        }" +
-            "    }" +
-            "}";
+            String payload = router.toJson();
 
             HttpUriRequest request = createQuantumPostRequest(RESOURCE_ROUTERS, payload, APPLICATION_JSON, user);
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error creating router in " + networkId + ": "
+            String errorMessage = "Error creating router in " + router.getIdNetwork() + ": "
             + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error creating router " + networkId
+            String errorMessage = "Error creating router " + router.getIdNetwork()
             + " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
@@ -669,7 +656,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * @see com.telefonica.claudia.smi.OpenStackClient#createSubNet(java.lang.String,
      * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
      */
-    public String createSubNet(String name, String networkId, String cidr, PaasManagerUser user) throws OpenStackException {
+    public String createSubNet(SubNetwork subNet, PaasManagerUser user) throws OpenStackException {
         // throw new UnsupportedOperationException("Not supported yet.");
         // I need to know X-Auth-Token, orgID-Tennat, IP and Port
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
@@ -680,30 +667,18 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         String response = null;
 
         try {
-            String payload = "{\"subnet\":{" +
-            "      \"name\":\"" + name + "\"," +
-            "      \"network_id\":\"" + networkId + "\"," +
-            "      \"ip_version\":4," +
-            "      \"cidr\":\"10.100.1.0/24\"," +
-            "      \"allocation_pools\":[" +
-            "         {" +
-            "            \"start\":\"10.100.1.3\"," +
-            "            \"end\":\"10.100.1.254\"\n" +
-            "         }" +
-            "      ]" +
-            "   }" +
-            "}";
+            String payload = subNet.toJson();
 
             HttpUriRequest request = createQuantumPostRequest(RESOURCE_SUBNETS, payload, APPLICATION_JSON, user);
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error creating subNetwork in " + networkId + ": "
+            String errorMessage = "Error creating subNetwork in " + subNet.getIdNetwork() + ": "
             + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error creating subNetwork " + networkId
+            String errorMessage = "Error creating subNetwork " + subNet.getIdNetwork()
             + " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);

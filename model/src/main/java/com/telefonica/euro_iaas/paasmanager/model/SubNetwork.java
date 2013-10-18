@@ -116,5 +116,15 @@ public class SubNetwork {
         this.idSubNet = id;
     }
 
+    public String toJson () {
+        return"{\"subnet\":{" +
+        "      \"name\":\"" + name + "\"," +
+        "      \"network_id\":\"" + this.idNetwork + "\"," +
+        "      \"ip_version\":4," +
+        "      \"cidr\":\" "+ this.cidr+
+        "   }" +
+        "}";
+    }
+
 
 }

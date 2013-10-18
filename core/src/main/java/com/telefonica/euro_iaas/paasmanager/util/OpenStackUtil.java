@@ -9,6 +9,8 @@ package com.telefonica.euro_iaas.paasmanager.util;
 //import org.openstack.docs.compute.api.v1.Server;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.Router;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
 /**
@@ -144,13 +146,12 @@ public interface OpenStackUtil {
     /**
      * Method to create a new router.
      *
-     * @param name the name of the router
-     * @param networkId the id of the external network to associate with
+     * @param router to be created
      * @param user the user
      * @return the result
      * @throws OpenStackException OpenStackException
      */
-    String createRouter(String name, String networkId, PaasManagerUser user) throws OpenStackException;
+    String createRouter(Router router, PaasManagerUser user) throws OpenStackException;
 
     /**
      * Deploys a VM inOpenStack
@@ -165,14 +166,12 @@ public interface OpenStackUtil {
     /**
      * Method to create a new subnet.
      *
-     * @param name the name of the subnet
-     * @param networkId the id of the external network to associate with
-     * @param string
+     * @param subNet
      * @param user the user
      * @return the result
      * @throws OpenStackException OpenStackException
      */
-    String createSubNet(String name, String networkId, String string, PaasManagerUser user) throws OpenStackException;
+    String createSubNet(SubNetwork subNet, PaasManagerUser user) throws OpenStackException;
 
     /**
      * Method to delete a network.

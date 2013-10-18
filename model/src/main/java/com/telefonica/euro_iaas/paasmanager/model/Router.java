@@ -93,5 +93,23 @@ public class Router {
         this.idRouter = id;
     }
 
+    /**
+     * 
+     * @return string with the json representation for the request
+     */
+    public String toJson ()
+    {
+        return  "{" +
+        "    \"router\":" +
+        "    {" +
+        "        \"name\": \"" + name + "\"," +
+        "        \"admin_state_up\": true," +
+        "        \"external_gateway_info\" : {" +
+        "             \"network_id\": \"" + this.idNetwork + "\"" +
+        "        }" +
+        "    }" +
+        "}";
+    }
+
 
 }

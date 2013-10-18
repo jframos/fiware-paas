@@ -7,14 +7,11 @@
 
 package com.telefonica.euro_iaas.paasmanager.model;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -40,9 +37,6 @@ public class ApplicationType {
     @Column(length = 2048)
     private String description;
 
-    // OneToMany, ManyToMany?
-    @OneToMany
-    private List<EnvironmentType> environmentTypes;
 
     /**
      * Default Constructor.
@@ -55,10 +49,9 @@ public class ApplicationType {
      * @param description
      * @param environmentTypes
      */
-    public ApplicationType(String name, String description, List<EnvironmentType> environmentTypes) {
+    public ApplicationType(String name, String description) {
         this.name = name;
         this.description = description;
-        this.environmentTypes = environmentTypes;
     }
 
     /**
@@ -93,12 +86,6 @@ public class ApplicationType {
         return description;
     }
 
-    /**
-     * @return the environmentTypes
-     */
-    public List<EnvironmentType> getEnvironmentTypes() {
-        return environmentTypes;
-    }
 
     /**
      * @return the id
@@ -132,14 +119,6 @@ public class ApplicationType {
      */
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    /**
-     * @param environmentTypes
-     *            the environmentTypes to set
-     */
-    public void setEnvironmentTypes(List<EnvironmentType> environmentTypes) {
-        this.environmentTypes = environmentTypes;
     }
 
     /**

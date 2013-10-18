@@ -27,7 +27,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 
 /**
- * Represents an instance of a tier
+ * Represents an instance of a tier.
  * 
  * @author Jesus M. Movilla
  * @version $Id: $
@@ -37,18 +37,15 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TierInstance extends InstallableInstance {
 
-    // @Column(nullable=false, length=256)
-    // private String name;
-
     @ManyToOne
     private Tier tier;
-    // private int currentNumberInstances;
 
-    /** the vmOVF ***/
+
+    /** the vmOVF. ***/
     @Column(length = 100000)
     private String ovf = "";
 
-    /** the VAPP ***/
+    /** the VAPP. ***/
     @Column(length = 10000)
     private String vapp = "";
     private String taskId = "";
@@ -60,11 +57,15 @@ public class TierInstance extends InstallableInstance {
 
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "tierinstance_has_productinstances", joinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false,
-            updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "productinstance_ID", nullable = false, updatable = false) })
-            private List<ProductInstance> productInstances;
+    @JoinTable(name = "tierinstance_has_productinstances", joinColumns = { @JoinColumn(name = "tierinstance_ID",
+            nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "productinstance_ID",
+                    nullable = false, updatable = false) })
+                    private List<ProductInstance> productInstances;
 
 
+    /**
+     * Constructor.
+     */
     public TierInstance() {
 
     }
@@ -87,6 +88,12 @@ public class TierInstance extends InstallableInstance {
     }
 
 
+    /**
+     * 
+     * @param tier2
+     * @param productInstances2
+     * @param vm
+     */
     public TierInstance(Tier tier2, List<ProductInstance> productInstances2,
             VM vm) {
         this.tier = tier2;
@@ -95,6 +102,13 @@ public class TierInstance extends InstallableInstance {
     }
 
 
+    /**
+     * 
+     * @param tier
+     * @param ovf
+     * @param name
+     * @param vm
+     */
     public TierInstance(Tier tier, String ovf, String name, VM vm) {
         super();
         this.tier = tier;
@@ -103,16 +117,25 @@ public class TierInstance extends InstallableInstance {
         this.vm = vm;
     }
 
+    /**
+     * 
+     * @param productInstance
+     */
     public void addProductInstance(ProductInstance productInstance) {
         if (productInstances == null) {
-            productInstances = new ArrayList();
+            productInstances = new ArrayList<ProductInstance>();
         }
         this.productInstances.add(productInstance);
     }
 
+    /**
+     * 
+     * @param productInstance
+     */
     public void deleteProductInstance(ProductInstance productInstance) {
-        if (productInstances.contains(productInstance))
+        if (productInstances.contains(productInstance)) {
             this.productInstances.remove(productInstance);
+        }
     }
 
     @Override
@@ -182,71 +205,76 @@ public class TierInstance extends InstallableInstance {
 
 
     /**
+     * @param ovf
+     */
+    public void setOvf(String ovf) {
+        this.ovf = ovf;
+    }
+
+    /**
+     * @param productInstances
+     *            the productInstances to set
+     */
+    public void setProductInstances(List<ProductInstance> productInstances) {
+        this.productInstances = productInstances;
+    }
+
+
+
+    public void setTaskId(String id) {
+        taskId = id;
+
+    }
+
+    /**
      * @param tier
      *            the tier to set
      */
-     public void setOvf(String ovf) {
-         this.ovf = ovf;
-     }    /**
-      * @param productInstances
-      *            the productInstances to set
-      */
-     public void setProductInstances(List<ProductInstance> productInstances) {
-         this.productInstances = productInstances;
-     }
+    public void setTier(Tier tier) {
+        this.tier = tier;
+    }
 
 
+    /**
+     * @param vapp
+     */
+    public void setVapp(String vapp) {
+        this.vapp = vapp;
+    }
 
-     public void setTaskId(String id) {
-         taskId = id;
-
-     }
-
-     /**
-      * @param tier
-      *            the tier to set
-      */
-     public void setTier(Tier tier) {
-         this.tier = tier;
-     }
+    public void setVM(VM vm) {
+        this.vm = vm;
+    }
 
 
-     /**
-      * @param tier
-      *            the tier to set
-      */
-     public void setVapp(String vapp) {
-         this.vapp = vapp;
-     }
+    /**
+     * The Dto specification.
+     * @return
+     */
+    public TierInstanceDto toDto() {
+        TierInstanceDto tierInstanceDto = new TierInstanceDto();
+        tierInstanceDto.setTierInstanceName(getName());
+        tierInstanceDto.setTierDto(getTier().toDto());
+        tierInstanceDto.setReplicaNumber(getNumberReplica());
+        if (this.getVM() != null) {
+            tierInstanceDto.setVM(getVM().toDto());
+        }
 
-     public void setVM(VM vm) {
-         this.vm = vm;
-     }
+        List<ProductInstanceDto> lProductInstanceDto = new ArrayList<ProductInstanceDto>();
+        if (getProductInstances() != null) {
+            for (ProductInstance productInstance : getProductInstances()) {
+                ProductInstanceDto productInstanceDto = productInstance.toDto();
+                lProductInstanceDto.add(productInstanceDto);
+            }
+        }
 
+        tierInstanceDto.setProductInstanceDtos(lProductInstanceDto);
 
-     public TierInstanceDto toDto() {
-         TierInstanceDto tierInstanceDto = new TierInstanceDto();
-         tierInstanceDto.setTierInstanceName(getName());
-         tierInstanceDto.setTierDto(getTier().toDto());
-         tierInstanceDto.setReplicaNumber(getNumberReplica());
-         if (this.getVM() != null) {
-             tierInstanceDto.setVM(getVM().toDto());
-         }
+        if (getPrivateAttributes() != null) {
+            tierInstanceDto.setAttributes(getPrivateAttributes());
+        }
 
-         List<ProductInstanceDto> lProductInstanceDto = new ArrayList<ProductInstanceDto>();
-         if (getProductInstances() != null) {
-             for (ProductInstance productInstance : getProductInstances()) {
-                 ProductInstanceDto productInstanceDto = productInstance.toDto();
-                 lProductInstanceDto.add(productInstanceDto);
-             }
-         }
-
-         tierInstanceDto.setProductInstanceDtos(lProductInstanceDto);
-
-         if (getPrivateAttributes() != null)
-             tierInstanceDto.setAttributes(getPrivateAttributes());
-
-         return tierInstanceDto;
-     }
+        return tierInstanceDto;
+    }
 
 }

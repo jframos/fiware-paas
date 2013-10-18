@@ -8,6 +8,7 @@ package com.telefonica.euro_iaas.paasmanager.claudia;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
@@ -103,7 +104,8 @@ public class ClaudiaClientOpenStackImplTest {
         tierInstance.setTier(tier);
         VM vm = new VM ();
         claudiaClientOpenStack.deployVM(claudiaData, tier, 1,vm);
-        // assertEquals(response,"response");
+        verify(openStackUtil).createServer(any(String.class), any(PaasManagerUser.class));
+
     }
 
 }

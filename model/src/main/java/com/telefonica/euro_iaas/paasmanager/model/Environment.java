@@ -23,12 +23,17 @@ import javax.persistence.ManyToMany;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 
+/**
+ * Environment entity.
+ * @author henar
+ *
+ */
 @Entity
 public class Environment {
 
-    public final static String ORG_FIELD = "org";
-    public final static String VDC_FIELD = "vdc";
-    public final static String ENVIRONMENT_NAME_FIELD = "name";
+    public static final String ORG_FIELD = "org";
+    public static final String VDC_FIELD = "vdc";
+    public static final String ENVIRONMENT_NAME_FIELD = "name";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,23 +54,39 @@ public class Environment {
     @Column(length = 90000)
     private String ovf;
 
+
     // @JoinTable(name = "environment_has_tiers")
     @ManyToMany(fetch = FetchType.LAZY)
     // @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "environment_has_tiers", joinColumns = { @JoinColumn(name = "environment_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) })
-    private List<Tier> tiers;
+    @JoinTable(name = "environment_has_tiers", joinColumns = { @JoinColumn(name = "environment_ID",
+            nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "tier_ID",
+                    nullable = false, updatable = false) })
+                    private List<Tier> tiers;
+
+
 
     /**
-     * Default constructor
+     * Default constructor.
      */
     public Environment() {
     }
 
+    /**
+     * Constructor.
+     * @param name
+     * @param tiers
+     */
     public Environment(String name, List<Tier> tiers) {
         this.name = name;
         this.tiers = tiers;
     }
 
+    /**
+     * Constructor.
+     * @param name
+     * @param tiers
+     * @param description
+     */
     public Environment(String name, List<Tier> tiers, String description) {
         this.name = name;
         this.description = description;
@@ -73,6 +94,14 @@ public class Environment {
 
     }
 
+    /**
+     * Constructor.
+     * @param name
+     * @param tiers
+     * @param description
+     * @param org
+     * @param vdc
+     */
     public Environment(String name, List<Tier> tiers, String description, String org, String vdc) {
         this.name = name;
         this.description = description;
@@ -85,15 +114,12 @@ public class Environment {
      * <p>
      * Constructor for Service.
      * </p>
-     * 
-     * @param id
-     *            a {@link java.lang.String} object.
+
      * @param name
      *            a {@link java.lang.String} object.
      * @param description
      *            a {@link java.lang.String} object.
-     * @param productReleases
-     *            a {@link List<Attribute>} object.
+     * @param tiers
      */
     public Environment(String name, String description, List<Tier> tiers) {
 
@@ -103,13 +129,21 @@ public class Environment {
 
     }
 
+    /**
+     * Add a tier to the environment.
+     * @param tier
+     */
     public void addTier(Tier tier) {
         if (this.tiers == null) {
-            tiers = new ArrayList();
+            tiers = new ArrayList<Tier>();
         }
         tiers.add(tier);
     }
 
+    /**
+     * Delete a tier in the environment.
+     * @param tier
+     */
     public void deleteTier(Tier tier) {
         if (tiers.contains(tier)) {
             tiers.remove(tier);
@@ -202,6 +236,10 @@ public class Environment {
         this.vdc = vdc;
     }
 
+    /**
+     * It returns the dto specification.
+     * @return EnvironmentDto.class
+     */
     public EnvironmentDto toDto() {
         EnvironmentDto envDto = new EnvironmentDto();
         envDto.setName(getName());
