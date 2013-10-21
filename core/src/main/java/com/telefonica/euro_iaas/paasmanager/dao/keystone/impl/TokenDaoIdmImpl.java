@@ -8,7 +8,10 @@
 package com.telefonica.euro_iaas.paasmanager.dao.keystone.impl;
 
 import java.sql.Connection;
+
 import javax.ws.rs.core.MediaType;
+
+import org.apache.log4j.Logger;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -19,7 +22,6 @@ import com.telefonica.euro_iaas.paasmanager.dao.keystone.TokenDao;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.keystone.Token;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import org.apache.log4j.Logger;
 
 /**
  * @author jesus.movilla

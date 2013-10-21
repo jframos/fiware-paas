@@ -29,8 +29,6 @@ public class NetworkDto {
     /* The subred name */
     private String subnetName;
 
-
-
     /**
      * Default Constructor.
      */
@@ -55,6 +53,7 @@ public class NetworkDto {
 
     /**
      * It returns the network object associated to the dto.
+     * 
      * @return the network
      */
     public Network fromDto() {
@@ -95,7 +94,5 @@ public class NetworkDto {
     public void setSubNetName(String subnetName) {
         this.subnetName = subnetName;
     }
-
-
 
 }

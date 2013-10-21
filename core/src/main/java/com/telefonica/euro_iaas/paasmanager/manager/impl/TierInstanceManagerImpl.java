@@ -10,8 +10,6 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -33,14 +31,15 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
-import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+import org.apache.log4j.Logger;
 
 public class TierInstanceManagerImpl implements TierInstanceManager {
 
@@ -55,11 +54,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     private static Logger log = Logger.getLogger(TierInstanceManagerImpl.class);
 
-
-
-
     public TierInstance create(ClaudiaData data, String envName, TierInstance tierInstance)
-    throws InvalidEntityException {
+            throws InvalidEntityException {
         log.debug("Inserting in database tierInstance" + tierInstance.getName());
 
         TierInstance tierInstanceDB = new TierInstance();
@@ -143,7 +139,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         int replicaNumber = tierInstance.getNumberReplica();
         VM vm = new VM();
         String fqn = claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc() + ".services."
-        + claudiaData.getService() + ".vees." + tierInstance.getTier().getName() + ".replicas." + replicaNumber;
+                + claudiaData.getService() + ".vees." + tierInstance.getTier().getName() + ".replicas." + replicaNumber;
         String hostname = claudiaData.getService() + "-" + tierInstance.getTier().getName() + "-" + replicaNumber;
 
         vm.setFqn(fqn);
@@ -156,27 +152,19 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         envInstance.setStatus(Status.DEPLOYING);
         environmentInstanceManager.update(envInstance);
 
-
         // We need to create the network before deploying the VMs
-        /*  for (Network network: tierInstance.getTier().getNetworks()) {
-                    networkManager.create(claudiaData, network);
-                }*/
+        /*
+         * for (Network network: tierInstance.getTier().getNetworks()) { networkManager.create(claudiaData, network); }
+         */
 
+        infrastructureManager.deployVM(claudiaData, tierInstance.getTier(), replicaNumber, tierInstance.getOvf(), vm);
 
-        infrastructureManager.deployVM(claudiaData, tierInstance
-                .getTier(), replicaNumber, tierInstance.getOvf(), vm);
+        // if (systemPropertiesProvider.getProperty(
+        // SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+        for (ProductRelease productRelease : tierInstance.getTier().getProductReleases()) {
 
-
-
-        //	if (systemPropertiesProvider.getProperty(
-        //		SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-        for (ProductRelease productRelease : tierInstance.getTier()
-                .getProductReleases()) {
-
-
-            infrastructureManager.deployVM(claudiaData, tierInstance.getTier(), replicaNumber, tierInstance.getOvf(), vm);
-
-
+            infrastructureManager.deployVM(claudiaData, tierInstance.getTier(), replicaNumber, tierInstance.getOvf(),
+                    vm);
 
             ProductInstance productInstance = null;
             try {
@@ -184,23 +172,22 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                 tierInstance = tierInstanceDao.update(tierInstance);
                 envInstance.setStatus(Status.INSTALLING);
                 environmentInstanceManager.update(envInstance);
-                productInstance = productInstanceManager.install(
-                        tierInstance, claudiaData, envInstance.getEnvironment().getName(), productRelease,
-                        productRelease.getAttributes());
+                productInstance = productInstanceManager.install(tierInstance, claudiaData, envInstance
+                        .getEnvironment().getName(), productRelease, productRelease.getAttributes());
             } catch (ProductInstallatorException e) {
-                String mens = "Error to install the productINstance " + productRelease.getName() + " in " + tierInstance.getName()+ " " + e.getMessage();
+                String mens = "Error to install the productINstance " + productRelease.getName() + " in "
+                        + tierInstance.getName() + " " + e.getMessage();
                 log.error(mens);
-                throw new ProductInstallatorException(mens,e);
-            } catch (Exception e)
-            {
-                String mens = "Error to install the productINstance " + productRelease.getName() + " in " + tierInstance.getName()+ " " + e.getMessage();
+                throw new ProductInstallatorException(mens, e);
+            } catch (Exception e) {
+                String mens = "Error to install the productINstance " + productRelease.getName() + " in "
+                        + tierInstance.getName() + " " + e.getMessage();
 
                 productInstance = productInstanceManager.install(tierInstance, claudiaData, envInstance
                         .getEnvironment().getName(), productRelease, productRelease.getAttributes());
             }
             tierInstance.addProductInstance(productInstance);
         }
-
 
         tierInstance.setStatus(Status.INSTALLED);
         tierInstance = tierInstanceDao.update(tierInstance);
@@ -209,7 +196,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
         try {
 
-            reconfigure (claudiaData, envInstance, tierInstance);
+            reconfigure(claudiaData, envInstance, tierInstance);
 
             reconfigure(claudiaData, envInstance, tierInstance);
 
@@ -219,9 +206,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     }
 
-
     public void delete(ClaudiaData claudiaData, TierInstance tierInstance, EnvironmentInstance envInstance)
-    throws InfrastructureException, InvalidEntityException, EntityNotFoundException {
+            throws InfrastructureException, InvalidEntityException, EntityNotFoundException {
 
         infrastructureManager.deleteVMReplica(claudiaData, tierInstance);
         envInstance.removeTierInstance(tierInstance);
@@ -230,13 +216,12 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     }
 
-    public List<TierInstance> findByCriteria(TierInstanceSearchCriteria criteria)
-    throws EntityNotFoundException {
+    public List<TierInstance> findByCriteria(TierInstanceSearchCriteria criteria) throws EntityNotFoundException {
 
         return tierInstanceDao.findByCriteria(criteria);
     }
-    public List<TierInstance> findByEnvironment(String vdc,
-            EnvironmentInstance environmentInstance)
+
+    public List<TierInstance> findByEnvironment(String vdc, EnvironmentInstance environmentInstance)
             throws EntityNotFoundException {
         TierInstanceSearchCriteria criteria = new TierInstanceSearchCriteria();
         criteria.setEnvironmentInstance(environmentInstance);
@@ -246,8 +231,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
         return tierInstances;
     }
-
-
 
     private List<Attribute> getPICAttributesOVF(String vmOVF) {
         List<Attribute> picAtributes = new ArrayList<Attribute>();
@@ -288,8 +271,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         return null;
     }
 
-
-
     public TierInstance getTierInstanceToConfigure(EnvironmentInstance environmentInstance, Tier tier) {
         log.debug("getTierInstanceToConfigure for tier " + tier.getName());
         String productName = getProductNameBalanced(tier);
@@ -301,28 +282,23 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         Tier tierProduct = null;
         try {
 
-            tierProduct = getTierProductWithName (environmentInstance.getEnvironment(), productName);
+            tierProduct = getTierProductWithName(environmentInstance.getEnvironment(), productName);
         } catch (InvalidEntityException e) {
             return null;
         }
-        log.info("Reconfiguring the tier " + tier.getName() + " with the productName " + productName + " and the tier to configure is " +
-                tierProduct.getName());
+        log.info("Reconfiguring the tier " + tier.getName() + " with the productName " + productName
+                + " and the tier to configure is " + tierProduct.getName());
 
-        return getTierInstanceWithTier (environmentInstance,tierProduct );
-
+        return getTierInstanceWithTier(environmentInstance, tierProduct);
 
     }
 
-
-
-    public TierInstance getTierInstanceWithTier (EnvironmentInstance enviromentInstance, Tier tier)
-    {
-        if (enviromentInstance.getTierInstances() != null)
-        {
+    public TierInstance getTierInstanceWithTier(EnvironmentInstance enviromentInstance, Tier tier) {
+        if (enviromentInstance.getTierInstances() != null) {
             for (TierInstance tierInstance : enviromentInstance.getTierInstances()) {
                 log.debug("Looking for " + tier.getName() + " tier instance " + tierInstance.getName());
-                System.out.println (" instance " +tierInstance.getTier().getName());
-                System.out.println (tier.getName());
+                System.out.println(" instance " + tierInstance.getTier().getName());
+                System.out.println(tier.getName());
                 if (tierInstance.getTier().getName().equals(tier.getName())) {
                     return tierInstance;
                 }
@@ -331,10 +307,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         return null;
     }
 
-
-
     public Tier getTierProductWithName(Environment environment, String productName) throws InvalidEntityException {
-
 
         if (productName == null) {
             return null;
@@ -343,20 +316,15 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             environment = environmentManager.load(environment.getName(), environment.getVdc());
         } catch (EntityNotFoundException e) {
 
-            throw new InvalidEntityException (e);
+            throw new InvalidEntityException(e);
         }
 
+        if (environment.getTiers() != null) {
+            for (Tier tier : environment.getTiers()) {
 
-        if (environment.getTiers() != null)
-        {
-            for (Tier tier: environment.getTiers())
-            {
-
-                if (tier.getProductReleases() != null)
-                {
-                    for (ProductRelease productRelease: tier.getProductReleases()) {
-                        if (productRelease.getProduct().equals(productName))
-                        {
+                if (tier.getProductReleases() != null) {
+                    for (ProductRelease productRelease : tier.getProductReleases()) {
+                        if (productRelease.getProduct().equals(productName)) {
 
                             return tier;
                         }
@@ -369,11 +337,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         return null;
     }
 
-
-
-
-
-
     public TierInstance load(long id) throws EntityNotFoundException {
         return tierInstanceDao.findByTierInstanceId(id);
     }
@@ -382,13 +345,12 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         return tierInstanceDao.load(name);
     }
 
-
     public TierInstance loadByName(String name) throws EntityNotFoundException {
         return tierInstanceDao.findByTierInstanceName(name);
     }
 
     public void reconfigure(ClaudiaData claudiaData, EnvironmentInstance environmentInstance, TierInstance tierInstance)
-    throws ProductReconfigurationException {
+            throws ProductReconfigurationException {
         log.info("Reconfiguring the balancer for the tier Instance " + tierInstance.getName());
 
         TierInstance tierInstanceToConfigured = getTierInstanceToConfigure(environmentInstance, tierInstance.getTier());
@@ -407,7 +369,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                     + tierInstanceToConfigured.getTier().getName() + " " + e.getMessage());
             throw new ProductReconfigurationException(
                     "Error to reconfigure the tier " + tierInstanceToConfigured.getName() + " from tier "
-                    + tierInstanceToConfigured.getTier().getName(), e);
+                            + tierInstanceToConfigured.getTier().getName(), e);
         }
         // TODO Auto-generated catch block
 
@@ -430,8 +392,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         }
     }
 
-
-
     public void remove(TierInstance tierInstance) throws InvalidEntityException {
 
         try {
@@ -441,7 +401,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             e1.printStackTrace();
         }
 
-
         List<ProductInstance> productInstances = tierInstance.getProductInstances();
 
         tierInstance.setProductInstances(null);
@@ -450,9 +409,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         } catch (InvalidEntityException e) {
             // TODO Auto-generated catch block
 
-            throw new InvalidEntityException(
-                    "Error to delete the Tier Instance "
-                    + tierInstance.getName());
+            throw new InvalidEntityException("Error to delete the Tier Instance " + tierInstance.getName());
 
         }
         if (productInstances != null && productInstances.size() > 0) {
@@ -469,39 +426,27 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     }
 
-    public void setEnvironmentInstanceManager(
-            EnvironmentInstanceManager environmentInstanceManager) {
+    public void setEnvironmentInstanceManager(EnvironmentInstanceManager environmentInstanceManager) {
         this.environmentInstanceManager = environmentInstanceManager;
     }
 
-
-
-    public void setEnvironmentManager (EnvironmentManager environmentManager)
-    {
+    public void setEnvironmentManager(EnvironmentManager environmentManager) {
         this.environmentManager = environmentManager;
     }
 
-
     /**
      * @param infrastructureManager
-     *            the infrastructureManager to set
-     * 
-     *            <property name="tierInstanceDao" ref="tierInstanceDao"/>
+     *            the infrastructureManager to set <property name="tierInstanceDao" ref="tierInstanceDao"/>
      */
-    public void setInfrastructureManager(
-            InfrastructureManager infrastructureManager) {
+    public void setInfrastructureManager(InfrastructureManager infrastructureManager) {
         this.infrastructureManager = infrastructureManager;
     }
-
 
     public void setNetworkManager(NetworkManager networkManager) {
         this.networkManager = networkManager;
     }
 
-
-
-    public void setProductInstanceManager(
-            ProductInstanceManager productInstanceManager) {
+    public void setProductInstanceManager(ProductInstanceManager productInstanceManager) {
         this.productInstanceManager = productInstanceManager;
     }
 
@@ -513,17 +458,12 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         this.tierInstanceDao = tierInstanceDao;
     }
 
-
     public void setTierManager(TierManager tierManager) {
         this.tierManager = tierManager;
     }
 
-
-
-
     public TierInstance update(ClaudiaData claudiaData, String envName, TierInstance tierInstance)
-    throws EntityNotFoundException, InvalidEntityException,
-    AlreadyExistsEntityException {
+            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
 
         if (tierInstance.getId() != null)
             tierInstance = tierInstanceDao.update(tierInstance);
@@ -535,8 +475,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     }
 
     public void update(ClaudiaData claudiaData, TierInstance tierInstance, EnvironmentInstance envInstance)
-    throws ProductInstallatorException, InvalidEntityException, AlreadyExistsEntityException,
-    EntityNotFoundException, ProductReconfigurationException {
+            throws ProductInstallatorException, InvalidEntityException, AlreadyExistsEntityException,
+            EntityNotFoundException, ProductReconfigurationException {
         log.debug("Updating the tier instance " + tierInstance.getTier().getName());
         Tier tier = null;
         try {

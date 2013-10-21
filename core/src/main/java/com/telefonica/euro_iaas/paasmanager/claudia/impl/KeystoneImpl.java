@@ -9,6 +9,8 @@ package com.telefonica.euro_iaas.paasmanager.claudia.impl;
 
 import javax.ws.rs.core.MediaType;
 
+import org.apache.log4j.Logger;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -16,7 +18,6 @@ import com.sun.jersey.api.client.WebResource.Builder;
 import com.telefonica.euro_iaas.paasmanager.claudia.KeystoneClient;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import org.apache.log4j.Logger;
 
 /**
  * @author henar mu�oz

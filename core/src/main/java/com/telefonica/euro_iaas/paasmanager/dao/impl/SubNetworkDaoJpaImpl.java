@@ -16,12 +16,12 @@ import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 
 /**
  * @author Henar Munoz
- * 
  */
 public class SubNetworkDaoJpaImpl extends AbstractBaseDao<SubNetwork, String> implements SubNetworkDao {
 
     /**
      * find all networks.
+     * 
      * @return network list
      */
     public List<SubNetwork> findAll() {

@@ -181,7 +181,7 @@ public class VappUtilsImpl implements VappUtils {
                 ipTag = IPADDRESS_TAG;
             }
             Node ipNnode = doc.getElementsByTagName(ipTag).item(0);
-            ip = ipNnode.getTextContent();
+            ip = ipNnode.getTextContent().trim();
 
         } catch (ParserConfigurationException e) {
             String msg = "Error parsing vapp . Desc: " + e.getMessage();

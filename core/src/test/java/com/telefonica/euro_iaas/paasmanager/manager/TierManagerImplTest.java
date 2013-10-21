@@ -7,18 +7,8 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
@@ -30,10 +20,18 @@ import com.telefonica.euro_iaas.paasmanager.model.Rule;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla
- * 
  */
 public class TierManagerImplTest extends TestCase {
 
@@ -75,8 +73,7 @@ public class TierManagerImplTest extends TestCase {
         tier.setName("tierName");
         tier.setProductReleases(productReleases);
 
-        when(productReleaseManager.load(any(String.class))).thenReturn(
-                productRelease);
+        when(productReleaseManager.load(any(String.class))).thenReturn(productRelease);
 
         data = new ClaudiaData("dd", "dd", "dd");
 
@@ -89,12 +86,10 @@ public class TierManagerImplTest extends TestCase {
 
         productReleases = new ArrayList<ProductRelease>();
         productReleases.add(productRelease);
-        Tier tier = new Tier("name", new Integer(1), new Integer(1),
-                new Integer(1), productReleases, "flavour", "image", "icono",
-                "keypair", "floatingip", "payload");
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
+                "image", "icono", "keypair", "floatingip", "payload");
 
-        SecurityGroup securityGroup = tierManager.generateSecurityGroup(data,
-                tier);
+        SecurityGroup securityGroup = tierManager.generateSecurityGroup(data, tier);
         assertEquals(securityGroup.getName(), "sg_dd_dd_" + tier.getName());
         assertEquals(securityGroup.getRules().size(), 3);
     }
@@ -106,12 +101,10 @@ public class TierManagerImplTest extends TestCase {
 
         productReleases = new ArrayList<ProductRelease>();
         productReleases.add(productRelease);
-        Tier tier = new Tier("name", new Integer(1), new Integer(1),
-                new Integer(1), productReleases, "flavour", "image", "icono",
-                "keypair", "floatingip", "payload");
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
+                "image", "icono", "keypair", "floatingip", "payload");
 
-        SecurityGroup securityGroup = tierManager.generateSecurityGroup(data,
-                tier);
+        SecurityGroup securityGroup = tierManager.generateSecurityGroup(data, tier);
         assertEquals(securityGroup.getName(), "sg_dd_dd_" + tier.getName());
         assertEquals(securityGroup.getRules().size(), 2);
     }
@@ -127,12 +120,10 @@ public class TierManagerImplTest extends TestCase {
         productReleases = new ArrayList<ProductRelease>();
         productReleases.add(productRelease);
         productReleases.add(productRelease2);
-        Tier tier = new Tier("name", new Integer(1), new Integer(1),
-                new Integer(1), productReleases, "flavour", "image", "icono",
-                "keypair", "floatingip", "payload");
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
+                "image", "icono", "keypair", "floatingip", "payload");
 
-        SecurityGroup securityGroup = tierManager.generateSecurityGroup(data,
-                tier);
+        SecurityGroup securityGroup = tierManager.generateSecurityGroup(data, tier);
         assertEquals(securityGroup.getName(), "sg_dd_dd_" + tier.getName());
         assertEquals(securityGroup.getRules().size(), 4);
     }
@@ -143,29 +134,22 @@ public class TierManagerImplTest extends TestCase {
         productRelease = new ProductRelease("product", "2.0");
         productRelease.addAttribute(new Attribute("openports", "8080 2323"));
 
-        Tier tier = new Tier("name", new Integer(1), new Integer(1),
-                new Integer(1), null, "flavour", "image", "icono", "keypair",
-                "floatingip", "payload");
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
+                "keypair", "floatingip", "payload");
 
         SecurityGroup securityGroup = new SecurityGroup("nanme", "description");
-        securityGroup.addRule(new Rule("ipProtocol", "fromPort", "toPort",
-                "sourceGroup", "cidr"));
+        securityGroup.addRule(new Rule("ipProtocol", "fromPort", "toPort", "sourceGroup", "cidr"));
         tier.setSecurityGroup(securityGroup);
-        when(systemPropertiesProvider.getProperty(any(String.class)))
-        .thenReturn("FIWARE");
-        when(
-                securityGroupManager.create(any(ClaudiaData.class),
-                        any(SecurityGroup.class))).thenReturn(securityGroup);
+        when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("FIWARE");
+        when(securityGroupManager.create(any(ClaudiaData.class), any(SecurityGroup.class))).thenReturn(securityGroup);
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
-        Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier))
-        .when(tierDao).load(any(String.class), any(String.class),any(String.class));
+        Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
+                .load(any(String.class), any(String.class), any(String.class));
 
         tier.addProductRelease(productRelease);
-        tierManager
-        .addSecurityGroupToProductRelease(data, tier, productRelease);
+        tierManager.addSecurityGroupToProductRelease(data, tier, productRelease);
         tier.addProductRelease(productRelease);
-        tierManager
-        .addSecurityGroupToProductRelease(data, tier, productRelease);
+        tierManager.addSecurityGroupToProductRelease(data, tier, productRelease);
         assertEquals(tier.getSecurityGroup().getRules().size(), 1);
         assertEquals(tier.getProductReleases().size(), 2);
 
@@ -177,25 +161,19 @@ public class TierManagerImplTest extends TestCase {
         productRelease = new ProductRelease("product", "2.0");
         productRelease.addAttribute(new Attribute("openports", "8080 2323"));
 
-        Tier tier = new Tier("name", new Integer(1), new Integer(1),
-                new Integer(1), null, "flavour", "image", "icono", "keypair",
-                "floatingip", "payload");
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
+                "keypair", "floatingip", "payload");
 
         SecurityGroup securityGroup = new SecurityGroup("nanme", "description");
-        securityGroup.addRule(new Rule("ipProtocol", "fromPort", "toPort",
-                "sourceGroup", "cidr"));
+        securityGroup.addRule(new Rule("ipProtocol", "fromPort", "toPort", "sourceGroup", "cidr"));
         tier.setSecurityGroup(securityGroup);
-        when(systemPropertiesProvider.getProperty(any(String.class)))
-        .thenReturn("FIWARE");
-        when(
-                securityGroupManager.create(any(ClaudiaData.class),
-                        any(SecurityGroup.class))).thenReturn(securityGroup);
+        when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("FIWARE");
+        when(securityGroupManager.create(any(ClaudiaData.class), any(SecurityGroup.class))).thenReturn(securityGroup);
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
-        Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier))
-        .when(tierDao).load(any(String.class), any(String.class),any(String.class));
+        Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
+                .load(any(String.class), any(String.class), any(String.class));
 
-        tierManager
-        .addSecurityGroupToProductRelease(data, tier, productRelease);
+        tierManager.addSecurityGroupToProductRelease(data, tier, productRelease);
         assertEquals(tier.getSecurityGroup().getRules().size(), 1);
 
     }
@@ -209,28 +187,21 @@ public class TierManagerImplTest extends TestCase {
         productReleases = new ArrayList<ProductRelease>();
         productReleases.add(productRelease);
 
-        Tier tier = new Tier("name", new Integer(1), new Integer(1),
-                new Integer(1), productReleases, "flavour", "image", "icono",
-                "keypair", "floatingip", "payload");
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
+                "image", "icono", "keypair", "floatingip", "payload");
 
         SecurityGroup securityGroup = new SecurityGroup("nanme", "description");
-        securityGroup.addRule(new Rule("ipProtocol", "fromPort", "toPort",
-                "sourceGroup", "cidr"));
+        securityGroup.addRule(new Rule("ipProtocol", "fromPort", "toPort", "sourceGroup", "cidr"));
         tier.setSecurityGroup(securityGroup);
-        when(systemPropertiesProvider.getProperty(any(String.class)))
-        .thenReturn("FIWARE");
-        when(
-                securityGroupManager.create(any(ClaudiaData.class),
-                        any(SecurityGroup.class))).thenReturn(securityGroup);
+        when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("FIWARE");
+        when(securityGroupManager.create(any(ClaudiaData.class), any(SecurityGroup.class))).thenReturn(securityGroup);
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
-        Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier))
-        .when(tierDao).load(any(String.class), any(String.class),any(String.class));
-        when(productReleaseManager.load(any(String.class), any(String.class)))
-        .thenReturn(productRelease);
+        Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
+                .load(any(String.class), any(String.class), any(String.class));
+        when(productReleaseManager.load(any(String.class), any(String.class))).thenReturn(productRelease);
 
-        Tier tier3 = new Tier("name", new Integer(1), new Integer(1),
-                new Integer(1), null, "flavour", "image", "icono", "keypair",
-                "floatingip", "payload");
+        Tier tier3 = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image",
+                "icono", "keypair", "floatingip", "payload");
         Tier tier2 = tierManager.create(data, "env", tier3);
         assertEquals(tier2.getName(), tier.getName());
         assertEquals(tier2.getKeypair(), tier.getKeypair());
@@ -238,34 +209,26 @@ public class TierManagerImplTest extends TestCase {
     }
 
     @Test
-    public void testTierAllDataSecurityPortNoAttributesInProductRelease()
-    throws Exception {
+    public void testTierAllDataSecurityPortNoAttributesInProductRelease() throws Exception {
 
         productRelease = new ProductRelease("product", "2.0");
         // productRelease.addAttributeport(new Attribute("puerto", "8080"));
 
         productReleases = new ArrayList<ProductRelease>();
         productReleases.add(productRelease);
-        Tier tier = new Tier("name", new Integer(1), new Integer(1),
-                new Integer(1), productReleases);
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases);
 
         SecurityGroup securityGroup = new SecurityGroup("nanme", "description");
-        securityGroup.addRule(new Rule("ipProtocol", "fromPort", "toPort",
-                "sourceGroup", "cidr"));
+        securityGroup.addRule(new Rule("ipProtocol", "fromPort", "toPort", "sourceGroup", "cidr"));
         tier.setSecurityGroup(securityGroup);
-        when(systemPropertiesProvider.getProperty(any(String.class)))
-        .thenReturn("FIWARE");
-        when(
-                securityGroupManager.create(any(ClaudiaData.class),
-                        any(SecurityGroup.class))).thenReturn(securityGroup);
+        when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("FIWARE");
+        when(securityGroupManager.create(any(ClaudiaData.class), any(SecurityGroup.class))).thenReturn(securityGroup);
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
-        Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier))
-        .when(tierDao).load(any(String.class), any(String.class),any(String.class));
-        when(productReleaseManager.load(any(String.class))).thenReturn(
-                productRelease);
-        Tier tier3 = new Tier("name", new Integer(1), new Integer(1),
-                new Integer(1), null, "flavour", "image", "icono", "keypair",
-                "floatingip", "payload");
+        Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
+                .load(any(String.class), any(String.class), any(String.class));
+        when(productReleaseManager.load(any(String.class))).thenReturn(productRelease);
+        Tier tier3 = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image",
+                "icono", "keypair", "floatingip", "payload");
         Tier tier2 = tierManager.create(data, "env", tier3);
         assertEquals(tier2.getName(), tier.getName());
         assertEquals(tier2.getKeypair(), tier.getKeypair());
@@ -273,49 +236,31 @@ public class TierManagerImplTest extends TestCase {
     }
 
     /*
-     * @Test public void testTierAllDataNoSecurityPort() throws Exception {
-     * 
-     * Tier tier = new Tier("name", new Integer(1), new Integer(1), new
-     * Integer(1), productReleases);
-     * 
-     * when(tierDao.create(any(Tier.class))).thenReturn(tier);
-     * Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier))
-     * .when(tierDao).load(any(String.class));
-     * when(systemPropertiesProvider.getProperty(any(String.class)))
-     * .thenReturn("FIWARE2");
-     * when(productReleaseManager.load(any(String.class))).thenReturn(
-     * productRelease);
-     * 
-     * Tier tier2 = tierManager.create(data, tier);
-     * assertEquals(tier2.getName(), tier.getName());
-     * assertEquals(tier2.getKeypair(), null);
-     * 
-     * }
+     * @Test public void testTierAllDataNoSecurityPort() throws Exception { Tier tier = new Tier("name", new Integer(1),
+     * new Integer(1), new Integer(1), productReleases); when(tierDao.create(any(Tier.class))).thenReturn(tier);
+     * Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)) .when(tierDao).load(any(String.class));
+     * when(systemPropertiesProvider.getProperty(any(String.class))) .thenReturn("FIWARE2");
+     * when(productReleaseManager.load(any(String.class))).thenReturn( productRelease); Tier tier2 =
+     * tierManager.create(data, tier); assertEquals(tier2.getName(), tier.getName()); assertEquals(tier2.getKeypair(),
+     * null); }
      */
 
     @Test
     public void testTierNoProductRelease() throws Exception {
 
-        Tier tier = new Tier("name", new Integer(1), new Integer(1),
-                new Integer(1), null, "flavour", "image", "icono", "keypair",
-                "floatingip", "payload");
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
+                "keypair", "floatingip", "payload");
 
         SecurityGroup securityGroup = new SecurityGroup("nanme", "description");
-        securityGroup.addRule(new Rule("ipProtocol", "fromPort", "toPort",
-                "sourceGroup", "cidr"));
+        securityGroup.addRule(new Rule("ipProtocol", "fromPort", "toPort", "sourceGroup", "cidr"));
         tier.setSecurityGroup(securityGroup);
-        when(systemPropertiesProvider.getProperty(any(String.class)))
-        .thenReturn("FIWARE");
-        when(
-                securityGroupManager.create(any(ClaudiaData.class),
-                        any(SecurityGroup.class))).thenReturn(securityGroup);
+        when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("FIWARE");
+        when(securityGroupManager.create(any(ClaudiaData.class), any(SecurityGroup.class))).thenReturn(securityGroup);
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
-        Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier))
-        .when(tierDao).load(any(String.class), any(String.class),any(String.class));
-        Tier tier3 = new Tier("name", new Integer(1), new Integer(1),
-                new Integer(1), null, "flavour", "image", "icono", "keypair",
-                "floatingip", "payload");
-
+        Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
+                .load(any(String.class), any(String.class), any(String.class));
+        Tier tier3 = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image",
+                "icono", "keypair", "floatingip", "payload");
 
         Tier tier2 = tierManager.create(data, "env", tier3);
         assertEquals(tier2.getName(), tier.getName());

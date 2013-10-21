@@ -7,10 +7,14 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.async.impl;
 
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL;
+
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidProductInstanceRequestException;
@@ -32,10 +36,6 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.util.TaskNotificator;
-import org.apache.commons.lang.StringUtils;
-
-
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL;
 
 public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncManager {
 

@@ -10,12 +10,10 @@ package com.telefonica.euro_iaas.paasmanager.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import junit.framework.TestCase;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 
 public class EnvironmentTest extends TestCase {
 

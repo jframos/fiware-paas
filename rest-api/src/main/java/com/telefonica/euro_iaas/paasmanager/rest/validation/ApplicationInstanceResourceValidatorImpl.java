@@ -7,6 +7,8 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
+import org.apache.log4j.Logger;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
 import com.telefonica.euro_iaas.paasmanager.exception.ApplicationInstanceNotFoundException;
@@ -14,7 +16,6 @@ import com.telefonica.euro_iaas.paasmanager.exception.InvalidApplicationReleaseE
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
-import org.apache.log4j.Logger;
 
 public class ApplicationInstanceResourceValidatorImpl implements ApplicationInstanceResourceValidator {
 

@@ -7,20 +7,12 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_CPU;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_DISK;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_MEM;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javax.ws.rs.core.MediaType;
-
-import org.apache.log4j.Logger;
-import org.springframework.scheduling.annotation.Async;
 
 import com.telefonica.claudia.smi.URICreation;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
@@ -49,6 +41,13 @@ import com.telefonica.euro_iaas.paasmanager.util.EnvironmentUtils;
 import com.telefonica.euro_iaas.paasmanager.util.OVFUtils;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.util.VappUtils;
+import org.apache.log4j.Logger;
+import org.springframework.scheduling.annotation.Async;
+
+
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_CPU;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_DISK;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_MEM;
 
 public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureManager {
 
@@ -88,13 +87,13 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
             browseServiceResponse = getProcessService(claudiaData);
         } catch (ClaudiaResourceNotFoundException crnfe) {
             String errorMessage = "Resource associated to org:" + claudiaData.getOrg() + " vdc:" + claudiaData.getVdc()
-            + " service:" + claudiaData.getService() + " Error Description: " + crnfe.getMessage();
+                    + " service:" + claudiaData.getService() + " Error Description: " + crnfe.getMessage();
             log.error(errorMessage);
             throw new InfrastructureException(errorMessage);
         } catch (Exception e) {
             String errorMessage = "Unknown exception when retriving vapp " + " associated to org:"
-            + claudiaData.getOrg() + " vdc:" + claudiaData.getVdc() + " service:" + claudiaData.getService()
-            + " Error Description: " + e.getMessage();
+                    + claudiaData.getOrg() + " vdc:" + claudiaData.getVdc() + " service:" + claudiaData.getService()
+                    + " Error Description: " + e.getMessage();
             log.error(errorMessage);
             throw new InfrastructureException(errorMessage);
         }
@@ -155,7 +154,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     public List<VM> createEnvironment(EnvironmentInstance envInstance, String ovf, ClaudiaData claudiaData)
-    throws InfrastructureException {
+            throws InfrastructureException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -165,7 +164,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
      * @see com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager# createEnvironment(java.lang.String)
      */
     public List<VM> createEnvironment(EnvironmentInstance envInstance, Tier tier, String ovf, ClaudiaData claudiaData)
-    throws InfrastructureException {
+            throws InfrastructureException {
 
         return null;
     }
@@ -265,7 +264,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
      * (com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance)
      */
     public void deleteEnvironment(ClaudiaData claudiaData, EnvironmentInstance envInstance)
-    throws InfrastructureException {
+            throws InfrastructureException {
 
         // Sacar todas la VMs del EnvironmentInstance y borrarlas
         // List<VM> vms = new ArrayList<VM>();
@@ -362,7 +361,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     public void deployVM(ClaudiaData claudiaData, Tier tier, int replica, String vmOVF, VM vm)
-    throws InfrastructureException {
+            throws InfrastructureException {
         return;
     }
 
@@ -376,7 +375,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
             vappSingleVM = vappUtils.getVappsSingleVM(claudiaData, vappService);
         } catch (InvalidVappException e) {
             String errorMessage = "Error splitting up the main ovf in single" + "VM ovfs. Description. "
-            + e.getMessage();
+                    + e.getMessage();
             log.error(errorMessage);
 
         }
@@ -386,7 +385,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
             ovfSingleVM = ovfUtils.getOvfsSingleVM(environment.getOvf());
         } catch (InvalidOVFException e) {
             String errorMessage = "Error splitting up the main ovf in single" + "VM ovfs. Description. "
-            + e.getMessage();
+                    + e.getMessage();
             log.error(errorMessage);
             throw new InvalidOVFException(errorMessage);
         }
@@ -557,7 +556,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
             scaleResponse = claudiaClient.createImage(claudiaData, tierInstance);
         } catch (ClaudiaRetrieveInfoException e) {
             String errorMessage = "Error creating teh image of the VM with the " + "fqn: "
-            + tierInstance.getVM().getFqn() + ". Descrption. " + e.getMessage();
+                    + tierInstance.getVM().getFqn() + ". Descrption. " + e.getMessage();
             log.error(errorMessage);
             throw new InfrastructureException(errorMessage);
         }
@@ -565,7 +564,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     private TierInstance insertTierInstanceBD(ClaudiaData claudiaData, String envName, TierInstance tierInstance)
-    throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
+            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
 
         TierInstance tierInstanceDB = null;
         if (tierInstance.getOvf() != null && tierInstance.getOvf().length() > tam_max) {

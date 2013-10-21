@@ -7,13 +7,6 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,13 +15,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Matchers;
-import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
@@ -46,6 +32,19 @@ import com.telefonica.euro_iaas.paasmanager.monitoring.MonitoringClient;
 import com.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser;
 import com.telefonica.euro_iaas.paasmanager.util.OVFUtils;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mockito;
+
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla
@@ -117,86 +116,38 @@ public class InfrastructureManagerImplTest extends TestCase {
         claudiaData = new ClaudiaData("org", "vdc", "service");
 
         /*
-         * vdc = "paasmanagerVDC"; org = "ORG"; number_vms = 2; claudiaData =
-         * new ClaudiaData(org, vdc);
-         * 
-         * //Taking ovf from a file InputStream is =
-         * ClassLoader.getSystemClassLoader().getResourceAsStream(ovfname);
-         * BufferedReader reader = new BufferedReader(new
-         * InputStreamReader(is)); StringBuffer ruleFile = new StringBuffer();
-         * String actualString;
-         * 
-         * while ((actualString = reader.readLine()) != null) {
-         * ruleFile.append(actualString).append("\n"); }
-         * 
-         * // user = new PaasManagerUser("user", "paasword", null);
-         * //claudiaData.setUser(user);
-         * 
-         * // ovf = ruleFile.toString(); // System.out.println("ovf: " + ovf);
-         * 
-         * // vdcResponseTask = new Task();
-         * vdcResponseTask.setState(TaskStates.SUCCESS);
-         * vdcResponseTask.setResource
-         * ("http://10.95.171.89:8080/rest-api-management/", "resourceType");
-         * serviceResponseTask = new Task();
-         * serviceResponseTask.setState(TaskStates.SUCCESS);
-         * serviceResponseTask.
-         * setResource("http://10.95.171.89:8080/rest-api-management/",
-         * "resourceType");
-         * 
-         * vmResponseTask = new Task();
-         * vmResponseTask.setState(TaskStates.SUCCESS);
-         * vmResponseTask.setResource
-         * ("http://10.95.171.89:8080/rest-api-management/", "resourceType");
-         * 
-         * propertiesProvider = mock(SystemPropertiesProvider.class);
-         * when(propertiesProvider
-         * .getProperty(NEOCLAUDIA_SERVICE)).thenReturn("paasmanagerService");
-         * when
-         * (propertiesProvider.getProperty(NEOCLAUDIA_VDC_CPU)).thenReturn("12"
-         * );
-         * when(propertiesProvider.getProperty(NEOCLAUDIA_VDC_MEM)).thenReturn
-         * ("14");
-         * when(propertiesProvider.getProperty(NEOCLAUDIA_VDC_DISK)).thenReturn
-         * ("16");
-         * when(propertiesProvider.getProperty(NEOCLAUDIA_ORG)).thenReturn
-         * ("EUROPIAAS-VC1");
-         * when(propertiesProvider.getProperty(NEOCLAUDIA_OVFSERVICE_LOCATION
-         * )).thenReturn("empty.ovf");
-         * when(propertiesProvider.getProperty(VM_NAME_PREFIX
-         * )).thenReturn("paasManagerVM");
-         * 
-         * 
-         * claudiaClient = mock(ClaudiaClient.class);
-         * //when(claudiaClient.browseVDC(any(String.class), any(String.class),
-         * user)) //.thenReturn(vdcResponse);
-         * when(claudiaClient.browseVDC(any(ClaudiaData
-         * .class))).thenReturn(vdcResponse);
-         * when(claudiaClient.deployVDC(any(ClaudiaData.class),
-         * any(String.class), any(String.class),
-         * any(String.class))).thenReturn("OK");
-         * when(claudiaClient.browseService
-         * (any(ClaudiaData.class))).thenReturn(vdcResponse);
-         * when(claudiaClient.deployService(any(ClaudiaData.class),
-         * any(String.class))) .thenReturn("OK");
-         * when(claudiaClient.deployVM(any(String.class), any(String.class),
-         * any(String.class), any(String.class), user, any(String.class)))
-         * .thenReturn("OK");
-         * 
-         * when(claudiaClient.deployVM(any(ClaudiaData.class),any(Tier.class)))
-         * .thenReturn(claudiaData);
-         * 
-         * when(claudiaClient.obtainIPFromFqn(any(String.class),
-         * any(String.class), any(String.class),any(String.class), user))
-         * .thenReturn("10.95.171.34");
-         * 
-         * claudiaUtil = mock (ClaudiaUtil.class);
-         * 
-         * claudiaResponseAnalyser = mock(ClaudiaResponseAnalyser.class);
-         * when(claudiaResponseAnalyser.getTaskUrl(any(String.class)))
-         * .thenReturn("OK");
-         * when(claudiaResponseAnalyser.getTaskStatus(any(String.class)))
-         * .thenReturn("success");
+         * vdc = "paasmanagerVDC"; org = "ORG"; number_vms = 2; claudiaData = new ClaudiaData(org, vdc); //Taking ovf
+         * from a file InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(ovfname); BufferedReader
+         * reader = new BufferedReader(new InputStreamReader(is)); StringBuffer ruleFile = new StringBuffer(); String
+         * actualString; while ((actualString = reader.readLine()) != null) {
+         * ruleFile.append(actualString).append("\n"); } // user = new PaasManagerUser("user", "paasword", null);
+         * //claudiaData.setUser(user); // ovf = ruleFile.toString(); // System.out.println("ovf: " + ovf); //
+         * vdcResponseTask = new Task(); vdcResponseTask.setState(TaskStates.SUCCESS); vdcResponseTask.setResource
+         * ("http://10.95.171.89:8080/rest-api-management/", "resourceType"); serviceResponseTask = new Task();
+         * serviceResponseTask.setState(TaskStates.SUCCESS); serviceResponseTask.
+         * setResource("http://10.95.171.89:8080/rest-api-management/", "resourceType"); vmResponseTask = new Task();
+         * vmResponseTask.setState(TaskStates.SUCCESS); vmResponseTask.setResource
+         * ("http://10.95.171.89:8080/rest-api-management/", "resourceType"); propertiesProvider =
+         * mock(SystemPropertiesProvider.class); when(propertiesProvider
+         * .getProperty(NEOCLAUDIA_SERVICE)).thenReturn("paasmanagerService"); when
+         * (propertiesProvider.getProperty(NEOCLAUDIA_VDC_CPU)).thenReturn("12" );
+         * when(propertiesProvider.getProperty(NEOCLAUDIA_VDC_MEM)).thenReturn ("14");
+         * when(propertiesProvider.getProperty(NEOCLAUDIA_VDC_DISK)).thenReturn ("16");
+         * when(propertiesProvider.getProperty(NEOCLAUDIA_ORG)).thenReturn ("EUROPIAAS-VC1");
+         * when(propertiesProvider.getProperty(NEOCLAUDIA_OVFSERVICE_LOCATION )).thenReturn("empty.ovf");
+         * when(propertiesProvider.getProperty(VM_NAME_PREFIX )).thenReturn("paasManagerVM"); claudiaClient =
+         * mock(ClaudiaClient.class); //when(claudiaClient.browseVDC(any(String.class), any(String.class), user))
+         * //.thenReturn(vdcResponse); when(claudiaClient.browseVDC(any(ClaudiaData .class))).thenReturn(vdcResponse);
+         * when(claudiaClient.deployVDC(any(ClaudiaData.class), any(String.class), any(String.class),
+         * any(String.class))).thenReturn("OK"); when(claudiaClient.browseService
+         * (any(ClaudiaData.class))).thenReturn(vdcResponse); when(claudiaClient.deployService(any(ClaudiaData.class),
+         * any(String.class))) .thenReturn("OK"); when(claudiaClient.deployVM(any(String.class), any(String.class),
+         * any(String.class), any(String.class), user, any(String.class))) .thenReturn("OK");
+         * when(claudiaClient.deployVM(any(ClaudiaData.class),any(Tier.class))) .thenReturn(claudiaData);
+         * when(claudiaClient.obtainIPFromFqn(any(String.class), any(String.class), any(String.class),any(String.class),
+         * user)) .thenReturn("10.95.171.34"); claudiaUtil = mock (ClaudiaUtil.class); claudiaResponseAnalyser =
+         * mock(ClaudiaResponseAnalyser.class); when(claudiaResponseAnalyser.getTaskUrl(any(String.class)))
+         * .thenReturn("OK"); when(claudiaResponseAnalyser.getTaskStatus(any(String.class))) .thenReturn("success");
          */
 
     }
@@ -229,7 +180,7 @@ public class InfrastructureManagerImplTest extends TestCase {
 
         String hostname = claudiaData.getService() + "-" + tier.getName() + "-" + 1;
         String fqn = claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc() + ".services."
-        + claudiaData.getService() + ".vees." + tier.getName() + ".replicas." + 1;
+                + claudiaData.getService() + ".vees." + tier.getName() + ".replicas." + 1;
 
         VM vm = new VM();
 
@@ -245,21 +196,21 @@ public class InfrastructureManagerImplTest extends TestCase {
         tierInstance.setVapp("vapp");
 
         when(claudiaClient.getIP(any(ClaudiaData.class), any(String.class), Matchers.anyInt(), any(VM.class)))
-        .thenReturn(ips);
+                .thenReturn(ips);
         Mockito.doNothing().when(claudiaClient)
-        .deployVM(any(ClaudiaData.class), any(Tier.class), Matchers.anyInt(), any(VM.class));
+                .deployVM(any(ClaudiaData.class), any(Tier.class), Matchers.anyInt(), any(VM.class));
         when(ovfUtils.changeInitialResources(any(String.class))).thenReturn(null);
         when(ovfUtils.getOvfsSingleVM(any(String.class))).thenReturn(ovfs);
         when(claudiaClient.browseVDC(any(ClaudiaData.class))).thenReturn("vdc");
         when(claudiaClient.browseService(any(ClaudiaData.class))).thenReturn("vapp");
         when(environmentInstanceDao.update(any(EnvironmentInstance.class))).thenReturn(envInst);
         when(claudiaClient.browseVMReplica(any(ClaudiaData.class), any(String.class), anyInt(), any(VM.class)))
-        .thenReturn("vapp");
+                .thenReturn("vapp");
 
         Mockito.doThrow(new EntityNotFoundException(TierInstance.class, "test", tierInstance))
-        .when(tierInstanceManager).load(any(String.class));
+                .when(tierInstanceManager).load(any(String.class));
         when(tierInstanceManager.create(any(ClaudiaData.class), any(String.class), any(TierInstance.class)))
-        .thenReturn(tierInstance);
+                .thenReturn(tierInstance);
 
         Mockito.doNothing().when(monitoringClient).startMonitoring(any(String.class), any(String.class));
 
@@ -288,7 +239,7 @@ public class InfrastructureManagerImplTest extends TestCase {
 
         String hostname = claudiaData.getService() + "-" + tier.getName() + "-" + 1;
         String fqn = claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc() + ".services."
-        + claudiaData.getService() + ".vees." + tier.getName() + ".replicas." + 1;
+                + claudiaData.getService() + ".vees." + tier.getName() + ".replicas." + 1;
 
         VM vm = new VM();
 
@@ -296,9 +247,9 @@ public class InfrastructureManagerImplTest extends TestCase {
         vm.setHostname(hostname);
 
         when(claudiaClient.getIP(any(ClaudiaData.class), any(String.class), Matchers.anyInt(), any(VM.class)))
-        .thenReturn(ips);
+                .thenReturn(ips);
         Mockito.doNothing().when(claudiaClient)
-        .deployVM(any(ClaudiaData.class), any(Tier.class), Matchers.anyInt(), any(VM.class));
+                .deployVM(any(ClaudiaData.class), any(Tier.class), Matchers.anyInt(), any(VM.class));
         when(ovfUtils.changeInitialResources(any(String.class))).thenReturn("ovf");
         Mockito.doNothing().when(monitoringClient).startMonitoring(any(String.class), any(String.class));
 

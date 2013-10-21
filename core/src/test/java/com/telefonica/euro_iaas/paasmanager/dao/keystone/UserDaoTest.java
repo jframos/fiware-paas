@@ -7,29 +7,27 @@
 
 package com.telefonica.euro_iaas.paasmanager.dao.keystone;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.telefonica.euro_iaas.paasmanager.dao.keystone.impl.UserDaoKeystoneImpl;
+import com.telefonica.euro_iaas.paasmanager.model.keystone.User;
 import junit.framework.TestCase;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import com.telefonica.euro_iaas.paasmanager.dao.keystone.impl.UserDaoKeystoneImpl;
-import com.telefonica.euro_iaas.paasmanager.model.keystone.User;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla
- *
  */
-public class UserDaoTest extends TestCase{
+public class UserDaoTest extends TestCase {
 
     private UserDaoKeystoneImpl userDao;
     private Connection connection;
@@ -38,10 +36,10 @@ public class UserDaoTest extends TestCase{
 
     @Override
     @Before
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         userDao = new UserDaoKeystoneImpl();
         List<User> usrs = new ArrayList<User>();
-        User usr = new User ("userId", "userNname", "extras");
+        User usr = new User("userId", "userNname", "extras");
         usrs.add(usr);
 
         rs = mock(ResultSet.class);
@@ -50,7 +48,7 @@ public class UserDaoTest extends TestCase{
         when(rs.getString("name")).thenReturn("userNname");
         when(rs.getString("extra")).thenReturn("extras");
 
-        statement= mock (Statement.class);
+        statement = mock(Statement.class);
         when(statement.executeQuery(any(String.class))).thenReturn(rs);
 
         connection = mock(Connection.class);
@@ -62,10 +60,10 @@ public class UserDaoTest extends TestCase{
     public void testfindAll() {
         List<User> users = userDao.findAll(connection);
         assertNotNull(users);
-        /*assertEquals(1, users.size());
-		assertEquals("userId", users.get(0).getId());
-		assertEquals("userNname", users.get(0).getName());
-		assertEquals("extras", users.get(0).getExtra());*/
+        /*
+         * assertEquals(1, users.size()); assertEquals("userId", users.get(0).getId()); assertEquals("userNname",
+         * users.get(0).getName()); assertEquals("extras", users.get(0).getExtra());
+         */
     }
 
 }

@@ -11,13 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.ws.rs.core.MediaType;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
-import org.apache.log4j.Logger;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -32,6 +26,9 @@ import com.telefonica.euro_iaas.paasmanager.model.Rule;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import org.apache.log4j.Logger;
 
 /**
  * @author henar mu�oz
@@ -40,16 +37,13 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
     private SystemPropertiesProvider systemPropertiesProvider;
 
-
     private static Logger log = Logger.getLogger(OpenstackFirewallingClientImpl.class);
-
-
 
     public String deployRule(ClaudiaData claudiaData, Rule rule) throws InfrastructureException {
         log.debug("Creating security rule " + rule.getFromPort());
         String url = systemPropertiesProvider.getProperty("openstack.nova.url")
-        + systemPropertiesProvider.getProperty("openstack.version")
-        + claudiaData.getVdc() + "/os-security-group-rules";
+                + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
+                + "/os-security-group-rules";
         log.debug("actionUri: " + url);
 
         String payload = rule.toJSON();
@@ -62,8 +56,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
             ClientResponse response = null;
 
             WebResource wr = client.resource(url);
-            Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(
-                    MediaType.APPLICATION_JSON).entity(payload);
+            Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).entity(payload);
 
             Map<String, String> header = getHeaders(claudiaData.getUser());
             for (String key : header.keySet()) {
@@ -75,27 +68,27 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
             String result = response.getEntity(String.class);
 
             log.debug("Status " + response.getStatus());
-            if (response.getStatus() == 200 || response.getStatus() == 201
-                    || response.getStatus() == 204) {
+            if (response.getStatus() == 200 || response.getStatus() == 201 || response.getStatus() == 204) {
 
                 log.debug("Operation ok result " + result);
 
-                //              String id = result.substring(result.indexOf(", \"id\":")
-                //                      + ", \"id\":".length() + 1, result.indexOf("}}"));
+                // String id = result.substring(result.indexOf(", \"id\":")
+                // + ", \"id\":".length() + 1, result.indexOf("}}"));
 
                 org.json.JSONObject network = new org.json.JSONObject(result);
                 String id;
 
-                if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_OPENSTACK_DISTRIBUTION).equals("essex")) {
+                if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_OPENSTACK_DISTRIBUTION).equals(
+                        "essex")) {
                     id = network.getJSONObject("security_group_rule").getString("id");
                 } else {
                     id = "" + network.getJSONObject("security_group_rule").getInt("id");
                 }
                 log.debug("Operation ok result " + id);
 
-                //                                if (id.startsWith("\"") && id.endsWith("\"")) {
-                //                                    id = id.substring(1, id.length()-1);
-                //                                }
+                // if (id.startsWith("\"") && id.endsWith("\"")) {
+                // id = id.substring(1, id.length()-1);
+                // }
 
                 rule.setIdRule(id);
 
@@ -103,13 +96,12 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
             } else {
                 log.error("Error to create a security rule " + result);
-                throw new InfrastructureException(
-                        "Error to create a security rule " + result);
+                throw new InfrastructureException("Error to create a security rule " + result);
             }
 
         } catch (Exception e) {
-            String errorMessage = "Error performing post on the resource: "
-                + url + " with payload: " + payload + " " + e.getMessage();
+            String errorMessage = "Error performing post on the resource: " + url + " with payload: " + payload + " "
+                    + e.getMessage();
             log.error(errorMessage);
             e.printStackTrace();
 
@@ -120,18 +112,19 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
     /**
      * Creating the security group in Openstack.
+     * 
      * @param claudiaData
      * @param securityGroup
      * @return
      * @throws InfrastructureException
      */
-    public String deploySecurityGroup(ClaudiaData claudiaData,
-            SecurityGroup securityGroup) throws InfrastructureException {
+    public String deploySecurityGroup(ClaudiaData claudiaData, SecurityGroup securityGroup)
+            throws InfrastructureException {
 
         log.debug("Creating security group " + securityGroup.getName());
         String url = systemPropertiesProvider.getProperty("openstack.nova.url")
-        + systemPropertiesProvider.getProperty("openstack.version")
-        + claudiaData.getVdc() + "/os-security-groups";
+                + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
+                + "/os-security-groups";
         log.debug("actionUri: " + url);
 
         String payload = securityGroup.toJSON();
@@ -143,8 +136,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
             ClientResponse response = null;
 
             WebResource wr = client.resource(url);
-            Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(
-                    MediaType.APPLICATION_JSON).entity(payload);
+            Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).entity(payload);
 
             Map<String, String> header = getHeaders(claudiaData.getUser());
             for (String key : header.keySet()) {
@@ -156,57 +148,51 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
             log.debug("Status " + response.getStatus());
 
-            if (response.getStatus() == 200 || response.getStatus() == 201
-                    || response.getStatus() == 204) {
+            if (response.getStatus() == 200 || response.getStatus() == 201 || response.getStatus() == 204) {
 
                 log.debug("Operation ok result " + result);
                 System.out.println("Result " + result);
                 org.json.JSONObject network = new org.json.JSONObject(result);
                 String id;
 
-                //     if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_OPENSTACK_DISTRIBUTION).equals("essex")) {
+                // if
+                // (systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_OPENSTACK_DISTRIBUTION).equals("essex"))
+                // {
                 id = network.getJSONObject("security_group").getString("id");
-                //   } else {
-                //     id = "" + network.getJSONObject("security_group").getInt("id");
+                // } else {
+                // id = "" + network.getJSONObject("security_group").getInt("id");
                 // }
-                //              String id = result.substring(result.indexOf(", \"id\":")
-                //                      + ", \"id\":".length() + 1, result
-                //                      .indexOf(", \"name\": "));
+                // String id = result.substring(result.indexOf(", \"id\":")
+                // + ", \"id\":".length() + 1, result
+                // .indexOf(", \"name\": "));
                 log.debug("Operation ok id " + id);
 
-                //                                if (id.startsWith("\"") && id.endsWith("\"")) {
-                //                                    id = id.substring(1, id.length()-1);
-                //                                }
+                // if (id.startsWith("\"") && id.endsWith("\"")) {
+                // id = id.substring(1, id.length()-1);
+                // }
 
                 return id;
             } else {
                 log.error("Error to create a security group " + result);
-                throw new InfrastructureException(
-                        "Error to create a security group " + result);
+                throw new InfrastructureException("Error to create a security group " + result);
             }
 
         } catch (Exception e) {
 
-            String errorMessage = "Error performing post on the resource: "
-                + url + " with payload: " + payload + " " + e.getMessage();
+            String errorMessage = "Error performing post on the resource: " + url + " with payload: " + payload + " "
+                    + e.getMessage();
             log.error(errorMessage);
 
             throw new InfrastructureException(errorMessage);
         }
 
-
     }
 
-
-
-
-    public void destroyRule(ClaudiaData claudiaData, Rule rule)
-    throws InfrastructureException {
+    public void destroyRule(ClaudiaData claudiaData, Rule rule) throws InfrastructureException {
         log.debug("Destroy security rule " + rule.getFromPort());
         String url = systemPropertiesProvider.getProperty("openstack.nova.url")
-        + systemPropertiesProvider.getProperty("openstack.version")
-        + claudiaData.getVdc() + "/os-security-group-rules/"
-        + rule.getIdRule();
+                + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
+                + "/os-security-group-rules/" + rule.getIdRule();
         log.debug("actionUri: " + url);
 
         try {
@@ -216,8 +202,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
             ClientResponse response = null;
 
             WebResource wr = client.resource(url);
-            Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(
-                    MediaType.APPLICATION_JSON);
+            Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
 
             Map<String, String> header = getHeaders(claudiaData.getUser());
             for (String key : header.keySet()) {
@@ -229,21 +214,16 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
             log.debug("Status " + response.getStatus());
 
-            if (response.getStatus() == 200 || response.getStatus() == 202
-                    || response.getStatus() == 201
+            if (response.getStatus() == 200 || response.getStatus() == 202 || response.getStatus() == 201
                     || response.getStatus() == 204) {
                 log.debug("Operation ok result " + result);
             } else {
-                log.error("Error to delete a security rule " + rule.getIdRule()
-                        + ": " + result);
-                throw new InfrastructureException(
-                        "Error to delete a security rule " + rule.getIdRule()
-                        + ": " + result);
+                log.error("Error to delete a security rule " + rule.getIdRule() + ": " + result);
+                throw new InfrastructureException("Error to delete a security rule " + rule.getIdRule() + ": " + result);
             }
 
         } catch (Exception e) {
-            String errorMessage = "Error performing delete on the resource: "
-                + url;
+            String errorMessage = "Error performing delete on the resource: " + url;
             e.printStackTrace();
 
             throw new InfrastructureException(errorMessage);
@@ -252,11 +232,11 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
     }
 
     public void destroySecurityGroup(ClaudiaData claudiaData, SecurityGroup securityGroup)
-    throws InfrastructureException {
+            throws InfrastructureException {
         log.debug("Destroy security group " + securityGroup.getName());
         String url = systemPropertiesProvider.getProperty("openstack.nova.url")
-        + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
-        + "/os-security-groups/" + securityGroup.getIdSecurityGroup();
+                + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
+                + "/os-security-groups/" + securityGroup.getIdSecurityGroup();
         log.debug("actionUri: " + url);
 
         try {
@@ -300,6 +280,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
     /**
      * Converting from a string (list of secGrous in json) to a list of SecurityGroups
+     * 
      * @param jsonSecGroups
      * @return
      */
@@ -326,8 +307,6 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
     }
 
-
-
     /*
      * (non-Javadoc)
      * @see
@@ -337,8 +316,8 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
     public List<SecurityGroup> loadAllSecurityGroups(ClaudiaData claudiaData) throws OpenStackException {
 
         String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)
-        + systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)
-        + claudiaData.getVdc() + "/os-security-groups";
+                + systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)
+                + claudiaData.getVdc() + "/os-security-groups";
         log.debug("actionUri: " + url);
 
         Client client = new Client();
@@ -366,16 +345,17 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
         return securityGroups;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see com.telefonica.euro_iaas.paasmanager.claudia.FirewallingClient#load(java.lang.String)
      */
     public SecurityGroup loadSecurityGroup(ClaudiaData claudiaData, String securityGroupId)
-    throws EntityNotFoundException {
+            throws EntityNotFoundException {
 
         log.debug("Loading security group " + securityGroupId);
         String url = systemPropertiesProvider.getProperty("openstack.nova.url")
-        + systemPropertiesProvider.getProperty("openstack.version")
-        + claudiaData.getVdc() + "/os-security-groups/" + securityGroupId;
+                + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
+                + "/os-security-groups/" + securityGroupId;
         log.debug("actionUri: " + url);
 
         try {
@@ -384,8 +364,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
             ClientResponse response = null;
 
             WebResource wr = client.resource(url);
-            Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(
-                    MediaType.APPLICATION_JSON);
+            Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
 
             Map<String, String> header = getHeaders(claudiaData.getUser());
             for (String key : header.keySet()) {
@@ -398,7 +377,6 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
             String jsonSecGroup = jsonsecurityGroup.getString("security_group");
             JSONObject jsonSecGroupRaw = JSONObject.fromObject(jsonSecGroup);
 
-
             log.debug("Status " + response.getStatus());
 
             if (response.getStatus() == 404) {
@@ -406,45 +384,30 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
                 log.info(errorMessage);
                 throw new EntityNotFoundException(SecurityGroup.class, securityGroupId, errorMessage);
             }
-            /*if (response.getStatus() == 200 || response.getStatus() == 201
-					|| response.getStatus() == 204) {
-
-				log.debug("Operation ok result " + result);
-				System.out.println("Result " + result);
-
-				String id = result.substring(result.indexOf(", \"id\":")
-						+ ", \"id\":".length() + 1, result
-						.indexOf(", \"name\": "));
-				log.debug("Operation ok id " + id);
-
-				return id;
-			} else {
-				log.error("Error to create a security group " + result);
-				throw new InfrastructureException(
-						"Error to create a security group " + result);
-			}*/
+            /*
+             * if (response.getStatus() == 200 || response.getStatus() == 201 || response.getStatus() == 204) {
+             * log.debug("Operation ok result " + result); System.out.println("Result " + result); String id =
+             * result.substring(result.indexOf(", \"id\":") + ", \"id\":".length() + 1, result
+             * .indexOf(", \"name\": ")); log.debug("Operation ok id " + id); return id; } else {
+             * log.error("Error to create a security group " + result); throw new InfrastructureException(
+             * "Error to create a security group " + result); }
+             */
             SecurityGroup secGroup = new SecurityGroup();
             secGroup.fromJson(jsonSecGroupRaw);
             return secGroup;
 
         } catch (Exception e) {
-            String errorMessage = "Error loading SecurityGroup : " + securityGroupId
-            + "  "+ e.getMessage();
+            String errorMessage = "Error loading SecurityGroup : " + securityGroupId + "  " + e.getMessage();
             log.error(errorMessage);
             throw new EntityNotFoundException(SecurityGroup.class, securityGroupId, errorMessage);
         }
     }
 
     /**
-     * 
      * @param systemPropertiesProvider
      */
-    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider){
+    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
-
-
-
-
 
 }

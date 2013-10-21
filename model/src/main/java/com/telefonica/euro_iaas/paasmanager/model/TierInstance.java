@@ -9,7 +9,6 @@ package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -40,7 +39,6 @@ public class TierInstance extends InstallableInstance {
     @ManyToOne
     private Tier tier;
 
-
     /** the vmOVF. ***/
     @Column(length = 100000)
     private String ovf = "";
@@ -55,13 +53,9 @@ public class TierInstance extends InstallableInstance {
     @Embedded
     private VM vm;
 
-
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "tierinstance_has_productinstances", joinColumns = { @JoinColumn(name = "tierinstance_ID",
-            nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "productinstance_ID",
-                    nullable = false, updatable = false) })
-                    private List<ProductInstance> productInstances;
-
+    @JoinTable(name = "tierinstance_has_productinstances", joinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "productinstance_ID", nullable = false, updatable = false) })
+    private List<ProductInstance> productInstances;
 
     /**
      * Constructor.
@@ -87,23 +81,18 @@ public class TierInstance extends InstallableInstance {
         this.vm = vm;
     }
 
-
     /**
-     * 
      * @param tier2
      * @param productInstances2
      * @param vm
      */
-    public TierInstance(Tier tier2, List<ProductInstance> productInstances2,
-            VM vm) {
+    public TierInstance(Tier tier2, List<ProductInstance> productInstances2, VM vm) {
         this.tier = tier2;
         this.productInstances = productInstances2;
         this.vm = vm;
     }
 
-
     /**
-     * 
      * @param tier
      * @param ovf
      * @param name
@@ -118,7 +107,6 @@ public class TierInstance extends InstallableInstance {
     }
 
     /**
-     * 
      * @param productInstance
      */
     public void addProductInstance(ProductInstance productInstance) {
@@ -129,7 +117,6 @@ public class TierInstance extends InstallableInstance {
     }
 
     /**
-     * 
      * @param productInstance
      */
     public void deleteProductInstance(ProductInstance productInstance) {
@@ -154,9 +141,7 @@ public class TierInstance extends InstallableInstance {
         return ovf;
     }
 
-
     /**
-
      * @return the productInstances
      */
     public List<ProductInstance> getProductInstances() {
@@ -168,15 +153,12 @@ public class TierInstance extends InstallableInstance {
 
     }
 
-
     /**
      * @return the tier
      */
     public Tier getTier() {
         return tier;
     }
-
-
 
     public String getVApp() {
         return vapp;
@@ -186,12 +168,9 @@ public class TierInstance extends InstallableInstance {
         return vm;
     }
 
-
-
     public void setId(Long id) {
         this.id = id;
     }
-
 
     @Override
     public void setName(String name) {
@@ -199,12 +178,9 @@ public class TierInstance extends InstallableInstance {
 
     }
 
-
-
     public void setNumberReplica(int numberReplica) {
         this.numberReplica = numberReplica;
     }
-
 
     /**
      * @param ovf
@@ -221,8 +197,6 @@ public class TierInstance extends InstallableInstance {
         this.productInstances = productInstances;
     }
 
-
-
     public void setTaskId(String id) {
         taskId = id;
 
@@ -236,7 +210,6 @@ public class TierInstance extends InstallableInstance {
         this.tier = tier;
     }
 
-
     /**
      * @param vapp
      */
@@ -248,9 +221,9 @@ public class TierInstance extends InstallableInstance {
         this.vm = vm;
     }
 
-
     /**
      * The Dto specification.
+     * 
      * @return
      */
     public TierInstanceDto toDto() {

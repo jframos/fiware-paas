@@ -37,7 +37,6 @@ public class ApplicationType {
     @Column(length = 2048)
     private String description;
 
-
     /**
      * Default Constructor.
      */
@@ -85,7 +84,6 @@ public class ApplicationType {
     public String getDescription() {
         return description;
     }
-
 
     /**
      * @return the id

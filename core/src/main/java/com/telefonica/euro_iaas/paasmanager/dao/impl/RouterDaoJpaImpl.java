@@ -16,12 +16,12 @@ import com.telefonica.euro_iaas.paasmanager.model.Router;
 
 /**
  * @author Henar Munoz
- * 
  */
 public class RouterDaoJpaImpl extends AbstractBaseDao<Router, String> implements RouterDao {
 
     /**
      * find all networks.
+     * 
      * @return network list
      */
     public List<Router> findAll() {

@@ -66,7 +66,9 @@
             <ResourceType xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">
                 10
             </ResourceType>
-            <IPv4Address xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_IPProtocolEndpoint">109.231.80.82</IPv4Address>
+            <IPv4Address xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_IPProtocolEndpoint">
+                109.231.80.82
+            </IPv4Address>
         </Item>
     </VirtualHardwareSection>
 </VApp>

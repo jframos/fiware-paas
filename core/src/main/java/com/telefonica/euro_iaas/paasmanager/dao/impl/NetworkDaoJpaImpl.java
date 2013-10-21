@@ -16,10 +16,8 @@ import com.telefonica.euro_iaas.paasmanager.model.Network;
 
 /**
  * @author Henar Munoz
- * 
  */
-public class NetworkDaoJpaImpl extends AbstractBaseDao<Network, String> implements
-NetworkDao {
+public class NetworkDaoJpaImpl extends AbstractBaseDao<Network, String> implements NetworkDao {
 
     /*
      * find all networks.
@@ -31,9 +29,7 @@ NetworkDao {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see
-     * com.telefonica.euro_iaas.commons.dao.BaseDAO#load(java.io.Serializable)
+     * @see com.telefonica.euro_iaas.commons.dao.BaseDAO#load(java.io.Serializable)
      */
     public Network load(String arg0) throws EntityNotFoundException {
         return super.loadByField(Network.class, "name", arg0);

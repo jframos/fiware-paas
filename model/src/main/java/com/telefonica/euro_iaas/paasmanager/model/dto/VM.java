@@ -8,7 +8,6 @@
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.HashMap;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -110,11 +109,11 @@ public class VM {
         this.osType = osType;
     }
 
-
     // // ACCESSORS ////
 
     /**
      * Add a network to the VM.
+     * 
      * @param network
      * @param ip
      */
@@ -128,6 +127,7 @@ public class VM {
 
     /**
      * The network to be deleted.
+     * 
      * @param network
      */
     public void deleteNetwork(String network) {
@@ -338,6 +338,7 @@ public class VM {
 
     /**
      * a Dto entity.
+     * 
      * @return
      */
     public VMDto toDto() {
@@ -353,7 +354,7 @@ public class VM {
     @Override
     public String toString() {
         return "VM [domain=" + domain + ", hostname=" + hostname + ", ip=" + ip + ", fqn=" + fqn + ", osType=" + osType
-        + "]";
+                + "]";
     }
 
 }

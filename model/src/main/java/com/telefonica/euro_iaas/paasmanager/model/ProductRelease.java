@@ -9,7 +9,6 @@ package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,10 +25,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
-import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 
 /**
  * A product release is a concrete version of a given product.
@@ -100,6 +98,7 @@ public class ProductRelease {
 
     /**
      * Constructor.
+     * 
      * @param product
      * @param version
      * @param object2
@@ -116,7 +115,6 @@ public class ProductRelease {
     }
 
     /**
-     * 
      * @param name
      * @param version
      * @param description
@@ -142,8 +140,7 @@ public class ProductRelease {
      * @param withArtifact
      * @param productType
      */
-    public ProductRelease(String product, String version, String description,
-            List<Attribute> attributes,
+    public ProductRelease(String product, String version, String description, List<Attribute> attributes,
             List<ProductRelease> transitableReleases, List<OS> supportedOOSS, Boolean withArtifact,
             ProductType productType) {
         this.name = product + "-" + version;
@@ -161,6 +158,7 @@ public class ProductRelease {
 
     /**
      * Add an attribute to the product release.
+     * 
      * @param attribute
      */
     public void addAttribute(Attribute attribute) {
@@ -172,6 +170,7 @@ public class ProductRelease {
 
     /**
      * Add a metadata.
+     * 
      * @param metadata
      */
     public void addMetadata(Metadata metadata) {
@@ -207,7 +206,7 @@ public class ProductRelease {
         }
         ProductRelease other = (ProductRelease) obj;
         if (id == null) {
-            if (other.id != null){
+            if (other.id != null) {
                 return false;
             }
         } else if (!id.equals(other.id)) {
@@ -226,9 +225,9 @@ public class ProductRelease {
         return JSONObject.fromObject(stringProductJson);
     }
 
-
     /**
      * the json.
+     * 
      * @param jsonNode
      */
     public void fromSdcJson(JSONObject jsonNode) {
@@ -270,6 +269,7 @@ public class ProductRelease {
 
     /**
      * Get the attribute with the key.
+     * 
      * @param key
      * @return
      */
@@ -308,6 +308,7 @@ public class ProductRelease {
 
     /**
      * Get the metadata from the key.
+     * 
      * @param key
      * @return
      */
@@ -477,6 +478,7 @@ public class ProductRelease {
 
     /**
      * the dto representation.
+     * 
      * @return
      */
     public ProductReleaseDto toDto() {
@@ -489,7 +491,7 @@ public class ProductRelease {
             pReleaseDto.setProductDescription(getDescription());
         }
 
-        if (getAttributes() != null){
+        if (getAttributes() != null) {
             pReleaseDto.setPrivateAttributes(getAttributes());
         }
 

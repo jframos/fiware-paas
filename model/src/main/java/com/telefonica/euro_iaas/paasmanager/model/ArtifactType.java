@@ -60,8 +60,6 @@ public class ArtifactType {
         this.productType = productType;
     }
 
-
-
     /**
      * @return the description
      */

@@ -19,12 +19,12 @@ import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 
 /**
  * @author henar
- * 
  */
 public interface NetworkClient {
 
     /**
      * Add the network to the router.
+     * 
      * @param claudiaData
      * @param router
      * @param network
@@ -33,14 +33,15 @@ public interface NetworkClient {
 
     /**
      * Deploy the network in the infrastructure.
+     * 
      * @param claudiaData
      * @param network
      */
-    void deployNetwork(ClaudiaData claudiaData,
-            Network network) throws InfrastructureException;
+    void deployNetwork(ClaudiaData claudiaData, Network network) throws InfrastructureException;
 
     /**
      * Deploy the router.
+     * 
      * @param claudiaData
      * @param router
      * @return
@@ -50,6 +51,7 @@ public interface NetworkClient {
 
     /**
      * Deploy the subnetwork in the infrastructure.
+     * 
      * @param claudiaData
      * @param subNet
      */
@@ -57,6 +59,7 @@ public interface NetworkClient {
 
     /**
      * Destroy the network in the infrastructure.
+     * 
      * @param claudiaData
      * @param network
      */
@@ -64,9 +67,9 @@ public interface NetworkClient {
 
     void destroyRouter(ClaudiaData claudiaData, Router router);
 
-
     /**
      * Destroy a subnet in OpenStack.
+     * 
      * @param claudiaData
      * @param subnet
      * @return
@@ -76,6 +79,7 @@ public interface NetworkClient {
 
     /**
      * Loads all network associated to a certain vdc.
+     * 
      * @param claudiaData
      * @return List<Network>
      */
@@ -83,12 +87,12 @@ public interface NetworkClient {
 
     /**
      * Load a Network from OpenStack.
+     * 
      * @param claudiaData
      * @param networkId
      * @return
      * @throws EntityNotFoundException
      */
     String loadNetwork(ClaudiaData claudiaData, Network network) throws EntityNotFoundException;
-
 
 }

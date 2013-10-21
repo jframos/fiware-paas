@@ -58,6 +58,7 @@ public class Metadata {
 
     /**
      * Constructor.
+     * 
      * @param key
      * @param value
      */
@@ -68,6 +69,7 @@ public class Metadata {
 
     /**
      * Constructor.
+     * 
      * @param key
      * @param value
      * @param description
@@ -113,6 +115,7 @@ public class Metadata {
 
     /**
      * from Json.
+     * 
      * @param jsonNode
      */
     public void fromJson(JSONObject jsonNode) {

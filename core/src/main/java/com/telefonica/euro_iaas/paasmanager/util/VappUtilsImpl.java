@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,6 +24,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidVappException;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.Tier;
+import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import org.apache.log4j.Logger;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
@@ -34,16 +39,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidVappException;
-import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
-import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
-
 /**
  * @author jesus.movilla
- * 
  */
 public class VappUtilsImpl implements VappUtils {
 
@@ -56,8 +53,7 @@ public class VappUtilsImpl implements VappUtils {
         return (XPathAPI.selectSingleNode(node, xql));
     }
 
-    private NodeList findNodeList(Node node, String xql)
-    throws TransformerException {
+    private NodeList findNodeList(Node node, String xql) throws TransformerException {
         return (XPathAPI.selectNodeList(node, xql));
     }
 
@@ -84,8 +80,7 @@ public class VappUtilsImpl implements VappUtils {
             log.info(msg);
             throw new InvalidVappException(msg);
         } catch (IOException e) {
-            String msg = "IOException .Error obtaining hostname : "
-                + e.getMessage();
+            String msg = "IOException .Error obtaining hostname : " + e.getMessage();
             log.info(msg);
             throw new InvalidVappException(msg);
         }
@@ -94,10 +89,7 @@ public class VappUtilsImpl implements VappUtils {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see
-     * com.telefonica.euro_iaas.paasmanager.installator.rec.util.VappUtils#getIP
-     * (java.lang.String)
+     * @see com.telefonica.euro_iaas.paasmanager.installator.rec.util.VappUtils#getIP (java.lang.String)
      */
     public List<String> getIP(String vappReplica) throws InvalidVappException {
         List<String> ips = new ArrayList<String>();
@@ -111,8 +103,7 @@ public class VappUtilsImpl implements VappUtils {
             builder = factory.newDocumentBuilder();
             doc = builder.parse(new InputSource(new StringReader(vappReplica)));
 
-            if (systemPropertiesProvider.getProperty(
-                    SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+            if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                 ipTag = IPADDRESS_TAG_FIWARE;
             } else {
                 ipTag = IPADDRESS_TAG;
@@ -146,50 +137,47 @@ public class VappUtilsImpl implements VappUtils {
         return ips;
     }
 
-
     private String getIpfromMacro(String value, EnvironmentInstance envIns, TierInstance tierInst) {
         String prefix = "@IP" + "(";
-        String macroValue = value.substring(value.indexOf(prefix)+prefix.length(),value.indexOf(")"));
+        String macroValue = value.substring(value.indexOf(prefix) + prefix.length(), value.indexOf(")"));
 
-        /* Two possibilities to take into account: @IP(net) or @IP(net,alias). Note that
-         * alias = "" in the case @IP(net) is used */
-        String network ="";
+        /*
+         * Two possibilities to take into account: @IP(net) or @IP(net,alias). Note that alias = "" in the case @IP(net)
+         * is used
+         */
+        String network = "";
         String vm = "";
-        StringTokenizer macroValueTokenizer = new StringTokenizer(macroValue,",");
+        StringTokenizer macroValueTokenizer = new StringTokenizer(macroValue, ",");
         vm = macroValueTokenizer.nextToken();
         if (macroValueTokenizer.hasMoreElements()) {
-            network= macroValueTokenizer.nextToken();
-
+            network = macroValueTokenizer.nextToken();
 
         }
-
 
         log.debug("IP@ = " + network);
         log.debug("vm@ = " + vm);
 
-        if (tierInst.getTier().getName().equals(vm))
-        {
+        if (tierInst.getTier().getName().equals(vm)) {
             return tierInst.getVM().getNetworks().get(network);
         }
-        log.debug ("dds " + envIns.getEnvironment());
-        log.debug ("size " + envIns.getEnvironment().getTiers());
+        log.debug("dds " + envIns.getEnvironment());
+        log.debug("size " + envIns.getEnvironment().getTiers());
 
-        for (TierInstance tierInst2: envIns.getTierInstances())
-        {
+        for (TierInstance tierInst2 : envIns.getTierInstances()) {
             Tier tier = tierInst2.getTier();
-            log.debug ("tier " + tier.getName() + " tier instance " + tierInst2.getName() + " vm " + tierInst2.getVM().getNetworks() );
-            if (tier.getName().equals(vm))
-            {
-                log.debug ("netws " +tierInst2.getVM().getNetworks());
-                log.debug ("netws " +tierInst2.getVM().getNetworks().get(network));
+            log.debug("tier " + tier.getName() + " tier instance " + tierInst2.getName() + " vm "
+                    + tierInst2.getVM().getNetworks());
+            if (tier.getName().equals(vm)) {
+                log.debug("netws " + tierInst2.getVM().getNetworks());
+                log.debug("netws " + tierInst2.getVM().getNetworks().get(network));
                 return tierInst2.getVM().getNetworks().get(network);
             }
         }
         return null;
     }
 
-    public String getMacroVapp (String ovf, EnvironmentInstance envIns, TierInstance tierInstance) throws InvalidOVFException
-    {
+    public String getMacroVapp(String ovf, EnvironmentInstance envIns, TierInstance tierInstance)
+            throws InvalidOVFException {
         if (ovf == null)
             return null;
 
@@ -204,9 +192,7 @@ public class VappUtilsImpl implements VappUtils {
             builder = factory.newDocumentBuilder();
             doc = builder.parse(new InputSource(new StringReader(ovf)));
 
-            NodeList productSectionNodes = doc
-            .getElementsByTagName("ovfenvelope:ProductSection");
-
+            NodeList productSectionNodes = doc.getElementsByTagName("ovfenvelope:ProductSection");
 
             for (int i = 0; i < productSectionNodes.getLength(); i++) {
 
@@ -219,21 +205,17 @@ public class VappUtilsImpl implements VappUtils {
                     String propertyString = nodeToString(property);
 
                     if (propertyString.contains("Property")) {
-                        if ((property.getAttributes().getNamedItem(
-                        "ovfenvelope:value").getTextContent().toLowerCase()
-                        .contains("@ip")))
-                        {
+                        if ((property.getAttributes().getNamedItem("ovfenvelope:value").getTextContent().toLowerCase()
+                                .contains("@ip"))) {
 
-
-                            String ip = getIpfromMacro (property.getAttributes().getNamedItem(
-                            "ovfenvelope:value").getTextContent(), envIns, tierInstance);
-                            log.debug ("IP value in macro : " + property.getAttributes().getNamedItem(
-                            "ovfenvelope:value").getTextContent() + " " + ip);
-                            property.getAttributes().getNamedItem(
-                            "ovfenvelope:value").setTextContent(ip);
+                            String ip = getIpfromMacro(property.getAttributes().getNamedItem("ovfenvelope:value")
+                                    .getTextContent(), envIns, tierInstance);
+                            log.debug("IP value in macro : "
+                                    + property.getAttributes().getNamedItem("ovfenvelope:value").getTextContent() + " "
+                                    + ip);
+                            property.getAttributes().getNamedItem("ovfenvelope:value").setTextContent(ip);
 
                         }
-
 
                     }
                 }
@@ -268,14 +250,11 @@ public class VappUtilsImpl implements VappUtils {
             builder = factory.newDocumentBuilder();
             doc = builder.parse(new InputSource(new StringReader(vappReplica)));
 
-            if (systemPropertiesProvider.getProperty(
-                    SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+            if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                 ipTag = IPADDRESS_TAG_FIWARE;
             } else {
                 ipTag = IPADDRESS_TAG;
             }
-
-
 
             NodeList nodeips = doc.getElementsByTagName(ipTag);
             NodeList nodeNetwork = doc.getElementsByTagName(connectionTag);
@@ -313,19 +292,14 @@ public class VappUtilsImpl implements VappUtils {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see
-     * com.telefonica.euro_iaas.paasmanager.util.VappUtils#getReplica(java.lang
-     * .String)
+     * @see com.telefonica.euro_iaas.paasmanager.util.VappUtils#getReplica(java.lang .String)
      */
     public String getReplica(String fqnId) {
         // TODO Auto-generated method stub
-        return fqnId.substring(fqnId.indexOf("replicas.")
-                + "replicas.".length());
+        return fqnId.substring(fqnId.indexOf("replicas.") + "replicas.".length());
     }
 
-    public List<String> getVappsSingleVM(ClaudiaData claudiaData, String vapp)
-    throws InvalidVappException {
+    public List<String> getVappsSingleVM(ClaudiaData claudiaData, String vapp) throws InvalidVappException {
         List<String> vappsReplicas = new ArrayList<String>();
         List<String> veeVapps = new ArrayList<String>();
 
@@ -354,12 +328,10 @@ public class VappUtilsImpl implements VappUtils {
                 String veeReplica = nodeToString(vappVEE);
                 veeVapps.add(veeReplica);
 
-                NodeList lVappReplica = vappVEE
-                .getElementsByTagName("Children");
+                NodeList lVappReplica = vappVEE.getElementsByTagName("Children");
 
                 for (int j = 0; j < lVappReplica.getLength(); j++) {
-                    NodeList vapps = ((Element) lVappReplica.item(j))
-                    .getElementsByTagName("VApp");
+                    NodeList vapps = ((Element) lVappReplica.item(j)).getElementsByTagName("VApp");
                     String vappReplica = nodeToString(vapps.item(0));
                     vappsReplicas.add(vappReplica);
                 }
@@ -384,14 +356,10 @@ public class VappUtilsImpl implements VappUtils {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see
-     * com.telefonica.euro_iaas.paasmanager.util.VappUtils#getVMName(java.lang
-     * .String)
+     * @see com.telefonica.euro_iaas.paasmanager.util.VappUtils#getVMName(java.lang .String)
      */
     public String getVMName(String fqnId) {
-        return fqnId.substring(fqnId.indexOf("vees.") + "vees.".length(), fqnId
-                .indexOf(".replicas"));
+        return fqnId.substring(fqnId.indexOf("vees.") + "vees.".length(), fqnId.indexOf(".replicas"));
     }
 
     private String nodeToString(Node node) {
@@ -405,18 +373,16 @@ public class VappUtilsImpl implements VappUtils {
         }
         return sw.toString();
     }
+
     /**
      * @param systemPropertiesProvider
      *            the systemPropertiesProvider to set
      */
-    public void setSystemPropertiesProvider(
-            SystemPropertiesProvider systemPropertiesProvider) {
+    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
-
-
-    public  String toString(Document doc) {
+    public String toString(Document doc) {
         try {
             StringWriter sw = new StringWriter();
             TransformerFactory tf = TransformerFactory.newInstance();
