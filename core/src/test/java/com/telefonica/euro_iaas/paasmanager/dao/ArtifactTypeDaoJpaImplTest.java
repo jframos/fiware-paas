@@ -7,6 +7,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.dao;
 
+
 public class ArtifactTypeDaoJpaImplTest extends AbstractJpaDaoTest {
     // implements ArtifactTypeDao {
 
@@ -19,9 +20,10 @@ public class ArtifactTypeDaoJpaImplTest extends AbstractJpaDaoTest {
      * @return artifactType
      */
     /*
-     * public ArtifactType create(ArtifactType artifactType) throws InvalidEntityException, AlreadyExistsEntityException
-     * { artifactType = artifactTypeDao.create(artifactType); assertNotNull(artifactType.getId()); return artifactType;
-     * }
+     * public ArtifactType create(ArtifactType artifactType) throws
+     * InvalidEntityException, AlreadyExistsEntityException { artifactType =
+     * artifactTypeDao.create(artifactType);
+     * assertNotNull(artifactType.getId()); return artifactType; }
      */
 
     /**
@@ -41,9 +43,10 @@ public class ArtifactTypeDaoJpaImplTest extends AbstractJpaDaoTest {
      * @return artifactType
      */
     /*
-     * public ArtifactType load(String arg0) throws EntityNotFoundException { ArtifactType artifactType =
-     * artifactTypeDao.load(artifactTypeDao.findAll().get(0).getName()); assertNotNull(artifactType.getId()); return
-     * artifactType; }
+     * public ArtifactType load(String arg0) throws EntityNotFoundException {
+     * ArtifactType artifactType =
+     * artifactTypeDao.load(artifactTypeDao.findAll().get(0).getName());
+     * assertNotNull(artifactType.getId()); return artifactType; }
      */
 
     /**
@@ -54,10 +57,15 @@ public class ArtifactTypeDaoJpaImplTest extends AbstractJpaDaoTest {
      * @return artifactType
      */
     /*
-     * public ArtifactType update(ArtifactType arg0) throws InvalidEntityException { ArtifactType artifactType =
-     * artifactTypeDao.findAll().get(0); artifactType.setDescription("Description2"); artifactType =
-     * artifactTypeDao.update(artifactType); assertEquals(artifactType.getDescription(), "Description2"); return
-     * artifactType; }
+     * public ArtifactType update(ArtifactType arg0) throws
+     * InvalidEntityException { ArtifactType artifactType =
+     * artifactTypeDao.findAll().get(0);
+     * artifactType.setDescription("Description2");
+     * 
+     * artifactType = artifactTypeDao.update(artifactType);
+     * assertEquals(artifactType.getDescription(), "Description2");
+     * 
+     * return artifactType; }
      */
 
     /**
@@ -67,7 +75,8 @@ public class ArtifactTypeDaoJpaImplTest extends AbstractJpaDaoTest {
      *            , the artifactType object
      */
     /*
-     * public void remove(ArtifactType artifactType) { artifactTypeDao.remove(artifactType); }
+     * public void remove(ArtifactType artifactType) {
+     * artifactTypeDao.remove(artifactType); }
      */
 
     /**
@@ -75,7 +84,8 @@ public class ArtifactTypeDaoJpaImplTest extends AbstractJpaDaoTest {
      *            the artifactTypeDao to set
      */
     /*
-     * public void setArtifactTypeDao(ArtifactTypeDao artifactTypeDao) { this.artifactTypeDao = artifactTypeDao; }
+     * public void setArtifactTypeDao(ArtifactTypeDao artifactTypeDao) {
+     * this.artifactTypeDao = artifactTypeDao; }
      */
 
 }

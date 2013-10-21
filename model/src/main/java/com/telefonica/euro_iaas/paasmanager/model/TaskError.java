@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Defines a message in a task
+ * Defines a message in a task.
  * 
  * @author Sergio Arroyo
  */
@@ -46,6 +46,13 @@ public class TaskError {
     }
 
     /**
+     * @return the majorErrorCode
+     */
+    public String getMajorErrorCode() {
+        return majorErrorCode;
+    }
+
+    /**
      * @return the message
      */
     public String getMessage() {
@@ -53,18 +60,17 @@ public class TaskError {
     }
 
     /**
-     * @param message
-     *            the message to set
+     * @return the minorErrorCode
      */
-    public void setMessage(String message) {
-        this.message = message;
+    public String getMinorErrorCode() {
+        return minorErrorCode;
     }
 
     /**
-     * @return the majorErrorCode
+     * @return the venodrSpecificErrorCode
      */
-    public String getMajorErrorCode() {
-        return majorErrorCode;
+    public String getVenodrSpecificErrorCode() {
+        return venodrSpecificErrorCode;
     }
 
     /**
@@ -76,10 +82,11 @@ public class TaskError {
     }
 
     /**
-     * @return the minorErrorCode
+     * @param message
+     *            the message to set
      */
-    public String getMinorErrorCode() {
-        return minorErrorCode;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     /**
@@ -88,13 +95,6 @@ public class TaskError {
      */
     public void setMinorErrorCode(String minorErrorCode) {
         this.minorErrorCode = minorErrorCode;
-    }
-
-    /**
-     * @return the venodrSpecificErrorCode
-     */
-    public String getVenodrSpecificErrorCode() {
-        return venodrSpecificErrorCode;
     }
 
     /**

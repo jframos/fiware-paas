@@ -7,37 +7,37 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentDao;
-import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentTypeDao;
-import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl;
-import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.paasmanager.model.Environment;
-import com.telefonica.euro_iaas.paasmanager.model.EnvironmentType;
-import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import junit.framework.TestCase;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentDao;
+import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
+import com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.Environment;
+import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
+import com.telefonica.euro_iaas.paasmanager.model.Tier;
+
 /**
  * @author jesus.movilla
+ * 
  */
 public class EnvironmentManagerImplTest extends TestCase {
 
     private ProductReleaseDao productReleaseDao;
     private EnvironmentDao environmentDao;
-    private EnvironmentTypeDao environmentTypeDao;
+
     // private TierDao tierDao;
     private TierManager tierManager;
 
@@ -49,14 +49,16 @@ public class EnvironmentManagerImplTest extends TestCase {
 
     private ClaudiaData data;
 
+    @Override
     @Before
     public void setUp() throws Exception {
 
         productRelease = new ProductRelease("product", "2.0");
         /*
-         * ProductType productType = new ProductType("Generic", "Generic"); productRelease.setProductType(productType);
-         * OS os = new OS ("94", "ip", "hostname", "domain"); List<OS> oss = new ArrayList<OS>(); oss.add(os);
-         * productRelease.setSupportedOOSS(oss);
+         * ProductType productType = new ProductType("Generic", "Generic");
+         * productRelease.setProductType(productType); OS os = new OS ("94",
+         * "ip", "hostname", "domain"); List<OS> oss = new ArrayList<OS>();
+         * oss.add(os); productRelease.setSupportedOOSS(oss);
          */
 
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
@@ -72,33 +74,39 @@ public class EnvironmentManagerImplTest extends TestCase {
         tiers = new ArrayList<Tier>();
         tiers.add(tier);
 
-        environmentTypeDao = mock(EnvironmentTypeDao.class);
-        when(environmentTypeDao.load(any(String.class))).thenReturn(new EnvironmentType("Generic", "Generic"));
+
 
         productReleaseDao = mock(ProductReleaseDao.class);
-        when(productReleaseDao.load(any(String.class))).thenReturn(productRelease);
+        when(productReleaseDao.load(any(String.class))).thenReturn(
+                productRelease);
         productReleaseManager = mock(ProductReleaseManager.class);
-        when(productReleaseManager.load(any(String.class))).thenReturn(productRelease);
+        when(productReleaseManager.load(any(String.class))).thenReturn(
+                productRelease);
 
         tierManager = mock(TierManager.class);
-        when(tierManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
-        when(tierManager.create(any(ClaudiaData.class), any(String.class), any(Tier.class))).thenReturn(tier);
+        when(tierManager.load(any(String.class), any(String.class), any(String.class)))
+        .thenReturn(tier);
+        when(tierManager.create(any(ClaudiaData.class), any(String.class),any(Tier.class)))
+        .thenReturn(tier);
 
         /*
-         * tierDao = mock(TierDao.class); when(tierDao.load(any(Long.class))).thenReturn(tier);
+         * tierDao = mock(TierDao.class);
+         * when(tierDao.load(any(Long.class))).thenReturn(tier);
          * when(tierDao.create(any(Tier.class))).thenReturn(tier);
          */
         Environment envResult = new Environment();
         envResult = new Environment();
         envResult.setName("environemntName");
-        envResult.setEnvironmentType(new EnvironmentType("Generic", "Generic"));
         envResult.setTiers(tiers);
 
         environmentDao = mock(EnvironmentDao.class);
-        Mockito.doThrow(new EntityNotFoundException(Environment.class, "test", envResult)).when(environmentDao)
-                .load(any(String.class));
+        Mockito.doThrow(
+                new EntityNotFoundException(Environment.class, "test",
+                        envResult)).when(environmentDao)
+                        .load(any(String.class));
 
-        when(environmentDao.create(any(Environment.class))).thenReturn(envResult);
+        when(environmentDao.create(any(Environment.class))).thenReturn(
+                envResult);
 
         data = new ClaudiaData("dd", "dd", "service");
 
@@ -115,7 +123,7 @@ public class EnvironmentManagerImplTest extends TestCase {
         Environment environment = new Environment();
 
         environment.setName("environemntName");
-        environment.setEnvironmentType(new EnvironmentType("Generic", "Generic"));
+
         environment.setTiers(tiers);
 
         Environment environmentCreated = manager.create(data, environment);

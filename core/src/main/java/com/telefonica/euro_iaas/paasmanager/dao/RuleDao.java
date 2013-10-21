@@ -11,7 +11,7 @@ import com.telefonica.euro_iaas.commons.dao.BaseDAO;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
 
 /**
- * Defines the methods needed to persist Environment objects.
+ * Defines the methods needed to persist Rule objects.
  * 
  * @author Henar Mu�oz
  */

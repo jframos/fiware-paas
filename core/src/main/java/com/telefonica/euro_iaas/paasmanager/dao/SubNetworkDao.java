@@ -7,15 +7,15 @@
 
 package com.telefonica.euro_iaas.paasmanager.dao;
 
+
 import com.telefonica.euro_iaas.commons.dao.BaseDAO;
-import com.telefonica.euro_iaas.paasmanager.model.EnvironmentType;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 
 /**
- * Defines the methods needed to persist Environment Type objects.
+ * Defines the methods needed to persist Network objects.
  * 
- * @author Jesus M. Movilla
- * @version $Id: $
+ * @author Henar Munoz
  */
-public interface EnvironmentTypeDao extends BaseDAO<EnvironmentType, String> {
+public interface SubNetworkDao extends BaseDAO<SubNetwork, String> {
 
 }

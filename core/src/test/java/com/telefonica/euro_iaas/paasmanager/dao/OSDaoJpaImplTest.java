@@ -10,16 +10,19 @@ package com.telefonica.euro_iaas.paasmanager.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.telefonica.euro_iaas.paasmanager.dao.impl.OSDaoJpaImpl;
-import com.telefonica.euro_iaas.paasmanager.model.OS;
 import junit.framework.TestCase;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import com.telefonica.euro_iaas.paasmanager.dao.impl.OSDaoJpaImpl;
+import com.telefonica.euro_iaas.paasmanager.model.OS;
 
 /**
  * Unit test for SODaoJpaImpl
  * 
  * @author Jesus M. Movilla
+ * 
  */
 public class OSDaoJpaImplTest extends TestCase {
 
@@ -31,6 +34,7 @@ public class OSDaoJpaImplTest extends TestCase {
     public final static String SO_DESCRIPTION = "TestDescription";
     public final static String SO_VERSION = "TestVersion";
 
+    @Override
     @Before
     public void setUp() throws Exception
 
@@ -55,9 +59,13 @@ public class OSDaoJpaImplTest extends TestCase {
         // List<OS> oss = osDao.findAll();
 
         /*
-         * OS createdSO = osDao.create(so); List<OS> oss = osDao.findAll(); assertNotNull (createdSO);
-         * assertNotNull(createdSO.getOsType()); assertEquals(so.getName(), createdSO.getName());
-         * assertEquals(so.getDescription(), createdSO.getDescription()); OS findSo = osDao.load(createdSO.getOsType());
+         * OS createdSO = osDao.create(so); List<OS> oss = osDao.findAll();
+         * 
+         * assertNotNull (createdSO); assertNotNull(createdSO.getOsType());
+         * assertEquals(so.getName(), createdSO.getName());
+         * assertEquals(so.getDescription(), createdSO.getDescription());
+         * 
+         * OS findSo = osDao.load(createdSO.getOsType());
          * assertEquals(createdSO, findSo);
          */
     }
@@ -69,9 +77,11 @@ public class OSDaoJpaImplTest extends TestCase {
     @Test
     public void testFindAllAndUpdate() throws Exception {
         /*
-         * assertEquals(0, osDao.findAll().size()); testCreate(); List<OS> ssoo = osDao.findAll(); assertEquals(1,
-         * ssoo.size()); OS os = ssoo.get(0); os.setName("newName"); osDao.update(os); assertEquals("newName",
-         * osDao.load(os.getOsType()).getName()); osDao.remove(os); assertEquals(0, osDao.findAll().size());
+         * assertEquals(0, osDao.findAll().size()); testCreate(); List<OS> ssoo
+         * = osDao.findAll(); assertEquals(1, ssoo.size()); OS os = ssoo.get(0);
+         * os.setName("newName"); osDao.update(os); assertEquals("newName",
+         * osDao.load(os.getOsType()).getName()); osDao.remove(os);
+         * assertEquals(0, osDao.findAll().size());
          */
 
     }

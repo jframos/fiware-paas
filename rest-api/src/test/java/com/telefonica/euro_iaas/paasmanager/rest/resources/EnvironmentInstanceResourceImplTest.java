@@ -7,8 +7,21 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import junit.framework.TestCase;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsyncManager;
@@ -16,30 +29,20 @@ import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
-import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
-import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
+import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
 import com.telefonica.euro_iaas.paasmanager.rest.util.OVFMacro;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentInstanceResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
 
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class EnvironmentInstanceResourceImplTest extends TestCase {
 
@@ -61,6 +64,8 @@ public class EnvironmentInstanceResourceImplTest extends TestCase {
     public TaskManager taskManager;
     public Task task;
 
+
+    @Override
     @Before
     public void setUp() throws Exception {
         environmentInstanceResource = new EnvironmentInstanceResourceImpl();
@@ -78,17 +83,24 @@ public class EnvironmentInstanceResourceImplTest extends TestCase {
         environmentInstanceResource.setExtendedOVFUtil(extendedOVFUtil);
         environmentInstanceResource.setOvfGeneration(ovfGeneration);
 
-        environmentInstanceResource.setSystemPropertiesProvider(systemPropertiesProvider);
-        environmentInstanceResource.setEnvironmentInstanceAsyncManager(environmentInstanceAsyncManager);
+
+        environmentInstanceResource
+        .setSystemPropertiesProvider(systemPropertiesProvider);
+        environmentInstanceResource
+        .setEnvironmentInstanceAsyncManager(environmentInstanceAsyncManager);
         environmentInstanceResource.setTaskManager(taskManager);
         environmentOvfInstanceResource.setValidator(validator);
         environmentOvfInstanceResource.setExtendedOVFUtil(extendedOVFUtil);
-        environmentOvfInstanceResource.setEnvironmentInstanceAsyncManager(environmentInstanceAsyncManager);
+        environmentOvfInstanceResource
+        .setEnvironmentInstanceAsyncManager(environmentInstanceAsyncManager);
         environmentOvfInstanceResource.setOvfMacro(ovfMacro);
         environmentOvfInstanceResource.setTaskManager(taskManager);
-        when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("");
-        Mockito.doNothing().when(environmentInstanceAsyncManager)
-                .create(any(ClaudiaData.class), any(EnvironmentInstance.class), any(Task.class), any(String.class));
+        when(systemPropertiesProvider.getProperty(any(String.class)))
+        .thenReturn("");
+        Mockito.doNothing().when(environmentInstanceAsyncManager).create(
+                any(ClaudiaData.class), any(EnvironmentInstance.class),
+                any(Task.class), any(String.class));
+
 
         // environmentOvfInstanceResource.setOvfGeneration(ovfGeneration);
         // environmentOvfInstanceResource.setProductReleaseManager(productReleaseManager);
@@ -97,8 +109,11 @@ public class EnvironmentInstanceResourceImplTest extends TestCase {
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
         productReleases.add(productRelease);
 
-        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
-                "image", "icono", "keypair", "floatingip", "payload");
+
+        Tier tier = new Tier("name", new Integer(1), new Integer(1),
+                new Integer(1), productReleases, "flavour", "image", "icono",
+                "keypair", "floatingip", "payload");
+
 
         tiers = new ArrayList<Tier>();
         tiers.add(tier);
@@ -142,11 +157,18 @@ public class EnvironmentInstanceResourceImplTest extends TestCase {
     @Test
     public void testCreateEnviornmentInstance() throws Exception {
 
-        when(extendedOVFUtil.isVirtualServicePayload(any(String.class))).thenReturn(false);
-        when(extendedOVFUtil.getEnvironmentName(any(String.class))).thenReturn("servicename");
-        when(ovfMacro.resolveMacros(any(Environment.class))).thenReturn(environment);
-        when(extendedOVFUtil.getTiers(any(String.class), any(String.class))).thenReturn(tiers);
-        Mockito.doNothing().when(validator).validateCreatePayload(any(String.class));
+
+        when(extendedOVFUtil.isVirtualServicePayload(any(String.class)))
+        .thenReturn(false);
+        when(extendedOVFUtil.getEnvironmentName(any(String.class))).thenReturn(
+        "servicename");
+        when(ovfMacro.resolveMacros(any(Environment.class))).thenReturn(
+                environment);
+        when(extendedOVFUtil.getTiers(any(String.class), any(String.class)))
+        .thenReturn(tiers);
+        Mockito.doNothing().when(validator).validateCreatePayload(
+                any(String.class));
+
 
         String payload = "ovf";
 
@@ -154,9 +176,13 @@ public class EnvironmentInstanceResourceImplTest extends TestCase {
         ClaudiaData data = new ClaudiaData(org, vdc, "servicename");
         data.setUser(null);
 
-        EnvironmentInstance envInst = new EnvironmentInstance("servicename", "description", environment);
-        verify(environmentInstanceAsyncManager, times(1)).create(any(ClaudiaData.class),
-                any(EnvironmentInstance.class), any(Task.class), any(String.class));
+
+        EnvironmentInstance envInst = new EnvironmentInstance("servicename",
+                "description", environment);
+        verify(environmentInstanceAsyncManager, times(1)).create(
+                any(ClaudiaData.class), any(EnvironmentInstance.class),
+                any(Task.class), any(String.class));
+
 
     }
 
@@ -167,18 +193,27 @@ public class EnvironmentInstanceResourceImplTest extends TestCase {
         environmentInstanceDto.setDescription("description");
         environmentInstanceDto.setBlueprintName("BlueprintName");
         environmentInstanceDto.setEnvironmentDto(environment.toDto());
-        environmentInstanceResource.create(org, vdc, environmentInstanceDto, callback);
+
+        environmentInstanceResource.create(org, vdc, environmentInstanceDto,
+                callback);
         ClaudiaData data = new ClaudiaData(org, vdc, "servicename");
         data.setUser(null);
 
-        EnvironmentInstance envInst = new EnvironmentInstance("servicename", "description", environment);
-        verify(environmentInstanceAsyncManager, times(1)).create(any(ClaudiaData.class),
-                any(EnvironmentInstance.class), any(Task.class), any(String.class));
+        EnvironmentInstance envInst = new EnvironmentInstance("servicename",
+                "description", environment);
+        verify(environmentInstanceAsyncManager, times(1)).create(
+                any(ClaudiaData.class), any(EnvironmentInstance.class),
+                any(Task.class), any(String.class));
+
 
     }
 
     /*
      * @Test public void testLoad() { fail("Not yet implemented"); }
+<<<<<<< HEAD
+     * 
+=======
+>>>>>>> 8869d952aa586c4efac07ce7a4426dc7dbe602de
      * @Test public void testDestroy() { fail("Not yet implemented"); }
      */
 

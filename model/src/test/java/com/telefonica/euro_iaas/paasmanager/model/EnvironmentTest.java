@@ -10,13 +10,16 @@ package com.telefonica.euro_iaas.paasmanager.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import junit.framework.TestCase;
+
 import org.junit.Before;
 import org.junit.Test;
 
+import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
+
 public class EnvironmentTest extends TestCase {
 
+    @Override
     @Before
     public void setUp() throws Exception {
     }
@@ -48,7 +51,6 @@ public class EnvironmentTest extends TestCase {
         Environment envResult = new Environment();
         envResult = new Environment();
         envResult.setName("environemntName");
-        envResult.setEnvironmentType(new EnvironmentType("Generic", "Generic"));
         envResult.setTiers(tiers);
 
         EnvironmentDto envDto = envResult.toDto();

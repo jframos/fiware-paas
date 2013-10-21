@@ -7,12 +7,20 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_CPU;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_DISK;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_MEM;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.ws.rs.core.MediaType;
+
+import org.apache.log4j.Logger;
+import org.springframework.scheduling.annotation.Async;
 
 import com.telefonica.claudia.smi.URICreation;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
@@ -41,13 +49,6 @@ import com.telefonica.euro_iaas.paasmanager.util.EnvironmentUtils;
 import com.telefonica.euro_iaas.paasmanager.util.OVFUtils;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.util.VappUtils;
-import org.apache.log4j.Logger;
-import org.springframework.scheduling.annotation.Async;
-
-
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_CPU;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_DISK;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_MEM;
 
 public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureManager {
 
@@ -71,283 +72,33 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     /** Max lenght of an OVF */
     private static final Integer tam_max = 90000;
 
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager# createEnvironment(java.lang.String)
+    /**
+     * deloy a VM from an ovf
+     * 
+     * @param org
+     * @param vdc
+     * @param service
+     * @throws InfrastructureException
      */
-    public List<VM> createEnvironment(EnvironmentInstance envInstance, Tier tier, String ovf, ClaudiaData claudiaData)
-            throws InfrastructureException {
+    private String browseService(ClaudiaData claudiaData) throws InfrastructureException {
 
-        return null;
-    }
-
-    public EnvironmentInstance createInfrasctuctureEnvironmentInstance(EnvironmentInstance environmentInstance,
-            List<Tier> tiers, ClaudiaData claudiaData) throws InfrastructureException, InvalidVappException,
-            InvalidOVFException {
-        environmentInstance.setName(claudiaData.getVdc() + "-" + environmentInstance.getEnvironment().getName());
-        // claudiaData.setService(environmentInstance.getEnvironment().getName());
-
-        // Deploy MVs
-        deployVDC(claudiaData);
-        deployService(claudiaData, environmentInstance.getEnvironment().getOvf());
-
-        String vappService = this.browseService(claudiaData);
-
-        List<TierInstance> tierInstances = null;
+        String browseServiceResponse = null;
         try {
-            tierInstances = fromVappToListTierInstance(vappService, environmentInstance.getEnvironment(), claudiaData);
-        } catch (InvalidVappException e) {
-            throw new InvalidVappException("Error parsing the Vapp " + e.getMessage());
-        } catch (InvalidOVFException e1) {
-            throw new InvalidVappException("Error obtaining the OVF for the Tier " + e1.getMessage());
-        }
-
-        for (TierInstance tierInstance : tierInstances) {
-
-            if (tierInstance.getOvf() != null) {
-                String newOvf = vappUtils.getMacroVapp(tierInstance.getOvf(), environmentInstance);
-                tierInstance.setOvf(newOvf);
-            }
-
-            try {
-                tierInstance = insertTierInstanceBD(claudiaData, environmentInstance.getEnvironment().getName(),
-                        tierInstance);
-            } catch (EntityNotFoundException e) {
-                throw new InfrastructureException(e);
-            } catch (InvalidEntityException e) {
-                throw new InfrastructureException(e);
-            } catch (AlreadyExistsEntityException e) {
-                throw new InfrastructureException(e);
-            }
-            environmentInstance.addTierInstance(tierInstance);
-        }
-        environmentInstance.setVapp(vappService);
-        return environmentInstance;
-    }
-
-    public List<TierInstance> fromVappToListTierInstance(String vappService, Environment environment,
-            ClaudiaData claudiaData) throws InvalidVappException, InvalidOVFException {
-        log.info("fromVappToListTierInstance");
-
-        List<TierInstance> tierInstances = new ArrayList<TierInstance>();
-        List<String> vappSingleVM = null;
-        try {
-            vappSingleVM = vappUtils.getVappsSingleVM(claudiaData, vappService);
-        } catch (InvalidVappException e) {
-            String errorMessage = "Error splitting up the main ovf in single" + "VM ovfs. Description. "
-                    + e.getMessage();
+            browseServiceResponse = claudiaClient.browseService(claudiaData);
+            browseServiceResponse = getProcessService(claudiaData);
+        } catch (ClaudiaResourceNotFoundException crnfe) {
+            String errorMessage = "Resource associated to org:" + claudiaData.getOrg() + " vdc:" + claudiaData.getVdc()
+            + " service:" + claudiaData.getService() + " Error Description: " + crnfe.getMessage();
             log.error(errorMessage);
-
-        }
-
-        List<String> ovfSingleVM;
-        try {
-            ovfSingleVM = ovfUtils.getOvfsSingleVM(environment.getOvf());
-        } catch (InvalidOVFException e) {
-            String errorMessage = "Error splitting up the main ovf in single" + "VM ovfs. Description. "
-                    + e.getMessage();
-            log.error(errorMessage);
-            throw new InvalidOVFException(errorMessage);
-        }
-
-        for (Tier tier : environment.getTiers()) {
-
-            String xVapp = "";
-            String ovf = "";
-            for (int i = 0; i < vappSingleVM.size(); i++) {
-                String vapptext = getVirtualSystemName(vappSingleVM.get(i));
-                log.debug(vapptext + " " + tier.getName());
-                if (vapptext.equals(tier.getName())) {
-                    xVapp = vappSingleVM.get(i);
-
-                }
-            }
-
-            if (xVapp.equals("")) {
-                log.warn("It is not possible to obtain the IP from the VApp");
-                throw new InvalidVappException("It is not possible to obtain the IP from the VApp");
-            }
-            for (int i = 0; i < ovfSingleVM.size(); i++) {
-                if (ovfSingleVM.get(i).indexOf("ovf:VirtualSystem ovf:id=\"" + tier.getName()) != -1) {
-                    ovf = ovfSingleVM.get(i);
-                }
-            }
-            if (ovf.equals("")) {
-                log.warn("It is not possible to obtain the ovf adecuated");
-                throw new InvalidVappException("It is not possible to obtain the ovf adecuated");
-            }
-
-            TierInstance tierInstance = null;
-            try {
-                tierInstance = createTierInstanceFromVapp(tier, environment.getName(), claudiaData, xVapp, ovf);
-
-                tierInstances.add(tierInstance);
-            } catch (InvalidVappException e) {
-                throw new InvalidVappException("Error to parse the VApp" + e.getMessage());
-            }
-
-        }
-        return tierInstances;
-    }
-
-    private String getVirtualSystemName(String vapp) throws InvalidVappException {
-        log.info("getVirtualSystemName ");
-        String fqnId = null;
-        try {
-            fqnId = vappUtils.getFqnId(vapp);
-        } catch (InvalidVappException e) {
-            throw new InvalidVappException("Error to obtain the fqn from the VApp " + e.getMessage());
-        }
-        log.info("getVirtualSystemName " + fqnId);
-        String vmName = vappUtils.getVMName(fqnId);
-        log.info("getVirtualSystemName " + vmName);
-        return vmName;
-    }
-
-    public TierInstance createTierInstanceFromVapp(Tier tier, String environmentName, ClaudiaData claudiaData,
-            String vapp, String vmOVF) throws InvalidVappException {
-        log.info("createTierInstanceFromVapp " + tier.getName() + "  env " + environmentName + " size vapp "
-                + vapp.length());
-        TierInstance tierInstance = new TierInstance();
-        String fqnId = null;
-        try {
-            fqnId = vappUtils.getFqnId(vapp);
-        } catch (InvalidVappException e) {
-            throw new InvalidVappException("Error to obtain the fqn from the VApp " + e.getMessage());
-        }
-        String vmName = vappUtils.getVMName(fqnId);
-
-        String replica = vappUtils.getReplica(fqnId);
-
-        VM vm = null;
-        try {
-            vm = getVMFromVapp(vapp);
-
-            // claudiaData.setVm(vmName);
-        } catch (InvalidVappException e) {
-            throw new InvalidVappException("Error to obtain the VM from the VApp " + e.getMessage());
-        }
-
-        int numReplica = new Integer(replica).intValue();
-
-        tierInstance.setVM(vm);
-        tierInstance.setNumberReplica(numReplica);
-        tierInstance.setVdc(claudiaData.getVdc());
-        tierInstance.setOvf(vmOVF);
-        tierInstance.setVapp(vapp);
-
-        tierInstance.setTier(tier);
-
-        tierInstance.setName(environmentName + "-" + tier.getName() + "-" + numReplica);
-
-        return tierInstance;
-    }
-
-    public VM getVMFromVapp(String vapp) throws InvalidVappException {
-
-        log.info("getVMFromVapp ");
-        HashMap<String, String> ips = vappUtils.getNetworkAndIP(vapp);
-        VM vm = new VM();
-
-        Iterator it = ips.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry e = (Map.Entry) it.next();
-            vm.addNetwork((String) e.getKey(), (String) e.getValue());
-            vm.setIp((String) e.getValue());
-        }
-
-        String fqnId = vappUtils.getFqnId(vapp);
-
-        String vmName = vappUtils.getVMName(fqnId);
-
-        log.info("fqn replica " + fqnId);
-
-        vm.setFqn(fqnId);
-
-        vm.setHostname(vmName);
-
-        return vm;
-    }
-
-    public void deployVM(ClaudiaData claudiaData, Tier tier, int replica, String vmOVF, VM vm)
-            throws InfrastructureException {
-        return;
-    }
-
-    public String ImageScalability(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
-
-        String scaleResponse;
-        try {
-            scaleResponse = claudiaClient.createImage(claudiaData, tierInstance);
-        } catch (ClaudiaRetrieveInfoException e) {
-            String errorMessage = "Error creating teh image of the VM with the " + "fqn: "
-                    + tierInstance.getVM().getFqn() + ". Descrption. " + e.getMessage();
+            throw new InfrastructureException(errorMessage);
+        } catch (Exception e) {
+            String errorMessage = "Unknown exception when retriving vapp " + " associated to org:"
+            + claudiaData.getOrg() + " vdc:" + claudiaData.getVdc() + " service:" + claudiaData.getService()
+            + " Error Description: " + e.getMessage();
             log.error(errorMessage);
             throw new InfrastructureException(errorMessage);
         }
-        return scaleResponse;
-    }
-
-    public String StartStopScalability(ClaudiaData claudiaData, boolean b) throws InfrastructureException {
-        String scalalility = claudiaClient.onOffScalability(claudiaData, claudiaData.getService(), b);
-        return scalalility;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager# deleteEnvironment
-     * (com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance)
-     */
-    public void deleteEnvironment(ClaudiaData claudiaData, EnvironmentInstance envInstance)
-            throws InfrastructureException {
-
-        // Sacar todas la VMs del EnvironmentInstance y borrarlas
-        // List<VM> vms = new ArrayList<VM>();
-        List<TierInstance> tierInstances = envInstance.getTierInstances();
-
-        if (tierInstances == null)
-            return;
-        for (int i = 0; i < tierInstances.size(); i++) {
-            TierInstance tierInstance = tierInstances.get(i);
-            // vms.add(tierInstance.getVM());
-            claudiaClient.undeployVMReplica(claudiaData, tierInstance);
-            monitoringClient.stopMonitoring(tierInstance.getVM().getFqn());
-        }
-
-        String fqn = envInstance.getTierInstances().get(0).getVM().getFqn();
-        String service = URICreation.getService(fqn);
-
-        // claudiaData.setService(service);
-        // claudiaData.setFqn(fqn);
-        // claudiaData.setReplica("1");
-
-        claudiaClient.undeployService(claudiaData);
-
-        // Delete all VM
-        /*
-         * for (int i = 0; i < vms.size(); i++) { claudiaClient.undeployVMReplica(claudiaData, tierInstance);
-         * monitoringClient.stopMonitoring(vms.get(i).getFqn()); }
-         */
-    }
-
-    public void deleteVMReplica(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager# cloneTemplate(java.lang.String)
-     */
-    @Async
-    public TierInstance cloneTemplate(String templateName) throws InfrastructureException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Async
-    public Template createTemplate(TierInstance tierInstance) throws InfrastructureException {
-        // TODO Auto-generated method stub
-        return null;
+        return browseServiceResponse;
     }
 
     /**
@@ -393,34 +144,160 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
         }
     }
 
-    /**
-     * Create an VDC if it is not created.
-     * 
-     * @param org
-     * @param vdc
-     * @throws InfrastructureException
+    /*
+     * (non-Javadoc)
+     * @see com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager# cloneTemplate(java.lang.String)
      */
-    public void deployVDC(ClaudiaData claudiaData) throws InfrastructureException {
-        // VDC
-        log.warn("Deploy VDC");
+    @Async
+    public TierInstance cloneTemplate(String templateName) throws InfrastructureException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List<VM> createEnvironment(EnvironmentInstance envInstance, String ovf, ClaudiaData claudiaData)
+    throws InfrastructureException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager# createEnvironment(java.lang.String)
+     */
+    public List<VM> createEnvironment(EnvironmentInstance envInstance, Tier tier, String ovf, ClaudiaData claudiaData)
+    throws InfrastructureException {
+
+        return null;
+    }
+
+    public EnvironmentInstance createInfrasctuctureEnvironmentInstance(EnvironmentInstance environmentInstance,
+            List<Tier> tiers, ClaudiaData claudiaData) throws InfrastructureException, InvalidVappException,
+            InvalidOVFException {
+        environmentInstance.setName(claudiaData.getVdc() + "-" + environmentInstance.getEnvironment().getName());
+        // claudiaData.setService(environmentInstance.getEnvironment().getName());
+
+        // Deploy MVs
+        deployVDC(claudiaData);
+        deployService(claudiaData, environmentInstance.getEnvironment().getOvf());
+
+        String vappService = this.browseService(claudiaData);
+
+        List<TierInstance> tierInstances = null;
         try {
-            claudiaClient.browseVDC(claudiaData);
-        } catch (ClaudiaResourceNotFoundException e) {
-
-            String deployVDCResponse = claudiaClient.deployVDC(claudiaData,
-                    systemPropertiesProvider.getProperty(NEOCLAUDIA_VDC_CPU),
-                    systemPropertiesProvider.getProperty(NEOCLAUDIA_VDC_MEM),
-                    systemPropertiesProvider.getProperty(NEOCLAUDIA_VDC_DISK));
-            String vdcTaskUrl = claudiaResponseAnalyser.getTaskUrl(deployVDCResponse);
-
-            if (claudiaResponseAnalyser.getTaskStatus(deployVDCResponse).equals("error")) {
-                String errorMes = "Error deploying VDC " + claudiaData.getVdc();
-                log.error(errorMes);
-                throw new InfrastructureException(errorMes);
-            }
-            if (!(claudiaResponseAnalyser.getTaskStatus(deployVDCResponse).equals("success")))
-                checkTaskResponse(claudiaData, vdcTaskUrl);
+            tierInstances = fromVappToListTierInstance(vappService, environmentInstance.getEnvironment(), claudiaData);
+        } catch (InvalidVappException e) {
+            throw new InvalidVappException("Error parsing the Vapp " + e.getMessage());
+        } catch (InvalidOVFException e1) {
+            throw new InvalidVappException("Error obtaining the OVF for the Tier " + e1.getMessage());
         }
+
+        for (TierInstance tierInstance : tierInstances) {
+
+            if (tierInstance.getOvf() != null) {
+                String newOvf = vappUtils.getMacroVapp(tierInstance.getOvf(), environmentInstance, tierInstance);
+                tierInstance.setOvf(newOvf);
+            }
+
+            try {
+                tierInstance = insertTierInstanceBD(claudiaData, environmentInstance.getEnvironment().getName(),
+                        tierInstance);
+            } catch (EntityNotFoundException e) {
+                throw new InfrastructureException(e);
+            } catch (InvalidEntityException e) {
+                throw new InfrastructureException(e);
+            } catch (AlreadyExistsEntityException e) {
+                throw new InfrastructureException(e);
+            }
+            environmentInstance.addTierInstance(tierInstance);
+        }
+        environmentInstance.setVapp(vappService);
+        return environmentInstance;
+    }
+
+    @Async
+    public Template createTemplate(TierInstance tierInstance) throws InfrastructureException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public TierInstance createTierInstanceFromVapp(Tier tier, String environmentName, ClaudiaData claudiaData,
+            String vapp, String vmOVF) throws InvalidVappException {
+        log.info("createTierInstanceFromVapp " + tier.getName() + "  env " + environmentName + " size vapp "
+                + vapp.length());
+        TierInstance tierInstance = new TierInstance();
+        String fqnId = null;
+        try {
+            fqnId = vappUtils.getFqnId(vapp);
+        } catch (InvalidVappException e) {
+            throw new InvalidVappException("Error to obtain the fqn from the VApp " + e.getMessage());
+        }
+        String vmName = vappUtils.getVMName(fqnId);
+
+        String replica = vappUtils.getReplica(fqnId);
+
+        VM vm = null;
+        try {
+            vm = getVMFromVapp(vapp);
+
+            // claudiaData.setVm(vmName);
+        } catch (InvalidVappException e) {
+            throw new InvalidVappException("Error to obtain the VM from the VApp " + e.getMessage());
+        }
+
+        int numReplica = new Integer(replica).intValue();
+
+        tierInstance.setVM(vm);
+        tierInstance.setNumberReplica(numReplica);
+        tierInstance.setVdc(claudiaData.getVdc());
+        tierInstance.setOvf(vmOVF);
+        tierInstance.setVapp(vapp);
+
+        tierInstance.setTier(tier);
+
+        tierInstance.setName(environmentName + "-" + tier.getName() + "-" + numReplica);
+
+        return tierInstance;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager# deleteEnvironment
+     * (com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance)
+     */
+    public void deleteEnvironment(ClaudiaData claudiaData, EnvironmentInstance envInstance)
+    throws InfrastructureException {
+
+        // Sacar todas la VMs del EnvironmentInstance y borrarlas
+        // List<VM> vms = new ArrayList<VM>();
+        List<TierInstance> tierInstances = envInstance.getTierInstances();
+
+        if (tierInstances == null)
+            return;
+        for (int i = 0; i < tierInstances.size(); i++) {
+            TierInstance tierInstance = tierInstances.get(i);
+            // vms.add(tierInstance.getVM());
+            claudiaClient.undeployVMReplica(claudiaData, tierInstance);
+            monitoringClient.stopMonitoring(tierInstance.getVM().getFqn());
+        }
+
+        String fqn = envInstance.getTierInstances().get(0).getVM().getFqn();
+        String service = URICreation.getService(fqn);
+
+        // claudiaData.setService(service);
+        // claudiaData.setFqn(fqn);
+        // claudiaData.setReplica("1");
+
+        claudiaClient.undeployService(claudiaData);
+
+        // Delete all VM
+        /*
+         * for (int i = 0; i < vms.size(); i++) { claudiaClient.undeployVMReplica(claudiaData, tierInstance);
+         * monitoringClient.stopMonitoring(vms.get(i).getFqn()); }
+         */
+    }
+
+    public void deleteVMReplica(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
+
     }
 
     /**
@@ -455,32 +332,103 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     /**
-     * deloy a VM from an ovf
+     * Create an VDC if it is not created.
      * 
      * @param org
      * @param vdc
-     * @param service
      * @throws InfrastructureException
      */
-    private String browseService(ClaudiaData claudiaData) throws InfrastructureException {
-
-        String browseServiceResponse = null;
+    public void deployVDC(ClaudiaData claudiaData) throws InfrastructureException {
+        // VDC
+        log.warn("Deploy VDC");
         try {
-            browseServiceResponse = claudiaClient.browseService(claudiaData);
-            browseServiceResponse = getProcessService(claudiaData);
-        } catch (ClaudiaResourceNotFoundException crnfe) {
-            String errorMessage = "Resource associated to org:" + claudiaData.getOrg() + " vdc:" + claudiaData.getVdc()
-                    + " service:" + claudiaData.getService() + " Error Description: " + crnfe.getMessage();
-            log.error(errorMessage);
-            throw new InfrastructureException(errorMessage);
-        } catch (Exception e) {
-            String errorMessage = "Unknown exception when retriving vapp " + " associated to org:"
-                    + claudiaData.getOrg() + " vdc:" + claudiaData.getVdc() + " service:" + claudiaData.getService()
-                    + " Error Description: " + e.getMessage();
-            log.error(errorMessage);
-            throw new InfrastructureException(errorMessage);
+            claudiaClient.browseVDC(claudiaData);
+        } catch (ClaudiaResourceNotFoundException e) {
+
+            String deployVDCResponse = claudiaClient.deployVDC(claudiaData,
+                    systemPropertiesProvider.getProperty(NEOCLAUDIA_VDC_CPU),
+                    systemPropertiesProvider.getProperty(NEOCLAUDIA_VDC_MEM),
+                    systemPropertiesProvider.getProperty(NEOCLAUDIA_VDC_DISK));
+            String vdcTaskUrl = claudiaResponseAnalyser.getTaskUrl(deployVDCResponse);
+
+            if (claudiaResponseAnalyser.getTaskStatus(deployVDCResponse).equals("error")) {
+                String errorMes = "Error deploying VDC " + claudiaData.getVdc();
+                log.error(errorMes);
+                throw new InfrastructureException(errorMes);
+            }
+            if (!(claudiaResponseAnalyser.getTaskStatus(deployVDCResponse).equals("success")))
+                checkTaskResponse(claudiaData, vdcTaskUrl);
         }
-        return browseServiceResponse;
+    }
+
+    public void deployVM(ClaudiaData claudiaData, Tier tier, int replica, String vmOVF, VM vm)
+    throws InfrastructureException {
+        return;
+    }
+
+    public List<TierInstance> fromVappToListTierInstance(String vappService, Environment environment,
+            ClaudiaData claudiaData) throws InvalidVappException, InvalidOVFException {
+        log.info("fromVappToListTierInstance");
+
+        List<TierInstance> tierInstances = new ArrayList<TierInstance>();
+        List<String> vappSingleVM = null;
+        try {
+            vappSingleVM = vappUtils.getVappsSingleVM(claudiaData, vappService);
+        } catch (InvalidVappException e) {
+            String errorMessage = "Error splitting up the main ovf in single" + "VM ovfs. Description. "
+            + e.getMessage();
+            log.error(errorMessage);
+
+        }
+
+        List<String> ovfSingleVM;
+        try {
+            ovfSingleVM = ovfUtils.getOvfsSingleVM(environment.getOvf());
+        } catch (InvalidOVFException e) {
+            String errorMessage = "Error splitting up the main ovf in single" + "VM ovfs. Description. "
+            + e.getMessage();
+            log.error(errorMessage);
+            throw new InvalidOVFException(errorMessage);
+        }
+
+        for (Tier tier : environment.getTiers()) {
+
+            String xVapp = "";
+            String ovf = "";
+            for (int i = 0; i < vappSingleVM.size(); i++) {
+                String vapptext = getVirtualSystemName(vappSingleVM.get(i));
+                log.debug(vapptext + " " + tier.getName());
+                if (vapptext.equals(tier.getName())) {
+                    xVapp = vappSingleVM.get(i);
+
+                }
+            }
+
+            if (xVapp.equals("")) {
+                log.warn("It is not possible to obtain the IP from the VApp");
+                throw new InvalidVappException("It is not possible to obtain the IP from the VApp");
+            }
+            for (int i = 0; i < ovfSingleVM.size(); i++) {
+                if (ovfSingleVM.get(i).indexOf("ovf:VirtualSystem ovf:id=\"" + tier.getName()) != -1) {
+                    ovf = ovfSingleVM.get(i);
+                }
+            }
+            if (ovf.equals("")) {
+                log.warn("It is not possible to obtain the ovf adecuated");
+                throw new InvalidVappException("It is not possible to obtain the ovf adecuated");
+            }
+
+            TierInstance tierInstance = null;
+            try {
+                tierInstance = createTierInstanceFromVapp(tier, environment.getName(), claudiaData, xVapp, ovf);
+
+                tierInstances.add(tierInstance);
+            } catch (InvalidVappException e) {
+                throw new InvalidVappException("Error to parse the VApp" + e.getMessage());
+            }
+
+        }
+        return tierInstances;
     }
 
     public String getProcessService(ClaudiaData claudiaData) throws InfrastructureException {
@@ -562,8 +510,62 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
 
     }
 
+    private String getVirtualSystemName(String vapp) throws InvalidVappException {
+        log.info("getVirtualSystemName ");
+        String fqnId = null;
+        try {
+            fqnId = vappUtils.getFqnId(vapp);
+        } catch (InvalidVappException e) {
+            throw new InvalidVappException("Error to obtain the fqn from the VApp " + e.getMessage());
+        }
+        log.info("getVirtualSystemName " + fqnId);
+        String vmName = vappUtils.getVMName(fqnId);
+        log.info("getVirtualSystemName " + vmName);
+        return vmName;
+    }
+
+    public VM getVMFromVapp(String vapp) throws InvalidVappException {
+
+        log.info("getVMFromVapp ");
+        HashMap<String, String> ips = vappUtils.getNetworkAndIP(vapp);
+        VM vm = new VM();
+
+        Iterator it = ips.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry e = (Map.Entry) it.next();
+            vm.addNetwork((String) e.getKey(), (String) e.getValue());
+            vm.setIp((String) e.getValue());
+        }
+
+        String fqnId = vappUtils.getFqnId(vapp);
+
+        String vmName = vappUtils.getVMName(fqnId);
+
+        log.info("fqn replica " + fqnId);
+
+        vm.setFqn(fqnId);
+
+        vm.setHostname(vmName);
+
+        return vm;
+    }
+
+    public String ImageScalability(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
+
+        String scaleResponse;
+        try {
+            scaleResponse = claudiaClient.createImage(claudiaData, tierInstance);
+        } catch (ClaudiaRetrieveInfoException e) {
+            String errorMessage = "Error creating teh image of the VM with the " + "fqn: "
+            + tierInstance.getVM().getFqn() + ". Descrption. " + e.getMessage();
+            log.error(errorMessage);
+            throw new InfrastructureException(errorMessage);
+        }
+        return scaleResponse;
+    }
+
     private TierInstance insertTierInstanceBD(ClaudiaData claudiaData, String envName, TierInstance tierInstance)
-            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
+    throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
 
         TierInstance tierInstanceDB = null;
         if (tierInstance.getOvf() != null && tierInstance.getOvf().length() > tam_max) {
@@ -579,28 +581,6 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
             // El ovf no puede superar un m�ximo de caracteres
         }
         return tierInstanceDB;
-    }
-
-    /**
-     * @param systemPropertiesProvider
-     *            the systemPropertiesProvider to set
-     * @param monitoringClient
-     *            the monitoringClient to set
-     */
-    public void setMonitoringClient(MonitoringClient monitoringClient) {
-        this.monitoringClient = monitoringClient;
-    }
-
-    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
-        this.systemPropertiesProvider = systemPropertiesProvider;
-    }
-
-    /**
-     * @param claudiaUtil
-     *            the claudiaUtil to set
-     */
-    public void setClaudiaUtil(ClaudiaUtil claudiaUtil) {
-        this.claudiaUtil = claudiaUtil;
     }
 
     /**
@@ -621,11 +601,29 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     /**
-     * @param VappUtils
-     *            the VappUtils to set
+     * @param claudiaUtil
+     *            the claudiaUtil to set
      */
-    public void setVappUtils(VappUtils vappUtils) {
-        this.vappUtils = vappUtils;
+    public void setClaudiaUtil(ClaudiaUtil claudiaUtil) {
+        this.claudiaUtil = claudiaUtil;
+    }
+
+    /**
+     * @param EnvironmentUtils
+     *            the EnvironmentUtils to set
+     */
+    public void setEnvironmentUtils(EnvironmentUtils environmentUtils) {
+        this.environmentUtils = environmentUtils;
+    }
+
+    /**
+     * @param systemPropertiesProvider
+     *            the systemPropertiesProvider to set
+     * @param monitoringClient
+     *            the monitoringClient to set
+     */
+    public void setMonitoringClient(MonitoringClient monitoringClient) {
+        this.monitoringClient = monitoringClient;
     }
 
     /**
@@ -634,6 +632,10 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
      */
     public void setOvfUtils(OVFUtils ovfUtils) {
         this.ovfUtils = ovfUtils;
+    }
+
+    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
+        this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
     /**
@@ -645,17 +647,16 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     /**
-     * @param EnvironmentUtils
-     *            the EnvironmentUtils to set
+     * @param VappUtils
+     *            the VappUtils to set
      */
-    public void setEnvironmentUtils(EnvironmentUtils environmentUtils) {
-        this.environmentUtils = environmentUtils;
+    public void setVappUtils(VappUtils vappUtils) {
+        this.vappUtils = vappUtils;
     }
 
-    public List<VM> createEnvironment(EnvironmentInstance envInstance, String ovf, ClaudiaData claudiaData)
-            throws InfrastructureException {
-        // TODO Auto-generated method stub
-        return null;
+    public String StartStopScalability(ClaudiaData claudiaData, boolean b) throws InfrastructureException {
+        String scalalility = claudiaClient.onOffScalability(claudiaData, claudiaData.getService(), b);
+        return scalalility;
     }
 
 }

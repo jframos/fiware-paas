@@ -43,6 +43,7 @@ import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 
 /**
  * @author jesus.movilla
+ * 
  */
 public class VappUtilsImpl implements VappUtils {
 
@@ -50,59 +51,14 @@ public class VappUtilsImpl implements VappUtils {
 
     private static Logger log = Logger.getLogger(VappUtilsImpl.class);
 
-    public List<String> getVappsSingleVM(ClaudiaData claudiaData, String vapp) throws InvalidVappException {
-        List<String> vappsReplicas = new ArrayList<String>();
-        List<String> veeVapps = new ArrayList<String>();
+    private Node findNode(Node node, String xql) throws TransformerException {
+        // System.out.println("Node:" + xql);
+        return (XPathAPI.selectSingleNode(node, xql));
+    }
 
-        if (vapp == null) {
-            return null;
-        }
-        // String ovf = removeInitOvfParams(ovfInstantParams);
-
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder;
-        Document doc;
-        Element root;
-
-        try {
-            builder = factory.newDocumentBuilder();
-            doc = builder.parse(new InputSource(new StringReader(vapp)));
-            root = doc.getDocumentElement();
-
-            // Node parentNode = findNode (root, XSQL_ENVELOPE_NOINIT);
-            Node vaapService = findNode(root, "/VApp");
-
-            NodeList lVaapVEE = findNodeList(vaapService, "/VApp/Children/VApp");
-
-            for (int i = 0; i < lVaapVEE.getLength(); i++) {
-                Element vappVEE = (Element) lVaapVEE.item(i);
-                String veeReplica = nodeToString(vappVEE);
-                veeVapps.add(veeReplica);
-
-                NodeList lVappReplica = vappVEE.getElementsByTagName("Children");
-
-                for (int j = 0; j < lVappReplica.getLength(); j++) {
-                    NodeList vapps = ((Element) lVappReplica.item(j)).getElementsByTagName("VApp");
-                    String vappReplica = nodeToString(vapps.item(0));
-                    vappsReplicas.add(vappReplica);
-                }
-
-            }
-
-        } catch (ParserConfigurationException e) {
-            String msg = "Error parsing ovf " + e.getMessage();
-            throw new InvalidVappException(msg);
-        } catch (SAXException e) {
-            String msg = "SAXException with  ovf " + e.getMessage();
-            throw new InvalidVappException(msg);
-        } catch (IOException e) {
-            String msg = "IOException with  ovf " + e.getMessage();
-            throw new InvalidVappException(msg);
-        } catch (TransformerException e) {
-            String msg = "TransformerException with ovf " + e.getMessage();
-            throw new InvalidVappException(msg);
-        }
-        return vappsReplicas;
+    private NodeList findNodeList(Node node, String xql)
+    throws TransformerException {
+        return (XPathAPI.selectNodeList(node, xql));
     }
 
     public String getFqnId(String vapp) throws InvalidVappException {
@@ -128,7 +84,8 @@ public class VappUtilsImpl implements VappUtils {
             log.info(msg);
             throw new InvalidVappException(msg);
         } catch (IOException e) {
-            String msg = "IOException .Error obtaining hostname : " + e.getMessage();
+            String msg = "IOException .Error obtaining hostname : "
+                + e.getMessage();
             log.info(msg);
             throw new InvalidVappException(msg);
         }
@@ -137,7 +94,10 @@ public class VappUtilsImpl implements VappUtils {
 
     /*
      * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.installator.rec.util.VappUtils#getIP (java.lang.String)
+     * 
+     * @see
+     * com.telefonica.euro_iaas.paasmanager.installator.rec.util.VappUtils#getIP
+     * (java.lang.String)
      */
     public List<String> getIP(String vappReplica) throws InvalidVappException {
         List<String> ips = new ArrayList<String>();
@@ -151,7 +111,8 @@ public class VappUtilsImpl implements VappUtils {
             builder = factory.newDocumentBuilder();
             doc = builder.parse(new InputSource(new StringReader(vappReplica)));
 
-            if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+            if (systemPropertiesProvider.getProperty(
+                    SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                 ipTag = IPADDRESS_TAG_FIWARE;
             } else {
                 ipTag = IPADDRESS_TAG;
@@ -161,7 +122,7 @@ public class VappUtilsImpl implements VappUtils {
 
             for (int i = 0; i < nodeips.getLength(); i++) {
                 Node ipNnode = doc.getElementsByTagName(ipTag).item(i);
-                ips.add(ipNnode.getTextContent().trim());
+                ips.add(ipNnode.getTextContent());
             }
 
         } catch (ParserConfigurationException e) {
@@ -185,6 +146,115 @@ public class VappUtilsImpl implements VappUtils {
         return ips;
     }
 
+
+    private String getIpfromMacro(String value, EnvironmentInstance envIns, TierInstance tierInst) {
+        String prefix = "@IP" + "(";
+        String macroValue = value.substring(value.indexOf(prefix)+prefix.length(),value.indexOf(")"));
+
+        /* Two possibilities to take into account: @IP(net) or @IP(net,alias). Note that
+         * alias = "" in the case @IP(net) is used */
+        String network ="";
+        String vm = "";
+        StringTokenizer macroValueTokenizer = new StringTokenizer(macroValue,",");
+        vm = macroValueTokenizer.nextToken();
+        if (macroValueTokenizer.hasMoreElements()) {
+            network= macroValueTokenizer.nextToken();
+
+
+        }
+
+
+        log.debug("IP@ = " + network);
+        log.debug("vm@ = " + vm);
+
+        if (tierInst.getTier().getName().equals(vm))
+        {
+            return tierInst.getVM().getNetworks().get(network);
+        }
+        log.debug ("dds " + envIns.getEnvironment());
+        log.debug ("size " + envIns.getEnvironment().getTiers());
+
+        for (TierInstance tierInst2: envIns.getTierInstances())
+        {
+            Tier tier = tierInst2.getTier();
+            log.debug ("tier " + tier.getName() + " tier instance " + tierInst2.getName() + " vm " + tierInst2.getVM().getNetworks() );
+            if (tier.getName().equals(vm))
+            {
+                log.debug ("netws " +tierInst2.getVM().getNetworks());
+                log.debug ("netws " +tierInst2.getVM().getNetworks().get(network));
+                return tierInst2.getVM().getNetworks().get(network);
+            }
+        }
+        return null;
+    }
+
+    public String getMacroVapp (String ovf, EnvironmentInstance envIns, TierInstance tierInstance) throws InvalidOVFException
+    {
+        if (ovf == null)
+            return null;
+
+        if (!ovf.toLowerCase().contains("@ip"))
+            return ovf;
+        log.info("Get macro ip");
+        DocumentBuilder builder;
+        Document doc;
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        try {
+            builder = factory.newDocumentBuilder();
+            doc = builder.parse(new InputSource(new StringReader(ovf)));
+
+            NodeList productSectionNodes = doc
+            .getElementsByTagName("ovfenvelope:ProductSection");
+
+
+            for (int i = 0; i < productSectionNodes.getLength(); i++) {
+
+                Node productSectionNode = productSectionNodes.item(i);
+
+                NodeList propertyList = productSectionNode.getChildNodes();
+
+                for (int j = 0; j < propertyList.getLength(); j++) {
+                    Node property = propertyList.item(j);
+                    String propertyString = nodeToString(property);
+
+                    if (propertyString.contains("Property")) {
+                        if ((property.getAttributes().getNamedItem(
+                        "ovfenvelope:value").getTextContent().toLowerCase()
+                        .contains("@ip")))
+                        {
+
+
+                            String ip = getIpfromMacro (property.getAttributes().getNamedItem(
+                            "ovfenvelope:value").getTextContent(), envIns, tierInstance);
+                            log.debug ("IP value in macro : " + property.getAttributes().getNamedItem(
+                            "ovfenvelope:value").getTextContent() + " " + ip);
+                            property.getAttributes().getNamedItem(
+                            "ovfenvelope:value").setTextContent(ip);
+
+                        }
+
+
+                    }
+                }
+            }
+
+        } catch (ParserConfigurationException e) {
+            String msg = "Error parsing vapp . Desc: " + e.getMessage();
+            log.info(msg);
+            throw new InvalidOVFException(msg);
+        } catch (SAXException e) {
+            String msg = "Error parsing vapp . Desc: " + e.getMessage();
+            log.info(msg);
+            throw new InvalidOVFException(msg);
+        } catch (IOException e) {
+            String msg = "IOException . Desc: " + e.getMessage();
+            log.info(msg);
+            throw new InvalidOVFException(msg);
+        }
+        return this.toString(doc);
+    }
+
     public HashMap<String, String> getNetworkAndIP(String vappReplica) throws InvalidVappException {
         HashMap<String, String> netowrks = new HashMap<String, String>();
         String ipTag = null;
@@ -198,11 +268,14 @@ public class VappUtilsImpl implements VappUtils {
             builder = factory.newDocumentBuilder();
             doc = builder.parse(new InputSource(new StringReader(vappReplica)));
 
-            if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+            if (systemPropertiesProvider.getProperty(
+                    SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                 ipTag = IPADDRESS_TAG_FIWARE;
             } else {
                 ipTag = IPADDRESS_TAG;
             }
+
+
 
             NodeList nodeips = doc.getElementsByTagName(ipTag);
             NodeList nodeNetwork = doc.getElementsByTagName(connectionTag);
@@ -240,19 +313,85 @@ public class VappUtilsImpl implements VappUtils {
 
     /*
      * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.util.VappUtils#getVMName(java.lang .String)
+     * 
+     * @see
+     * com.telefonica.euro_iaas.paasmanager.util.VappUtils#getReplica(java.lang
+     * .String)
      */
-    public String getVMName(String fqnId) {
-        return fqnId.substring(fqnId.indexOf("vees.") + "vees.".length(), fqnId.indexOf(".replicas"));
+    public String getReplica(String fqnId) {
+        // TODO Auto-generated method stub
+        return fqnId.substring(fqnId.indexOf("replicas.")
+                + "replicas.".length());
+    }
+
+    public List<String> getVappsSingleVM(ClaudiaData claudiaData, String vapp)
+    throws InvalidVappException {
+        List<String> vappsReplicas = new ArrayList<String>();
+        List<String> veeVapps = new ArrayList<String>();
+
+        if (vapp == null) {
+            return null;
+        }
+        // String ovf = removeInitOvfParams(ovfInstantParams);
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder;
+        Document doc;
+        Element root;
+
+        try {
+            builder = factory.newDocumentBuilder();
+            doc = builder.parse(new InputSource(new StringReader(vapp)));
+            root = doc.getDocumentElement();
+
+            // Node parentNode = findNode (root, XSQL_ENVELOPE_NOINIT);
+            Node vaapService = findNode(root, "/VApp");
+
+            NodeList lVaapVEE = findNodeList(vaapService, "/VApp/Children/VApp");
+
+            for (int i = 0; i < lVaapVEE.getLength(); i++) {
+                Element vappVEE = (Element) lVaapVEE.item(i);
+                String veeReplica = nodeToString(vappVEE);
+                veeVapps.add(veeReplica);
+
+                NodeList lVappReplica = vappVEE
+                .getElementsByTagName("Children");
+
+                for (int j = 0; j < lVappReplica.getLength(); j++) {
+                    NodeList vapps = ((Element) lVappReplica.item(j))
+                    .getElementsByTagName("VApp");
+                    String vappReplica = nodeToString(vapps.item(0));
+                    vappsReplicas.add(vappReplica);
+                }
+
+            }
+
+        } catch (ParserConfigurationException e) {
+            String msg = "Error parsing ovf " + e.getMessage();
+            throw new InvalidVappException(msg);
+        } catch (SAXException e) {
+            String msg = "SAXException with  ovf " + e.getMessage();
+            throw new InvalidVappException(msg);
+        } catch (IOException e) {
+            String msg = "IOException with  ovf " + e.getMessage();
+            throw new InvalidVappException(msg);
+        } catch (TransformerException e) {
+            String msg = "TransformerException with ovf " + e.getMessage();
+            throw new InvalidVappException(msg);
+        }
+        return vappsReplicas;
     }
 
     /*
      * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.util.VappUtils#getReplica(java.lang .String)
+     * 
+     * @see
+     * com.telefonica.euro_iaas.paasmanager.util.VappUtils#getVMName(java.lang
+     * .String)
      */
-    public String getReplica(String fqnId) {
-        // TODO Auto-generated method stub
-        return fqnId.substring(fqnId.indexOf("replicas.") + "replicas.".length());
+    public String getVMName(String fqnId) {
+        return fqnId.substring(fqnId.indexOf("vees.") + "vees.".length(), fqnId
+                .indexOf(".replicas"));
     }
 
     private String nodeToString(Node node) {
@@ -266,112 +405,18 @@ public class VappUtilsImpl implements VappUtils {
         }
         return sw.toString();
     }
-
-    private Node findNode(Node node, String xql) throws TransformerException {
-        // System.out.println("Node:" + xql);
-        return (XPathAPI.selectSingleNode(node, xql));
-    }
-
-    private NodeList findNodeList(Node node, String xql) throws TransformerException {
-        return (XPathAPI.selectNodeList(node, xql));
-    }
-
     /**
      * @param systemPropertiesProvider
      *            the systemPropertiesProvider to set
      */
-    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
+    public void setSystemPropertiesProvider(
+            SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
-    public String getMacroVapp(String ovf, EnvironmentInstance envIns) throws InvalidOVFException {
-        if (ovf == null)
-            return null;
 
-        if (!ovf.toLowerCase().contains("@ip"))
-            return ovf;
-        log.info("Get macro ip");
-        DocumentBuilder builder;
-        Document doc;
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        try {
-            builder = factory.newDocumentBuilder();
-            doc = builder.parse(new InputSource(new StringReader(ovf)));
-
-            NodeList productSectionNodes = doc.getElementsByTagName("ovfenvelope:ProductSection");
-
-            for (int i = 0; i < productSectionNodes.getLength(); i++) {
-
-                Node productSectionNode = productSectionNodes.item(i);
-
-                NodeList propertyList = productSectionNode.getChildNodes();
-
-                for (int j = 0; j < propertyList.getLength(); j++) {
-                    Node property = propertyList.item(j);
-                    String propertyString = nodeToString(property);
-
-                    if (propertyString.contains("Property")) {
-                        if ((property.getAttributes().getNamedItem("ovfenvelope:value").getTextContent().toLowerCase()
-                                .contains("@ip"))) {
-
-                            String ip = getIpfromMacro(property.getAttributes().getNamedItem("ovfenvelope:value")
-                                    .getTextContent(), envIns);
-                            log.debug("IP value in macro : "
-                                    + property.getAttributes().getNamedItem("ovfenvelope:value").getTextContent() + " "
-                                    + ip);
-                            property.getAttributes().getNamedItem("ovfenvelope:value").setTextContent(ip);
-
-                        }
-
-                    }
-                }
-            }
-
-        } catch (ParserConfigurationException e) {
-            String msg = "Error parsing vapp . Desc: " + e.getMessage();
-            log.info(msg);
-            throw new InvalidOVFException(msg);
-        } catch (SAXException e) {
-            String msg = "Error parsing vapp . Desc: " + e.getMessage();
-            log.info(msg);
-            throw new InvalidOVFException(msg);
-        } catch (IOException e) {
-            String msg = "IOException . Desc: " + e.getMessage();
-            log.info(msg);
-            throw new InvalidOVFException(msg);
-        }
-        return this.toString(doc);
-    }
-
-    private String getIpfromMacro(String value, EnvironmentInstance envIns) {
-        String prefix = "@IP" + "(";
-        String macroValue = value.substring(value.indexOf(prefix) + prefix.length(), value.indexOf(")"));
-
-        /*
-         * Two possibilities to take into account: @IP(net) or @IP(net,alias). Note that alias = "" in the case @IP(net)
-         * is used
-         */
-        String network = "";
-        String vm = "";
-        StringTokenizer macroValueTokenizer = new StringTokenizer(macroValue, ",");
-        vm = macroValueTokenizer.nextToken();
-        if (macroValueTokenizer.hasMoreElements()) {
-            network = macroValueTokenizer.nextToken();
-        }
-
-        log.debug("IP@ = " + network);
-
-        for (TierInstance tierInst : envIns.getTierInstances()) {
-            Tier tier = tierInst.getTier();
-            if (tier.getName().equals(vm)) {
-                return (String) tierInst.getVM().getNetworks().get(network);
-            }
-        }
-        return null;
-    }
-
-    public String toString(Document doc) {
+    public  String toString(Document doc) {
         try {
             StringWriter sw = new StringWriter();
             TransformerFactory tf = TransformerFactory.newInstance();

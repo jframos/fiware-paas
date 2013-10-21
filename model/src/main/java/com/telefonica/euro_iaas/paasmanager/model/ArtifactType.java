@@ -43,7 +43,7 @@ public class ArtifactType {
     private ProductType productType;
 
     /**
-     * Default Constructor
+     * Default Constructor.
      */
     public ArtifactType() {
 
@@ -58,6 +58,15 @@ public class ArtifactType {
         this.name = name;
         this.description = description;
         this.productType = productType;
+    }
+
+
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**
@@ -75,41 +84,10 @@ public class ArtifactType {
     }
 
     /**
-     * @param name
-     *            the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param description
-     *            the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
      * @return the productType
      */
     public ProductType getProductType() {
         return productType;
-    }
-
-    /**
-     * @param productType
-     *            the productType to set
-     */
-    public void setProductType(ProductType productType) {
-        this.productType = productType;
     }
 
     /*
@@ -124,25 +102,28 @@ public class ArtifactType {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
+    /**
+     * @param description
+     *            the description to set
      */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ArtifactType other = (ArtifactType) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @param productType
+     *            the productType to set
+     */
+    public void setProductType(ProductType productType) {
+        this.productType = productType;
     }
 
 }

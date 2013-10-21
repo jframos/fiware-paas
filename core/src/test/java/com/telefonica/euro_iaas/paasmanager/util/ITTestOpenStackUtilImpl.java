@@ -7,28 +7,29 @@
 
 package com.telefonica.euro_iaas.paasmanager.util;
 
-// import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
-import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.core.GrantedAuthority;
 
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
 /**
  * This is an Integration Test against OpenStack.
  */
 public class ITTestOpenStackUtilImpl {
     /**
-     * This is the authToken obtained from the keystone. You have to insert a new one everyday.
+     * This is the authToken obtained from the keystone. You have to insert a
+     * new one everyday.
      */
 
     private final String authToken = "886334e3b80847699753912043d13b6d"; // valid
@@ -129,14 +130,16 @@ public class ITTestOpenStackUtilImpl {
     /**
      * Image ref from Openstack, One of them.
      */
-    private final String imageRef = "http://130.206.80.63:8774/v2/" + tenant + "/images/" + imageId;
+    private final String imageRef = "http://130.206.80.63:8774/v2/" + tenant
+    + "/images/" + imageId;
     /**
      * flavor ref from Openstack, One of them.
      */
-    private final String flavorRef = "http://130.206.80.63:8774/v2/" + tenant + "/flavors/1";
+    private final String flavorRef = "http://130.206.80.63:8774/v2/" + tenant
+    + "/flavors/1";
     /**
      * FloatingIP to be assigned to a Server
-     */
+     * */
     private String floatingIP = "X.X.X.X";
 
     /**
@@ -149,19 +152,55 @@ public class ITTestOpenStackUtilImpl {
     PaasManagerUser user = null;
 
     /**
+     *Build the payload to deploy a VM (createServer)
+     */
+    private String buildCreateServerPayload() throws OpenStackException {
+
+        if ((imageId == null) || (flavourValue == null) || (keypair == null)) {
+            String errorMsg = " The tier does not include a not-null information: "
+                + "Image: "
+                + imageId
+                + "Flavour: "
+                + flavourValue
+                + "KeyPair: " + keypair;
+            System.out.println("errorMsg");
+            throw new OpenStackException(errorMsg);
+        }
+
+        String payload = "{\"server\": " + "{\"name\": \"" + serverName
+        + "\", " + "\"imageRef\": \"" + imageId + "\", "
+        + "\"flavorRef\": \"" + flavourValue + "\", "
+        + "\"key_name\": \"" + keypair + "\"} ";
+
+        if (security_group != null)
+            payload = payload + ", \"security_group\": \"" + security_group
+            + "\"}";
+        else
+            payload += "}";
+
+        return payload;
+    }
+
+    /**
      *
      */
     @Before
     public void setup() {
-        user = new PaasManagerUser(username, authToken, new HashSet<GrantedAuthority>());
+        user = new PaasManagerUser(username, authToken,
+                new HashSet<GrantedAuthority>());
         user.setToken(authToken);
         user.setTenantId(tenant);
         user.setUsername(username);
 
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)).thenReturn(
-                "http://130.206.80.63:8774/");
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).thenReturn("v2/");
+        when(
+                systemPropertiesProvider
+                .getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY))
+                .thenReturn("http://130.206.80.63:8774/");
+        when(
+                systemPropertiesProvider
+                .getProperty(SystemPropertiesProvider.VERSION_PROPERTY))
+                .thenReturn("v2/");
     }
 
     // @Ignore
@@ -170,9 +209,11 @@ public class ITTestOpenStackUtilImpl {
         try {
             // Creates a new VM
             /*
-             * HashMap<String,String> metadata = new HashMap<String,String>(); metadata.put(tokenMetadata, authToken);
-             * metadata.put(tenantMetadata, tenant); metadata.put(userMetadata, user); openStackUtil = new
-             * OpenStackUtilImpl(); openStackUtil.setMetadata(metadata);
+             * HashMap<String,String> metadata = new HashMap<String,String>();
+             * metadata.put(tokenMetadata, authToken);
+             * metadata.put(tenantMetadata, tenant); metadata.put(userMetadata,
+             * user); openStackUtil = new OpenStackUtilImpl();
+             * openStackUtil.setMetadata(metadata);
              */
             openStackUtil.setSystemPropertiesProvider(systemPropertiesProvider);
 
@@ -199,7 +240,8 @@ public class ITTestOpenStackUtilImpl {
             System.out.println("DELETE VM:" + deleteResponse);
 
         } catch (Exception ex) {
-            Logger.getLogger(ITTestOpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ITTestOpenStackUtilImpl.class.getName()).log(
+                    Level.SEVERE, null, ex);
         }
     }
 
@@ -215,9 +257,11 @@ public class ITTestOpenStackUtilImpl {
         try {
             // Creates a new VM
             /*
-             * HashMap<String,String> metadata = new HashMap<String,String>(); metadata.put(tokenMetadata, authToken);
-             * metadata.put(tenantMetadata, tenant); metadata.put(userMetadata, user); openStackUtil = new
-             * OpenStackUtilImpl(); openStackUtil.setMetadata(metadata);
+             * HashMap<String,String> metadata = new HashMap<String,String>();
+             * metadata.put(tokenMetadata, authToken);
+             * metadata.put(tenantMetadata, tenant); metadata.put(userMetadata,
+             * user); openStackUtil = new OpenStackUtilImpl();
+             * openStackUtil.setMetadata(metadata);
              */
             openStackUtil.setSystemPropertiesProvider(systemPropertiesProvider);
 
@@ -228,8 +272,9 @@ public class ITTestOpenStackUtilImpl {
             System.out.println("serverId" + serverId);
 
             /*
-             * String id = postResponse.split(",")[1]; serverId = id.substring(8, id.length()-1);
-             * System.out.println("serverId:" + serverId);
+             * String id = postResponse.split(",")[1]; serverId =
+             * id.substring(8, id.length()-1); System.out.println("serverId:" +
+             * serverId);
              */
 
             Thread.sleep(5000);
@@ -245,30 +290,8 @@ public class ITTestOpenStackUtilImpl {
             System.out.println("DELETE VM:" + deleteResponse);
 
         } catch (Exception ex) {
-            Logger.getLogger(ITTestOpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ITTestOpenStackUtilImpl.class.getName()).log(
+                    Level.SEVERE, null, ex);
         }
-    }
-
-    /**
-     * Build the payload to deploy a VM (createServer)
-     */
-    private String buildCreateServerPayload() throws OpenStackException {
-
-        if ((imageId == null) || (flavourValue == null) || (keypair == null)) {
-            String errorMsg = " The tier does not include a not-null information: " + "Image: " + imageId + "Flavour: "
-                    + flavourValue + "KeyPair: " + keypair;
-            System.out.println("errorMsg");
-            throw new OpenStackException(errorMsg);
-        }
-
-        String payload = "{\"server\": " + "{\"name\": \"" + serverName + "\", " + "\"imageRef\": \"" + imageId
-                + "\", " + "\"flavorRef\": \"" + flavourValue + "\", " + "\"key_name\": \"" + keypair + "\"} ";
-
-        if (security_group != null)
-            payload = payload + ", \"security_group\": \"" + security_group + "\"}";
-        else
-            payload += "}";
-
-        return payload;
     }
 }

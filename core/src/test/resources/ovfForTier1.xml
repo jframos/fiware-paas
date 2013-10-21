@@ -90,7 +90,7 @@
 <ovfenvelope:Property ovfenvelope:value="Deploy_AC" ovfenvelope:key="org.fourcaast.instancecomponent.cookbook.0.recipe.0"/>
 <ovfenvelope:Property ovfenvelope:value="Start_AC" ovfenvelope:key="org.fourcaast.instancecomponent.cookbook.0.recipe.1"/>
 <ovfenvelope:Category ovfenvelope:msgid="org.fourcaast.instancecomponent.attributes">Product Specific Attributes</ovfenvelope:Category>
-<ovfenvelope:Property ovfenvelope:value="@IP(mysql,public)" ovfenvelope:key="db_name"/>
+<ovfenvelope:Property ovfenvelope:value="@IP(tomcat,public)" ovfenvelope:key="db_name"/>
 <ovfenvelope:Property ovfenvelope:value="flipper" ovfenvelope:key="user_password"/>
 <ovfenvelope:Property ovfenvelope:value="flipper" ovfenvelope:key="user_name"/>
 </ovfenvelope:ProductSection>

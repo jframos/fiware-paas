@@ -7,9 +7,22 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+
+import junit.framework.TestCase;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.security.core.GrantedAuthority;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
@@ -18,31 +31,18 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
-import com.telefonica.euro_iaas.paasmanager.model.EnvironmentType;
-import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
+import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.springframework.security.core.GrantedAuthority;
-
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla
+ * 
  */
 public class TierInstanceManagerImplTest extends TestCase {
 
@@ -68,12 +68,15 @@ public class TierInstanceManagerImplTest extends TestCase {
     private PaasManagerUser user;
     private ClaudiaData claudiaData;
 
+    @Override
     @Before
     public void setUp() throws Exception {
 
         claudiaData = new ClaudiaData("org", "vdc", "service");
-        user = new PaasManagerUser("user", "password",
-                (Collection<? extends GrantedAuthority>) new ArrayList<GrantedAuthority>());
+        user = new PaasManagerUser(
+                "user",
+                "password",
+                new ArrayList<GrantedAuthority>());
         claudiaData.setUser(user);
 
         tierInstanceDao = mock(TierInstanceDao.class);
@@ -82,7 +85,7 @@ public class TierInstanceManagerImplTest extends TestCase {
         productInstanceManager = mock(ProductInstanceManager.class);
         environmentInstanceManager = mock(EnvironmentInstanceManager.class);
         tierManager = mock(TierManager.class);
-        enviromentManager = mock(EnvironmentManager.class);
+        enviromentManager = mock (EnvironmentManager.class);
 
         manager = new TierInstanceManagerImpl();
 
@@ -92,6 +95,12 @@ public class TierInstanceManagerImplTest extends TestCase {
         manager.setTierManager(tierManager);
         manager.setEnvironmentInstanceManager(environmentInstanceManager);
         manager.setEnvironmentManager(enviromentManager);
+
+
+
+
+
+
 
         VM host = new VM(null, "hostname", "domain");
 
@@ -105,12 +114,12 @@ public class TierInstanceManagerImplTest extends TestCase {
         tierProductConfig.setName("tierconfig");
         tierProductConfig.setProductReleases(productReleasesConfig);
 
-        Attribute att = new Attribute("balancer", "mongos", "description");
-        List<Attribute> lAtt = new ArrayList();
+        Attribute att = new Attribute ("balancer", "mongos", "description");
+        List<Attribute> lAtt = new ArrayList ();
         lAtt.add(att);
         ProductRelease productReleaseShard = new ProductRelease("shard", "2.0");
         productReleaseShard.addAttribute(att);
-        // ProductRelease productBalancer = new ProductRelease("productbalancer", "2.0");
+        //ProductRelease productBalancer = new ProductRelease("productbalancer", "2.0");
         List<ProductRelease> productReleasesShards = new ArrayList<ProductRelease>();
         productReleasesShards.add(productReleaseShard);
 
@@ -132,20 +141,33 @@ public class TierInstanceManagerImplTest extends TestCase {
         tierProductMongos.setName("tierNameMongos");
         tierProductMongos.setProductReleases(productReleaseBalancer);
 
-        tierInstanceConfig = new TierInstance(tierProductConfig, "tierInsatnceConfig", "nametierInstance-tier-1", host);
-        ProductInstance productInstance = new ProductInstance(productReleaseConfig, Status.INSTALLING, "vdc");
-        tierInstanceShard = new TierInstance(tierProductShard, "tierInsatnceShard", "nametierInstance-tier-1", host);
-        tierInstanceMongos = new TierInstance(tierProductMongos, "tierInsatnceMongos", "nametierInstance-tier-1", host);
+        tierInstanceConfig = new TierInstance(tierProductConfig, "tierInsatnceConfig",
+                "nametierInstance-tier-1", host);
+        ProductInstance productInstance = new ProductInstance(productReleaseConfig,
+                Status.INSTALLING, "vdc");
+        tierInstanceShard = new TierInstance(tierProductShard, "tierInsatnceShard",
+                "nametierInstance-tier-1", host);
+        tierInstanceMongos = new TierInstance(tierProductMongos, "tierInsatnceMongos",
+                "nametierInstance-tier-1", host);
         tierInstanceMongos.setId(new Long(1));
         tierInstanceMongos.addProductInstance(productInstance);
-        when(tierManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(tierProductConfig);
-        when(tierInstanceDao.create(any(TierInstance.class))).thenReturn(tierInstanceMongos);
-        when(tierInstanceDao.update(any(TierInstance.class))).thenReturn(tierInstanceMongos);
+        when(tierManager.load(any(String.class), any(String.class),any(String.class)))
+        .thenReturn(tierProductConfig);
+        when(tierInstanceDao.create(any(TierInstance.class))).thenReturn(
+                tierInstanceMongos);
+        when(tierInstanceDao.update(any(TierInstance.class))).thenReturn(
+                tierInstanceMongos);
 
         when(tierInstanceDao.load(any(String.class))).thenThrow(
                 new EntityNotFoundException(TierInstance.class, "dD", null));
 
-        when(productInstanceManager.create(any(ProductInstance.class))).thenReturn(productInstance);
+        when(productInstanceManager.create(any(ProductInstance.class)))
+        .thenReturn(productInstance);
+
+
+
+
+
 
         List<Tier> tiers = new ArrayList<Tier>();
         tiers.add(tierProductConfig);
@@ -155,7 +177,7 @@ public class TierInstanceManagerImplTest extends TestCase {
         envResult = new Environment();
         envResult = new Environment();
         envResult.setName("environemntName");
-        envResult.setEnvironmentType(new EnvironmentType("Generic", "Generic"));
+
         envResult.setTiers(tiers);
 
         environmentInstance = new EnvironmentInstance();
@@ -163,10 +185,12 @@ public class TierInstanceManagerImplTest extends TestCase {
         environmentInstance.setBlueprintName("blueprintName");
         environmentInstance.setDescription("description");
 
-        List<ProductInstance> lProductInstance = new ArrayList();
+
+        List<ProductInstance> lProductInstance = new ArrayList ();
         lProductInstance.add(productInstance);
 
-        List<TierInstance> lTierInstance = new ArrayList();
+
+        List<TierInstance> lTierInstance = new ArrayList ();
         lTierInstance.add(tierInstanceConfig);
         lTierInstance.add(tierInstanceShard);
         lTierInstance.add(tierInstanceMongos);
@@ -177,89 +201,62 @@ public class TierInstanceManagerImplTest extends TestCase {
     }
 
     @Test
-    public void testCreateTierInstance() throws Exception {
-
-        VM host = new VM(null, "hostname", "domain");
-        TierInstance tierInstance = new TierInstance(tierProductConfig, "tierInsatnce", "nametierInstance-tier-1", host);
-
-        TierInstance tierInstanceCreated = manager.create(claudiaData, "env", tierInstance);
-        assertEquals(tierInstanceCreated.getName(), tierInstanceCreated.getName());
-        // assertNotNull(environmentCreated.getId());
-    }
-
-    @Test
     public void testAddProductInstances() throws Exception {
 
         VM host = new VM(null, "hostname", "domain");
-        TierInstance tierInstance = new TierInstance(tierProductConfig, "tierInsatnce", "nametierInstance-tier-1", host);
+        TierInstance tierInstance = new TierInstance(tierProductConfig, "tierInsatnce",
+                "nametierInstance-tier-1", host);
 
         TierInstance tierInstanceCreated = manager.create(claudiaData, "env", tierInstance);
 
-        assertEquals(tierInstanceCreated.getName(), tierInstanceCreated.getName());
+        assertEquals(tierInstanceCreated.getName(), tierInstanceCreated
+                .getName());
 
         ProductRelease productRelease = new ProductRelease("product", "2.0");
 
-        ProductInstance productInstance = new ProductInstance(productRelease, Status.INSTALLING, "vdc");
+        ProductInstance productInstance = new ProductInstance(productRelease,
+                Status.INSTALLING, "vdc");
         tierInstanceCreated.addProductInstance(productInstance);
         TierInstance tierInstanceUpdate = manager.update(claudiaData, "env", tierInstance);
 
         verify(tierInstanceDao, times(2)).load(any(String.class));
         verify(tierInstanceDao, times(0)).update(any(TierInstance.class));
         verify(tierInstanceDao, times(2)).create(any(TierInstance.class));
-        // assertEquals(tierInstanceUpdate.getProductInstances().size(), 3);
+        //	assertEquals(tierInstanceUpdate.getProductInstances().size(), 3);
     }
 
     @Test
-    public void testRemoveTierInstance() throws Exception {
+    public void testCreateTierInstance() throws Exception {
 
         VM host = new VM(null, "hostname", "domain");
-        TierInstance tierInstance = new TierInstance(tierProductConfig, "tierInsatnce", "nametierInstance-tier-1", host);
+        TierInstance tierInstance = new TierInstance(tierProductConfig, "tierInsatnce",
+                "nametierInstance-tier-1", host);
+
         TierInstance tierInstanceCreated = manager.create(claudiaData, "env", tierInstance);
-        // when(tierInstanceDao.load(any(String.class))).thenReturn(tierInstance);
-        manager.remove(tierInstanceCreated);
+        assertEquals(tierInstanceCreated.getName(), tierInstanceCreated
+                .getName());
+        // assertNotNull(environmentCreated.getId());
     }
 
     @Test
-    public void testScalePaaSInstance() throws Exception {
-
-        TierInstance tierInstanceCreated = manager.create(claudiaData, "env", tierInstanceShard);
-
-        SystemPropertiesProvider propertiesProvider = mock(SystemPropertiesProvider.class);
-        when(propertiesProvider.getProperty(any(String.class))).thenReturn("dd");
-        // manager.create(claudiaData, tierInstanceCreated, environmentInstance,
-        // propertiesProvider);
-
-    }
-
-    @Test
-    public void testGetProductNameBalanced() throws Exception {
+    public void testGetProductNameBalanced ()throws Exception
+    {
 
         String productName = manager.getProductNameBalanced(tierProductShard);
         assertEquals(productName, "mongos");
     }
 
     @Test
-    public void testGetProductNameBalancedError() throws Exception {
+    public void testGetProductNameBalancedError ()throws Exception
+    {
 
         String productName = manager.getProductNameBalanced(tierProductMongos);
         assertNull(productName);
     }
 
     @Test
-    public void testGetTierProductWithName() throws Exception {
-        Tier tier = manager.getTierProductWithName(envResult, "mongos");
-        assertEquals(tier, tierProductMongos);
-    }
-
-    @Test
-    public void testGetTierInstanceWithTier() throws Exception {
-        TierInstance tierInstance = manager.getTierInstanceWithTier(environmentInstance, tierProductMongos);
-        assertEquals(tierInstance.getTier(), tierProductMongos);
-        assertEquals(tierInstance, tierInstanceMongos);
-    }
-
-    @Test
-    public void testGetTierInstanceToConfigure() throws Exception {
+    public void testGetTierInstanceToConfigure() throws Exception
+    {
 
         TierInstance tierfound = manager.getTierInstanceToConfigure(environmentInstance, tierProductShard);
         assertNotNull(tierfound);
@@ -267,14 +264,56 @@ public class TierInstanceManagerImplTest extends TestCase {
         assertEquals(tierfound, tierInstanceMongos);
     }
 
+    @Test
+    public void testGetTierInstanceWithTier() throws Exception
+    {
+        TierInstance tierInstance= manager.getTierInstanceWithTier (environmentInstance, tierProductMongos);
+        assertEquals(tierInstance.getTier(), tierProductMongos);
+        assertEquals(tierInstance, tierInstanceMongos);
+    }
+    @Test
+    public void testGetTierProductWithName ()throws Exception
+    {
+        Tier tier= manager.getTierProductWithName (envResult, "mongos");
+        assertEquals(tier, tierProductMongos);
+    }
+
+
+
     @SuppressWarnings("unchecked")
     @Test
-    public void testReconfigure() throws Exception {
-        Mockito.doNothing().when(productInstanceManager)
-                .configure(any(ClaudiaData.class), any(ProductInstance.class), anyList());
+    public void testReconfigure () throws Exception
+    {
+        Mockito.doNothing().when(productInstanceManager).configure(any(ClaudiaData.class), any(ProductInstance.class),anyList());
 
         manager.reconfigure(claudiaData, environmentInstance, tierInstanceShard);
 
     }
+
+    @Test
+    public void testRemoveTierInstance() throws Exception {
+
+        VM host = new VM(null, "hostname", "domain");
+        TierInstance tierInstance = new TierInstance(tierProductConfig, "tierInsatnce",
+                "nametierInstance-tier-1", host);
+        TierInstance tierInstanceCreated = manager.create(claudiaData,"env", tierInstance);
+        // when(tierInstanceDao.load(any(String.class))).thenReturn(tierInstance);
+        manager.remove(tierInstanceCreated);
+    }
+
+    @Test
+    public void testScalePaaSInstance() throws Exception {
+
+
+        TierInstance tierInstanceCreated = manager.create(claudiaData, "env", tierInstanceShard);
+
+        SystemPropertiesProvider propertiesProvider = mock(SystemPropertiesProvider.class);
+        when(propertiesProvider.getProperty(any(String.class)))
+        .thenReturn("dd");
+        //	manager.create(claudiaData, tierInstanceCreated, environmentInstance,
+        //		propertiesProvider);
+
+    }
+
 
 }

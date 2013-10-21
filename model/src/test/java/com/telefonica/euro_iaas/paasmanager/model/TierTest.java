@@ -7,12 +7,23 @@
 
 package com.telefonica.euro_iaas.paasmanager.model;
 
-import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import junit.framework.TestCase;
+
 import org.junit.Test;
 
+import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
+
+/**
+ * Test for Tier entity.
+ * @author henar
+ *
+ */
 public class TierTest extends TestCase {
 
+    /**
+     * Test the creation of the enviornment.
+     * @throws Exception
+     */
     @Test
     public void testCreateEnvironment() throws Exception {
 

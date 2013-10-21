@@ -1,4 +1,4 @@
-from tools import http
+import http
 
 __author__ = 'henar'
 
@@ -6,10 +6,10 @@ import sys
 from xml.etree.ElementTree import tostring
 import json
 
-from tools.environment import Environment
-from tools.tier import Tier
-from tools.productrelease import ProductRelease
-from tools.productrequest import ProductRequest
+from environment import Environment
+from tier import Tier
+from productrelease import ProductRelease, Product
+from productrequest import ProductRequest
 
 
 class EnvironmentRequest:
@@ -36,7 +36,6 @@ class EnvironmentRequest:
         #url="%s/%s" %(self.paasmanager_url,"catalog/org/FIWARE/environment")
         headers={'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
              'Accept': "application/json"}
-        print headers
         response= http.get(url, headers)
          ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
         if response.status!=200:
@@ -131,11 +130,12 @@ class EnvironmentRequest:
 
     def __check_product_exist (self, product_name, product_version):
 
-        request=ProductRequest(self.keystone_url, self.sdc_url, self.tenant, self.user, self.password)
-        product = request.get_product_info(product_name,product_version)
+        #request=ProductRequest(self.keystone_url, self.sdc_url, self.tenant, self.user, self.password)
+        #product = request.get_product_info(product_name,product_version)
 
-        if product is None:
-            print 'Error: the product ' +  product_name + ' ' + product_version + ' does not exit'
+      #  if product is None:
+       #     print 'Error: the product ' +  product_name + ' ' + product_version + ' does not exit'
+        product = ProductRelease (product_name, product_version)
         return product
 
 
@@ -179,6 +179,20 @@ class EnvironmentRequest:
             products = self.__process_product (products_information)
             for product in products:
                 tier.add_product(product)
+
+        payload=tostring(tier.to_tier_xml())
+        self.__add_tier_environment(url, payload)
+
+    def add_tier_environment_network(self, environment_name, tier_name, products_information=None, networks=None):
+        url="%s/%s/%s/%s/%s/%s/%s" %(self.paasmanager_url,"catalog/org/FIWARE", "vdc", self.vdc, "environment",environment_name,"tier")
+        tier = Tier (tier_name)
+        if products_information:
+            products = self.__process_product (products_information)
+            for product in products:
+                tier.add_product(product)
+
+        for net in networks:
+            tier.add_network(net)
 
         payload=tostring(tier.to_tier_xml())
         self.__add_tier_environment(url, payload)
@@ -233,11 +247,11 @@ class EnvironmentRequest:
         return environments
 
     def __process_environment (self,env):
-
         environment = Environment (env['name'],env['description'])
         try:
             tiers_string =env['tierDtos']
         except:
+            environment.to_string()
             return environment
 
         if isinstance(tiers_string, list):
@@ -266,8 +280,9 @@ class EnvironmentRequest:
                 if isinstance(products_string, list):
 
                     for product_string in products_string:
-                        product = ProductRelease (product_string['productName'], product_string['version'])
-                        tier.add_product(product)
+                        producte = Product (product_string['productName'])
+                        product_release = ProductRelease (producte, product_string['version'])
+                        tier.add_product(product_release)
                 else:
                     product = ProductRelease (products_string['productName'], products_string['version'])
                     tier.add_product(product)

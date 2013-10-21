@@ -7,8 +7,10 @@
 
 package com.telefonica.euro_iaas.paasmanager.dao;
 
+
 /**
  * @author jesus.movilla
+ * 
  */
 public class TaskDaoJpaImplTest extends AbstractJpaDaoTest {
 
@@ -18,12 +20,23 @@ public class TaskDaoJpaImplTest extends AbstractJpaDaoTest {
      * Test the create and load method
      */
     /*
-     * public void testCreate() throws Exception { Task task = new Task(); task.setDescription("description");
-     * task.setHref("href"); task.setVdc("vdc"); task.setStatus(TaskStates.RUNNING); List<Task> tasks = new
-     * ArrayList<Task>(); //Task createdTask = taskDao.create(task); tasks = taskDao.findAll(); Task createdTask; if
-     * (tasks.size() == 0) createdTask = taskDao.create(task); else createdTask = tasks.get(0);
-     * assertNotNull(createdTask.getId()); Task foundTask = taskDao.load(createdTask.getId()); assertEquals(createdTask,
-     * foundTask); }
+     * public void testCreate() throws Exception {
+     * 
+     * Task task = new Task(); task.setDescription("description");
+     * task.setHref("href"); task.setVdc("vdc");
+     * task.setStatus(TaskStates.RUNNING); List<Task> tasks = new
+     * ArrayList<Task>();
+     * 
+     * //Task createdTask = taskDao.create(task);
+     * 
+     * tasks = taskDao.findAll();
+     * 
+     * Task createdTask; if (tasks.size() == 0) createdTask =
+     * taskDao.create(task); else createdTask = tasks.get(0);
+     * 
+     * assertNotNull(createdTask.getId()); Task foundTask =
+     * taskDao.load(createdTask.getId()); assertEquals(createdTask, foundTask);
+     * }
      */
 
     /**

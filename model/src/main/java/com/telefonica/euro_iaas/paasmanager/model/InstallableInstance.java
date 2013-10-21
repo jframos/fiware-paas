@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,15 +37,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class InstallableInstance {
 
-    public final static String VM_FIELD = "vm";
-    public final static String STATUS_FIELD = "status";
-    public final static String VDC_FIELD = "vdc";
-    public final static String ENVIRONMENT_INSTANCE_FIELD = "environmentinstance";
-
     /**
      * Defines the value of the different status the Application could be. See the diagram bellow to know the relations
      * between the different states. <img src=
-     * "http://plantuml.com:80/plantuml/img/YzQALT3LjLFmp2ikISp9oSnBv-L2i96bKbFWCgafO8dGl4nCNJ2vWlIYn1Gi4ixvUMcPwQL5O2cuAdIBa5IXIo7RYkeC55ceTT5QiRnS65voBIhABq9t6LGGrKrGGNJtmDIYkmLT7DLeC0Lp5W00"
      * >
      */
     public enum Status {
@@ -64,7 +59,12 @@ public class InstallableInstance {
         UNDEPLOYING_ARTEFACT,
         ARTEFACT_DEPLOYED,
         ARTEFACT_UNDEPLOYED
-    };
+    }
+    public static final String VM_FIELD = "vm";
+    public static final String STATUS_FIELD = "status";
+    public static final String VDC_FIELD = "vdc";
+
+    public static final String ENVIRONMENT_INSTANCE_FIELD = "environmentinstance";;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -80,14 +80,11 @@ public class InstallableInstance {
 
     private String vdc;
 
-    /*
-     * @Column(length=5000) private String vapp;
-     */
     @OneToMany(cascade = CascadeType.ALL)
     private List<Attribute> privateAttributes;
 
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param status
      */
@@ -97,7 +94,7 @@ public class InstallableInstance {
     }
 
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param status
      */
@@ -107,13 +104,39 @@ public class InstallableInstance {
     }
 
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param status
      */
     public InstallableInstance(Status status) {
         this();
         this.status = status;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        InstallableInstance other = (InstallableInstance) obj;
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -124,11 +147,10 @@ public class InstallableInstance {
     }
 
     /**
-     * @param date
-     *            the date to set
+     * @return the id
      */
-    public void setDate(Date date) {
-        this.date = date;
+    public Long getId() {
+        return id;
     }
 
     /**
@@ -139,11 +161,10 @@ public class InstallableInstance {
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @return the privateAttributes
      */
-    public void setName(String name) {
-        this.name = name;
+    public List<Attribute> getPrivateAttributes() {
+        return privateAttributes;
     }
 
     /**
@@ -154,48 +175,10 @@ public class InstallableInstance {
     }
 
     /**
-     * @param status
-     *            the status to set
-     */
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    /**
-     * @return the id
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
      * @return the vdc
      */
     public String getVdc() {
         return vdc;
-    }
-
-    /**
-     * @param vdc
-     *            the vdc to set
-     */
-    public void setVdc(String vdc) {
-        this.vdc = vdc;
-    }
-
-    /**
-     * @return the privateAttributes
-     */
-    public List<Attribute> getPrivateAttributes() {
-        return privateAttributes;
-    }
-
-    /**
-     * @param privateAttributes
-     *            the privateAttributes to set
-     */
-    public void setPrivateAttributes(List<Attribute> privateAttributes) {
-        this.privateAttributes = privateAttributes;
     }
 
     /*
@@ -210,25 +193,44 @@ public class InstallableInstance {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
+    /**
+     * @param date
+     *            the date to set
      */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        InstallableInstance other = (InstallableInstance) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @param privateAttributes
+     *            the privateAttributes to set
+     */
+    public void setPrivateAttributes(List<Attribute> privateAttributes) {
+        this.privateAttributes = privateAttributes;
+    }
+
+    /**
+     * @param status
+     *            the status to set
+     */
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    /**
+     * @param vdc
+     *            the vdc to set
+     */
+    public void setVdc(String vdc) {
+        this.vdc = vdc;
     }
 
 }

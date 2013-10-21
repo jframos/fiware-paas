@@ -14,9 +14,11 @@ import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidVappException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 
 /**
  * @author jesus.movilla
+ * 
  */
 public interface VappUtils {
 
@@ -45,27 +47,6 @@ public interface VappUtils {
     public final static String ITEM_TAG = "ovf:Item";
 
     /**
-     * Captures the list of ips associated to the VApp (first private, last public)
-     * 
-     * @param vapp
-     * @return
-     * @throws InvalidVappException
-     */
-    List<String> getIP(String vapp) throws InvalidVappException;
-
-    HashMap<String, String> getNetworkAndIP(String vappReplica) throws InvalidVappException;
-
-    /**
-     * Gets the VApps of the different VMs that forms the vapp
-     * 
-     * @param claudiaData
-     * @param vapp
-     * @return
-     * @throws InvalidVappException
-     */
-    List<String> getVappsSingleVM(ClaudiaData claudiaData, String vapp) throws InvalidVappException;
-
-    /**
      * Extract FqnId from Vapp
      * 
      * @param vapp
@@ -75,12 +56,18 @@ public interface VappUtils {
     String getFqnId(String vapp) throws InvalidVappException;
 
     /**
-     * Extract Vmname from fqn
+     * Captures the list of ips associated to the VApp (first private, last
+     * public)
      * 
-     * @param fqn
+     * @param vapp
      * @return
+     * @throws InvalidVappException
      */
-    String getVMName(String fqn);
+    List<String> getIP(String vapp) throws InvalidVappException;
+
+    String getMacroVapp (String ovf, EnvironmentInstance envIns, TierInstance tierInstance) throws InvalidOVFException ;
+
+    HashMap<String, String> getNetworkAndIP(String vappReplica) throws InvalidVappException;
 
     /**
      * Extract Replica from fqn
@@ -90,5 +77,22 @@ public interface VappUtils {
      */
     String getReplica(String fqnId);
 
-    String getMacroVapp(String ovf, EnvironmentInstance envIns) throws InvalidOVFException;
+    /**
+     * Gets the VApps of the different VMs that forms the vapp
+     * 
+     * @param claudiaData
+     * @param vapp
+     * @return
+     * @throws InvalidVappException
+     */
+    List<String> getVappsSingleVM(ClaudiaData claudiaData, String vapp)
+    throws InvalidVappException;
+
+    /**
+     * Extract Vmname from fqn
+     * 
+     * @param fqn
+     * @return
+     */
+    String getVMName(String fqn);
 }

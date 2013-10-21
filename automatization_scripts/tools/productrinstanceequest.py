@@ -38,7 +38,7 @@ class ProductInstanceRequest:
 
         productrequest=ProductRequest(self.keystone_url, self.sdc_url,self.tenant, self.user, self.password)
 
-        productrequest.get_product_info ( product_name, product_version)
+        productrequest.get_product_info ( product_name)
         attributes = self.__process_attributes(attributes_string)
 
         product_release = ProductReleaseDto (product_name, product_version)

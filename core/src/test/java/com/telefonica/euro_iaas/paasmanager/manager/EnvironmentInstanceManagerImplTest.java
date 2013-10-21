@@ -7,6 +7,11 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,40 +19,33 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.junit.Before;
+import org.mockito.Mockito;
+import org.springframework.security.core.GrantedAuthority;
+
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentDao;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
-import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentTypeDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
-import com.telefonica.euro_iaas.paasmanager.model.EnvironmentType;
-import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.OS;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.ProductType;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
+import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
-import org.junit.Before;
-import org.mockito.Mockito;
-import org.springframework.security.core.GrantedAuthority;
-
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla
+ * 
  */
 public class EnvironmentInstanceManagerImplTest {
 
-    private EnvironmentTypeDao environmentTypeDao;
     private EnvironmentInstanceDao environmentInstanceDao;
     private EnvironmentDao environmentDao;
     private TierDao tierDao;
@@ -75,7 +73,8 @@ public class EnvironmentInstanceManagerImplTest {
     @Before
     public void setUp() throws Exception {
         // OVF
-        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("4caastovfexample_attributes.xml");
+        InputStream is = ClassLoader.getSystemClassLoader()
+        .getResourceAsStream("4caastovfexample_attributes.xml");
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuffer ruleFile = new StringBuffer();
         String actualString;
@@ -85,7 +84,7 @@ public class EnvironmentInstanceManagerImplTest {
         }
 
         claudiaData = new ClaudiaData("org", "vdc", "service");
-        // Collection<GrantedAuthority> authorities = null;
+        //Collection<GrantedAuthority> authorities = null;
         authorities = Mockito.anyCollection();
 
         user = new PaasManagerUser("user", "paasword", authorities);
@@ -114,25 +113,26 @@ public class EnvironmentInstanceManagerImplTest {
         tiers.add(tier);
         tiers.add(tier);
 
-        environmentTypeDao = mock(EnvironmentTypeDao.class);
-        when(environmentTypeDao.load(any(String.class))).thenReturn(new EnvironmentType("Generic", "Generic"));
 
         productReleaseDao = mock(ProductReleaseDao.class);
-        when(productReleaseDao.load(any(String.class))).thenReturn(productRelease);
+        when(productReleaseDao.load(any(String.class))).thenReturn(
+                productRelease);
 
         tierDao = mock(TierDao.class);
         when(tierDao.load(any(String.class))).thenReturn(tier);
 
         environment = new Environment();
         environment.setName("environemntName");
-        environment.setEnvironmentType(new EnvironmentType("Generic", "Generic"));
+
         environment.setTiers(tiers);
 
         environmentDao = mock(EnvironmentDao.class);
-        when(environmentDao.create(any(Environment.class))).thenReturn(environment);
+        when(environmentDao.create(any(Environment.class))).thenReturn(
+                environment);
 
         environmentManager = mock(EnvironmentManager.class);
-        when(environmentManager.load(any(String.class), any(String.class))).thenReturn(environment);
+        when(environmentManager.load(any(String.class), any(String.class)))
+        .thenReturn(environment);
 
         // Instance
         vms = new ArrayList<VM>();
@@ -148,8 +148,10 @@ public class EnvironmentInstanceManagerImplTest {
 
         productInstanceManager = mock(ProductInstanceManager.class);
         when(
-                productInstanceManager.install(any(TierInstance.class), any(ClaudiaData.class), any(String.class),
-                        any(ProductRelease.class), anyList())).thenReturn(productInstance);
+                productInstanceManager
+                .install(any(TierInstance.class),any(ClaudiaData.class), any(String.class),
+                        any(ProductRelease.class), anyList()))
+                        .thenReturn(productInstance);
 
         List<ProductInstance> productInstances = new ArrayList<ProductInstance>();
         productInstances.add(productInstance);
@@ -172,19 +174,31 @@ public class EnvironmentInstanceManagerImplTest {
         environmentInstance.setEnvironment(environment);
 
         environmentInstanceDao = mock(EnvironmentInstanceDao.class);
-        when(environmentInstanceDao.load(any(String.class))).thenReturn(environmentInstance);
+        when(environmentInstanceDao.load(any(String.class))).thenReturn(
+                environmentInstance);
     }
 
-    /*
-     * @Test public void testCreateEnvironment() throws Exception { EnvironmentInstanceManagerImpl manager = new
-     * EnvironmentInstanceManagerImpl(); manager.setEnvironmentInstanceDao(environmentInstanceDao);
-     * manager.setEnvironmentManager(environmentManager); manager.setInfrastructureManager(infrastructureManager);
-     * manager.setProductInstanceManager(productInstanceManager); EnvironmentInstance environmentInstanceCreated =
-     * manager.create( claudiaData, environmentInstance);
-     * assertEquals(environmentInstanceCreated.getEnvironment().getName(), environment.getName());
-     * assertEquals(environmentInstanceCreated.getTierInstances().size(), 1);
-     * assertEquals(environmentInstanceCreated.getTierInstances().get(0) .getVM().getHostname(), "hostname1");
-     * assertEquals(environmentInstanceCreated.getTierInstances().get(0) .getVM().getFqn(), "fqn1");
-     * assertEquals(environmentInstanceCreated.getTierInstances().get(0) .getVM().getIp(), "ip1"); }
-     */
+    /*@Test
+	public void testCreateEnvironment() throws Exception {
+		EnvironmentInstanceManagerImpl manager = new EnvironmentInstanceManagerImpl();
+
+		manager.setEnvironmentInstanceDao(environmentInstanceDao);
+		manager.setEnvironmentManager(environmentManager);
+		manager.setInfrastructureManager(infrastructureManager);
+		manager.setProductInstanceManager(productInstanceManager);
+
+		EnvironmentInstance environmentInstanceCreated = manager.create(
+				claudiaData, environmentInstance);
+
+		assertEquals(environmentInstanceCreated.getEnvironment().getName(),
+				environment.getName());
+		assertEquals(environmentInstanceCreated.getTierInstances().size(), 1);
+		assertEquals(environmentInstanceCreated.getTierInstances().get(0)
+				.getVM().getHostname(), "hostname1");
+		assertEquals(environmentInstanceCreated.getTierInstances().get(0)
+				.getVM().getFqn(), "fqn1");
+		assertEquals(environmentInstanceCreated.getTierInstances().get(0)
+				.getVM().getIp(), "ip1");
+
+	}*/
 }

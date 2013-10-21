@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Represents an instance of a application
+ * Represents an instance of a application.
  * 
  * @author Jesus M. Movilla
  * @version $Id: $
@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ApplicationInstance extends InstallableInstance {
 
-    public final static String VDC_FIELD = "vdc";
+    public static final String VDC_FIELD = "vdc";
     @ManyToOne
     private ApplicationRelease applicationRelease;
 
@@ -32,7 +32,7 @@ public class ApplicationInstance extends InstallableInstance {
     private EnvironmentInstance environmentInstance;
 
     /**
-     * Default Constructor
+     * Default Constructor.
      */
     public ApplicationInstance() {
     }
@@ -83,18 +83,18 @@ public class ApplicationInstance extends InstallableInstance {
     }
 
     /**
+     * @return the environmentInstance
+     */
+    public EnvironmentInstance getEnvironmentInstance() {
+        return environmentInstance;
+    }
+
+    /**
      * @param applicationRelease
      *            the applicationRelease to set
      */
     public void setApplicationRelease(ApplicationRelease applicationRelease) {
         this.applicationRelease = applicationRelease;
-    }
-
-    /**
-     * @return the environmentInstance
-     */
-    public EnvironmentInstance getEnvironmentInstance() {
-        return environmentInstance;
     }
 
     /**
@@ -105,8 +105,8 @@ public class ApplicationInstance extends InstallableInstance {
         this.environmentInstance = environmentInstance;
     }
 
-    /*
-     * setting the name as fuction of applicationRelease.name and environmentInstance.name
+    /**
+     * setting the name as fuction of applicationRelease.name and environmentInstance.name.
      */
     private void setName() {
         this.name = applicationRelease.getName() + "-" + environmentInstance.getName();

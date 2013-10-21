@@ -3,9 +3,11 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
   http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+
              version="1.0">
 
     <persistence-unit name="paasmanager" transaction-type="RESOURCE_LOCAL">
+
         <class>com.telefonica.euro_iaas.commons.properties.PersistentProperty</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.Configuration</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.OS</class>
@@ -15,7 +17,6 @@
         <class>com.telefonica.euro_iaas.paasmanager.model.ProductRelease</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.Artifact</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.ArtifactType</class>
-        <class>com.telefonica.euro_iaas.paasmanager.model.EnvironmentType</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.ApplicationType</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.Service</class>
@@ -30,6 +31,11 @@
         <class>com.telefonica.euro_iaas.paasmanager.model.Task</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.SecurityGroup</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.Rule</class>
+
+        <class>com.telefonica.euro_iaas.paasmanager.model.Network</class>
+        <class>com.telefonica.euro_iaas.paasmanager.model.SubNetwork</class>
+        <class>com.telefonica.euro_iaas.paasmanager.model.Router</class>
+
         <exclude-unlisted-classes></exclude-unlisted-classes>
     </persistence-unit>
 </persistence>

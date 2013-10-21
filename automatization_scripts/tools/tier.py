@@ -6,7 +6,7 @@ from xml.etree.ElementTree import Element, SubElement
 class Tier:
 
 
-    def __init__(self, tier_name, tier_num_min='1', tier_num_max='1', tier_num_initial='1', tier_image='44dcdba3-a75d-46a3-b209-5e9035d2435e',
+    def __init__(self, tier_name, tier_num_min='1', tier_num_max='1', tier_num_initial='1', tier_image='694ae405-0731-4dab-a50f-d089d1cca04d',
                  tier_flavour='2',tier_keypair='',tier_floatingip='false' ):
         self.name=tier_name
         self.tier_num_min=tier_num_min
@@ -17,10 +17,16 @@ class Tier:
         self.tier_keypair=tier_keypair
         self.tier_floatingip=tier_floatingip
         self.products=[]
+        self.networks = []
 
     def add_product (self,product):
 
         self.products.append(product)
+
+    def add_network (self,network):
+
+        self.networks.append(network)
+
 
     def delete_product (self,product):
         self.products.pop (product)
@@ -48,6 +54,12 @@ class Tier:
         if self.products:
             for product in self.products:
                 prod = product.to_product_xml_env()
+
+                tier_dtos.append(prod)
+
+        if self.networks:
+            for net in self.networks:
+                prod = net.to_product_xml_env()
 
                 tier_dtos.append(prod)
         return tier_dtos

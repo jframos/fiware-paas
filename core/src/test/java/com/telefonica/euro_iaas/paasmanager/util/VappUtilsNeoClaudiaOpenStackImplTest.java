@@ -5,44 +5,66 @@
  * agreement/contract under which the program(s) have been supplied.
  */
 
-/**
- * 
- */
 package com.telefonica.euro_iaas.paasmanager.util;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+
+import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  * @author jesus.movilla
+ * 
  */
-public class VappUtilsNeoClaudiaOpenStackImplTest {
+public class VappUtilsNeoClaudiaOpenStackImplTest extends TestCase {
 
     private String vappReplica;
-    private String VappNeoclaudiaTwoIps = "/VappNeoclaudiaTwoIps.xml";
+    private final String VappNeoclaudiaTwoIps = "src/test/resources/VappNeoclaudiaTwoIps.xml";
 
     private VappUtilsNeoClaudiaOpenStackImpl vappUtilsNeoClaudiaOpenStackImpl;
     private SystemPropertiesProvider systemPropertiesProvider;
 
+    private String getFile(String file) throws IOException {
+        File f = new File(file);
+        System.out.println(f.isFile() + " " + f.getAbsolutePath());
+
+        InputStream dd = new FileInputStream(f);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(dd));
+        StringBuffer ruleFile = new StringBuffer();
+        String actualString;
+
+        while ((actualString = reader.readLine()) != null) {
+            ruleFile.append(actualString).append("\n");
+        }
+        return ruleFile.toString();
+    }
+
+    @Override
     @Before
     public void setUp() throws Exception {
         vappReplica = getFile(VappNeoclaudiaTwoIps);
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         // when
         // (systemPropertiesProvider.getProperty(any(String.class))).thenReturn("FIWARE");
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM)).thenReturn("FIWARE");
+        when(
+                systemPropertiesProvider
+                .getProperty(SystemPropertiesProvider.CLOUD_SYSTEM))
+                .thenReturn("FIWARE");
         vappUtilsNeoClaudiaOpenStackImpl = new VappUtilsNeoClaudiaOpenStackImpl();
-        vappUtilsNeoClaudiaOpenStackImpl.setSystemPropertiesProvider(systemPropertiesProvider);
+        vappUtilsNeoClaudiaOpenStackImpl
+        .setSystemPropertiesProvider(systemPropertiesProvider);
     }
 
     @Test
@@ -57,19 +79,5 @@ public class VappUtilsNeoClaudiaOpenStackImplTest {
     @Test
     public void testGetVappsSingleVM() throws Exception {
 
-    }
-
-    private String getFile(String file) throws IOException {
-
-        InputStream dd = this.getClass().getResourceAsStream(file);
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(dd));
-        StringBuffer ruleFile = new StringBuffer();
-        String actualString;
-
-        while ((actualString = reader.readLine()) != null) {
-            ruleFile.append(actualString).append("\n");
-        }
-        return ruleFile.toString();
     }
 }

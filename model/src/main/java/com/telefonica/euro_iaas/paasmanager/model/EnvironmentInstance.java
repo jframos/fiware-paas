@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -44,8 +45,8 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.TierPDto;
 @Table(name = "EnvironmentInstance")
 public class EnvironmentInstance extends InstallableInstance {
 
-    public final static String VDC_FIELD = "vdc";
-    public final static String ENVIRONMENTNAME_FIELD = "blueprintname";
+    public static final String VDC_FIELD = "vdc";
+    public static final String ENVIRONMENTNAME_FIELD = "blueprintname";
 
     @ManyToOne()
     private Environment environment;
@@ -54,35 +55,21 @@ public class EnvironmentInstance extends InstallableInstance {
     private String blueprintName = "";
     private String taskId = "";
 
-    // @ManyToMany
-    // @OneToMany(fetch=FetchType.EAGER)
-
     @ManyToMany(fetch = FetchType.LAZY)
-    // @ManyToMany
-    @JoinTable(name = "environmentInstance_has_tierInstances", joinColumns = { @JoinColumn(name = "environmentinstance_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) })
-    // @OneToMany(fetch=FetchType.LAZY)
-    // @JoinColumn(name="tierInstance_id")
-    // @OneToMany(fetch = FetchType.LAZY, mappedBy = "environmentInstance")
-    // @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,org.hibernate.annotations.CascadeType.DELETE
-    // })
-    private List<TierInstance> tierInstances;
+    @JoinTable(name = "environmentInstance_has_tierInstances", joinColumns = {
+        @JoinColumn(name = "environmentinstance_ID", nullable = false, updatable = false) },
+        inverseJoinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) })
+
+        private List<TierInstance> tierInstances;
 
     @Column(length = 90000)
     private String vapp;
 
+    /**
+     * Constructor.
+     */
     public EnvironmentInstance() {
 
-    }
-
-    public EnvironmentInstance(String blueprintName, String description) {
-        this.blueprintName = blueprintName;
-        this.description = description;
-    }
-
-    public EnvironmentInstance(String blueprintName, String description, Environment env) {
-        this.blueprintName = blueprintName;
-        this.description = description;
-        this.environment = env;
     }
 
     /**
@@ -97,38 +84,103 @@ public class EnvironmentInstance extends InstallableInstance {
     }
 
     /**
-     * @return the environment
+     * 
+     * @param blueprintName
+     * @param description
      */
-    public Environment getEnvironment() {
-        return environment;
+    public EnvironmentInstance(String blueprintName, String description) {
+        this.blueprintName = blueprintName;
+        this.description = description;
     }
 
     /**
-     * @param environment
-     *            the environment to set
+     * 
+     * @param blueprintName
+     * @param description
+     * @param env
      */
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
+    public EnvironmentInstance(String blueprintName, String description, Environment env) {
+        this.blueprintName = blueprintName;
         this.description = description;
+        this.environment = env;
+    }
+
+    /**
+     * 
+     * @param tierInstance
+     */
+    public void addTierInstance(TierInstance tierInstance) {
+        if (tierInstances == null) {
+            tierInstances = new ArrayList<TierInstance>();
+        }
+        tierInstances.add(tierInstance);
+
+    }
+
+
+    private TierInstancePDto createInstancePDto(TierInstance tierInstance) {
+        List<ProductInstanceDto> productInstanceDtos = new ArrayList<ProductInstanceDto>();
+        if (tierInstance.getProductInstances() != null) {
+            for (ProductInstance productInstance : tierInstance.getProductInstances()) {
+                productInstanceDtos.add(productInstance.toDto());
+            }
+        }
+        TierInstancePDto tierInstancePDto = null;
+        if (tierInstance.getVM() == null) {
+            tierInstancePDto = new TierInstancePDto(tierInstance.getName(), productInstanceDtos, null,
+                    tierInstance.getStatus(), tierInstance.getTaskId());
+        } else {
+            tierInstancePDto = new TierInstancePDto(tierInstance.getName(), productInstanceDtos, tierInstance.getVM()
+                    .toDto(), tierInstance.getStatus(), tierInstance.getTaskId());
+        }
+        return tierInstancePDto;
+    }
+
+    private TierPDto createTierPDto(Tier tier) {
+
+        return new TierPDto(tier.getName());
+    }
+
+    private TierPDto createTierPDto(Tier tier, List<TierInstance> lTierInstance) {
+        List<ProductReleaseDto> productReleasedto = new ArrayList<ProductReleaseDto>();
+
+        for (ProductRelease productRelease : tier.getProductReleases()) {
+            if (!productReleasedto.contains(productRelease.toDto())) {
+                productReleasedto.add(productRelease.toDto());
+            }
+        }
+        String securitygroup = "";
+        if (tier.getSecurityGroup() != null) {
+            securitygroup = tier.getSecurityGroup().getName();
+        }
+        TierPDto tierPDto = new TierPDto(tier.getName(), tier.getMaximumNumberInstances(),
+                tier.getMinimumNumberInstances(), tier.getInitialNumberInstances(), productReleasedto,
+                tier.getFlavour(), tier.getImage(), tier.getIcono(), securitygroup, tier.getKeypair(),
+                tier.getFloatingip());
+        if (lTierInstance != null && lTierInstance.size() != 0) {
+            for (TierInstance tierInstance : lTierInstance) {
+
+                if (tierInstance.getTier().getName().equals(tier.getName())) {
+                    tierPDto.addTierInstance(createInstancePDto(tierInstance));
+                }
+            }
+        }
+        return tierPDto;
     }
 
     public String getBlueprintName() {
         return this.blueprintName;
     }
 
-    public void setBlueprintName(String blueprintName) {
-        this.blueprintName = blueprintName;
+    public String getDescription() {
+        return description;
     }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
+    /**
+     * @return the environment
+     */
+    public Environment getEnvironment() {
+        return environment;
     }
 
     public String getTaskId() {
@@ -142,17 +194,46 @@ public class EnvironmentInstance extends InstallableInstance {
         return tierInstances;
     }
 
-    public void addTierInstance(TierInstance tierInstance) {
-        if (tierInstances == null)
-            tierInstances = new ArrayList();
-        tierInstances.add(tierInstance);
+    /**
+     * @return the vapp
+     */
+    public String getVapp() {
+        return vapp;
+    }
+
+    /**
+     * It removes a tier instance in the environment
+     * @param tierInstance
+     */
+    public void removeTierInstance(TierInstance tierInstance) {
+        if (tierInstances.contains(tierInstance)) {
+            tierInstances.remove(tierInstance);
+        }
 
     }
 
-    public void removeTierInstance(TierInstance tierInstance) {
-        if (tierInstances.contains(tierInstance))
-            tierInstances.remove(tierInstance);
+    public void setBlueprintName(String blueprintName) {
+        this.blueprintName = blueprintName;
+    }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @param environment
+     *            the environment to set
+     */
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    /*
+     * setting the Name as function of environment and Tiers
+     */
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
     /**
@@ -164,24 +245,17 @@ public class EnvironmentInstance extends InstallableInstance {
     }
 
     /**
-     * @return the vapp
-     */
-    public String getVapp() {
-        return vapp;
-    }
-
-    /**
-     * @param envPayload
+     * @param vapp
      *            the vapp to set
      */
     public void setVapp(String vapp) {
         this.vapp = vapp;
     }
 
-    /*
-     * setting the Name as function of environment and Tiers
+    /**
+     * the dto specification.
+     * @return the dto
      */
-
     public EnvironmentInstanceDto toDto() {
         EnvironmentInstanceDto envInstanceDto = new EnvironmentInstanceDto();
         envInstanceDto.setEnvironmentInstanceName(getName());
@@ -191,10 +265,7 @@ public class EnvironmentInstance extends InstallableInstance {
         if (this.getStatus() != null) {
             envInstanceDto.setStatus(this.getStatus());
         }
-        /*
-         * if (envInstance.getEnvironment() != null) { EnvironmentDto envDto = convertToDto(envInstance
-         * .getEnvironment()); envInstanceDto.setEnvironmentDto(envDto); }
-         */
+
 
         List<TierInstanceDto> lTierInstanceDto = new ArrayList<TierInstanceDto>();
         if (getTierInstances() != null) {
@@ -204,15 +275,21 @@ public class EnvironmentInstance extends InstallableInstance {
             envInstanceDto.setTierInstances(lTierInstanceDto);
         }
 
-        if (getVdc() != null)
+        if (getVdc() != null) {
             envInstanceDto.setVdc(getVdc());
+        }
 
-        if (getPrivateAttributes() != null)
+        if (getPrivateAttributes() != null) {
             envInstanceDto.setAttributes(getPrivateAttributes());
+        }
 
         return envInstanceDto;
     }
 
+    /**
+     * The dto entity for the portal.
+     * @return
+     */
     public EnvironmentInstancePDto toPDto() {
         EnvironmentInstancePDto envInstanceDto = new EnvironmentInstancePDto();
         envInstanceDto.setEnvironmentInstanceName(getName());
@@ -241,12 +318,17 @@ public class EnvironmentInstance extends InstallableInstance {
 
         }
 
-        if (getVdc() != null)
+        if (getVdc() != null) {
             envInstanceDto.setVdc(getVdc());
+        }
 
         return envInstanceDto;
     }
 
+    /**
+     * The environment instance dto for the portal.
+     * @return
+     */
     public EnvironmentInstancePDto toPDtos() {
         EnvironmentInstancePDto envInstanceDto = new EnvironmentInstancePDto();
         envInstanceDto.setEnvironmentInstanceName(getName());
@@ -266,59 +348,10 @@ public class EnvironmentInstance extends InstallableInstance {
                 }
             }
         }
-        if (getVdc() != null)
+        if (getVdc() != null) {
             envInstanceDto.setVdc(getVdc());
+        }
 
         return envInstanceDto;
-    }
-
-    private TierPDto createTierPDto(Tier tier, List<TierInstance> lTierInstance) {
-        List<ProductReleaseDto> productReleasedto = new ArrayList();
-
-        for (ProductRelease productRelease : tier.getProductReleases()) {
-            if (!productReleasedto.contains(productRelease.toDto())) {
-                productReleasedto.add(productRelease.toDto());
-            }
-        }
-        String securitygroup = "";
-        if (tier.getSecurityGroup() != null) {
-            securitygroup = tier.getSecurityGroup().getName();
-        }
-        TierPDto tierPDto = new TierPDto(tier.getName(), tier.getMaximumNumberInstances(),
-                tier.getMinimumNumberInstances(), tier.getInitialNumberInstances(), productReleasedto,
-                tier.getFlavour(), tier.getImage(), tier.getIcono(), securitygroup, tier.getKeypair(),
-                tier.getFloatingip());
-        if (lTierInstance != null && lTierInstance.size() != 0) {
-            for (TierInstance tierInstance : lTierInstance) {
-
-                if (tierInstance.getTier().getName().equals(tier.getName())) {
-                    tierPDto.addTierInstance(createInstancePDto(tierInstance));
-                }
-            }
-        }
-        return tierPDto;
-    }
-
-    private TierPDto createTierPDto(Tier tier) {
-
-        return new TierPDto(tier.getName());
-    }
-
-    private TierInstancePDto createInstancePDto(TierInstance tierInstance) {
-        List<ProductInstanceDto> productInstanceDtos = new ArrayList();
-        if (tierInstance.getProductInstances() != null) {
-            for (ProductInstance productInstance : tierInstance.getProductInstances()) {
-                productInstanceDtos.add(productInstance.toDto());
-            }
-        }
-        TierInstancePDto tierInstancePDto = null;
-        if (tierInstance.getVM() == null) {
-            tierInstancePDto = new TierInstancePDto(tierInstance.getName(), productInstanceDtos, null,
-                    tierInstance.getStatus(), tierInstance.getTaskId());
-        } else {
-            tierInstancePDto = new TierInstancePDto(tierInstance.getName(), productInstanceDtos, tierInstance.getVM()
-                    .toDto(), tierInstance.getStatus(), tierInstance.getTaskId());
-        }
-        return tierInstancePDto;
     }
 }

@@ -10,6 +10,8 @@ package com.telefonica.euro_iaas.paasmanager.claudia.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.springframework.security.core.GrantedAuthority;
+
 import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaResourceNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.IPNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
@@ -18,7 +20,6 @@ import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
-import org.springframework.security.core.GrantedAuthority;
 
 public class OpenstackDummyImplTest {
 
@@ -30,7 +31,8 @@ public class OpenstackDummyImplTest {
         ClaudiaData data = new ClaudiaData("org", vdc, "service");
 
         Collection<? extends GrantedAuthority> dd = new ArrayList();
-        PaasManagerUser manUser = new PaasManagerUser("dd", "f9f2ae5abf9e4723a89f5f2f684c74da", dd);
+        PaasManagerUser manUser = new PaasManagerUser("dd",
+                "f9f2ae5abf9e4723a89f5f2f684c74da", dd);
         manUser.setTenantId(vdc);
         data.setUser(manUser);
 
@@ -48,7 +50,8 @@ public class OpenstackDummyImplTest {
         try {
             openstack.deployVM(data, tierInstance, 1, vm);
 
-            System.out.println("IP " + openstack.obtainIPFromFqn("org", vdc, "", "", manUser));
+            System.out.println("IP "
+                    + openstack.obtainIPFromFqn("org", vdc, "", "", manUser));
         } catch (InfrastructureException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

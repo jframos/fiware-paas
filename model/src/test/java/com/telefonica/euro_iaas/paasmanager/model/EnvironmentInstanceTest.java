@@ -10,18 +10,26 @@ package com.telefonica.euro_iaas.paasmanager.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
-import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstancePDto;
-import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import junit.framework.TestCase;
+
 import org.junit.Before;
 import org.junit.Test;
 
+import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstancePDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
+
+/**
+ * Test for environmetn instances.
+ * @author henar
+ *
+ */
 public class EnvironmentInstanceTest extends TestCase {
 
-    EnvironmentInstance envIns = null;
-    Environment envResult;
+    private EnvironmentInstance envIns = null;
+    private Environment envResult;
 
+    @Override
     @Before
     public void setUp() throws Exception {
 
@@ -49,7 +57,6 @@ public class EnvironmentInstanceTest extends TestCase {
         envResult = new Environment();
         envResult = new Environment();
         envResult.setName("environemntName");
-        envResult.setEnvironmentType(new EnvironmentType("Generic", "Generic"));
         envResult.setTiers(tiers);
 
         envIns = new EnvironmentInstance("blue", "description");
@@ -79,7 +86,7 @@ public class EnvironmentInstanceTest extends TestCase {
         assertEquals(envIns.getTierInstances().get(0).getProductInstances().size(), 1);
         assertEquals(envIns.getTierInstances().get(0).getProductInstances().get(0).getName(), "produInst");
         assertEquals(envIns.getTierInstances().get(0).getProductInstances().get(0).getProductRelease().getProduct(),
-                "product");
+        "product");
 
         EnvironmentInstanceDto envInstDto = envIns.toDto();
         envInstDto.setEnvironmentDto(envResult.toDto());
@@ -87,6 +94,10 @@ public class EnvironmentInstanceTest extends TestCase {
 
     }
 
+    /**
+     * Test for create environment dto.
+     * @throws Exception
+     */
     @Test
     public void testCreateEnvironmentToPDto() throws Exception {
 
@@ -96,11 +107,15 @@ public class EnvironmentInstanceTest extends TestCase {
         assertEquals(enviromentIsntanceDto.getTiers().get(0).getProductReleaseDtos().size(), 1);
         assertEquals(enviromentIsntanceDto.getTiers().get(0).getTierInstances().size(), 1);
         assertEquals(enviromentIsntanceDto.getTiers().get(0).getTierInstances().get(0).getTierInstanceName(),
-                "tierInstance");
+        "tierInstance");
         assertEquals(enviromentIsntanceDto.getTiers().get(0).getTierInstances().get(0).getVM().getFqn(), "fqn");
 
     }
 
+    /**
+     * Create an environment without vm.
+     * @throws Exception
+     */
     @Test
     public void testCreateEnvironmentToPDtoNoVM() throws Exception {
         envIns.getTierInstances().get(0).setVM(null);
@@ -111,7 +126,7 @@ public class EnvironmentInstanceTest extends TestCase {
         assertEquals(enviromentIsntanceDto.getTiers().get(0).getProductReleaseDtos().size(), 1);
         assertEquals(enviromentIsntanceDto.getTiers().get(0).getTierInstances().size(), 1);
         assertEquals(enviromentIsntanceDto.getTiers().get(0).getTierInstances().get(0).getTierInstanceName(),
-                "tierInstance");
+        "tierInstance");
 
     }
 

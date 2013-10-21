@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -51,11 +52,13 @@ public class ApplicationRelease {
     private List<Artifact> artifacts;
 
     /**
-	 */
+     * Default constructor.
+     */
     public ApplicationRelease() {
     }
 
     /**
+     * Constructor.
      * @param name
      * @param version
      */
@@ -86,64 +89,30 @@ public class ApplicationRelease {
         this.transitableReleases = transitableReleases;
     }
 
-    /**
-     * @return the id
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
      */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name
-     *            the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @return the version
-     */
-    public String getVersion() {
-        return version;
-    }
-
-    /**
-     * @param version
-     *            the version to set
-     */
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    /**
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param description
-     *            the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ApplicationRelease other = (ApplicationRelease) obj;
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -154,11 +123,31 @@ public class ApplicationRelease {
     }
 
     /**
-     * @param applicationType
-     *            the applicationType to set
+     * @return the artifacts
      */
-    public void setApplicationType(ApplicationType applicationType) {
-        this.applicationType = applicationType;
+    public List<Artifact> getArtifacts() {
+        return artifacts;
+    }
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
     }
 
     /**
@@ -169,26 +158,10 @@ public class ApplicationRelease {
     }
 
     /**
-     * @param transitableReleases
-     *            the transitableReleases to set
+     * @return the version
      */
-    public void setTransitableReleases(List<ApplicationRelease> transitableReleases) {
-        this.transitableReleases = transitableReleases;
-    }
-
-    /**
-     * @return the artifacts
-     */
-    public List<Artifact> getArtifacts() {
-        return artifacts;
-    }
-
-    /**
-     * @param artifacts
-     *            the artifacts to set
-     */
-    public void setArtifacts(List<Artifact> artifacts) {
-        this.artifacts = artifacts;
+    public String getVersion() {
+        return version;
     }
 
     /*
@@ -203,25 +176,60 @@ public class ApplicationRelease {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
+    /**
+     * @param applicationType
+     *            the applicationType to set
      */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ApplicationRelease other = (ApplicationRelease) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
+    public void setApplicationType(ApplicationType applicationType) {
+        this.applicationType = applicationType;
+    }
+
+    /**
+     * @param artifacts
+     *            the artifacts to set
+     */
+    public void setArtifacts(List<Artifact> artifacts) {
+        this.artifacts = artifacts;
+    }
+
+    /**
+     * @param description
+     *            the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @param id
+     *            the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @param transitableReleases
+     *            the transitableReleases to set
+     */
+    public void setTransitableReleases(List<ApplicationRelease> transitableReleases) {
+        this.transitableReleases = transitableReleases;
+    }
+
+    /**
+     * @param version
+     *            the version to set
+     */
+    public void setVersion(String version) {
+        this.version = version;
     }
 
 }
