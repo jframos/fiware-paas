@@ -7,12 +7,20 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_CPU;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_DISK;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_MEM;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.ws.rs.core.MediaType;
+
+import org.apache.log4j.Logger;
+import org.springframework.scheduling.annotation.Async;
 
 import com.telefonica.claudia.smi.URICreation;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
@@ -41,13 +49,6 @@ import com.telefonica.euro_iaas.paasmanager.util.EnvironmentUtils;
 import com.telefonica.euro_iaas.paasmanager.util.OVFUtils;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.util.VappUtils;
-import org.apache.log4j.Logger;
-import org.springframework.scheduling.annotation.Async;
-
-
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_CPU;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_DISK;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_MEM;
 
 public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureManager {
 
@@ -72,11 +73,8 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     private static final Integer tam_max = 90000;
 
     /**
-     * deloy a VM from an ovf
+     * Deploy a VM from an ovf.
      * 
-     * @param org
-     * @param vdc
-     * @param service
      * @throws InfrastructureException
      */
     private String browseService(ClaudiaData claudiaData) throws InfrastructureException {
@@ -302,39 +300,26 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     /**
      * Cretae a Service
      * 
-     * @param org
-     * @param vdc
-     * @param service
      * @throws InfrastructureException
      */
     public void deployService(ClaudiaData claudiaData, String ovf) throws InfrastructureException {
 
         // Service
-        System.out.println("deployService " + ovf);
+        log.debug("deployService " + ovf);
         String serviceResponse = null;
         try {
             serviceResponse = claudiaClient.browseService(claudiaData);
-            System.out.println("Deploy service " + serviceResponse);
+            log.debug("Deploy service " + serviceResponse);
         } catch (ClaudiaResourceNotFoundException e) {
 
             claudiaClient.deployServiceFull(claudiaData, ovf);
 
-            /*
-             * String serviceTaskUrl = claudiaResponseAnalyser .getTaskUrl(deployServiceResponse); if
-             * (claudiaResponseAnalyser.getTaskStatus(deployServiceResponse) .equals("error")) { String errorMesServ =
-             * "Error deploying Service " + claudiaData.getService(); log.error(errorMesServ); throw new
-             * InfrastructureException(errorMesServ); } if
-             * (!(claudiaResponseAnalyser.getTaskStatus(deployServiceResponse) .equals("success")))
-             * checkTaskResponse(claudiaData, serviceTaskUrl);
-             */
         }
     }
 
     /**
      * Create an VDC if it is not created.
      * 
-     * @param org
-     * @param vdc
      * @throws InfrastructureException
      */
     public void deployVDC(ClaudiaData claudiaData) throws InfrastructureException {
@@ -592,7 +577,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     /**
-     * @param ClaudiaResponseAnalyser
+     * @param claudiaResponseAnalyser
      *            the ClaudiaResponseAnalyser to set
      */
     public void setClaudiaResponseAnalyser(ClaudiaResponseAnalyser claudiaResponseAnalyser) {
@@ -608,7 +593,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     /**
-     * @param EnvironmentUtils
+     * @param environmentUtils
      *            the EnvironmentUtils to set
      */
     public void setEnvironmentUtils(EnvironmentUtils environmentUtils) {
@@ -616,8 +601,6 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     /**
-     * @param systemPropertiesProvider
-     *            the systemPropertiesProvider to set
      * @param monitoringClient
      *            the monitoringClient to set
      */
@@ -626,7 +609,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     /**
-     * @param OVFUtils
+     * @param ovfUtils
      *            the OVFUtils to set
      */
     public void setOvfUtils(OVFUtils ovfUtils) {
@@ -638,7 +621,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     /**
-     * @param TierInstanceManager
+     * @param tierInstanceManager
      *            the TierInstanceManager to set
      */
     public void setTierInstanceManager(TierInstanceManager tierInstanceManager) {
@@ -646,7 +629,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     /**
-     * @param VappUtils
+     * @param vappUtils
      *            the VappUtils to set
      */
     public void setVappUtils(VappUtils vappUtils) {

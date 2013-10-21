@@ -733,7 +733,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
                 InputStream is = response.getEntity().getContent();
                 String result = convertStreamToString(is);
-                System.out.println("Result " + result);
+                log.debug("Result " + result);
                 is.close();
 
                 if ((response.getStatusLine().getStatusCode() == http_code_ok)
@@ -802,19 +802,19 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
         } catch (SAXException e) {
             String errorMessage = "SAXException when obtaining nodeList." + " Desc: " + e.getMessage();
-            System.out.println(errorMessage);
+            log.warn(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (ParserConfigurationException e) {
             String errorMessage = "ParserConfigurationException when obtaining " + "NodelIst. Desc: " + e.getMessage();
-            System.out.println(errorMessage);
+            log.warn(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (IOException e) {
             String errorMessage = "IOException when obtaining " + "NodeList. Desc: " + e.getMessage();
-            System.out.println(errorMessage);
+            log.warn(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
             String errorMessage = "Unexpected exception : " + e.getMessage();
-            System.out.println(errorMessage);
+            log.warn(errorMessage);
             throw new OpenStackException(errorMessage);
         }
         return nodeList;

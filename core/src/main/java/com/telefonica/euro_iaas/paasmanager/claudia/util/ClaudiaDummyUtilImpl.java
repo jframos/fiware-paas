@@ -38,6 +38,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.FileUtilsException;
 import com.telefonica.euro_iaas.paasmanager.exception.URLNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -66,6 +67,7 @@ import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider
 public class ClaudiaDummyUtilImpl implements ClaudiaUtil {
 
     private SystemPropertiesProvider systemPropertiesProvider;
+    private static Logger log = Logger.getLogger(ClaudiaDummyUtilImpl.class);
 
     /**
      * Return the url of the corresponding Claudia Resource
@@ -165,7 +167,7 @@ public class ClaudiaDummyUtilImpl implements ClaudiaUtil {
             t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             t.transform(new DOMSource(node), new StreamResult(sw));
         } catch (TransformerException te) {
-            System.out.println("nodeToString Transformer Exception");
+            log.warn("nodeToString Transformer Exception");
         }
         return sw.toString();
     }
@@ -181,10 +183,6 @@ public class ClaudiaDummyUtilImpl implements ClaudiaUtil {
         return payload;
     }
 
-    /**
-     * @param propertiesProvider
-     *            the propertiesProvider to set
-     */
     public SystemPropertiesProvider getSystemPropertiesProvider() {
         return this.systemPropertiesProvider;
     }

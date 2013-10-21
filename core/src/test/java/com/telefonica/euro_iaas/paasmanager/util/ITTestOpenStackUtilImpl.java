@@ -156,7 +156,6 @@ public class ITTestOpenStackUtilImpl {
         if ((imageId == null) || (flavourValue == null) || (keypair == null)) {
             String errorMsg = " The tier does not include a not-null information: " + "Image: " + imageId + "Flavour: "
                     + flavourValue + "KeyPair: " + keypair;
-            System.out.println("errorMsg");
             throw new OpenStackException(errorMsg);
         }
 
@@ -192,34 +191,25 @@ public class ITTestOpenStackUtilImpl {
     public void testCreateGetDeleteServer() throws OpenStackException {
         try {
             // Creates a new VM
-            /*
-             * HashMap<String,String> metadata = new HashMap<String,String>(); metadata.put(tokenMetadata, authToken);
-             * metadata.put(tenantMetadata, tenant); metadata.put(userMetadata, user); openStackUtil = new
-             * OpenStackUtilImpl(); openStackUtil.setMetadata(metadata);
-             */
+
             openStackUtil.setSystemPropertiesProvider(systemPropertiesProvider);
 
             String payload = buildCreateServerPayload();
 
             // Create a VM
             String postResponse = openStackUtil.createServer(payload, user);
-            System.out.println("CREATE VM:" + postResponse);
 
             String id = postResponse.split(",")[1];
             serverId = id.substring(8, id.length() - 1);
-            System.out.println("serverId:" + serverId);
             // setServerId(id.substring(8, id.length()-1));
-            // System.out.println("serverId:" + getServerId());
 
             // Get the VM
             String getResponse = openStackUtil.getServer(serverId, user);
-            System.out.println("GET VM:" + getResponse);
 
             Thread.sleep(5000);
 
             // Delete the VM
             String deleteResponse = openStackUtil.deleteServer(serverId, user);
-            System.out.println("DELETE VM:" + deleteResponse);
 
         } catch (Exception ex) {
             Logger.getLogger(ITTestOpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -237,23 +227,13 @@ public class ITTestOpenStackUtilImpl {
     public void testCreateServerAssignFloatingIP() throws OpenStackException {
         try {
             // Creates a new VM
-            /*
-             * HashMap<String,String> metadata = new HashMap<String,String>(); metadata.put(tokenMetadata, authToken);
-             * metadata.put(tenantMetadata, tenant); metadata.put(userMetadata, user); openStackUtil = new
-             * OpenStackUtilImpl(); openStackUtil.setMetadata(metadata);
-             */
+
             openStackUtil.setSystemPropertiesProvider(systemPropertiesProvider);
 
             String payload = buildCreateServerPayload();
 
             // Create a VM
             String serverId = openStackUtil.createServer(payload, user);
-            System.out.println("serverId" + serverId);
-
-            /*
-             * String id = postResponse.split(",")[1]; serverId = id.substring(8, id.length()-1);
-             * System.out.println("serverId:" + serverId);
-             */
 
             Thread.sleep(5000);
 
@@ -265,7 +245,6 @@ public class ITTestOpenStackUtilImpl {
 
             // Delete the VM
             String deleteResponse = openStackUtil.deleteServer(serverId, user);
-            System.out.println("DELETE VM:" + deleteResponse);
 
         } catch (Exception ex) {
             Logger.getLogger(ITTestOpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);

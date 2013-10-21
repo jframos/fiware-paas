@@ -10,6 +10,8 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -39,7 +41,6 @@ import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import org.apache.log4j.Logger;
 
 public class TierInstanceManagerImpl implements TierInstanceManager {
 
@@ -297,8 +298,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         if (enviromentInstance.getTierInstances() != null) {
             for (TierInstance tierInstance : enviromentInstance.getTierInstances()) {
                 log.debug("Looking for " + tier.getName() + " tier instance " + tierInstance.getName());
-                System.out.println(" instance " + tierInstance.getTier().getName());
-                System.out.println(tier.getName());
                 if (tierInstance.getTier().getName().equals(tier.getName())) {
                     return tierInstance;
                 }

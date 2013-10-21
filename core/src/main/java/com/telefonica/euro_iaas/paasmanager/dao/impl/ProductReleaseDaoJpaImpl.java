@@ -9,16 +9,11 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
-
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -26,6 +21,9 @@ import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.model.OS;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductReleaseSearchCriteria;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, String> implements ProductReleaseDao {
 
@@ -107,19 +105,13 @@ public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, St
         } catch (NoResultException e) {
             String message = " No ProductRelease found in the database with id: " + name + " Exception: "
                     + e.getMessage();
-            System.out.println(message);
             throw new EntityNotFoundException(ProductRelease.class, "name", name);
         }
         return productRelease;
     }
 
     /**
-     * Filter the result by product release
-     * 
-     * @param applications
-     * @param product
-     *            Release
-     * @return
+     * Filter the result by product release.
      */
     private List<ProductRelease> filterByOSType(List<ProductRelease> productReleases, String osType) {
         List<ProductRelease> result = new ArrayList<ProductRelease>();

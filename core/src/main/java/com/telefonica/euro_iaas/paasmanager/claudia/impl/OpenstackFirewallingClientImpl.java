@@ -151,25 +151,11 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
             if (response.getStatus() == 200 || response.getStatus() == 201 || response.getStatus() == 204) {
 
                 log.debug("Operation ok result " + result);
-                System.out.println("Result " + result);
                 org.json.JSONObject network = new org.json.JSONObject(result);
                 String id;
 
-                // if
-                // (systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_OPENSTACK_DISTRIBUTION).equals("essex"))
-                // {
                 id = network.getJSONObject("security_group").getString("id");
-                // } else {
-                // id = "" + network.getJSONObject("security_group").getInt("id");
-                // }
-                // String id = result.substring(result.indexOf(", \"id\":")
-                // + ", \"id\":".length() + 1, result
-                // .indexOf(", \"name\": "));
                 log.debug("Operation ok id " + id);
-
-                // if (id.startsWith("\"") && id.endsWith("\"")) {
-                // id = id.substring(1, id.length()-1);
-                // }
 
                 return id;
             } else {
@@ -384,14 +370,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
                 log.info(errorMessage);
                 throw new EntityNotFoundException(SecurityGroup.class, securityGroupId, errorMessage);
             }
-            /*
-             * if (response.getStatus() == 200 || response.getStatus() == 201 || response.getStatus() == 204) {
-             * log.debug("Operation ok result " + result); System.out.println("Result " + result); String id =
-             * result.substring(result.indexOf(", \"id\":") + ", \"id\":".length() + 1, result
-             * .indexOf(", \"name\": ")); log.debug("Operation ok id " + id); return id; } else {
-             * log.error("Error to create a security group " + result); throw new InfrastructureException(
-             * "Error to create a security group " + result); }
-             */
+
             SecurityGroup secGroup = new SecurityGroup();
             secGroup.fromJson(jsonSecGroupRaw);
             return secGroup;

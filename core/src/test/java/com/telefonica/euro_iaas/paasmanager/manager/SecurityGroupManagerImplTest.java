@@ -7,6 +7,16 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.claudia.FirewallingClient;
 import com.telefonica.euro_iaas.paasmanager.dao.SecurityGroupDao;
@@ -14,29 +24,17 @@ import com.telefonica.euro_iaas.paasmanager.manager.impl.SecurityGroupManagerImp
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla
  */
-public class SecurityGroupManagerImplTest extends TestCase {
+public class SecurityGroupManagerImplTest {
 
     private SecurityGroupManagerImpl securityGroupManager;
     private FirewallingClient firewallingClient;
     private RuleManager ruleManager;
     private SecurityGroupDao securityGroupDao;
 
-    private ProductReleaseManager productReleaseManager;
-
-    @Override
     @Before
     public void setUp() throws Exception {
 
@@ -69,8 +67,6 @@ public class SecurityGroupManagerImplTest extends TestCase {
         when(securityGroupDao.create(any(SecurityGroup.class))).thenReturn(securityGroup);
 
         SecurityGroup securityGroup2 = securityGroupManager.create(claudiaData, securityGroup);
-
-        System.out.println(securityGroup2.toJSON());
 
         assertNotNull(securityGroup2);
         assertEquals(securityGroup2.getName(), "name");

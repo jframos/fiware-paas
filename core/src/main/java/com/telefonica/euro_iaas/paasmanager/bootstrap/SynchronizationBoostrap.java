@@ -40,7 +40,6 @@ public class SynchronizationBoostrap implements ServletContextListener {
 
     /** {@inheritDoc} */
     public void contextInitialized(ServletContextEvent event) {
-        System.out.println("SynchronizationBoostrap. START");
         log.info("SynchronizationBoostrap. START");
         WebApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(event.getServletContext());
 

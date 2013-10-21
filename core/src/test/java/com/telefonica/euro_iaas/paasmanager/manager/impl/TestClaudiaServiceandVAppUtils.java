@@ -37,16 +37,16 @@ import com.telefonica.euro_iaas.paasmanager.util.EnvironmentUtils;
 import com.telefonica.euro_iaas.paasmanager.util.OVFUtilsDomImpl;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.util.VappUtilsImpl;
-import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class TestClaudiaServiceandVAppUtils extends TestCase {
+public class TestClaudiaServiceandVAppUtils {
 
     ClaudiaData claudiaData = new ClaudiaData("org", "vdc", "service");
     Environment envResult = null;
@@ -55,8 +55,6 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
 
     private String getFile(String file) throws IOException {
         File f = new File(file);
-        System.out.println(f.isFile() + " " + f.getAbsolutePath());
-        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(file);
         InputStream dd = new FileInputStream(f);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(dd));
@@ -69,7 +67,6 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
         return ruleFile.toString();
     }
 
-    @Override
     @Before
     public void setUp() {
         manager = new InfrastructureManagerServiceClaudiaImpl();

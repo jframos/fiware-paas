@@ -7,12 +7,12 @@
 
 package com.telefonica.euro_iaas.paasmanager.environment;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.paasmanager.model.Attribute;
-import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +20,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
+import com.telefonica.euro_iaas.paasmanager.model.Attribute;
+import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 
 /**
  * Integration Tests for Product Release entity
@@ -49,11 +49,6 @@ public class AProductReleaseTest {
 
         List<ProductRelease> productReleases = productReleaseDao.findAll();
         assertNotNull(productReleases);
-        System.out.println("Number of product releases .." + productReleases);
-        System.out.println("Number of product releases  .." + productReleases.size());
-
-        System.out.println(productReleases.get(0).getProduct() + " " + productReleases.get(0).getVersion() + " "
-                + productReleases.get(0).getName());
 
         ProductRelease productRelease = productReleaseDao.load("mysql-2");
         assertNotNull(productRelease);
@@ -67,8 +62,6 @@ public class AProductReleaseTest {
 
         List<ProductRelease> productReleases = productReleaseDao.findAll();
         assertNotNull(productReleases);
-        System.out.println("Number of product releases .." + productReleases);
-        System.out.println("Number of enviornment .." + productReleases.size());
 
         int number = productReleases.size();
 
@@ -84,11 +77,7 @@ public class AProductReleaseTest {
 
         productReleases = productReleaseDao.findAll();
         assertNotNull(productReleases);
-        System.out.println("Number of product releases .." + productReleases);
-        System.out.println("Number of product releases  .." + productReleases.size());
         assertEquals(productReleases.size(), number + 1);
-        System.out.println(productReleases.get(0).getProduct() + " " + productReleases.get(0).getVersion() + " "
-                + productReleases.get(0).getName());
 
         ProductRelease productRelease = productReleaseDao.load("henar-0.1");
         assertNotNull(productRelease);

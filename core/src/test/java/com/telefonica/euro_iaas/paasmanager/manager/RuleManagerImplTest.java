@@ -26,13 +26,12 @@ import static org.mockito.Mockito.when;
 /**
  * @author jesus.movilla
  */
-public class RuleManagerImplTest extends TestCase {
+public class RuleManagerImplTest {
 
     private RuleManagerImpl ruleManager;
     private RuleDao ruleDao;
     private FirewallingClient firewallingClient = null;
 
-    @Override
     @Before
     public void setUp() throws Exception {
 
@@ -52,14 +51,11 @@ public class RuleManagerImplTest extends TestCase {
         ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
 
         Mockito.doThrow(new EntityNotFoundException(Rule.class, "test", rule)).when(ruleDao).load(any(String.class));
-        /*
-         * Mockito.doNothing().doThrow(new RuntimeException()).when(
-         * firewallingClient).deployRule(any(ClaudiaData.class), any(Rule.class));
-         */
+
         when(firewallingClient.deployRule(any(ClaudiaData.class), any(Rule.class))).thenReturn("Id");
         when(ruleDao.create(any(Rule.class))).thenReturn(rule);
         Rule rule2 = ruleManager.create(claudiaData, rule);
-        System.out.println(rule2.toJSON());
+
 
     }
 
