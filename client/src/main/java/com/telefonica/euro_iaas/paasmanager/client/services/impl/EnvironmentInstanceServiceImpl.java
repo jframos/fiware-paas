@@ -9,8 +9,6 @@ package com.telefonica.euro_iaas.paasmanager.client.services.impl;
 
 import java.text.MessageFormat;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
@@ -19,6 +17,7 @@ import com.telefonica.euro_iaas.paasmanager.client.services.EnvironmentInstanceS
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
+import org.apache.commons.lang.StringUtils;
 
 public class EnvironmentInstanceServiceImpl extends AbstractBaseService implements EnvironmentInstanceService {
 

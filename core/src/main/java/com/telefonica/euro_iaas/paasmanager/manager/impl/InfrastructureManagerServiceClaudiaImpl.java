@@ -69,8 +69,8 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     /** The log. */
     private static Logger log = Logger.getLogger(InfrastructureManagerServiceClaudiaImpl.class);
 
-    /** Max lenght of an OVF */
-    private static final Integer tam_max = 90000;
+    /** Max lenght of an OVF. */
+    private static final Integer MAX_SIZE = 90000;
 
     /**
      * Deploy a VM from an ovf.
@@ -268,8 +268,9 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
         // List<VM> vms = new ArrayList<VM>();
         List<TierInstance> tierInstances = envInstance.getTierInstances();
 
-        if (tierInstances == null)
+        if (tierInstances == null) {
             return;
+        }
         for (int i = 0; i < tierInstances.size(); i++) {
             TierInstance tierInstance = tierInstances.get(i);
             // vms.add(tierInstance.getVM());
@@ -298,7 +299,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     /**
-     * Cretae a Service
+     * Cretae a Service.
      * 
      * @throws InfrastructureException
      */
@@ -340,8 +341,9 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
                 log.error(errorMes);
                 throw new InfrastructureException(errorMes);
             }
-            if (!(claudiaResponseAnalyser.getTaskStatus(deployVDCResponse).equals("success")))
+            if (!(claudiaResponseAnalyser.getTaskStatus(deployVDCResponse).equals("success"))) {
                 checkTaskResponse(claudiaData, vdcTaskUrl);
+            }
         }
     }
 
@@ -552,7 +554,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
             throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
 
         TierInstance tierInstanceDB = null;
-        if (tierInstance.getOvf() != null && tierInstance.getOvf().length() > tam_max) {
+        if (tierInstance.getOvf() != null && tierInstance.getOvf().length() > MAX_SIZE) {
             String vmOVF = tierInstance.getOvf();
             while (vmOVF.contains("ovfenvelope:ProductSection"))
                 vmOVF = environmentUtils.deleteProductSection(vmOVF);

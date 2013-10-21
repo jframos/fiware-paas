@@ -20,9 +20,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
-import org.junit.Before;
 import org.junit.Test;
 
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
@@ -55,7 +52,6 @@ public class ProductInstallatorRECManagerImplTest {
         }
         return ruleFile.toString();
     }
-
 
     @Test
     public void testInstall() {
