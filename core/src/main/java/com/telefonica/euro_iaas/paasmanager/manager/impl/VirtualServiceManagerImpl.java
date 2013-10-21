@@ -7,8 +7,13 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.REC_SERVER_MEDIATYPE;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.REC_SERVER_URL;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
@@ -19,11 +24,6 @@ import com.telefonica.euro_iaas.paasmanager.installator.rec.util.VappUtils;
 import com.telefonica.euro_iaas.paasmanager.manager.VirtualServiceManager;
 import com.telefonica.euro_iaas.paasmanager.util.OVFUtils;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import org.apache.log4j.Logger;
-
-
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.REC_SERVER_MEDIATYPE;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.REC_SERVER_URL;
 
 /**
  * @author jesus.movilla

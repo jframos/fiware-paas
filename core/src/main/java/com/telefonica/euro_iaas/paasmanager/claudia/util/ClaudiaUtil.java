@@ -9,17 +9,19 @@ package com.telefonica.euro_iaas.paasmanager.claudia.util;
 
 import java.io.IOException;
 import java.util.List;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaResourceNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaRetrieveInfoException;
 import com.telefonica.euro_iaas.paasmanager.exception.URLNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 /**
  * @author jesus.movilla

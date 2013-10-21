@@ -7,6 +7,10 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.util;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,24 +20,22 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
-import com.telefonica.euro_iaas.paasmanager.util.OVFUtils;
 import junit.framework.TestCase;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
+import com.telefonica.euro_iaas.paasmanager.model.Tier;
+import com.telefonica.euro_iaas.paasmanager.util.OVFUtils;
 
 /**
  * @author jesus.movilla

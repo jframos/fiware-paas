@@ -9,7 +9,6 @@ package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,7 +27,6 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.NetworkDto;
  * A network.
  * 
  * @author Henar Munoz
- * 
  */
 
 @SuppressWarnings("serial")
@@ -36,7 +34,6 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.NetworkDto;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Table(name = "Network")
-
 public class Network {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -73,6 +70,7 @@ public class Network {
 
     /**
      * It gets the id for the subnet to specify the cidr.
+     * 
      * @param subNet
      * @return
      */
@@ -101,6 +99,7 @@ public class Network {
 
     /**
      * It gets the id for the subnet to specify the cidr.
+     * 
      * @return
      */
     public int getSubNetCounts() {
@@ -109,6 +108,7 @@ public class Network {
 
     /**
      * It gets the subnets.
+     * 
      * @return List<SubNetwork>
      */
     public List<SubNetwork> getSubNets() {
@@ -124,6 +124,7 @@ public class Network {
 
     /**
      * the dto entity.
+     * 
      * @return
      */
     public NetworkDto toDto() {
@@ -134,19 +135,13 @@ public class Network {
 
     /**
      * It returns the string representations for rest rerquest.
+     * 
      * @return the json representation
      */
     public String toJson() {
-        return "{"
-        + " \"network\":{"
-        + "    \"name\": \"" + this.name + "\","
-        + "    \"admin_state_up\": false,"
-        + "    \"shared\": false"
-        + "  }"
-        + "}";
+        return "{" + " \"network\":{" + "    \"name\": \"" + this.name + "\"," + "    \"admin_state_up\": false,"
+                + "    \"shared\": false" + "  }" + "}";
 
     }
-
-
 
 }

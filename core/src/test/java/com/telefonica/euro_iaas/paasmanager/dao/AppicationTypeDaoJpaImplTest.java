@@ -7,39 +7,18 @@
 
 package com.telefonica.euro_iaas.paasmanager.dao;
 
-
 public class AppicationTypeDaoJpaImplTest extends AbstractJpaDaoTest {
     // implements ApplicationTypeDao {
 
     /*
-     * private ApplicationTypeDao applicationTypeDao;
-     * 
-     * public ApplicationType create(ApplicationType applicationType) throws
-     * InvalidEntityException, AlreadyExistsEntityException {
-     * 
-     * applicationType = applicationTypeDao.create(applicationType);
-     * assertNotNull(applicationType.getId()); return applicationType;
-     * 
-     * }
-     * 
-     * public List<ApplicationType> findAll() { return
-     * applicationTypeDao.findAll(); }
-     * 
-     * public ApplicationType load(String arg0) throws EntityNotFoundException {
-     * ApplicationType applicationType = applicationTypeDao.load(arg0);
-     * 
-     * return applicationType;
-     * 
-     * }
-     * 
-     * public void remove(ApplicationType applicationType) {
-     * applicationTypeDao.remove(applicationType);
-     * 
-     * }
-     * 
-     * public ApplicationType update(ApplicationType applicationType) throws
-     * InvalidEntityException { return
-     * applicationTypeDao.update(applicationType); }
+     * private ApplicationTypeDao applicationTypeDao; public ApplicationType create(ApplicationType applicationType)
+     * throws InvalidEntityException, AlreadyExistsEntityException { applicationType =
+     * applicationTypeDao.create(applicationType); assertNotNull(applicationType.getId()); return applicationType; }
+     * public List<ApplicationType> findAll() { return applicationTypeDao.findAll(); } public ApplicationType
+     * load(String arg0) throws EntityNotFoundException { ApplicationType applicationType =
+     * applicationTypeDao.load(arg0); return applicationType; } public void remove(ApplicationType applicationType) {
+     * applicationTypeDao.remove(applicationType); } public ApplicationType update(ApplicationType applicationType)
+     * throws InvalidEntityException { return applicationTypeDao.update(applicationType); }
      */
 
     /**
@@ -47,8 +26,8 @@ public class AppicationTypeDaoJpaImplTest extends AbstractJpaDaoTest {
      *            the applicationTypeDao to set
      */
     /*
-     * public void setApplicationTypeDao(ApplicationTypeDao applicationTypeDao)
-     * { this.applicationTypeDao = applicationTypeDao; }
+     * public void setApplicationTypeDao(ApplicationTypeDao applicationTypeDao) { this.applicationTypeDao =
+     * applicationTypeDao; }
      */
 
 }

@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.rest.auth;
 
 import java.io.IOException;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -15,8 +16,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
-import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +27,9 @@ import org.springframework.security.web.authentication.NullRememberMeServices;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.GenericFilterBean;
+
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * The Class OpenStackAuthenticationFilter.

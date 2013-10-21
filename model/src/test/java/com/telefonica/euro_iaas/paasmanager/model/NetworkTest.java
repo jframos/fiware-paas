@@ -7,35 +7,27 @@
 
 package com.telefonica.euro_iaas.paasmanager.model;
 
+import com.telefonica.euro_iaas.paasmanager.model.dto.NetworkDto;
 import junit.framework.TestCase;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import com.telefonica.euro_iaas.paasmanager.model.dto.NetworkDto;
-
 /**
  * Network Test.
+ * 
  * @author henar
- *
  */
 
 public class NetworkTest extends TestCase {
 
-    public static String NETWORK_NAME ="name";
-    public static String SUBNETWORK_NAME ="subname";
-    public static String ROUTER_NAME ="router";
-    public static String CIDR ="10.100.1.0/24";
-    public static String ID ="id";
+    public static String NETWORK_NAME = "name";
+    public static String SUBNETWORK_NAME = "subname";
+    public static String ROUTER_NAME = "router";
+    public static String CIDR = "10.100.1.0/24";
+    public static String ID = "id";
 
-    public static String NETWORK_STRING = "{"
-        + " \"network\":{"
-        + "    \"name\": \"" + NETWORK_NAME + "\","
-        + "    \"admin_state_up\": false,"
-        + "    \"shared\": false"
-        + "  }"
-        + "}";
-
+    public static String NETWORK_STRING = "{" + " \"network\":{" + "    \"name\": \"" + NETWORK_NAME + "\","
+            + "    \"admin_state_up\": false," + "    \"shared\": false" + "  }" + "}";
 
     @Override
     @Before
@@ -44,6 +36,7 @@ public class NetworkTest extends TestCase {
 
     /**
      * Create network test.
+     * 
      * @throws Exception
      */
 
@@ -59,6 +52,7 @@ public class NetworkTest extends TestCase {
 
     /**
      * Create network and subnet test.
+     * 
      * @throws Exception
      */
     @Test
@@ -79,7 +73,7 @@ public class NetworkTest extends TestCase {
         Network network = new Network(NETWORK_NAME);
         SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, "" + network.getSubNetCounts());
         network.addSubNet(subnet);
-        Router router = new Router (ROUTER_NAME);
+        Router router = new Router(ROUTER_NAME);
         router.setIdNetwork(network.getIdNetwork());
         router.setIdRouter(ID);
         assertEquals(network.getNetworkName(), NETWORK_NAME);
@@ -91,7 +85,7 @@ public class NetworkTest extends TestCase {
     @Test
     public void testFromDto() throws Exception {
 
-        NetworkDto networkDto = new NetworkDto (NETWORK_NAME, SUBNETWORK_NAME);
+        NetworkDto networkDto = new NetworkDto(NETWORK_NAME, SUBNETWORK_NAME);
         Network net = networkDto.fromDto();
 
         assertEquals(net.getNetworkName(), NETWORK_NAME);

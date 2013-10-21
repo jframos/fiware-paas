@@ -7,11 +7,6 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
-import junit.framework.TestCase;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
 import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.InfrastructureManagerClaudiaImpl;
@@ -19,6 +14,9 @@ import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author jesus.movilla
@@ -50,86 +48,38 @@ public class InfrastructureManagerImplTest extends TestCase {
     public void setUp() throws Exception {
 
         /*
-         * vdc = "paasmanagerVDC"; org = "ORG"; number_vms = 2; claudiaData =
-         * new ClaudiaData(org, vdc);
-         * 
-         * //Taking ovf from a file InputStream is =
-         * ClassLoader.getSystemClassLoader().getResourceAsStream(ovfname);
-         * BufferedReader reader = new BufferedReader(new
-         * InputStreamReader(is)); StringBuffer ruleFile = new StringBuffer();
-         * String actualString;
-         * 
-         * while ((actualString = reader.readLine()) != null) {
-         * ruleFile.append(actualString).append("\n"); }
-         * 
-         * // user = new PaasManagerUser("user", "paasword", null);
-         * //claudiaData.setUser(user);
-         * 
-         * // ovf = ruleFile.toString(); // System.out.println("ovf: " + ovf);
-         * 
-         * // vdcResponseTask = new Task();
-         * vdcResponseTask.setState(TaskStates.SUCCESS);
-         * vdcResponseTask.setResource
-         * ("http://10.95.171.89:8080/rest-api-management/", "resourceType");
-         * serviceResponseTask = new Task();
-         * serviceResponseTask.setState(TaskStates.SUCCESS);
-         * serviceResponseTask.
-         * setResource("http://10.95.171.89:8080/rest-api-management/",
-         * "resourceType");
-         * 
-         * vmResponseTask = new Task();
-         * vmResponseTask.setState(TaskStates.SUCCESS);
-         * vmResponseTask.setResource
-         * ("http://10.95.171.89:8080/rest-api-management/", "resourceType");
-         * 
-         * propertiesProvider = mock(SystemPropertiesProvider.class);
-         * when(propertiesProvider
-         * .getProperty(NEOCLAUDIA_SERVICE)).thenReturn("paasmanagerService");
-         * when
-         * (propertiesProvider.getProperty(NEOCLAUDIA_VDC_CPU)).thenReturn("12"
-         * );
-         * when(propertiesProvider.getProperty(NEOCLAUDIA_VDC_MEM)).thenReturn
-         * ("14");
-         * when(propertiesProvider.getProperty(NEOCLAUDIA_VDC_DISK)).thenReturn
-         * ("16");
-         * when(propertiesProvider.getProperty(NEOCLAUDIA_ORG)).thenReturn
-         * ("EUROPIAAS-VC1");
-         * when(propertiesProvider.getProperty(NEOCLAUDIA_OVFSERVICE_LOCATION
-         * )).thenReturn("empty.ovf");
-         * when(propertiesProvider.getProperty(VM_NAME_PREFIX
-         * )).thenReturn("paasManagerVM");
-         * 
-         * 
-         * claudiaClient = mock(ClaudiaClient.class);
-         * //when(claudiaClient.browseVDC(any(String.class), any(String.class),
-         * user)) //.thenReturn(vdcResponse);
-         * when(claudiaClient.browseVDC(any(ClaudiaData
-         * .class))).thenReturn(vdcResponse);
-         * when(claudiaClient.deployVDC(any(ClaudiaData.class),
-         * any(String.class), any(String.class),
-         * any(String.class))).thenReturn("OK");
-         * when(claudiaClient.browseService
-         * (any(ClaudiaData.class))).thenReturn(vdcResponse);
-         * when(claudiaClient.deployService(any(ClaudiaData.class),
-         * any(String.class))) .thenReturn("OK");
-         * when(claudiaClient.deployVM(any(String.class), any(String.class),
-         * any(String.class), any(String.class), user, any(String.class)))
-         * .thenReturn("OK");
-         * 
-         * when(claudiaClient.deployVM(any(ClaudiaData.class),any(Tier.class)))
-         * .thenReturn(claudiaData);
-         * 
-         * when(claudiaClient.obtainIPFromFqn(any(String.class),
-         * any(String.class), any(String.class),any(String.class), user))
-         * .thenReturn("10.95.171.34");
-         * 
-         * claudiaUtil = mock (ClaudiaUtil.class);
-         * 
-         * claudiaResponseAnalyser = mock(ClaudiaResponseAnalyser.class);
-         * when(claudiaResponseAnalyser.getTaskUrl(any(String.class)))
-         * .thenReturn("OK");
-         * when(claudiaResponseAnalyser.getTaskStatus(any(String.class)))
-         * .thenReturn("success");
+         * vdc = "paasmanagerVDC"; org = "ORG"; number_vms = 2; claudiaData = new ClaudiaData(org, vdc); //Taking ovf
+         * from a file InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(ovfname); BufferedReader
+         * reader = new BufferedReader(new InputStreamReader(is)); StringBuffer ruleFile = new StringBuffer(); String
+         * actualString; while ((actualString = reader.readLine()) != null) {
+         * ruleFile.append(actualString).append("\n"); } // user = new PaasManagerUser("user", "paasword", null);
+         * //claudiaData.setUser(user); // ovf = ruleFile.toString(); // System.out.println("ovf: " + ovf); //
+         * vdcResponseTask = new Task(); vdcResponseTask.setState(TaskStates.SUCCESS); vdcResponseTask.setResource
+         * ("http://10.95.171.89:8080/rest-api-management/", "resourceType"); serviceResponseTask = new Task();
+         * serviceResponseTask.setState(TaskStates.SUCCESS); serviceResponseTask.
+         * setResource("http://10.95.171.89:8080/rest-api-management/", "resourceType"); vmResponseTask = new Task();
+         * vmResponseTask.setState(TaskStates.SUCCESS); vmResponseTask.setResource
+         * ("http://10.95.171.89:8080/rest-api-management/", "resourceType"); propertiesProvider =
+         * mock(SystemPropertiesProvider.class); when(propertiesProvider
+         * .getProperty(NEOCLAUDIA_SERVICE)).thenReturn("paasmanagerService"); when
+         * (propertiesProvider.getProperty(NEOCLAUDIA_VDC_CPU)).thenReturn("12" );
+         * when(propertiesProvider.getProperty(NEOCLAUDIA_VDC_MEM)).thenReturn ("14");
+         * when(propertiesProvider.getProperty(NEOCLAUDIA_VDC_DISK)).thenReturn ("16");
+         * when(propertiesProvider.getProperty(NEOCLAUDIA_ORG)).thenReturn ("EUROPIAAS-VC1");
+         * when(propertiesProvider.getProperty(NEOCLAUDIA_OVFSERVICE_LOCATION )).thenReturn("empty.ovf");
+         * when(propertiesProvider.getProperty(VM_NAME_PREFIX )).thenReturn("paasManagerVM"); claudiaClient =
+         * mock(ClaudiaClient.class); //when(claudiaClient.browseVDC(any(String.class), any(String.class), user))
+         * //.thenReturn(vdcResponse); when(claudiaClient.browseVDC(any(ClaudiaData .class))).thenReturn(vdcResponse);
+         * when(claudiaClient.deployVDC(any(ClaudiaData.class), any(String.class), any(String.class),
+         * any(String.class))).thenReturn("OK"); when(claudiaClient.browseService
+         * (any(ClaudiaData.class))).thenReturn(vdcResponse); when(claudiaClient.deployService(any(ClaudiaData.class),
+         * any(String.class))) .thenReturn("OK"); when(claudiaClient.deployVM(any(String.class), any(String.class),
+         * any(String.class), any(String.class), user, any(String.class))) .thenReturn("OK");
+         * when(claudiaClient.deployVM(any(ClaudiaData.class),any(Tier.class))) .thenReturn(claudiaData);
+         * when(claudiaClient.obtainIPFromFqn(any(String.class), any(String.class), any(String.class),any(String.class),
+         * user)) .thenReturn("10.95.171.34"); claudiaUtil = mock (ClaudiaUtil.class); claudiaResponseAnalyser =
+         * mock(ClaudiaResponseAnalyser.class); when(claudiaResponseAnalyser.getTaskUrl(any(String.class)))
+         * .thenReturn("OK"); when(claudiaResponseAnalyser.getTaskStatus(any(String.class))) .thenReturn("success");
          */
 
         manager = new InfrastructureManagerClaudiaImpl();

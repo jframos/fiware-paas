@@ -7,9 +7,16 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.async.impl;
 
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.APPLICATION_RELEASE_BASE_URL;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.APPLICATION_TYPE_BASE_URL;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.ENVIRONMENT_INSTANCE_BASE_URL;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PRODUCT_RELEASE_BASE_URL;
+
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.logging.Logger;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -32,13 +39,6 @@ import com.telefonica.euro_iaas.paasmanager.model.TaskError;
 import com.telefonica.euro_iaas.paasmanager.model.TaskReference;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.util.TaskNotificator;
-import org.apache.commons.lang.StringUtils;
-
-
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.APPLICATION_RELEASE_BASE_URL;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.APPLICATION_TYPE_BASE_URL;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.ENVIRONMENT_INSTANCE_BASE_URL;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PRODUCT_RELEASE_BASE_URL;
 
 /**
  * Application Instance Manager operations: install

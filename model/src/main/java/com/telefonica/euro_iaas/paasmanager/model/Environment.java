@@ -9,7 +9,6 @@ package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -25,8 +24,8 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 
 /**
  * Environment entity.
+ * 
  * @author henar
- *
  */
 @Entity
 public class Environment {
@@ -54,16 +53,11 @@ public class Environment {
     @Column(length = 90000)
     private String ovf;
 
-
     // @JoinTable(name = "environment_has_tiers")
     @ManyToMany(fetch = FetchType.LAZY)
     // @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "environment_has_tiers", joinColumns = { @JoinColumn(name = "environment_ID",
-            nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "tier_ID",
-                    nullable = false, updatable = false) })
-                    private List<Tier> tiers;
-
-
+    @JoinTable(name = "environment_has_tiers", joinColumns = { @JoinColumn(name = "environment_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) })
+    private List<Tier> tiers;
 
     /**
      * Default constructor.
@@ -73,6 +67,7 @@ public class Environment {
 
     /**
      * Constructor.
+     * 
      * @param name
      * @param tiers
      */
@@ -83,6 +78,7 @@ public class Environment {
 
     /**
      * Constructor.
+     * 
      * @param name
      * @param tiers
      * @param description
@@ -96,6 +92,7 @@ public class Environment {
 
     /**
      * Constructor.
+     * 
      * @param name
      * @param tiers
      * @param description
@@ -114,7 +111,7 @@ public class Environment {
      * <p>
      * Constructor for Service.
      * </p>
-
+     * 
      * @param name
      *            a {@link java.lang.String} object.
      * @param description
@@ -131,6 +128,7 @@ public class Environment {
 
     /**
      * Add a tier to the environment.
+     * 
      * @param tier
      */
     public void addTier(Tier tier) {
@@ -142,6 +140,7 @@ public class Environment {
 
     /**
      * Delete a tier in the environment.
+     * 
      * @param tier
      */
     public void deleteTier(Tier tier) {
@@ -238,6 +237,7 @@ public class Environment {
 
     /**
      * It returns the dto specification.
+     * 
      * @return EnvironmentDto.class
      */
     public EnvironmentDto toDto() {

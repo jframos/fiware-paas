@@ -8,7 +8,6 @@
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -20,8 +19,8 @@ import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 
 /**
  * The dto entity for the environment instance.
+ * 
  * @author henar
- *
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -61,6 +60,7 @@ public class EnvironmentInstanceDto {
 
     /**
      * the dto specification.
+     * 
      * @return
      */
     public EnvironmentInstance fromDto() {

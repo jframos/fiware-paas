@@ -7,11 +7,19 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.util;
 
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
@@ -23,14 +31,6 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductType;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
-import org.apache.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
-
-
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla

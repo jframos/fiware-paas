@@ -7,10 +7,6 @@
 
 package com.telefonica.euro_iaas.paasmanager.util;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,21 +16,23 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
+import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla
- * 
  */
 public class VappUtilsDomImplTest extends TestCase {
 
@@ -53,8 +51,7 @@ public class VappUtilsDomImplTest extends TestCase {
     private String getFile(String file) throws IOException {
         File f = new File(file);
         System.out.println(f.isFile() + " " + f.getAbsolutePath());
-        InputStream is = ClassLoader.getSystemClassLoader()
-        .getResourceAsStream(file);
+        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(file);
         InputStream dd = new FileInputStream(f);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(dd));
@@ -75,8 +72,7 @@ public class VappUtilsDomImplTest extends TestCase {
         vappReplica = getFile(veename);
         vappService2VMs = getFile(vappname2vms);
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
-        when(systemPropertiesProvider.getProperty(any(String.class)))
-        .thenReturn("");
+        when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("");
         vappUtilsImpl = new VappUtilsImpl();
         vappUtilsImpl.setSystemPropertiesProvider(systemPropertiesProvider);
 
@@ -85,8 +81,7 @@ public class VappUtilsDomImplTest extends TestCase {
     @Test
     public void testGetFqnId() throws Exception {
         String fqn = vappUtilsImpl.getFqnId(vappReplica);
-        assertEquals(fqn,
-        "4caast.customers.test9.services.jonastest5.vees.jonas5.replicas.1");
+        assertEquals(fqn, "4caast.customers.test9.services.jonastest5.vees.jonas5.replicas.1");
 
     }
 
@@ -98,34 +93,25 @@ public class VappUtilsDomImplTest extends TestCase {
 
     }
 
-
-
     @Test
     public void testMacrofuntionality() throws Exception {
 
-        Tier tier = new Tier("tomcat", new Integer(1), new Integer(1),
-                new Integer(1), null, "flavour", "image", "icono", "keypair",
-                "floatingip", "payload");
-
+        Tier tier = new Tier("tomcat", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image",
+                "icono", "keypair", "floatingip", "payload");
 
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
-
 
         List<Tier> lTier = new ArrayList();
         lTier.add(tier);
 
         Environment env = new Environment("name", lTier, "description");
-        EnvironmentInstance envInst = new EnvironmentInstance("blue", "des",
-                env);
-
-
+        EnvironmentInstance envInst = new EnvironmentInstance("blue", "des", env);
 
         String ovf1 = null;
 
         try {
             ovf1 = getFile("src/test/resources/ovfForTier1.xml");
-
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -137,36 +123,31 @@ public class VappUtilsDomImplTest extends TestCase {
         VM vm2 = new VM();
         vm.addNetwork("public", "IP2");
 
-
         tierInstance.setVM(vm);
         tierInstance.setOvf(ovf1);
         tierInstance.setVapp("vapp");
 
-
-        List<TierInstance> tierInstances = new ArrayList ();
+        List<TierInstance> tierInstances = new ArrayList();
         tierInstances.add(tierInstance);
 
         envInst.setTierInstances(tierInstances);
 
-
-        String test = vappUtilsImpl.getMacroVapp(ovf1, envInst,tierInstance);
-        System.out.println (test);
+        String test = vappUtilsImpl.getMacroVapp(ovf1, envInst, tierInstance);
+        System.out.println(test);
 
     }
 
     @Test
     public void testSplitService2VMsVApp() throws Exception {
 
-        List<String> vapps = vappUtilsImpl.getVappsSingleVM(claudiaData,
-                vappService2VMs);
+        List<String> vapps = vappUtilsImpl.getVappsSingleVM(claudiaData, vappService2VMs);
         assertEquals(vapps.size(), 2);
     }
 
     @Test
     public void testSplitVApp() throws Exception {
 
-        List<String> vapps = vappUtilsImpl.getVappsSingleVM(claudiaData,
-                vappService);
+        List<String> vapps = vappUtilsImpl.getVappsSingleVM(claudiaData, vappService);
         assertEquals(vapps.size(), 1);
 
     }

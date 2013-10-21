@@ -7,16 +7,16 @@
 
 package com.telefonica.euro_iaas.paasmanager.installator.sdc.util;
 
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.SDC_SERVER_MEDIATYPE;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.SDC_SERVER_URL;
+
+import org.apache.log4j.Logger;
+
 import com.sun.jersey.api.client.Client;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.client.SDCClient;
 import com.telefonica.euro_iaas.sdc.model.Task;
-import org.apache.log4j.Logger;
-
-
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.SDC_SERVER_MEDIATYPE;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.SDC_SERVER_URL;
 
 /**
  * @author jesus.movilla

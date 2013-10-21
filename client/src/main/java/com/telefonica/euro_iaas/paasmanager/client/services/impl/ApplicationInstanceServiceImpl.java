@@ -9,8 +9,6 @@ package com.telefonica.euro_iaas.paasmanager.client.services.impl;
 
 import java.text.MessageFormat;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
@@ -18,6 +16,7 @@ import com.telefonica.euro_iaas.paasmanager.client.ClientConstants;
 import com.telefonica.euro_iaas.paasmanager.client.services.ApplicationInstanceService;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationInstanceDto;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author jesus.movilla

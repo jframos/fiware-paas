@@ -7,9 +7,6 @@
 
 package com.telefonica.euro_iaas.paasmanager.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,23 +16,25 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class OVFUtilsDomImplTest {
 
     String ovfMultipleVMS;
     String ovfOnlyVs;
-    //String ovfTomcatVsNoInitial;
+    // String ovfTomcatVsNoInitial;
     String ovfRECVMName;
 
     private String getFile(String file) throws IOException {
         File f = new File(file);
         System.out.println(f.isFile() + " " + f.getAbsolutePath());
-        InputStream is = ClassLoader.getSystemClassLoader()
-        .getResourceAsStream(file);
+        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(file);
         InputStream dd = new FileInputStream(f);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(dd));
@@ -53,7 +52,7 @@ public class OVFUtilsDomImplTest {
 
         ovfMultipleVMS = getFile("src/test/resources/OVFFiwareMultipleVM.xml");
         ovfOnlyVs = getFile("src/test/resources/TomcatOnlyVS.xml");
-        //ovfTomcatVsNoInitial = getFile("src/test/resources/tomcatVsNoInitial.xml");
+        // ovfTomcatVsNoInitial = getFile("src/test/resources/tomcatVsNoInitial.xml");
         ovfRECVMName = getFile("src/test/resources/OVFFiwareRecVMName.xml");
     }
 
@@ -78,7 +77,7 @@ public class OVFUtilsDomImplTest {
     }
 
     @Test
-    public void testGetRECVMNameFromProductSection(){
+    public void testGetRECVMNameFromProductSection() {
         OVFUtilsDomImpl manager = new OVFUtilsDomImpl();
         String vmName = null;
         try {
@@ -90,7 +89,7 @@ public class OVFUtilsDomImplTest {
     }
 
     @Test
-    public void testGetServiceName(){
+    public void testGetServiceName() {
         OVFUtilsDomImpl manager = new OVFUtilsDomImpl();
         String serviceName = null;
         try {

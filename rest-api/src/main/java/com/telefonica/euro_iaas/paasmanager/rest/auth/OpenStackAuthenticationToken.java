@@ -14,8 +14,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.telefonica.euro_iaas.paasmanager.rest.exception.AuthenticationConnectionException;
-import com.telefonica.euro_iaas.paasmanager.rest.util.CompareDates;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -24,6 +22,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+
+import com.telefonica.euro_iaas.paasmanager.rest.exception.AuthenticationConnectionException;
+import com.telefonica.euro_iaas.paasmanager.rest.util.CompareDates;
 
 /**
  * @author fernandolopezaguilar

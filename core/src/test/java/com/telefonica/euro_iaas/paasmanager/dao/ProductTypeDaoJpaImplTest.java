@@ -21,8 +21,7 @@ public class ProductTypeDaoJpaImplTest extends AbstractJpaDaoTest {
 
     private ProductTypeDao productTypeDao;
 
-    public ProductType create(ProductType productType)
-    throws InvalidEntityException, AlreadyExistsEntityException {
+    public ProductType create(ProductType productType) throws InvalidEntityException, AlreadyExistsEntityException {
         System.out.println("Inserting ProductTypeObject in DB");
         productType = productTypeDao.create(productType);
         assertNotNull(productType.getId());
@@ -34,8 +33,7 @@ public class ProductTypeDaoJpaImplTest extends AbstractJpaDaoTest {
     }
 
     public ProductType load(Long arg0) throws EntityNotFoundException {
-        ProductType productType = productTypeDao.load(productTypeDao.findAll()
-                .get(0).getName());
+        ProductType productType = productTypeDao.load(productTypeDao.findAll().get(0).getName());
         assertNotNull(productType.getId());
         return productType;
     }

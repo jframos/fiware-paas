@@ -7,9 +7,15 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.async.impl;
 
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.ENVIRONMENT_BASE_URL;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.ENVIRONMENT_INSTANCE_BASE_URL;
+
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.logging.Logger;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.scheduling.annotation.Async;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -31,12 +37,6 @@ import com.telefonica.euro_iaas.paasmanager.model.TaskError;
 import com.telefonica.euro_iaas.paasmanager.model.TaskReference;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.util.TaskNotificator;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.scheduling.annotation.Async;
-
-
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.ENVIRONMENT_BASE_URL;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.ENVIRONMENT_INSTANCE_BASE_URL;
 
 public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceAsyncManager {
 

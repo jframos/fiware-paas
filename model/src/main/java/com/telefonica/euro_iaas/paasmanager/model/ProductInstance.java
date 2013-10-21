@@ -14,8 +14,8 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.ProductInstanceDto;
 
 /**
  * The Product Instance entity.
+ * 
  * @author henar
- *
  */
 @Entity
 public class ProductInstance extends InstallableInstance implements Comparable<ProductInstance> {
@@ -33,6 +33,7 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
 
     /**
      * Constructor.
+     * 
      * @param productRelease
      * @param status
      * @param vdc
@@ -72,6 +73,7 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
 
     /**
      * It returns the dto.
+     * 
      * @return ProductInstanceDto.class
      */
     public ProductInstanceDto toDto() {

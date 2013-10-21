@@ -9,10 +9,6 @@ package com.telefonica.euro_iaas.paasmanager.claudia.impl;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
@@ -22,36 +18,44 @@ import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.Router;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackUtil;
+import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * @author henar.munoz
- *
  */
 public class OpenstackNetworkClientImpl implements NetworkClient {
 
     private OpenStackUtil openStackUtil = null;
     private static Logger log = Logger.getLogger(OpenstackNetworkClientImpl.class);
+
     /**
      * It adds the network to the router.
+     * 
      * @params claudiaData
      * @params router
      * @params network
      * @return network information
      * @throws InfrastructureException
      */
-    public void addNetworkToRouter(ClaudiaData claudiaData, Router router, Network network) throws InfrastructureException {
+    public void addNetworkToRouter(ClaudiaData claudiaData, Router router, Network network)
+            throws InfrastructureException {
         try {
-            openStackUtil.addRouterInterface(router.getIdRouter(),network.getSubNets().get(0).getIdSubNet(), claudiaData.getUser());
+            openStackUtil.addRouterInterface(router.getIdRouter(), network.getSubNets().get(0).getIdSubNet(),
+                    claudiaData.getUser());
         } catch (OpenStackException e) {
-            String msm = "Error to add the network " + network.getNetworkName() + "to the router " + router.getName() + ":" + e.getMessage();
+            String msm = "Error to add the network " + network.getNetworkName() + "to the router " + router.getName()
+                    + ":" + e.getMessage();
             log.error(msm);
-            throw new InfrastructureException( msm, e);
+            throw new InfrastructureException(msm, e);
         }
 
     }
 
     /**
      * The deploy the network in Openstack.
+     * 
      * @params claudiaData
      * @params network
      */
@@ -78,6 +82,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
 
     /**
      * The deploy the network in Openstack.
+     * 
      * @params claudiaData
      * @params network
      */
@@ -104,6 +109,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
 
     /**
      * The deploy the subnet in Openstack.
+     * 
      * @params claudiaData
      * @params subNet
      */
@@ -127,8 +133,10 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             throw new InfrastructureException(msm, e);
         }
     }
+
     /**
      * It destroys the network.
+     * 
      * @params claudiaData
      * @params network
      */
@@ -150,6 +158,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
 
     /**
      * It destroys the network.
+     * 
      * @params claudiaData
      * @params network
      */
@@ -166,6 +175,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
 
     /**
      * It loads all networks.
+     * 
      * @params claudiaData
      */
     public List<Network> loadAllNetwork(ClaudiaData claudiaData) throws OpenStackException {
@@ -175,6 +185,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
 
     /**
      * It obtains information about the network.
+     * 
      * @params claudiaData
      * @params network
      * @return network information
@@ -193,6 +204,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
 
     /**
      * Set the variable.
+     * 
      * @params openStackUtil
      */
     public void setOpenStackUtil(OpenStackUtil openStackUtil) {

@@ -9,8 +9,6 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -24,27 +22,28 @@ import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.Router;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
+import org.apache.log4j.Logger;
 
 /**
  * @author henar
- * 
  */
 public class NetworkManagerImpl implements NetworkManager {
 
-    private  NetworkDao networkDao = null;
-    private  NetworkClient networkClient = null;
-    private  SubNetworkManager subNetworkManager = null;
-    private  RouterManager routerManager = null;
+    private NetworkDao networkDao = null;
+    private NetworkClient networkClient = null;
+    private SubNetworkManager subNetworkManager = null;
+    private RouterManager routerManager = null;
     private static Logger log = Logger.getLogger(NetworkManagerImpl.class);
 
     /**
      * To create a network.
+     * 
      * @throws AlreadyExistsEntityException
      * @params claudiaData
      * @params network
      */
-    public Network create(ClaudiaData claudiaData, Network network)
-    throws InvalidEntityException,InfrastructureException, AlreadyExistsEntityException {
+    public Network create(ClaudiaData claudiaData, Network network) throws InvalidEntityException,
+            InfrastructureException, AlreadyExistsEntityException {
         log.debug("Create network " + network.getNetworkName());
 
         try {
@@ -77,11 +76,12 @@ public class NetworkManagerImpl implements NetworkManager {
 
     /**
      * To remove a network.
+     * 
      * @params claudiaData
      * @params network
      */
-    public void delete(ClaudiaData claudiaData, Network network)
-    throws  EntityNotFoundException,  InvalidEntityException, InfrastructureException {
+    public void delete(ClaudiaData claudiaData, Network network) throws EntityNotFoundException,
+            InvalidEntityException, InfrastructureException {
         log.debug("Destroying network " + network.getNetworkName());
         try {
             networkDao.remove(network);
@@ -94,6 +94,7 @@ public class NetworkManagerImpl implements NetworkManager {
 
     /**
      * To obtain the list of networks.
+     * 
      * @return the network list
      */
     public List<Network> findAll() {
@@ -102,6 +103,7 @@ public class NetworkManagerImpl implements NetworkManager {
 
     /**
      * To obtain the network.
+     * 
      * @param name
      * @param vdc
      * @param networkName
@@ -114,18 +116,22 @@ public class NetworkManagerImpl implements NetworkManager {
     public void setNetworkClient(NetworkClient networkClient) {
         this.networkClient = networkClient;
     }
+
     public void setNetworkDao(NetworkDao networkDao) {
         this.networkDao = networkDao;
     }
+
     public void setRouterManager(RouterManager routerManager) {
         this.routerManager = routerManager;
     }
+
     public void setSubNetworkManager(SubNetworkManager subNetworkManager) {
         this.subNetworkManager = subNetworkManager;
     }
 
     /**
      * To update the network.
+     * 
      * @param network
      * @return the network
      */

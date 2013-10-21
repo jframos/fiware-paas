@@ -9,7 +9,6 @@ package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -73,10 +72,9 @@ public class TierDto {
         this.networkDto = new ArrayList<NetworkDto>();
     }
 
-    public TierDto(String name, Integer maximumNumberInstances,
-            Integer minimumNumberInstances, Integer initialNumberInstances,
-            List<ProductReleaseDto> productReleaseDtos, String flavour,
-            String image, String icono, String keypair, String floatingip) {
+    public TierDto(String name, Integer maximumNumberInstances, Integer minimumNumberInstances,
+            Integer initialNumberInstances, List<ProductReleaseDto> productReleaseDtos, String flavour, String image,
+            String icono, String keypair, String floatingip) {
 
         this.name = name;
         this.maximumNumberInstances = maximumNumberInstances;
@@ -91,12 +89,9 @@ public class TierDto {
         this.networkDto = new ArrayList<NetworkDto>();
     }
 
-
-    public TierDto(String name, Integer maximumNumberInstances,
-            Integer minimumNumberInstances, Integer initialNumberInstances,
-            List<ProductReleaseDto> productReleaseDtos, String flavour,
-            String image, String icono, String securityGroup, String keypair,
-            String floatingip) {
+    public TierDto(String name, Integer maximumNumberInstances, Integer minimumNumberInstances,
+            Integer initialNumberInstances, List<ProductReleaseDto> productReleaseDtos, String flavour, String image,
+            String icono, String securityGroup, String keypair, String floatingip) {
 
         this.name = name;
         this.maximumNumberInstances = maximumNumberInstances;
@@ -114,7 +109,9 @@ public class TierDto {
 
     /**
      * Add network dto.
-     * @param networkDto the network do to be add to the array.
+     * 
+     * @param networkDto
+     *            the network do to be add to the array.
      */
     public void addNetworkDto(NetworkDto networkDto) {
         if (networkDto == null) {
@@ -125,7 +122,9 @@ public class TierDto {
 
     /**
      * Add product release.
-     * @param productReleaseDto the product release to be added.
+     * 
+     * @param productReleaseDto
+     *            the product release to be added.
      */
     public void addProductRelease(ProductReleaseDto productReleaseDto) {
         if (this.productReleaseDtos == null) {
@@ -136,6 +135,7 @@ public class TierDto {
 
     /**
      * It obtains the Tier object associated.
+     * 
      * @tier
      */
     public Tier fromDto() {
@@ -151,7 +151,7 @@ public class TierDto {
         tier.setKeypair(getKeypair());
         tier.setFloatingip(getFloatingip());
 
-        for (ProductReleaseDto pReleaseDto: getProductReleaseDtos()) {
+        for (ProductReleaseDto pReleaseDto : getProductReleaseDtos()) {
             ProductRelease pRelease = new ProductRelease();
             pRelease.setProduct(pReleaseDto.getProductName());
             pRelease.setVersion(pReleaseDto.getVersion());
@@ -162,13 +162,12 @@ public class TierDto {
             tier.addProductRelease(pRelease);
         }
 
-        for (NetworkDto networkDto: this.getNetworksDto()) {
+        for (NetworkDto networkDto : this.getNetworksDto()) {
             Network network = networkDto.fromDto();
             tier.addNetwork(network);
         }
         return tier;
     }
-
 
     public String getFlavour() {
         return flavour;
@@ -235,25 +234,24 @@ public class TierDto {
         return productReleaseDtos;
     }
 
-
     /**
      * Get the security group.
+     * 
      * @return
      */
     public String getSecurityGroup() {
         return this.securityGroup;
     }
 
-
     /**
      * It removes the product release.
+     * 
      * @param productReleaseDto
      */
     public void removeProductRelease(ProductReleaseDto productReleaseDto) {
 
         productReleaseDtos.remove(productReleaseDto);
     }
-
 
     /**
      * @param flavour
@@ -263,8 +261,6 @@ public class TierDto {
         this.flavour = flavour;
     }
 
-
-
     public void setFloatingip(String floatingip) {
         this.floatingip = floatingip;
     }
@@ -273,18 +269,17 @@ public class TierDto {
         this.icono = icono;
     }
 
-
-
     public void setImage(String image) {
         this.image = image;
-    }                /**
+    }
+
+    /**
      * @param initialNumberInstances
      *            the initialNumberInstances to set
      */
     public void setInitialNumberInstances(Integer initialNumberInstances) {
         this.initialNumberInstances = initialNumberInstances;
     }
-
 
     public void setKeypair(String keypair) {
         this.keypair = keypair;
@@ -306,7 +301,6 @@ public class TierDto {
         this.minimumNumberInstances = minimumNumberInstances;
     }
 
-
     /**
      * @param name
      *            the name to set
@@ -315,16 +309,17 @@ public class TierDto {
         this.name = name;
     }
 
-
-
     /**
-     * @param networkDto the network do to be add to the array
+     * @param networkDto
+     *            the network do to be add to the array
      */
     public void setNetworksDto(List<NetworkDto> networkDto) {
         this.networkDto = networkDto;
-    }                    /**
+    }
 
     /**
+     * /**
+     * 
      * @param productReleases
      *            the productReleases to set
      */

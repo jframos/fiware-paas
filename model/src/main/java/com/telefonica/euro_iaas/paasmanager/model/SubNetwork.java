@@ -22,7 +22,6 @@ import javax.xml.bind.annotation.XmlTransient;
  * A sub network.
  * 
  * @author Henar Munoz
- * 
  */
 
 @SuppressWarnings("serial")
@@ -30,7 +29,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Table(name = "SubNetwork")
-
 public class SubNetwork {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -47,9 +45,9 @@ public class SubNetwork {
 
     private String cidr;
 
-    private String allocationPoolsStart ;
+    private String allocationPoolsStart;
 
-    private String allocationPoolsEnd ;
+    private String allocationPoolsEnd;
 
     /**
      * Constructor.
@@ -87,8 +85,6 @@ public class SubNetwork {
         return idNetwork;
     }
 
-
-
     /**
      * @return the id
      */
@@ -119,17 +115,12 @@ public class SubNetwork {
 
     /**
      * the json for the OPenstack request.
+     * 
      * @return
      */
-    public String toJson () {
-        return"{\"subnet\":{" +
-        "      \"name\":\"" + name + "\"," +
-        "      \"network_id\":\"" + this.idNetwork + "\"," +
-        "      \"ip_version\":4," +
-        "      \"cidr\":\" "+ this.cidr+
-        "   }" +
-        "}";
+    public String toJson() {
+        return "{\"subnet\":{" + "      \"name\":\"" + name + "\"," + "      \"network_id\":\"" + this.idNetwork
+                + "\"," + "      \"ip_version\":4," + "      \"cidr\":\" " + this.cidr + "   }" + "}";
     }
-
 
 }

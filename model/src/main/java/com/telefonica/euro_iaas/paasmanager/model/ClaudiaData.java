@@ -23,12 +23,11 @@ public class ClaudiaData {
     /** The service. */
     private final String service;
 
-    /** The user.**/
+    /** The user. **/
     private PaasManagerUser user;
 
     /** The replica. **/
     private String replica;
-
 
     /**
      * @param org
@@ -40,7 +39,6 @@ public class ClaudiaData {
         this.vdc = vdc;
         this.service = service;
     }
-
 
     /**
      * @return the org

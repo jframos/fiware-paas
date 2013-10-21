@@ -16,8 +16,8 @@ import net.sf.json.JSONObject;
 
 /**
  * Rule entity for security groups.
+ * 
  * @author henar
- *
  */
 @Entity
 public class Rule {
@@ -43,6 +43,7 @@ public class Rule {
 
     /**
      * Constructor.
+     * 
      * @param ipProtocol
      * @param fromPort
      * @param toPort
@@ -60,6 +61,7 @@ public class Rule {
 
     /**
      * From json to entity.
+     * 
      * @param jsonNode
      */
     @SuppressWarnings("unchecked")
@@ -130,12 +132,13 @@ public class Rule {
 
     /**
      * to json for request Openstack.
+     * 
      * @return
      */
     public String toJSON() {
         String payload = "{\"security_group_rule\": \n" + "{" + "\"ip_protocol\": \"" + getIpProtocol() + "\", \n"
-        + "\"from_port\": \"" + getFromPort() + "\", \n" + "\"to_port\": \"" + getToPort() + "\", \n"
-        + "\"cidr\": \"" + getCidr() + "\", \n";
+                + "\"from_port\": \"" + getFromPort() + "\", \n" + "\"to_port\": \"" + getToPort() + "\", \n"
+                + "\"cidr\": \"" + getCidr() + "\", \n";
 
         if (!getSourceGroup().equals("")) {
             payload = payload + "\"group_id\": \"" + getSourceGroup() + "\", \n";

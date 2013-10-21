@@ -18,16 +18,13 @@ import com.telefonica.euro_iaas.paasmanager.model.Router;
 
 /**
  * @author henar
- * 
  */
 public interface RouterManager {
 
     /**
      * It adds a network to the router.
-     * 
      */
     void addNetwork(ClaudiaData claudiaData, Router router, Network network) throws InfrastructureException;
-
 
     /**
      * Create a router.
@@ -37,19 +34,19 @@ public interface RouterManager {
      * @return the tierInstance created
      * @throws InfrastructureException
      */
-    void create(ClaudiaData claudiaData, Router subNetwork)
-    throws InvalidEntityException, InfrastructureException;
+    void create(ClaudiaData claudiaData, Router subNetwork) throws InvalidEntityException, InfrastructureException;
 
     /**
      * Delete a router.
+     * 
      * @param claudiaData
      * @param router
      * @throws EntityNotFoundException
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    void delete(ClaudiaData claudiaData, Router router) throws EntityNotFoundException,
-    InvalidEntityException, InfrastructureException;
+    void delete(ClaudiaData claudiaData, Router router) throws EntityNotFoundException, InvalidEntityException,
+            InfrastructureException;
 
     /**
      * Retrieve all router created in the system.
@@ -65,9 +62,9 @@ public interface RouterManager {
      */
     Router load(String name) throws EntityNotFoundException;
 
-
     /**
      * Update a router.
+     * 
      * @param router
      * @return the router updated
      */

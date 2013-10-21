@@ -22,7 +22,6 @@ import javax.xml.bind.annotation.XmlTransient;
  * A router.
  * 
  * @author Henar Munoz
- * 
  */
 
 @SuppressWarnings("serial")
@@ -30,7 +29,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Table(name = "Router")
-
 public class Router {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -56,8 +54,6 @@ public class Router {
     public Router(String name) {
         this.name = name;
     }
-
-
 
     /**
      * @return the id
@@ -95,22 +91,12 @@ public class Router {
     }
 
     /**
-     * 
      * @return string with the json representation for the request
      */
-    public String toJson ()
-    {
-        return  "{" +
-        "    \"router\":" +
-        "    {" +
-        "        \"name\": \"" + name + "\"," +
-        "        \"admin_state_up\": true," +
-        "        \"external_gateway_info\" : {" +
-        "             \"network_id\": \"" + this.idNetwork + "\"" +
-        "        }" +
-        "    }" +
-        "}";
+    public String toJson() {
+        return "{" + "    \"router\":" + "    {" + "        \"name\": \"" + name + "\","
+                + "        \"admin_state_up\": true," + "        \"external_gateway_info\" : {"
+                + "             \"network_id\": \"" + this.idNetwork + "\"" + "        }" + "    }" + "}";
     }
-
 
 }

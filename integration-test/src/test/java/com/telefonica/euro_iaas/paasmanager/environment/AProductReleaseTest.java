@@ -7,12 +7,12 @@
 
 package com.telefonica.euro_iaas.paasmanager.environment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
+import com.telefonica.euro_iaas.paasmanager.model.Attribute;
+import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +20,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.paasmanager.model.Attribute;
-import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Integration Tests for Product Release entity
+ * 
  * @author henar
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/applicationContextTest.xml" })
@@ -72,7 +72,7 @@ public class AProductReleaseTest {
 
         int number = productReleases.size();
 
-        List<Attribute> attHenar = new ArrayList<Attribute> ();
+        List<Attribute> attHenar = new ArrayList<Attribute>();
         attHenar.add(new Attribute("henar", "henar", "henar"));
 
         ProductRelease productHenar = new ProductRelease("henar", "0.1", "henar 0.1", attHenar);

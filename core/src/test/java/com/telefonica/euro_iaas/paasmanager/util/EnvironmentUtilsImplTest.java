@@ -10,9 +10,6 @@ package com.telefonica.euro_iaas.paasmanager.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.OS;
@@ -20,10 +17,11 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.ProductType;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author jesus.movilla
- * 
  */
 public class EnvironmentUtilsImplTest {
 
@@ -31,8 +29,7 @@ public class EnvironmentUtilsImplTest {
     private List<VM> vms;
 
     private Tier tierMysql, tierTomcat;
-    private ProductRelease productReleaseMysql, productReleaseTomcat,
-    productReleaseWar;
+    private ProductRelease productReleaseMysql, productReleaseTomcat, productReleaseWar;
 
     @Before
     public void setUp() throws Exception {
@@ -117,10 +114,8 @@ public class EnvironmentUtilsImplTest {
 
         vms = new ArrayList<VM>();
 
-        VM vmMysql = new VM("ipMysql", "hostnameMysql", "domainMysql", "mysql",
-        "vdcTest");
-        VM vmTomcat = new VM("ipTomcat", "hostnameTomcat", "domainTomcat",
-                "tomcat", "vdcTest");
+        VM vmMysql = new VM("ipMysql", "hostnameMysql", "domainMysql", "mysql", "vdcTest");
+        VM vmTomcat = new VM("ipTomcat", "hostnameTomcat", "domainTomcat", "tomcat", "vdcTest");
         vms.add(vmMysql);
         vms.add(vmTomcat);
     }

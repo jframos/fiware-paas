@@ -18,7 +18,6 @@ import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 
 /**
  * @author jesus.movilla
- * 
  */
 public interface VappUtils {
 
@@ -56,8 +55,7 @@ public interface VappUtils {
     String getFqnId(String vapp) throws InvalidVappException;
 
     /**
-     * Captures the list of ips associated to the VApp (first private, last
-     * public)
+     * Captures the list of ips associated to the VApp (first private, last public)
      * 
      * @param vapp
      * @return
@@ -65,7 +63,7 @@ public interface VappUtils {
      */
     List<String> getIP(String vapp) throws InvalidVappException;
 
-    String getMacroVapp (String ovf, EnvironmentInstance envIns, TierInstance tierInstance) throws InvalidOVFException ;
+    String getMacroVapp(String ovf, EnvironmentInstance envIns, TierInstance tierInstance) throws InvalidOVFException;
 
     HashMap<String, String> getNetworkAndIP(String vappReplica) throws InvalidVappException;
 
@@ -85,8 +83,7 @@ public interface VappUtils {
      * @return
      * @throws InvalidVappException
      */
-    List<String> getVappsSingleVM(ClaudiaData claudiaData, String vapp)
-    throws InvalidVappException;
+    List<String> getVappsSingleVM(ClaudiaData claudiaData, String vapp) throws InvalidVappException;
 
     /**
      * Extract Vmname from fqn

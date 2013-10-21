@@ -77,6 +77,7 @@ public class Attribute {
 
     /**
      * The equal function.
+     * 
      * @see java.lang.Object#
      */
     @Override
@@ -110,6 +111,7 @@ public class Attribute {
 
     /**
      * from Json.
+     * 
      * @param jsonNode
      */
     @SuppressWarnings("unchecked")
