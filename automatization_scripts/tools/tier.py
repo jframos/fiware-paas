@@ -8,7 +8,7 @@ class Network:
         self.network_name=network_name
 
     def to_xml(self):
-        networkDto = Element("NetworkDto")
+        networkDto = Element("networkDto")
         network = SubElement(networkDto, "networkName")
         network.text=self.network_name
         return networkDto
@@ -70,7 +70,6 @@ class Tier:
 
         if self.networks:
             for net in self.networks:
-                print net
                 prod = net.to_xml()
 
                 tier_dtos.append(prod)

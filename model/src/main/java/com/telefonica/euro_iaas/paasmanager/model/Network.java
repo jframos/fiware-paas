@@ -79,7 +79,7 @@ public class Network {
         if (subNets == null) {
             subNets = new ArrayList<SubNetwork>();
         }
-        subNet.setIdNetwork("" + subNetCount);
+        subNet.setIdNetwork(this.getIdNetwork());
         subNets.add(subNet);
         subNetCount++;
     }
@@ -119,6 +119,19 @@ public class Network {
      */
     public void setIdNetwork(String id) {
         this.idNetwork = id;
+    }
+
+    /**
+     * It obtains the json for adding this subnet into a router.
+     * @return
+     */
+    public String toAddInterfaceJson() {
+        if (getSubNets().size()!= 0){
+            return this.getSubNets().get(0).toJsonAddInterface();
+        }
+        else {
+            return "";
+        }
     }
 
     /**

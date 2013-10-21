@@ -103,6 +103,8 @@ public interface OpenStackUtil {
      */
     public static final String ERROR_AUTHENTICATION_HEADERS = "Authentication Token, Tenant ID and User must be initialized...";
 
+    String addInterface(Router router, Network net, PaasManagerUser user) throws OpenStackException;
+
     /**
      * Method to add an interface to the router.
      *
@@ -197,7 +199,6 @@ public interface OpenStackUtil {
      *
      */
     String getFloatingIP(PaasManagerUser user) throws OpenStackException;
-
     /**
      * Method to get a single Network.
      *
@@ -224,6 +225,7 @@ public interface OpenStackUtil {
      */
     String getServer(String serverId, PaasManagerUser user)
     throws OpenStackException;
+
     /**
      * List all servers in OpenStack
      *

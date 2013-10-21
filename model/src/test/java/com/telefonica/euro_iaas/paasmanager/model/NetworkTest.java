@@ -24,6 +24,7 @@ public class NetworkTest extends TestCase {
     public static String NETWORK_NAME ="name";
     public static String SUBNETWORK_NAME ="subname";
     public static String ROUTER_NAME ="router";
+    public static String ID_PUBLIC_NET ="IDPUBLIC";
     public static String CIDR ="10.100.1.0/24";
     public static String ID ="id";
 
@@ -34,6 +35,16 @@ public class NetworkTest extends TestCase {
         + "    \"shared\": false"
         + "  }"
         + "}";
+
+    public static String SUBNETWORK_STRING = "{\"subnet\":{" +
+    "      \"name\":\"" + SUBNETWORK_NAME + "\"," +
+    "      \"network_id\":\"" + ID + "\"," +
+    "      \"ip_version\":4," +
+    "      \"cidr\":\""+ CIDR+"\""+
+    "   }" +
+    "}";
+
+    public static String ADDINTERFACE = "{\"subnet_id\": \"" + ID+ "\" }";
 
 
     @Override
@@ -64,6 +75,7 @@ public class NetworkTest extends TestCase {
     public void testCreateNetworkAndSubNet() throws Exception {
 
         Network network = new Network(NETWORK_NAME);
+        network.setIdNetwork(ID);
         SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, "" + network.getSubNetCounts());
         network.addSubNet(subnet);
         assertEquals(network.getNetworkName(), NETWORK_NAME);
@@ -78,8 +90,7 @@ public class NetworkTest extends TestCase {
         Network network = new Network(NETWORK_NAME);
         SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, "" + network.getSubNetCounts());
         network.addSubNet(subnet);
-        Router router = new Router (ROUTER_NAME);
-        router.setIdNetwork(network.getIdNetwork());
+        Router router = new Router(ID_PUBLIC_NET, ROUTER_NAME);
         router.setIdRouter(ID);
         assertEquals(network.getNetworkName(), NETWORK_NAME);
         assertEquals(network.getSubNets().size(), 1);
@@ -88,9 +99,22 @@ public class NetworkTest extends TestCase {
     }
 
     @Test
+    public void testCreateSubNetwork() throws Exception {
+
+        Network network = new Network(NETWORK_NAME);
+        network.setIdNetwork(ID);
+        SubNetwork subNetwork = new SubNetwork(SUBNETWORK_NAME);
+        subNetwork.setIdSubNet(ID);
+        network.addSubNet(subNetwork);
+        assertEquals(subNetwork.toJson(), SUBNETWORK_STRING);
+        assertEquals(network.toAddInterfaceJson(), ADDINTERFACE);
+
+    }
+
+    @Test
     public void testFromDto() throws Exception {
 
-        NetworkDto networkDto = new NetworkDto (NETWORK_NAME, SUBNETWORK_NAME);
+        NetworkDto networkDto = new NetworkDto(NETWORK_NAME, SUBNETWORK_NAME);
         Network net = networkDto.fromDto();
 
         assertEquals(net.getNetworkName(), NETWORK_NAME);

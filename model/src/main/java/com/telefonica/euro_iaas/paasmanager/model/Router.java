@@ -41,28 +41,23 @@ public class Router {
 
     private String idRouter;
 
-    private String idNetwork;
+
+
+    private String idPublicNetwork;
 
     /**
      * Constructor.
      */
-    public Router() {
+    public Router (String idPublicNetwork, int otro) {
+        idPublicNetwork = this.idPublicNetwork;
     }
 
     /**
      * @param networkName
      */
-    public Router(String name) {
+    public Router(String idPublicNetwork, String name) {
         this.name = name;
-    }
-
-
-
-    /**
-     * @return the id
-     */
-    public String getIdNetwork() {
-        return idNetwork;
+        idPublicNetwork = this.idPublicNetwork;
     }
 
     /**
@@ -79,12 +74,6 @@ public class Router {
         return name;
     }
 
-    /**
-     * @param id
-     */
-    public void setIdNetwork(String id) {
-        this.idNetwork = id;
-    }
 
     /**
      * @param id
@@ -97,15 +86,14 @@ public class Router {
      * 
      * @return string with the json representation for the request
      */
-    public String toJson ()
-    {
+    public String toJson(){
         return  "{" +
         "    \"router\":" +
         "    {" +
         "        \"name\": \"" + name + "\"," +
-        "        \"admin_state_up\": true," +
+        "        \"admin_state_up\": true" +
         "        \"external_gateway_info\" : {" +
-        "             \"network_id\": \"" + this.idNetwork + "\"" +
+        "             \"network_id\": \"" + idPublicNetwork + "\"" +
         "        }" +
         "    }" +
         "}";

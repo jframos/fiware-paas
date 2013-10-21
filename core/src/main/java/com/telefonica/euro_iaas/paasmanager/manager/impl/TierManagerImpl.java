@@ -85,7 +85,7 @@ public class TierManagerImpl implements TierManager {
                 + " initial_number_instances " + tier.getInitialNumberInstances() + " maximum_number_instances "
                 + tier.getMaximumNumberInstances() + " minimum_number_instances " + tier.getMinimumNumberInstances()
                 + " floatingip " + tier.getFloatingip() + " keypair " + tier.getKeypair() + " icono " + tier.getIcono()
-                + " product releases " + tier.getProductReleases() + "  vdc " + claudiaData.getVdc());
+                + " product releases " + tier.getProductReleases() + "  vdc " + claudiaData.getVdc() + " networks " + tier.getNetworks());
 
         try {
             tier = load(tier.getName(), claudiaData.getVdc(), envName);
@@ -103,14 +103,16 @@ public class TierManagerImpl implements TierManager {
 
 
             for (Network network: tier.getNetworks()) {
+                log.debug("Network to be deployed: " + network.getNetworkName());
 
                 try {
                     network = networkManager.load(network.getNetworkName());
+                    log.debug("the network " + network.getNetworkName() + " already exists");
                 } catch (EntityNotFoundException e1) {
                     try {
                         network = networkManager.create(claudiaData, network);
                     } catch (AlreadyExistsEntityException e2) {
-                        throw new InvalidEntityException (network);
+                        throw new InvalidEntityException(network);
                     }
                 }
 

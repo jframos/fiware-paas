@@ -46,7 +46,10 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
 
         } catch (EntityNotFoundException e1) {
             try {
+
                 networkClient.deploySubNetwork(claudiaData, subNetwork);
+                log.debug("SubNetwork " + subNetwork.getName() + " in network " + subNetwork.getIdNetwork() +
+                        " deployed with id " + subNetwork.getIdSubNet());
                 subNetwork = subNetworkDao.create(subNetwork);
             } catch (Exception e) {
                 log.error("Error to create the subnetwork in BD " + e.getMessage());

@@ -120,14 +120,22 @@ public class SubNetwork {
      * the json for the OPenstack request.
      * @return
      */
-    public String toJson () {
+    public String toJson() {
         return"{\"subnet\":{" +
         "      \"name\":\"" + name + "\"," +
         "      \"network_id\":\"" + this.idNetwork + "\"," +
         "      \"ip_version\":4," +
-        "      \"cidr\":\" "+ this.cidr+
+        "      \"cidr\":\""+ this.cidr+"\""+
         "   }" +
         "}";
+    }
+
+    /**
+     * It obtains the json for adding this subnet into a router.
+     * @return
+     */
+    public String toJsonAddInterface() {
+        return  "{\"subnet_id\": \"" + getIdSubNet()+ "\" }";
     }
 
 

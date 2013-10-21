@@ -46,7 +46,7 @@ public class TierDto {
     private String floatingip = "";
 
     /**
-     * Default Constructor
+     * Default Constructor.
      */
     public TierDto() {
         this.networkDto = new ArrayList<NetworkDto>();
@@ -54,6 +54,7 @@ public class TierDto {
     }
 
     /**
+     * Constructor.
      * @param name
      * @param maximumNumberInstances
      * @param minimumNumberInstances
@@ -73,6 +74,19 @@ public class TierDto {
         this.networkDto = new ArrayList<NetworkDto>();
     }
 
+    /**
+     * Constructor.
+     * @param name
+     * @param maximumNumberInstances
+     * @param minimumNumberInstances
+     * @param initialNumberInstances
+     * @param productReleaseDtos
+     * @param flavour
+     * @param image
+     * @param icono
+     * @param keypair
+     * @param floatingip
+     */
     public TierDto(String name, Integer maximumNumberInstances,
             Integer minimumNumberInstances, Integer initialNumberInstances,
             List<ProductReleaseDto> productReleaseDtos, String flavour,
@@ -92,6 +106,20 @@ public class TierDto {
     }
 
 
+    /**
+     * Constructor.
+     * @param name
+     * @param maximumNumberInstances
+     * @param minimumNumberInstances
+     * @param initialNumberInstances
+     * @param productReleaseDtos
+     * @param flavour
+     * @param image
+     * @param icono
+     * @param securityGroup
+     * @param keypair
+     * @param floatingip
+     */
     public TierDto(String name, Integer maximumNumberInstances,
             Integer minimumNumberInstances, Integer initialNumberInstances,
             List<ProductReleaseDto> productReleaseDtos, String flavour,
@@ -322,10 +350,10 @@ public class TierDto {
      */
     public void setNetworksDto(List<NetworkDto> networkDto) {
         this.networkDto = networkDto;
-    }                    /**
+    }
 
     /**
-     * @param productReleases
+     * @param productReleaseDtos
      *            the productReleases to set
      */
     public void setProductReleaseDtos(List<ProductReleaseDto> productReleaseDtos) {

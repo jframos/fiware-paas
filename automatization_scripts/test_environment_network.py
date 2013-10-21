@@ -19,7 +19,7 @@ g=EnvironmentRequest(config['keystone_url'], config['paasmanager_url'], config['
 instance_request = EnvironmentInstanceRequest (config['keystone_url'], config['paasmanager_url'], config['tenant'], config['user'], config['password'],
                                                config['vdc'],config['sdc_url'])
 
-environment_name = 'networkenv6deg4'
+environment_name = 'networkenv6deg17'
 
 
 
@@ -29,7 +29,7 @@ print("  OK")
 
 print('Create template: node')
 tier_name = 'tiername'
-g.add_tier_environment_network(environment_name,tier_name, "nodejs=0.6.15","uno")
+g.add_tier_environment_network(environment_name,tier_name, "nodejs=0.6.15","dos")
 print("  OK")
 
 print('Get Information about the Blueprint: ' + environment_name )

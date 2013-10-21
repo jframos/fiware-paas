@@ -505,6 +505,13 @@ public class Tier {
             payload = payload + "\"security_groups\": [{ \"name\": \""
             + getSecurityGroup().getName() + "\"}], ";
         }
+
+        for (Network net: this.getNetworks()){
+
+            payload = payload + "\"net-id\": " + net.getIdNetwork()+"\", ";
+        }
+
+
         payload = payload
         + "\"flavorRef\": \"" + getFlavour() + "\", " + "\"imageRef\": \""
         + getImage() + "\", " + "\"name\": \"" + name + "\"}}";

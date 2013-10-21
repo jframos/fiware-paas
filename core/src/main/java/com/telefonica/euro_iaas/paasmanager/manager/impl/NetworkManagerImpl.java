@@ -23,6 +23,7 @@ import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.Router;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * @author henar
@@ -34,6 +35,7 @@ public class NetworkManagerImpl implements NetworkManager {
     private  NetworkClient networkClient = null;
     private  SubNetworkManager subNetworkManager = null;
     private  RouterManager routerManager = null;
+    private SystemPropertiesProvider systemPropertiesProvider;
     private static Logger log = Logger.getLogger(NetworkManagerImpl.class);
 
     /**
@@ -53,16 +55,17 @@ public class NetworkManagerImpl implements NetworkManager {
         } catch (EntityNotFoundException e1) {
             try {
                 networkClient.deployNetwork(claudiaData, network);
+                log.debug("Network " + network.getNetworkName() + " : " + network.getIdNetwork() + " deployed");
                 SubNetwork subNet = new SubNetwork("sub-net-" + network.getNetworkName() + "-"
                         + network.getSubNetCounts(), "" + network.getSubNetCounts());
-                subNet.setIdNetwork(network.getIdNetwork());
+
                 network.addSubNet(subNet);
                 subNetworkManager.create(claudiaData, subNet);
 
-                Router router = new Router("router-" + network.getNetworkName());
-                // This network id can be the internet network...
-                router.setIdNetwork(network.getIdNetwork());
-                routerManager.create(claudiaData, router);
+                Router router = new Router("router-" + network.getNetworkName(),
+                        systemPropertiesProvider.getProperty(SystemPropertiesProvider.PUBLIC_NETWORK_ID));
+
+                routerManager.create(claudiaData, router, network);
                 routerManager.addNetwork(claudiaData, router, network);
                 network = networkDao.create(network);
             } catch (Exception e) {
@@ -121,6 +124,14 @@ public class NetworkManagerImpl implements NetworkManager {
     }
     public void setSubNetworkManager(SubNetworkManager subNetworkManager) {
         this.subNetworkManager = subNetworkManager;
+    }
+
+    /**
+     * @param systemPropertiesProvider the systemPropertiesProvider to set
+     */
+    public void setSystemPropertiesProvider(
+            SystemPropertiesProvider systemPropertiesProvider) {
+        this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
     /**

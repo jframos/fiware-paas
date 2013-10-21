@@ -38,7 +38,7 @@ public class RouterManagerImpl implements RouterManager {
      * @network
      */
     public void addNetwork(ClaudiaData claudiaData, Router router, Network network) throws InfrastructureException {
-        networkClient.addNetworkToRouter(claudiaData, router,network);
+        networkClient.addNetworkToRouter(claudiaData, router, network);
 
     }
 
@@ -47,7 +47,7 @@ public class RouterManagerImpl implements RouterManager {
      * @params claudiaData
      * @params router
      */
-    public void create(ClaudiaData claudiaData, Router router)
+    public void create(ClaudiaData claudiaData, Router router, Network network)
     throws InvalidEntityException,InfrastructureException {
         log.debug("Create router " + router.getName());
 
@@ -58,6 +58,7 @@ public class RouterManagerImpl implements RouterManager {
         } catch (EntityNotFoundException e1) {
             try {
                 networkClient.deployRouter(claudiaData, router);
+                addNetwork(claudiaData, router, network);
                 router = routerDao.create(router);
             } catch (Exception e) {
                 log.error("Error to create the subnetwork in BD " + e.getMessage());
@@ -120,5 +121,7 @@ public class RouterManagerImpl implements RouterManager {
         // TODO Auto-generated method stub
         return null;
     }
+
+
 
 }

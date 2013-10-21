@@ -33,10 +33,10 @@ public interface RouterManager {
      * 
      * @param claudiaData
      * @param router
-     * @return the tierInstance created
+     * @param net
      * @throws InfrastructureException
      */
-    void create(ClaudiaData claudiaData, Router subNetwork)
+    void create(ClaudiaData claudiaData, Router router, Network net)
     throws InvalidEntityException, InfrastructureException;
 
     /**

@@ -117,6 +117,38 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      */
     private String user;
 
+    public String addInterface(Router router, Network net, PaasManagerUser user) throws OpenStackException {
+
+        //  PUT /v2.0/routers/8604a0de-7f6b-409a-a47c-a1cc7bc77b2e/add_router_interface
+        // Accept: application/json
+
+        log.debug ("Adding an interface from network " + net.getNetworkName()+ " to router " + router.getName());
+        String response = null;
+
+        try {
+            String payload = net.toAddInterfaceJson();
+            log.debug(payload);
+
+            HttpUriRequest request = createQuantumPutRequest(RESOURCE_ROUTERS
+                    + "/" + router.getIdRouter() + "/" + RESOURCE_ADD_INTERFACE, payload, APPLICATION_JSON, user);
+            response = executeNovaRequest(request);
+
+        } catch (OpenStackException e) {
+            String errorMessage = "Error creating router in " + router.getName() + ": "
+            + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        } catch (Exception e) {
+            String errorMessage = "Error creating router " + router.getName()
+            + " from OpenStack: " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        }
+
+        return response;
+
+    }
+
     /* (non-Javadoc)
      * @see com.telefonica.claudia.smi.OpenStackClient#addRouterInterface(java.lang.String,
      * java.lang.String, com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser )
@@ -584,22 +616,23 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // -H "Content-Type: application/json" -H "Accept: application/xml"
         // -X POST "http://10.95.171.115:9696/v2.0/subnets"
         //-d '{"network" : {"name" : "testNetwork", "admin_state_up": false}}'
-
+        log.debug ("Creating a router " + router.getName() );
         String response = null;
 
         try {
             String payload = router.toJson();
+            log.debug (payload);
 
             HttpUriRequest request = createQuantumPostRequest(RESOURCE_ROUTERS, payload, APPLICATION_JSON, user);
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error creating router in " + router.getIdNetwork() + ": "
+            String errorMessage = "Error creating router in " + router.getName() + ": "
             + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error creating router " + router.getIdNetwork()
+            String errorMessage = "Error creating router " + router.getName()
             + " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
@@ -664,10 +697,12 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // -X POST "http://10.95.171.115:9696/v2.0/subnets"
         //-d '{"network" : {"name" : "testNetwork", "admin_state_up": false}}'
 
+        log.debug("Creating sub net " + subNet.getName());
         String response = null;
 
         try {
             String payload = subNet.toJson();
+            log.info("Payload " + payload);
 
             HttpUriRequest request = createQuantumPostRequest(RESOURCE_SUBNETS, payload, APPLICATION_JSON, user);
             response = executeNovaRequest(request);
@@ -827,7 +862,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      */
 
     /**
-     * Obtains the attribute value from a node
+     * Obtains the attribute value from a node.
      *
      * @param node
      * @param attribute
@@ -913,7 +948,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         }
         return floatingIP;
     }
-
     /**
      * Obtain the xml including all FloatingIPs of a certain tenant
      *
@@ -972,6 +1006,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
         return response;
     }
+
     /* (non-Javadoc)
      * @see com.telefonica.claudia.smi.OpenStackClient#getNetworks(
      * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
