@@ -168,6 +168,10 @@ public class Tier {
         if (this.networks  == null) {
             this.networks = new ArrayList<Network>();
         }
+        int count = 0;
+        if (( count =containsNetwork(network))!=-1) {
+            networks.remove(count);
+        }
         networks.add(network);
 
     }
@@ -181,6 +185,22 @@ public class Tier {
             productReleases = new ArrayList<ProductRelease>();
         }
         productReleases.add(productRelease);
+    }
+
+    /**
+     * It returns the position in the array list of the network.
+     * @param net2
+     * @return
+     */
+    public int containsNetwork(Network net2) {
+        int i = 0;
+        for (Network net: networks) {
+            if (net2.getNetworkName().equals(net.getNetworkName())) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
     }
 
 
@@ -505,12 +525,16 @@ public class Tier {
             payload = payload + "\"security_groups\": [{ \"name\": \""
             + getSecurityGroup().getName() + "\"}], ";
         }
+        if (getNetworks() != null) {
+            payload = payload + "\"networks\": [";
+            for (Network net: this.getNetworks()){
 
-        for (Network net: this.getNetworks()){
+                payload = payload + "{ \"uuid\": \""
+                + net.getIdNetwork() + "\"}";
+            }
+            payload = payload + "], ";
 
-            payload = payload + "\"net-id\": " + net.getIdNetwork()+"\", ";
         }
-
 
         payload = payload
         + "\"flavorRef\": \"" + getFlavour() + "\", " + "\"imageRef\": \""

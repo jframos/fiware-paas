@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.telefonica.euro_iaas.paasmanager.model.dto.NetworkDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.SubNetworkDto;
 
 /**
  * A network.
@@ -85,6 +86,18 @@ public class Network {
     }
 
     /**
+     * 
+     * @param subNet
+     * @return
+     */
+    public boolean contains(SubNetwork subNet) {
+        if (subNets == null) {
+            subNets = new ArrayList<SubNetwork>();
+        }
+        return subNets.contains(subNet);
+    }
+
+    /**
      * @return the networkName
      */
     public String getIdNetwork() {
@@ -126,7 +139,7 @@ public class Network {
      * @return
      */
     public String toAddInterfaceJson() {
-        if (getSubNets().size()!= 0){
+        if (getSubNets().size() != 0) {
             return this.getSubNets().get(0).toJsonAddInterface();
         }
         else {
@@ -140,8 +153,11 @@ public class Network {
      */
     public NetworkDto toDto() {
         NetworkDto networkDto = new NetworkDto(this.name);
+        for (SubNetwork subnet: this.getSubNets()) {
+            SubNetworkDto subNetDto = subnet.toDto();
+            networkDto.addSubNetworkDto(subNetDto);
+        }
         return networkDto;
-
     }
 
     /**

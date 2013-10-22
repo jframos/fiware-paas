@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
@@ -56,14 +57,29 @@ public class RouterManagerImpl implements RouterManager {
             routerDao.load(router.getName());
 
         } catch (EntityNotFoundException e1) {
+
+
             try {
                 networkClient.deployRouter(claudiaData, router);
                 addNetwork(claudiaData, router, network);
                 router = routerDao.create(router);
-            } catch (Exception e) {
-                log.error("Error to create the subnetwork in BD " + e.getMessage());
+            }
+            catch (InfrastructureException e) {
+                String msm = "Error to deploy the router " + e.getMessage();
+                log.error(msm);
+                throw new InfrastructureException(msm,e);
+            }
+            catch (AlreadyExistsEntityException e) {
+                String msm = "Error to deploy the router. It already exists in the database " + e.getMessage();
+                log.error(msm);
                 throw new InvalidEntityException(router);
             }
+            catch (Exception e) {
+                String msm = "Error to deploy the router. Error in the database " + e.getMessage();
+                log.error(msm);
+                throw new InvalidEntityException(router);
+            }
+
         }
         //return router;
     }

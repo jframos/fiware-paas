@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.telefonica.euro_iaas.paasmanager.model.dto.NetworkDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.SubNetworkDto;
 
 /**
  * Network Test.
@@ -84,6 +85,10 @@ public class NetworkTest extends TestCase {
         assertEquals(network.getSubNets().get(0).getCidr(), CIDR);
     }
 
+    /**
+     * It tests the creation of network, subnetwork and router.
+     * @throws Exception
+     */
     @Test
     public void testCreateNetworkAndSubNetAndRouter() throws Exception {
 
@@ -98,6 +103,10 @@ public class NetworkTest extends TestCase {
         assertEquals(network.getSubNets().get(0).getCidr(), CIDR);
     }
 
+    /**
+     * It tests the creation o subnetwork and its json representation.
+     * @throws Exception
+     */
     @Test
     public void testCreateSubNetwork() throws Exception {
 
@@ -111,10 +120,16 @@ public class NetworkTest extends TestCase {
 
     }
 
+    /**
+     * It test the dto from the Network specification.
+     * @throws Exception
+     */
     @Test
     public void testFromDto() throws Exception {
 
-        NetworkDto networkDto = new NetworkDto(NETWORK_NAME, SUBNETWORK_NAME);
+        NetworkDto networkDto = new NetworkDto(NETWORK_NAME);
+        SubNetworkDto subNetworkDto = new SubNetworkDto(SUBNETWORK_NAME, CIDR);
+        networkDto.addSubNetworkDto(subNetworkDto);
         Network net = networkDto.fromDto();
 
         assertEquals(net.getNetworkName(), NETWORK_NAME);

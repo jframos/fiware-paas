@@ -41,23 +41,24 @@ public class Router {
 
     private String idRouter;
 
-
-
-    private String idPublicNetwork;
+    private final String idPublicNetwork;
 
     /**
      * Constructor.
+     * @param idPublicNetwork
      */
-    public Router (String idPublicNetwork, int otro) {
-        idPublicNetwork = this.idPublicNetwork;
+    public Router(String idPublicNetwork) {
+        this.idPublicNetwork = idPublicNetwork;
     }
 
     /**
-     * @param networkName
+     * Constructor.
+     * @param idPublicNetwork
+     * @param name
      */
     public Router(String idPublicNetwork, String name) {
         this.name = name;
-        idPublicNetwork = this.idPublicNetwork;
+        this.idPublicNetwork = idPublicNetwork;
     }
 
     /**
@@ -91,7 +92,7 @@ public class Router {
         "    \"router\":" +
         "    {" +
         "        \"name\": \"" + name + "\"," +
-        "        \"admin_state_up\": true" +
+        "        \"admin_state_up\": true ,"+
         "        \"external_gateway_info\" : {" +
         "             \"network_id\": \"" + idPublicNetwork + "\"" +
         "        }" +

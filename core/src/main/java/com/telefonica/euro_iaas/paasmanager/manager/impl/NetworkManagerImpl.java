@@ -49,24 +49,26 @@ public class NetworkManagerImpl implements NetworkManager {
         log.debug("Create network " + network.getNetworkName());
 
         try {
-            networkDao.load(network.getNetworkName());
-            throw new AlreadyExistsEntityException(network);
+            Network dbNetwork = networkDao.load(network.getNetworkName());
+            log.debug("The network already exists");
+            for (SubNetwork subnet: network.getSubNets()) {
+                if (!dbNetwork.contains(subnet)) {
+                    createSubNetwork(claudiaData, dbNetwork, subnet);
+                }
+            }
+            return network;
 
         } catch (EntityNotFoundException e1) {
             try {
                 networkClient.deployNetwork(claudiaData, network);
                 log.debug("Network " + network.getNetworkName() + " : " + network.getIdNetwork() + " deployed");
-                SubNetwork subNet = new SubNetwork("sub-net-" + network.getNetworkName() + "-"
-                        + network.getSubNetCounts(), "" + network.getSubNetCounts());
-
-                network.addSubNet(subNet);
-                subNetworkManager.create(claudiaData, subNet);
-
-                Router router = new Router("router-" + network.getNetworkName(),
+                createSubNetwork(claudiaData, network, null);
+                log.debug ("The internet network is in " +
                         systemPropertiesProvider.getProperty(SystemPropertiesProvider.PUBLIC_NETWORK_ID));
+                Router router = new Router(systemPropertiesProvider.getProperty(SystemPropertiesProvider.PUBLIC_NETWORK_ID),
+                        "router-" + network.getNetworkName());
 
                 routerManager.create(claudiaData, router, network);
-                routerManager.addNetwork(claudiaData, router, network);
                 network = networkDao.create(network);
             } catch (Exception e) {
                 log.error("Error to create the network in BD " + e.getMessage());
@@ -75,6 +77,31 @@ public class NetworkManagerImpl implements NetworkManager {
         }
 
         return network;
+    }
+
+    /**
+     * It creates a subnet in the network.
+     * @param claudiaData
+     * @param network
+     * @param subNetwork
+     * @throws InvalidEntityException
+     * @throws InfrastructureException
+     * @throws AlreadyExistsEntityException
+     */
+    public void createSubNetwork(ClaudiaData claudiaData, Network network, SubNetwork subNetwork)
+    throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException
+    {
+
+        SubNetwork subNet = subNetwork;
+        if (subNet == null) {
+            int cidrCount = findAll().size() + 1;
+            subNet = new SubNetwork("sub-net-" + network.getNetworkName() + "-"
+                    + cidrCount, "" + cidrCount);
+        }
+
+        network.addSubNet(subNet);
+        subNetworkManager.create(claudiaData, subNet);
+        log.debug("SubNetwork " + subNet.getName() + " in network  " + network.getNetworkName() + " deployed");
     }
 
     /**
@@ -112,7 +139,6 @@ public class NetworkManagerImpl implements NetworkManager {
     public Network load(String networkName) throws EntityNotFoundException {
         return networkDao.load(networkName);
     }
-
     public void setNetworkClient(NetworkClient networkClient) {
         this.networkClient = networkClient;
     }
@@ -122,6 +148,7 @@ public class NetworkManagerImpl implements NetworkManager {
     public void setRouterManager(RouterManager routerManager) {
         this.routerManager = routerManager;
     }
+
     public void setSubNetworkManager(SubNetworkManager subNetworkManager) {
         this.subNetworkManager = subNetworkManager;
     }

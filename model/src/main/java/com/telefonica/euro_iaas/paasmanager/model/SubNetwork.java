@@ -17,6 +17,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.telefonica.euro_iaas.paasmanager.model.dto.SubNetworkDto;
+
 /**
  * A sub network.
  * 
@@ -73,7 +75,7 @@ public class SubNetwork {
     }
 
     /**
-     * @return the id
+     * @return the cidr
      */
     public String getCidr() {
         return cidr;
@@ -86,8 +88,6 @@ public class SubNetwork {
         return idNetwork;
     }
 
-
-
     /**
      * @return the id
      */
@@ -95,11 +95,20 @@ public class SubNetwork {
         return idSubNet;
     }
 
+
+
     /**
      * @return the networkName
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * @param cidr
+     */
+    public void setCidr(String cidr) {
+        this.cidr = cidr;
     }
 
     /**
@@ -114,6 +123,17 @@ public class SubNetwork {
      */
     public void setIdSubNet(String id) {
         this.idSubNet = id;
+    }
+
+    /**
+     * To the subnetwork Dto.
+     * @return
+     */
+    public SubNetworkDto toDto() {
+        SubNetworkDto subNetworkDto = new SubNetworkDto(this.getName());
+        subNetworkDto.setCidr(this.getCidr());
+        return subNetworkDto;
+
     }
 
     /**
@@ -137,6 +157,7 @@ public class SubNetwork {
     public String toJsonAddInterface() {
         return  "{\"subnet_id\": \"" + getIdSubNet()+ "\" }";
     }
+
 
 
 }
