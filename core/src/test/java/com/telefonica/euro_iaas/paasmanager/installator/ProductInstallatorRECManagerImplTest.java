@@ -4,6 +4,7 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.installator;
 
 import static org.mockito.Matchers.any;
@@ -19,9 +20,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
-import org.junit.Before;
 import org.junit.Test;
 
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
@@ -39,13 +37,10 @@ import com.telefonica.euro_iaas.paasmanager.util.OVFUtilsDomImpl;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.util.VappUtilsImpl;
 
-public class ProductInstallatorRECManagerImplTest extends TestCase {
+public class ProductInstallatorRECManagerImplTest {
 
     private String getFile(String file) throws IOException {
         File f = new File(file);
-        System.out.println(f.isFile() + " " + f.getAbsolutePath());
-        InputStream is = ClassLoader.getSystemClassLoader()
-        .getResourceAsStream(file);
         InputStream dd = new FileInputStream(f);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(dd));
@@ -56,12 +51,6 @@ public class ProductInstallatorRECManagerImplTest extends TestCase {
             ruleFile.append(actualString).append("\n");
         }
         return ruleFile.toString();
-    }
-
-    @Override
-    @Before
-    public void setUp() throws Exception {
-
     }
 
     @Test
@@ -101,10 +90,8 @@ public class ProductInstallatorRECManagerImplTest extends TestCase {
 
         EnvironmentInstance environmentInstance = new EnvironmentInstance();
         environmentInstance.setEnvironment(envResult);
-        ClaudiaData claudiaData = new ClaudiaData("org", "vdc", envResult
-                .getName());
-        environmentInstance.setName(claudiaData.getVdc() + "-"
-                + envResult.getName());
+        ClaudiaData claudiaData = new ClaudiaData("org", "vdc", envResult.getName());
+        environmentInstance.setName(claudiaData.getVdc() + "-" + envResult.getName());
 
         String vappname = "src/test/resources/vappsap83.xml";
         String vappService = null;
@@ -118,8 +105,7 @@ public class ProductInstallatorRECManagerImplTest extends TestCase {
         InfrastructureManagerServiceClaudiaImpl manager2 = new InfrastructureManagerServiceClaudiaImpl();
         VappUtilsImpl vappUtils = new VappUtilsImpl();
         SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
-        when(systemPropertiesProvider.getProperty(any(String.class)))
-        .thenReturn("ddFIWARE");
+        when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("ddFIWARE");
 
         vappUtils.setSystemPropertiesProvider(systemPropertiesProvider);
         manager2.setVappUtils(vappUtils);
@@ -129,8 +115,7 @@ public class ProductInstallatorRECManagerImplTest extends TestCase {
         List<TierInstance> tierInstances = null;
 
         try {
-            tierInstances = manager2.fromVappToListTierInstance(vappService,
-                    envResult, claudiaData);
+            tierInstances = manager2.fromVappToListTierInstance(vappService, envResult, claudiaData);
         } catch (InvalidVappException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -149,13 +134,12 @@ public class ProductInstallatorRECManagerImplTest extends TestCase {
         manager.setSystemPropertiesProvider(systemPropertiesProvider);
         com.telefonica.euro_iaas.paasmanager.installator.rec.util.VappUtils vappUtilRecs = new com.telefonica.euro_iaas.paasmanager.installator.rec.util.VappUtilsImpl();
         manager.setVappUtils(vappUtilRecs);
-        ClaudiaData data = new ClaudiaData ("org", "vdc", "");
+        ClaudiaData data = new ClaudiaData("org", "vdc", "");
 
         try {
             ProductInstance productInstance2 = manager.install(data, "evn",
-                    environmentInstance.getTierInstances().get(0),
-                    environmentInstance.getTierInstances().get(0).getTier()
-                    .getProductReleases().get(0), null);
+                    environmentInstance.getTierInstances().get(0), environmentInstance.getTierInstances().get(0)
+                            .getTier().getProductReleases().get(0), null);
         } catch (ProductInstallatorException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

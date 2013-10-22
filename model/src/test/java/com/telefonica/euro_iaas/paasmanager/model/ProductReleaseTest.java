@@ -7,15 +7,17 @@
 
 package com.telefonica.euro_iaas.paasmanager.model;
 
-import junit.framework.TestCase;
 import net.sf.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author jesus.movilla
  */
-public class ProductReleaseTest extends TestCase {
+public class ProductReleaseTest {
 
     private ProductRelease productRelease;
     private JSONObject productReleaseJson, productReleaseJsonNoAttributes, productReleaseJsonOneAttribute;
@@ -25,26 +27,10 @@ public class ProductReleaseTest extends TestCase {
     public void setUp() throws Exception {
 
         productRelease = new ProductRelease();
-        /*
-         * String productReleaseString = "{\"rules\":[" +
-         * "{\"from_port\":22,\"group\":{},\"ip_protocol\":\"tcp\",\"to_port\":22,\"parent_group_id\":6,\"ip_range\":{\"cidr\":\"0.0.0.0/0\"},\"id\":10},"
-         * +
-         * "{\"from_port\":8080,\"group\":{},\"ip_protocol\":\"tcp\",\"to_port\":8080,\"parent_group_id\":6,\"ip_range\":{\"cidr\":\"0.0.0.0/0\"},\"id\":11}]"
-         * + ",\"tenant_id\":\"ebe6d9ec7b024361b7a3882c65a57dda\"," + "\"id\":6," + "\"name\":\"namedefault\"," +
-         * "\"description\":\"default\"" + "} ";
-         */
 
         String productReleaseStringNoAttributes = "{" + "\"releaseNotes\":\"Tomcat server 7\"," + "\"version\":\"7\","
-                + "\"product\":" + "{" + "\"name\":\"tomcat\"," + "\"description\":\"tomcat J2EE container\"" +
-                /*
-                 * "\"attributes\":" + "[" +
-                 * "{\"key\":\"port\",\"value\":\"8080\",\"description\":\"The listen port\"}," +
-                 * "{\"key\":\"ssl_port\",\"value\":\"8443\",\"description\":\"The ssl listen port\"}," +
-                 * "{\"key\":\"ssl_port\",\"value\":\"8443\",\"description\":\"The ssl listen port\"}," +
-                 * "{\"key\":\"id_web_server\",\"value\":\"default\",\"description\":\"The id web server\"}," +
-                 * "{\"key\":\"sdcgroupid\",\"value\":\"id_web_server\",\"description\":\"sdcgroupid\"}" + "]" +
-                 */
-                "}," + "\"supportedOOSS\":" + "["
+                + "\"product\":" + "{" + "\"name\":\"tomcat\"," + "\"description\":\"tomcat J2EE container\"" + "},"
+                + "\"supportedOOSS\":" + "["
                 + "{\"description\":\"Ubuntu 10.04\",\"name\":\"Ubuntu\",\"osType\":\"94\",\"version\":\"10.04\"},"
                 + "{\"description\":\"Debian 5\",\"name\":\"Debian\",\"osType\":\"95\",\"version\":\"5\"},"
                 + "{\"description\":\"Centos 2.9\",\"name\":\"Centos\",\"osType\":\"76\",\"version\":\"2.9\"}" + "]"
@@ -88,8 +74,6 @@ public class ProductReleaseTest extends TestCase {
 
         productReleaseJson = JSONObject.fromObject(productReleaseString);
         productReleaseJsonNoAttributes = JSONObject.fromObject(productReleaseStringNoAttributes);
-        System.out.println("productReleaseStringOneAttribute:***********");
-        System.out.println(productReleaseStringOneAttribute);
         productReleaseJsonOneAttribute = JSONObject.fromObject(productReleaseStringOneAttribute);
         productReleaseJsonNoReleaseNotesNoSSOO = JSONObject.fromObject(productReleaseNoReleaseNotesNoSSOO);
     }

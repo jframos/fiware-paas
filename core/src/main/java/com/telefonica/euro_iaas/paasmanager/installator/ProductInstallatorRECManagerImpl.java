@@ -7,8 +7,14 @@
 
 package com.telefonica.euro_iaas.paasmanager.installator;
 
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.ENVELOPE_TEMPLATE_LOCATION;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.REC_SERVER_MEDIATYPE;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.REC_SERVER_URL;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
@@ -32,12 +38,6 @@ import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.util.OVFUtils;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
-import org.apache.log4j.Logger;
-
-
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.ENVELOPE_TEMPLATE_LOCATION;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.REC_SERVER_MEDIATYPE;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.REC_SERVER_URL;
 
 /**
  * @author jesus.movilla

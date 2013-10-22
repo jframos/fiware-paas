@@ -9,7 +9,6 @@ package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -18,8 +17,8 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 
 /**
  * The Dto for the Tier Instance.
+ * 
  * @author henar
- *
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -39,9 +38,7 @@ public class TierInstanceDto {
         this.productInstanceDtos = new ArrayList<ProductInstanceDto>();
     }
 
-
     /**
-     * 
      * @param tierInstanceName
      * @param replicaNumber
      * @param productInstanceDtos
@@ -57,7 +54,6 @@ public class TierInstanceDto {
     }
 
     /**
-     * 
      * @param tierInstanceName
      * @param replicaNumber
      * @param productInstanceDtos
@@ -74,16 +70,14 @@ public class TierInstanceDto {
     }
 
     /**
-     * 
      * @param tierInstanceName
      * @param tierDto
      * @param replicaNumber
      * @param productInstanceDtos
      * @param fqn
      */
-    public TierInstanceDto(String tierInstanceName, TierDto tierDto,
-            int replicaNumber, List<ProductInstanceDto> productInstanceDtos,
-            String fqn) {
+    public TierInstanceDto(String tierInstanceName, TierDto tierDto, int replicaNumber,
+            List<ProductInstanceDto> productInstanceDtos, String fqn) {
         this.tierInstanceName = tierInstanceName;
         this.tierDto = tierDto;
         this.productInstanceDtos = productInstanceDtos;
@@ -91,9 +85,9 @@ public class TierInstanceDto {
         this.productInstanceDtos = new ArrayList<ProductInstanceDto>();
     }
 
-
     /**
      * Add the product instance dto object.
+     * 
      * @param productInstanceDto
      */
     public void addProductInstanceDto(ProductInstanceDto productInstanceDto) {
@@ -103,10 +97,10 @@ public class TierInstanceDto {
         this.productInstanceDtos.add(productInstanceDto);
     }
 
-
     public List<Attribute> getAttributes() {
         return attributes;
     }
+
     public List<ProductInstanceDto> getProductInstanceDtos() {
         return productInstanceDtos;
     }
@@ -139,6 +133,7 @@ public class TierInstanceDto {
     public void setTierDto(TierDto tierDto) {
         this.tierDto = tierDto;
     }
+
     public void setTierInstanceName(String tierInstanceName) {
         this.tierInstanceName = tierInstanceName;
     }

@@ -9,7 +9,6 @@ package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -57,13 +56,13 @@ public class Task implements Serializable {
     @AttributeOverrides({ @AttributeOverride(name = "href", column = @Column(name = "owner_href")),
         @AttributeOverride(name = "name", column = @Column(name = "owner_name")),
         @AttributeOverride(name = "type", column = @Column(name = "owner_type")) })
-        private TaskReference owner;
+    private TaskReference owner;
     @XmlElement(required = false)
     @Embedded
     @AttributeOverrides({ @AttributeOverride(name = "href", column = @Column(name = "result_href")),
         @AttributeOverride(name = "name", column = @Column(name = "result_name")),
         @AttributeOverride(name = "type", column = @Column(name = "result_type")) })
-        private TaskReference result;
+    private TaskReference result;
 
     @XmlAttribute(required = true)
     private Date startTime;

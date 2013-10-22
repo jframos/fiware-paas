@@ -12,8 +12,13 @@ package com.telefonica.euro_iaas.paasmanager.bootstrap;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
 import com.telefonica.euro_iaas.paasmanager.claudia.FirewallingClient;
@@ -25,9 +30,6 @@ import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.dao.keystone.TokenDao;
 import com.telefonica.euro_iaas.paasmanager.dao.keystone.UserDao;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import org.apache.log4j.Logger;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * @author jesus.movilla
@@ -38,7 +40,6 @@ public class SynchronizationBoostrap implements ServletContextListener {
 
     /** {@inheritDoc} */
     public void contextInitialized(ServletContextEvent event) {
-        System.out.println("SynchronizationBoostrap. START");
         log.info("SynchronizationBoostrap. START");
         WebApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(event.getServletContext());
 

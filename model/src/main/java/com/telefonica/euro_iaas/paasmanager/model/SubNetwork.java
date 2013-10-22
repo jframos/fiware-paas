@@ -4,6 +4,7 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import javax.persistence.Column;
@@ -23,7 +24,6 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.SubNetworkDto;
  * A sub network.
  * 
  * @author Henar Munoz
- * 
  */
 
 @SuppressWarnings("serial")
@@ -31,7 +31,6 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.SubNetworkDto;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Table(name = "SubNetwork")
-
 public class SubNetwork {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -48,9 +47,9 @@ public class SubNetwork {
 
     private String cidr;
 
-    private String allocationPoolsStart ;
+    private String allocationPoolsStart;
 
-    private String allocationPoolsEnd ;
+    private String allocationPoolsEnd;
 
     /**
      * Constructor.
@@ -138,9 +137,11 @@ public class SubNetwork {
 
     /**
      * the json for the OPenstack request.
+     * 
      * @return
      */
     public String toJson() {
+<<<<<<< HEAD
         return"{\"subnet\":{" +
         "      \"name\":\"" + name + "\"," +
         "      \"network_id\":\"" + this.idNetwork + "\"," +
@@ -160,4 +161,10 @@ public class SubNetwork {
 
 
 
+=======
+        return "{\"subnet\":{" + "      \"name\":\"" + name + "\"," + "      \"network_id\":\"" + this.idNetwork
+                + "\"," + "      \"ip_version\":4," + "      \"cidr\":\" " + this.cidr + "   }" + "}";
+    }
+
+>>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
 }

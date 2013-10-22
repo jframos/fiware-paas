@@ -9,18 +9,19 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.List;
 
-import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.dao.TaskDao;
-import com.telefonica.euro_iaas.paasmanager.model.Task;
-import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
-import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TaskSearchCriteria;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.SimpleExpression;
+
+import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.dao.TaskDao;
+import com.telefonica.euro_iaas.paasmanager.model.Task;
+import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
+import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TaskSearchCriteria;
 
 /**
  * TaskDao JPA based implementation.

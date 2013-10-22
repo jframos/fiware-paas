@@ -68,17 +68,14 @@
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>1.6</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey.contribs</groupId>
             <artifactId>jersey-multipart</artifactId>
-            <version>1.6</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-json</artifactId>
-            <version>1.6</version>
         </dependency>
 
         <!-- SPRINC SECURITY DEPENDENCIES -->
@@ -104,11 +101,6 @@
             <artifactId>spring-security-taglibs</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <!--<dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.1.1</version>
-        </dependency>-->
 
         <!--  CORS FILTER -->
         <dependency>
@@ -206,26 +198,6 @@
                     </reportPlugins>
                 </configuration>
             </plugin>
-
-
-            <!--    	<plugin>
-                    <groupId>org.codehaus.enunciate</groupId>
-                    <artifactId>maven-enunciate-plugin</artifactId>
-                    <version>1.23</version>
-                    <configuration>
-                        <configFile>src/build/enunciate.xml</configFile>
-                        <exports>
-                            <jaxws.client.library.binaries>client.jar</jaxws.client.library.binaries>
-                        </exports>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>assemble</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>	-->
 
 
             <plugin>

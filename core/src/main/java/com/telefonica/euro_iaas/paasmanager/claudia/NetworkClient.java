@@ -4,6 +4,7 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.claudia;
 
 import java.util.List;
@@ -18,7 +19,6 @@ import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 
 /**
  * @author henar
- * 
  */
 public interface NetworkClient {
 
@@ -26,6 +26,7 @@ public interface NetworkClient {
 
     /**
      * Add the network to the router.
+     * 
      * @param claudiaData
      * @param router
      * @param network
@@ -34,14 +35,15 @@ public interface NetworkClient {
 
     /**
      * Deploy the network in the infrastructure.
+     * 
      * @param claudiaData
      * @param network
      */
-    void deployNetwork(ClaudiaData claudiaData,
-            Network network) throws InfrastructureException;
+    void deployNetwork(ClaudiaData claudiaData, Network network) throws InfrastructureException;
 
     /**
      * Deploy the router.
+     * 
      * @param claudiaData
      * @param router
      * @return
@@ -51,6 +53,7 @@ public interface NetworkClient {
 
     /**
      * Deploy the subnetwork in the infrastructure.
+     * 
      * @param claudiaData
      * @param subNet
      */
@@ -58,16 +61,21 @@ public interface NetworkClient {
 
     /**
      * Destroy the network in the infrastructure.
+     * 
      * @param claudiaData
      * @param network
      */
     void destroyNetwork(ClaudiaData claudiaData, Network network) throws InfrastructureException;
 
 
+<<<<<<< HEAD
     void destroyRouter(ClaudiaData claudiaData, Router router);
 
+=======
+>>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
     /**
      * Destroy a subnet in OpenStack.
+     * 
      * @param claudiaData
      * @param subnet
      * @return
@@ -77,6 +85,7 @@ public interface NetworkClient {
 
     /**
      * Loads all network associated to a certain vdc.
+     * 
      * @param claudiaData
      * @return List<Network>
      */
@@ -84,12 +93,12 @@ public interface NetworkClient {
 
     /**
      * Load a Network from OpenStack.
+     * 
      * @param claudiaData
      * @param networkId
      * @return
      * @throws EntityNotFoundException
      */
     String loadNetwork(ClaudiaData claudiaData, Network network) throws EntityNotFoundException;
-
 
 }

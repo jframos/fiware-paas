@@ -9,9 +9,6 @@ package com.telefonica.euro_iaas.paasmanager.installator.rec.services.impl;
 
 import java.text.MessageFormat;
 
-import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
-import com.telefonica.euro_iaas.paasmanager.installator.rec.client.ClientConstants;
-import com.telefonica.euro_iaas.paasmanager.installator.rec.services.RECACService;
 import org.apache.log4j.Logger;
 import org.restlet.Client;
 import org.restlet.data.MediaType;
@@ -20,6 +17,10 @@ import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.resource.DomRepresentation;
 import org.w3c.dom.Document;
+
+import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
+import com.telefonica.euro_iaas.paasmanager.installator.rec.client.ClientConstants;
+import com.telefonica.euro_iaas.paasmanager.installator.rec.services.RECACService;
 
 /**
  * @author jesus.movilla

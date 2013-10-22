@@ -12,6 +12,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -22,7 +23,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import org.apache.log4j.Logger;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
@@ -31,6 +31,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 
 public class OVFUtilsDomImpl implements OVFUtils {
 
@@ -115,60 +117,23 @@ public class OVFUtilsDomImpl implements OVFUtils {
 
         } catch (ParserConfigurationException e) {
             String msg = "Error parsing ovf " + e.getMessage();
-            System.out.println(msg);
+            log.warn(msg);
             throw new InvalidOVFException(msg);
         } catch (SAXException e) {
             String msg = "SAXException with  ovf " + e.getMessage();
-            System.out.println(msg);
+            log.warn(msg);
             throw new InvalidOVFException(msg);
         } catch (IOException e) {
             String msg = "IOException with  ovf " + e.getMessage();
-            System.out.println(msg);
+            log.warn(msg);
             throw new InvalidOVFException(msg);
         } catch (TransformerException e) {
             String msg = "TransformerException with ovf " + e.getMessage();
-            System.out.println(msg);
+            log.warn(msg);
             throw new InvalidOVFException(msg);
         }
         return ovfs;
     }
-
-    /*
-     * private String removeInitOvfParams(String ovf) throws InvalidOVFException { String ovfSingleVM;
-     * DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); DocumentBuilder builder; Document doc;
-     * Element root; try { builder = factory.newDocumentBuilder(); doc = builder.parse(new InputSource(new
-     * StringReader(ovf))); root = doc.getDocumentElement(); Node parentNode = findNode(root, XSQL_ENVELOPE); Node
-     * instantiateOvfParamsNode = parentNode.getParentNode(); Node rootNode = instantiateOvfParamsNode.getParentNode();
-     * rootNode = updateNode(builder, doc, rootNode, nodeToString(parentNode), instantiateOvfParamsNode); Transformer
-     * transformer = TransformerFactory.newInstance() .newTransformer();
-     * transformer.setOutputProperty(OutputKeys.INDENT, "yes"); StreamResult result = new StreamResult(new
-     * StringWriter()); DOMSource source = new DOMSource(doc); transformer.transform(source, result); ovfSingleVM =
-     * result.getWriter().toString(); } catch (ParserConfigurationException e) { String msg = "Error parsing ovf " +
-     * e.getMessage(); System.out.println(msg); throw new InvalidOVFException(msg); } catch (SAXException e) { String
-     * msg = "SAXException with  ovf " + e.getMessage(); System.out.println(msg); throw new InvalidOVFException(msg); }
-     * catch (IOException e) { String msg = "IOException with  ovf " + e.getMessage(); System.out.println(msg); throw
-     * new InvalidOVFException(msg); } catch (TransformerException e) { String msg = "TransformerException with ovf " +
-     * e.getMessage(); System.out.println(msg); throw new InvalidOVFException(msg); } return ovfSingleVM; }
-     */
-
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.util.OVFUtils#getOSType(java.lang .String)
-     */
-    /*
-     * public String getOSType(String ovfVM) throws InvalidOVFException { String osType = null; DocumentBuilderFactory
-     * factory = DocumentBuilderFactory.newInstance(); DocumentBuilder builder; Document doc; try { builder =
-     * factory.newDocumentBuilder(); doc = builder.parse(new InputSource(new StringReader(ovfVM))); osType =
-     * doc.getElementsByTagName(OPERATINGSYSTEM_SECTION).item(0)
-     * .getAttributes().getNamedItem(OSTYPE_ID).getTextContent(); } catch (SAXException e) { String errorMessage =
-     * "SAXException when obtaining OsType." + " Desc: " + e.getMessage(); log.error(errorMessage); throw new
-     * InvalidOVFException(errorMessage); } catch (ParserConfigurationException e) { String errorMessage =
-     * "ParserConfigurationException when obtaining " + "OsType. Desc: " + e.getMessage(); log.error(errorMessage);
-     * throw new InvalidOVFException(errorMessage); } catch (IOException e) { String errorMessage =
-     * "IOException when obtaining " + "OsType. Desc: " + e.getMessage(); log.error(errorMessage); throw new
-     * InvalidOVFException(errorMessage); } catch (Exception e) { String errorMessage = "Unexpected exception : " +
-     * e.getMessage(); log.error(errorMessage); throw new InvalidOVFException(errorMessage); } return osType; }
-     */
 
     /*
      * (non-Javadoc)
@@ -421,7 +386,6 @@ public class OVFUtilsDomImpl implements OVFUtils {
         try {
             Node fragmentNode = docBuilder.parse(new InputSource(new StringReader(newNode))).getDocumentElement();
             fragmentNode = doc.importNode(fragmentNode, true);
-            // System.out.println("newNode:" + nodeToString(fragmentNode));
             parentNode.replaceChild(fragmentNode, oldNode);
         } catch (SAXException se) {
             se.printStackTrace();
@@ -436,7 +400,6 @@ public class OVFUtilsDomImpl implements OVFUtils {
     }
 
     private NodeList findNodeList(Node node, String xql) throws TransformerException {
-        // System.out.println("Node:" + xql);
         return (XPathAPI.selectNodeList(node, xql));
     }
 
@@ -460,13 +423,6 @@ public class OVFUtilsDomImpl implements OVFUtils {
         return targetNode;
     }
 
-    /*
-     * private String getTextContents(Node node) { NodeList childNodes; StringBuffer contents = new StringBuffer();
-     * childNodes = node.getChildNodes(); for (int i = 0; i < childNodes.getLength(); i++) { if
-     * (childNodes.item(i).getNodeType() == Node.TEXT_NODE) { contents.append(childNodes.item(i).getNodeValue()); } }
-     * return contents.toString(); }
-     */
-
     // From
     // http://projectwownow.blogspot.com/2008/08/java-node-to-string-conversion.html
     private String nodeToString(Node node) {
@@ -476,23 +432,9 @@ public class OVFUtilsDomImpl implements OVFUtils {
             t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             t.transform(new DOMSource(node), new StreamResult(sw));
         } catch (TransformerException te) {
-            System.out.println("nodeToString Transformer Exception");
+            log.warn("nodeToString Transformer Exception");
         }
         return sw.toString();
     }
-
-    /**
-     * @param ovf
-     * @return
-     */
-    /*
-     * private String getVMNameFromSingleOVF(String ovf) throws InvalidOVFException { String vmname = null;
-     * log.info("ovf= " + ovf); try { Document doc = claudiaUtil.stringToDom(ovf); Node virtualSystem =
-     * doc.getElementsByTagName(VIRTUAL_SYSTEM_TAG) .item(0); vmname = virtualSystem.getAttributes().getNamedItem(
-     * VIRTUAL_SYSTEM_ID).getTextContent(); } catch (SAXException e) { throw new InvalidOVFException(e.getMessage()); }
-     * catch (ParserConfigurationException e) { throw new InvalidOVFException(e.getMessage()); } catch (IOException e) {
-     * throw new InvalidOVFException(e.getMessage()); } catch (Exception e) { throw new
-     * InvalidOVFException(e.getMessage()); } return vmname; }
-     */
 
 }

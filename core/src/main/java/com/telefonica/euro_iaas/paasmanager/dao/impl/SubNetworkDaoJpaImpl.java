@@ -4,6 +4,7 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.List;
@@ -15,12 +16,12 @@ import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 
 /**
  * @author Henar Munoz
- * 
  */
 public class SubNetworkDaoJpaImpl extends AbstractBaseDao<SubNetwork, String> implements SubNetworkDao {
 
     /**
      * find all networks.
+     * 
      * @return network list
      */
     public List<SubNetwork> findAll() {

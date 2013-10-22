@@ -135,7 +135,6 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
         } catch (NoResultException e) {
             String message = " No EnvironmentInstance found in the database with tiers" + "with blueprintName: "
                     + envInstanceName;
-            System.out.println(message);
             throw new EntityNotFoundException(EnvironmentInstance.class, "blueprintName", envInstanceName);
         }
         return environmentInstance;
@@ -154,7 +153,6 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
         } catch (NoResultException e) {
             String message = " No EnvironmentInstance found in the database no tiers " + "with blueprintName: "
                     + envInstanceName;
-            System.out.println(message);
             throw new EntityNotFoundException(EnvironmentInstance.class, "blueprintName", envInstanceName);
         }
         return environmentInstance;

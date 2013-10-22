@@ -80,7 +80,6 @@ public class InitDbBootstrap implements ServletContextListener {
         ArtifactTypeDao artifactTypeDao = (ArtifactTypeDao) ctx.getBean("artifactTypeDao");
         ArtifactDao artifactDao = (ArtifactDao) ctx.getBean("artifactDao");
 
-
         EnvironmentDao environmentDao = (EnvironmentDao) ctx.getBean("environmentDao");
         EnvironmentInstanceDao environmentInstanceDao = (EnvironmentInstanceDao) ctx.getBean("environmentInstanceDao");
 
@@ -133,8 +132,8 @@ public class InitDbBootstrap implements ServletContextListener {
             // Taking the ProductRelease from SDC *******************
         } catch (SdcException ex1) {
             String msg = " Impossible to recover ProductReleases from SDC. "
-                + "Either connection problem or Product Release Resource problem";
-            System.out.println(msg);
+                    + "Either connection problem or Product Release Resource problem";
+            log.error(msg);
             throw new RuntimeException(ex1);
         } catch (AlreadyExistsEntityException ex2) {
             throw new RuntimeException(ex2);
@@ -164,7 +163,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 ProductType productTypeFirewall = new ProductType("Firewall", "Firewall description");
                 ProductType productTypeDatabase = new ProductType("Database", "database description");
                 ProductType productTypeAWS = new ProductType("ApplicationWebServer",
-                "Application Web Server description");
+                        "Application Web Server description");
                 ProductType productTypeLoadBalancer = new ProductType("LoadBalancer", "LoadBalancer description");
                 ProductType productTypeNEP = new ProductType("NONEXISTENT", "NONEXISTENT description");
 
@@ -189,24 +188,6 @@ public class InitDbBootstrap implements ServletContextListener {
                 artifactTypeEar = artifactTypeDao.create(artifactTypeEar);
                 artifactTypeSql = artifactTypeDao.create(artifactTypeSql);
 
-                // EnvironmentType
-
-
-
-                // Taking the ProductRelease from SDC
-                /*
-                 * List<ProductRelease> productReleases = new ArrayList<ProductRelease>(); try { productReleases =
-                 * productReleaseSdcDao.findAll(); } catch (SdcException e1) { String msg =
-                 * " Impossible to recover ProductReleases from SDC. " +
-                 * "Either connection problem or Product Release Resource problem"; System.out.println(msg); } for (int
-                 * i=0; i < productReleases.size(); i++){ ProductRelease pRelease = productReleases.get(i); List<OS>
-                 * ssoo =new ArrayList<OS>(); ssoo = pRelease.getSupportedOOSS(); //if (!ssoo.isEmpty()) { if (ssoo !=
-                 * null) { List<OS> supportedOOSS =new ArrayList<OS>(); for (int j=0; j < ssoo.size(); j++){ OS so =
-                 * null; try { so = osDao.load(ssoo.get(j).getOsType()); } catch (EntityNotFoundException e1) { so =
-                 * osDao.create(ssoo.get(j)); } supportedOOSS.add(so); } pRelease.setSupportedOOSS(supportedOOSS); }
-                 * ProductRelease productRelease = productReleaseDao.create(pRelease); }
-                 */
-
                 ProductRelease tomcat6 = null;
                 ProductRelease postgres84 = null;
                 ProductRelease haproxy10 = null;
@@ -228,79 +209,10 @@ public class InitDbBootstrap implements ServletContextListener {
                     nodejs0615 = productReleaseDao.load("nodejs-0.6.15");
                 } catch (EntityNotFoundException e1) {
                     String msg = " Impossible to recover ProductReleases from PaasManager Database. "
-                        + "Either connection problem or Product Release Resource problem";
-                    System.out.println(msg);
+                            + "Either connection problem or Product Release Resource problem";
+                    log.error(msg);
                     throw new RuntimeException(e1);
                 }
-
-                // ProductReleases taken from SDC
-                /*
-                 * List<Attribute> atttomcat = new ArrayList<Attribute>(); atttomcat.add(new Attribute("ssl_port",
-                 * "8443", "The ssl listen port")); atttomcat.add(new Attribute("port", "8080", "The ssl listen port"));
-                 * atttomcat.add(new Attribute("openports", "8080", "The ssl listen port")); atttomcat.add(new
-                 * Attribute("sdcgroupid", "id_web_server", "The ssl listen port")); ProductRelease tomcat6 = new
-                 * ProductRelease("tomcat", "6", "Tomcat server 6", atttomcat); tomcat6 =
-                 * productReleaseDao.create(tomcat6); ProductRelease JOnAS_PIC = new ProductRelease("JOnAS_PIC",
-                 * "2.0.0", "JOnAS_PIC 2.0.0 description", null, null, supportedSSOO123, true, productTypeAWS);
-                 * JOnAS_PIC = productReleaseDao.create(JOnAS_PIC); List<Attribute> attgit = new ArrayList<Attribute>();
-                 * attgit.add(new Attribute("test", "dd", "ddd")); ProductRelease git17 = new ProductRelease("git",
-                 * "1.7", "git 1.7", attgit); git17 = productReleaseDao.create(git17); List<Attribute> attmongoshard =
-                 * new ArrayList(); attmongoshard.add(new Attribute("sdcgroupid", "cluster_name", "sdcgroupid"));
-                 * attmongoshard.add(new Attribute("balancer", "mongos", "mongos")); ProductRelease mongoshard223 = new
-                 * ProductRelease( "mongodbshard", "2.2.3", "mongodb shard 2.2.3", attmongoshard); mongoshard223 =
-                 * productReleaseDao.create(mongoshard223); Attribute att11 = new Attribute("sdcgroupid",
-                 * "cluster_name", "sdcgroupid"); Attribute att22 = new Attribute("sdccoregroupid",
-                 * "mongodb_cluster_name", "sdccoregroupid"); List<Attribute> atts = new ArrayList<Attribute>();
-                 * atts.add(att11); atts.add(att22); ProductRelease mongodbconfig223 = new ProductRelease(
-                 * "mongodbconfig", "2.2.3", "mongodb config 2.2.3", atts); mongodbconfig223 =
-                 * productReleaseDao.create(mongodbconfig223); List<Attribute> attmysql = new ArrayList<Attribute>();
-                 * Attribute attmy = new Attribute("openports", "3306", "3306"); attmysql.add(attmy); ProductRelease
-                 * mysqlsql10 = new ProductRelease("mysql", "1.2.4", "mysql 1.0 description", attmysql); mysqlsql10 =
-                 * productReleaseDao.create(mysqlsql10); List<Attribute> attnodejs = new ArrayList<Attribute>();
-                 * attnodejs .add(new Attribute("openports", "80", "The port opens")); attnodejs.add(new
-                 * Attribute("application", "helloworld", "the helloworld application")); attnodejs .add(new
-                 * Attribute("url_repo_git", "https://github.com/hmunfru/nodejstest.git", "the url")); ProductRelease
-                 * nodejs0615 = new ProductRelease("nodejs", "0.6.15", "Nodejs 0.6.15", attnodejs); nodejs0615 =
-                 * productReleaseDao.create(nodejs0615); List<Attribute> attsmongos = new ArrayList<Attribute>();
-                 * attsmongos.add(new Attribute("sdcgroupid", "cluster_name", "sdcgroupid")); attsmongos.add(new
-                 * Attribute("sdccoregroupid", "mongodb_cluster_name", "sdccoregroupid")); ProductRelease mongos223 =
-                 * new ProductRelease("mongos", "2.2.3", "mongos 1.0.0", attsmongos); mongos223 =
-                 * productReleaseDao.create(mongos223); List<Attribute> attcontextbroker = new ArrayList<Attribute>();
-                 * attcontextbroker.add(new Attribute("port", "80", "test")); ProductRelease contextbroker100 = new
-                 * ProductRelease( "contextbroker", "1.0.0", "contextbroker 1.0.0", attcontextbroker); contextbroker100
-                 * = productReleaseDao.create(contextbroker100); tomcat6 = productReleaseDao.update(tomcat6);
-                 * List<Attribute> attspostgresql = new ArrayList<Attribute>(); attspostgresql.add(new
-                 * Attribute("username", "postgres", "The administrator usename")); attspostgresql.add(new
-                 * Attribute("password", "postgres", "The administrator password")); ProductRelease postgres84 = new
-                 * ProductRelease("postgresql", "8.4", "postgresql 8.4", attspostgresql); postgres84 =
-                 * productReleaseDao.create(postgres84); List<Attribute> attshaproxy = new ArrayList<Attribute>();
-                 * attshaproxy .add(new Attribute("key1", "value1", "keyvaluedesc1")); attshaproxy .add(new
-                 * Attribute("key2", "value2", "keyvaluedesc2")); attshaproxy.add(new Attribute("sdccoregroupid",
-                 * "app_server_role", "idcoregroup")); ProductRelease haproxy10 = new ProductRelease("haproxy", "1.0",
-                 * "haproxy 1.0", attshaproxy); haproxy10 = productReleaseDao.create(haproxy10); List<Attribute>
-                 * attstest = new ArrayList<Attribute>(); attstest.add(new Attribute("key1", "value1",
-                 * "keyvaluedesc1")); attstest.add(new Attribute("key2", "value2", "keyvaluedesc2")); ProductRelease
-                 * test01 = new ProductRelease("test", "0.1", "blah blah blah", attstest); test01 =
-                 * productReleaseDao.create(test01); List<Attribute> attsmediawiki = new ArrayList<Attribute>();
-                 * attsmediawiki.add(new Attribute("wikiname", "Wiki to be shown", "The name of the wiki"));
-                 * attsmediawiki.add(new Attribute("path", "/demo", "The url context to be displayed")); ProductRelease
-                 * mediawiki1 = new ProductRelease("mediawiki", "1.17.0", "Mediawiki 1.17.0", attsmediawiki); mediawiki1
-                 * = productReleaseDao.create(mediawiki1); List<Attribute> attpostgres = new ArrayList<Attribute>();
-                 * attpostgres.add(new Attribute("tset", "test", "test")); ProductRelease postgresql_PIC = new
-                 * ProductRelease( "postgresql_PIC", "0.0.3", "postgresql_PIC", attpostgres); postgresql_PIC =
-                 * productReleaseDao.create(postgresql_PIC); List<Attribute> attpostgres2 = new ArrayList<Attribute>();
-                 * attpostgres2.add(new Attribute("tset", "test", "test")); ProductRelease postgresql_PIC2 = new
-                 * ProductRelease( "postgresql_PIC", "0.0.4", "postgresql_PIC", attpostgres2); postgresql_PIC2 =
-                 * productReleaseDao.create(postgresql_PIC2); List<Attribute> atttomcatpic = new ArrayList<Attribute>();
-                 * atttomcatpic.add(new Attribute("tset", "test", "test")); ProductRelease tomcat_PIC = new
-                 * ProductRelease("tomcat_PIC", "0.0.3", "tomcat_PIC", atttomcatpic); tomcat_PIC =
-                 * productReleaseDao.create(tomcat_PIC); ProductRelease jonas_PIC = new ProductRelease("JONAS_PIC",
-                 * "2.0.0", "JONAS_PIC", null); jonas_PIC = productReleaseDao.create(jonas_PIC); ProductRelease
-                 * jOnAS_Orchestra_PIC = new ProductRelease("JOnAS_Orchestra_PIC", "2.0.0", "JOnAS_Orchestra_PIC",
-                 * null); jOnAS_Orchestra_PIC = productReleaseDao.create(jOnAS_Orchestra_PIC); ProductRelease
-                 * extServiceMix_PIC = new ProductRelease("ExtServiceMix_PIC", "1.0.0", "ExtServiceMix_PIC", null);
-                 * extServiceMix_PIC = productReleaseDao.create(extServiceMix_PIC);
-                 */
 
                 // PoductReleases List
                 List<ProductRelease> productReleasesTomcat6 = new ArrayList<ProductRelease>();
@@ -411,7 +323,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 tiersTesting2.add(abstractTier);
 
                 Environment abstractEnvironment = new Environment("2testing", tiersTesting2,
-                "abstractEnvironment for testing ");
+                        "abstractEnvironment for testing ");
                 abstractEnvironment.setOrg("FIWARE");
                 abstractEnvironment = environmentDao.create(abstractEnvironment);
 
@@ -463,7 +375,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 Tier tierContextBroker = new Tier("contextbrokr", 1, 1, 1, productReleasesMongoContext);
                 tierContextBroker.setImage("44dcdba3-a75d-46a3-b209-5e9035d2435e");
                 tierContextBroker
-                .setIcono("http://catalogue.fi-ware.eu/sites/default/files/styles/enabler_icon_large/public/orion.png");
+                        .setIcono("http://catalogue.fi-ware.eu/sites/default/files/styles/enabler_icon_large/public/orion.png");
                 tierContextBroker.setFlavour("2");
                 tierContextBroker = tierDao.create(tierContextBroker);
 
@@ -500,7 +412,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 Tier tierContextBroker2 = new Tier("mongoscontextbrokr", 1, 1, 1, productReleasesMongoContext);
                 tierContextBroker2.setImage("44dcdba3-a75d-46a3-b209-5e9035d2435e");
                 tierContextBroker2
-                .setIcono("http://catalogue.fi-ware.eu/sites/default/files/styles/enabler_icon_large/public/orion.png");
+                        .setIcono("http://catalogue.fi-ware.eu/sites/default/files/styles/enabler_icon_large/public/orion.png");
                 tierContextBroker2.setFlavour("2");
                 tierContextBroker2.setVdc("cd593e796acb4ac5821e208ff26802bd");
                 tierContextBroker2.setKeypair("passmanager-fermin");
@@ -525,14 +437,14 @@ public class InitDbBootstrap implements ServletContextListener {
                 tiersSmartcitylights.add(tierApp2);
 
                 Environment contextSmartcitylights = new Environment("smartcity-lights", tiersSmartcitylights,
-                "Environment smartcity-lights");
+                        "Environment smartcity-lights");
                 contextSmartcitylights.setOrg("FIWARE");
                 contextSmartcitylights.setVdc("cd593e796acb4ac5821e208ff26802bd");
                 contextSmartcitylights = environmentDao.create(contextSmartcitylights);
 
                 // AppicationType
                 ApplicationType applicationTypeJavaSpring = new ApplicationType("Java-Spring Application",
-                "Java-Spring Env description");
+                        "Java-Spring Env description");
                 applicationTypeJavaSpring = applicationTypeDao.create(applicationTypeJavaSpring);
 
                 // *********Application Release*************
@@ -568,14 +480,6 @@ public class InitDbBootstrap implements ServletContextListener {
 
                 // Provisoning an environmentInstance
 
-                // EnvironmentInstance
-                /*
-                 * Environment environment4CaastTomcatHaproxyMysql = new Environment("4CaastTPCW",
-                 * environmentTypeJavaSpring, tiers4Caast3VMs); environment4CaastTomcatHaproxyMysql =
-                 * environmentDao.create(environment4CaastTomcatHaproxyMysql); environment4CaastTomcatHaproxyMysql =
-                 * environmentDao.load("4CaastTPCW");
-                 */
-
             } catch (AlreadyExistsEntityException e1) {
                 throw new RuntimeException(e1);
             } catch (InvalidEntityException e1) {
@@ -583,6 +487,6 @@ public class InitDbBootstrap implements ServletContextListener {
             }
         }
 
-        System.out.println("InitDbBootstrap. END");
+        log.trace("InitDbBootstrap. END");
     }
 }

@@ -10,6 +10,8 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -21,7 +23,6 @@ import com.telefonica.euro_iaas.paasmanager.manager.SecurityGroupManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
-import org.apache.log4j.Logger;
 
 public class SecurityGroupManagerImpl implements SecurityGroupManager {
 

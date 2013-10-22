@@ -9,7 +9,13 @@ package com.telefonica.euro_iaas.paasmanager.dao.sdc.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ws.rs.core.MediaType;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import org.apache.log4j.Logger;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -20,9 +26,6 @@ import com.telefonica.euro_iaas.paasmanager.dao.sdc.ProductReleaseSdcDao;
 import com.telefonica.euro_iaas.paasmanager.exception.SdcException;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import org.apache.log4j.Logger;
 
 /**
  * @author jesus.movilla

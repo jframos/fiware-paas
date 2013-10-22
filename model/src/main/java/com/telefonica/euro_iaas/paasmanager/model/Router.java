@@ -4,6 +4,7 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import javax.persistence.Column;
@@ -21,7 +22,6 @@ import javax.xml.bind.annotation.XmlTransient;
  * A router.
  * 
  * @author Henar Munoz
- * 
  */
 
 @SuppressWarnings("serial")
@@ -29,7 +29,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Table(name = "Router")
-
 public class Router {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -58,7 +57,17 @@ public class Router {
      */
     public Router(String idPublicNetwork, String name) {
         this.name = name;
+<<<<<<< HEAD
         this.idPublicNetwork = idPublicNetwork;
+=======
+    }
+
+    /**
+     * @return the id
+     */
+    public String getIdNetwork() {
+        return idNetwork;
+>>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
     }
 
     /**
@@ -84,9 +93,9 @@ public class Router {
     }
 
     /**
-     * 
      * @return string with the json representation for the request
      */
+<<<<<<< HEAD
     public String toJson(){
         return  "{" +
         "    \"router\":" +
@@ -98,7 +107,12 @@ public class Router {
         "        }" +
         "    }" +
         "}";
+=======
+    public String toJson() {
+        return "{" + "    \"router\":" + "    {" + "        \"name\": \"" + name + "\","
+                + "        \"admin_state_up\": true," + "        \"external_gateway_info\" : {"
+                + "             \"network_id\": \"" + this.idNetwork + "\"" + "        }" + "    }" + "}";
+>>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
     }
-
 
 }

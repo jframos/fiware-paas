@@ -9,6 +9,9 @@ package com.telefonica.euro_iaas.paasmanager.installator.rec.client;
 
 // import com.sun.jersey.api.client.Client;
 
+import org.restlet.Client;
+import org.restlet.data.Protocol;
+
 import com.telefonica.euro_iaas.paasmanager.installator.rec.services.RECACService;
 import com.telefonica.euro_iaas.paasmanager.installator.rec.services.RECPICService;
 import com.telefonica.euro_iaas.paasmanager.installator.rec.services.RECServiceService;
@@ -19,8 +22,6 @@ import com.telefonica.euro_iaas.paasmanager.installator.rec.services.impl.RECPIC
 import com.telefonica.euro_iaas.paasmanager.installator.rec.services.impl.RECServiceServiceImpl;
 import com.telefonica.euro_iaas.paasmanager.installator.rec.services.impl.RECVMServiceImpl;
 import com.telefonica.euro_iaas.paasmanager.installator.rec.services.impl.RECVirtualServiceServiceImpl;
-import org.restlet.Client;
-import org.restlet.data.Protocol;
 
 /**
  * @author jesus.movilla

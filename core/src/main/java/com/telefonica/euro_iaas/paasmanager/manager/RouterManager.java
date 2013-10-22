@@ -4,6 +4,7 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import java.util.List;
@@ -17,16 +18,13 @@ import com.telefonica.euro_iaas.paasmanager.model.Router;
 
 /**
  * @author henar
- * 
  */
 public interface RouterManager {
 
     /**
      * It adds a network to the router.
-     * 
      */
     void addNetwork(ClaudiaData claudiaData, Router router, Network network) throws InfrastructureException;
-
 
     /**
      * Create a router.
@@ -36,19 +34,24 @@ public interface RouterManager {
      * @param net
      * @throws InfrastructureException
      */
+<<<<<<< HEAD
     void create(ClaudiaData claudiaData, Router router, Network net)
     throws InvalidEntityException, InfrastructureException;
+=======
+    void create(ClaudiaData claudiaData, Router subNetwork) throws InvalidEntityException, InfrastructureException;
+>>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
 
     /**
      * Delete a router.
+     * 
      * @param claudiaData
      * @param router
      * @throws EntityNotFoundException
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    void delete(ClaudiaData claudiaData, Router router) throws EntityNotFoundException,
-    InvalidEntityException, InfrastructureException;
+    void delete(ClaudiaData claudiaData, Router router) throws EntityNotFoundException, InvalidEntityException,
+            InfrastructureException;
 
     /**
      * Retrieve all router created in the system.
@@ -64,9 +67,9 @@ public interface RouterManager {
      */
     Router load(String name) throws EntityNotFoundException;
 
-
     /**
      * Update a router.
+     * 
      * @param router
      * @return the router updated
      */

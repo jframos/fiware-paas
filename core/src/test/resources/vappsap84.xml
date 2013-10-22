@@ -1,25 +1,38 @@
 <VApp>
-<Children>
-<VApp href="http://109.231.70.141:8182/api/org/4caast/vdc/test9/vapp/1321testconnuevasimages" name="4caast.customers.test9.services.1321testconnuevasimages">
-<Link href="http://109.231.70.141:8182/api/org/4caast/vdc/test9/vapp/1321testconnuevasimages/monitor" rel="monitor:measures" type="application/vnc.telefonica.tcloud. measureDescriptorList+xml"/>
-<Children>
-<VApp href="http://109.231.70.141:8182/api/org/4caast/vdc/test9/vapp/1321testconnuevasimages/FlexVM1/1" name="4caast.customers.test9.services.1321testconnuevasimages.vees.FlexVM1.replicas.1">
-<Link href="http://109.231.70.141:8182/api/org/4caast/vdc/test9/vapp/1321testconnuevasimages/FlexVM1/1/monitor" rel="monitor:measures" type="application/vnc.telefonica.tcloud.measureDescriptorList+xml"/>
-<ProductSection xmlns="http://schemas.dmtf.org/ovf/envelope/1" xmlns:ns0="http://schemas.dmtf.org/ovf/envelope/1" href="http://109.231.70.141:8182/api/org/4caast/vdc/test9/vapp/1321testconnuevasimages/FlexVM1/1/product/FlexVM1" ns0:class="fourcast.product.FlexVM1">
-<Link rel="add" type="application/ovf.item+xml"/>
-<Product>FlexVM1</Product>
-<Version>1.0</Version>
-</ProductSection>
-<ProductSection xmlns="http://schemas.dmtf.org/ovf/envelope/1" xmlns:ns0="http://schemas.dmtf.org/ovf/envelope/1" href="http://109.231.70.141:8182/api/org/4caast/vdc/test9/vapp/1321testconnuevasimages/FlexVM1/1/product/tomcat_PIC" ns0:class="fourcast.product.tomcat_PIC">
-<Link rel="add" type="application/ovf.item+xml"/>
-<Product>tomcat_PIC</Product>
-<Version>0.0.3</Version>
-</ProductSection>
-<ProductSection xmlns="http://schemas.dmtf.org/ovf/envelope/1" xmlns:ns0="http://schemas.dmtf.org/ovf/envelope/1" href="http://109.231.70.141:8182/api/org/4caast/vdc/test9/vapp/1321testconnuevasimages/FlexVM1/1/product/WarrantManagement_app_war" ns0:class="fourcast.product.WarrantManagement_app_war">
-<Link rel="add" type="application/ovf.item+xml"/>
-<Product>WarrantManagement_app_war</Product>
-<Version>1.0</Version>
-</ProductSection>
+    <Children>
+        <VApp href="http://109.231.70.141:8182/api/org/4caast/vdc/test9/vapp/1321testconnuevasimages"
+              name="4caast.customers.test9.services.1321testconnuevasimages">
+            <Link href="http://109.231.70.141:8182/api/org/4caast/vdc/test9/vapp/1321testconnuevasimages/monitor"
+                  rel="monitor:measures" type="application/vnc.telefonica.tcloud. measureDescriptorList+xml"/>
+            <Children>
+                <VApp href="http://109.231.70.141:8182/api/org/4caast/vdc/test9/vapp/1321testconnuevasimages/FlexVM1/1"
+                      name="4caast.customers.test9.services.1321testconnuevasimages.vees.FlexVM1.replicas.1">
+                    <Link href="http://109.231.70.141:8182/api/org/4caast/vdc/test9/vapp/1321testconnuevasimages/FlexVM1/1/monitor"
+                          rel="monitor:measures" type="application/vnc.telefonica.tcloud.measureDescriptorList+xml"/>
+                    <ProductSection xmlns="http://schemas.dmtf.org/ovf/envelope/1"
+                                    xmlns:ns0="http://schemas.dmtf.org/ovf/envelope/1"
+                                    href="http://109.231.70.141:8182/api/org/4caast/vdc/test9/vapp/1321testconnuevasimages/FlexVM1/1/product/FlexVM1"
+                                    ns0:class="fourcast.product.FlexVM1">
+                        <Link rel="add" type="application/ovf.item+xml"/>
+                        <Product>FlexVM1</Product>
+                        <Version>1.0</Version>
+                    </ProductSection>
+                    <ProductSection xmlns="http://schemas.dmtf.org/ovf/envelope/1"
+                                    xmlns:ns0="http://schemas.dmtf.org/ovf/envelope/1"
+                                    href="http://109.231.70.141:8182/api/org/4caast/vdc/test9/vapp/1321testconnuevasimages/FlexVM1/1/product/tomcat_PIC"
+                                    ns0:class="fourcast.product.tomcat_PIC">
+                        <Link rel="add" type="application/ovf.item+xml"/>
+                        <Product>tomcat_PIC</Product>
+                        <Version>0.0.3</Version>
+                    </ProductSection>
+                    <ProductSection xmlns="http://schemas.dmtf.org/ovf/envelope/1"
+                                    xmlns:ns0="http://schemas.dmtf.org/ovf/envelope/1"
+                                    href="http://109.231.70.141:8182/api/org/4caast/vdc/test9/vapp/1321testconnuevasimages/FlexVM1/1/product/WarrantManagement_app_war"
+                                    ns0:class="fourcast.product.WarrantManagement_app_war">
+                        <Link rel="add" type="application/ovf.item+xml"/>
+                        <Product>WarrantManagement_app_war</Product>
+                        <Version>1.0</Version>
+                    </ProductSection>
 
 
                     <VirtualHardwareSection xmlns="http://schemas.dmtf.org/ovf/envelope/1">
@@ -502,5 +515,5 @@
                 </VApp>
             </Children>
         </VApp>
-</Children>
+    </Children>
 </VApp>

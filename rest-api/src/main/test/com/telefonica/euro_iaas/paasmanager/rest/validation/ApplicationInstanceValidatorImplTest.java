@@ -7,12 +7,14 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
+import junit.framework.Assert;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.telefonica.euro_iaas.paasmanager.exception.EnvironmentInstanceNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidApplicationReleaseException;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationInstanceDto;
-import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ApplicationInstanceValidatorImplTest {
 

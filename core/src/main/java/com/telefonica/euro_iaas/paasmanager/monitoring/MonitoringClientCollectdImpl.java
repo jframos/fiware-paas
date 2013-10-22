@@ -7,6 +7,11 @@
 
 package com.telefonica.euro_iaas.paasmanager.monitoring;
 
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.COLLECTOR_BASEURL;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.COLLECTOR_IP;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.COLLECTOR_MYSQL;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.COLLECTOR_PORT;
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -17,6 +22,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
 
+import org.apache.log4j.Logger;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -24,13 +31,6 @@ import com.telefonica.euro_iaas.paasmanager.exception.MonitoringDeleteException;
 import com.telefonica.euro_iaas.paasmanager.exception.MonitoringGetException;
 import com.telefonica.euro_iaas.paasmanager.exception.MonitoringPutException;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import org.apache.log4j.Logger;
-
-
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.COLLECTOR_BASEURL;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.COLLECTOR_IP;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.COLLECTOR_MYSQL;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.COLLECTOR_PORT;
 
 public class MonitoringClientCollectdImpl implements MonitoringClient {
 

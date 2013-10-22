@@ -9,6 +9,8 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -18,7 +20,6 @@ import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.manager.RuleManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
-import org.apache.log4j.Logger;
 
 public class RuleManagerImpl implements RuleManager {
 

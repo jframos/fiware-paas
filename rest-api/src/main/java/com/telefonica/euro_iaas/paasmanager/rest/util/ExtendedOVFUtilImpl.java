@@ -435,7 +435,7 @@ public class ExtendedOVFUtilImpl implements ExtendedOVFUtil {
             t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             t.transform(new DOMSource(node), new StreamResult(sw));
         } catch (TransformerException te) {
-            System.out.println("nodeToString Transformer Exception");
+            log.warn("nodeToString Transformer Exception");
         }
         return sw.toString();
     }

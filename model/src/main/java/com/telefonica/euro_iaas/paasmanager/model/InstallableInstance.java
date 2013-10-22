@@ -9,7 +9,6 @@ package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,8 +38,7 @@ public class InstallableInstance {
 
     /**
      * Defines the value of the different status the Application could be. See the diagram bellow to know the relations
-     * between the different states. <img src=
-     * >
+     * between the different states. <img src= >
      */
     public enum Status {
         INIT,
@@ -60,6 +58,7 @@ public class InstallableInstance {
         ARTEFACT_DEPLOYED,
         ARTEFACT_UNDEPLOYED
     }
+
     public static final String VM_FIELD = "vm";
     public static final String STATUS_FIELD = "status";
     public static final String VDC_FIELD = "vdc";

@@ -7,9 +7,14 @@
 
 package com.telefonica.euro_iaas.paasmanager.installator;
 
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.SDC_SERVER_MEDIATYPE;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.SDC_SERVER_URL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import org.apache.log4j.Logger;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
@@ -28,11 +33,6 @@ import com.telefonica.euro_iaas.sdc.client.SDCClient;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
 import com.telefonica.euro_iaas.sdc.client.services.ChefClientService;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
-import org.apache.log4j.Logger;
-
-
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.SDC_SERVER_MEDIATYPE;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.SDC_SERVER_URL;
 
 public class ProductInstallatorSdcImpl implements ProductInstallator {
 

@@ -8,7 +8,6 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -59,6 +58,7 @@ public class ApplicationRelease {
 
     /**
      * Constructor.
+     * 
      * @param name
      * @param version
      */

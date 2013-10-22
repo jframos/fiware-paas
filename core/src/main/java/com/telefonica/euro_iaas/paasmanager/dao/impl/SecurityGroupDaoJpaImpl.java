@@ -20,7 +20,7 @@ import com.telefonica.euro_iaas.paasmanager.dao.SecurityGroupDao;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 
 /**
- * @author Henar Mu�oz
+ * @author Henar
  */
 public class SecurityGroupDaoJpaImpl extends AbstractBaseDao<SecurityGroup, String> implements SecurityGroupDao {
 
@@ -52,15 +52,11 @@ public class SecurityGroupDaoJpaImpl extends AbstractBaseDao<SecurityGroup, Stri
         query.setParameter("name", securityGroup.getName());
         SecurityGroup secGroup = null;
         try {
-            int result = query.executeUpdate();
+            query.executeUpdate();
             secGroup = load(securityGroup.getName());
         } catch (NoResultException e) {
-            String message = " No SecurityGroup found in the database " + securityGroup.getName();
-            System.out.println(message);
             throw new InvalidEntityException(securityGroup);
         } catch (EntityNotFoundException e) {
-            String message = " No SecurityGroup found in the database " + securityGroup.getName();
-            System.out.println(message);
             throw new InvalidEntityException(securityGroup);
         }
         return secGroup;

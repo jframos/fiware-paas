@@ -9,8 +9,13 @@ package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
+
+import org.apache.log4j.Logger;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
@@ -21,9 +26,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import org.apache.log4j.Logger;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 /**
  * default Environment implementation

@@ -221,7 +221,6 @@ public class AbstractBaseService {
         // Check the state of the task
         Reference urlTask = new Reference(url);
 
-        System.out.println("URL " + url);
         Response response = client.get(urlTask);
         String msgerror = "RECManagerException. Error obtaining task " + url + "." + " Desc "
                 + response.getStatus().getDescription();

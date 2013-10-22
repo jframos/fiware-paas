@@ -4,6 +4,7 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import java.util.List;
@@ -17,7 +18,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Network;
 
 /**
  * @author henar
- * 
  */
 public interface NetworkManager {
     /**
@@ -29,20 +29,20 @@ public interface NetworkManager {
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
      */
-    Network create(ClaudiaData claudiaData, Network network)
-    throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException;
-
+    Network create(ClaudiaData claudiaData, Network network) throws InvalidEntityException, InfrastructureException,
+            AlreadyExistsEntityException;
 
     /**
      * Delete a Network.
+     * 
      * @param claudiaData
      * @param network
      * @throws EntityNotFoundException
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    void delete(ClaudiaData claudiaData, Network network)
-    throws EntityNotFoundException, InvalidEntityException, InfrastructureException;
+    void delete(ClaudiaData claudiaData, Network network) throws EntityNotFoundException, InvalidEntityException,
+            InfrastructureException;
 
     /**
      * Retrieve all Network created in the system.
@@ -60,6 +60,7 @@ public interface NetworkManager {
 
     /**
      * Update a network.
+     * 
      * @param network
      * @return the tierInstance created
      */

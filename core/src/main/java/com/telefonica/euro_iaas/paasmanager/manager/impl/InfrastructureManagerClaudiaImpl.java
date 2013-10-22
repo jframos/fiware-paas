@@ -7,24 +7,11 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_OVFSERVICE_LOCATION;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_CPU;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_DISK;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_MEM;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.VM_DEPLOYMENT_DELAY;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.ws.rs.core.MediaType;
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.log4j.Logger;
-import org.springframework.scheduling.annotation.Async;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -40,10 +27,10 @@ import com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.Template;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
-import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.monitoring.MonitoringClient;
 import com.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser;
@@ -51,6 +38,18 @@ import com.telefonica.euro_iaas.paasmanager.util.EnvironmentUtils;
 import com.telefonica.euro_iaas.paasmanager.util.OVFUtils;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.util.VappUtils;
+import org.apache.log4j.Logger;
+import org.springframework.scheduling.annotation.Async;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
+
+
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_OVFSERVICE_LOCATION;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_CPU;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_DISK;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_VDC_MEM;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.VM_DEPLOYMENT_DELAY;
 
 public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
@@ -87,13 +86,13 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
             browseServiceResponse = claudiaClient.browseService(claudiaData);
         } catch (ClaudiaResourceNotFoundException crnfe) {
             String errorMessage = "Resource associated to org:" + claudiaData.getOrg() + " vdc:" + claudiaData.getVdc()
-            + " service:" + claudiaData.getService() + " Error Description: " + crnfe.getMessage();
+                    + " service:" + claudiaData.getService() + " Error Description: " + crnfe.getMessage();
             log.error(errorMessage);
             throw new InfrastructureException(errorMessage);
         } catch (Exception e) {
             String errorMessage = "Unknown exception when retriving vapp " + " associated to org:"
-            + claudiaData.getOrg() + " vdc:" + claudiaData.getVdc() + " service:" + claudiaData.getService()
-            + " Error Description: " + e.getMessage();
+                    + claudiaData.getOrg() + " vdc:" + claudiaData.getVdc() + " service:" + claudiaData.getService()
+                    + " Error Description: " + e.getMessage();
             log.error(errorMessage);
             throw new InfrastructureException(errorMessage);
         }
@@ -154,7 +153,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
     }
 
     public List<VM> createEnvironment(EnvironmentInstance envInstance, String ovf, ClaudiaData claudiaData)
-    throws InfrastructureException {
+            throws InfrastructureException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -175,7 +174,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
             ovfSingleVM = ovfUtils.getOvfsSingleVM(environmentInstance.getEnvironment().getOvf());
         } catch (InvalidOVFException e) {
             String errorMessage = "Error splitting up the main ovf in single" + "VM ovfs. Description. "
-            + e.getMessage();
+                    + e.getMessage();
             log.error(errorMessage);
             // throw new InfrastructureException(errorMessage);
         }
@@ -193,8 +192,8 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 tierInstance.setTier(tier);
                 VM vm = new VM();
                 String fqn = claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc()
-                + ".services." + claudiaData.getService() + ".vees." + tier.getName() + ".replicas."
-                + numReplica;
+                        + ".services." + claudiaData.getService() + ".vees." + tier.getName() + ".replicas."
+                        + numReplica;
                 String hostname = (claudiaData.getService() + "-" + tier.getName() + "-" + numReplica).toLowerCase();
                 vm.setFqn(fqn);
                 vm.setHostname(hostname);
@@ -293,7 +292,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
      * (com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance)
      */
     public void deleteEnvironment(ClaudiaData claudiaData, EnvironmentInstance envInstance)
-    throws InfrastructureException {
+            throws InfrastructureException {
 
         List<TierInstance> tierInstances = envInstance.getTierInstances();
 
@@ -381,7 +380,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
     }
 
     public void deployVM(ClaudiaData claudiaData, Tier tier, int replica, String vmOVF, VM vm)
-    throws InfrastructureException {
+            throws InfrastructureException {
 
         log.debug("Deploy VM for tier " + tier.getName());
 
@@ -463,7 +462,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
     private String getFQNPaas(ClaudiaData claudiaData, String tierName, int replica) {
         return claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc() + ".services."
-        + claudiaData.getService() + ".vees." + tierName + ".replicas." + replica;
+                + claudiaData.getService() + ".vees." + tierName + ".replicas." + replica;
     }
 
     private List<String> getProductsName(String vmOVF) {
@@ -506,7 +505,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
             scaleResponse = claudiaClient.createImage(claudiaData, tierInstance);
         } catch (ClaudiaRetrieveInfoException e) {
             String errorMessage = "Error creating teh image of the VM with the " + "fqn: "
-            + tierInstance.getVM().getFqn() + ". Descrption. " + e.getMessage();
+                    + tierInstance.getVM().getFqn() + ". Descrption. " + e.getMessage();
             log.error(errorMessage);
             throw new InfrastructureException(errorMessage);
         }
@@ -576,7 +575,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
     }
 
     private TierInstance insertTierInstanceBD(ClaudiaData claudiaData, String envName, TierInstance tierInstance)
-    throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
+            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
 
         log.debug("Inserting in database");
         TierInstance tierInstanceDB = null;

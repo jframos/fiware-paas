@@ -4,23 +4,23 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.manager;
-
-import static org.mockito.Mockito.mock;
-import junit.framework.TestCase;
-
-import org.junit.Before;
-import org.junit.Test;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.ProductReleaseManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
+import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
+
+import static org.mockito.Mockito.mock;
 
 /**
  * @author jesus.movilla
- * 
  */
 public class ProductReleaseImplTest extends TestCase {
 

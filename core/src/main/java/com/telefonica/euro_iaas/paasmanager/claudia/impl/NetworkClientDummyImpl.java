@@ -4,6 +4,7 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.claudia.impl;
 
 import java.util.List;
@@ -18,26 +19,26 @@ import com.telefonica.euro_iaas.paasmanager.model.Router;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 
 /**
- * 
  * @author henar.munoz
- *
  */
 public class NetworkClientDummyImpl implements NetworkClient {
 
-
     /**
      * It adds the network to the router.
+     * 
      * @params claudiaData
      * @params router
      * @params network
      * @throws InfrastructureException
      */
-    public void addNetworkToRouter(ClaudiaData claudiaData, Router router, Network network) throws InfrastructureException {
+    public void addNetworkToRouter(ClaudiaData claudiaData, Router router, Network network)
+            throws InfrastructureException {
 
     }
 
     /**
      * The deploy the network in Openstack.
+     * 
      * @params claudiaData
      * @params network
      */
@@ -47,6 +48,7 @@ public class NetworkClientDummyImpl implements NetworkClient {
 
     /**
      * The deploy the network in Openstack.
+     * 
      * @params claudiaData
      * @params network
      */
@@ -57,6 +59,7 @@ public class NetworkClientDummyImpl implements NetworkClient {
 
     /**
      * The deploy the subnet in Openstack.
+     * 
      * @params claudiaData
      * @params subNet
      */
@@ -64,17 +67,20 @@ public class NetworkClientDummyImpl implements NetworkClient {
         subNet.setIdSubNet("id");
 
     }
+
     /**
      * It destroys the network.
+     * 
      * @params claudiaData
      * @params network
      */
     public void destroyNetwork(ClaudiaData claudiaData, Network network) throws InfrastructureException {
 
-
     }
+
     /**
      * It destroys the router.
+     * 
      * @params claudiaData
      * @params router
      */
@@ -85,16 +91,17 @@ public class NetworkClientDummyImpl implements NetworkClient {
 
     /**
      * It destroys the network.
+     * 
      * @params claudiaData
      * @params network
      */
     public void destroySubNetwork(ClaudiaData claudiaData, SubNetwork subnet) throws InfrastructureException {
 
-
     }
 
     /**
      * It loads all networks.
+     * 
      * @params claudiaData
      */
     public List<Network> loadAllNetwork(ClaudiaData claudiaData) throws OpenStackException {
@@ -104,6 +111,7 @@ public class NetworkClientDummyImpl implements NetworkClient {
 
     /**
      * It obtains information about the network.
+     * 
      * @params claudiaData
      * @params network
      * @return network information
@@ -111,6 +119,5 @@ public class NetworkClientDummyImpl implements NetworkClient {
     public String loadNetwork(ClaudiaData claudiaData, Network network) throws EntityNotFoundException {
         return "";
     }
-
 
 }

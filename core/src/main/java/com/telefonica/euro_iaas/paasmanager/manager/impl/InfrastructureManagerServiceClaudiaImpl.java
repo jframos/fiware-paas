@@ -69,15 +69,12 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     /** The log. */
     private static Logger log = Logger.getLogger(InfrastructureManagerServiceClaudiaImpl.class);
 
-    /** Max lenght of an OVF */
-    private static final Integer tam_max = 90000;
+    /** Max lenght of an OVF. */
+    private static final Integer MAX_SIZE = 90000;
 
     /**
-     * deloy a VM from an ovf
+     * Deploy a VM from an ovf.
      * 
-     * @param org
-     * @param vdc
-     * @param service
      * @throws InfrastructureException
      */
     private String browseService(ClaudiaData claudiaData) throws InfrastructureException {
@@ -88,13 +85,13 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
             browseServiceResponse = getProcessService(claudiaData);
         } catch (ClaudiaResourceNotFoundException crnfe) {
             String errorMessage = "Resource associated to org:" + claudiaData.getOrg() + " vdc:" + claudiaData.getVdc()
-            + " service:" + claudiaData.getService() + " Error Description: " + crnfe.getMessage();
+                    + " service:" + claudiaData.getService() + " Error Description: " + crnfe.getMessage();
             log.error(errorMessage);
             throw new InfrastructureException(errorMessage);
         } catch (Exception e) {
             String errorMessage = "Unknown exception when retriving vapp " + " associated to org:"
-            + claudiaData.getOrg() + " vdc:" + claudiaData.getVdc() + " service:" + claudiaData.getService()
-            + " Error Description: " + e.getMessage();
+                    + claudiaData.getOrg() + " vdc:" + claudiaData.getVdc() + " service:" + claudiaData.getService()
+                    + " Error Description: " + e.getMessage();
             log.error(errorMessage);
             throw new InfrastructureException(errorMessage);
         }
@@ -155,7 +152,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     public List<VM> createEnvironment(EnvironmentInstance envInstance, String ovf, ClaudiaData claudiaData)
-    throws InfrastructureException {
+            throws InfrastructureException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -165,7 +162,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
      * @see com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager# createEnvironment(java.lang.String)
      */
     public List<VM> createEnvironment(EnvironmentInstance envInstance, Tier tier, String ovf, ClaudiaData claudiaData)
-    throws InfrastructureException {
+            throws InfrastructureException {
 
         return null;
     }
@@ -265,14 +262,15 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
      * (com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance)
      */
     public void deleteEnvironment(ClaudiaData claudiaData, EnvironmentInstance envInstance)
-    throws InfrastructureException {
+            throws InfrastructureException {
 
         // Sacar todas la VMs del EnvironmentInstance y borrarlas
         // List<VM> vms = new ArrayList<VM>();
         List<TierInstance> tierInstances = envInstance.getTierInstances();
 
-        if (tierInstances == null)
+        if (tierInstances == null) {
             return;
+        }
         for (int i = 0; i < tierInstances.size(); i++) {
             TierInstance tierInstance = tierInstances.get(i);
             // vms.add(tierInstance.getVM());
@@ -301,41 +299,28 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     /**
-     * Cretae a Service
+     * Cretae a Service.
      * 
-     * @param org
-     * @param vdc
-     * @param service
      * @throws InfrastructureException
      */
     public void deployService(ClaudiaData claudiaData, String ovf) throws InfrastructureException {
 
         // Service
-        System.out.println("deployService " + ovf);
+        log.debug("deployService " + ovf);
         String serviceResponse = null;
         try {
             serviceResponse = claudiaClient.browseService(claudiaData);
-            System.out.println("Deploy service " + serviceResponse);
+            log.debug("Deploy service " + serviceResponse);
         } catch (ClaudiaResourceNotFoundException e) {
 
             claudiaClient.deployServiceFull(claudiaData, ovf);
 
-            /*
-             * String serviceTaskUrl = claudiaResponseAnalyser .getTaskUrl(deployServiceResponse); if
-             * (claudiaResponseAnalyser.getTaskStatus(deployServiceResponse) .equals("error")) { String errorMesServ =
-             * "Error deploying Service " + claudiaData.getService(); log.error(errorMesServ); throw new
-             * InfrastructureException(errorMesServ); } if
-             * (!(claudiaResponseAnalyser.getTaskStatus(deployServiceResponse) .equals("success")))
-             * checkTaskResponse(claudiaData, serviceTaskUrl);
-             */
         }
     }
 
     /**
      * Create an VDC if it is not created.
      * 
-     * @param org
-     * @param vdc
      * @throws InfrastructureException
      */
     public void deployVDC(ClaudiaData claudiaData) throws InfrastructureException {
@@ -356,13 +341,14 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
                 log.error(errorMes);
                 throw new InfrastructureException(errorMes);
             }
-            if (!(claudiaResponseAnalyser.getTaskStatus(deployVDCResponse).equals("success")))
+            if (!(claudiaResponseAnalyser.getTaskStatus(deployVDCResponse).equals("success"))) {
                 checkTaskResponse(claudiaData, vdcTaskUrl);
+            }
         }
     }
 
     public void deployVM(ClaudiaData claudiaData, Tier tier, int replica, String vmOVF, VM vm)
-    throws InfrastructureException {
+            throws InfrastructureException {
         return;
     }
 
@@ -376,7 +362,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
             vappSingleVM = vappUtils.getVappsSingleVM(claudiaData, vappService);
         } catch (InvalidVappException e) {
             String errorMessage = "Error splitting up the main ovf in single" + "VM ovfs. Description. "
-            + e.getMessage();
+                    + e.getMessage();
             log.error(errorMessage);
 
         }
@@ -386,7 +372,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
             ovfSingleVM = ovfUtils.getOvfsSingleVM(environment.getOvf());
         } catch (InvalidOVFException e) {
             String errorMessage = "Error splitting up the main ovf in single" + "VM ovfs. Description. "
-            + e.getMessage();
+                    + e.getMessage();
             log.error(errorMessage);
             throw new InvalidOVFException(errorMessage);
         }
@@ -557,7 +543,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
             scaleResponse = claudiaClient.createImage(claudiaData, tierInstance);
         } catch (ClaudiaRetrieveInfoException e) {
             String errorMessage = "Error creating teh image of the VM with the " + "fqn: "
-            + tierInstance.getVM().getFqn() + ". Descrption. " + e.getMessage();
+                    + tierInstance.getVM().getFqn() + ". Descrption. " + e.getMessage();
             log.error(errorMessage);
             throw new InfrastructureException(errorMessage);
         }
@@ -565,10 +551,10 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     private TierInstance insertTierInstanceBD(ClaudiaData claudiaData, String envName, TierInstance tierInstance)
-    throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
+            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
 
         TierInstance tierInstanceDB = null;
-        if (tierInstance.getOvf() != null && tierInstance.getOvf().length() > tam_max) {
+        if (tierInstance.getOvf() != null && tierInstance.getOvf().length() > MAX_SIZE) {
             String vmOVF = tierInstance.getOvf();
             while (vmOVF.contains("ovfenvelope:ProductSection"))
                 vmOVF = environmentUtils.deleteProductSection(vmOVF);
@@ -593,7 +579,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     /**
-     * @param ClaudiaResponseAnalyser
+     * @param claudiaResponseAnalyser
      *            the ClaudiaResponseAnalyser to set
      */
     public void setClaudiaResponseAnalyser(ClaudiaResponseAnalyser claudiaResponseAnalyser) {
@@ -609,7 +595,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     /**
-     * @param EnvironmentUtils
+     * @param environmentUtils
      *            the EnvironmentUtils to set
      */
     public void setEnvironmentUtils(EnvironmentUtils environmentUtils) {
@@ -617,8 +603,6 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     /**
-     * @param systemPropertiesProvider
-     *            the systemPropertiesProvider to set
      * @param monitoringClient
      *            the monitoringClient to set
      */
@@ -627,7 +611,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     /**
-     * @param OVFUtils
+     * @param ovfUtils
      *            the OVFUtils to set
      */
     public void setOvfUtils(OVFUtils ovfUtils) {
@@ -639,7 +623,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     /**
-     * @param TierInstanceManager
+     * @param tierInstanceManager
      *            the TierInstanceManager to set
      */
     public void setTierInstanceManager(TierInstanceManager tierInstanceManager) {
@@ -647,7 +631,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     /**
-     * @param VappUtils
+     * @param vappUtils
      *            the VappUtils to set
      */
     public void setVappUtils(VappUtils vappUtils) {

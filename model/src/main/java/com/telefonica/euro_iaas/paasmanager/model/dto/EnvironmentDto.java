@@ -9,17 +9,17 @@ package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
+
 /**
  * EnvironmentDto for the Environment entity.
+ * 
  * @author henar
- *
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -49,6 +49,7 @@ public class EnvironmentDto {
 
     /**
      * from Dto.
+     * 
      * @return
      */
     public Environment fromDto() {
@@ -111,6 +112,7 @@ public class EnvironmentDto {
     public void setDescription(String description) {
         this.description = description;
     }
+
     /**
      * @param name
      *            the name to set

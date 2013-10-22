@@ -4,16 +4,8 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.manager;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import junit.framework.TestCase;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
@@ -23,12 +15,24 @@ import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.Router;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
+<<<<<<< HEAD
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+=======
+import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+>>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
 
 /**
  * Network, SubNetwork and Router Manager.
- * @author henar
  * 
+ * @author henar
  */
 public class NetworkManagerImplTest extends TestCase {
 
@@ -70,9 +74,14 @@ public class NetworkManagerImplTest extends TestCase {
     public void testCreateNetwork() throws Exception {
         // Given
         Network net = new Network(NETWORK_NAME);
+<<<<<<< HEAD
+=======
+        // SubNetwork subNet = new SubNetwork (SUBNETWORK_NAME);
+        // net.addSubNet(subNet);
+>>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
         ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
 
-        //When
+        // When
         when(networkDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
         when(systemPropertiesProvider.getProperty("key")).thenReturn("VALUE");
         Mockito.doNothing().when(networkClient).deployNetwork(any(ClaudiaData.class), any(Network.class));
@@ -80,8 +89,7 @@ public class NetworkManagerImplTest extends TestCase {
         Mockito.doNothing().when(routerManager).create(any(ClaudiaData.class), any(Router.class), any(Network.class));
         when(networkDao.create(any(Network.class))).thenReturn(net);
 
-
-        //Verity
+        // Verity
         networkManager.create(claudiaData, net);
         assertEquals(net.getNetworkName(), NETWORK_NAME);
         assertEquals(net.getSubNets().size(), 1);
@@ -98,9 +106,14 @@ public class NetworkManagerImplTest extends TestCase {
     public void testDestroyNetwork() throws Exception {
         // Given
         Network net = new Network(NETWORK_NAME);
+<<<<<<< HEAD
+=======
+        // SubNetwork subNet = new SubNetwork (SUBNETWORK_NAME);
+        // net.addSubNet(subNet);
+>>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
         ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
 
-        //When
+        // When
         when(networkDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
         when(systemPropertiesProvider.getProperty("key")).thenReturn("VALUE");
         Mockito.doNothing().when(networkClient).deployNetwork(any(ClaudiaData.class), any(Network.class));
@@ -108,7 +121,7 @@ public class NetworkManagerImplTest extends TestCase {
         Mockito.doNothing().when(networkDao).remove(any(Network.class));
         when(networkDao.create(any(Network.class))).thenReturn(net);
 
-        //Verity
+        // Verity
         networkManager.delete(claudiaData, net);
 
     }

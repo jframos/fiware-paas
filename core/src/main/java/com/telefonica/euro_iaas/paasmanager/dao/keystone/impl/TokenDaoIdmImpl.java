@@ -66,7 +66,7 @@ public class TokenDaoIdmImpl implements TokenDao {
             throw new OpenStackException(message);
         }
         String resp = response.getEntity(String.class);
-        System.out.print(resp);
+        log.debug(resp);
         Token token = extractToken(resp);
         token.setTenantId(tenantId);
         return token;

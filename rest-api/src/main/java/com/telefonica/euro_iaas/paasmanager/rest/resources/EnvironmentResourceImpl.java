@@ -9,15 +9,8 @@ package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -37,6 +30,11 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentSear
 import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 /**
  * default Environment implementation
@@ -78,7 +76,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
     }
 
     public void delete(String org, String vdc, String envName) throws EnvironmentInstanceNotFoundException,
-    InvalidEntityException, InvalidEnvironmentRequestException, AlreadyExistEntityException {
+            InvalidEntityException, InvalidEnvironmentRequestException, AlreadyExistEntityException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
         environmentResourceValidator.validateDelete(envName, vdc, systemPropertiesProvider);
 
@@ -158,7 +156,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
     }
 
     public void insert(String org, String vdc, EnvironmentDto environmentDto)
-    throws InvalidEnvironmentRequestException, AlreadyExistEntityException, InvalidEntityException {
+            throws InvalidEnvironmentRequestException, AlreadyExistEntityException, InvalidEntityException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentDto.getName());
 
         log.debug("Create a environment " + environmentDto.getName() + " " + environmentDto.getDescription() + " "

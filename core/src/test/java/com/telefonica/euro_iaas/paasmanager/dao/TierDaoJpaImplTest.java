@@ -4,6 +4,7 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.dao;
 
 import java.util.ArrayList;
@@ -17,7 +18,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
  * Unit test for TierDaoJpaImplTest
  * 
  * @author Jesus M. Movilla
- * 
  */
 public class TierDaoJpaImplTest extends AbstractJpaDaoTest {
 
@@ -36,60 +36,15 @@ public class TierDaoJpaImplTest extends AbstractJpaDaoTest {
      * Test the create and load method
      */
     public void testCreate1() throws Exception {
-        System.out.println("Inserting TierObject1 in DB");
 
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
 
         productReleases.add(new ProductRelease());
 
-        Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES,
-                INITIAL_INSTANCES, productReleases);
+        Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, productReleases);
 
         TierDaoJpaImpl tierDao = new TierDaoJpaImpl();
 
-        // Tier createdTier = tierDao.create(tier);
-
-        // assertNotNull(createdTier.getName());
-        // assertEquals(createdTier.getName(), tier.getName());
-
-    }
-
-    /**
-     * Test the create and load method
-     */
-    public void testCreate2() throws Exception {
-    }
-
-    // System.out.println("Inserting TierObject2 in DB");
-
-    // List<ProductRelease> productReleases2 = productReleaseDao.findAll();
-
-    /*
-     * Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES,
-     * INITIAL_INSTANCES, productReleases2);
-     * 
-     * TierDaoJpaImpl tierDao = new TierDaoJpaImpl ();
-     * 
-     * // Tier createdTier = tierDao.create(tier);
-     * 
-     * // assertNotNull(createdTier.getName()); //
-     * assertEquals(createdTier.getName(), tier.getName());
-     * 
-     * }
-     * 
-     * /** Test the create and load method
-     */
-    public void testFindAllAndUpdate() throws Exception {
-        /*
-         * TierDaoJpaImpl tierDao = new TierDaoJpaImpl (); Integer
-         * initial_number_instances = 3; assertEquals(0,
-         * tierDao.findAll().size()); testCreate1(); List<Tier> tiers =
-         * tierDao.findAll(); assertEquals(1, tiers.size()); Tier tier =
-         * tiers.get(0); tier.setInitial_number_instances(3);
-         * tierDao.update(tier); assertEquals(initial_number_instances,
-         * tierDao.load(tier.getName()).getInitial_number_instances());
-         * tierDao.remove(tier); assertEquals(0, tierDao.findAll().size());
-         */
     }
 
 }

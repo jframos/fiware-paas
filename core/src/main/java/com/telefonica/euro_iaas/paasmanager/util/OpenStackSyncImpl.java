@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.springframework.security.core.GrantedAuthority;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
@@ -39,8 +42,6 @@ import com.telefonica.euro_iaas.paasmanager.model.keystone.User;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
-import org.apache.log4j.Logger;
-import org.springframework.security.core.GrantedAuthority;
 
 /**
  * @author jesus.movilla

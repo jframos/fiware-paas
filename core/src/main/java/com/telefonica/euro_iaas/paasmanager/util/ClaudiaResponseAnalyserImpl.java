@@ -42,7 +42,6 @@ public class ClaudiaResponseAnalyserImpl implements ClaudiaResponseAnalyser {
     public String getTaskStatus(String xmlTask) {
         String statusSplit = xmlTask.split("status")[1];
         String status = statusSplit.split("\"")[1];
-        System.out.println("task status: " + status);
         return status;
     }
 

@@ -105,19 +105,13 @@ public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, St
         } catch (NoResultException e) {
             String message = " No ProductRelease found in the database with id: " + name + " Exception: "
                     + e.getMessage();
-            System.out.println(message);
             throw new EntityNotFoundException(ProductRelease.class, "name", name);
         }
         return productRelease;
     }
 
     /**
-     * Filter the result by product release
-     * 
-     * @param applications
-     * @param product
-     *            Release
-     * @return
+     * Filter the result by product release.
      */
     private List<ProductRelease> filterByOSType(List<ProductRelease> productReleases, String osType) {
         List<ProductRelease> result = new ArrayList<ProductRelease>();

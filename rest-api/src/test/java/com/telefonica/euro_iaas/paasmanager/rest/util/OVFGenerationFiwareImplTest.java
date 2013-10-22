@@ -14,8 +14,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,9 +29,8 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * @author jesus.movilla
- * 
  */
-public class OVFGenerationFiwareImplTest extends TestCase {
+public class OVFGenerationFiwareImplTest {
 
     private OVFGenerationFiwareImpl ovfGenerationImpl;
     private SystemPropertiesProvider systemPropertiesProvider;
@@ -49,13 +46,11 @@ public class OVFGenerationFiwareImplTest extends TestCase {
 
     ProductReleaseDto pReleaseDto1, pReleaseDto2;
 
-    @Override
     @Before
     public void setUp() throws Exception {
 
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
-        when(systemPropertiesProvider.getProperty(any(String.class)))
-        .thenReturn("./../core/src/main/resources/");
+        when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("./../core/src/main/resources/");
         ovfGenerationImpl = new OVFGenerationFiwareImpl();
         ovfGenerationImpl.setSystemPropertiesProvider(systemPropertiesProvider);
 
@@ -93,24 +88,14 @@ public class OVFGenerationFiwareImplTest extends TestCase {
         List<ProductInstanceDto> pInstances2 = new ArrayList<ProductInstanceDto>();
         pInstances2.add(pInstance2);
 
-        tierInstanceDto1 = new TierInstanceDto("tierInstaceName1",
-                new TierDto(), 1, pInstances1, "fqnTierInstance1");
-        tierInstanceDto2 = new TierInstanceDto("tierInstanceName2",
-                new TierDto(), 1, pInstances2, "fqnTierInstance2");
+        tierInstanceDto1 = new TierInstanceDto("tierInstaceName1", new TierDto(), 1, pInstances1, "fqnTierInstance1");
+        tierInstanceDto2 = new TierInstanceDto("tierInstanceName2", new TierDto(), 1, pInstances2, "fqnTierInstance2");
 
         tierInstancesDto.add(tierInstanceDto1);
         tierInstancesDto.add(tierInstanceDto2);
 
-        environmentInstanceDto = new EnvironmentInstanceDto("envInstanceName",
-                new EnvironmentDto(), tierInstancesDto, "vdc");
-    }
-
-    @Test
-    public void testCreateOvf() throws Exception {
-
-        // String ovf = ovfGenerationImpl.createOvf(environmentInstanceDto);
-        // System.out.println("ovf=" + ovf);
-
+        environmentInstanceDto = new EnvironmentInstanceDto("envInstanceName", new EnvironmentDto(), tierInstancesDto,
+                "vdc");
     }
 
     @Test
@@ -142,20 +127,18 @@ public class OVFGenerationFiwareImplTest extends TestCase {
         List<ProductReleaseDto> p2Releases = new ArrayList<ProductReleaseDto>();
         p2Releases.add(pReleaseDto2);
 
-        TierDto tier1 = new TierDto("tiertomcat", 1, 1, 1, p1Releases, "1",
-                "image", "icono", "security_group", "keypair", "yes");
-        TierDto tier2 = new TierDto("tierpostgres", 1, 1, 1, p2Releases, "1",
-                "image", "icono", "security_group", "keypair", "yes");
+        TierDto tier1 = new TierDto("tiertomcat", 1, 1, 1, p1Releases, "1", "image", "icono", "security_group",
+                "keypair", "yes");
+        TierDto tier2 = new TierDto("tierpostgres", 1, 1, 1, p2Releases, "1", "image", "icono", "security_group",
+                "keypair", "yes");
 
         List<TierDto> tiersDto = new ArrayList<TierDto>();
         tiersDto.add(tier1);
         tiersDto.add(tier2);
 
-        EnvironmentDto environment = new EnvironmentDto(tiersDto,
-                "environmentname", "description");
+        EnvironmentDto environment = new EnvironmentDto(tiersDto, "environmentname", "description");
 
         String ovf = ovfGenerationImpl.createOvf(environment);
-        // System.out.println("ovf=" + ovf);
 
     }
 
@@ -197,11 +180,9 @@ public class OVFGenerationFiwareImplTest extends TestCase {
         tiersDto.add(tier1);
         tiersDto.add(tier2);
 
-        EnvironmentDto environment = new EnvironmentDto(tiersDto,
-                "environmentname", "description");
+        EnvironmentDto environment = new EnvironmentDto(tiersDto, "environmentname", "description");
 
         String ovf = ovfGenerationImpl.createOvf(environment);
-        // System.out.println("ovf=" + ovf);
 
     }
 
@@ -229,13 +210,10 @@ public class OVFGenerationFiwareImplTest extends TestCase {
 
         /*
          * <tierDtos> <minimum_number_instances>1</minimum_number_instances>
-         * <initial_number_instances>1</initial_number_instances>
-         * <maximum_number_instances>1</maximum_number_instances>
-         * <name>mongoconfig</name> <flavour>2</flavour>
-         * <image>945689be-1231-4414-8c3e-09bcee4e8e63</image>
-         * <keypair>testpaas</keypair> <floatingip>false</floatingip>
-         * <productReleaseDtos> <productName>mongodbconfig</productName>
-         * <version>2.2.3</version> </productReleaseDtos> </tierDtos>
+         * <initial_number_instances>1</initial_number_instances> <maximum_number_instances>1</maximum_number_instances>
+         * <name>mongoconfig</name> <flavour>2</flavour> <image>945689be-1231-4414-8c3e-09bcee4e8e63</image>
+         * <keypair>testpaas</keypair> <floatingip>false</floatingip> <productReleaseDtos>
+         * <productName>mongodbconfig</productName> <version>2.2.3</version> </productReleaseDtos> </tierDtos>
          */
 
         ProductReleaseDto pReleaseDto1 = new ProductReleaseDto();
@@ -243,10 +221,8 @@ public class OVFGenerationFiwareImplTest extends TestCase {
         pReleaseDto1.setVersion("2.2.3");
         List<ProductReleaseDto> p1Releasesmongoconfig = new ArrayList<ProductReleaseDto>();
         p1Releasesmongoconfig.add(pReleaseDto1);
-        TierDto tiermongoconfig = new TierDto("tiermongoconfig", 1, 1, 1,
-                p1Releasesmongoconfig, "2",
-                "945689be-1231-4414-8c3e-09bcee4e8e63", "icono", "testpaas",
-        "false");
+        TierDto tiermongoconfig = new TierDto("tiermongoconfig", 1, 1, 1, p1Releasesmongoconfig, "2",
+                "945689be-1231-4414-8c3e-09bcee4e8e63", "icono", "testpaas", "false");
         tiermongoconfig.setSecurityGroup("security_group");
 
         List<TierDto> tiersDto = new ArrayList<TierDto>();
@@ -254,13 +230,10 @@ public class OVFGenerationFiwareImplTest extends TestCase {
 
         /*
          * <tierDtos> <minimum_number_instances>1</minimum_number_instances>
-         * <initial_number_instances>1</initial_number_instances>
-         * <maximum_number_instances>5</maximum_number_instances>
-         * <name>mongoshard</name> <flavour>2</flavour>
-         * <image>945689be-1231-4414-8c3e-09bcee4e8e63</image>
-         * <keypair>testpaas</keypair> <floatingip>false</floatingip>
-         * <productReleaseDtos> <productName>mongodbshard</productName>
-         * <version>2.2.3</version> </productReleaseDtos> </tierDtos>
+         * <initial_number_instances>1</initial_number_instances> <maximum_number_instances>5</maximum_number_instances>
+         * <name>mongoshard</name> <flavour>2</flavour> <image>945689be-1231-4414-8c3e-09bcee4e8e63</image>
+         * <keypair>testpaas</keypair> <floatingip>false</floatingip> <productReleaseDtos>
+         * <productName>mongodbshard</productName> <version>2.2.3</version> </productReleaseDtos> </tierDtos>
          */
 
         ProductReleaseDto pReleaseDto2 = new ProductReleaseDto();
@@ -269,25 +242,19 @@ public class OVFGenerationFiwareImplTest extends TestCase {
         List<ProductReleaseDto> p1Releasesmongoshard = new ArrayList<ProductReleaseDto>();
         p1Releasesmongoshard.add(pReleaseDto2);
 
-        TierDto tiermongoshard = new TierDto("tiermongoshard", 6, 1, 1,
-                p1Releasesmongoshard, "2",
-                "945689be-1231-4414-8c3e-09bcee4e8e63", "icono", "testpaas",
-        "false");
+        TierDto tiermongoshard = new TierDto("tiermongoshard", 6, 1, 1, p1Releasesmongoshard, "2",
+                "945689be-1231-4414-8c3e-09bcee4e8e63", "icono", "testpaas", "false");
         tiermongoshard.setSecurityGroup("security_group");
 
         tiersDto.add(tiermongoshard);
 
         /*
          * <tierDtos> <minimum_number_instances>1</minimum_number_instances>
-         * <initial_number_instances>1</initial_number_instances>
-         * <maximum_number_instances>1</maximum_number_instances>
-         * <name>contextbroker</name> <flavour>2</flavour>
-         * <image>945689be-1231-4414-8c3e-09bcee4e8e63</image>
-         * <keypair>testpaas</keypair> <floatingip>true</floatingip>
-         * <productReleaseDtos> <productName>mongos</productName>
-         * <version>2.2.3</version> </productReleaseDtos> <productReleaseDtos>
-         * <productName>contextbroker</productName> <version>1.0.0</version>
-         * </productReleaseDtos> </tierDtos>
+         * <initial_number_instances>1</initial_number_instances> <maximum_number_instances>1</maximum_number_instances>
+         * <name>contextbroker</name> <flavour>2</flavour> <image>945689be-1231-4414-8c3e-09bcee4e8e63</image>
+         * <keypair>testpaas</keypair> <floatingip>true</floatingip> <productReleaseDtos>
+         * <productName>mongos</productName> <version>2.2.3</version> </productReleaseDtos> <productReleaseDtos>
+         * <productName>contextbroker</productName> <version>1.0.0</version> </productReleaseDtos> </tierDtos>
          */
 
         ProductReleaseDto p1Releasecontextbroker = new ProductReleaseDto();
@@ -300,40 +267,31 @@ public class OVFGenerationFiwareImplTest extends TestCase {
         p1Releasescontextbroker.add(p1Releasecontextbroker);
         p1Releasescontextbroker.add(p1Releasecontextbroker2);
 
-        TierDto tiercontextbroker = new TierDto("contextbroker ", 1, 1, 1,
-                p1Releasescontextbroker, "2",
-                "945689be-1231-4414-8c3e-09bcee4e8e63", "icono", "testpaas",
-        "false");
+        TierDto tiercontextbroker = new TierDto("contextbroker ", 1, 1, 1, p1Releasescontextbroker, "2",
+                "945689be-1231-4414-8c3e-09bcee4e8e63", "icono", "testpaas", "false");
         tiercontextbroker.setSecurityGroup("security_group");
-
 
         tiersDto.add(tiercontextbroker);
 
-        EnvironmentDto environment = new EnvironmentDto(tiersDto,
-                "environmentname", "description");
+        EnvironmentDto environment = new EnvironmentDto(tiersDto, "environmentname", "description");
 
         String ovf = ovfGenerationImpl.createOvf(environment);
-        System.out.println("ovf=" + ovf);
 
     }
 
     @Test
     public void testCreateOvfTierNoproduct() throws Exception {
 
-        TierDto tiercontextbroker = new TierDto("contextbroker ", 1, 1, 1,
-                null, "2",
-                "945689be-1231-4414-8c3e-09bcee4e8e63", "icono", "testpaas",
-        "false");
+        TierDto tiercontextbroker = new TierDto("contextbroker ", 1, 1, 1, null, "2",
+                "945689be-1231-4414-8c3e-09bcee4e8e63", "icono", "testpaas", "false");
         tiercontextbroker.setSecurityGroup("security_group");
 
         List<TierDto> tiersDto = new ArrayList<TierDto>();
         tiersDto.add(tiercontextbroker);
 
-        EnvironmentDto environment = new EnvironmentDto(tiersDto,
-                "environmentname", "description");
+        EnvironmentDto environment = new EnvironmentDto(tiersDto, "environmentname", "description");
 
         String ovf = ovfGenerationImpl.createOvf(environment);
-        System.out.println("ovf=" + ovf);
     }
 
 }

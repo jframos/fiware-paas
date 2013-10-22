@@ -4,6 +4,7 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.util;
 
 import static org.mockito.Mockito.mock;
@@ -24,7 +25,6 @@ import org.junit.Test;
 
 /**
  * @author jesus.movilla
- * 
  */
 public class VappUtilsNeoClaudiaOpenStackImplTest extends TestCase {
 
@@ -36,8 +36,6 @@ public class VappUtilsNeoClaudiaOpenStackImplTest extends TestCase {
 
     private String getFile(String file) throws IOException {
         File f = new File(file);
-        System.out.println(f.isFile() + " " + f.getAbsolutePath());
-
         InputStream dd = new FileInputStream(f);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(dd));
@@ -57,13 +55,9 @@ public class VappUtilsNeoClaudiaOpenStackImplTest extends TestCase {
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         // when
         // (systemPropertiesProvider.getProperty(any(String.class))).thenReturn("FIWARE");
-        when(
-                systemPropertiesProvider
-                .getProperty(SystemPropertiesProvider.CLOUD_SYSTEM))
-                .thenReturn("FIWARE");
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM)).thenReturn("FIWARE");
         vappUtilsNeoClaudiaOpenStackImpl = new VappUtilsNeoClaudiaOpenStackImpl();
-        vappUtilsNeoClaudiaOpenStackImpl
-        .setSystemPropertiesProvider(systemPropertiesProvider);
+        vappUtilsNeoClaudiaOpenStackImpl.setSystemPropertiesProvider(systemPropertiesProvider);
     }
 
     @Test

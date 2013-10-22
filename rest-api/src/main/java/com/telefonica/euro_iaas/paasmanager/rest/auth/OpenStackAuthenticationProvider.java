@@ -7,11 +7,17 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.auth;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.xml.namespace.QName;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.UniformInterfaceException;
+import com.sun.jersey.api.client.WebResource;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 import org.openstack.docs.identity.api.v2.AuthenticateResponse;
 import org.openstack.docs.identity.api.v2.Role;
@@ -20,17 +26,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.GrantedAuthority;
-
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
-import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import java.util.ArrayList;
-import org.apache.http.impl.client.DefaultHttpClient;
 /**
  * The Class OpenStackAuthenticationProvider.
  */
@@ -118,7 +116,7 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
         String adminTenant = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_TENANT);
 
         String thresholdString = systemPropertiesProvider
-        .getProperty(SystemPropertiesProvider.VALIDATION_TIME_THRESHOLD);
+                .getProperty(SystemPropertiesProvider.VALIDATION_TIME_THRESHOLD);
 
         DefaultHttpClient httpClient = new DefaultHttpClient();
 
@@ -148,8 +146,8 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
 
             // Validate user's token
             AuthenticateResponse responseAuth = webResource.path("tokens").path(token)
-            .header("Accept", "application/xml").header("X-Auth-Token", credential[0])
-            .get(AuthenticateResponse.class);
+                    .header("Accept", "application/xml").header("X-Auth-Token", credential[0])
+                    .get(AuthenticateResponse.class);
 
             if (!tenantId.equals(responseAuth.getToken().getTenant().getId())) {
                 throw new AuthenticationServiceException("Token not valid for the tenantId provided:" + tenantId);

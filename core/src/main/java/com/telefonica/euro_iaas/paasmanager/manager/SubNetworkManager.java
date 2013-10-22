@@ -4,6 +4,7 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import java.util.List;
@@ -17,7 +18,6 @@ import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 
 /**
  * @author henar
- * 
  */
 public interface SubNetworkManager {
     /**
@@ -29,20 +29,20 @@ public interface SubNetworkManager {
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
      */
-    void create(ClaudiaData claudiaData, SubNetwork subNetwork)
-    throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException;
-
+    void create(ClaudiaData claudiaData, SubNetwork subNetwork) throws InvalidEntityException, InfrastructureException,
+            AlreadyExistsEntityException;
 
     /**
      * Delete a subnetwork.
+     * 
      * @param claudiaData
      * @param subNetwork
      * @throws EntityNotFoundException
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    void delete(ClaudiaData claudiaData, SubNetwork subNetwork) throws EntityNotFoundException,
-    InvalidEntityException, InfrastructureException;
+    void delete(ClaudiaData claudiaData, SubNetwork subNetwork) throws EntityNotFoundException, InvalidEntityException,
+            InfrastructureException;
 
     /**
      * Retrieve all Network created in the system.
@@ -60,6 +60,7 @@ public interface SubNetworkManager {
 
     /**
      * Update a subNetwork.
+     * 
      * @param subNetwork
      * @return the subnet updated
      */

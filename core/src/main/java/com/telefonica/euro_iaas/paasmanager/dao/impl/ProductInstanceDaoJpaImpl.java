@@ -11,6 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.SimpleExpression;
+
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductInstanceDao;
@@ -22,12 +29,6 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductInstanceSearchCriteria;
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.SimpleExpression;
 
 public class ProductInstanceDaoJpaImpl extends AbstractBaseDao<ProductInstance, String> implements ProductInstanceDao {
 

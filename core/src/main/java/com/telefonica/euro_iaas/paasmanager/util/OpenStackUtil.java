@@ -4,9 +4,10 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.util;
 
-//import org.openstack.docs.compute.api.v1.Server;
+// import org.openstack.docs.compute.api.v1.Server;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.Router;
@@ -15,7 +16,6 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
 /**
  * @author jesus.movilla
- *
  */
 public interface OpenStackUtil {
 
@@ -84,18 +84,15 @@ public interface OpenStackUtil {
      */
     public static final String RESOURCE_FLOATINGIP = "os-floating-ips";
     /**
-     * name of OpenStack constant name: org.openstack.compute.storage.root.
-     * Amount of root Disk.
+     * name of OpenStack constant name: org.openstack.compute.storage.root. Amount of root Disk.
      */
     public static final String OPENSTACK_COMPUTE_STORAGE_ROOT = "org.openstack.compute.storage.root";
     /**
-     * name of OpenStack constant name: org.openstack.compute.storage.root.
-     * Amount of root Disk.
+     * name of OpenStack constant name: org.openstack.compute.storage.root. Amount of root Disk.
      */
     public static final String OPENSTACK_COMPUTE_STORAGE_EPHEMERAL = "org.openstack.compute.storage.ephemeral";
     /**
-     * name of OpenStack constant name: org.openstack.compute.swap. Amount of
-     * swap.
+     * name of OpenStack constant name: org.openstack.compute.swap. Amount of swap.
      */
     public static final String OPENSTACK_COMPUTE_SWAP = "org.openstack.compute.swap";
     /**
@@ -107,18 +104,22 @@ public interface OpenStackUtil {
 
     /**
      * Method to add an interface to the router.
-     *
-     * @param routerId the id of the router
-     * @param subNetId the id of the subNet to associate with
-     * @param user the user
+     * 
+     * @param routerId
+     *            the id of the router
+     * @param subNetId
+     *            the id of the subNet to associate with
+     * @param user
+     *            the user
      * @return the result
-     * @throws OpenStackException OpenStackException
+     * @throws OpenStackException
+     *             OpenStackException
      */
     String addRouterInterface(String routerId, String subNetId, PaasManagerUser user) throws OpenStackException;
 
     /**
      * Allocate a new FloatingIP to a tenant
-     *
+     * 
      * @return
      * @throws OpenStackException
      */
@@ -126,109 +127,129 @@ public interface OpenStackUtil {
     // OpenStackException;
     /**
      * Assign FloatingIP to a serverId
-     *
+     * 
      * @param serverId
      * @param floatingIP
      * @return
      * @throws OpenStackException
      */
-    String assignFloatingIP(String serverId, String floatingIP,
-            PaasManagerUser user) throws OpenStackException;
+    String assignFloatingIP(String serverId, String floatingIP, PaasManagerUser user) throws OpenStackException;
 
     /**
      * Method to create a new network.
-     *
-     * @param name the name of the network
-     * @param user the user
+     * 
+     * @param name
+     *            the name of the network
+     * @param user
+     *            the user
      * @return the result
-     * @throws OpenStackException OpenStackException
+     * @throws OpenStackException
+     *             OpenStackException
      */
     String createNetwork(Network net, PaasManagerUser user) throws OpenStackException;
 
     /**
      * Method to create a new router.
-     *
-     * @param router to be created
-     * @param user the user
+     * 
+     * @param router
+     *            to be created
+     * @param user
+     *            the user
      * @return the result
-     * @throws OpenStackException OpenStackException
+     * @throws OpenStackException
+     *             OpenStackException
      */
     String createRouter(Router router, PaasManagerUser user) throws OpenStackException;
 
     /**
      * Deploys a VM inOpenStack
-     *
+     * 
      * @param payload
      * @return serverId
      * @throws OpenStackException
      */
-    String createServer(String payload, PaasManagerUser user)
-    throws OpenStackException;
+    String createServer(String payload, PaasManagerUser user) throws OpenStackException;
 
     /**
      * Method to create a new subnet.
-     *
+     * 
      * @param subNet
-     * @param user the user
+     * @param user
+     *            the user
      * @return the result
-     * @throws OpenStackException OpenStackException
+     * @throws OpenStackException
+     *             OpenStackException
      */
     String createSubNet(SubNetwork subNet, PaasManagerUser user) throws OpenStackException;
 
     /**
      * Method to delete a network.
-     *
-     * @param networkId the Id of the network
-     * @param user the user
+     * 
+     * @param networkId
+     *            the Id of the network
+     * @param user
+     *            the user
      * @return the result
-     * @throws OpenStackException OpenStackException
+     * @throws OpenStackException
+     *             OpenStackException
      */
     String deleteNetwork(String networkId, PaasManagerUser user) throws OpenStackException;
 
     /**
      * Undeploys a VM in Openstack
-     *
-     * @param serverId the VM to be undeployed
-     * @param the user
+     * 
+     * @param serverId
+     *            the VM to be undeployed
+     * @param the
+     *            user
      */
-    String deleteServer(String serverId, PaasManagerUser user)
-    throws OpenStackException;
+    String deleteServer(String serverId, PaasManagerUser user) throws OpenStackException;
 
     /**
      * Obtain the floating IP's of a certain tenantID
-     *
      */
     String getFloatingIP(PaasManagerUser user) throws OpenStackException;
     /**
      * Method to get a single Network.
-     *
-     * @param networkId the Id of the network
-     * @param user the user
+     * 
+     * @param networkId
+     *            the Id of the network
+     * @param user
+     *            the user
      * @return the result
-     * @throws OpenStackException OpenStackException
+     * @throws OpenStackException
+     *             OpenStackException
      */
     String getNetworkDetails(String networkId, PaasManagerUser user) throws OpenStackException;
+
     /**
      * Method to get a list of Networks.
-     *
-     * @param user the user
+     * 
+     * @param user
+     *            the user
      * @return the result
-     * @throws OpenStackException OpenStackException
+     * @throws OpenStackException
+     *             OpenStackException
      */
     String getNetworks(PaasManagerUser user) throws OpenStackException;
+
     /**
      * Get the Server details
-     *
+     * 
      * @param serverId
      * @return
      * @throws OpenStackException
      */
+<<<<<<< HEAD
     String getServer(String serverId, PaasManagerUser user)
     throws OpenStackException;
+=======
+    String getServer(String serverId, PaasManagerUser user) throws OpenStackException;
+>>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
 
     /**
      * List all servers in OpenStack
-     *
+     * 
      * @return
      * @throws OpenStackException
      */

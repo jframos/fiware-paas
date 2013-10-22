@@ -4,21 +4,12 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
-package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import junit.framework.TestCase;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
 import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
@@ -44,6 +35,15 @@ import com.telefonica.euro_iaas.paasmanager.util.EnvironmentUtils;
 import com.telefonica.euro_iaas.paasmanager.util.OVFUtils;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.util.VappUtils;
+import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
 
@@ -164,13 +164,10 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
             when(vappUtils.getFqnId(any(String.class))).thenReturn(fqn);
             when(vappUtils.getReplica(any(String.class))).thenReturn("1");
             when(vappUtils.getVMName(any(String.class))).thenReturn("tierName");
-            when(
-                    vappUtils.getVappsSingleVM(any(ClaudiaData.class),
-                            any(String.class))).thenReturn(vapps);
+            when(vappUtils.getVappsSingleVM(any(ClaudiaData.class), any(String.class))).thenReturn(vapps);
             when(ovfUtils.getOvfsSingleVM(any(String.class))).thenReturn(ovfs);
             try {
-                when(tierInstanceManager.load(any(String.class))).thenReturn(
-                        tierInstanceDB);
+                when(tierInstanceManager.load(any(String.class))).thenReturn(tierInstanceDB);
             } catch (com.telefonica.euro_iaas.commons.dao.EntityNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -185,8 +182,7 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
         }
 
         try {
-            when(claudiaClient.browseVDC(any(ClaudiaData.class)))
-            .thenReturn("");
+            when(claudiaClient.browseVDC(any(ClaudiaData.class))).thenReturn("");
         } catch (ClaudiaResourceNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -195,20 +191,15 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
         String ovf = "ss";
         String vapp = "ss";
         try {
-            when(
-                    claudiaClient.deployServiceFull(any(ClaudiaData.class),
-                            any(String.class))).thenReturn("String");
+            when(claudiaClient.deployServiceFull(any(ClaudiaData.class), any(String.class))).thenReturn("String");
         } catch (InfrastructureException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-        when(claudiaResponseAnalyser.getTaskUrl(any(String.class))).thenReturn(
-        "String");
-        when(claudiaResponseAnalyser.getTaskStatus(any(String.class)))
-        .thenReturn("sucess");
+        when(claudiaResponseAnalyser.getTaskUrl(any(String.class))).thenReturn("String");
+        when(claudiaResponseAnalyser.getTaskStatus(any(String.class))).thenReturn("sucess");
         try {
-            when(claudiaClient.browseService(any(ClaudiaData.class)))
-            .thenReturn(vapp);
+            when(claudiaClient.browseService(any(ClaudiaData.class))).thenReturn(vapp);
         } catch (ClaudiaResourceNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -218,9 +209,8 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
         instance.setVdc("vdc");
         instance.setEnvironment(envResult);
         try {
-            instance = manager
-            .createInfrasctuctureEnvironmentInstance(instance, instance
-                    .getEnvironment().getTiers(), claudiaData);
+            instance = manager.createInfrasctuctureEnvironmentInstance(instance, instance.getEnvironment().getTiers(),
+                    claudiaData);
         } catch (InfrastructureException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -233,15 +223,13 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
         }
 
         try {
-            Mockito.doNothing().doThrow(new RuntimeException()).when(
-                    claudiaClient).undeployVMReplica(any(ClaudiaData.class),
-                            any(TierInstance.class));
+            Mockito.doNothing().doThrow(new RuntimeException()).when(claudiaClient)
+                    .undeployVMReplica(any(ClaudiaData.class), any(TierInstance.class));
         } catch (InfrastructureException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-        Mockito.doNothing().doThrow(new RuntimeException()).when(
-                monitoringClient).stopMonitoring(any(String.class));
+        Mockito.doNothing().doThrow(new RuntimeException()).when(monitoringClient).stopMonitoring(any(String.class));
         try {
             manager.deleteEnvironment(claudiaData, instance);
         } catch (InfrastructureException e) {
@@ -267,9 +255,7 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
             when(vappUtils.getFqnId(any(String.class))).thenReturn(fqn);
             when(vappUtils.getReplica(any(String.class))).thenReturn("1");
             when(vappUtils.getVMName(any(String.class))).thenReturn("tierName");
-            when(
-                    vappUtils.getVappsSingleVM(any(ClaudiaData.class),
-                            any(String.class))).thenReturn(vapps);
+            when(vappUtils.getVappsSingleVM(any(ClaudiaData.class), any(String.class))).thenReturn(vapps);
             when(ovfUtils.getOvfsSingleVM(any(String.class))).thenReturn(ovfs);
 
         } catch (InvalidVappException e) {
@@ -281,8 +267,7 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
         }
 
         try {
-            when(claudiaClient.browseVDC(any(ClaudiaData.class)))
-            .thenReturn("");
+            when(claudiaClient.browseVDC(any(ClaudiaData.class))).thenReturn("");
         } catch (ClaudiaResourceNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -291,31 +276,25 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
         String ovf = "";
         String vapp = "";
         try {
-            when(
-                    claudiaClient.deployServiceFull(any(ClaudiaData.class),
-                            any(String.class))).thenReturn("String");
+            when(claudiaClient.deployServiceFull(any(ClaudiaData.class), any(String.class))).thenReturn("String");
         } catch (InfrastructureException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-        when(claudiaResponseAnalyser.getTaskUrl(any(String.class))).thenReturn(
-        "String");
-        when(claudiaResponseAnalyser.getTaskStatus(any(String.class)))
-        .thenReturn("sucess");
+        when(claudiaResponseAnalyser.getTaskUrl(any(String.class))).thenReturn("String");
+        when(claudiaResponseAnalyser.getTaskStatus(any(String.class))).thenReturn("sucess");
         try {
-            when(claudiaClient.browseService(any(ClaudiaData.class)))
-            .thenReturn(vapp);
+            when(claudiaClient.browseService(any(ClaudiaData.class))).thenReturn(vapp);
         } catch (ClaudiaResourceNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        EnvironmentInstance envInst = new EnvironmentInstance("blue", "des",
-                envResult);
+        EnvironmentInstance envInst = new EnvironmentInstance("blue", "des", envResult);
         EnvironmentInstance instance = null;
         try {
-            instance = manager.createInfrasctuctureEnvironmentInstance(envInst,
-                    envInst.getEnvironment().getTiers(), claudiaData);
+            instance = manager.createInfrasctuctureEnvironmentInstance(envInst, envInst.getEnvironment().getTiers(),
+                    claudiaData);
         } catch (InfrastructureException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -327,8 +306,7 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
             e.printStackTrace();
         }
 
-        assertEquals(instance.getName(), claudiaData.getVdc() + "-"
-                + envResult.getName());
+        assertEquals(instance.getName(), claudiaData.getVdc() + "-" + envResult.getName());
         assertEquals(instance.getEnvironment(), envResult);
         assertEquals(instance.getTierInstances().size(), 1);
 
@@ -367,16 +345,14 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
         TierInstance tierInstance = null;
 
         try {
-            tierInstance = manager.createTierInstanceFromVapp(envResult
-                    .getTiers().get(0), envResult.getName(), claudiaData, vapp,
-            "ovf");
+            tierInstance = manager.createTierInstanceFromVapp(envResult.getTiers().get(0), envResult.getName(),
+                    claudiaData, vapp, "ovf");
         } catch (InvalidVappException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        assertEquals(tierInstance.getName(), envResult.getName() + "-"
-                + envResult.getTiers().get(0).getName() + "-1");
+        assertEquals(tierInstance.getName(), envResult.getName() + "-" + envResult.getTiers().get(0).getName() + "-1");
         assertEquals(tierInstance.getNumberReplica(), 1);
         assertEquals(tierInstance.getVM().getHostname(), "tierName");
         assertEquals(tierInstance.getVM().getNetworks().get("public"), "10.99.88.33");
@@ -387,8 +363,7 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
     public void testDeployVDC() {
 
         try {
-            when(claudiaClient.browseVDC(any(ClaudiaData.class))).thenReturn(
-            "OK");
+            when(claudiaClient.browseVDC(any(ClaudiaData.class))).thenReturn("OK");
         } catch (ClaudiaResourceNotFoundException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -416,9 +391,7 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
             when(vappUtils.getFqnId(any(String.class))).thenReturn(fqn);
             when(vappUtils.getReplica(any(String.class))).thenReturn("1");
             when(vappUtils.getVMName(any(String.class))).thenReturn("tierName");
-            when(
-                    vappUtils.getVappsSingleVM(any(ClaudiaData.class),
-                            any(String.class))).thenReturn(vapps);
+            when(vappUtils.getVappsSingleVM(any(ClaudiaData.class), any(String.class))).thenReturn(vapps);
             when(ovfUtils.getOvfsSingleVM(any(String.class))).thenReturn(ovfs);
 
         } catch (InvalidVappException e) {
@@ -433,8 +406,7 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
         List<TierInstance> tierInstances = null;
 
         try {
-            tierInstances = manager.fromVappToListTierInstance(vapp, envResult,
-                    claudiaData);
+            tierInstances = manager.fromVappToListTierInstance(vapp, envResult, claudiaData);
         } catch (InvalidVappException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -455,17 +427,13 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
         vapps.add("ddd");
 
         try {
-            when(
-                    vappUtils.getVappsSingleVM(any(ClaudiaData.class),
-                            any(String.class))).thenReturn(vapps);
+            when(vappUtils.getVappsSingleVM(any(ClaudiaData.class), any(String.class))).thenReturn(vapps);
             when(vappUtils.getIP(any(String.class))).thenReturn(ips);
             when(vappUtils.getReplica(any(String.class))).thenReturn("1");
             when(vappUtils.getVMName(any(String.class))).thenReturn("tierName");
             when(claudiaUtil.getUrl(any(List.class))).thenReturn("url");
-            when(
-                    claudiaUtil.getClaudiaResource(any(PaasManagerUser.class),
-                            any(String.class), any(String.class))).thenReturn(
-                            "url");
+            when(claudiaUtil.getClaudiaResource(any(PaasManagerUser.class), any(String.class), any(String.class)))
+                    .thenReturn("url");
 
         } catch (InvalidVappException e) {
             // TODO Auto-generated catch block
@@ -497,9 +465,7 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
         vapps.add("ddd");
 
         try {
-            when(
-                    vappUtils.getVappsSingleVM(any(ClaudiaData.class),
-                            any(String.class))).thenReturn(vapps);
+            when(vappUtils.getVappsSingleVM(any(ClaudiaData.class), any(String.class))).thenReturn(vapps);
             when(vappUtils.getIP(any(String.class))).thenReturn(ips);
         } catch (InvalidVappException e) {
             // TODO Auto-generated catch block
@@ -516,35 +482,17 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
     }
 
     /*
-     * @Test public void testDeployService() { ClaudiaData claudiaData = new
-     * ClaudiaData ("dd", "2");
-     * 
-     * try {
-     * when(claudiaClient.browseService(any(ClaudiaData.class))).thenThrow(new
-     * ClaudiaResourceNotFoundException ("d")); } catch
-     * (ClaudiaResourceNotFoundException e1) { // TODO Auto-generated catch
-     * block e1.printStackTrace(); }
-     * 
-     * 
-     * String ovf =""; String vapp = "";
-     * when(claudiaClient.deployServiceFull(any(ClaudiaData.class),
-     * any(String.class))).thenReturn("String");
-     * when(claudiaResponseAnalyser.getTaskUrl
-     * (any(String.class))).thenReturn("String");
-     * when(claudiaResponseAnalyser.getTaskStatus
-     * (any(String.class))).thenReturn("sucess"); try { when
-     * (claudiaUtil.getClaudiaResource(any(PaasManagerUser.class),
-     * any(String.class), any(String.class))).thenReturn(""); } catch
-     * (ClaudiaRetrieveInfoException e1) { // TODO Auto-generated catch block
-     * e1.printStackTrace(); } catch (ClaudiaResourceNotFoundException e1) { //
-     * TODO Auto-generated catch block e1.printStackTrace(); }
-     * 
-     * try { manager.deployService(claudiaData,ovf ); } catch
-     * (InfrastructureException e) { // TODO Auto-generated catch block
-     * e.printStackTrace(); }
-     * 
-     * 
-     * }
+     * @Test public void testDeployService() { ClaudiaData claudiaData = new ClaudiaData ("dd", "2"); try {
+     * when(claudiaClient.browseService(any(ClaudiaData.class))).thenThrow(new ClaudiaResourceNotFoundException ("d"));
+     * } catch (ClaudiaResourceNotFoundException e1) { // TODO Auto-generated catch block e1.printStackTrace(); } String
+     * ovf =""; String vapp = ""; when(claudiaClient.deployServiceFull(any(ClaudiaData.class),
+     * any(String.class))).thenReturn("String"); when(claudiaResponseAnalyser.getTaskUrl
+     * (any(String.class))).thenReturn("String"); when(claudiaResponseAnalyser.getTaskStatus
+     * (any(String.class))).thenReturn("sucess"); try { when (claudiaUtil.getClaudiaResource(any(PaasManagerUser.class),
+     * any(String.class), any(String.class))).thenReturn(""); } catch (ClaudiaRetrieveInfoException e1) { // TODO
+     * Auto-generated catch block e1.printStackTrace(); } catch (ClaudiaResourceNotFoundException e1) { // TODO
+     * Auto-generated catch block e1.printStackTrace(); } try { manager.deployService(claudiaData,ovf ); } catch
+     * (InfrastructureException e) { // TODO Auto-generated catch block e.printStackTrace(); } }
      */
 
 }

@@ -4,6 +4,7 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.dao;
 
 import java.util.List;
@@ -20,9 +21,7 @@ public class ProductTypeDaoJpaImplTest extends AbstractJpaDaoTest {
 
     private ProductTypeDao productTypeDao;
 
-    public ProductType create(ProductType productType)
-    throws InvalidEntityException, AlreadyExistsEntityException {
-        System.out.println("Inserting ProductTypeObject in DB");
+    public ProductType create(ProductType productType) throws InvalidEntityException, AlreadyExistsEntityException {
         productType = productTypeDao.create(productType);
         assertNotNull(productType.getId());
         return productType;
@@ -33,8 +32,7 @@ public class ProductTypeDaoJpaImplTest extends AbstractJpaDaoTest {
     }
 
     public ProductType load(Long arg0) throws EntityNotFoundException {
-        ProductType productType = productTypeDao.load(productTypeDao.findAll()
-                .get(0).getName());
+        ProductType productType = productTypeDao.load(productTypeDao.findAll().get(0).getName());
         assertNotNull(productType.getId());
         return productType;
     }

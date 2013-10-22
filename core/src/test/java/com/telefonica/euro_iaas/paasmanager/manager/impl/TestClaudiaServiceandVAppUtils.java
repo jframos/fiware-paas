@@ -4,11 +4,8 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
-package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,11 +15,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
-
-import org.junit.Before;
-import org.junit.Test;
 
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
@@ -45,8 +37,16 @@ import com.telefonica.euro_iaas.paasmanager.util.EnvironmentUtils;
 import com.telefonica.euro_iaas.paasmanager.util.OVFUtilsDomImpl;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.util.VappUtilsImpl;
+import org.junit.Before;
+import org.junit.Test;
 
-public class TestClaudiaServiceandVAppUtils extends TestCase {
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+public class TestClaudiaServiceandVAppUtils {
 
     ClaudiaData claudiaData = new ClaudiaData("org", "vdc", "service");
     Environment envResult = null;
@@ -55,9 +55,6 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
 
     private String getFile(String file) throws IOException {
         File f = new File(file);
-        System.out.println(f.isFile() + " " + f.getAbsolutePath());
-        InputStream is = ClassLoader.getSystemClassLoader()
-        .getResourceAsStream(file);
         InputStream dd = new FileInputStream(f);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(dd));
@@ -69,23 +66,18 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
         }
         return ruleFile.toString();
     }
-    @Override
+
     @Before
-    public void setUp ()
-    {
+    public void setUp() {
         manager = new InfrastructureManagerServiceClaudiaImpl();
         VappUtilsImpl vappUtils = new VappUtilsImpl();
         SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
-        when(
-                systemPropertiesProvider
-                .getProperty(SystemPropertiesProvider.CLOUD_SYSTEM))
-                .thenReturn("ddFIWARE");
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM)).thenReturn("ddFIWARE");
 
         vappUtils.setSystemPropertiesProvider(systemPropertiesProvider);
         manager.setVappUtils(vappUtils);
         OVFUtilsDomImpl ovfUtils = new OVFUtilsDomImpl();
         manager.setOvfUtils(ovfUtils);
-
 
         envResult = new Environment();
         envResult.setName("environemntName");
@@ -137,13 +129,10 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
     @Test
     public void testClaudiaServiceandVAppUtils() {
 
-
-
         EnvironmentInstance environmentInstance = new EnvironmentInstance();
         environmentInstance.setEnvironment(envResult);
 
-        environmentInstance.setName(claudiaData.getVdc() + "-"
-                + envResult.getName());
+        environmentInstance.setName(claudiaData.getVdc() + "-" + envResult.getName());
 
         String vappname = "src/test/resources/vappsap83.xml";
         String vappService = null;
@@ -157,10 +146,7 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
         InfrastructureManagerServiceClaudiaImpl manager = new InfrastructureManagerServiceClaudiaImpl();
         VappUtilsImpl vappUtils = new VappUtilsImpl();
         SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
-        when(
-                systemPropertiesProvider
-                .getProperty(SystemPropertiesProvider.CLOUD_SYSTEM))
-                .thenReturn("ddFIWARE");
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM)).thenReturn("ddFIWARE");
 
         vappUtils.setSystemPropertiesProvider(systemPropertiesProvider);
         manager.setVappUtils(vappUtils);
@@ -170,8 +156,7 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
         List<TierInstance> tierInstances = null;
 
         try {
-            tierInstances = manager.fromVappToListTierInstance(vappService,
-                    envResult, claudiaData);
+            tierInstances = manager.fromVappToListTierInstance(vappService, envResult, claudiaData);
         } catch (InvalidVappException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -180,19 +165,13 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
             e.printStackTrace();
         }
 
-        for (TierInstance tierInstance: tierInstances)
-        {
-            if (tierInstance.getTier().equals("haproxy"))
-            {
-                assertEquals (tierInstance.getVM().getIp(), "109.231.73.170");
-            }
-            else if (tierInstance.getTier().equals("FlexVM1"))
-            {
-                assertEquals (tierInstance.getVM().getIp(), "109.231.80.84");
-            }
-            else if (tierInstance.getTier().equals("FlexVM2"))
-            {
-                assertEquals (tierInstance.getVM().getIp(), "109.231.73.171");
+        for (TierInstance tierInstance : tierInstances) {
+            if (tierInstance.getTier().equals("haproxy")) {
+                assertEquals(tierInstance.getVM().getIp(), "109.231.73.170");
+            } else if (tierInstance.getTier().equals("FlexVM1")) {
+                assertEquals(tierInstance.getVM().getIp(), "109.231.80.84");
+            } else if (tierInstance.getTier().equals("FlexVM2")) {
+                assertEquals(tierInstance.getVM().getIp(), "109.231.73.171");
             }
 
         }
@@ -207,9 +186,8 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
         ProductInstanceManager productInstanceManager = mock(ProductInstanceManager.class);
         try {
             when(
-                    productInstanceManager.install(any(TierInstance.class),any(ClaudiaData.class),
-                            any(String.class), any(ProductRelease.class),
-                            any(List.class))).thenReturn(productInstance);
+                    productInstanceManager.install(any(TierInstance.class), any(ClaudiaData.class), any(String.class),
+                            any(ProductRelease.class), any(List.class))).thenReturn(productInstance);
         } catch (ProductInstallatorException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -223,32 +201,26 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        environmentInstanceManager
-        .setProductInstanceManager(productInstanceManager);
+        environmentInstanceManager.setProductInstanceManager(productInstanceManager);
         InfrastructureManager infrastructureManager = mock(InfrastructureManager.class);
         try {
-            when(
-                    infrastructureManager.ImageScalability(
-                            any(ClaudiaData.class), any(TierInstance.class)))
-                            .thenReturn("dd");
+            when(infrastructureManager.ImageScalability(any(ClaudiaData.class), any(TierInstance.class))).thenReturn(
+                    "dd");
         } catch (InfrastructureException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
         EnvironmentUtils environmentUtils = mock(EnvironmentUtils.class);
-        when(environmentUtils.updateVmOvf(any(String.class), any(String.class)))
-        .thenReturn("dd");
+        when(environmentUtils.updateVmOvf(any(String.class), any(String.class))).thenReturn("dd");
 
-        environmentInstanceManager
-        .setInfrastructureManager(infrastructureManager);
+        environmentInstanceManager.setInfrastructureManager(infrastructureManager);
         environmentInstanceManager.setEnvironmentUtils(environmentUtils);
 
         TierInstanceDao tierInstanceDao = mock(TierInstanceDao.class);
         environmentInstanceManager.setTierInstanceDao(tierInstanceDao);
 
         try {
-            boolean bScalableEnvironment = environmentInstanceManager
-            .installSoftwareInEnvironmentInstance(claudiaData,
+            boolean bScalableEnvironment = environmentInstanceManager.installSoftwareInEnvironmentInstance(claudiaData,
                     environmentInstance);
         } catch (ProductInstallatorException e) {
             // TODO Auto-generated catch block
@@ -272,13 +244,10 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
     @Test
     public void testSeveralNetworksClaudiaServiceandVAppUtils() {
 
-
-
         EnvironmentInstance environmentInstance = new EnvironmentInstance();
         environmentInstance.setEnvironment(envResult);
 
-        environmentInstance.setName(claudiaData.getVdc() + "-"
-                + envResult.getName());
+        environmentInstance.setName(claudiaData.getVdc() + "-" + envResult.getName());
 
         String vappname = "src/test/resources/vappsap84.xml";
         String vappService = null;
@@ -289,12 +258,10 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
             e1.printStackTrace();
         }
 
-
         List<TierInstance> tierInstances = null;
 
         try {
-            tierInstances = manager.fromVappToListTierInstance(vappService,
-                    envResult, claudiaData);
+            tierInstances = manager.fromVappToListTierInstance(vappService, envResult, claudiaData);
         } catch (InvalidVappException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -303,25 +270,19 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
             e.printStackTrace();
         }
 
-        for (TierInstance tierInstance: tierInstances)
-        {
-            if (tierInstance.getTier().equals("haproxy"))
-            {
-                assertEquals (tierInstance.getVM().getNetworks().get("public"), "109.231.73.170");
-                assertEquals (tierInstance.getVM().getNetworks().get("private"), "1.231.73.170");
-                assertEquals (tierInstance.getVM().getNetworks().get("other"), "2.231.73.170");
-            }
-            else if (tierInstance.getTier().equals("FlexVM1"))
-            {
-                assertEquals (tierInstance.getVM().getNetworks().get("public"), "109.231.80.84");
-                assertEquals (tierInstance.getVM().getNetworks().get("private"), "1.231.80.84");
-                assertEquals (tierInstance.getVM().getNetworks().get("other"), "2.231.80.84");
-            }
-            else if (tierInstance.getTier().equals("FlexVM2"))
-            {
-                assertEquals (tierInstance.getVM().getNetworks().get("public"), "109.231.73.171");
-                assertEquals (tierInstance.getVM().getNetworks().get("private"), "1.231.73.171");
-                assertEquals (tierInstance.getVM().getNetworks().get("other"), "2.231.73.171");
+        for (TierInstance tierInstance : tierInstances) {
+            if (tierInstance.getTier().equals("haproxy")) {
+                assertEquals(tierInstance.getVM().getNetworks().get("public"), "109.231.73.170");
+                assertEquals(tierInstance.getVM().getNetworks().get("private"), "1.231.73.170");
+                assertEquals(tierInstance.getVM().getNetworks().get("other"), "2.231.73.170");
+            } else if (tierInstance.getTier().equals("FlexVM1")) {
+                assertEquals(tierInstance.getVM().getNetworks().get("public"), "109.231.80.84");
+                assertEquals(tierInstance.getVM().getNetworks().get("private"), "1.231.80.84");
+                assertEquals(tierInstance.getVM().getNetworks().get("other"), "2.231.80.84");
+            } else if (tierInstance.getTier().equals("FlexVM2")) {
+                assertEquals(tierInstance.getVM().getNetworks().get("public"), "109.231.73.171");
+                assertEquals(tierInstance.getVM().getNetworks().get("private"), "1.231.73.171");
+                assertEquals(tierInstance.getVM().getNetworks().get("other"), "2.231.73.171");
             }
 
         }
@@ -336,9 +297,8 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
         ProductInstanceManager productInstanceManager = mock(ProductInstanceManager.class);
         try {
             when(
-                    productInstanceManager.install(any(TierInstance.class),any(ClaudiaData.class),
-                            any(String.class), any(ProductRelease.class),
-                            any(List.class))).thenReturn(productInstance);
+                    productInstanceManager.install(any(TierInstance.class), any(ClaudiaData.class), any(String.class),
+                            any(ProductRelease.class), any(List.class))).thenReturn(productInstance);
         } catch (ProductInstallatorException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -352,32 +312,26 @@ public class TestClaudiaServiceandVAppUtils extends TestCase {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        environmentInstanceManager
-        .setProductInstanceManager(productInstanceManager);
+        environmentInstanceManager.setProductInstanceManager(productInstanceManager);
         InfrastructureManager infrastructureManager = mock(InfrastructureManager.class);
         try {
-            when(
-                    infrastructureManager.ImageScalability(
-                            any(ClaudiaData.class), any(TierInstance.class)))
-                            .thenReturn("dd");
+            when(infrastructureManager.ImageScalability(any(ClaudiaData.class), any(TierInstance.class))).thenReturn(
+                    "dd");
         } catch (InfrastructureException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
         EnvironmentUtils environmentUtils = mock(EnvironmentUtils.class);
-        when(environmentUtils.updateVmOvf(any(String.class), any(String.class)))
-        .thenReturn("dd");
+        when(environmentUtils.updateVmOvf(any(String.class), any(String.class))).thenReturn("dd");
 
-        environmentInstanceManager
-        .setInfrastructureManager(infrastructureManager);
+        environmentInstanceManager.setInfrastructureManager(infrastructureManager);
         environmentInstanceManager.setEnvironmentUtils(environmentUtils);
 
         TierInstanceDao tierInstanceDao = mock(TierInstanceDao.class);
         environmentInstanceManager.setTierInstanceDao(tierInstanceDao);
 
         try {
-            boolean bScalableEnvironment = environmentInstanceManager
-            .installSoftwareInEnvironmentInstance(claudiaData,
+            boolean bScalableEnvironment = environmentInstanceManager.installSoftwareInEnvironmentInstance(claudiaData,
                     environmentInstance);
         } catch (ProductInstallatorException e) {
             // TODO Auto-generated catch block

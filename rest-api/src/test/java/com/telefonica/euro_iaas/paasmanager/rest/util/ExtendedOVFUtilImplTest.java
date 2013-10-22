@@ -110,8 +110,6 @@ public class ExtendedOVFUtilImplTest extends TestCase {
 
     private String getFile(String file) throws IOException {
         File f = new File(file);
-        System.out.println(f.isFile() + " " + f.getAbsolutePath());
-        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(file);
         InputStream dd = new FileInputStream(f);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(dd));

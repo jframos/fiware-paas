@@ -171,9 +171,9 @@ public class OVFMacroImplTest {
         OVFMacroImpl ovfMacroImpl = new OVFMacroImpl();
         ovfMacroImpl.setExtendedOVFUtil(extendedOVFUtil);
 
-        System.out.println("BEFORE CONVERTING MACROS Vapp: " + ovf);
+        log.debug("BEFORE CONVERTING MACROS Vapp: " + ovf);
         environment = ovfMacroImpl.resolveMacros(environment);
-        System.out.println("AFTER CONVERTING MACROS Vapp: " + environment.getOvf());
+        log.debug("AFTER CONVERTING MACROS Vapp: " + environment.getOvf());
     }
 
 }

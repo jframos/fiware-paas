@@ -7,8 +7,18 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import junit.framework.TestCase;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
@@ -21,15 +31,6 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.TierResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class TierResourceTest extends TestCase {
 

@@ -17,6 +17,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -27,10 +28,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidVappException;
-import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
-import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import org.apache.log4j.Logger;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
@@ -39,6 +36,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidVappException;
+import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * @author jesus.movilla
@@ -181,7 +183,7 @@ public class VappUtilsImpl implements VappUtils {
                 ipTag = IPADDRESS_TAG;
             }
             Node ipNnode = doc.getElementsByTagName(ipTag).item(0);
-            ip = ipNnode.getTextContent();
+            ip = ipNnode.getTextContent().trim();
 
         } catch (ParserConfigurationException e) {
             String msg = "Error parsing vapp . Desc: " + e.getMessage();
@@ -259,11 +261,6 @@ public class VappUtilsImpl implements VappUtils {
 
             virtualSystemNode = findNode(doc, VIRTUALSYSTEM_PATH);
             virtualSystemNodeString = nodeToString(virtualSystemNode);
-            /*
-             * for (int i=0; i < virtualSystemNode.getChildNodes().getLength(); i++) { Node node =
-             * virtualSystemNode.getChildNodes().item(i); String nString = nodeToString(node);
-             * System.out.println("child[" + i + "]=" + nString); }
-             */
 
             nameNode = doc.getElementsByTagName(NODENAME_TAG).item(0);
             String nameNodeString = nodeToString(nameNode);
@@ -359,31 +356,6 @@ public class VappUtilsImpl implements VappUtils {
 
         return virtualSystemNodeString;
     }
-
-    /*
-     * (non-Javadoc)
-     * @seecom.telefonica.euro_iaas.paasmanager.installator.rec.util.VappUtils# getRECProductSection(java.lang.String)
-     */
-    /*
-     * private String getRECProductSection(String vapp, String ip, String login, String password) throws
-     * ProductInstallatorException { String productSectionREC = null; DocumentBuilder builder; Document doc;
-     * DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); try { builder =
-     * factory.newDocumentBuilder(); doc = builder.parse(new InputSource(new StringReader(vapp))); NodeList
-     * productSectionNodes = doc. getElementsByTagName(PRODUCTSECTION_TAG); for (int i=0; i<
-     * productSectionNodes.getLength(); i++){ Node productSectionNode = productSectionNodes.item(i); NodeList
-     * propertyList = productSectionNode.getChildNodes(); for (int j=0; j < propertyList.getLength(); j++) { Node
-     * property = propertyList.item(j); String propertyString = nodeToString(property); if
-     * (propertyString.contains("Property")){ if ((property.getAttributes().getNamedItem
-     * (KEYATTRIBUTE_TAG).getTextContent().equals(KEYATTRIBUTE_VALUE))&& (property
-     * .getAttributes().getNamedItem(VALUEATTRIBUTE_TAG).getTextContent( ).equals("REC"))){ productSectionREC =
-     * nodeToString(productSectionNode); } } } } if (productSectionREC == null) return productSectionREC; else return
-     * setParamsREC(productSectionREC, ip, login, password); } catch (ParserConfigurationException e) { String msg
-     * ="Error parsing vapp . Desc: " + e.getMessage(); log.info(msg); throw new ProductInstallatorException(msg); }
-     * catch (SAXException e) { String msg ="Error parsing vapp . Desc: " + e.getMessage(); log.info(msg); throw new
-     * ProductInstallatorException(msg); } catch (IOException e) { String msg ="IOException . Desc: " + e.getMessage();
-     * log.info(msg); throw new ProductInstallatorException(msg); } catch (InvalidOVFException e){ String msg
-     * ="InvalidOVFException . Desc: " + e.getMessage(); log.info(msg); throw new ProductInstallatorException(msg); } }
-     */
 
     /*
      * (non-Javadoc)
@@ -833,23 +805,6 @@ public class VappUtilsImpl implements VappUtils {
 
     /*
      * (non-Javadoc)
-     * @seecom.telefonica.euro_iaas.paasmanager.installator.rec.util.VappUtils# getHostname(java.lang.String)
-     */
-    /*
-     * public String getHostname(String vappVS) throws InvalidOVFException { String hostname = null; DocumentBuilder
-     * builder; Document doc; DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); try { builder =
-     * factory.newDocumentBuilder(); doc = builder.parse(new InputSource(new StringReader(vappVS))); NodeList
-     * productSectionNodes = doc .getElementsByTagName(VIRTUALSYSTEM_TAG); hostname =
-     * productSectionNodes.item(0).getAttributes() .getNamedItem(VIRTUALSYSTEMID_TAG).getTextContent(); } catch
-     * (ParserConfigurationException e) { String msg = "Error obtaining hostname . Desc: " + e.getMessage();
-     * log.info(msg); throw new InvalidOVFException(msg); } catch (SAXException e) { String msg =
-     * "Error obtaining hostname  . Desc: " + e.getMessage(); log.info(msg); throw new InvalidOVFException(msg); } catch
-     * (IOException e) { String msg = "IOException .Error obtaining hostname : " + e.getMessage(); log.info(msg); throw
-     * new InvalidOVFException(msg); } return hostname; }
-     */
-
-    /*
-     * (non-Javadoc)
      * @seecom.telefonica.euro_iaas.paasmanager.installator.rec.util.VappUtils# getEnvelopeTypeSegment(java.lang.String)
      */
     public String getEnvelopeTypeSegment(String serviceFile, String appId) throws InvalidOVFException {
@@ -1011,7 +966,6 @@ public class VappUtilsImpl implements VappUtils {
         try {
             Node fragmentNode = docBuilder.parse(new InputSource(new StringReader(newNode))).getDocumentElement();
             fragmentNode = doc.importNode(fragmentNode, true);
-            // System.out.println("newNode:" + nodeToString(fragmentNode));
             parentNode.replaceChild(fragmentNode, oldNode);
         } catch (SAXException se) {
             se.printStackTrace();
@@ -1022,7 +976,6 @@ public class VappUtilsImpl implements VappUtils {
     }
 
     private Node findNode(Node node, String xql) throws TransformerException {
-        // System.out.println("Node:" + xql);
         return (XPathAPI.selectSingleNode(node, xql));
     }
 
@@ -1126,7 +1079,7 @@ public class VappUtilsImpl implements VappUtils {
             t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             t.transform(new DOMSource(node), new StreamResult(sw));
         } catch (TransformerException te) {
-            System.out.println("nodeToString Transformer Exception");
+            log.warn("nodeToString Transformer Exception");
         }
         return sw.toString();
     }

@@ -4,6 +4,7 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.util;
 
 import java.io.BufferedReader;
@@ -13,11 +14,18 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import com.telefonica.claudia.util.JAXBUtils;
+import com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientImpl;
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.Router;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
@@ -35,18 +43,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.telefonica.claudia.util.JAXBUtils;
-import com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientImpl;
-import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
-import com.telefonica.euro_iaas.paasmanager.model.Network;
-import com.telefonica.euro_iaas.paasmanager.model.Router;
-import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
-import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
-
 /**
  * @author jesus.movilla
- *
  */
 public class OpenStackUtilImpl implements OpenStackUtil {
 
@@ -54,15 +52,17 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * The log.
      */
     private static Logger log = Logger.getLogger(ClaudiaClientImpl.class);
+
     /**
      * Returns an InputStream as String.
-     *
-     * @param is InputStream from response
+     * 
+     * @param is
+     *            InputStream from response
      * @return Compute Compute
-     * @throws OCCIException OCCIException
+     * @throws OCCIException
+     *             OCCIException
      */
-    private static String convertStreamToString(InputStream is)
-    throws OpenStackException {
+    private static String convertStreamToString(InputStream is) throws OpenStackException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
 
@@ -82,6 +82,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         }
         return sb.toString();
     }
+
     private SystemPropertiesProvider systemPropertiesProvider;
     /**
      * HTTP code for accepted requests
@@ -117,6 +118,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      */
     private String user;
 
+<<<<<<< HEAD
     public String addInterface(Router router, Network net, PaasManagerUser user) throws OpenStackException {
 
         //  PUT /v2.0/routers/8604a0de-7f6b-409a-a47c-a1cc7bc77b2e/add_router_interface
@@ -152,6 +154,12 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     /* (non-Javadoc)
      * @see com.telefonica.claudia.smi.OpenStackClient#addRouterInterface(java.lang.String,
      * java.lang.String, com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser )
+=======
+    /*
+     * (non-Javadoc)
+     * @see com.telefonica.claudia.smi.OpenStackClient#addRouterInterface(java.lang.String, java.lang.String,
+     * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser )
+>>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
      */
     public String addRouterInterface(String routerId, String subNetId, PaasManagerUser user) throws OpenStackException {
         // throw new UnsupportedOperationException("Not supported yet.");
@@ -159,25 +167,24 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
         // -H "Content-Type: application/json" -H "Accept: application/xml"
         // -X POST "http://10.95.171.115:9696/v2.0/subnets"
-        //-d '{"network" : {"name" : "testNetwork", "admin_state_up": false}}'
+        // -d '{"network" : {"name" : "testNetwork", "admin_state_up": false}}'
 
         String response = null;
 
         try {
             String payload = "{\"subnet_id\": \"" + subNetId + "\"}";
 
-            HttpUriRequest request = createQuantumPutRequest(RESOURCE_ROUTERS
-                    + "/" + routerId + "/" + RESOURCE_ADD_INTERFACE, payload, APPLICATION_JSON, user);
+            HttpUriRequest request = createQuantumPutRequest(RESOURCE_ROUTERS + "/" + routerId + "/"
+                    + RESOURCE_ADD_INTERFACE, payload, APPLICATION_JSON, user);
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error adding interface " + subNetId + " to router " + routerId + ": "
-            + e;
+            String errorMessage = "Error adding interface " + subNetId + " to router " + routerId + ": " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error adding interface " + subNetId + " to router " + routerId
-            + " from OpenStack: " + e;
+            String errorMessage = "Error adding interface " + subNetId + " to router " + routerId + " from OpenStack: "
+                    + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
@@ -187,30 +194,28 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     /**
      * Add a floatingIP to a full ip pool
-     *
+     * 
      * @param payload
      * @return
      * @throws OpenStackException
      */
-    public String allocateFloatingIP(String payload, PaasManagerUser user)
-    throws OpenStackException {
+    public String allocateFloatingIP(String payload, PaasManagerUser user) throws OpenStackException {
         String response = null;
 
         try {
-            HttpUriRequest request = createNovaPostRequest("/"
-                    + RESOURCE_FLOATINGIP, payload, APPLICATION_XML, APPLICATION_JSON, user);
+            HttpUriRequest request = createNovaPostRequest("/" + RESOURCE_FLOATINGIP, payload, APPLICATION_XML,
+                    APPLICATION_JSON, user);
 
             response = executeNovaRequest(request);
             // deletion.setMessage(response);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error Getting Floating IPs "
-                + " from tenant " + tenant + ": " + e;
+            String errorMessage = "Error Getting Floating IPs " + " from tenant " + tenant + ": " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error Getting Floating IPs "
-                + " from tenant " + tenant + ": " + " from OpenStack: " + e;
+            String errorMessage = "Error Getting Floating IPs " + " from tenant " + tenant + ": " + " from OpenStack: "
+                    + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
@@ -222,42 +227,29 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * Deploys a VM in Openstack
      */
     /*
-     * public String deleteServer(String serverId, PaasManagerUser user) throws
-     * OpenStackException { // throw new
-     * UnsupportedOperationException("Not supported yet."); // I need to know
-     * X-Auth-Token, orgID-Tennat, IP and Port // curl -v -H 'X-Auth-Token:
-     * a92287ea7c2243d78a7180ef3f7a5757' // -H "Content-Type: application/json"
-     * -H "Accept: application/json" // -d "{"reboot" : {"type" : "SOFT" }}" //
-     * -X POST
+     * public String deleteServer(String serverId, PaasManagerUser user) throws OpenStackException { // throw new
+     * UnsupportedOperationException("Not supported yet."); // I need to know X-Auth-Token, orgID-Tennat, IP and Port //
+     * curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757' // -H "Content-Type: application/json" -H
+     * "Accept: application/json" // -d "{"reboot" : {"type" : "SOFT" }}" // -X POST
      * "http://10.95.171.115:8774/v2/30c60771b6d144d2861b21e442f0bef9/servers/6570eca2-21e2-4942-bede-f556c57af2b4/action"
-     * 
-     * String response = null; //TaskResult deletion = new TaskResult();
-     * 
-     * try { HttpUriRequest request =
-     * createNovaDeleteRequest(OpenStackConstants.RESOURCE_SERVERS + "/" +
-     * serverId, user);
-     * 
-     * response = executeNovaRequest(request); // deletion.setMessage(response);
-     * 
-     * } catch (InfrastructureException e) { String errorMessage =
-     * "Error deleting server " + serverId + ": " + e; log.error(errorMessage);
-     * throw new OpenStackException(errorMessage);
-     * //deletion.setMessage(e.getMessage()); //deletion.setSuccess(false); }
-     * catch (Exception e) { String errorMessage = "Error deleting server " +
-     * serverId + " from OpenStack: " + e; log.error(errorMessage); throw new
-     * OpenStackException(errorMessage); //deletion.setMessage(e.getMessage());
+     * String response = null; //TaskResult deletion = new TaskResult(); try { HttpUriRequest request =
+     * createNovaDeleteRequest(OpenStackConstants.RESOURCE_SERVERS + "/" + serverId, user); response =
+     * executeNovaRequest(request); // deletion.setMessage(response); } catch (InfrastructureException e) { String
+     * errorMessage = "Error deleting server " + serverId + ": " + e; log.error(errorMessage); throw new
+     * OpenStackException(errorMessage); //deletion.setMessage(e.getMessage()); //deletion.setSuccess(false); } catch
+     * (Exception e) { String errorMessage = "Error deleting server " + serverId + " from OpenStack: " + e;
+     * log.error(errorMessage); throw new OpenStackException(errorMessage); //deletion.setMessage(e.getMessage());
      * //deletion.setSuccess(false); } return response; }
      */
     /**
      * Assign certain floatingIP to a serverId
-     *
+     * 
      * @param serverId
      * @param floatingIP
      * @return
      * @throws OpenStackException
      */
-    public String assignFloatingIP(String serverId, String floatingIP,
-            PaasManagerUser user) throws OpenStackException {
+    public String assignFloatingIP(String serverId, String floatingIP, PaasManagerUser user) throws OpenStackException {
         // throw new UnsupportedOperationException("Not supported yet.");
         // I need to know X-Auth-Token, orgID-Tennat, IP and Port
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
@@ -270,21 +262,19 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // TaskResult deletion = new TaskResult();
         String payload = buildPayloadFloatingIP(floatingIP);
         try {
-            HttpUriRequest request = createNovaPostRequest(RESOURCE_SERVERS
-                    + "/" + serverId + "/" + RESOURCE_ACTION, payload,
-                    APPLICATION_XML, APPLICATION_JSON, user);
+            HttpUriRequest request = createNovaPostRequest(RESOURCE_SERVERS + "/" + serverId + "/" + RESOURCE_ACTION,
+                    payload, APPLICATION_XML, APPLICATION_JSON, user);
 
             response = executeNovaRequest(request);
             // deletion.setMessage(response);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error Assigning Floating IP " + floatingIP
-            + " to server " + serverId + ": " + e;
+            String errorMessage = "Error Assigning Floating IP " + floatingIP + " to server " + serverId + ": " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error Assigning Floating IP " + floatingIP
-            + " to server " + serverId + " from OpenStack: " + e;
+            String errorMessage = "Error Assigning Floating IP " + floatingIP + " to server " + serverId
+                    + " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
@@ -293,30 +283,27 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     }
 
     private String buildAllocateFloatingIPPayload(String floatingIPPool) {
-        return "<?xml version='1.0' encoding='UTF-8'?>" + "<pool>"
-        + floatingIPPool + "</pool>";
+        return "<?xml version='1.0' encoding='UTF-8'?>" + "<pool>" + floatingIPPool + "</pool>";
 
     }
 
     /**
      * Building the payload to assign FloatingIP
-     *
+     * 
      * @param floatigIP
      * @return
      */
     private String buildPayloadFloatingIP(String floatigIP) {
-        return "<addFloatingIp>\n<address>" + floatigIP
-        + "</address>\n</addFloatingIp>";
+        return "<addFloatingIp>\n<address>" + floatigIP + "</address>\n</addFloatingIp>";
     }
 
     /**
      * Checks if metadatas (authToken, tenant and user) were initialized.
-     *
+     * 
      * @throws InfrastructureException
      */
     private void checkParam(PaasManagerUser user) throws OpenStackException {
-        if (user.getToken() == null || user.getTenantId() == null
-                || user.getUsername() == null) {
+        if (user.getToken() == null || user.getTenantId() == null || user.getUsername() == null) {
             throw new OpenStackException(ERROR_AUTHENTICATION_HEADERS);
         }
     }
@@ -327,7 +314,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
         // -H "Content-Type: application/json" -H "Accept: application/xml"
         // -X POST "http://10.95.171.115:9696/v2/networks"
-        //-d '{"network" : {"name" : "testNetwork", "admin_state_up": false}}'
+        // -d '{"network" : {"name" : "testNetwork", "admin_state_up": false}}'
 
         String response = null;
 
@@ -338,13 +325,11 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error creating network " + net.getNetworkName() + ": "
-            + e;
+            String errorMessage = "Error creating network " + net.getNetworkName() + ": " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error creating network " + net.getNetworkName()
-            + " from OpenStack: " + e;
+            String errorMessage = "Error creating network " + net.getNetworkName() + " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
@@ -354,27 +339,23 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     /**
      * Returns a request for a NOVA DELETE petition.
-     *
-     * @param resource the target resource
+     * 
+     * @param resource
+     *            the target resource
      * @return HttpUriRequest the request
      */
-    private HttpUriRequest createNovaDeleteRequest(String resource,
-            PaasManagerUser user) {
+    private HttpUriRequest createNovaDeleteRequest(String resource, PaasManagerUser user) {
         HttpUriRequest request;
 
         try {
             checkParam(user);
         } catch (OpenStackException ex) {
-            java.util.logging.Logger.getLogger(
-                    OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null,
-                            ex);
+            java.util.logging.Logger.getLogger(OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        request = new HttpDelete(systemPropertiesProvider
-                .getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)
-                + systemPropertiesProvider
-                .getProperty(SystemPropertiesProvider.VERSION_PROPERTY)
-                + user.getTenantId() + "/" + resource);
+        request = new HttpDelete(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)
+                + systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY) + user.getTenantId()
+                + "/" + resource);
 
         // request.setHeader(OpenStackConstants.CONTENT_TYPE,
         // OpenStackConstants.APPLICATION_JSON);
@@ -386,29 +367,24 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     /**
      * Returns a request for a NOVA GET petition.
-     *
+     * 
      * @param resource
      * @param accept
      * @param user
      * @return
      */
-    private HttpUriRequest createNovaGetRequest(String resource, String accept,
-            PaasManagerUser user) {
+    private HttpUriRequest createNovaGetRequest(String resource, String accept, PaasManagerUser user) {
         HttpUriRequest request;
 
         try {
             checkParam(user);
         } catch (OpenStackException ex) {
-            java.util.logging.Logger.getLogger(
-                    OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null,
-                            ex);
+            java.util.logging.Logger.getLogger(OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        request = new HttpGet(systemPropertiesProvider
-                .getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)
-                + systemPropertiesProvider
-                .getProperty(SystemPropertiesProvider.VERSION_PROPERTY)
-                + user.getTenantId() + "/" + resource);
+        request = new HttpGet(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)
+                + systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY) + user.getTenantId()
+                + "/" + resource);
 
         // request.setHeader(OpenStackConstants.CONTENT_TYPE,
         // OpenStackConstants.APPLICATION_XML);
@@ -420,12 +396,13 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     /**
      * Returns a request for a NOVA POST petition.
-     *
-     * @param resource the target resource
+     * 
+     * @param resource
+     *            the target resource
      * @return HttpUriRequest the request
      */
-    private HttpPost createNovaPostRequest(String resource, String payload,
-            String content, String accept, PaasManagerUser user) throws OpenStackException {
+    private HttpPost createNovaPostRequest(String resource, String payload, String content, String accept,
+            PaasManagerUser user) throws OpenStackException {
         HttpPost request;
 
         // Check that the authtoken, tenant and user was initialized
@@ -433,17 +410,13 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         try {
             checkParam(user);
         } catch (OpenStackException ex) {
-            java.util.logging.Logger.getLogger(
-                    OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null,
-                            ex);
+            java.util.logging.Logger.getLogger(OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         log.info("Payload " + payload);
 
-        request = new HttpPost(systemPropertiesProvider
-                .getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)
-                + systemPropertiesProvider
-                .getProperty(SystemPropertiesProvider.VERSION_PROPERTY)
-                + user.getTenantId() + "/" + resource);
+        request = new HttpPost(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)
+                + systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY) + user.getTenantId()
+                + "/" + resource);
 
         try {
             request.setEntity(new StringEntity(payload));
@@ -463,8 +436,9 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     /**
      * Returns a request for a QUANTUM DELETE petition.
-     *
-     * @param resource the target resource
+     * 
+     * @param resource
+     *            the target resource
      * @return HttpUriRequest the request
      */
     private HttpUriRequest createQuantumDeleteRequest(String resource, PaasManagerUser user) {
@@ -475,16 +449,13 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         try {
             checkParam(user);
         } catch (OpenStackException ex) {
-            java.util.logging.Logger.getLogger(
-                    OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null,
-                            ex);
+            java.util.logging.Logger.getLogger(OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         request = new HttpDelete(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_QUANTUM_PROPERTY)
-                + systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_QUANTUM_VERSION)
-                + resource);
+                + systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_QUANTUM_VERSION) + resource);
 
-        //request.setHeader(OpenStackConstants.CONTENT_TYPE, OpenStackConstants.APPLICATION_JSON);
+        // request.setHeader(OpenStackConstants.CONTENT_TYPE, OpenStackConstants.APPLICATION_JSON);
         request.setHeader(ACCEPT, APPLICATION_JSON);
         request.setHeader(X_AUTH_TOKEN, user.getToken());
 
@@ -493,8 +464,9 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     /**
      * Returns a request for a Quantum GET petition.
-     *
-     * @param resource the target resource
+     * 
+     * @param resource
+     *            the target resource
      * @return HttpUriRequest the request
      */
     private HttpUriRequest createQuantumGetRequest(String resource, String accept, PaasManagerUser user) {
@@ -505,13 +477,10 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         try {
             checkParam(user);
         } catch (OpenStackException ex) {
-            java.util.logging.Logger.getLogger(
-                    OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null,
-                            ex);
+            java.util.logging.Logger.getLogger(OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         request = new HttpGet(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_QUANTUM_PROPERTY)
-                + systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_QUANTUM_VERSION)
-                + resource);
+                + systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_QUANTUM_VERSION) + resource);
 
         request.setHeader(ACCEPT, accept);
         request.setHeader(X_AUTH_TOKEN, user.getToken());
@@ -521,12 +490,13 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     /**
      * Returns a request for a Quantum POST petition.
-     *
-     * @param resource the target resource
+     * 
+     * @param resource
+     *            the target resource
      * @return HttpUriRequest the request
      */
-    private HttpPost createQuantumPostRequest(String resource, String payload,
-            String content, PaasManagerUser user) throws OpenStackException {
+    private HttpPost createQuantumPostRequest(String resource, String payload, String content, PaasManagerUser user)
+            throws OpenStackException {
         HttpPost request;
 
         // Check that the authtoken, tenant and user was initialized
@@ -534,9 +504,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         try {
             checkParam(user);
         } catch (OpenStackException ex) {
-            java.util.logging.Logger.getLogger(
-                    OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null,
-                            ex);
+            java.util.logging.Logger.getLogger(OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         log.info("Payload " + payload);
 
@@ -564,12 +532,13 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     /**
      * Returns a request for a Quantum POST petition.
-     *
-     * @param resource the target resource
+     * 
+     * @param resource
+     *            the target resource
      * @return HttpUriRequest the request
      */
-    private HttpPut createQuantumPutRequest(String resource, String payload,
-            String content, PaasManagerUser user) throws OpenStackException {
+    private HttpPut createQuantumPutRequest(String resource, String payload, String content, PaasManagerUser user)
+            throws OpenStackException {
         HttpPut request;
 
         // Check that the authtoken, tenant and user was initialized
@@ -577,9 +546,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         try {
             checkParam(user);
         } catch (OpenStackException ex) {
-            java.util.logging.Logger.getLogger(
-                    OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null,
-                            ex);
+            java.util.logging.Logger.getLogger(OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         log.info("Payload " + payload);
 
@@ -605,7 +572,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         return request;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see com.telefonica.claudia.smi.OpenStackClient#createRouter(java.lang.String,
      * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser )
      */
@@ -615,8 +583,13 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
         // -H "Content-Type: application/json" -H "Accept: application/xml"
         // -X POST "http://10.95.171.115:9696/v2.0/subnets"
+<<<<<<< HEAD
         //-d '{"network" : {"name" : "testNetwork", "admin_state_up": false}}'
         log.debug ("Creating a router " + router.getName() );
+=======
+        // -d '{"network" : {"name" : "testNetwork", "admin_state_up": false}}'
+
+>>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
         String response = null;
 
         try {
@@ -627,6 +600,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
+<<<<<<< HEAD
             String errorMessage = "Error creating router in " + router.getName() + ": "
             + e;
             log.error(errorMessage);
@@ -634,6 +608,13 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         } catch (Exception e) {
             String errorMessage = "Error creating router " + router.getName()
             + " from OpenStack: " + e;
+=======
+            String errorMessage = "Error creating router in " + router.getIdNetwork() + ": " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        } catch (Exception e) {
+            String errorMessage = "Error creating router " + router.getIdNetwork() + " from OpenStack: " + e;
+>>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
@@ -641,8 +622,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         return response;
     }
 
-    public String createServer(String payload, PaasManagerUser user)
-    throws OpenStackException {
+    public String createServer(String payload, PaasManagerUser user) throws OpenStackException {
         // throw new UnsupportedOperationException("Not supported yet.");
         // I need to know X-Auth-Token, orgID-Tennat, IP and Port
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
@@ -655,8 +635,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         String getResponse = "getResponse";
 
         try {
-            request = createNovaPostRequest(RESOURCE_SERVERS, payload,
-                    APPLICATION_JSON, APPLICATION_XML, user);
+            request = createNovaPostRequest(RESOURCE_SERVERS, payload, APPLICATION_JSON, APPLICATION_XML, user);
         } catch (OpenStackException ex) {
             throw new OpenStackException(ex.getMessage());
         }
@@ -664,9 +643,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         try {
             response = executeNovaRequest(request);
 
-            //            String id = response.split(",")[1];
+            // String id = response.split(",")[1];
             server = JAXBUtils.unmarshall(response, false, Server.class);
-
 
             // Mecanismo de sondeo.
             while (!(getResponse.contains("ACTIVE") || getResponse.contains("ERROR"))) {
@@ -685,7 +663,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         return server.getId();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see com.telefonica.claudia.smi.OpenStackClient#createSubNet(java.lang.String,
      * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
      */
@@ -695,7 +674,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
         // -H "Content-Type: application/json" -H "Accept: application/xml"
         // -X POST "http://10.95.171.115:9696/v2.0/subnets"
-        //-d '{"network" : {"name" : "testNetwork", "admin_state_up": false}}'
+        // -d '{"network" : {"name" : "testNetwork", "admin_state_up": false}}'
 
         log.debug("Creating sub net " + subNet.getName());
         String response = null;
@@ -708,13 +687,11 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error creating subNetwork in " + subNet.getIdNetwork() + ": "
-            + e;
+            String errorMessage = "Error creating subNetwork in " + subNet.getIdNetwork() + ": " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error creating subNetwork " + subNet.getIdNetwork()
-            + " from OpenStack: " + e;
+            String errorMessage = "Error creating subNetwork " + subNet.getIdNetwork() + " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
@@ -726,37 +703,34 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757...'
         // -H "Accept: application/json"
         // -X DELETE "http://10.95.171.115:9696/v2/networks/5867b6bd-ba18-4ae3-a34f-dd0f2e189eb6"
-        HttpUriRequest request = createQuantumDeleteRequest(RESOURCE_NETWORKS + "/"
-                + networkId, user);
+        HttpUriRequest request = createQuantumDeleteRequest(RESOURCE_NETWORKS + "/" + networkId, user);
 
         String response = null;
-
 
         try {
 
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error deleting network " + networkId + ": "
-            + e;
+            String errorMessage = "Error deleting network " + networkId + ": " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error deleting network " + networkId
-            + " from OpenStack: " + e;
+            String errorMessage = "Error deleting network " + networkId + " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
 
         return response;
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see com.telefonica.claudia.smi.OpenStackClient#createNetwork(java.lang.String,
      * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
      */
 
-    public String deleteServer(String serverId, PaasManagerUser user)
-    throws OpenStackException {
+    public String deleteServer(String serverId, PaasManagerUser user) throws OpenStackException {
         // throw new UnsupportedOperationException("Not supported yet.");
         // I need to know X-Auth-Token, orgID-Tennat, IP and Port
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
@@ -769,20 +743,17 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // TaskResult deletion = new TaskResult();
 
         try {
-            HttpUriRequest request = createNovaDeleteRequest(RESOURCE_SERVERS
-                    + "/" + serverId, user);
+            HttpUriRequest request = createNovaDeleteRequest(RESOURCE_SERVERS + "/" + serverId, user);
 
             response = executeNovaRequest(request);
             // deletion.setMessage(response);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error deleting server " + serverId + ": "
-            + e;
+            String errorMessage = "Error deleting server " + serverId + ": " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error deleting server " + serverId
-            + " from OpenStack: " + e;
+            String errorMessage = "Error deleting server " + serverId + " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
@@ -792,13 +763,13 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     /**
      * Method to execute a request and get the response from NOVA.
-     *
-     * @param request the request to be executed
+     * 
+     * @param request
+     *            the request to be executed
      * @return HttpUriRequest the response from server
      * @throws OCCIException
      */
-    private String executeNovaRequest(HttpUriRequest request)
-    throws OpenStackException {
+    private String executeNovaRequest(HttpUriRequest request) throws OpenStackException {
         String[] newHeaders = null;
         // Where the response is located. 0 for json, 1 for XML (it depends on
         // the \n)
@@ -806,9 +777,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
         httpClient = new DefaultHttpClient();
 
-        if (request.containsHeader(ACCEPT)
-                & request.getFirstHeader(ACCEPT).getValue().equals(
-                        APPLICATION_XML)) {
+        if (request.containsHeader(ACCEPT) & request.getFirstHeader(ACCEPT).getValue().equals(APPLICATION_XML)) {
             responseLocation = 1;
         }
         HttpResponse response = null;
@@ -820,7 +789,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
                 InputStream is = response.getEntity().getContent();
                 String result = convertStreamToString(is);
-                System.out.println("Result " + result);
+                log.debug("Result " + result);
                 is.close();
 
                 if ((response.getStatusLine().getStatusCode() == http_code_ok)
@@ -829,8 +798,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
                     newHeaders = result.split("\n");
                 } else {
-                    log.debug(" HttpResponse "
-                            + response.getStatusLine().getStatusCode());
+                    log.debug(" HttpResponse " + response.getStatusLine().getStatusCode());
                     throw new OpenStackException(result);
                 }
 
@@ -848,22 +816,28 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         }
 
         if (response.containsHeader("Location")
-                && response.getFirstHeader("Location").getValue().contains(
-                        RESOURCE_IMAGES)) {
+                && response.getFirstHeader("Location").getValue().contains(RESOURCE_IMAGES)) {
 
             return response.getFirstHeader("Location").getValue();
         }
 
         return newHeaders[responseLocation];
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see com.telefonica.claudia.smi.OpenStackClient#getNetworkDetails(java.lang.String,
      * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
      */
 
     /**
+<<<<<<< HEAD
      * Obtains the attribute value from a node.
      *
+=======
+     * Obtains the attribute value from a node
+     * 
+>>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
      * @param node
      * @param attribute
      * @return
@@ -875,8 +849,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     /*
      * Obtains the list of nodes whose tag is nodeListTag
      */
-    private NodeList findNodeList(String xmlDoc, String nodeListTag)
-    throws OpenStackException {
+    private NodeList findNodeList(String xmlDoc, String nodeListTag) throws OpenStackException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder;
         Document doc;
@@ -889,23 +862,20 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             nodeList = doc.getElementsByTagName(nodeListTag);
 
         } catch (SAXException e) {
-            String errorMessage = "SAXException when obtaining nodeList."
-                + " Desc: " + e.getMessage();
-            System.out.println(errorMessage);
+            String errorMessage = "SAXException when obtaining nodeList." + " Desc: " + e.getMessage();
+            log.warn(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (ParserConfigurationException e) {
-            String errorMessage = "ParserConfigurationException when obtaining "
-                + "NodelIst. Desc: " + e.getMessage();
-            System.out.println(errorMessage);
+            String errorMessage = "ParserConfigurationException when obtaining " + "NodelIst. Desc: " + e.getMessage();
+            log.warn(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (IOException e) {
-            String errorMessage = "IOException when obtaining "
-                + "NodeList. Desc: " + e.getMessage();
-            System.out.println(errorMessage);
+            String errorMessage = "IOException when obtaining " + "NodeList. Desc: " + e.getMessage();
+            log.warn(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
             String errorMessage = "Unexpected exception : " + e.getMessage();
-            System.out.println(errorMessage);
+            log.warn(errorMessage);
             throw new OpenStackException(errorMessage);
         }
         return nodeList;
@@ -921,7 +891,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         } else {
             floatingIP = allocateFloatingIP(
                     buildAllocateFloatingIPPayload(systemPropertiesProvider
-                            .getProperty(SystemPropertiesProvider.NOVA_IPFLOATING_POOLNAME)), user);
+                            .getProperty(SystemPropertiesProvider.NOVA_IPFLOATING_POOLNAME)),
+                    user);
             getFloatingIPsResponse = getFloatingIPs(user);
             floatingIP = getFloatingIPFree(getFloatingIPsResponse);
         }
@@ -931,7 +902,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     /**
      * Get a Free FloatingIP
-     *
+     * 
      * @param xmlDoc
      * @return
      * @throws Exception
@@ -941,8 +912,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         NodeList floatingIPs = findNodeList(xmlDoc, "floating_ip");
         for (int i = 0; i < floatingIPs.getLength(); i++) {
             Node floatingIPNode = floatingIPs.item(i);
-            if (findAttributeValueInNode(floatingIPNode, "instance_id").equals(
-            "None")) {
+            if (findAttributeValueInNode(floatingIPNode, "instance_id").equals("None")) {
                 floatingIP = findAttributeValueInNode(floatingIPNode, "ip");
             }
         }
@@ -950,41 +920,38 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     }
     /**
      * Obtain the xml including all FloatingIPs of a certain tenant
-     *
+     * 
      * @return
      * @throws OpenStackException
      */
-    private String getFloatingIPs(PaasManagerUser user)
-    throws OpenStackException {
+    private String getFloatingIPs(PaasManagerUser user) throws OpenStackException {
         String response = null;
 
         try {
-            HttpUriRequest request = createNovaGetRequest("/"
-                    + RESOURCE_FLOATINGIP, APPLICATION_XML, user);
+            HttpUriRequest request = createNovaGetRequest("/" + RESOURCE_FLOATINGIP, APPLICATION_XML, user);
 
             response = executeNovaRequest(request);
             // deletion.setMessage(response);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error Getting Floating IPs "
-                + " from tenant " + tenant + ": " + e;
+            String errorMessage = "Error Getting Floating IPs " + " from tenant " + tenant + ": " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error Getting Floating IPs "
-                + " from tenant " + tenant + ": " + " from OpenStack: " + e;
+            String errorMessage = "Error Getting Floating IPs " + " from tenant " + tenant + ": " + " from OpenStack: "
+                    + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
 
         return response;
     }
+
     public String getNetworkDetails(String networkId, PaasManagerUser user) throws OpenStackException {
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
         // -H "Accept: application/xml"
         // -X GET "http://10.95.171.115:9696/v2/networks/5867b6bd-ba18-4ae3-a34f-dd0f2e189eb6"
-        HttpUriRequest request = createQuantumGetRequest(RESOURCE_NETWORKS + "/"
-                + networkId, APPLICATION_XML, user);
+        HttpUriRequest request = createQuantumGetRequest(RESOURCE_NETWORKS + "/" + networkId, APPLICATION_XML, user);
 
         String response = null;
 
@@ -993,13 +960,11 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error getting network " + networkId + ": "
-            + e;
+            String errorMessage = "Error getting network " + networkId + ": " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error getting network " + networkId
-            + " from OpenStack: " + e;
+            String errorMessage = "Error getting network " + networkId + " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
@@ -1007,7 +972,12 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         return response;
     }
 
+<<<<<<< HEAD
     /* (non-Javadoc)
+=======
+    /*
+     * (non-Javadoc)
+>>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
      * @see com.telefonica.claudia.smi.OpenStackClient#getNetworks(
      * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
      */
@@ -1015,11 +985,11 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
         // -H "Content-Type: application/xml" -H "Accept: application/json"
         // -X GET "http://10.95.171.115:9696/v2/networks"
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_OPENSTACK_DISTRIBUTION).equalsIgnoreCase("essex")) {
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_OPENSTACK_DISTRIBUTION).equalsIgnoreCase(
+                "essex")) {
             return null;
         }
-        HttpUriRequest request = createQuantumGetRequest(RESOURCE_NETWORKS,
-                APPLICATION_XML, user);
+        HttpUriRequest request = createQuantumGetRequest(RESOURCE_NETWORKS, APPLICATION_XML, user);
 
         String response = null;
 
@@ -1028,8 +998,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error getting networks: "
-                + e;
+            String errorMessage = "Error getting networks: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
@@ -1040,13 +1009,14 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
         return response;
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see com.telefonica.claudia.smi.OpenStackClient#deleteNetwork(java.lang.String,
      * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
      */
 
-    public String getServer(String serverId, PaasManagerUser user)
-    throws OpenStackException {
+    public String getServer(String serverId, PaasManagerUser user) throws OpenStackException {
         // throw new UnsupportedOperationException("Not supported yet.");
         // I need to know X-Auth-Token, orgID-Tennat, IP and Port
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
@@ -1054,8 +1024,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // -X GET
         // "http://10.95.171.115:8774/v2/30c60771b6d144d2861b21e442f0bef9/servers/88y6ga216ad4s33ra6asd5fgrg7"
 
-        HttpUriRequest request = createNovaGetRequest(RESOURCE_SERVERS + "/"
-                + serverId, APPLICATION_XML, user);
+        HttpUriRequest request = createNovaGetRequest(RESOURCE_SERVERS + "/" + serverId, APPLICATION_XML, user);
 
         String response = null;
         // TaskResult server = new TaskResult();
@@ -1065,8 +1034,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             // server.setMessage(response);
 
         } catch (Exception e) {
-            String errorMessage = "Error getting server " + serverId
-            + " from OpenStack: " + e;
+            String errorMessage = "Error getting server " + serverId + " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
             // server.setMessage(e.getMessage());
@@ -1077,19 +1045,17 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     /**
      * Is Any FloatingIP Free
-     *
+     * 
      * @param xmlDoc
      * @return
      * @throws Exception
      */
-    private boolean isAnyFloatingIPFreeToBeAssigned(String xmlDoc)
-    throws OpenStackException {
+    private boolean isAnyFloatingIPFreeToBeAssigned(String xmlDoc) throws OpenStackException {
 
         NodeList floatingIPs = findNodeList(xmlDoc, "floating_ip");
         for (int i = 0; i < floatingIPs.getLength(); i++) {
             Node floatingIPNode = floatingIPs.item(i);
-            if (findAttributeValueInNode(floatingIPNode, "instance_id").equals(
-            "None")) {
+            if (findAttributeValueInNode(floatingIPNode, "instance_id").equals("None")) {
                 return true;
             }
         }
@@ -1104,8 +1070,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // -X GET
         // "http://10.95.171.115:8774/v2/30c60771b6d144d2861b21e442f0bef9/servers"
 
-        HttpUriRequest request = createNovaGetRequest(RESOURCE_SERVERS,
-                APPLICATION_JSON, user);
+        HttpUriRequest request = createNovaGetRequest(RESOURCE_SERVERS, APPLICATION_JSON, user);
 
         String response = null;
         // TaskResult server = new TaskResult();
@@ -1115,8 +1080,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             // server.setMessage(response);
 
         } catch (Exception e) {
-            String errorMessage = "Error getting lis of servers "
-                + " from OpenStack: " + e;
+            String errorMessage = "Error getting lis of servers " + " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
             // server.setMessage(e.getMessage());
@@ -1126,12 +1090,11 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     }
 
     /**
-     * @param systemPropertiesProvider the systemPropertiesProvider to set
+     * @param systemPropertiesProvider
+     *            the systemPropertiesProvider to set
      */
-    public void setSystemPropertiesProvider(
-            SystemPropertiesProvider systemPropertiesProvider) {
+    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
-
 
 }

@@ -9,7 +9,6 @@ package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -56,11 +55,8 @@ public class EnvironmentInstance extends InstallableInstance {
     private String taskId = "";
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "environmentInstance_has_tierInstances", joinColumns = {
-        @JoinColumn(name = "environmentinstance_ID", nullable = false, updatable = false) },
-        inverseJoinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) })
-
-        private List<TierInstance> tierInstances;
+    @JoinTable(name = "environmentInstance_has_tierInstances", joinColumns = { @JoinColumn(name = "environmentinstance_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) })
+    private List<TierInstance> tierInstances;
 
     @Column(length = 90000)
     private String vapp;
@@ -84,7 +80,6 @@ public class EnvironmentInstance extends InstallableInstance {
     }
 
     /**
-     * 
      * @param blueprintName
      * @param description
      */
@@ -94,7 +89,6 @@ public class EnvironmentInstance extends InstallableInstance {
     }
 
     /**
-     * 
      * @param blueprintName
      * @param description
      * @param env
@@ -106,7 +100,6 @@ public class EnvironmentInstance extends InstallableInstance {
     }
 
     /**
-     * 
      * @param tierInstance
      */
     public void addTierInstance(TierInstance tierInstance) {
@@ -116,7 +109,6 @@ public class EnvironmentInstance extends InstallableInstance {
         tierInstances.add(tierInstance);
 
     }
-
 
     private TierInstancePDto createInstancePDto(TierInstance tierInstance) {
         List<ProductInstanceDto> productInstanceDtos = new ArrayList<ProductInstanceDto>();
@@ -203,6 +195,7 @@ public class EnvironmentInstance extends InstallableInstance {
 
     /**
      * It removes a tier instance in the environment
+     * 
      * @param tierInstance
      */
     public void removeTierInstance(TierInstance tierInstance) {
@@ -254,6 +247,7 @@ public class EnvironmentInstance extends InstallableInstance {
 
     /**
      * the dto specification.
+     * 
      * @return the dto
      */
     public EnvironmentInstanceDto toDto() {
@@ -265,7 +259,6 @@ public class EnvironmentInstance extends InstallableInstance {
         if (this.getStatus() != null) {
             envInstanceDto.setStatus(this.getStatus());
         }
-
 
         List<TierInstanceDto> lTierInstanceDto = new ArrayList<TierInstanceDto>();
         if (getTierInstances() != null) {
@@ -288,6 +281,7 @@ public class EnvironmentInstance extends InstallableInstance {
 
     /**
      * The dto entity for the portal.
+     * 
      * @return
      */
     public EnvironmentInstancePDto toPDto() {
@@ -327,6 +321,7 @@ public class EnvironmentInstance extends InstallableInstance {
 
     /**
      * The environment instance dto for the portal.
+     * 
      * @return
      */
     public EnvironmentInstancePDto toPDtos() {

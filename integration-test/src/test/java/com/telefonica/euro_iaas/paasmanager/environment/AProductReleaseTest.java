@@ -26,8 +26,8 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 
 /**
  * Integration Tests for Product Release entity
+ * 
  * @author henar
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/applicationContextTest.xml" })
@@ -49,11 +49,6 @@ public class AProductReleaseTest {
 
         List<ProductRelease> productReleases = productReleaseDao.findAll();
         assertNotNull(productReleases);
-        System.out.println("Number of product releases .." + productReleases);
-        System.out.println("Number of product releases  .." + productReleases.size());
-
-        System.out.println(productReleases.get(0).getProduct() + " " + productReleases.get(0).getVersion() + " "
-                + productReleases.get(0).getName());
 
         ProductRelease productRelease = productReleaseDao.load("mysql-2");
         assertNotNull(productRelease);
@@ -67,12 +62,10 @@ public class AProductReleaseTest {
 
         List<ProductRelease> productReleases = productReleaseDao.findAll();
         assertNotNull(productReleases);
-        System.out.println("Number of product releases .." + productReleases);
-        System.out.println("Number of enviornment .." + productReleases.size());
 
         int number = productReleases.size();
 
-        List<Attribute> attHenar = new ArrayList<Attribute> ();
+        List<Attribute> attHenar = new ArrayList<Attribute>();
         attHenar.add(new Attribute("henar", "henar", "henar"));
 
         ProductRelease productHenar = new ProductRelease("henar", "0.1", "henar 0.1", attHenar);
@@ -84,11 +77,7 @@ public class AProductReleaseTest {
 
         productReleases = productReleaseDao.findAll();
         assertNotNull(productReleases);
-        System.out.println("Number of product releases .." + productReleases);
-        System.out.println("Number of product releases  .." + productReleases.size());
         assertEquals(productReleases.size(), number + 1);
-        System.out.println(productReleases.get(0).getProduct() + " " + productReleases.get(0).getVersion() + " "
-                + productReleases.get(0).getName());
 
         ProductRelease productRelease = productReleaseDao.load("henar-0.1");
         assertNotNull(productRelease);

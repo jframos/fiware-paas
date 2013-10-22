@@ -9,6 +9,8 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -39,7 +41,6 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInst
 import com.telefonica.euro_iaas.paasmanager.util.EnvironmentUtils;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
-import org.apache.log4j.Logger;
 
 public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManager {
 

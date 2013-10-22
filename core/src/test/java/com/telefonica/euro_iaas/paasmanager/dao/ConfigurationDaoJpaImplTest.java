@@ -4,6 +4,7 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.dao;
 
 import java.util.List;
@@ -41,8 +42,7 @@ public class ConfigurationDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(configuration.getKey(), createdConfiguration.getKey());
         assertEquals(configuration.getValue(), createdConfiguration.getValue());
 
-        Configuration foundConfiguration = configurationDao
-        .load(createdConfiguration.getId());
+        Configuration foundConfiguration = configurationDao.load(createdConfiguration.getId());
         assertEquals(createdConfiguration, foundConfiguration);
     }
 
@@ -50,20 +50,17 @@ public class ConfigurationDaoJpaImplTest extends AbstractJpaDaoTest {
      * Test the find, remove and upload method
      */
     /*
-     * public void testFindAllAndUpdate() throws Exception { assertEquals(0,
-     * configurationDao.findAll().size()); testCreate(); List<Configuration>
-     * configurations = configurationDao.findAll(); assertEquals(1,
-     * configurations.size()); Configuration configuration =
-     * configurations.get(0); configuration.setKey(KEY2);
+     * public void testFindAllAndUpdate() throws Exception { assertEquals(0, configurationDao.findAll().size());
+     * testCreate(); List<Configuration> configurations = configurationDao.findAll(); assertEquals(1,
+     * configurations.size()); Configuration configuration = configurations.get(0); configuration.setKey(KEY2);
      * configurationDao.update(configuration); assertEquals(KEY2,
-     * configurationDao.load(configuration.getId()).getKey());
-     * configurationDao.remove(configuration); assertEquals(0,
+     * configurationDao.load(configuration.getId()).getKey()); configurationDao.remove(configuration); assertEquals(0,
      * configurationDao.findAll().size()); }
      */
 
     /*
-     * public void testSuma() throws Exception { String suma =
-     * configurationDao.suma("a", "b"); assertEquals ("ab" , suma); }
+     * public void testSuma() throws Exception { String suma = configurationDao.suma("a", "b"); assertEquals ("ab" ,
+     * suma); }
      */
 
     /**
@@ -71,7 +68,7 @@ public class ConfigurationDaoJpaImplTest extends AbstractJpaDaoTest {
      *            the configurationDao to set
      */
     /*
-     * public void setApplicationTypeDao(ConfigurationDao configurationDao) {
-     * this.configurationDao = configurationDao; }
+     * public void setApplicationTypeDao(ConfigurationDao configurationDao) { this.configurationDao = configurationDao;
+     * }
      */
 }

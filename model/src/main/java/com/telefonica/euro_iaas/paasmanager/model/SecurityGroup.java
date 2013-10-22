@@ -9,7 +9,6 @@ package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,8 +21,8 @@ import net.sf.json.JSONObject;
 
 /**
  * Security Group entity for iptables.
+ * 
  * @author henar
- *
  */
 @Entity
 public class SecurityGroup {
@@ -38,7 +37,6 @@ public class SecurityGroup {
     private String name;
     private String description;
 
-
     @OneToMany
     private List<Rule> rules;
 
@@ -51,6 +49,7 @@ public class SecurityGroup {
 
     /**
      * Constructor.
+     * 
      * @param name
      * @param description
      */
@@ -61,6 +60,7 @@ public class SecurityGroup {
 
     /**
      * Add rule in the security group.
+     * 
      * @param rule
      */
     public void addRule(Rule rule) {
@@ -72,6 +72,7 @@ public class SecurityGroup {
 
     /**
      * Delete a rule in the security group.
+     * 
      * @param rule
      */
     public void deleteRule(Rule rule) {
@@ -83,6 +84,7 @@ public class SecurityGroup {
 
     /**
      * From json.
+     * 
      * @param jsonNode
      */
     @SuppressWarnings("unchecked")
@@ -138,10 +140,11 @@ public class SecurityGroup {
 
     /**
      * Json.
+     * 
      * @return
      */
     public String toJSON() {
         return "{\"security_group\": \n" + "{" + "\"name\": \"" + name + "\", " + "\"description\":  \"" + description
-        + "\" " + "}" + "}";
+                + "\" " + "}" + "}";
     }
 }

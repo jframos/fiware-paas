@@ -4,12 +4,14 @@
  * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
  * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.manager;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,18 +27,14 @@ import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 
 /**
  * @author jesus.movilla
- * 
  */
-public class SecurityGroupManagerImplTest extends TestCase {
+public class SecurityGroupManagerImplTest {
 
     private SecurityGroupManagerImpl securityGroupManager;
     private FirewallingClient firewallingClient;
     private RuleManager ruleManager;
     private SecurityGroupDao securityGroupDao;
 
-    private ProductReleaseManager productReleaseManager;
-
-    @Override
     @Before
     public void setUp() throws Exception {
 
@@ -48,9 +46,7 @@ public class SecurityGroupManagerImplTest extends TestCase {
         securityGroupManager.setRuleManager(ruleManager);
         securityGroupManager.setSecurityGroupDao(securityGroupDao);
 
-        when(
-                firewallingClient.deploySecurityGroup(any(ClaudiaData.class),
-                        any(SecurityGroup.class))).thenReturn("2");
+        when(firewallingClient.deploySecurityGroup(any(ClaudiaData.class), any(SecurityGroup.class))).thenReturn("2");
 
     }
 
@@ -65,19 +61,12 @@ public class SecurityGroupManagerImplTest extends TestCase {
 
         ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "dd");
 
-        Mockito.doThrow(
-                new EntityNotFoundException(SecurityGroup.class, "test",
-                        securityGroup)).when(securityGroupDao).load(
-                                any(String.class));
-        when(ruleManager.create(any(ClaudiaData.class), any(Rule.class)))
-        .thenReturn(rule);
-        when(securityGroupDao.create(any(SecurityGroup.class))).thenReturn(
-                securityGroup);
+        Mockito.doThrow(new EntityNotFoundException(SecurityGroup.class, "test", securityGroup)).when(securityGroupDao)
+                .load(any(String.class));
+        when(ruleManager.create(any(ClaudiaData.class), any(Rule.class))).thenReturn(rule);
+        when(securityGroupDao.create(any(SecurityGroup.class))).thenReturn(securityGroup);
 
-        SecurityGroup securityGroup2 = securityGroupManager.create(claudiaData,
-                securityGroup);
-
-        System.out.println(securityGroup2.toJSON());
+        SecurityGroup securityGroup2 = securityGroupManager.create(claudiaData, securityGroup);
 
         assertNotNull(securityGroup2);
         assertEquals(securityGroup2.getName(), "name");
@@ -98,17 +87,14 @@ public class SecurityGroupManagerImplTest extends TestCase {
         ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "dd");
 
         Mockito.doNothing().doThrow(new RuntimeException()).when(ruleManager)
-        .destroy(any(ClaudiaData.class), any(Rule.class));
+                .destroy(any(ClaudiaData.class), any(Rule.class));
 
-        Mockito.doNothing().doThrow(new RuntimeException()).when(
-                securityGroupDao).remove(any(SecurityGroup.class));
+        Mockito.doNothing().doThrow(new RuntimeException()).when(securityGroupDao).remove(any(SecurityGroup.class));
 
-        Mockito.doNothing().doThrow(new RuntimeException()).when(
-                firewallingClient).destroySecurityGroup(any(ClaudiaData.class),
-                        any(SecurityGroup.class));
+        Mockito.doNothing().doThrow(new RuntimeException()).when(firewallingClient)
+                .destroySecurityGroup(any(ClaudiaData.class), any(SecurityGroup.class));
 
-        when(securityGroupDao.create(any(SecurityGroup.class))).thenReturn(
-                securityGroup);
+        when(securityGroupDao.create(any(SecurityGroup.class))).thenReturn(securityGroup);
 
         securityGroupManager.destroy(claudiaData, securityGroup);
 

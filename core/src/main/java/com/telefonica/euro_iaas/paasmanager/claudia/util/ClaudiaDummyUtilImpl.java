@@ -7,10 +7,6 @@
 
 package com.telefonica.euro_iaas.paasmanager.claudia.util;
 
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_BASEURL;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_IP;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_PORT;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,7 +17,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.MessageFormat;
 import java.util.List;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -31,11 +26,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.telefonica.claudia.client.CommandCreationException;
@@ -48,6 +38,16 @@ import com.telefonica.euro_iaas.paasmanager.exception.FileUtilsException;
 import com.telefonica.euro_iaas.paasmanager.exception.URLNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_BASEURL;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_IP;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.NEOCLAUDIA_PORT;
 
 // import javax.ws.rs.core.MultivaluedMap;
 // import com.sun.jersey.core.util.MultivaluedMapImpl;
@@ -67,6 +67,7 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 public class ClaudiaDummyUtilImpl implements ClaudiaUtil {
 
     private SystemPropertiesProvider systemPropertiesProvider;
+    private static Logger log = Logger.getLogger(ClaudiaDummyUtilImpl.class);
 
     /**
      * Return the url of the corresponding Claudia Resource
@@ -166,7 +167,7 @@ public class ClaudiaDummyUtilImpl implements ClaudiaUtil {
             t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             t.transform(new DOMSource(node), new StreamResult(sw));
         } catch (TransformerException te) {
-            System.out.println("nodeToString Transformer Exception");
+            log.warn("nodeToString Transformer Exception");
         }
         return sw.toString();
     }
@@ -182,10 +183,6 @@ public class ClaudiaDummyUtilImpl implements ClaudiaUtil {
         return payload;
     }
 
-    /**
-     * @param propertiesProvider
-     *            the propertiesProvider to set
-     */
     public SystemPropertiesProvider getSystemPropertiesProvider() {
         return this.systemPropertiesProvider;
     }

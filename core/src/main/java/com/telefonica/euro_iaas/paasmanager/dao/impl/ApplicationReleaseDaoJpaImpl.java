@@ -10,14 +10,15 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.ApplicationReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationReleaseSearchCriteria;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
 
 public class ApplicationReleaseDaoJpaImpl extends AbstractBaseDao<ApplicationRelease, String> implements
         ApplicationReleaseDao {

@@ -7,8 +7,19 @@
 
 package com.telefonica.euro_iaas.paasmanager.environment;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
@@ -20,17 +31,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.EnvironmentResource;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.TierResource;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 // ApplicationContext will be loaded from "classpath:/app-config.xml"
@@ -69,7 +69,6 @@ public class TierTest {
 
     @Test
     public void testCreateTierOK() throws Exception {
-        System.out.println("testCreateTierOK");
         Environment environment2 = new Environment();
         environment2.setName("create_tier_ok");
         environment2.setDescription("description");
@@ -102,7 +101,6 @@ public class TierTest {
 
     @Test(expected = javax.ws.rs.WebApplicationException.class)
     public void testCreateTierAlreadyExist() throws Exception {
-        System.out.println("testCreateTierAlreadyExist");
         Environment environmentBk = new Environment();
         environmentBk.setName("create_tier_already");
         environmentBk.setDescription("description");
@@ -123,7 +121,6 @@ public class TierTest {
 
     @Test(expected = Exception.class)
     public void testCreateTierNotFound() throws Exception {
-        System.out.println("testCreateTierOK");
         Environment environmentBk = new Environment();
         environmentBk.setName("create_tier");
         environmentBk.setDescription("description");
@@ -136,7 +133,6 @@ public class TierTest {
 
     @Test
     public void testdUpdateTier() throws Exception {
-        System.out.println("testUpdateTier");
 
         Environment environmentBk = new Environment();
         environmentBk.setName("updatedenvironmenttier");
@@ -180,7 +176,6 @@ public class TierTest {
 
     @Test
     public void testdUpdateTierSoftware() throws Exception {
-        System.out.println("testdUpdateTierSoftware");
 
         ProductRelease product2 = new ProductRelease("test", "0.1", "test 0.1", null);
 

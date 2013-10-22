@@ -48,7 +48,7 @@
     <bean id="subNetworkDao" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.SubNetworkDaoJpaImpl"/>
     <bean id="routerDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.paasmanager.dao.impl.RouterDaoJpaImpl"/>       
+          class="com.telefonica.euro_iaas.paasmanager.dao.impl.RouterDaoJpaImpl"/>
     <bean id="securityGroupDao" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.SecurityGroupDaoJpaImpl"/>
     <bean id="attributeDao" lazy-init="true"
