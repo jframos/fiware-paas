@@ -95,20 +95,11 @@
             <version>${project.version}</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>com.telefonica.euro_iaas</groupId>
-            <artifactId>paas-manager-client</artifactId>
-            <version>${project.version}</version>
-
-        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
             <scope>test</scope>
         </dependency>
-
 
         <dependency>
             <groupId>info.cukes</groupId>
