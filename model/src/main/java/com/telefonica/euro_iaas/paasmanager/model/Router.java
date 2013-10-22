@@ -57,18 +57,9 @@ public class Router {
      */
     public Router(String idPublicNetwork, String name) {
         this.name = name;
-<<<<<<< HEAD
         this.idPublicNetwork = idPublicNetwork;
-=======
     }
 
-    /**
-     * @return the id
-     */
-    public String getIdNetwork() {
-        return idNetwork;
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
-    }
 
     /**
      * @return the id
@@ -95,7 +86,7 @@ public class Router {
     /**
      * @return string with the json representation for the request
      */
-<<<<<<< HEAD
+
     public String toJson(){
         return  "{" +
         "    \"router\":" +
@@ -107,12 +98,7 @@ public class Router {
         "        }" +
         "    }" +
         "}";
-=======
-    public String toJson() {
-        return "{" + "    \"router\":" + "    {" + "        \"name\": \"" + name + "\","
-                + "        \"admin_state_up\": true," + "        \"external_gateway_info\" : {"
-                + "             \"network_id\": \"" + this.idNetwork + "\"" + "        }" + "    }" + "}";
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
     }
+
 
 }

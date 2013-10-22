@@ -9,12 +9,9 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
 
-<<<<<<< HEAD
 import org.apache.log4j.Logger;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
-=======
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
@@ -24,7 +21,6 @@ import com.telefonica.euro_iaas.paasmanager.manager.RouterManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.Router;
-import org.apache.log4j.Logger;
 
 /**
  * @author henar
@@ -54,12 +50,11 @@ public class RouterManagerImpl implements RouterManager {
      * @params claudiaData
      * @params router
      */
-<<<<<<< HEAD
+
     public void create(ClaudiaData claudiaData, Router router, Network network)
     throws InvalidEntityException,InfrastructureException {
-=======
-    public void create(ClaudiaData claudiaData, Router router) throws InvalidEntityException, InfrastructureException {
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
+
+
         log.debug("Create router " + router.getName());
 
         try {
@@ -100,7 +95,7 @@ public class RouterManagerImpl implements RouterManager {
      * @params router
      */
     public void delete(ClaudiaData claudiaData, Router router) throws EntityNotFoundException, InvalidEntityException,
-            InfrastructureException {
+    InfrastructureException {
         log.debug("Destroying network " + router.getName());
         try {
             networkClient.destroyRouter(claudiaData, router);

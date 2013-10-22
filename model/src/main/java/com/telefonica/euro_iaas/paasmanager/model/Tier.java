@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -165,20 +166,12 @@ public class Tier {
         }
         networks.add(network);
 
-<<<<<<< HEAD
-    }
-
-    /**
-     * Add the product release for the tier.
-     * @param productRelease
-=======
     }
 
     /**
      * Add the product release for the tier.
      * 
      * @param productRelease
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
      */
     public void addProductRelease(ProductRelease productRelease) {
         if (this.productReleases == null) {
@@ -325,9 +318,9 @@ public class Tier {
     public String getVdc() {
         return vdc;
     } /*
-       * (non-Javadoc)
-       * @see java.lang.Object#hashCode()
-       */
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
 
     @Override
     public int hashCode() {
@@ -495,7 +488,6 @@ public class Tier {
         tierDto.setProductReleaseDtos(productReleasesDto);
         return tierDto;
 
-<<<<<<< HEAD
     }
 
     /**
@@ -526,24 +518,8 @@ public class Tier {
         return payload;
 
     }
-=======
-    }
 
-    /**
-     * to json.
-     * 
-     * @return
-     */
-    public String toJson() {
-        String payload = "{\"server\": " + "{\"key_name\": \"" + getKeypair() + "\", ";
-        if (getSecurityGroup() != null) {
-            payload = payload + "\"security_groups\": [{ \"name\": \"" + getSecurityGroup().getName() + "\"}], ";
-        }
-        payload = payload + "\"flavorRef\": \"" + getFlavour() + "\", " + "\"imageRef\": \"" + getImage() + "\", "
-                + "\"name\": \"" + name + "\"}}";
-        return payload;
 
-    }
 
     /**
      * @param network
@@ -559,7 +535,5 @@ public class Tier {
                 networks.add(network);
             }
         }
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
-
     }
 }

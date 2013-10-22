@@ -7,6 +7,15 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import junit.framework.TestCase;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
 import com.telefonica.euro_iaas.paasmanager.dao.NetworkDao;
@@ -15,19 +24,8 @@ import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.Router;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
-<<<<<<< HEAD
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-=======
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
 
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
 
 /**
  * Network, SubNetwork and Router Manager.
@@ -74,11 +72,6 @@ public class NetworkManagerImplTest extends TestCase {
     public void testCreateNetwork() throws Exception {
         // Given
         Network net = new Network(NETWORK_NAME);
-<<<<<<< HEAD
-=======
-        // SubNetwork subNet = new SubNetwork (SUBNETWORK_NAME);
-        // net.addSubNet(subNet);
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
         ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
 
         // When
@@ -106,11 +99,6 @@ public class NetworkManagerImplTest extends TestCase {
     public void testDestroyNetwork() throws Exception {
         // Given
         Network net = new Network(NETWORK_NAME);
-<<<<<<< HEAD
-=======
-        // SubNetwork subNet = new SubNetwork (SUBNETWORK_NAME);
-        // net.addSubNet(subNet);
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
         ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
 
         // When

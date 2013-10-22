@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -72,7 +73,6 @@ public class TierDto {
 
         this.networkDto = new ArrayList<NetworkDto>();
     }
-<<<<<<< HEAD
 
     /**
      * Constructor.
@@ -87,18 +87,13 @@ public class TierDto {
      * @param keypair
      * @param floatingip
      */
-    public TierDto(String name, Integer maximumNumberInstances,
-            Integer minimumNumberInstances, Integer initialNumberInstances,
-            List<ProductReleaseDto> productReleaseDtos, String flavour,
-            String image, String icono, String keypair, String floatingip) {
 
-=======
 
     public TierDto(String name, Integer maximumNumberInstances, Integer minimumNumberInstances,
             Integer initialNumberInstances, List<ProductReleaseDto> productReleaseDtos, String flavour, String image,
             String icono, String keypair, String floatingip) {
 
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
+
         this.name = name;
         this.maximumNumberInstances = maximumNumberInstances;
         this.minimumNumberInstances = minimumNumberInstances;
@@ -112,7 +107,7 @@ public class TierDto {
         this.networkDto = new ArrayList<NetworkDto>();
     }
 
-<<<<<<< HEAD
+
 
     /**
      * Constructor.
@@ -128,24 +123,7 @@ public class TierDto {
      * @param keypair
      * @param floatingip
      */
-    public TierDto(String name, Integer maximumNumberInstances,
-            Integer minimumNumberInstances, Integer initialNumberInstances,
-            List<ProductReleaseDto> productReleaseDtos, String flavour,
-            String image, String icono, String securityGroup, String keypair,
-            String floatingip) {
 
-        this.name = name;
-        this.maximumNumberInstances = maximumNumberInstances;
-        this.minimumNumberInstances = minimumNumberInstances;
-        this.initialNumberInstances = initialNumberInstances;
-        this.productReleaseDtos = productReleaseDtos;
-        this.flavour = flavour;
-        this.image = image;
-        this.icono = icono;
-        this.keypair = keypair;
-        this.floatingip = floatingip;
-        this.securityGroup = securityGroup;
-=======
     public TierDto(String name, Integer maximumNumberInstances, Integer minimumNumberInstances,
             Integer initialNumberInstances, List<ProductReleaseDto> productReleaseDtos, String flavour, String image,
             String icono, String securityGroup, String keypair, String floatingip) {
@@ -161,7 +139,6 @@ public class TierDto {
         this.keypair = keypair;
         this.floatingip = floatingip;
         this.securityGroup = securityGroup;
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
         this.networkDto = new ArrayList<NetworkDto>();
     }
 

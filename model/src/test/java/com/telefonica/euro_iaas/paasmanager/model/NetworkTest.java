@@ -7,17 +7,15 @@
 
 package com.telefonica.euro_iaas.paasmanager.model;
 
-import com.telefonica.euro_iaas.paasmanager.model.dto.NetworkDto;
 import junit.framework.TestCase;
+
 import org.junit.Before;
 import org.junit.Test;
 
-<<<<<<< HEAD
 import com.telefonica.euro_iaas.paasmanager.model.dto.NetworkDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.SubNetworkDto;
 
-=======
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
+
 /**
  * Network Test.
  * 
@@ -26,7 +24,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.SubNetworkDto;
 
 public class NetworkTest extends TestCase {
 
-<<<<<<< HEAD
+
     public static String NETWORK_NAME ="name";
     public static String SUBNETWORK_NAME ="subname";
     public static String ROUTER_NAME ="router";
@@ -34,13 +32,7 @@ public class NetworkTest extends TestCase {
     public static String CIDR ="10.100.1.0/24";
     public static String ID ="id";
 
-    public static String NETWORK_STRING = "{"
-        + " \"network\":{"
-        + "    \"name\": \"" + NETWORK_NAME + "\","
-        + "    \"admin_state_up\": false,"
-        + "    \"shared\": false"
-        + "  }"
-        + "}";
+
 
     public static String SUBNETWORK_STRING = "{\"subnet\":{" +
     "      \"name\":\"" + SUBNETWORK_NAME + "\"," +
@@ -52,16 +44,11 @@ public class NetworkTest extends TestCase {
 
     public static String ADDINTERFACE = "{\"subnet_id\": \"" + ID+ "\" }";
 
-=======
-    public static String NETWORK_NAME = "name";
-    public static String SUBNETWORK_NAME = "subname";
-    public static String ROUTER_NAME = "router";
-    public static String CIDR = "10.100.1.0/24";
-    public static String ID = "id";
+
 
     public static String NETWORK_STRING = "{" + " \"network\":{" + "    \"name\": \"" + NETWORK_NAME + "\","
-            + "    \"admin_state_up\": false," + "    \"shared\": false" + "  }" + "}";
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
+    + "    \"admin_state_up\": false," + "    \"shared\": false" + "  }" + "}";
+
 
     @Override
     @Before
@@ -112,12 +99,8 @@ public class NetworkTest extends TestCase {
         Network network = new Network(NETWORK_NAME);
         SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, "" + network.getSubNetCounts());
         network.addSubNet(subnet);
-<<<<<<< HEAD
         Router router = new Router(ID_PUBLIC_NET, ROUTER_NAME);
-=======
-        Router router = new Router(ROUTER_NAME);
-        router.setIdNetwork(network.getIdNetwork());
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
+
         router.setIdRouter(ID);
         assertEquals(network.getNetworkName(), NETWORK_NAME);
         assertEquals(network.getSubNets().size(), 1);
@@ -149,13 +132,10 @@ public class NetworkTest extends TestCase {
     @Test
     public void testFromDto() throws Exception {
 
-<<<<<<< HEAD
+
         NetworkDto networkDto = new NetworkDto(NETWORK_NAME);
         SubNetworkDto subNetworkDto = new SubNetworkDto(SUBNETWORK_NAME, CIDR);
         networkDto.addSubNetworkDto(subNetworkDto);
-=======
-        NetworkDto networkDto = new NetworkDto(NETWORK_NAME, SUBNETWORK_NAME);
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
         Network net = networkDto.fromDto();
 
         assertEquals(net.getNetworkName(), NETWORK_NAME);

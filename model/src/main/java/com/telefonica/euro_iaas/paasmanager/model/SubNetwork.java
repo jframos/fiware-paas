@@ -141,14 +141,9 @@ public class SubNetwork {
      * @return
      */
     public String toJson() {
-<<<<<<< HEAD
-        return"{\"subnet\":{" +
-        "      \"name\":\"" + name + "\"," +
-        "      \"network_id\":\"" + this.idNetwork + "\"," +
-        "      \"ip_version\":4," +
-        "      \"cidr\":\""+ this.cidr+"\""+
-        "   }" +
-        "}";
+
+        return "{\"subnet\":{" + "      \"name\":\"" + name + "\"," + "      \"network_id\":\"" + this.idNetwork
+        + "\"," + "      \"ip_version\":4," + "      \"cidr\":\"" + this.cidr + "\"   }" + "}";
     }
 
     /**
@@ -159,12 +154,4 @@ public class SubNetwork {
         return  "{\"subnet_id\": \"" + getIdSubNet()+ "\" }";
     }
 
-
-
-=======
-        return "{\"subnet\":{" + "      \"name\":\"" + name + "\"," + "      \"network_id\":\"" + this.idNetwork
-                + "\"," + "      \"ip_version\":4," + "      \"cidr\":\" " + this.cidr + "   }" + "}";
-    }
-
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
 }

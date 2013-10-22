@@ -9,6 +9,8 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -22,29 +24,21 @@ import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.Router;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
-<<<<<<< HEAD
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-=======
-import org.apache.log4j.Logger;
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
+
 
 /**
  * @author henar
  */
 public class NetworkManagerImpl implements NetworkManager {
 
-<<<<<<< HEAD
+
     private  NetworkDao networkDao = null;
     private  NetworkClient networkClient = null;
     private  SubNetworkManager subNetworkManager = null;
     private  RouterManager routerManager = null;
     private SystemPropertiesProvider systemPropertiesProvider;
-=======
-    private NetworkDao networkDao = null;
-    private NetworkClient networkClient = null;
-    private SubNetworkManager subNetworkManager = null;
-    private RouterManager routerManager = null;
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
+
     private static Logger log = Logger.getLogger(NetworkManagerImpl.class);
 
     /**
@@ -55,7 +49,7 @@ public class NetworkManagerImpl implements NetworkManager {
      * @params network
      */
     public Network create(ClaudiaData claudiaData, Network network) throws InvalidEntityException,
-            InfrastructureException, AlreadyExistsEntityException {
+    InfrastructureException, AlreadyExistsEntityException {
         log.debug("Create network " + network.getNetworkName());
 
         try {
@@ -121,7 +115,7 @@ public class NetworkManagerImpl implements NetworkManager {
      * @params network
      */
     public void delete(ClaudiaData claudiaData, Network network) throws EntityNotFoundException,
-            InvalidEntityException, InfrastructureException {
+    InvalidEntityException, InfrastructureException {
         log.debug("Destroying network " + network.getNetworkName());
         try {
             networkDao.remove(network);

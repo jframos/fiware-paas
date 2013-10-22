@@ -34,12 +34,9 @@ public interface RouterManager {
      * @param net
      * @throws InfrastructureException
      */
-<<<<<<< HEAD
+
     void create(ClaudiaData claudiaData, Router router, Network net)
     throws InvalidEntityException, InfrastructureException;
-=======
-    void create(ClaudiaData claudiaData, Router subNetwork) throws InvalidEntityException, InfrastructureException;
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
 
     /**
      * Delete a router.
@@ -51,7 +48,7 @@ public interface RouterManager {
      * @throws InfrastructureException
      */
     void delete(ClaudiaData claudiaData, Router router) throws EntityNotFoundException, InvalidEntityException,
-            InfrastructureException;
+    InfrastructureException;
 
     /**
      * Retrieve all router created in the system.

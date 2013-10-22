@@ -7,7 +7,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
-<<<<<<< HEAD
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,41 +38,10 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.TierResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-=======
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.WebApplicationException;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidSecurityGroupRequestException;
-import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
-import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
-import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.paasmanager.model.Environment;
-import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
-import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
-import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
-import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
-import com.telefonica.euro_iaas.paasmanager.rest.validation.TierResourceValidator;
-import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
 
 /**
- * default Tier implementation
+ * default Tier implementation.
  * 
  * @author Henar Mu�oz
  */

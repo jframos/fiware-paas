@@ -68,11 +68,9 @@ public interface NetworkClient {
     void destroyNetwork(ClaudiaData claudiaData, Network network) throws InfrastructureException;
 
 
-<<<<<<< HEAD
+
     void destroyRouter(ClaudiaData claudiaData, Router router);
 
-=======
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
     /**
      * Destroy a subnet in OpenStack.
      * 

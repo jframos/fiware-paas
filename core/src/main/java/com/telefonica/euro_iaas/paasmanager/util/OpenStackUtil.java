@@ -240,12 +240,10 @@ public interface OpenStackUtil {
      * @return
      * @throws OpenStackException
      */
-<<<<<<< HEAD
+
     String getServer(String serverId, PaasManagerUser user)
     throws OpenStackException;
-=======
-    String getServer(String serverId, PaasManagerUser user) throws OpenStackException;
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
+
 
     /**
      * List all servers in OpenStack
