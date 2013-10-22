@@ -73,8 +73,6 @@ public class EnvironmenTest {
 
     @Test
     public void testEnvironmentDtos() throws Exception {
-        System.out.println("testCreateEnvironmentOK");
-
         ProductRelease tomcat7Att = new ProductRelease("tomcat1", "7", "Tomcat server 7", null);
 
         tomcat7Att = productReleaseDao.create(tomcat7Att);
@@ -124,7 +122,6 @@ public class EnvironmenTest {
 
     @Test
     public void testCloneEnviroment() throws Exception {
-        System.out.println("testCreateEnvironmentOK");
 
         ProductRelease tomcat7Att = new ProductRelease("tomcat50", "7", "Tomcat server 7", null);
 
@@ -169,7 +166,6 @@ public class EnvironmenTest {
 
     @Test
     public void testCreateEnvironment3Tiers() throws Exception {
-        System.out.println("testCreateEnvironment3Tiers");
         ProductRelease tomcat7Att = new ProductRelease("tomcat2", "7", "Tomcat server 7", null);
 
         tomcat7Att = productReleaseDao.create(tomcat7Att);
@@ -240,11 +236,8 @@ public class EnvironmenTest {
 
     @Test
     public void testFirstCreateEnvironmentOK() throws Exception {
-        System.out.println("testCreateEnvironmentOK");
 
         List<Environment> environments = environmentManager.findAll();
-        System.out.println("Number of enviornment .." + environments);
-        System.out.println("Number of enviornment .." + environments.size());
         int numberEnvs = environments.size();
 
         ProductRelease tomcat7Att = new ProductRelease("tomcat3", "7", "Tomcat server 7", null);
@@ -272,8 +265,6 @@ public class EnvironmenTest {
 
         List<Environment> environment2 = environmentManager.findAll();
         assertEquals(environment2.size(), numberEnvs + 1);
-        System.out.println("Number of enviornment .." + environment2);
-        System.out.println("Number of enviornment .." + environment2.size());
 
         Environment env = environmentManager.load("firstenvironment", vdc);
         assertNotNull(env);
@@ -347,7 +338,6 @@ public class EnvironmenTest {
 
     @Test
     public void testc3SecondCreateEnvironmentRepiteTierOK() throws Exception {
-        System.out.println("testCreateEnvironmentRepiteTierOK");
         Environment environmentBk = new Environment();
         environmentBk.setName("alreadyexiststierenvironment");
         environmentBk.setDescription("Description Second environment");
@@ -410,8 +400,6 @@ public class EnvironmenTest {
 
     @Test
     public void testdCreateTwoEnvironmentsIqualTier() throws Exception {
-        System.out.println("testUpdateTier");
-
         Environment environmentBk = new Environment();
         environmentBk.setName("twoenvironmenttier");
         environmentBk.setDescription("Description Second environment");

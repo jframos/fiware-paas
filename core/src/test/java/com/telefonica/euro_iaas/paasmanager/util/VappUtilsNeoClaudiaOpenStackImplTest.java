@@ -7,6 +7,9 @@
 
 package com.telefonica.euro_iaas.paasmanager.util;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,12 +19,9 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import junit.framework.TestCase;
+
 import org.junit.Before;
 import org.junit.Test;
-
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla
@@ -36,8 +36,6 @@ public class VappUtilsNeoClaudiaOpenStackImplTest extends TestCase {
 
     private String getFile(String file) throws IOException {
         File f = new File(file);
-        System.out.println(f.isFile() + " " + f.getAbsolutePath());
-
         InputStream dd = new FileInputStream(f);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(dd));

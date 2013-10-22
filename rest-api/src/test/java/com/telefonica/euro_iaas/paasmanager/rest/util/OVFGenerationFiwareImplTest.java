@@ -7,8 +7,15 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.util;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
@@ -19,19 +26,11 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
-
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla
  */
-public class OVFGenerationFiwareImplTest extends TestCase {
+public class OVFGenerationFiwareImplTest {
 
     private OVFGenerationFiwareImpl ovfGenerationImpl;
     private SystemPropertiesProvider systemPropertiesProvider;
@@ -47,7 +46,6 @@ public class OVFGenerationFiwareImplTest extends TestCase {
 
     ProductReleaseDto pReleaseDto1, pReleaseDto2;
 
-    @Override
     @Before
     public void setUp() throws Exception {
 
@@ -101,14 +99,6 @@ public class OVFGenerationFiwareImplTest extends TestCase {
     }
 
     @Test
-    public void testCreateOvf() throws Exception {
-
-        // String ovf = ovfGenerationImpl.createOvf(environmentInstanceDto);
-        // System.out.println("ovf=" + ovf);
-
-    }
-
-    @Test
     public void testCreateOvfFromEnvironmentFiware() throws Exception {
 
         Attribute attr1 = new Attribute("key1", "value1");
@@ -149,7 +139,6 @@ public class OVFGenerationFiwareImplTest extends TestCase {
         EnvironmentDto environment = new EnvironmentDto(tiersDto, "environmentname", "description");
 
         String ovf = ovfGenerationImpl.createOvf(environment);
-        // System.out.println("ovf=" + ovf);
 
     }
 
@@ -194,7 +183,6 @@ public class OVFGenerationFiwareImplTest extends TestCase {
         EnvironmentDto environment = new EnvironmentDto(tiersDto, "environmentname", "description");
 
         String ovf = ovfGenerationImpl.createOvf(environment);
-        // System.out.println("ovf=" + ovf);
 
     }
 
@@ -288,7 +276,6 @@ public class OVFGenerationFiwareImplTest extends TestCase {
         EnvironmentDto environment = new EnvironmentDto(tiersDto, "environmentname", "description");
 
         String ovf = ovfGenerationImpl.createOvf(environment);
-        System.out.println("ovf=" + ovf);
 
     }
 
@@ -305,7 +292,6 @@ public class OVFGenerationFiwareImplTest extends TestCase {
         EnvironmentDto environment = new EnvironmentDto(tiersDto, "environmentname", "description");
 
         String ovf = ovfGenerationImpl.createOvf(environment);
-        System.out.println("ovf=" + ovf);
     }
 
 }

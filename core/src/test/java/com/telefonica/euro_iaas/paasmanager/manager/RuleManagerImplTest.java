@@ -7,32 +7,30 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.claudia.FirewallingClient;
 import com.telefonica.euro_iaas.paasmanager.dao.RuleDao;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.RuleManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla
  */
-public class RuleManagerImplTest extends TestCase {
+public class RuleManagerImplTest {
 
     private RuleManagerImpl ruleManager;
     private RuleDao ruleDao;
     private FirewallingClient firewallingClient = null;
 
-    @Override
     @Before
     public void setUp() throws Exception {
 
@@ -52,14 +50,10 @@ public class RuleManagerImplTest extends TestCase {
         ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
 
         Mockito.doThrow(new EntityNotFoundException(Rule.class, "test", rule)).when(ruleDao).load(any(String.class));
-        /*
-         * Mockito.doNothing().doThrow(new RuntimeException()).when(
-         * firewallingClient).deployRule(any(ClaudiaData.class), any(Rule.class));
-         */
+
         when(firewallingClient.deployRule(any(ClaudiaData.class), any(Rule.class))).thenReturn("Id");
         when(ruleDao.create(any(Rule.class))).thenReturn(rule);
         Rule rule2 = ruleManager.create(claudiaData, rule);
-        System.out.println(rule2.toJSON());
 
     }
 

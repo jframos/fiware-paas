@@ -22,7 +22,6 @@ public class ProductTypeDaoJpaImplTest extends AbstractJpaDaoTest {
     private ProductTypeDao productTypeDao;
 
     public ProductType create(ProductType productType) throws InvalidEntityException, AlreadyExistsEntityException {
-        System.out.println("Inserting ProductTypeObject in DB");
         productType = productTypeDao.create(productType);
         assertNotNull(productType.getId());
         return productType;

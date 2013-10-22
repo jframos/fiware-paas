@@ -69,7 +69,6 @@ public class TierTest {
 
     @Test
     public void testCreateTierOK() throws Exception {
-        System.out.println("testCreateTierOK");
         Environment environment2 = new Environment();
         environment2.setName("create_tier_ok");
         environment2.setDescription("description");
@@ -102,7 +101,6 @@ public class TierTest {
 
     @Test(expected = javax.ws.rs.WebApplicationException.class)
     public void testCreateTierAlreadyExist() throws Exception {
-        System.out.println("testCreateTierAlreadyExist");
         Environment environmentBk = new Environment();
         environmentBk.setName("create_tier_already");
         environmentBk.setDescription("description");
@@ -123,7 +121,6 @@ public class TierTest {
 
     @Test(expected = Exception.class)
     public void testCreateTierNotFound() throws Exception {
-        System.out.println("testCreateTierOK");
         Environment environmentBk = new Environment();
         environmentBk.setName("create_tier");
         environmentBk.setDescription("description");
@@ -136,7 +133,6 @@ public class TierTest {
 
     @Test
     public void testdUpdateTier() throws Exception {
-        System.out.println("testUpdateTier");
 
         Environment environmentBk = new Environment();
         environmentBk.setName("updatedenvironmenttier");
@@ -180,7 +176,6 @@ public class TierTest {
 
     @Test
     public void testdUpdateTierSoftware() throws Exception {
-        System.out.println("testdUpdateTierSoftware");
 
         ProductRelease product2 = new ProductRelease("test", "0.1", "test 0.1", null);
 

@@ -166,7 +166,6 @@ public class OpenstackDummyImpl implements ClaudiaClient {
         String payload = null;
 
         String url = "http://130.206.80.63:8774/v2/" + claudiaData.getVdc() + "/servers";
-        System.out.println("actionUri: " + url);
 
         String name = claudiaData.getService() + "-" + tier.getName() + "-" + replica;
         try {
@@ -174,7 +173,6 @@ public class OpenstackDummyImpl implements ClaudiaClient {
                     + "\", \"imageRef\": \"44dcdba3-a75d-46a3-b209-5e9035d2435e\", \"flavorRef\": \"2\" }}";
 
             Client client = new Client();
-            System.out.println("url: " + url);
             ClientResponse response = null;
 
             WebResource wr = client.resource(url);
@@ -189,21 +187,15 @@ public class OpenstackDummyImpl implements ClaudiaClient {
 
             String result = response.getEntity(String.class);
 
-            System.out.println("Result " + result);
-
             String id = result.substring(result.indexOf("\"id\": \"") + "\"id\": \"".length(),
                     result.indexOf(", \"links\"") - 1);
 
             auxIdVM = id;
 
-            System.out.println("ID " + id);
-
-            System.out.println("Error " + response.getStatus() + " " + result);
             vm.setVmid(id);
 
         } catch (Exception e) {
             String errorMessage = "Error performing post on the resource: " + url + " with payload: " + payload;
-            e.printStackTrace();
 
             throw new InfrastructureException(errorMessage);
         }
@@ -274,11 +266,9 @@ public class OpenstackDummyImpl implements ClaudiaClient {
         }
 
         String url = "http://130.206.80.63:8774/v2/" + vdc + "/servers/" + this.auxIdVM;
-        System.out.println("actionUri: " + url);
         try {
 
             Client client = new Client();
-            System.out.println("url: " + url);
             ClientResponse response = null;
 
             WebResource wr = client.resource(url);
@@ -296,14 +286,10 @@ public class OpenstackDummyImpl implements ClaudiaClient {
             String ip = result.substring(result.indexOf("\"addr\": \"") + "\"addr\": \"".length(),
                     result.indexOf("\"}]}"));
 
-            System.out.println(ip);
-
             return ip;
 
         } catch (Exception e) {
             String errorMessage = "Error performing get on the resource: " + url;
-            e.printStackTrace();
-
             throw new IPNotRetrievedException(errorMessage);
         }
 
