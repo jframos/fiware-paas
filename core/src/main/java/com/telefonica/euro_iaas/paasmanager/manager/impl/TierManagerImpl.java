@@ -255,15 +255,13 @@ public class TierManagerImpl implements TierManager {
                     try {
 
                         productRelease = productReleaseManager.load(productRelease.getProduct() + "-"
-
-                                + productRelease.getVersion());
-                    } catch (Exception e) {
-
+                            + productRelease.getVersion());
+                    } catch (Exception e){
+                        log.warn("The product does not exists " + productRelease.getProduct() + "-"
+                            + productRelease.getVersion());
                     }
                 }
-
                 Attribute openPortsAttribute = productRelease.getAttribute("openports");
-
                 if (openPortsAttribute != null) {
                     StringTokenizer st = new StringTokenizer(openPortsAttribute.getValue());
 
@@ -342,10 +340,8 @@ public class TierManagerImpl implements TierManager {
      * @throws InfrastructureException
      */
     public Tier tierInsertBD(Tier tier, ClaudiaData data)
-    throws InvalidEntityException, InfrastructureException {
-        List<Network> networskout = new ArrayList ();
-
-
+        throws InvalidEntityException, InfrastructureException {
+        List<Network> networskout = new ArrayList();
         try {
             tier = load(tier.getName(), data.getVdc(), data.getService());
             return tier;
@@ -355,7 +351,6 @@ public class TierManagerImpl implements TierManager {
             tier.setEnviromentName(data.getService());
 
             List<ProductRelease> productReleases = new ArrayList();
-
             if (tier.getProductReleases() != null && tier.getProductReleases().size() != 0) {
                 for (ProductRelease p : tier.getProductReleases()) {
                     productReleases.add(p);
@@ -365,13 +360,9 @@ public class TierManagerImpl implements TierManager {
                 log.warn("There is not any product release associated to the tier " + tier.getName());
             }
 
-
-
-
             for (Network p: tier.getNetworks()) {
                 networskout.add(p);
             }
-
 
             try {
                 tier.setProductReleases(null);
@@ -396,7 +387,7 @@ public class TierManagerImpl implements TierManager {
                         update(tier);
                     } catch (Exception e2) {
                         String errorMessage = "The ProductRelease Object " + prod.getProduct() + "-"
-                        + prod.getVersion() + " is " + "NOT present in Database";
+                            + prod.getVersion() + " is " + "NOT present in Database";
                         log.error(errorMessage);
                         throw new InvalidEntityException(e2);
                     }
