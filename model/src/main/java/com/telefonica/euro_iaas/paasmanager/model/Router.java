@@ -42,12 +42,14 @@ public class Router {
 
     private final String idPublicNetwork;
 
+
     /**
      * Constructor.
      * @param idPublicNetwork
      */
     public Router(String idPublicNetwork) {
         this.idPublicNetwork = idPublicNetwork;
+
     }
 
     /**
@@ -59,7 +61,6 @@ public class Router {
         this.name = name;
         this.idPublicNetwork = idPublicNetwork;
     }
-
 
     /**
      * @return the id
@@ -74,7 +75,6 @@ public class Router {
     public String getName() {
         return name;
     }
-
 
     /**
      * @param id

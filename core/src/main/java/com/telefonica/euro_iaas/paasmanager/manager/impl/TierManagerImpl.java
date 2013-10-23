@@ -35,6 +35,11 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
+/**
+ * It is the manager for the Tier.
+ * @author henar
+ *
+ */
 public class TierManagerImpl implements TierManager {
 
     private TierDao tierDao;
@@ -48,8 +53,11 @@ public class TierManagerImpl implements TierManager {
 
     private static Logger log = Logger.getLogger(TierManagerImpl.class);
 
+    /**
+     * It add teh security groups related the products.
+     */
     public void addSecurityGroupToProductRelease(ClaudiaData claudiaData, Tier tier, ProductRelease productRelease)
-    throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
+        throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
         Attribute openPortsAttribute = productRelease.getAttribute("openports");
         if (openPortsAttribute != null) {
             StringTokenizer st = new StringTokenizer(openPortsAttribute.getValue());
@@ -62,17 +70,8 @@ public class TierManagerImpl implements TierManager {
         }
     }
 
-    /*
-     * private Tier tierInsertBD(Tier tier) throws EntityNotFoundException, InvalidEntityException,
-     * AlreadyExistsEntityException { if (tier.getId() != null) tier = tierDao.load(tier.getName()); else tier =
-     * tierDao.create(tier); //lo que a�ado yo List<ProductRelease> productReleases = tier.getProductReleases();
-     * List<ProductRelease> productReleasesBD = new ArrayList<ProductRelease>(); ProductRelease productRelease = null;
-     * for (ProductRelease productRel: productReleases) { ProductRelease productRele =
-     * productReleaseManager.load(productRel.getName()); productReleasesBD.add(productRele); }
-     * tier.setProductReleases(productReleases); tier.setInitial_number_instances(tier.getInitial_number_instances());
-     * tier.setMaximum_number_instances(tier.getMaximum_number_instances());
-     * tier.setMinimum_number_instances(tier.getMinimum_number_instances()); tier.setName(tier.getName()); tier =
-     * tierDao.create(tier); return tier; }
+    /**
+     * It creates a tier.
      */
 
     public Tier create(ClaudiaData claudiaData, String envName, Tier tier) throws InvalidEntityException,
@@ -81,7 +80,8 @@ public class TierManagerImpl implements TierManager {
                 + " initial_number_instances " + tier.getInitialNumberInstances() + " maximum_number_instances "
                 + tier.getMaximumNumberInstances() + " minimum_number_instances " + tier.getMinimumNumberInstances()
                 + " floatingip " + tier.getFloatingip() + " keypair " + tier.getKeypair() + " icono " + tier.getIcono()
-                + " product releases " + tier.getProductReleases() + "  vdc " + claudiaData.getVdc() + " networks " + tier.getNetworks());
+                + " product releases " + tier.getProductReleases() + "  vdc " + claudiaData.getVdc() + " networks "
+                + tier.getNetworks());
 
 
         try {
@@ -95,8 +95,6 @@ public class TierManagerImpl implements TierManager {
                 SecurityGroup securityGroup = createSecurityGroup(claudiaData, tier);
                 tier.setSecurityGroup(securityGroup);
             }
-
-
             List<Network> networkToBeDeployed = new ArrayList<Network>();
             for (Network network: tier.getNetworks()) {
                 networkToBeDeployed.add(network);
@@ -117,11 +115,7 @@ public class TierManagerImpl implements TierManager {
                 }
                 tier.addNetwork(network);
             }
-
-
-
             return tierInsertBD(tier, claudiaData);
-
         }
     }
 
@@ -197,28 +191,28 @@ public class TierManagerImpl implements TierManager {
             tier = load(tier.getName(), claudiaData.getVdc(), claudiaData.getService());
         } catch (EntityNotFoundException e) {
             if (tier.getId() == null) {
-
                 String mens = "It is not possible to delete the tier " + tier.getName() + " since it is not exist";
-
                 log.error(mens);
                 throw new EntityNotFoundException(Tier.class, mens, tier);
             }
         } catch (Exception e) {
 
             String mens = "It is not possible to delete the tier since there is an error " + e.getMessage();
-
             log.error(mens);
             throw new InvalidEntityException(tier, e);
         }
 
         if (tier.getSecurityGroup() != null) {
             SecurityGroup sec = tier.getSecurityGroup();
-
             log.debug("Deleting security group " + sec.getName() + " in tier " + tier.getName());
-
             tier.setSecurityGroup(null);
             tierDao.update(tier);
             securityGroupManager.destroy(claudiaData, sec);
+        }
+
+        for (Network network: tier.getNetworks()) {
+            log.debug("Deleting network " + network.getNetworkName());
+            networkManager.delete(claudiaData, network);
         }
         try {
             tierDao.remove(tier);
@@ -241,7 +235,6 @@ public class TierManagerImpl implements TierManager {
     }
 
     public List<Tier> findByEnvironment(Environment environment) {
-        // TODO Auto-generated method stub
         return null;
     }
 

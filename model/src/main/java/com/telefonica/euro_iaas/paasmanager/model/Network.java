@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -52,12 +53,17 @@ public class Network {
     @OneToMany
     private List<SubNetwork> subNets;
 
+    @OneToMany
+    private List<Router> routers;
+
     /**
      * Constructor.
      */
     public Network() {
         subNetCount = 1;
         subNets = new ArrayList<SubNetwork>();
+        routers = new ArrayList<Router>();
+
     }
 
     /**
@@ -66,11 +72,25 @@ public class Network {
     public Network(String name) {
         this.name = name;
         subNets = new ArrayList<SubNetwork>();
+        routers = new ArrayList<Router>();
         subNetCount = 1;
     }
 
     /**
-     * It gets the id for the subnet to specify the cidr.
+     * It adds a router to the network.
+     * 
+     * @param router
+     * @return
+     */
+    public void addRouter(Router router) {
+        if (routers == null) {
+            routers = new ArrayList<Router>();
+        }
+        routers.add(router);
+    }
+
+    /**
+     * It adds a subnet to the network.
      * 
      * @param subNet
      * @return
@@ -97,6 +117,19 @@ public class Network {
     }
 
     /**
+     * It obtains the id of the subnet to be used for the router.
+     * @return
+     */
+    public String getIdNetRouter() {
+        if (getSubNets().size() != 0) {
+            return this.getSubNets().get(0).getIdSubNet();
+        }
+        else {
+            return "";
+        }
+    }
+
+    /**
      * @return the networkName
      */
     public String getIdNetwork() {
@@ -108,6 +141,15 @@ public class Network {
      */
     public String getNetworkName() {
         return name;
+    }
+
+    /**
+     * It gets the routers.
+     * 
+     * @return List<Router>
+     */
+    public List<Router> getRouters() {
+        return this.routers;
     }
 
     /**
@@ -169,7 +211,7 @@ public class Network {
      */
     public String toJson() {
         return "{" + " \"network\":{" + "    \"name\": \"" + this.name + "\"," + "    \"admin_state_up\": false,"
-                + "    \"shared\": false" + "  }" + "}";
+        + "    \"shared\": false" + "  }" + "}";
 
     }
 

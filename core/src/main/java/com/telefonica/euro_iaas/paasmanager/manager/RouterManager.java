@@ -47,7 +47,7 @@ public interface RouterManager {
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    void delete(ClaudiaData claudiaData, Router router) throws EntityNotFoundException, InvalidEntityException,
+    void delete(ClaudiaData claudiaData, Router router, Network network) throws EntityNotFoundException, InvalidEntityException,
     InfrastructureException;
 
     /**

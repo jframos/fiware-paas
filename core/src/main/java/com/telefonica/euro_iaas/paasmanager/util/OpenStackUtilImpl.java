@@ -121,12 +121,15 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     private String user;
 
 
+    /**
+     * It adds an interface to the router
+     */
     public String addInterface(Router router, Network net, PaasManagerUser user) throws OpenStackException {
 
         //  PUT /v2.0/routers/8604a0de-7f6b-409a-a47c-a1cc7bc77b2e/add_router_interface
         // Accept: application/json
 
-        log.debug ("Adding an interface from network " + net.getNetworkName()+ " to router " + router.getName());
+        log.debug("Adding an interface from network " + net.getNetworkName()+ " to router " + router.getName());
         String response = null;
 
         try {
@@ -153,16 +156,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     }
 
-    /* (non-Javadoc)
-     * @see com.telefonica.claudia.smi.OpenStackClient#addRouterInterface(java.lang.String,
-     * java.lang.String, com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser )
-=======
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.claudia.smi.OpenStackClient#addRouterInterface(java.lang.String, java.lang.String,
-     * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser )
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
-     */
+
     public String addRouterInterface(String routerId, String subNetId, PaasManagerUser user) throws OpenStackException {
         // throw new UnsupportedOperationException("Not supported yet.");
         // I need to know X-Auth-Token, orgID-Tennat, IP and Port
@@ -290,7 +284,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     }
 
     /**
-     * Building the payload to assign FloatingIP
+     * Building the payload to assign FloatingIP.
      * 
      * @param floatigIP
      * @return
@@ -715,6 +709,31 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         return response;
     }
 
+    public String deleteRouter(String routerId, PaasManagerUser user) throws OpenStackException {
+        // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757...'
+        // -H "Accept: application/json"
+        // -X DELETE "http://10.95.171.115:9696/v2/networks/5867b6bd-ba18-4ae3-a34f-dd0f2e189eb6"
+        HttpUriRequest request = createQuantumDeleteRequest(RESOURCE_ROUTERS + "/" + routerId, user);
+
+        String response = null;
+
+        try {
+
+            response = executeNovaRequest(request);
+
+        } catch (OpenStackException e) {
+            String errorMessage = "Error deleting router " + routerId + ": " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        } catch (Exception e) {
+            String errorMessage = "Error deleting router " + routerId + " from OpenStack: " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        }
+
+        return response;
+    }
+
     /*
      * (non-Javadoc)
      * @see com.telefonica.claudia.smi.OpenStackClient#createNetwork(java.lang.String,
@@ -751,6 +770,33 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
         return response;
     }
+
+    public void deleteSubNetwork(String idSubNet, PaasManagerUser user) throws OpenStackException {
+        String response = null;
+
+        try {
+            HttpUriRequest request = createNovaDeleteRequest(RESOURCE_SERVERS + "/" + idSubNet, user);
+
+            response = executeNovaRequest(request);
+
+        } catch (OpenStackException e) {
+            String errorMessage = "Error deleting server " + idSubNet + ": " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        } catch (Exception e) {
+            String errorMessage = "Error deleting server " + idSubNet + " from OpenStack: " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        }
+
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.telefonica.claudia.smi.OpenStackClient#getNetworkDetails(java.lang.String,
+     * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
+     */
 
     /**
      * Method to execute a request and get the response from NOVA.
@@ -815,20 +861,9 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         return newHeaders[responseLocation];
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.claudia.smi.OpenStackClient#getNetworkDetails(java.lang.String,
-     * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
-     */
-
     /**
-<<<<<<< HEAD
      * Obtains the attribute value from a node.
      *
-=======
-     * Obtains the attribute value from a node
-     * 
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
      * @param node
      * @param attribute
      * @return
@@ -890,7 +925,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
         return floatingIP;
     }
-
     /**
      * Get a Free FloatingIP
      * 
@@ -909,8 +943,9 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         }
         return floatingIP;
     }
+
     /**
-     * Obtain the xml including all FloatingIPs of a certain tenant
+     * Obtain the xml including all FloatingIPs of a certain tenant.
      * 
      * @return
      * @throws OpenStackException
@@ -922,15 +957,14 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             HttpUriRequest request = createNovaGetRequest("/" + RESOURCE_FLOATINGIP, APPLICATION_XML, user);
 
             response = executeNovaRequest(request);
-            // deletion.setMessage(response);
 
         } catch (OpenStackException e) {
             String errorMessage = "Error Getting Floating IPs " + " from tenant " + tenant + ": " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error Getting Floating IPs " + " from tenant " + tenant + ": " + " from OpenStack: "
-            + e;
+            String errorMessage = "Error Getting Floating IPs " + " from tenant " + tenant + ": " +
+            " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
@@ -965,6 +999,12 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     /*
      * (non-Javadoc)
+     * @see com.telefonica.claudia.smi.OpenStackClient#deleteNetwork(java.lang.String,
+     * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
+     */
+
+    /*
+     * (non-Javadoc)
      * @see com.telefonica.claudia.smi.OpenStackClient#getNetworks(
      * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
      */
@@ -972,10 +1012,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
         // -H "Content-Type: application/xml" -H "Accept: application/json"
         // -X GET "http://10.95.171.115:9696/v2/networks"
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_OPENSTACK_DISTRIBUTION).equalsIgnoreCase(
-        "essex")) {
-            return null;
-        }
         HttpUriRequest request = createQuantumGetRequest(RESOURCE_NETWORKS, APPLICATION_XML, user);
 
         String response = null;
@@ -996,12 +1032,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
         return response;
     }
-
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.claudia.smi.OpenStackClient#deleteNetwork(java.lang.String,
-     * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
-     */
 
     public String getServer(String serverId, PaasManagerUser user) throws OpenStackException {
         // throw new UnsupportedOperationException("Not supported yet.");
@@ -1075,6 +1105,45 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         }
         return response;
     }
+
+
+    /**
+     * It adds an interface to the router
+     */
+    public String removeInterface(Router router, String net, PaasManagerUser user) throws OpenStackException {
+
+        //  PUT /v2.0/routers/8604a0de-7f6b-409a-a47c-a1cc7bc77b2e/remove_router_interface
+        // Accept: application/json
+
+        //{"subnet_id": "a2f1f29d-571b-4533-907f-5803ab96ead1"}
+
+        log.debug("Removing an interface from network " + net+ " to router " + router.getName());
+        String response = null;
+
+        try {
+            String payload = "{\"subnet_id\": \""+net+"\"}";
+            log.debug(payload);
+
+            HttpUriRequest request = createQuantumPutRequest(RESOURCE_ROUTERS
+                    + "/" + router.getIdRouter() + "/" + RESOURCE_REMOVE_INTERFACE, payload, APPLICATION_JSON, user);
+            response = executeNovaRequest(request);
+
+        } catch (OpenStackException e) {
+            String errorMessage = "Error deleting interface in router " + router.getName() + ": "
+            + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        } catch (Exception e) {
+            String errorMessage = "Error deleting interface in router " + router.getName()
+            + " from OpenStack: " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        }
+
+        return response;
+
+    }
+
 
     /**
      * @param systemPropertiesProvider

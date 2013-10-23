@@ -80,6 +80,11 @@ public interface OpenStackUtil {
      */
     public static final String RESOURCE_ADD_INTERFACE = "add_router_interface";
     /**
+     * path for remove interfaces to routers.
+     */
+    public static final String RESOURCE_REMOVE_INTERFACE = "remove_router_interface";
+
+    /**
      * path for floatingIPS.
      */
     public static final String RESOURCE_FLOATINGIP = "os-floating-ips";
@@ -196,6 +201,16 @@ public interface OpenStackUtil {
     String deleteNetwork(String networkId, PaasManagerUser user) throws OpenStackException;
 
     /**
+     * Undeploys a router in Openstack
+     * 
+     * @param serverId
+     *            the VM to be undeployed
+     * @param the
+     *            user
+     */
+    String deleteRouter(String routerId, PaasManagerUser user) throws OpenStackException;
+
+    /**
      * Undeploys a VM in Openstack
      * 
      * @param serverId
@@ -206,9 +221,17 @@ public interface OpenStackUtil {
     String deleteServer(String serverId, PaasManagerUser user) throws OpenStackException;
 
     /**
+     * It deletes the subnetwork.
+     * @param idSubNet
+     * @param user
+     * @throws OpenStackException
+     */
+    void deleteSubNetwork(String idSubNet, PaasManagerUser user) throws OpenStackException;
+    /**
      * Obtain the floating IP's of a certain tenantID
      */
     String getFloatingIP(PaasManagerUser user) throws OpenStackException;
+
     /**
      * Method to get a single Network.
      * 
@@ -233,6 +256,7 @@ public interface OpenStackUtil {
      */
     String getNetworks(PaasManagerUser user) throws OpenStackException;
 
+
     /**
      * Get the Server details
      * 
@@ -244,7 +268,6 @@ public interface OpenStackUtil {
     String getServer(String serverId, PaasManagerUser user)
     throws OpenStackException;
 
-
     /**
      * List all servers in OpenStack
      * 
@@ -252,4 +275,14 @@ public interface OpenStackUtil {
      * @throws OpenStackException
      */
     String listServers(PaasManagerUser user) throws OpenStackException;
+
+    /**
+     * It remvoes the interface of the network in the router.
+     * @param router
+     * @param net
+     * @param user
+     * @return
+     * @throws OpenStackException
+     */
+    String removeInterface(Router router, String net, PaasManagerUser user) throws OpenStackException;
 }

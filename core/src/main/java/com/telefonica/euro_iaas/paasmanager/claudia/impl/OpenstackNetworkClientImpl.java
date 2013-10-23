@@ -58,6 +58,26 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
     }
 
     /**
+     * It deletes the interface of the network in the router.
+     */
+    public void deleteNetworkFromRouter(ClaudiaData claudiaData, Router router, Network net)
+    throws InfrastructureException {
+        log.info("Delete Interfact net " + net.getNetworkName()+ " " + net.getIdNetRouter() + " from router " + router.getName()
+                + " for user " + claudiaData.getUser().getTenantName());
+
+        try {
+
+            String response = openStackUtil.removeInterface(router, net.getIdNetRouter(), claudiaData.getUser());
+            log.debug(response);
+        } catch (OpenStackException e) {
+            String msm = "Error to deploy the network " + router.getName() + ":" + e.getMessage();
+            log.error(msm);
+            throw new InfrastructureException(msm, e);
+        }
+
+    }
+
+    /**
      * The deploy the network in Openstack.
      * 
      * @params claudiaData
@@ -85,7 +105,6 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             throw new InfrastructureException(msm, e);
         }
     }
-
     /**
      * The deploy the network in Openstack.
      * 
@@ -96,7 +115,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         log.info("Deploy router " + router.getName() + " for user " + claudiaData.getUser().getTenantName());
 
         try {
-            log.debug ("Payload " + router.toJson());
+            log.debug("Payload " + router.toJson());
             String response = openStackUtil.createRouter(router, claudiaData.getUser());
 
 
@@ -114,6 +133,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             throw new InfrastructureException(msm, e);
         }
     }
+
     /**
      * The deploy the subnet in Openstack.
      * 
@@ -165,8 +185,17 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         }
     }
 
-    public void destroyRouter(ClaudiaData claudiaData, Router router) {
-        // TODO Auto-generated method stub
+    /**
+     * It delete the router in Openstack.
+     */
+    public void destroyRouter(ClaudiaData claudiaData, Router router) throws InfrastructureException {
+        try {
+            openStackUtil.deleteRouter(router.getIdRouter(), claudiaData.getUser());
+        } catch (OpenStackException e) {
+            String msm = "Error to delete the router " + router.getName() + ":" + e.getMessage();
+            log.error(msm);
+            throw new InfrastructureException(msm, e);
+        }
 
     }
 
@@ -179,7 +208,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
     public void destroySubNetwork(ClaudiaData claudiaData, SubNetwork subnet) throws InfrastructureException {
 
         try {
-            openStackUtil.deleteNetwork(subnet.getIdSubNet(), claudiaData.getUser());
+            openStackUtil.deleteSubNetwork(subnet.getIdSubNet(), claudiaData.getUser());
         } catch (OpenStackException e) {
             String msm = "Error to delete the network " + subnet.getName() + ":" + e.getMessage();
             log.error(msm);

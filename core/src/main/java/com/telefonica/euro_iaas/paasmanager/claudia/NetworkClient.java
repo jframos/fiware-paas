@@ -34,6 +34,16 @@ public interface NetworkClient {
     void addNetworkToRouter(ClaudiaData claudiaData, Router router, Network network) throws InfrastructureException;
 
     /**
+     * Remove the network from the router.
+     * 
+     * @param claudiaData
+     * @param router
+     * @param idNet
+     */
+    void deleteNetworkFromRouter(ClaudiaData claudiaData, Router router, Network idNet)
+    throws InfrastructureException;
+
+    /**
      * Deploy the network in the infrastructure.
      * 
      * @param claudiaData
@@ -69,7 +79,13 @@ public interface NetworkClient {
 
 
 
-    void destroyRouter(ClaudiaData claudiaData, Router router);
+    /**
+     * It delete a router in Openstack.
+     * @param claudiaData
+     * @param router
+     * @throws InfrastructureException
+     */
+    void destroyRouter(ClaudiaData claudiaData, Router router) throws InfrastructureException;
 
     /**
      * Destroy a subnet in OpenStack.
