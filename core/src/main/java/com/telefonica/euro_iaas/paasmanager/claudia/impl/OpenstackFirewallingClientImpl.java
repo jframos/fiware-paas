@@ -52,8 +52,8 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
     public String deployRule(ClaudiaData claudiaData, Rule rule) throws InfrastructureException {
         log.debug("Creating security rule " + rule.getFromPort());
         String url = systemPropertiesProvider.getProperty("openstack.nova.url")
-        + systemPropertiesProvider.getProperty("openstack.version")
-        + claudiaData.getVdc() + "/os-security-group-rules";
+            + systemPropertiesProvider.getProperty("openstack.version")
+            + claudiaData.getVdc() + "/os-security-group-rules";
         log.debug("actionUri: " + url);
 
         String payload = rule.toJSON();
@@ -115,12 +115,12 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
      * @throws InfrastructureException
      */
     public String deploySecurityGroup(ClaudiaData claudiaData, SecurityGroup securityGroup)
-    throws InfrastructureException {
+        throws InfrastructureException {
 
         log.debug("Creating security group " + securityGroup.getName());
         String url = systemPropertiesProvider.getProperty("openstack.nova.url")
-        + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
-        + "/os-security-groups";
+            + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
+            + "/os-security-groups";
         log.debug("actionUri: " + url);
 
         String payload = securityGroup.toJSON();
@@ -162,7 +162,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
         } catch (Exception e) {
 
             String errorMessage = "Error performing post on the resource: " + url + " with payload: " + payload + " "
-            + e.getMessage();
+                + e.getMessage();
             log.error(errorMessage);
 
             throw new InfrastructureException(errorMessage);
@@ -176,12 +176,12 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
      * @param rule
      */
     public void destroyRule(ClaudiaData claudiaData, Rule rule)
-    throws InfrastructureException {
+        throws InfrastructureException {
 
         log.debug("Destroy security rule " + rule.getFromPort());
         String url = systemPropertiesProvider.getProperty("openstack.nova.url")
-        + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
-        + "/os-security-group-rules/" + rule.getIdRule();
+            + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
+            + "/os-security-group-rules/" + rule.getIdRule();
         log.debug("actionUri: " + url);
 
         try {
@@ -208,7 +208,8 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
                 log.debug("Operation ok result " + result);
             } else {
                 log.error("Error to delete a security rule " + rule.getIdRule() + ": " + result);
-                throw new InfrastructureException("Error to delete a security rule " + rule.getIdRule() + ": " + result);
+                throw new InfrastructureException("Error to delete a security rule " + rule.getIdRule()
+                    + ": " + result);
             }
 
         } catch (Exception e) {
@@ -220,12 +221,15 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
     }
 
+    /**
+     * It destroys a security group.
+     */
     public void destroySecurityGroup(ClaudiaData claudiaData, SecurityGroup securityGroup)
-    throws InfrastructureException {
+        throws InfrastructureException {
         log.debug("Destroy security group " + securityGroup.getName());
         String url = systemPropertiesProvider.getProperty("openstack.nova.url")
-        + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
-        + "/os-security-groups/" + securityGroup.getIdSecurityGroup();
+            + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
+            + "/os-security-groups/" + securityGroup.getIdSecurityGroup();
         log.debug("actionUri: " + url);
 
         try {
@@ -268,7 +272,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
     }
 
     /**
-     * Converting from a string (list of secGrous in json) to a list of SecurityGroups
+     * Converting from a string (list of secGrous in json) to a list of SecurityGroups.
      * 
      * @param jsonSecGroups
      * @return
@@ -296,17 +300,14 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
     }
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * com.telefonica.euro_iaas.paasmanager.claudia.FirewallingClient#loadAllSecurityGroups(com.telefonica.euro_iaas
-     * .paasmanager.model.ClaudiaData)
+    /**
+     * It loads all the security groups.
      */
     public List<SecurityGroup> loadAllSecurityGroups(ClaudiaData claudiaData) throws OpenStackException {
 
         String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)
-        + systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)
-        + claudiaData.getVdc() + "/os-security-groups";
+            + systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)
+            + claudiaData.getVdc() + "/os-security-groups";
         log.debug("actionUri: " + url);
 
         Client client = new Client();
@@ -341,12 +342,12 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
 
     public SecurityGroup loadSecurityGroup(ClaudiaData claudiaData, String securityGroupId)
-    throws EntityNotFoundException {
+        throws EntityNotFoundException {
 
         log.debug("Loading security group " + securityGroupId);
         String url = systemPropertiesProvider.getProperty("openstack.nova.url")
-        + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
-        + "/os-security-groups/" + securityGroupId;
+            + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
+            + "/os-security-groups/" + securityGroupId;
         log.debug("actionUri: " + url);
 
         try {
