@@ -197,20 +197,13 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         String payload = buildCreateServerPayload(claudiaData, tier, replica);
 
         try {
-<<<<<<< HEAD
 
-=======
->>>>>>> 96e60993de0c9a7510ddf89f0b07a0dabfe07bce
             String serverId = openStackUtil.createServer(payload, claudiaData.getUser());
             if (tier.getFloatingip().equals("true")) {
                 String floatingIP = openStackUtil.getFloatingIP(claudiaData.getUser());
                 openStackUtil.assignFloatingIP(serverId, floatingIP, claudiaData.getUser());
             }
             vm.setVmid(serverId);
-<<<<<<< HEAD
-
-=======
->>>>>>> 96e60993de0c9a7510ddf89f0b07a0dabfe07bce
         } catch (OpenStackException e) {
             String errorMessage = "Error interacting with OpenStack ";
             log.error(errorMessage);
