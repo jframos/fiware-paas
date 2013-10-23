@@ -19,9 +19,9 @@ g=EnvironmentRequest(config['keystone_url'], config['paasmanager_url'], config['
 instance_request = EnvironmentInstanceRequest (config['keystone_url'], config['paasmanager_url'], config['tenant'], config['user'], config['password'],
                                                config['vdc'],config['sdc_url'])
 
-environment_name = 'networkenv6deg43s33'
-blueprintname ="blueuno5s"
-network ="cincotest90"
+environment_name = 'networkenv6sssdedg43s34'
+blueprintname ="blueudno54s44"
+network ="cincotedsts9444"
 
 
 
@@ -34,10 +34,7 @@ tier_name = 'tiername'
 g.add_tier_environment_network(environment_name,tier_name, "nodejs=0.6.15",network)
 print("  OK")
 
-print('Get Information about the Blueprint: ' + environment_name )
-env = g.get_environment(environment_name)
-env.to_string()
-print("  OK")
+
 
 
 
@@ -81,6 +78,11 @@ print("  OK")
 print('borrado del blueprint Template No tiers for contextbroker: ')
 g.delete_environment(environment_name)
 
+print("  OK")
+
+print('Get Information about the Blueprint: ' + environment_name )
+env = g.get_environment(environment_name)
+env.to_string()
 print("  OK")
 
 print('Deploy an environment Instance' + blueprintname )
