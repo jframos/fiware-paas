@@ -1,17 +1,6 @@
 __author__ = 'henar'
 
 from xml.etree.ElementTree import Element, SubElement
-from xml.etree.ElementTree import tostring
-
-class Network:
-    def __init__(self, network_name):
-        self.network_name=network_name
-
-    def to_xml(self):
-        networkDto = Element("networkDto")
-        network = SubElement(networkDto, "networkName")
-        network.text=self.network_name
-        return networkDto
 
 
 class Tier:
@@ -61,7 +50,7 @@ class Tier:
         floating_ip= SubElement(tier_dtos, "floatingip")
         floating_ip.text=self.tier_floatingip
 
-        print tostring(tier_dtos)
+
         if self.products:
             for product in self.products:
                 prod = product.to_product_xml_env()
@@ -70,10 +59,9 @@ class Tier:
 
         if self.networks:
             for net in self.networks:
-                prod = net.to_xml()
+                prod = net.to__xml()
 
                 tier_dtos.append(prod)
-        print tostring(tier_dtos)
         return tier_dtos
 
     def to_xml (self):

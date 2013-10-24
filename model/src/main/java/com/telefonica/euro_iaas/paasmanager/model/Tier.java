@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -159,6 +160,10 @@ public class Tier {
         if (this.networks == null) {
             this.networks = new ArrayList<Network>();
         }
+        int count = 0;
+        if (( count =containsNetwork(network))!=-1) {
+            networks.remove(count);
+        }
         networks.add(network);
 
     }
@@ -173,6 +178,22 @@ public class Tier {
             productReleases = new ArrayList<ProductRelease>();
         }
         productReleases.add(productRelease);
+    }
+
+    /**
+     * It returns the position in the array list of the network.
+     * @param net2
+     * @return
+     */
+    public int containsNetwork(Network net2) {
+        int i = 0;
+        for (Network net: networks) {
+            if (net2.getNetworkName().equals(net.getNetworkName())) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
     }
 
     /*
@@ -297,9 +318,9 @@ public class Tier {
     public String getVdc() {
         return vdc;
     } /*
-       * (non-Javadoc)
-       * @see java.lang.Object#hashCode()
-       */
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
 
     @Override
     public int hashCode() {
@@ -471,19 +492,34 @@ public class Tier {
 
     /**
      * to json.
-     * 
      * @return
      */
     public String toJson() {
-        String payload = "{\"server\": " + "{\"key_name\": \"" + getKeypair() + "\", ";
+        String payload = "{\"server\": " + "{\"key_name\": \""
+        + getKeypair() + "\", ";
         if (getSecurityGroup() != null) {
-            payload = payload + "\"security_groups\": [{ \"name\": \"" + getSecurityGroup().getName() + "\"}], ";
+            payload = payload + "\"security_groups\": [{ \"name\": \""
+            + getSecurityGroup().getName() + "\"}], ";
         }
-        payload = payload + "\"flavorRef\": \"" + getFlavour() + "\", " + "\"imageRef\": \"" + getImage() + "\", "
-                + "\"name\": \"" + name + "\"}}";
+        if (getNetworks() != null) {
+            payload = payload + "\"networks\": [";
+            for (Network net: this.getNetworks()){
+
+                payload = payload + "{ \"uuid\": \""
+                + net.getIdNetwork() + "\"}";
+            }
+            payload = payload + "], ";
+
+        }
+
+        payload = payload
+        + "\"flavorRef\": \"" + getFlavour() + "\", " + "\"imageRef\": \""
+        + getImage() + "\", " + "\"name\": \"" + name + "\"}}";
         return payload;
 
     }
+
+
 
     /**
      * @param network
@@ -499,6 +535,5 @@ public class Tier {
                 networks.add(network);
             }
         }
-
     }
 }

@@ -7,6 +7,16 @@
 
 package com.telefonica.euro_iaas.paasmanager.environment;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
@@ -16,6 +26,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
@@ -24,16 +35,6 @@ import com.telefonica.euro_iaas.paasmanager.rest.resources.EnvironmentInstanceRe
 import com.telefonica.euro_iaas.paasmanager.rest.resources.EnvironmentResource;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.TierInstanceResource;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.TierResource;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 // ApplicationContext will be loaded from "classpath:/app-config.xml"
@@ -123,6 +124,105 @@ public class NetworkinEnvironmenInstanceTest {
         assertEquals(tierInstance.getName(), "blueprintname2-tierdtotest-1");
         assertEquals(tierInstance.getNumberReplica(), 1);
         assertEquals(tierInstance.getTier().getName(), "tierdtotest");
+
+    }
+
+
+    @Test
+    public void testCreateEnvironmentWithNetworkAlreadyExist() throws Exception {
+
+        ProductRelease product = new ProductRelease("tomcat222", "7", "Tomcat server 22", null);
+
+        product = productReleaseDao.create(product);
+        assertNotNull(product);
+        assertNotNull(product.getId());
+        assertEquals(product.getProduct(), "tomcat222");
+        assertEquals(product.getVersion(), "7");
+
+        Environment environmentBk = new Environment();
+        environmentBk.setName("testNetworkAlreadyExist");
+        environmentBk.setDescription("Description First environment");
+        Tier tierbk = new Tier("tierdtotest", new Integer(1), new Integer(1), new Integer(1), null);
+        tierbk.setImage("image");
+        tierbk.setIcono("icono");
+        tierbk.setFlavour("flavour");
+        tierbk.setFloatingip("floatingip");
+        tierbk.setPayload("");
+        tierbk.setKeypair("keypair");
+        tierbk.addProductRelease(product);
+
+        Network net = new Network ("network");
+        tierbk.addNetwork(net);
+
+        environmentBk.addTier(tierbk);
+
+        environmentResource.insert(org, vdc, environmentBk.toDto());
+
+        Environment environmentAlreadyNetwork = new Environment();
+        environmentAlreadyNetwork.setName("testNetworkAlreadyExist2");
+        environmentAlreadyNetwork.setDescription("Description First environment");
+        environmentAlreadyNetwork.addTier(tierbk);
+
+        environmentResource.insert(org, vdc, environmentAlreadyNetwork.toDto());
+
+        Environment env2 = environmentManager.load("testNetworkAlreadyExist2");
+        assertNotNull(env2);
+        assertNotNull(env2.getTiers().get(0).getNetworks());
+        assertEquals(env2.getTiers().get(0).getNetworks().size(), 1);
+        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(),"network");
+        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getSubNets().size(),1);
+
+    }
+
+    @Test
+    public void testCreateEnvironmentWithNetworkAlreadyExistDifferentSubnet() throws Exception {
+
+        ProductRelease product = new ProductRelease("tomcat223", "7", "Tomcat server 22", null);
+
+        product = productReleaseDao.create(product);
+        assertNotNull(product);
+        assertNotNull(product.getId());
+        assertEquals(product.getProduct(), "tomcat223");
+        assertEquals(product.getVersion(), "7");
+
+        Environment environmentBk = new Environment();
+        environmentBk.setName("testNetworkAlreadyExistDifferentSubnet");
+        environmentBk.setDescription("Description First environment");
+        Tier tierbk = new Tier("tierdtotest", new Integer(1), new Integer(1), new Integer(1), null);
+        tierbk.setImage("image");
+        tierbk.setIcono("icono");
+        tierbk.setFlavour("flavour");
+        tierbk.setFloatingip("floatingip");
+        tierbk.setPayload("");
+        tierbk.setKeypair("keypair");
+        tierbk.addProductRelease(product);
+
+        Network net = new Network ("network");
+
+        tierbk.addNetwork(net);
+
+        environmentBk.addTier(tierbk);
+
+        environmentResource.insert(org, vdc, environmentBk.toDto());
+
+        Environment environmentAlreadyNetwork = new Environment();
+        environmentAlreadyNetwork.setName("testNetworkAlreadyExistDifferentSubnet2");
+        environmentAlreadyNetwork.setDescription("Description First environment");
+
+        SubNetwork subNet = new SubNetwork ("subnet");
+        subNet.setCidr("10.0.4.6/24");
+        tierbk.getNetworks().get(0).addSubNet(subNet);
+
+        environmentAlreadyNetwork.addTier(tierbk);
+
+        environmentResource.insert(org, vdc, environmentAlreadyNetwork.toDto());
+
+        Environment env2 = environmentManager.load("testNetworkAlreadyExistDifferentSubnet2");
+        assertNotNull(env2);
+        assertNotNull(env2.getTiers().get(0).getNetworks());
+        assertEquals(env2.getTiers().get(0).getNetworks().size(), 1);
+        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(),"network");
+        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getSubNets().size(),1);
 
     }
 

@@ -32,7 +32,13 @@ public class NetworkClientDummyImpl implements NetworkClient {
      * @throws InfrastructureException
      */
     public void addNetworkToRouter(ClaudiaData claudiaData, Router router, Network network)
-            throws InfrastructureException {
+    throws InfrastructureException {
+
+    }
+
+    public void deleteNetworkFromRouter(ClaudiaData claudiaData, Router router, Network network)
+    throws InfrastructureException {
+        // TODO Auto-generated method stub
 
     }
 

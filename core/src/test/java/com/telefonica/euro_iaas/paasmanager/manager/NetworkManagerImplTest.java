@@ -7,6 +7,15 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import junit.framework.TestCase;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
 import com.telefonica.euro_iaas.paasmanager.dao.NetworkDao;
@@ -15,15 +24,8 @@ import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.Router;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Network, SubNetwork and Router Manager.
@@ -32,15 +34,16 @@ import static org.mockito.Mockito.when;
  */
 public class NetworkManagerImplTest extends TestCase {
 
-    public static String NETWORK_NAME = "name";
-    public static String SUBNETWORK_NAME = "subname";
-    public static String CIDR = "10.100.1.0/24";
+    private static String NETWORK_NAME = "name";
+    private static String SUB_NETWORK_NAME = "subname";
+    private static String CIDR = "10.100.1.0/24";
 
     private NetworkManagerImpl networkManager;
     private NetworkDao networkDao;
     private NetworkClient networkClient = null;
     private SubNetworkManager subNetworkManager = null;
     private RouterManager routerManager = null;
+    private SystemPropertiesProvider systemPropertiesProvider = null;
 
     @Override
     @Before
@@ -49,7 +52,10 @@ public class NetworkManagerImplTest extends TestCase {
         networkManager = new NetworkManagerImpl();
         networkDao = mock(NetworkDao.class);
         networkManager.setNetworkDao(networkDao);
+        systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+        networkManager.setSystemPropertiesProvider(systemPropertiesProvider);
         networkClient = mock(NetworkClient.class);
+
         subNetworkManager = mock(SubNetworkManager.class);
         routerManager = mock(RouterManager.class);
         networkManager.setNetworkClient(networkClient);
@@ -58,19 +64,22 @@ public class NetworkManagerImplTest extends TestCase {
 
     }
 
+    /**
+     * It tests the creation of a network.
+     * @throws Exception
+     */
     @Test
-    public void testCreteNetwork() throws Exception {
+    public void testCreateNetwork() throws Exception {
         // Given
         Network net = new Network(NETWORK_NAME);
-        // SubNetwork subNet = new SubNetwork (SUBNETWORK_NAME);
-        // net.addSubNet(subNet);
         ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
 
         // When
         when(networkDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
+        when(systemPropertiesProvider.getProperty("key")).thenReturn("VALUE");
         Mockito.doNothing().when(networkClient).deployNetwork(any(ClaudiaData.class), any(Network.class));
         Mockito.doNothing().when(subNetworkManager).create(any(ClaudiaData.class), any(SubNetwork.class));
-        Mockito.doNothing().when(routerManager).create(any(ClaudiaData.class), any(Router.class));
+        Mockito.doNothing().when(routerManager).create(any(ClaudiaData.class), any(Router.class), any(Network.class));
         when(networkDao.create(any(Network.class))).thenReturn(net);
 
         // Verity
@@ -82,16 +91,19 @@ public class NetworkManagerImplTest extends TestCase {
 
     }
 
+    /**
+     * It tests the destruction of a network.
+     * @throws Exception
+     */
     @Test
     public void testDestroyNetwork() throws Exception {
         // Given
         Network net = new Network(NETWORK_NAME);
-        // SubNetwork subNet = new SubNetwork (SUBNETWORK_NAME);
-        // net.addSubNet(subNet);
         ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
 
         // When
         when(networkDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
+        when(systemPropertiesProvider.getProperty("key")).thenReturn("VALUE");
         Mockito.doNothing().when(networkClient).deployNetwork(any(ClaudiaData.class), any(Network.class));
         Mockito.doNothing().when(subNetworkManager).delete(any(ClaudiaData.class), any(SubNetwork.class));
         Mockito.doNothing().when(networkDao).remove(any(Network.class));

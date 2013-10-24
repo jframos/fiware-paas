@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -45,7 +46,7 @@ public class TierDto {
     private String floatingip = "";
 
     /**
-     * Default Constructor
+     * Default Constructor.
      */
     public TierDto() {
         this.networkDto = new ArrayList<NetworkDto>();
@@ -53,6 +54,7 @@ public class TierDto {
     }
 
     /**
+     * Constructor.
      * @param name
      * @param maximumNumberInstances
      * @param minimumNumberInstances
@@ -72,9 +74,25 @@ public class TierDto {
         this.networkDto = new ArrayList<NetworkDto>();
     }
 
+    /**
+     * Constructor.
+     * @param name
+     * @param maximumNumberInstances
+     * @param minimumNumberInstances
+     * @param initialNumberInstances
+     * @param productReleaseDtos
+     * @param flavour
+     * @param image
+     * @param icono
+     * @param keypair
+     * @param floatingip
+     */
+
+
     public TierDto(String name, Integer maximumNumberInstances, Integer minimumNumberInstances,
             Integer initialNumberInstances, List<ProductReleaseDto> productReleaseDtos, String flavour, String image,
             String icono, String keypair, String floatingip) {
+
 
         this.name = name;
         this.maximumNumberInstances = maximumNumberInstances;
@@ -88,6 +106,23 @@ public class TierDto {
         this.floatingip = floatingip;
         this.networkDto = new ArrayList<NetworkDto>();
     }
+
+
+
+    /**
+     * Constructor.
+     * @param name
+     * @param maximumNumberInstances
+     * @param minimumNumberInstances
+     * @param initialNumberInstances
+     * @param productReleaseDtos
+     * @param flavour
+     * @param image
+     * @param icono
+     * @param securityGroup
+     * @param keypair
+     * @param floatingip
+     */
 
     public TierDto(String name, Integer maximumNumberInstances, Integer minimumNumberInstances,
             Integer initialNumberInstances, List<ProductReleaseDto> productReleaseDtos, String flavour, String image,
@@ -318,9 +353,13 @@ public class TierDto {
     }
 
     /**
+<<<<<<< HEAD
+     * @param productReleaseDtos
+=======
      * /**
      * 
      * @param productReleases
+>>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
      *            the productReleases to set
      */
     public void setProductReleaseDtos(List<ProductReleaseDto> productReleaseDtos) {

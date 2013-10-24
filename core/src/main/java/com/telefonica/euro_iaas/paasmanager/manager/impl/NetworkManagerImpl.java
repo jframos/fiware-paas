@@ -9,6 +9,8 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -22,17 +24,21 @@ import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.Router;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
-import org.apache.log4j.Logger;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+
 
 /**
  * @author henar
  */
 public class NetworkManagerImpl implements NetworkManager {
 
-    private NetworkDao networkDao = null;
-    private NetworkClient networkClient = null;
-    private SubNetworkManager subNetworkManager = null;
-    private RouterManager routerManager = null;
+
+    private  NetworkDao networkDao = null;
+    private  NetworkClient networkClient = null;
+    private  SubNetworkManager subNetworkManager = null;
+    private  RouterManager routerManager = null;
+    private SystemPropertiesProvider systemPropertiesProvider;
+
     private static Logger log = Logger.getLogger(NetworkManagerImpl.class);
 
     /**
@@ -43,27 +49,25 @@ public class NetworkManagerImpl implements NetworkManager {
      * @params network
      */
     public Network create(ClaudiaData claudiaData, Network network) throws InvalidEntityException,
-            InfrastructureException, AlreadyExistsEntityException {
+    InfrastructureException, AlreadyExistsEntityException {
         log.debug("Create network " + network.getNetworkName());
 
         try {
-            networkDao.load(network.getNetworkName());
-            throw new AlreadyExistsEntityException(network);
+            Network dbNetwork = networkDao.load(network.getNetworkName());
+            log.debug("The network already exists");
+            for (SubNetwork subnet: network.getSubNets()) {
+                if (!dbNetwork.contains(subnet)) {
+                    createSubNetwork(claudiaData, dbNetwork, subnet);
+                }
+            }
+            return network;
 
         } catch (EntityNotFoundException e1) {
             try {
                 networkClient.deployNetwork(claudiaData, network);
-                SubNetwork subNet = new SubNetwork("sub-net-" + network.getNetworkName() + "-"
-                        + network.getSubNetCounts(), "" + network.getSubNetCounts());
-                subNet.setIdNetwork(network.getIdNetwork());
-                network.addSubNet(subNet);
-                subNetworkManager.create(claudiaData, subNet);
-
-                Router router = new Router("router-" + network.getNetworkName());
-                // This network id can be the internet network...
-                router.setIdNetwork(network.getIdNetwork());
-                routerManager.create(claudiaData, router);
-                routerManager.addNetwork(claudiaData, router, network);
+                log.debug("Network " + network.getNetworkName() + " : " + network.getIdNetwork() + " deployed");
+                createSubNetwork(claudiaData, network, null);
+                createRouter(claudiaData, network);
                 network = networkDao.create(network);
             } catch (Exception e) {
                 log.error("Error to create the network in BD " + e.getMessage());
@@ -75,14 +79,66 @@ public class NetworkManagerImpl implements NetworkManager {
     }
 
     /**
+     * It creates a router and associted it to the network.
+     * @param claudiaData
+     * @param network
+     * @throws InvalidEntityException
+     * @throws InfrastructureException
+     */
+    public void createRouter(ClaudiaData claudiaData, Network network)
+        throws InvalidEntityException, InfrastructureException {
+        log.debug("The internet network is in "
+            + systemPropertiesProvider.getProperty(SystemPropertiesProvider.PUBLIC_NETWORK_ID));
+        Router router = new Router(systemPropertiesProvider.getProperty(SystemPropertiesProvider.PUBLIC_NETWORK_ID),
+            "router-" + network.getNetworkName());
+
+        routerManager.create(claudiaData, router, network);
+    }
+
+    /**
+     * It creates a subnet in the network.
+     * @param claudiaData
+     * @param network
+     * @param subNetwork
+     * @throws InvalidEntityException
+     * @throws InfrastructureException
+     * @throws AlreadyExistsEntityException
+     */
+    public void createSubNetwork(ClaudiaData claudiaData, Network network, SubNetwork subNetwork)
+        throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException
+    {
+
+        SubNetwork subNet = subNetwork;
+        if (subNet == null) {
+            int cidrCount = findAll().size() + 1;
+            subNet = new SubNetwork("sub-net-" + network.getNetworkName() + "-"
+                    + cidrCount, "" + cidrCount);
+        }
+
+        network.addSubNet(subNet);
+        subNetworkManager.create(claudiaData, subNet);
+        log.debug("SubNetwork " + subNet.getName() + " in network  " + network.getNetworkName() + " deployed");
+    }
+
+    /**
      * To remove a network.
      * 
      * @params claudiaData
      * @params network
      */
     public void delete(ClaudiaData claudiaData, Network network) throws EntityNotFoundException,
-            InvalidEntityException, InfrastructureException {
+    InvalidEntityException, InfrastructureException {
         log.debug("Destroying network " + network.getNetworkName());
+        log.debug("Deleting the router and their interfaces");
+        for (Router router: network.getRouters()) {
+            routerManager.delete(claudiaData, router, network);
+        }
+        log.debug("Deleting the subnets");
+        for (SubNetwork subNet: network.getSubNets()) {
+            subNetworkManager.delete(claudiaData, subNet);
+        }
+        log.debug("Deleting the network");
+        networkClient.destroyNetwork(claudiaData, network);
         try {
             networkDao.remove(network);
         } catch (Exception e) {
@@ -112,7 +168,6 @@ public class NetworkManagerImpl implements NetworkManager {
     public Network load(String networkName) throws EntityNotFoundException {
         return networkDao.load(networkName);
     }
-
     public void setNetworkClient(NetworkClient networkClient) {
         this.networkClient = networkClient;
     }
@@ -127,6 +182,14 @@ public class NetworkManagerImpl implements NetworkManager {
 
     public void setSubNetworkManager(SubNetworkManager subNetworkManager) {
         this.subNetworkManager = subNetworkManager;
+    }
+
+    /**
+     * @param systemPropertiesProvider the systemPropertiesProvider to set
+     */
+    public void setSystemPropertiesProvider(
+            SystemPropertiesProvider systemPropertiesProvider) {
+        this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
     /**

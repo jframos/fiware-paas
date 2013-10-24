@@ -111,6 +111,8 @@ public interface SystemPropertiesProvider {
     public static final String KEYSTONE_DATABASE_USERNAME = "keystone.database.username";
     public static final String KEYSTONE_DATABASE_PASSWORD = "keystone.database.password";
 
+    public static final String PUBLIC_NETWORK_ID = "openstack.network.public";
+
     /**
      * pool name in nova *
      */
@@ -123,7 +125,7 @@ public interface SystemPropertiesProvider {
      *            a {@link java.lang.String} object.
      * @return a {@link java.lang.String} object.
      */
-    String getProperty(String key);
+    Integer getIntProperty(String key);
 
     /**
      * Get the property for a given key.
@@ -132,7 +134,14 @@ public interface SystemPropertiesProvider {
      *            a {@link java.lang.String} object.
      * @return a {@link java.lang.String} object.
      */
-    Integer getIntProperty(String key);
+    String getProperty(String key);
+
+    /**
+     * Find all system configuration properties.
+     * 
+     * @return
+     */
+    Properties loadProperties();
 
     /**
      * Persist the configuration properties in the SystemConfiguration namespace.
@@ -141,12 +150,5 @@ public interface SystemPropertiesProvider {
      *            the properties to store∫
      */
     void setProperties(Properties configuration);
-
-    /**
-     * Find all system configuration properties.
-     * 
-     * @return
-     */
-    Properties loadProperties();
 
 }

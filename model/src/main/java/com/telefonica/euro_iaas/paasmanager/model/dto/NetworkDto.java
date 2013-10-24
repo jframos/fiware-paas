@@ -7,6 +7,9 @@
 
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -27,12 +30,13 @@ public class NetworkDto {
     /* The network name */
     private String networkName;
     /* The subred name */
-    private String subnetName;
+    private List<SubNetworkDto> subNetworkDto;
 
     /**
      * Default Constructor.
      */
     public NetworkDto() {
+        subNetworkDto = new ArrayList<SubNetworkDto>();
     }
 
     /**
@@ -40,15 +44,11 @@ public class NetworkDto {
      */
     public NetworkDto(String networkName) {
         this.networkName = networkName;
+        subNetworkDto = new ArrayList<SubNetworkDto>();
     }
 
-    /**
-     * @param networkName
-     * @param subnetName
-     */
-    public NetworkDto(String networkName, String subnetName) {
-        this.networkName = networkName;
-        this.subnetName = subnetName;
+    public void addSubNetworkDto (SubNetworkDto subNetworkDto) {
+        this.subNetworkDto.add(subNetworkDto);
     }
 
     /**
@@ -60,8 +60,9 @@ public class NetworkDto {
 
         Network net = new Network(this.getNetworkName());
 
-        if (this.getSubNetName() != null) {
-            SubNetwork subnet = new SubNetwork(this.getSubNetName(), "" + net.getSubNetCounts());
+        for (SubNetworkDto subNetworkDto: this.getSubNetworkDto()) {
+            SubNetwork subnet = new SubNetwork(subNetworkDto.getSubNetName());
+            subnet.setCidr(subNetworkDto.getCidr());
             net.addSubNet(subnet);
         }
         return net;
@@ -75,10 +76,11 @@ public class NetworkDto {
     }
 
     /**
-     * @return the networkName
+     * 
+     * @return List<SubNetworkDto>
      */
-    public String getSubNetName() {
-        return subnetName;
+    public List<SubNetworkDto> getSubNetworkDto() {
+        return this.subNetworkDto;
     }
 
     /**
@@ -88,11 +90,13 @@ public class NetworkDto {
         this.networkName = networkName;
     }
 
+
     /**
-     * @param subnetName
+     * 
+     * @param subNetworkDto
      */
-    public void setSubNetName(String subnetName) {
-        this.subnetName = subnetName;
+    public void setSubNetworkDto(List<SubNetworkDto> subNetworkDto) {
+        this.subNetworkDto = subNetworkDto;
     }
 
 }

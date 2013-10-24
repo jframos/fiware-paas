@@ -9,6 +9,8 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -18,7 +20,6 @@ import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.manager.SubNetworkManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
-import org.apache.log4j.Logger;
 
 /**
  * @author henar
@@ -38,7 +39,7 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
      * @params network
      */
     public void create(ClaudiaData claudiaData, SubNetwork subNetwork) throws InvalidEntityException,
-            InfrastructureException, AlreadyExistsEntityException {
+    InfrastructureException, AlreadyExistsEntityException {
         log.debug("Create subnetwork " + subNetwork.getName());
 
         try {
@@ -47,14 +48,16 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
 
         } catch (EntityNotFoundException e1) {
             try {
+
                 networkClient.deploySubNetwork(claudiaData, subNetwork);
+                log.debug("SubNetwork " + subNetwork.getName() + " in network " + subNetwork.getIdNetwork()
+                    + " deployed with id " + subNetwork.getIdSubNet());
                 subNetwork = subNetworkDao.create(subNetwork);
             } catch (Exception e) {
                 log.error("Error to create the subnetwork in BD " + e.getMessage());
                 throw new InvalidEntityException(subNetwork);
             }
         }
-        // return subNetwork;
     }
 
     /**
@@ -64,8 +67,8 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
      * @params subNetwork
      */
     public void delete(ClaudiaData claudiaData, SubNetwork subNetwork) throws EntityNotFoundException,
-            InvalidEntityException, InfrastructureException {
-        log.debug("Destroying network " + subNetwork.getName());
+    InvalidEntityException, InfrastructureException {
+        log.debug("Destroying the subnetwork " + subNetwork.getName());
         try {
             networkClient.destroySubNetwork(claudiaData, subNetwork);
             subNetworkDao.remove(subNetwork);

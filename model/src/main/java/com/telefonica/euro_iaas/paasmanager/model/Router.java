@@ -40,26 +40,26 @@ public class Router {
 
     private String idRouter;
 
-    private String idNetwork;
+    private final String idPublicNetwork;
+
 
     /**
      * Constructor.
+     * @param idPublicNetwork
      */
-    public Router() {
+    public Router(String idPublicNetwork) {
+        this.idPublicNetwork = idPublicNetwork;
+
     }
 
     /**
-     * @param networkName
+     * Constructor.
+     * @param idPublicNetwork
+     * @param name
      */
-    public Router(String name) {
+    public Router(String idPublicNetwork, String name) {
         this.name = name;
-    }
-
-    /**
-     * @return the id
-     */
-    public String getIdNetwork() {
-        return idNetwork;
+        this.idPublicNetwork = idPublicNetwork;
     }
 
     /**
@@ -79,13 +79,6 @@ public class Router {
     /**
      * @param id
      */
-    public void setIdNetwork(String id) {
-        this.idNetwork = id;
-    }
-
-    /**
-     * @param id
-     */
     public void setIdRouter(String id) {
         this.idRouter = id;
     }
@@ -93,10 +86,19 @@ public class Router {
     /**
      * @return string with the json representation for the request
      */
-    public String toJson() {
-        return "{" + "    \"router\":" + "    {" + "        \"name\": \"" + name + "\","
-                + "        \"admin_state_up\": true," + "        \"external_gateway_info\" : {"
-                + "             \"network_id\": \"" + this.idNetwork + "\"" + "        }" + "    }" + "}";
+
+    public String toJson(){
+        return  "{" +
+        "    \"router\":" +
+        "    {" +
+        "        \"name\": \"" + name + "\"," +
+        "        \"admin_state_up\": true ,"+
+        "        \"external_gateway_info\" : {" +
+        "             \"network_id\": \"" + idPublicNetwork + "\"" +
+        "        }" +
+        "    }" +
+        "}";
     }
+
 
 }

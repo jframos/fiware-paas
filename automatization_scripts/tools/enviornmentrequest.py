@@ -7,7 +7,7 @@ from xml.etree.ElementTree import tostring
 import json
 
 from environment import Environment
-from tier import Tier
+from tier import Tier, Network
 from productrelease import ProductRelease, Product
 from productrequest import ProductRequest
 
@@ -128,6 +128,18 @@ class EnvironmentRequest:
             products.append(product)
         return products
 
+    def __process_metwork (self, network_information):
+
+        nets = []
+        networks = network_information.split(';')
+
+        for net in networks:
+            object_net = Network (net)
+            nets.append(object_net)
+        return nets
+
+
+
     def __check_product_exist (self, product_name, product_version):
 
         #request=ProductRequest(self.keystone_url, self.sdc_url, self.tenant, self.user, self.password)
@@ -191,9 +203,12 @@ class EnvironmentRequest:
             for product in products:
                 tier.add_product(product)
 
-        for net in networks:
-            tier.add_network(net)
+        if networks:
+            networks = self.__process_metwork(networks)
+            for net in networks:
+                tier.add_network(net)
 
+        print tostring(tier.to_tier_xml())
         payload=tostring(tier.to_tier_xml())
         self.__add_tier_environment(url, payload)
 

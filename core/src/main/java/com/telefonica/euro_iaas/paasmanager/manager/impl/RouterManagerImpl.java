@@ -9,6 +9,9 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
@@ -18,7 +21,6 @@ import com.telefonica.euro_iaas.paasmanager.manager.RouterManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.Router;
-import org.apache.log4j.Logger;
 
 /**
  * @author henar
@@ -39,6 +41,7 @@ public class RouterManagerImpl implements RouterManager {
      */
     public void addNetwork(ClaudiaData claudiaData, Router router, Network network) throws InfrastructureException {
         networkClient.addNetworkToRouter(claudiaData, router, network);
+        network.addRouter(router);
 
     }
 
@@ -48,22 +51,35 @@ public class RouterManagerImpl implements RouterManager {
      * @params claudiaData
      * @params router
      */
-    public void create(ClaudiaData claudiaData, Router router) throws InvalidEntityException, InfrastructureException {
+
+    public void create(ClaudiaData claudiaData, Router router, Network network)
+        throws InvalidEntityException, InfrastructureException {
         log.debug("Create router " + router.getName());
 
         try {
             routerDao.load(router.getName());
 
         } catch (EntityNotFoundException e1) {
+
+
             try {
                 networkClient.deployRouter(claudiaData, router);
+                addNetwork(claudiaData, router, network);
                 router = routerDao.create(router);
+            } catch (InfrastructureException e) {
+                String msm = "Error to deploy the router " + e.getMessage();
+                log.error(msm);
+                throw new InfrastructureException(msm, e);
+            } catch (AlreadyExistsEntityException e) {
+                String msm = "Error to deploy the router. It already exists in the database " + e.getMessage();
+                log.error(msm);
+                throw new InvalidEntityException(router);
             } catch (Exception e) {
-                log.error("Error to create the subnetwork in BD " + e.getMessage());
+                String msm = "Error to deploy the router. Error in the database " + e.getMessage();
+                log.error(msm);
                 throw new InvalidEntityException(router);
             }
         }
-        // return router;
     }
 
     /**
@@ -72,9 +88,11 @@ public class RouterManagerImpl implements RouterManager {
      * @params claudiaData
      * @params router
      */
-    public void delete(ClaudiaData claudiaData, Router router) throws EntityNotFoundException, InvalidEntityException,
-            InfrastructureException {
-        log.debug("Destroying network " + router.getName());
+    public void delete(ClaudiaData claudiaData, Router router, Network network) throws
+    EntityNotFoundException, InvalidEntityException,
+    InfrastructureException {
+        log.debug("Destroying router " + router.getName());
+        deleteInterfacesNetworks(claudiaData, router, network);
         try {
             networkClient.destroyRouter(claudiaData, router);
             routerDao.remove(router);
@@ -82,6 +100,24 @@ public class RouterManagerImpl implements RouterManager {
             log.error("Error to remove the router in BD " + e.getMessage());
             throw new InvalidEntityException(router);
         }
+
+    }
+
+    /**
+     * It adds a network to the router.
+     * 
+     * @throws InfrastructureException
+     * @throws InvalidEntityException
+     * @params claudiaData
+     * @params router
+     * @network
+     */
+    private void deleteInterfacesNetworks(ClaudiaData claudiaData, Router router, Network net)
+        throws InfrastructureException, InvalidEntityException {
+        log.debug("Removing the network interface " + net.getNetworkName() + " " + net.getIdNetRouter()
+            + " from router " + router.getName());
+        networkClient.deleteNetworkFromRouter(claudiaData, router, net);
+        routerDao.update(router);
 
     }
 
@@ -124,5 +160,7 @@ public class RouterManagerImpl implements RouterManager {
         // TODO Auto-generated method stub
         return null;
     }
+
+
 
 }

@@ -18,6 +18,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.telefonica.euro_iaas.paasmanager.model.dto.SubNetworkDto;
+
 /**
  * A sub network.
  * 
@@ -72,7 +74,7 @@ public class SubNetwork {
     }
 
     /**
-     * @return the id
+     * @return the cidr
      */
     public String getCidr() {
         return cidr;
@@ -92,11 +94,20 @@ public class SubNetwork {
         return idSubNet;
     }
 
+
+
     /**
      * @return the networkName
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * @param cidr
+     */
+    public void setCidr(String cidr) {
+        this.cidr = cidr;
     }
 
     /**
@@ -114,13 +125,33 @@ public class SubNetwork {
     }
 
     /**
+     * To the subnetwork Dto.
+     * @return
+     */
+    public SubNetworkDto toDto() {
+        SubNetworkDto subNetworkDto = new SubNetworkDto(this.getName());
+        subNetworkDto.setCidr(this.getCidr());
+        return subNetworkDto;
+
+    }
+
+    /**
      * the json for the OPenstack request.
      * 
      * @return
      */
     public String toJson() {
+
         return "{\"subnet\":{" + "      \"name\":\"" + name + "\"," + "      \"network_id\":\"" + this.idNetwork
-                + "\"," + "      \"ip_version\":4," + "      \"cidr\":\" " + this.cidr + "   }" + "}";
+        + "\"," + "      \"ip_version\":4," + "      \"cidr\":\"" + this.cidr + "\"   }" + "}";
+    }
+
+    /**
+     * It obtains the json for adding this subnet into a router.
+     * @return
+     */
+    public String toJsonAddInterface() {
+        return  "{\"subnet_id\": \"" + getIdSubNet()+ "\" }";
     }
 
 }
