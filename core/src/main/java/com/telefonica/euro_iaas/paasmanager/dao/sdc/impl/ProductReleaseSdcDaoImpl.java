@@ -40,10 +40,20 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
      * @see com.telefonica.euro_iaas.paasmanager.dao.sdc.ProductReleaseSdcDao#findAll()
      */
     public List<ProductRelease> findAll() throws SdcException {
-
-        String sdcproductReleases = findAllProductReleases();
-
-        return fromSDCToPaasManager(sdcproductReleases);
+        List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
+        
+        String sdcProducts = findAllProducts();
+        List<String> pNames = fromSDCToProductNames(sdcProducts);
+        
+        for (int i=0; i < pNames.size(); i++) {
+            String sdcproductReleases = findAllProductReleases(pNames.get(i));
+            List<ProductRelease> productReleasesProduct = fromSDCToPaasManager(sdcproductReleases);
+            
+            for (int j=0; j < productReleasesProduct.size(); j++) {
+                productReleases.add(productReleasesProduct.get(j));
+            }
+        }
+        return productReleases;
     }
 
     public ProductRelease load(String product, String version) throws EntityNotFoundException, SdcException {
@@ -54,9 +64,33 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
         return productRelease;
     }
 
-    private String findAllProductReleases() throws SdcException {
+    private String findAllProducts() throws SdcException {
         String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.SDC_SERVER_URL)
-                + "/catalog/product/release";
+            + "/catalog/product";
+     
+        log.debug("url: " + url);
+
+        Client client = new Client();
+        ClientResponse response = null;
+
+        WebResource wr = client.resource(url);
+        Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
+
+        response = builder.get(ClientResponse.class);
+
+        if (response.getStatus() != 200) {
+            String message = "Error calling SDC to recover all Products. Status " + 
+                response.getStatus();
+            log.error(message);
+            throw new SdcException(message);
+        }
+
+        return response.getEntity(String.class);            
+    }
+    
+    private String findAllProductReleases(String pName) throws SdcException {
+        String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.SDC_SERVER_URL)
+                + "/catalog/product/" + pName + "/release";
         log.debug("url: " + url);
 
         Client client = new Client();
@@ -102,6 +136,21 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
         return response.getEntity(String.class);
     }
 
+    private List<String> fromSDCToProductNames(String sdcproducts) {
+
+        JSONObject jsonNodeProducts = JSONObject.fromObject(sdcproducts);
+        List<String> productNames = new ArrayList<String>();
+        
+        JSONArray jsonproductList = jsonNodeProducts.getJSONArray("product");
+
+        for (Object o : jsonproductList) {
+            JSONObject jsonProduct = (JSONObject) o;
+            String productName = jsonProduct.getString("name");
+            productNames.add(productName);
+        }
+        return productNames;
+    }
+    
     private List<ProductRelease> fromSDCToPaasManager(String sdcproductReleases) {
 
         JSONObject jsonNode = JSONObject.fromObject(sdcproductReleases);
@@ -113,18 +162,26 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
     /**
      * Converting from a string (list of secGrous in json) to a list of SecurityGroups
      * 
-     * @param jsonSecGroups
-     * @return
+     * @param jsonProductReleases
+     * @return List of ProductReleases
      */
     private List<ProductRelease> fromStringToProductReleases(JSONObject jsonProductReleases) {
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
-        JSONArray jsonproductReleasesList = jsonProductReleases.getJSONArray("productRelease");
-
-        for (Object o : jsonproductReleasesList) {
+        
+        if (!(jsonProductReleases.isArray())){
+            JSONObject jsonProductRelease = jsonProductReleases.getJSONObject("productRelease");
             ProductRelease productRelease = new ProductRelease();
-            JSONObject jsonProductRelease = (JSONObject) o;
             productRelease.fromSdcJson(jsonProductRelease);
             productReleases.add(productRelease);
+        } else {
+            JSONArray jsonproductReleasesList = jsonProductReleases.getJSONArray("productRelease");
+
+            for (Object o : jsonproductReleasesList) {
+                ProductRelease productRelease = new ProductRelease();
+                JSONObject jsonProductRelease = (JSONObject) o;
+                productRelease.fromSdcJson(jsonProductRelease);
+                productReleases.add(productRelease);
+            }
         }
         return productReleases;
     }
