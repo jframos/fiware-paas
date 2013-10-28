@@ -74,7 +74,8 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
         ClientResponse response = null;
 
         WebResource wr = client.resource(url);
-        Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
+        Builder builder = wr.accept(MediaType.APPLICATION_JSON);
+        builder = builder.type(MediaType.APPLICATION_JSON);
 
         response = builder.get(ClientResponse.class);
 
@@ -97,7 +98,8 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
         ClientResponse response = null;
 
         WebResource wr = client.resource(url);
-        Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
+        Builder builder = wr.accept(MediaType.APPLICATION_JSON);
+        builder = builder.type(MediaType.APPLICATION_JSON);
 
         response = builder.get(ClientResponse.class);
 
