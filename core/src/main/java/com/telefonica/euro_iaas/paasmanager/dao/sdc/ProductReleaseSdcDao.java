@@ -41,4 +41,11 @@ public interface ProductReleaseSdcDao {
      * @throws SdcException
      */
     List<String> findAllProducts() throws SdcException;
+    
+    /**
+     * Load all productRelease of a product from SDC.
+     * @return a list with the product names present in SDC
+     * @throws SdcException
+     */
+    List<ProductRelease> findAllProductReleasesOfProduct(String pName) throws SdcException;
 }

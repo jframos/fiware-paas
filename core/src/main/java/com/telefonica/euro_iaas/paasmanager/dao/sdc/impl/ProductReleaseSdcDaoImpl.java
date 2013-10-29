@@ -46,13 +46,12 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
     public List<ProductRelease> findAll() throws SdcException {
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
         
-        /*String sdcProducts = findAllProducts();
-        List<String> pNames = fromSDCToProductNames(sdcProducts);*/
         List<String> pNames = findAllProducts();
         
         for (int i=0; i < pNames.size(); i++) {
-            String sdcproductReleases = findAllProductReleases(pNames.get(i));
-            List<ProductRelease> productReleasesProduct = fromSDCToPaasManager(sdcproductReleases);
+            /*String sdcproductReleases = findAllProductReleases(pNames.get(i));
+            List<ProductRelease> productReleasesProduct = fromSDCToPaasManager(sdcproductReleases);*/
+            List<ProductRelease> productReleasesProduct = findAllProductReleasesOfProduct(pNames.get(i));
             
             for (int j=0; j < productReleasesProduct.size(); j++) {
                 productReleases.add(productReleasesProduct.get(j));
@@ -75,15 +74,11 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
      
         log.debug("url: " + url);
 
-        //Client client = new Client();
-        //ClientResponse response = null;
-
         WebResource wr = client.resource(url);
         Builder builder = wr.accept(MediaType.APPLICATION_JSON);
         builder = builder.type(MediaType.APPLICATION_JSON);
         
         InputStream inputStream = builder.get(InputStream.class);
-        //response = builder.get(ClientResponse.class);
         String response;
         try {
             response = IOUtils.toString(inputStream);
@@ -93,37 +88,36 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
             throw new SdcException(message);
         }
         
-        /*if (response.getStatus() != 200) {
-            String message = "Error calling SDC to recover all Products. Status " + 
-                response.getStatus();
-            log.error(message);
-            throw new SdcException(message);
-        }*/
-        
-        //String responseStr = response.getEntity(String.class);
-        return fromSDCToProductNames(response);            
+       return fromSDCToProductNames(response);            
     }
     
-    private String findAllProductReleases(String pName) throws SdcException {
+    public List<ProductRelease> findAllProductReleasesOfProduct(String pName) throws SdcException {
         String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.SDC_SERVER_URL)
                 + "/catalog/product/" + pName + "/release";
         log.debug("url: " + url);
-
-        //Client client = new Client();
-        ClientResponse response = null;
 
         WebResource wr = client.resource(url);
         Builder builder = wr.accept(MediaType.APPLICATION_JSON);
         builder = builder.type(MediaType.APPLICATION_JSON);
 
-        response = builder.get(ClientResponse.class);
+        InputStream inputStream = builder.get(InputStream.class);
+        String response;
+        try {
+            response = IOUtils.toString(inputStream);
+        } catch (IOException e) {
+            String message = "Error calling SDC to obtain the products ";
+            log.error(message);
+            throw new SdcException(message);
+        }
+
+        /*response = builder.get(ClientResponse.class);
 
         if (response.getStatus() != 200) {
             String message = "Error calling SDC to recover all product Releases. " + "Status " + response.getStatus();
             throw new SdcException(message);
-        }
+        }*/
 
-        return response.getEntity(String.class);
+        return fromSDCToPaasManager(response);
     }
 
     private String loadByName(String product, String version) throws EntityNotFoundException, SdcException {
