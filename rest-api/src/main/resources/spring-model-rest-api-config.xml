@@ -102,6 +102,7 @@
           class="com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentInstanceResourceValidatorImpl">
         <property name="claudiaUtil" ref="claudiaUtil"/>
         <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
+        <property name="quotaClient" ref="quotaClient"/>
 
     </bean>
 
@@ -110,6 +111,7 @@
         <property name="tierResourceValidator" ref="tierResourceValidator"/>
         <property name="environmentManager" ref="environmentManager"/>
         <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
+
     </bean>
 
     <bean id="tierInstanceResourceValidator" lazy-init="true"

@@ -8,6 +8,8 @@
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
+import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
@@ -17,7 +19,7 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 public interface EnvironmentInstanceResourceValidator {
 
     /**
-     * Validate the request to create an EnvironmentInstance from a payload
+     * Validate the request to create an EnvironmentInstance from a payload.
      * 
      * @param payload
      * @throws InvalidEnvironmentRequestException
@@ -25,11 +27,20 @@ public interface EnvironmentInstanceResourceValidator {
     void validateCreatePayload(String payload) throws InvalidEnvironmentRequestException;
 
     /**
-     * Validate the requets to create and EnvironmentInstance from a EnvironmentDto
+     * Validate the requets to create and EnvironmentInstance from a EnvironmentDto.
      * 
      * @param EnvironmentDto
      * @throws InvalidEnvironmentRequestException
      */
     void validateCreate(EnvironmentInstanceDto EnvironmentDto, SystemPropertiesProvider systemPropertiesProvider)
             throws InvalidEnvironmentRequestException;
+
+    /**
+     * Validate quota.
+     * 
+     * @param claudiaData
+     * @param environmentInstanceDto
+     */
+    void validateQuota(ClaudiaData claudiaData, EnvironmentInstanceDto environmentInstanceDto)
+            throws InvalidEnvironmentRequestException, QuotaExceededException;
 }

@@ -14,9 +14,11 @@ import java.util.List;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 
+import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
@@ -37,6 +39,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstancePDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
@@ -72,6 +75,19 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
     private static Logger log = Logger.getLogger(EnvironmentInstanceResourceImpl.class);
 
     /**
+     * @return
+     */
+    // TODO duplicated code with EnvironmentResourceImpl
+    public PaasManagerUser getCredentials() {
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } else {
+            return null;
+        }
+
+    }
+
+    /**
      * @throws InvalidEnvironmentRequestException
      * @throws AlreadyExistsEntityException
      * @throws InvalidEntityException
@@ -79,19 +95,25 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
      */
     public Task create(String org, String vdc, EnvironmentInstanceDto environmentInstanceDto, String callback)
             throws InvalidEnvironmentRequestException, EntityNotFoundException, InvalidEntityException,
-            AlreadyExistsEntityException, InfrastructureException, InvalidOVFException {
+            AlreadyExistsEntityException, InfrastructureException, InvalidOVFException, QuotaExceededException {
 
         log.warn("Desploy an environment instance " + environmentInstanceDto.getBlueprintName() + " from environmetn "
                 + environmentInstanceDto.getEnvironmentDto());
+
         Task task = null;
 
         try {
             validator.validateCreate(environmentInstanceDto, systemPropertiesProvider);
         } catch (InvalidEnvironmentRequestException e) {
-            log.error("The environmetn isntance is not valid " + e.getMessage());
+            log.error("The environment instance is not valid " + e.getMessage());
             throw new InvalidEntityException(e);
         }
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentInstanceDto.getBlueprintName());
+        PaasManagerUser paasManagerUser = getCredentials();
+        claudiaData.setUser(paasManagerUser);
+        paasManagerUser.setTenantId(vdc);
+
+        validator.validateQuota(claudiaData, environmentInstanceDto);
 
         EnvironmentInstance environmentInstance = environmentInstanceDto.fromDto();
         Environment environment = environmentInstance.getEnvironment();

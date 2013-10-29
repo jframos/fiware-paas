@@ -23,12 +23,18 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
 import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
+import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.Limits;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
@@ -42,6 +48,9 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
     private ExtendedOVFUtil extendedOVFUtil;
     private EnvironmentInstanceDao environmentInstanceDao;
     private TierResourceValidator tierResourceValidator;
+
+    private QuotaClient quotaClient;
+
     /** The log. */
     private static Logger log = Logger.getLogger(EnvironmentInstanceResourceValidatorImpl.class);
 
@@ -172,6 +181,36 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
     }
 
+    @Override
+    public void validateQuota(ClaudiaData claudiaData, EnvironmentInstanceDto environmentInstanceDto)
+            throws InvalidEnvironmentRequestException, QuotaExceededException {
+
+        Limits limits;
+        try {
+            limits = quotaClient.getLimits(claudiaData);
+
+        } catch (InfrastructureException e) {
+            throw new InvalidEnvironmentRequestException("Failed in getLimits " + e.getMessage());
+        }
+
+        Integer initialNumberInstances = 0;
+        Integer floatingIPs = 0;
+        for (TierInstanceDto tierInstanceDto : environmentInstanceDto.getTierInstances()) {
+
+            initialNumberInstances += tierInstanceDto.getTierDto().getInitialNumberInstances();
+            if ("true".equals(tierInstanceDto.getTierDto().getFloatingip())) {
+                floatingIPs++;
+            }
+        }
+        if (initialNumberInstances + limits.getTotalInstancesUsed() > limits.getMaxTotalInstances()) {
+            throw new QuotaExceededException("max number of instances exceeded: " + limits.getMaxTotalInstances());
+        }
+
+        if (floatingIPs + limits.getTotalFloatingIpsUsed() > limits.getMaxTotalFloatingIps()) {
+            throw new QuotaExceededException("max number of floating IPs exceeded: " + limits.getMaxTotalFloatingIps());
+        }
+    }
+
     /**
      * @param claudiaUtil
      *            the claudiaUtil to set
@@ -186,6 +225,14 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
     public void setTierResourceValidator(TierResourceValidator tierResourceValidator) {
         this.tierResourceValidator = tierResourceValidator;
+    }
+
+    public QuotaClient getQuotaClient() {
+        return quotaClient;
+    }
+
+    public void setQuotaClient(QuotaClient quotaClient) {
+        this.quotaClient = quotaClient;
     }
 
 }
