@@ -9,8 +9,15 @@ package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -30,11 +37,6 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentSear
 import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 
 /**
  * default Environment implementation
@@ -149,10 +151,12 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
     }
 
     public PaasManagerUser getCredentials() {
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE"))
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
             return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        else
+        } else {
             return null;
+        }
+
     }
 
     public void insert(String org, String vdc, EnvironmentDto environmentDto)
