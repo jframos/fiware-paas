@@ -34,4 +34,11 @@ public interface ProductReleaseSdcDao {
      * @throws EntityNotFoundException
      */
     ProductRelease load(String product, String version) throws EntityNotFoundException, SdcException;
+
+    /**
+     * Load all products from SDC.
+     * @return a list with the product names present in SDC
+     * @throws SdcException
+     */
+    List<String> findAllProducts() throws SdcException;
 }

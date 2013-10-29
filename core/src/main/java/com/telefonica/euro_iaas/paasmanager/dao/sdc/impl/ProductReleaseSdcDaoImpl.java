@@ -7,6 +7,8 @@
 
 package com.telefonica.euro_iaas.paasmanager.dao.sdc.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import com.sun.jersey.api.client.Client;
@@ -34,6 +37,7 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
 
     private SystemPropertiesProvider systemPropertiesProvider;
     private static Logger log = Logger.getLogger(ProductReleaseSdcDaoImpl.class);
+    Client client;
 
     /*
      * (non-Javadoc)
@@ -42,8 +46,9 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
     public List<ProductRelease> findAll() throws SdcException {
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
         
-        String sdcProducts = findAllProducts();
-        List<String> pNames = fromSDCToProductNames(sdcProducts);
+        /*String sdcProducts = findAllProducts();
+        List<String> pNames = fromSDCToProductNames(sdcProducts);*/
+        List<String> pNames = findAllProducts();
         
         for (int i=0; i < pNames.size(); i++) {
             String sdcproductReleases = findAllProductReleases(pNames.get(i));
@@ -64,29 +69,39 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
         return productRelease;
     }
 
-    private String findAllProducts() throws SdcException {
+    public List<String> findAllProducts() throws SdcException {
         String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.SDC_SERVER_URL)
             + "/catalog/product";
      
         log.debug("url: " + url);
 
-        Client client = new Client();
-        ClientResponse response = null;
+        //Client client = new Client();
+        //ClientResponse response = null;
 
         WebResource wr = client.resource(url);
         Builder builder = wr.accept(MediaType.APPLICATION_JSON);
         builder = builder.type(MediaType.APPLICATION_JSON);
-
-        response = builder.get(ClientResponse.class);
-
-        if (response.getStatus() != 200) {
+        
+        InputStream inputStream = builder.get(InputStream.class);
+        //response = builder.get(ClientResponse.class);
+        String response;
+        try {
+            response = IOUtils.toString(inputStream);
+        } catch (IOException e) {
+            String message = "Error calling SDC to obtain the products ";
+            log.error(message);
+            throw new SdcException(message);
+        }
+        
+        /*if (response.getStatus() != 200) {
             String message = "Error calling SDC to recover all Products. Status " + 
                 response.getStatus();
             log.error(message);
             throw new SdcException(message);
-        }
-
-        return response.getEntity(String.class);            
+        }*/
+        
+        //String responseStr = response.getEntity(String.class);
+        return fromSDCToProductNames(response);            
     }
     
     private String findAllProductReleases(String pName) throws SdcException {
@@ -94,7 +109,7 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
                 + "/catalog/product/" + pName + "/release";
         log.debug("url: " + url);
 
-        Client client = new Client();
+        //Client client = new Client();
         ClientResponse response = null;
 
         WebResource wr = client.resource(url);
@@ -116,7 +131,7 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
                 + "/catalog/product/" + product + "/release/" + version;
         log.debug("url: " + url);
 
-        Client client = new Client();
+        //Client client = new Client();
         ClientResponse response = null;
 
         WebResource wr = client.resource(url);
@@ -190,5 +205,13 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
 
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
+    }
+    
+    /**
+     * @param client
+     *            the client to set
+     */
+    public void setClient(Client client) {
+        this.client = client;
     }
 }
