@@ -19,7 +19,7 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 public interface ProductReleaseSdcDao {
 
     /**
-     * Load all product Release present in the SDC
+     * Load all product Release present in the SDC.
      * 
      * @return
      * @throws SdcException
@@ -27,7 +27,7 @@ public interface ProductReleaseSdcDao {
     List<ProductRelease> findAll() throws SdcException;
 
     /**
-     * Load a ProductRelease from the SDC by Name
+     * Load a ProductRelease from the SDC by Name.
      * 
      * @param name
      * @return

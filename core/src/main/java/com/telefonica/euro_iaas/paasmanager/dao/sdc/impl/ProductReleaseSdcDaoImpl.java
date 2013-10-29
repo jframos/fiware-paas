@@ -49,9 +49,7 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
         List<String> pNames = findAllProducts();
         
         for (int i=0; i < pNames.size(); i++) {
-            /*String sdcproductReleases = findAllProductReleases(pNames.get(i));
-            List<ProductRelease> productReleasesProduct = fromSDCToPaasManager(sdcproductReleases);*/
-            List<ProductRelease> productReleasesProduct = findAllProductReleasesOfProduct(pNames.get(i));
+           List<ProductRelease> productReleasesProduct = findAllProductReleasesOfProduct(pNames.get(i));
             
             for (int j=0; j < productReleasesProduct.size(); j++) {
                 productReleases.add(productReleasesProduct.get(j));
@@ -109,14 +107,6 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
             log.error(message);
             throw new SdcException(message);
         }
-
-        /*response = builder.get(ClientResponse.class);
-
-        if (response.getStatus() != 200) {
-            String message = "Error calling SDC to recover all product Releases. " + "Status " + response.getStatus();
-            throw new SdcException(message);
-        }*/
-
         return fromSDCToPaasManager(response);
     }
 
@@ -125,12 +115,9 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
                 + "/catalog/product/" + product + "/release/" + version;
         log.debug("url: " + url);
 
-        //Client client = new Client();
         ClientResponse response = null;
-
         WebResource wr = client.resource(url);
         Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
-
         response = builder.get(ClientResponse.class);
 
         if (response.getStatus() == 404) {
