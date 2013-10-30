@@ -74,8 +74,15 @@ public class ProductInstallatorSdcImplTest {
 
         ProductType productType = new ProductType("type A", "Type A desc");
         tierInstance = new TierInstance();
-        productRelease = new ProductRelease("productPrueba", "1.0", "Product Prueba desc", Arrays.asList(attribute),
-                null, Arrays.asList(os), true, productType);
+        //productRelease = new ProductRelease("productPrueba", "1.0", "Product Prueba desc", Arrays.asList(attribute),
+          //      null, Arrays.asList(os), true, productType);
+        productRelease = new ProductRelease("productPrueba", "1.0");
+        
+        productRelease.addAttribute(attribute);
+        productRelease.setDescription("Product Prueba desc");
+        productRelease.setSupportedOOSS(Arrays.asList(os));
+        productRelease.setProductType(productType);
+        productRelease.setWithArtifact(true);
 
         expectedProductInstance = new ProductInstance(productRelease, Status.INSTALLED, "vdc");
         expectedProductInstance.setPrivateAttributes(Arrays.asList(attribute));
@@ -91,6 +98,7 @@ public class ProductInstallatorSdcImplTest {
 
         productReleaseManager = mock(ProductReleaseManager.class);
         when(productReleaseManager.load(any(String.class))).thenReturn(productRelease);
+        when(productReleaseManager.load(any(String.class), any(String.class))).thenReturn(productRelease);
 
         task = new Task();
         task.setHref("http://130.206.80.119:8081/sdc2/rest/vdc/60b4125450fc4a109f50357894ba2e28/task/581");
@@ -163,7 +171,57 @@ public class ProductInstallatorSdcImplTest {
         // verify(productInstanceDao, times(1)).findUniqueByCriteria(
         // any(ProductInstanceSearchCriteria.class));
     }
+    
+    @Test
+    public void testInstallWithOutAttributesWhenEverithingIsOk() throws Exception {
+        ProductInstallatorSdcImpl installator = new ProductInstallatorSdcImpl();
+        installator.setSDCClient(sdcClient);
+        installator.setSystemPropertiesProvider(systemPropertiesProvider);
+        installator.setProductReleaseManager(productReleaseManager);
+        installator.setSDCUtil(sDCUtil);
+        installator.setTierInstanceManager(tierInstanceManager);
 
+        ProductRelease productReleaseWithoutAttrs = new ProductRelease("productPrueba", "1.0");
+        
+        productReleaseWithoutAttrs.setDescription("Product Prueba desc");
+        productReleaseWithoutAttrs.setSupportedOOSS(Arrays.asList(os));
+        productReleaseWithoutAttrs.setProductType(new ProductType("type A", "Type A desc"));
+        productReleaseWithoutAttrs.setWithArtifact(true);
+        
+        ClaudiaData data = new ClaudiaData("org", "vdc", "");
+        ProductInstance installedProduct = installator.install(data, "env", tierInstance,
+                        productReleaseWithoutAttrs, null);
+        // make verifications
+        assertEquals(expectedProductInstance, installedProduct);
+
+        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_MEDIATYPE);
+    }
+    
+    @Test
+    public void testInstallWithoutAttributesWhenEverithingIsOk() throws Exception {
+        ProductInstallatorSdcImpl installator = new ProductInstallatorSdcImpl();
+        installator.setSDCClient(sdcClient);
+        installator.setSystemPropertiesProvider(systemPropertiesProvider);
+        installator.setProductReleaseManager(productReleaseManager);
+        installator.setSDCUtil(sDCUtil);
+        installator.setTierInstanceManager(tierInstanceManager);
+
+        ClaudiaData data = new ClaudiaData("org", "vdc", "");
+        ProductInstance installedProduct = installator.install(data, "env", tierInstance,
+                expectedProductInstance.getProductRelease(), null);
+        // make verifications
+        assertEquals(expectedProductInstance, installedProduct);
+
+        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_URL);
+        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_MEDIATYPE);
+
+        // only one product will be installed, the other one causes error.
+        // verify(productInstanceDao,
+        // times(1)).update(any(ProductInstance.class));
+        // verify(productInstanceDao, times(1)).findUniqueByCriteria(
+        // any(ProductInstanceSearchCriteria.class));
+    }
+    
     @Test
     public void testObtainProductInstanceName() throws Exception {
         ProductInstallatorSdcImpl installator = new ProductInstallatorSdcImpl();

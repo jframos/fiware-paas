@@ -19,7 +19,7 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 public interface ProductReleaseSdcDao {
 
     /**
-     * Load all product Release present in the SDC
+     * Load all product Release present in the SDC.
      * 
      * @return
      * @throws SdcException
@@ -27,11 +27,25 @@ public interface ProductReleaseSdcDao {
     List<ProductRelease> findAll() throws SdcException;
 
     /**
-     * Load a ProductRelease from the SDC by Name
+     * Load a ProductRelease from the SDC by Name.
      * 
      * @param name
      * @return
      * @throws EntityNotFoundException
      */
     ProductRelease load(String product, String version) throws EntityNotFoundException, SdcException;
+
+    /**
+     * Load all products from SDC.
+     * @return a list with the product names present in SDC
+     * @throws SdcException
+     */
+    List<String> findAllProducts() throws SdcException;
+    
+    /**
+     * Load all productRelease of a product from SDC.
+     * @return a list with the product names present in SDC
+     * @throws SdcException
+     */
+    List<ProductRelease> findAllProductReleasesOfProduct(String pName) throws SdcException;
 }
