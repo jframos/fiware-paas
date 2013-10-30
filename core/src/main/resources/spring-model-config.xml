@@ -175,6 +175,11 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
         </bean>
 
+        <bean id="quotaClient" lazy-init="true"
+              class="com.telefonica.euro_iaas.paasmanager.claudia.impl.OpenStackQuotaClientImpl">
+            <property name="openStackUtil" ref="openStackUtil"/>
+        </bean>
+
     </beans>
 
 
@@ -419,11 +424,6 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="vappUtils" ref="vappUtils"/>
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
         </bean> -->
-
-        <bean id="quotaClient" lazy-init="true"
-              class="com.telefonica.euro_iaas.paasmanager.claudia.impl.OpenStackQuotaClientImpl">
-            <property name="openStackUtil" ref="openStackUtil"/>
-        </bean>
 
         <bean id="networkClient" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.claudia.impl.OpenstackNetworkClientImpl">
