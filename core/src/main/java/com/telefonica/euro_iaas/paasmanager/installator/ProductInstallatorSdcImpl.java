@@ -58,7 +58,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         try {
             productRelease = productReleaseManager
                     .load(productRelease.getProduct() + "-" + productRelease.getVersion());
-            if (productRelease.getAttributes() != null) {
+            if (productRelease.getAttributes().isEmpty()) {
                 List<com.telefonica.euro_iaas.sdc.model.Attribute> attrs = new ArrayList<com.telefonica.euro_iaas.sdc.model.Attribute>();
 
                 for (Attribute attribute : productRelease.getAttributes()) {
@@ -71,13 +71,15 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
                     // attribute.getKey(), attribute.getValue()));
                 }
 
-                // Attributes from the external request
-                for (Attribute attrib : attributes) {
-                    com.telefonica.euro_iaas.sdc.model.Attribute sdcAttr = new com.telefonica.euro_iaas.sdc.model.Attribute(
+                if (!(attributes.isEmpty())) {
+                    // Attributes from the external request
+                    for (Attribute attrib : attributes) {
+                        com.telefonica.euro_iaas.sdc.model.Attribute sdcAttr = new com.telefonica.euro_iaas.sdc.model.Attribute(
                             attrib.getKey(), attrib.getValue());
-                    attrs.add(sdcAttr);
+                        attrs.add(sdcAttr);
+                    }
+                    productInstanceDto.setAttributes(attrs);
                 }
-                productInstanceDto.setAttributes(attrs);
             }
 
         } catch (com.telefonica.euro_iaas.commons.dao.EntityNotFoundException e1) {
