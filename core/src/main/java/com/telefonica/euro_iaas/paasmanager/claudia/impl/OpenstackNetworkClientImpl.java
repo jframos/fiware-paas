@@ -41,16 +41,36 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @throws InfrastructureException
      */
 
-    public void addNetworkToRouter(ClaudiaData claudiaData, Router router, Network net) throws InfrastructureException {
-        log.info("Add Interfact from net " + net.getNetworkName() + " to router " + router.getName()
+    public void addNetworkToRouter(ClaudiaData claudiaData, String routerId, Network net) throws InfrastructureException {
+        log.info("Add Interfact from net " + net.getNetworkName() + " to router " + routerId
                 + " for user " + claudiaData.getUser().getTenantName());
 
         try {
-            log.debug("Payload " + router.toJson());
-            String response = openStackUtil.addInterface(router, net, claudiaData.getUser());
+            String response = openStackUtil.addInterface(routerId, net, claudiaData.getUser());
             log.debug(response);
         } catch (OpenStackException e) {
-            String msm = "Error to deploy the network " + router.getName() + ":" + e.getMessage();
+            String msm = "Error to deploy the network " + routerId+ ":" + e.getMessage();
+            log.error(msm);
+            throw new InfrastructureException(msm, e);
+        }
+
+    }
+    
+    /**
+     * It adds the network to the public router.
+     * 
+     * @params net
+     * @throws InfrastructureException
+     */
+
+    public void addNetworkToPublicRouter(ClaudiaData claudiaData, Network net) throws InfrastructureException {
+        log.info("Add Interfact from net " + net.getNetworkName() + " to public router ");
+
+        try {
+            String response = openStackUtil.addInterfaceToPublicRouter(claudiaData.getUser(), net);
+            log.debug(response);
+        } catch (OpenStackException e) {
+            String msm = "Error to add the network " + net.getNetworkName() + " to the public router :" + e.getMessage();
             log.error(msm);
             throw new InfrastructureException(msm, e);
         }

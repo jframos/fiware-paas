@@ -31,13 +31,20 @@ public class NetworkClientDummyImpl implements NetworkClient {
      * @params network
      * @throws InfrastructureException
      */
-    public void addNetworkToRouter(ClaudiaData claudiaData, Router router, Network network)
-    throws InfrastructureException {
+    public void addNetworkToRouter(ClaudiaData claudiaData, String router, Network network)
+        throws InfrastructureException {
 
     }
 
+    /**
+     * Its delete the network from the router.
+     * @params claudiaData
+     * @params router
+     * @params network
+     * @throws InfrastructureException
+     */
     public void deleteNetworkFromRouter(ClaudiaData claudiaData, Router router, Network network)
-    throws InfrastructureException {
+        throws InfrastructureException {
         // TODO Auto-generated method stub
 
     }
@@ -124,6 +131,14 @@ public class NetworkClientDummyImpl implements NetworkClient {
      */
     public String loadNetwork(ClaudiaData claudiaData, Network network) throws EntityNotFoundException {
         return "";
+    }
+
+    /**
+     * It add the network interface to the public router.
+     */
+    public void addNetworkToPublicRouter(ClaudiaData claudiaData, Network net) throws InfrastructureException {
+        // TODO Auto-generated method stub
+        
     }
 
 }
