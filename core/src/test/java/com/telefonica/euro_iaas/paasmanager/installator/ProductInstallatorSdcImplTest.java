@@ -196,7 +196,32 @@ public class ProductInstallatorSdcImplTest {
 
         verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_MEDIATYPE);
     }
+    
+    @Test
+    public void testInstallWithoutAttributesWhenEverithingIsOk() throws Exception {
+        ProductInstallatorSdcImpl installator = new ProductInstallatorSdcImpl();
+        installator.setSDCClient(sdcClient);
+        installator.setSystemPropertiesProvider(systemPropertiesProvider);
+        installator.setProductReleaseManager(productReleaseManager);
+        installator.setSDCUtil(sDCUtil);
+        installator.setTierInstanceManager(tierInstanceManager);
 
+        ClaudiaData data = new ClaudiaData("org", "vdc", "");
+        ProductInstance installedProduct = installator.install(data, "env", tierInstance,
+                expectedProductInstance.getProductRelease(), null);
+        // make verifications
+        assertEquals(expectedProductInstance, installedProduct);
+
+        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_URL);
+        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_MEDIATYPE);
+
+        // only one product will be installed, the other one causes error.
+        // verify(productInstanceDao,
+        // times(1)).update(any(ProductInstance.class));
+        // verify(productInstanceDao, times(1)).findUniqueByCriteria(
+        // any(ProductInstanceSearchCriteria.class));
+    }
+    
     @Test
     public void testObtainProductInstanceName() throws Exception {
         ProductInstallatorSdcImpl installator = new ProductInstallatorSdcImpl();
