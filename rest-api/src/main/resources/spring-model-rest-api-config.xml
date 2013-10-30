@@ -31,6 +31,7 @@
         <property name="environmentResourceValidator" ref="environmentResourceValidator"/>
         <property name="environmentManager" ref="environmentManager"/>
         <property name="ovfGeneration" ref="ovfGeneration"/>
+        <property name="extendedOVFUtil" ref="extendedOVFUtil"/>
     </bean>
 
     <bean id="abstractEnvironmentResource" lazy-init="true"

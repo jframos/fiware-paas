@@ -175,10 +175,6 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
         </bean>
 
-        <bean id="quotaClient" lazy-init="true"
-              class="com.telefonica.euro_iaas.paasmanager.claudia.impl.OpenStackQuotaClientImpl">
-            <property name="openStackUtil" ref="openStackUtil"/>
-        </bean>
 
     </beans>
 
@@ -425,6 +421,12 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
         </bean> -->
 
+
+        <bean id="quotaClient" lazy-init="true"
+              class="com.telefonica.euro_iaas.paasmanager.claudia.impl.OpenStackQuotaClientImpl">
+            <property name="openStackUtil" ref="openStackUtil"/>
+        </bean>
+
         <bean id="networkClient" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.claudia.impl.OpenstackNetworkClientImpl">
             <property name="openStackUtil" ref="openStackUtil"/>
@@ -482,6 +484,11 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <beans profile="dummy">
 
+
+        <bean id="quotaClient" lazy-init="true"
+              class="com.telefonica.euro_iaas.paasmanager.claudia.impl.OpenStackQuotaDummyClientImpl">
+
+        </bean>
         <bean id="claudiaUtil" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaDummyUtilImpl">
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>

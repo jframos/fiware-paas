@@ -19,9 +19,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsyncManager;
@@ -172,23 +169,17 @@ public class EnvironmentInstanceResourceImplTest {
         environmentInstanceDto.setBlueprintName("BlueprintName");
         environmentInstanceDto.setEnvironmentDto(environment.toDto());
 
-        SecurityContext context = mock(SecurityContext.class);
-        SecurityContextHolder.setContext(context);
-        Authentication authentication = mock(Authentication.class);
         PaasManagerUser paasManagerUser = mock(PaasManagerUser.class);
 
         // When
         when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM)).thenReturn("FIWARE");
-        when(context.getAuthentication()).thenReturn(authentication);
-        when(authentication.getPrincipal()).thenReturn(paasManagerUser);
+        when(extendedOVFUtil.getCredentials()).thenReturn(paasManagerUser);
         environmentInstanceResource.create(org, vdc, environmentInstanceDto, callback);
 
         // Then
         verify(environmentInstanceAsyncManager, times(1)).create(any(ClaudiaData.class),
                 any(EnvironmentInstance.class), any(Task.class), any(String.class));
         verify(systemPropertiesProvider, times(2)).getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
-        verify(context).getAuthentication();
-        verify(authentication).getPrincipal();
-
+        verify(extendedOVFUtil, times(2)).getCredentials();
     }
 }

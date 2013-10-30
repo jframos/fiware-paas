@@ -10,6 +10,9 @@ package com.telefonica.euro_iaas.paasmanager.environment;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,8 @@ import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.EnvironmentInstanceResource;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.EnvironmentResource;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.TierInstanceResource;
@@ -108,6 +113,14 @@ public class NetworkinEnvironmenInstanceTest {
         envInst.setBlueprintName("blueprintname2");
         envInst.setDescription("description");
         envInst.setEnvironmentDto(environmentBk.toDto());
+        List<TierInstanceDto> tierInstanceDtos = new ArrayList(2);
+        TierInstanceDto tierInstanceDto = new TierInstanceDto();
+        TierDto tierDto = new TierDto();
+        tierDto.setInitialNumberInstances(1);
+        tierDto.setFloatingip("true");
+        tierInstanceDto.setTierDto(tierDto);
+        tierInstanceDtos.add(tierInstanceDto);
+        envInst.setTierInstances(tierInstanceDtos);
 
         Task task = environmentInstanceResource.create(org, vdc, envInst, "");
 
@@ -126,7 +139,6 @@ public class NetworkinEnvironmenInstanceTest {
         assertEquals(tierInstance.getTier().getName(), "tierdtotest");
 
     }
-
 
     @Test
     public void testCreateEnvironmentWithNetworkAlreadyExist() throws Exception {
@@ -151,7 +163,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network ("network");
+        Network net = new Network("network");
         tierbk.addNetwork(net);
 
         environmentBk.addTier(tierbk);
@@ -169,8 +181,8 @@ public class NetworkinEnvironmenInstanceTest {
         assertNotNull(env2);
         assertNotNull(env2.getTiers().get(0).getNetworks());
         assertEquals(env2.getTiers().get(0).getNetworks().size(), 1);
-        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(),"network");
-        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getSubNets().size(),1);
+        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(), "network");
+        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getSubNets().size(), 1);
 
     }
 
@@ -197,7 +209,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network ("network");
+        Network net = new Network("network");
 
         tierbk.addNetwork(net);
 
@@ -209,7 +221,7 @@ public class NetworkinEnvironmenInstanceTest {
         environmentAlreadyNetwork.setName("testNetworkAlreadyExistDifferentSubnet2");
         environmentAlreadyNetwork.setDescription("Description First environment");
 
-        SubNetwork subNet = new SubNetwork ("subnet");
+        SubNetwork subNet = new SubNetwork("subnet");
         subNet.setCidr("10.0.4.6/24");
         tierbk.getNetworks().get(0).addSubNet(subNet);
 
@@ -221,8 +233,8 @@ public class NetworkinEnvironmenInstanceTest {
         assertNotNull(env2);
         assertNotNull(env2.getTiers().get(0).getNetworks());
         assertEquals(env2.getTiers().get(0).getNetworks().size(), 1);
-        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(),"network");
-        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getSubNets().size(),1);
+        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(), "network");
+        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getSubNets().size(), 1);
 
     }
 

@@ -17,7 +17,6 @@ import javax.ws.rs.WebApplicationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
@@ -39,7 +38,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstancePDto;
-import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
@@ -75,14 +73,15 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
     private static Logger log = Logger.getLogger(EnvironmentInstanceResourceImpl.class);
 
     /**
-     * @return
+     * Add PaasManagerUser to claudiaData.
+     * 
+     * @param claudiaData
      */
-    // TODO duplicated code with EnvironmentResourceImpl
-    public PaasManagerUser getCredentials() {
+    public void addCredentialsToClaudiaData(ClaudiaData claudiaData) {
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        } else {
-            return null;
+
+            claudiaData.setUser(extendedOVFUtil.getCredentials());
+            claudiaData.getUser().setTenantId(claudiaData.getVdc());
         }
 
     }
@@ -109,9 +108,7 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
             throw new InvalidEntityException(e);
         }
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentInstanceDto.getBlueprintName());
-        PaasManagerUser paasManagerUser = getCredentials();
-        claudiaData.setUser(paasManagerUser);
-        paasManagerUser.setTenantId(vdc);
+        addCredentialsToClaudiaData(claudiaData);
 
         validator.validateQuota(claudiaData, environmentInstanceDto);
 
