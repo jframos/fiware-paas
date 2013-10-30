@@ -210,8 +210,8 @@ public class Network {
      * @return the json representation
      */
     public String toJson() {
-        return "{" + " \"network\":{" + "    \"name\": \"" + this.name + "\"," + "    \"admin_state_up\": false,"
-        + "    \"shared\": false" + "  }" + "}";
+        return "{" + " \"network\":{" + "    \"name\": \"" + this.name + "\"," + "    \"admin_state_up\": true,"
+            + "    \"shared\": false" + "  }" + "}";
 
     }
 

@@ -124,7 +124,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     /**
      * It adds an interface to the router
      */
-    public String addInterface(Router router, Network net, PaasManagerUser user) throws OpenStackException {
+    public String addInterface(String idRouter, Network net, PaasManagerUser user) throws OpenStackException {
 
         //  PUT /v2.0/routers/8604a0de-7f6b-409a-a47c-a1cc7bc77b2e/add_router_interface
         // Accept: application/json
@@ -137,15 +137,15 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             log.debug(payload);
 
             HttpUriRequest request = createQuantumPutRequest(RESOURCE_ROUTERS
-                    + "/" + router.getIdRouter() + "/" + RESOURCE_ADD_INTERFACE, payload, APPLICATION_JSON, user);
+                    + "/" + idRouter + "/" + RESOURCE_ADD_INTERFACE, payload, APPLICATION_JSON, user);
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error creating router in " + router.getName() + ": " + e;
+            String errorMessage = "Error creating router in " + idRouter + ": " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error creating router " + router.getName() + " from OpenStack: " + e;
+            String errorMessage = "Error creating router " + idRouter+ " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }

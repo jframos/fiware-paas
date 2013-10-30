@@ -61,9 +61,9 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * It deletes the interface of the network in the router.
      */
     public void deleteNetworkFromRouter(ClaudiaData claudiaData, Router router, Network net)
-    throws InfrastructureException {
-        log.info("Delete Interfact net " + net.getNetworkName()+ " " + net.getIdNetRouter() + " from router " + router.getName()
-                + " for user " + claudiaData.getUser().getTenantName());
+        throws InfrastructureException {
+        log.info("Delete Interfact net " + net.getNetworkName()+ " " + net.getIdNetRouter() +  " from router "
+                + router.getName() + " for user " + claudiaData.getUser().getTenantName());
 
         try {
 
