@@ -107,7 +107,8 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
      * #validateCreate(com.telefonica.euro_iaas .paasmanager.model.dto.EnvironmentDto)
      */
     public void validateCreate(EnvironmentInstanceDto environmentInstanceDto,
-            SystemPropertiesProvider systemPropertiesProvider) throws InvalidEnvironmentRequestException {
+            SystemPropertiesProvider systemPropertiesProvider, ClaudiaData claudiaData)
+            throws InvalidEnvironmentRequestException, QuotaExceededException {
 
         log.debug("Validate enviornment instance blueprint " + environmentInstanceDto.getBlueprintName()
                 + " description " + environmentInstanceDto.getDescription() + " environment "
@@ -168,6 +169,8 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
                 throw new InvalidEnvironmentRequestException(message);
             }
         }
+
+        validateQuota(claudiaData, environmentInstanceDto);
     }
 
     public void validateTiers(TierDto tierDto) throws InvalidEnvironmentRequestException {
@@ -195,19 +198,22 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
         Integer initialNumberInstances = 0;
         Integer floatingIPs = 0;
-        for (TierInstanceDto tierInstanceDto : environmentInstanceDto.getTierInstances()) {
+        if (environmentInstanceDto.getTierInstances() != null) {
+            for (TierInstanceDto tierInstanceDto : environmentInstanceDto.getTierInstances()) {
 
-            initialNumberInstances += tierInstanceDto.getTierDto().getInitialNumberInstances();
-            if ("true".equals(tierInstanceDto.getTierDto().getFloatingip())) {
-                floatingIPs++;
+                initialNumberInstances += tierInstanceDto.getTierDto().getInitialNumberInstances();
+                if ("true".equals(tierInstanceDto.getTierDto().getFloatingip())) {
+                    floatingIPs++;
+                }
             }
-        }
-        if (initialNumberInstances + limits.getTotalInstancesUsed() > limits.getMaxTotalInstances()) {
-            throw new QuotaExceededException("max number of instances exceeded: " + limits.getMaxTotalInstances());
-        }
+            if (initialNumberInstances + limits.getTotalInstancesUsed() > limits.getMaxTotalInstances()) {
+                throw new QuotaExceededException("max number of instances exceeded: " + limits.getMaxTotalInstances());
+            }
 
-        if (floatingIPs + limits.getTotalFloatingIpsUsed() > limits.getMaxTotalFloatingIps()) {
-            throw new QuotaExceededException("max number of floating IPs exceeded: " + limits.getMaxTotalFloatingIps());
+            if (floatingIPs + limits.getTotalFloatingIpsUsed() > limits.getMaxTotalFloatingIps()) {
+                throw new QuotaExceededException("max number of floating IPs exceeded: "
+                        + limits.getMaxTotalFloatingIps());
+            }
         }
     }
 

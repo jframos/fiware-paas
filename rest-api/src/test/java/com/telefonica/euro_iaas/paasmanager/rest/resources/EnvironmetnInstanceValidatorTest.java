@@ -23,10 +23,13 @@ import org.mockito.Mockito;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
+import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
@@ -81,7 +84,13 @@ public class EnvironmetnInstanceValidatorTest extends TestCase {
         environmentInstanceDto.setDescription("description");
         environmentInstanceDto.setEnvironmentDto(environment.toDto());
         environmentInstanceDto.setBlueprintName("blueprintName");
-        validator.validateCreate(environmentInstanceDto, systemPropertiesProvider);
+        ClaudiaData claudiaData = mock(ClaudiaData.class);
+        QuotaClient quotaClient = mock(QuotaClient.class);
+        validator.setQuotaClient(quotaClient);
+
+        // when
+        validator.validateCreate(environmentInstanceDto, systemPropertiesProvider, claudiaData);
+
     }
 
     @Test
@@ -90,8 +99,10 @@ public class EnvironmetnInstanceValidatorTest extends TestCase {
         environmentInstanceDto.setDescription("description");
         environmentInstanceDto.setEnvironmentDto(environment.toDto());
         boolean exception = false;
+        ClaudiaData claudiaData = mock(ClaudiaData.class);
+
         try {
-            validator.validateCreate(environmentInstanceDto, systemPropertiesProvider);
+            validator.validateCreate(environmentInstanceDto, systemPropertiesProvider, claudiaData);
         } catch (InvalidEnvironmentRequestException e) {
             exception = true;
         }
@@ -104,9 +115,11 @@ public class EnvironmetnInstanceValidatorTest extends TestCase {
         environmentInstanceDto.setEnvironmentDto(environment.toDto());
         environmentInstanceDto.setBlueprintName("blueprintName");
 
+        ClaudiaData claudiaData = mock(ClaudiaData.class);
+
         boolean exception = false;
         try {
-            validator.validateCreate(environmentInstanceDto, systemPropertiesProvider);
+            validator.validateCreate(environmentInstanceDto, systemPropertiesProvider, claudiaData);
         } catch (InvalidEnvironmentRequestException e) {
             exception = true;
         }
@@ -117,13 +130,15 @@ public class EnvironmetnInstanceValidatorTest extends TestCase {
     @Test
     public void testCreateEnviornmentInstanceNoEnvironment() throws InvalidEnvironmentRequestException,
             EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException, InfrastructureException,
-            InvalidOVFException {
+            InvalidOVFException, QuotaExceededException {
         EnvironmentInstanceDto environmentInstanceDto = new EnvironmentInstanceDto();
         environmentInstanceDto.setDescription("description");
         environmentInstanceDto.setBlueprintName("BlueprintName");
         boolean exception = false;
+        ClaudiaData claudiaData = mock(ClaudiaData.class);
+
         try {
-            validator.validateCreate(environmentInstanceDto, systemPropertiesProvider);
+            validator.validateCreate(environmentInstanceDto, systemPropertiesProvider, claudiaData);
         } catch (InvalidEnvironmentRequestException e) {
             exception = true;
         }

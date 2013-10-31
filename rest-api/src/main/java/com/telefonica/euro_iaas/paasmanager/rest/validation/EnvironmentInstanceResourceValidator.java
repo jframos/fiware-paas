@@ -29,11 +29,13 @@ public interface EnvironmentInstanceResourceValidator {
     /**
      * Validate the requets to create and EnvironmentInstance from a EnvironmentDto.
      * 
+     *
      * @param EnvironmentDto
+     * @param claudiaData
      * @throws InvalidEnvironmentRequestException
      */
-    void validateCreate(EnvironmentInstanceDto EnvironmentDto, SystemPropertiesProvider systemPropertiesProvider)
-            throws InvalidEnvironmentRequestException;
+    void validateCreate(EnvironmentInstanceDto EnvironmentDto, SystemPropertiesProvider systemPropertiesProvider, ClaudiaData claudiaData)
+            throws InvalidEnvironmentRequestException, QuotaExceededException;
 
     /**
      * Validate quota.

@@ -101,16 +101,14 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
 
         Task task = null;
 
+        ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentInstanceDto.getBlueprintName());
+        addCredentialsToClaudiaData(claudiaData);
         try {
-            validator.validateCreate(environmentInstanceDto, systemPropertiesProvider);
+            validator.validateCreate(environmentInstanceDto, systemPropertiesProvider, claudiaData);
         } catch (InvalidEnvironmentRequestException e) {
             log.error("The environment instance is not valid " + e.getMessage());
             throw new InvalidEntityException(e);
         }
-        ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentInstanceDto.getBlueprintName());
-        addCredentialsToClaudiaData(claudiaData);
-
-        validator.validateQuota(claudiaData, environmentInstanceDto);
 
         EnvironmentInstance environmentInstance = environmentInstanceDto.fromDto();
         Environment environment = environmentInstance.getEnvironment();
