@@ -10,13 +10,9 @@ package com.telefonica.euro_iaas.paasmanager.rest.auth;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.xml.namespace.QName;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
-import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 import org.openstack.docs.identity.api.v2.AuthenticateResponse;
@@ -28,6 +24,12 @@ import org.springframework.security.authentication.dao.AbstractUserDetailsAuthen
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.UniformInterfaceException;
+import com.sun.jersey.api.client.WebResource;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * The Class OpenStackAuthenticationProvider.
@@ -150,7 +152,8 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
                     .get(AuthenticateResponse.class);
 
             if (!tenantId.equals(responseAuth.getToken().getTenant().getId())) {
-                throw new AuthenticationServiceException("Token not valid for the tenantId provided:" + tenantId);
+                throw new AuthenticationServiceException("Token " + responseAuth.getToken().getTenant().getId()
+                        + " not valid for the tenantId provided:" + tenantId);
             }
 
             Set<GrantedAuthority> authsSet = new HashSet<GrantedAuthority>();

@@ -141,7 +141,8 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
                 // String tenantId = request.getPathInfo().split("/")[3];
 
                 if (debug) {
-                    logger.debug("OpenStack Authentication Authorization header " + "found for user '" + token + "'");
+                    logger.debug("OpenStack Authentication Authorization header " + "found for user '" + token
+                            + "' and tenant " + tenantId);
                 }
 
                 UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(token,

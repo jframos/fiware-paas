@@ -26,6 +26,7 @@ import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
+import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
@@ -60,7 +61,7 @@ public interface EnvironmentInstanceResource {
      * 
      * @param vdc
      * @param org
-     * @param environmentInstanceDto
+     * @param envInstanceDto
      * @param callback
      * @return the task that informs how the environment creation process evolves
      * @throws InvalidEnvironmentRequestException
@@ -75,7 +76,7 @@ public interface EnvironmentInstanceResource {
     Task create(@PathParam("org") String org, @PathParam("vdc") String vdc, EnvironmentInstanceDto envInstanceDto,
             @HeaderParam("callback") String callback) throws InvalidEnvironmentRequestException,
             EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException, InfrastructureException,
-            InvalidOVFException;
+            InvalidOVFException, QuotaExceededException;
 
     /*
      * @POST
@@ -173,8 +174,6 @@ public interface EnvironmentInstanceResource {
     /**
      * Destroy an Instance of an Environment.
      * 
-     * @param id
-     *            the installable instance id
      * @param callback
      *            if not empty, contains the url where the result of the async operation will be sent
      * @return the task.

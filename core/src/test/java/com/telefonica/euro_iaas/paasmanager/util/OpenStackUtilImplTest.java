@@ -7,43 +7,83 @@
 
 package com.telefonica.euro_iaas.paasmanager.util;
 
-import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
-import org.junit.Before;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-/**
- * @author jesus.movilla
- */
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
+
+import org.apache.http.StatusLine;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.security.core.GrantedAuthority;
+
+import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
+
 public class OpenStackUtilImplTest {
 
-    private String payload;
-    private PaasManagerUser user;
-    private String name;
+    private CloseableHttpClient closeableHttpClientMock;
 
     @Before
-    public void setUp() throws Exception {
-        name = "pruebatest";
-
-        user.setTenantId("tenantId");
-        user.setToken("token");
-
-        payload = "{\"server\": \n" + "{\"name\": \"" + name + "\", "
-                + "\"imageRef\": \"44dcdba3-a75d-46a3-b209-5e9035d2435e\", " + "\"flavorRef\": \"2\"}}";
-
+    public void setUp() {
+        closeableHttpClientMock = mock(CloseableHttpClient.class);
     }
 
-    /*
-     * @Test public void testgetCredentials() throws Exception { // POST to http://130.206.80.63:35357/v2.0/tokens //
-     * Payload: {"auth": {"tenantName": "jesusproject", // "passwordCredentials":{"username": "jesus", "password":
-     * "susje"}}} // Response extract tenantId and tokenId }
-     */
+    @Test
+    public void shouldGetAbsoluteLimitsWithResponse204() throws OpenStackException, IOException {
+        // given
+        OpenStackUtilImplTestable openStackUtil = new OpenStackUtilImplTestable();
+        SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+        openStackUtil.setSystemPropertiesProvider(systemPropertiesProvider);
+        Collection<GrantedAuthority> authorities = new HashSet();
+        PaasManagerUser paasManagerUser = new PaasManagerUser("username", "password", authorities);
+        paasManagerUser.setTenantId("tenantId");
+        HttpClientConnectionManager httpClientConnectionManager = mock(HttpClientConnectionManager.class);
+        openStackUtil.setConnectionManager(httpClientConnectionManager);
 
-    /*
-     * @Test public void testcreateServer() throws Exception { OpenStackUtilImpl openStackUtilImpl = new
-     * OpenStackUtilImpl(); openStackUtilImpl.createServer(payload, user); }
-     */
+        CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
+        StatusLine statusLine = mock(StatusLine.class);
 
-    /*
-     * @Test public void testdeleteServer() throws Exception { OpenStackUtilImpl openStackUtilImpl = new
-     * OpenStackUtilImpl(); openStackUtilImpl.deleteServer("serverId", user); }
-     */
+        // when
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)).thenReturn(
+                "http://localhost/");
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).thenReturn("v2/");
+
+        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
+        when(httpResponse.getStatusLine()).thenReturn(statusLine);
+        when(statusLine.getStatusCode()).thenReturn(204);
+        when(statusLine.getReasonPhrase()).thenReturn("ok");
+
+        String response = openStackUtil.getAbsoluteLimits(paasManagerUser);
+
+        // then
+        assertNotNull(response);
+        assertEquals("ok", response);
+
+        verify(systemPropertiesProvider, times(2)).getProperty(anyString());
+        verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
+        verify(httpResponse, times(2)).getStatusLine();
+        verify(statusLine).getStatusCode();
+        verify(statusLine).getReasonPhrase();
+    }
+
+    private class OpenStackUtilImplTestable extends OpenStackUtilImpl {
+
+        public CloseableHttpClient getHttpClient() {
+
+            return closeableHttpClientMock;
+        }
+    }
 }
