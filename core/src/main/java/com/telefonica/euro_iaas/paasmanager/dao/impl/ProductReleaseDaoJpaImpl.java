@@ -36,9 +36,20 @@ public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, St
 
     public ProductRelease load(String name) throws EntityNotFoundException {
         try {
-            return findByProductReleaseName(name);
+            return findByProductReleaseWithMetadataAndAtt(name);
         } catch (Exception e) {
-            return super.loadByField(ProductRelease.class, "name", name);
+        	try {
+                return findByProductReleaseWithAtt(name);
+            } catch (Exception e2) {
+            	
+            	try {
+                    return findByProductReleaseWithMetadata(name);
+                } catch (Exception e3) {
+                	
+                    return super.loadByField(ProductRelease.class, "name", name);
+                }
+            }
+
         }
         // return super.loadByField(ProductRelease.class, "name", name);
     }
@@ -80,24 +91,47 @@ public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, St
      */
 
     public ProductRelease load(String product, String version) throws EntityNotFoundException {
-        // return super.loadByField(ProductRelease.class, "name", product + "-"
-        // + version);
+       return load(product + "-" + version);
 
-        try {
-            return findByProductReleaseName(product + "-" + version);
-        } catch (Exception e) {
-            return load(product + "-" + version);
-        }
-        // return findByProductReleaseName(product + "-" + version)
     }
 
     /*
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang .String)
      */
-    private ProductRelease findByProductReleaseName(String name) throws EntityNotFoundException {
+    private ProductRelease findByProductReleaseWithAtt(String name) throws EntityNotFoundException {
         Query query = entityManager.createQuery("select p from ProductRelease p join "
                 + "fetch p.attributes where p.name = :name");
+        query.setParameter("name", name);
+        ProductRelease productRelease = null;
+        try {
+            productRelease = (ProductRelease) query.getSingleResult();
+        } catch (NoResultException e) {
+            String message = " No ProductRelease found in the database with id: " + name + " Exception: "
+                    + e.getMessage();
+            throw new EntityNotFoundException(ProductRelease.class, "name", name);
+        }
+        return productRelease;
+    }
+    
+    private ProductRelease findByProductReleaseWithMetadata(String name) throws EntityNotFoundException {
+        Query query = entityManager.createQuery("select p from ProductRelease p join "
+                + "fetch p.metadatas where p.name = :name");
+        query.setParameter("name", name);
+        ProductRelease productRelease = null;
+        try {
+            productRelease = (ProductRelease) query.getSingleResult();
+        } catch (NoResultException e) {
+            String message = " No ProductRelease found in the database with id: " + name + " Exception: "
+                    + e.getMessage();
+            throw new EntityNotFoundException(ProductRelease.class, "name", name);
+        }
+        return productRelease;
+    }
+    
+    private ProductRelease findByProductReleaseWithMetadataAndAtt(String name) throws EntityNotFoundException {
+        Query query = entityManager.createQuery("select p from ProductRelease p join "
+                + "fetch p.attributes fetch p.metadatas where p.name = :name");
         query.setParameter("name", name);
         ProductRelease productRelease = null;
         try {

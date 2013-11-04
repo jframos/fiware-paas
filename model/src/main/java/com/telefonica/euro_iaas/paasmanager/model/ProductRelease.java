@@ -8,7 +8,10 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -68,7 +71,7 @@ public class ProductRelease {
     private List<Attribute> attributes;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Metadata> metadatas;
+    private Set<Metadata> metadatas;
 
     // @OneToMany(cascade = CascadeType.ALL)
     // private List<Attribute> attributesPort;
@@ -92,7 +95,7 @@ public class ProductRelease {
      */
     public ProductRelease() {
         attributes = new ArrayList<Attribute>();
-        metadatas = new ArrayList<Metadata>();
+        metadatas = new HashSet<Metadata>();
 
     }
 
@@ -111,7 +114,7 @@ public class ProductRelease {
         this.product = product;
         this.version = version;
         attributes = new ArrayList<Attribute>();
-        metadatas = new ArrayList<Metadata>();
+        metadatas = new HashSet<Metadata>();
     }
 
     /**
@@ -127,7 +130,7 @@ public class ProductRelease {
         this.description = description;
         this.attributes = attributes;
         attributes = new ArrayList<Attribute>();
-        metadatas = new ArrayList<Metadata>();
+        metadatas = new HashSet<Metadata>();
     }
 
     /**
@@ -153,7 +156,7 @@ public class ProductRelease {
         this.withArtifact = withArtifact;
         this.productType = productType;
         attributes = new ArrayList<Attribute>();
-        metadatas = new ArrayList<Metadata>();
+        metadatas = new HashSet<Metadata>();
     }
 
     /**
@@ -175,7 +178,7 @@ public class ProductRelease {
      */
     public void addMetadata(Metadata metadata) {
         if (metadatas == null) {
-            metadatas = new ArrayList<Metadata>();
+            metadatas = new HashSet<Metadata>();
         }
         metadatas.add(metadata);
     }
@@ -289,6 +292,9 @@ public class ProductRelease {
      * @return the attributes
      */
     public List<Attribute> getAttributes() {
+    	if (attributes == null) {
+    		attributes = new ArrayList<Attribute> ();
+    	}
         return attributes;
     }
 
@@ -327,7 +333,7 @@ public class ProductRelease {
     /**
      * @return the metadatas
      */
-    public List<Metadata> getMetadatas() {
+    public Set<Metadata> getMetadatas() {
         return metadatas;
     }
 
@@ -416,7 +422,7 @@ public class ProductRelease {
      * @param metadatas
      *            the metadatas to set
      */
-    public void setMetadatas(List<Metadata> metadatas) {
+    public void setMetadatas(HashSet<Metadata> metadatas) {
         this.metadatas = metadatas;
     }
 
