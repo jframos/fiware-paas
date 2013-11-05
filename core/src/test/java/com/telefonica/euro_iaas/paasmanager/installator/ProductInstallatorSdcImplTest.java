@@ -70,6 +70,8 @@ public class ProductInstallatorSdcImplTest {
 
         os = new OS("os1", "1", "os1 description", "v1");
         host.setOsType(os.getOsType());
+        host.setFqn("xx.vees.xx");
+        
         attribute = new Attribute("key", "value");
 
         ProductType productType = new ProductType("type A", "Type A desc");
@@ -79,6 +81,9 @@ public class ProductInstallatorSdcImplTest {
         productRelease = new ProductRelease("productPrueba", "1.0");
         
         productRelease.addAttribute(attribute);
+        productRelease.addAttribute(new Attribute("sdcgroupid","sdcgroupid"));
+        productRelease.addAttribute(new Attribute("idcoregroup","idcoregroup"));
+        productRelease.addAttribute(new Attribute("id_web_server","id_web_server"));
         productRelease.setDescription("Product Prueba desc");
         productRelease.setSupportedOOSS(Arrays.asList(os));
         productRelease.setProductType(productType);
