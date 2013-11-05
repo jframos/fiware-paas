@@ -10,6 +10,9 @@ package com.telefonica.euro_iaas.paasmanager.environment;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,8 @@ import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.EnvironmentInstanceResource;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.EnvironmentResource;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.TierInstanceResource;
@@ -104,6 +109,14 @@ public class EnvironmenInstanceTest {
         envInst.setBlueprintName("blueprintname");
         envInst.setDescription("description");
         envInst.setEnvironmentDto(environmentBk.toDto());
+        List<TierInstanceDto> tierInstanceDtos = new ArrayList(2);
+        TierInstanceDto tierInstanceDto = new TierInstanceDto();
+        TierDto tierDto = new TierDto();
+        tierDto.setInitialNumberInstances(1);
+        tierDto.setFloatingip("true");
+        tierInstanceDto.setTierDto(tierDto);
+        tierInstanceDtos.add(tierInstanceDto);
+        envInst.setTierInstances(tierInstanceDtos);
 
         Task task = environmentInstanceResource.create(org, vdc, envInst, "");
 
@@ -183,6 +196,14 @@ public class EnvironmenInstanceTest {
         envInst.setBlueprintName("blueprintnameAlready");
         envInst.setDescription("description");
         envInst.setEnvironmentDto(environmentBk.toDto());
+        List<TierInstanceDto> tierInstanceDtos = new ArrayList(2);
+        TierInstanceDto tierInstanceDto = new TierInstanceDto();
+        TierDto tierDto = new TierDto();
+        tierDto.setInitialNumberInstances(1);
+        tierDto.setFloatingip("true");
+        tierInstanceDto.setTierDto(tierDto);
+        tierInstanceDtos.add(tierInstanceDto);
+        envInst.setTierInstances(tierInstanceDtos);
 
         Task task = environmentInstanceResource.create(org, vdc, envInst, "");
 
@@ -233,6 +254,14 @@ public class EnvironmenInstanceTest {
         envInst.setBlueprintName("blueprintnameTierInstance");
         envInst.setDescription("description");
         envInst.setEnvironmentDto(environmentBk.toDto());
+        List<TierInstanceDto> tierInstanceDtos = new ArrayList(2);
+        TierInstanceDto tierInstanceDto = new TierInstanceDto();
+        TierDto tierDto = new TierDto();
+        tierDto.setInitialNumberInstances(1);
+        tierDto.setFloatingip("true");
+        tierInstanceDto.setTierDto(tierDto);
+        tierInstanceDtos.add(tierInstanceDto);
+        envInst.setTierInstances(tierInstanceDtos);
 
         Task task = environmentInstanceResource.create(org, vdc, envInst, "");
         Thread.sleep(20000);
@@ -294,6 +323,14 @@ public class EnvironmenInstanceTest {
         envInst.setBlueprintName("blueprintnameTierInstanceDelete");
         envInst.setDescription("description");
         envInst.setEnvironmentDto(environmentBk.toDto());
+        List<TierInstanceDto> tierInstanceDtos = new ArrayList(2);
+        TierInstanceDto tierInstanceDto = new TierInstanceDto();
+        TierDto tierDto = new TierDto();
+        tierDto.setInitialNumberInstances(1);
+        tierDto.setFloatingip("true");
+        tierInstanceDto.setTierDto(tierDto);
+        tierInstanceDtos.add(tierInstanceDto);
+        envInst.setTierInstances(tierInstanceDtos);
 
         Task task = environmentInstanceResource.create(org, vdc, envInst, "");
         Thread.sleep(5000);
@@ -352,6 +389,14 @@ public class EnvironmenInstanceTest {
         envInst.setBlueprintName("blueprintnameDeleteEnvInstn");
         envInst.setDescription("description");
         envInst.setEnvironmentDto(environmentBk.toDto());
+        List<TierInstanceDto> tierInstanceDtos = new ArrayList(2);
+        TierInstanceDto tierInstanceDto = new TierInstanceDto();
+        TierDto tierDto = new TierDto();
+        tierDto.setInitialNumberInstances(1);
+        tierDto.setFloatingip("true");
+        tierInstanceDto.setTierDto(tierDto);
+        tierInstanceDtos.add(tierInstanceDto);
+        envInst.setTierInstances(tierInstanceDtos);
 
         Task task = environmentInstanceResource.create(org, vdc, envInst, "");
         Thread.sleep(5000);

@@ -7,6 +7,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.util;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,13 +15,11 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+
 import java.util.logging.Level;
 
-import javax.xml.namespace.QName;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -28,18 +27,20 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.openstack.docs.compute.api.v1.Server;
-import org.springframework.security.core.GrantedAuthority;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -56,6 +57,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Router;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
+
 /**
  * @author jesus.movilla
  */
@@ -67,15 +69,68 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     private static Logger log = Logger.getLogger(ClaudiaClientImpl.class);
 
     /**
+     * the properties configuration.
+     */
+    private SystemPropertiesProvider systemPropertiesProvider;
+    /**
+     * HTTP code for accepted requests.
+     */
+    private static int http_code_accepted = 202;
+    /**
+     * HTTP code for accepted requests.
+     */
+    private static int http_code_ok = 200;
+    /**
+     * HTTP code for created requests.
+     */
+    private static int http_code_created = 201;
+    /**
+     * HTTP code for no content response.
+     */
+    private static int http_code_deleted = 204;
+
+    /**
+     * authToken to be used.
+     */
+    private String authToken;
+    /**
+     * tenant to be used.
+     */
+    private String tenant;
+
+    /**
+     * user to be used.
+     */
+    private String user;
+
+
+    private HttpClientConnectionManager connectionManager;
+
+    /**
+     * The constructor.
+     */
+    public OpenStackUtilImpl() {
+        connectionManager = new PoolingHttpClientConnectionManager();
+    }
+
+    public HttpClientConnectionManager getConnectionManager() {
+        return connectionManager;
+    }
+
+    public void setConnectionManager(HttpClientConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
+
+    /**
      * Returns an InputStream as String.
-     * 
      * @param is
      *            InputStream from response
      * @return Compute Compute
-     * @throws OCCIException
+     * @throws OpenStackException
      *             OCCIException
      */
-    private static String convertStreamToString(InputStream is) throws OpenStackException {
+    private static String convertStreamToString(InputStream is)
+        throws OpenStackException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
 
@@ -96,48 +151,13 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         return sb.toString();
     }
 
-    private SystemPropertiesProvider systemPropertiesProvider;
-    /**
-     * HTTP code for accepted requests.
-     */
-    private static int http_code_accepted = 202;
-    /**
-     * HTTP code for accepted requests.
-     */
-    private static int http_code_ok = 200;
-    /**
-     * HTTP code for created requests.
-     */
-    private static int http_code_created = 201;
-    /**
-     * HTTP code for no content response.
-     */
-    private static int http_code_deleted = 204;
-    /**
-     * Httpclient to send REST operations.
-     */
-    private HttpClient httpClient;
-    /**
-     * authToken to be used.
-     */
-    private String authToken;
-    /**
-     * tenant to be used.
-     */
-    private String tenant;
-
-    /**
-     * user to be used.
-     */
-    private String user;
-
-
     /**
      * It adds an interface to the router.
      */
     public String addInterface(String idRouter, Network net, PaasManagerUser user) throws OpenStackException {
 
-        //  PUT /v2.0/routers/8604a0de-7f6b-409a-a47c-a1cc7bc77b2e/add_router_interface
+
+        // PUT /v2.0/routers/8604a0de-7f6b-409a-a47c-a1cc7bc77b2e/add_router_interface
         // Accept: application/json
 
         log.debug("Adding an interface from network " + net.getNetworkName() + " to router " + idRouter);
@@ -147,8 +167,10 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             String payload = net.toAddInterfaceJson();
             log.debug(payload);
 
+
             HttpUriRequest request = createQuantumPutRequest(RESOURCE_ROUTERS
                     + "/" + idRouter + "/" + RESOURCE_ADD_INTERFACE, payload, APPLICATION_JSON, user);
+
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
@@ -229,7 +251,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
             String errorMessage = "Error adding interface " + subNetId + " to router " + routerId + " from OpenStack: "
-            + e;
+                    + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
@@ -239,7 +261,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     /**
      * Add a floatingIP to a full ip pool
-     * 
      * @param payload
      * @return
      * @throws OpenStackException
@@ -260,7 +281,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
             String errorMessage = "Error Getting Floating IPs " + " from tenant " + tenant + ": " + " from OpenStack: "
-            + e;
+                    + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
@@ -319,7 +340,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
             String errorMessage = "Error Assigning Floating IP " + floatingIP + " to server " + serverId
-            + " from OpenStack: " + e;
+                    + " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
@@ -402,7 +423,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         
     private ArrayList<Object> executePostRequest(HttpPost postRequest) throws OpenStackException {
         HttpResponse response;
-        httpClient = new DefaultHttpClient();
+        CloseableHttpClient httpClient = getHttpClient();
         ArrayList<Object> message = new ArrayList();
 
         Date localDate = null;
@@ -675,7 +696,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * @return HttpUriRequest the request
      */
     private HttpPost createQuantumPostRequest(String resource, String payload, String content, PaasManagerUser user)
-        throws OpenStackException {
+            throws OpenStackException {
         HttpPost request;
 
         // Check that the authtoken, tenant and user was initialized
@@ -717,7 +738,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * @return HttpUriRequest the request
      */
     private HttpPut createQuantumPutRequest(String resource, String payload, String content, PaasManagerUser user)
-        throws OpenStackException {
+            throws OpenStackException {
         HttpPut request;
 
         // Check that the authtoken, tenant and user was initialized
@@ -763,7 +784,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // -H "Content-Type: application/json" -H "Accept: application/xml"
         // -X POST "http://10.95.171.115:9696/v2.0/subnets"
 
-        //-d '{"network" : {"name" : "testNetwork", "admin_state_up": false}}'
+        // -d '{"network" : {"name" : "testNetwork", "admin_state_up": false}}'
         log.debug("Creating a router " + router.getName());
 
         String response = null;
@@ -931,7 +952,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // -d "{"reboot" : {"type" : "SOFT" }}"
         // -X POST
         // "http://10.95.171.115:8774/v2/30c60771b6d144d2861b21e442f0bef9/servers/
-        //6570eca2-21e2-4942-bede-f556c57af2b4/action"
+        // 6570eca2-21e2-4942-bede-f556c57af2b4/action"
 
         String response = null;
         // TaskResult deletion = new TaskResult();
@@ -973,7 +994,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             throw new OpenStackException(errorMessage);
         }
 
-
     }
 
     /*
@@ -988,7 +1008,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * @param request
      *            the request to be executed
      * @return HttpUriRequest the response from server
-     * @throws OCCIException
+     * @throws OpenStackException
      */
     private String executeNovaRequest(HttpUriRequest request) throws OpenStackException {
         String[] newHeaders = null;
@@ -996,7 +1016,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // the \n)
         int responseLocation = 0;
 
-        httpClient = new DefaultHttpClient();
+        CloseableHttpClient httpClient = getHttpClient();
 
         if (request.containsHeader(ACCEPT) & request.getFirstHeader(ACCEPT).getValue().equals(APPLICATION_XML)) {
             responseLocation = 1;
@@ -1014,8 +1034,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
                 is.close();
 
                 if ((response.getStatusLine().getStatusCode() == http_code_ok)
-                        || (response.getStatusLine().getStatusCode() == http_code_accepted)
-                        || (response.getStatusLine().getStatusCode() == http_code_created)) {
+                    || (response.getStatusLine().getStatusCode() == http_code_accepted)
+                    || (response.getStatusLine().getStatusCode() == http_code_created)) {
 
                     newHeaders = result.split("\n");
                 } else {
@@ -1034,6 +1054,12 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             } else {
                 throw new OpenStackException(e.getMessage());
             }
+        } finally {
+            try {
+                httpClient.close();
+            } catch (IOException e) {
+                log.warn("Error in close httpclient");
+            }
         }
 
         if (response.containsHeader("Location")
@@ -1045,9 +1071,13 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         return newHeaders[responseLocation];
     }
 
+    protected CloseableHttpClient getHttpClient() {
+        return HttpClients.custom().setConnectionManager(connectionManager).build();
+    }
+
     /**
      * Obtains the attribute value from a node.
-     *
+     * 
      * @param node
      * @param attribute
      * @return
@@ -1102,13 +1132,14 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             floatingIP = allocateFloatingIP(
                     buildAllocateFloatingIPPayload(systemPropertiesProvider
                             .getProperty(SystemPropertiesProvider.NOVA_IPFLOATING_POOLNAME)),
-                            user);
+                    user);
             getFloatingIPsResponse = getFloatingIPs(user);
             floatingIP = getFloatingIPFree(getFloatingIPsResponse);
         }
 
         return floatingIP;
     }
+
     /**
      * Get a Free FloatingIP.
      * 
@@ -1147,8 +1178,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error Getting Floating IPs " + " from tenant " + tenant + ": "
-                + " from OpenStack: " + e;
+            String errorMessage = "Error Getting Floating IPs " + " from tenant " + tenant + ": " + " from OpenStack: "
+                    + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
@@ -1291,16 +1322,15 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         return response;
     }
 
-
     /**
      * It adds an interface to the router
      */
     public String removeInterface(Router router, String net, PaasManagerUser user) throws OpenStackException {
 
-        //  PUT /v2.0/routers/8604a0de-7f6b-409a-a47c-a1cc7bc77b2e/remove_router_interface
+        // PUT /v2.0/routers/8604a0de-7f6b-409a-a47c-a1cc7bc77b2e/remove_router_interface
         // Accept: application/json
 
-        //{"subnet_id": "a2f1f29d-571b-4533-907f-5803ab96ead1"}
+        // {"subnet_id": "a2f1f29d-571b-4533-907f-5803ab96ead1"}
 
         log.debug("Removing an interface from network " + net + " to router " + router.getName());
         String response = null;
@@ -1309,8 +1339,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             String payload = "{\"subnet_id\": \"" + net + "\"}";
             log.debug(payload);
 
-            HttpUriRequest request = createQuantumPutRequest(RESOURCE_ROUTERS
-                    + "/" + router.getIdRouter() + "/" + RESOURCE_REMOVE_INTERFACE, payload, APPLICATION_JSON, user);
+            HttpUriRequest request = createQuantumPutRequest(RESOURCE_ROUTERS + "/" + router.getIdRouter() + "/"
+                    + RESOURCE_REMOVE_INTERFACE, payload, APPLICATION_JSON, user);
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
@@ -1327,6 +1357,27 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     }
 
+    /**
+     * Return a string with absolute limits values by tenantId.
+     * 
+     * <pre>
+     * GET http://host:port/v2/tenantId/limits
+     * Accept: application/json
+     * X-Auth-Token: ea90309ce14b4da490fe035c618515db
+     * </pre>
+     * @param paasManagerUser
+     *            parameter to rest client
+     * @return a string with data
+     * @throws OpenStackException
+     */
+    public String getAbsoluteLimits(PaasManagerUser paasManagerUser) throws OpenStackException {
+
+        HttpUriRequest request = createNovaGetRequest("limits", APPLICATION_JSON, paasManagerUser);
+
+        String response = executeNovaRequest(request);
+
+        return response;
+    }
 
     /**
      * @param systemPropertiesProvider

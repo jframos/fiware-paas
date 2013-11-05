@@ -25,6 +25,7 @@ import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
+import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsyncManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
@@ -72,6 +73,20 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
     private static Logger log = Logger.getLogger(EnvironmentInstanceResourceImpl.class);
 
     /**
+     * Add PaasManagerUser to claudiaData.
+     * 
+     * @param claudiaData
+     */
+    public void addCredentialsToClaudiaData(ClaudiaData claudiaData) {
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+
+            claudiaData.setUser(extendedOVFUtil.getCredentials());
+            claudiaData.getUser().setTenantId(claudiaData.getVdc());
+        }
+
+    }
+
+    /**
      * @throws InvalidEnvironmentRequestException
      * @throws AlreadyExistsEntityException
      * @throws InvalidEntityException
@@ -79,19 +94,21 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
      */
     public Task create(String org, String vdc, EnvironmentInstanceDto environmentInstanceDto, String callback)
             throws InvalidEnvironmentRequestException, EntityNotFoundException, InvalidEntityException,
-            AlreadyExistsEntityException, InfrastructureException, InvalidOVFException {
+            AlreadyExistsEntityException, InfrastructureException, InvalidOVFException, QuotaExceededException {
 
         log.warn("Desploy an environment instance " + environmentInstanceDto.getBlueprintName() + " from environmetn "
                 + environmentInstanceDto.getEnvironmentDto());
+
         Task task = null;
 
+        ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentInstanceDto.getBlueprintName());
+        addCredentialsToClaudiaData(claudiaData);
         try {
-            validator.validateCreate(environmentInstanceDto, systemPropertiesProvider);
+            validator.validateCreate(environmentInstanceDto, systemPropertiesProvider, claudiaData);
         } catch (InvalidEnvironmentRequestException e) {
-            log.error("The environmetn isntance is not valid " + e.getMessage());
+            log.error("The environment instance is not valid " + e.getMessage());
             throw new InvalidEntityException(e);
         }
-        ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentInstanceDto.getBlueprintName());
 
         EnvironmentInstance environmentInstance = environmentInstanceDto.fromDto();
         Environment environment = environmentInstance.getEnvironment();

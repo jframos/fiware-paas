@@ -9,8 +9,15 @@ package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -27,14 +34,10 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentSearchCriteria;
+import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 
 /**
  * default Environment implementation
@@ -56,6 +59,8 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
     private EnvironmentResourceValidator environmentResourceValidator;
 
     private OVFGeneration ovfGeneration;
+
+    private ExtendedOVFUtil extendedOVFUtil;
 
     private static Logger log = Logger.getLogger(EnvironmentManagerImpl.class);
 
@@ -80,9 +85,8 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
         environmentResourceValidator.validateDelete(envName, vdc, systemPropertiesProvider);
 
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            claudiaData.setUser(getCredentials());
-        }
+        addCredentialsToClaudiaData(claudiaData);
+
         try {
             Environment env = environmentManager.load(envName, vdc);
             environmentManager.destroy(claudiaData, env);
@@ -149,10 +153,26 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
     }
 
     public PaasManagerUser getCredentials() {
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE"))
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
             return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        else
+        } else {
             return null;
+        }
+
+    }
+
+    /**
+     * Add PaasManagerUser to claudiaData.
+     * 
+     * @param claudiaData
+     */
+    public void addCredentialsToClaudiaData(ClaudiaData claudiaData) {
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+
+            claudiaData.setUser(extendedOVFUtil.getCredentials());
+            claudiaData.getUser().setTenantId(claudiaData.getVdc());
+        }
+
     }
 
     public void insert(String org, String vdc, EnvironmentDto environmentDto)
@@ -171,9 +191,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
          * (InvalidEntityException e) { throw new WebApplicationException(e, ERROR_REQUEST); }
          */
 
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            claudiaData.setUser(getCredentials());
-        }
+        addCredentialsToClaudiaData(claudiaData);
 
         Environment environment = new Environment();
         environment.setName(environmentDto.getName());
@@ -245,6 +263,14 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
      */
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
+    }
+
+    public ExtendedOVFUtil getExtendedOVFUtil() {
+        return extendedOVFUtil;
+    }
+
+    public void setExtendedOVFUtil(ExtendedOVFUtil extendedOVFUtil) {
+        this.extendedOVFUtil = extendedOVFUtil;
     }
 
 }
