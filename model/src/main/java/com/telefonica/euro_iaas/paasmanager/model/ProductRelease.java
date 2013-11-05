@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -67,8 +68,9 @@ public class ProductRelease {
     @Column(length = 2048)
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Attribute> attributes;
+
+    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Attribute> attributes = null;
 
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Metadata> metadatas;
@@ -94,7 +96,7 @@ public class ProductRelease {
      * Constructor.
      */
     public ProductRelease() {
-        attributes = new ArrayList<Attribute>();
+      //  attributes = new ArrayList<Attribute>();
         metadatas = new HashSet<Metadata>();
 
     }
@@ -113,7 +115,7 @@ public class ProductRelease {
         this.name = product + "-" + version;
         this.product = product;
         this.version = version;
-        attributes = new ArrayList<Attribute>();
+      //  attributes = new ArrayList<Attribute>();
         metadatas = new HashSet<Metadata>();
     }
 
@@ -129,7 +131,7 @@ public class ProductRelease {
         this.name = product + "-" + version;
         this.description = description;
         this.attributes = attributes;
-        attributes = new ArrayList<Attribute>();
+     //   attributes = new ArrayList<Attribute>();
         metadatas = new HashSet<Metadata>();
     }
 
@@ -155,7 +157,7 @@ public class ProductRelease {
         this.supportedOOSS = supportedOOSS;
         this.withArtifact = withArtifact;
         this.productType = productType;
-        attributes = new ArrayList<Attribute>();
+     //   attributes = new ArrayList<Attribute>();
         metadatas = new HashSet<Metadata>();
     }
 
@@ -334,6 +336,9 @@ public class ProductRelease {
      * @return the metadatas
      */
     public Set<Metadata> getMetadatas() {
+    	if (metadatas == null) {
+    		metadatas = new HashSet<Metadata> ();
+    	}
         return metadatas;
     }
 
