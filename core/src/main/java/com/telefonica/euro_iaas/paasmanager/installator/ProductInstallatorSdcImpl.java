@@ -135,7 +135,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         }
 
         Attribute attApp_server_role = getAttribute(productRelease.getAttributes(), "app_server_role");
-        if (attId_web_server != null) {
+        if (attApp_server_role != null) {
 
             productInstanceDto.getAttributes().add(
 
