@@ -31,6 +31,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
@@ -209,11 +210,20 @@ public class TierManagerImpl implements TierManager {
             tierDao.update(tier);
             securityGroupManager.destroy(claudiaData, sec);
         }
-
-        for (Network network: tier.getNetworks()) {
-            log.debug("Deleting network " + network.getNetworkName());
-            networkManager.delete(claudiaData, network);
+        
+        log.debug("Deleting the networks");
+        List<Network> netsAux = new ArrayList<Network> ();
+        for (Network netNet: tier.getNetworks()) {
+        	netsAux.add(netNet);
         }
+        
+        for (Network net: netsAux) {
+        	tier.deleteNetwork(net);
+        	tierDao.update(tier);
+        	log.debug("Deleting network " + net.getNetworkName());
+            networkManager.delete(claudiaData, net);      
+        }
+
         try {
             tierDao.remove(tier);
         } catch (Exception e) {

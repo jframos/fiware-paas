@@ -7,6 +7,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -146,10 +147,19 @@ public class NetworkManagerImpl implements NetworkManager {
         for (Router router: network.getRouters()) {
             routerManager.delete(claudiaData, router, network);
         }
+        
         log.debug("Deleting the subnets");
+        List<SubNetwork> subNetsAux = new ArrayList<SubNetwork> ();
         for (SubNetwork subNet: network.getSubNets()) {
+        	subNetsAux.add(subNet);
+        }
+        
+        for (SubNetwork subNet: subNetsAux) {
+        	network.deleteSubNet(subNet);
+        	networkDao.update(network);
             subNetworkManager.delete(claudiaData, subNet);
         }
+
         log.debug("Deleting the network");
         networkClient.destroyNetwork(claudiaData, network);
         try {

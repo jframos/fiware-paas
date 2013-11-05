@@ -167,6 +167,17 @@ public class Tier {
         networks.add(network);
 
     }
+    
+    /**
+     * @param network
+     *            the network list
+     */
+    public void deleteNetwork(Network network) {
+        if (networks.contains (network)){
+            networks.remove(network);
+        }
+
+    }
 
     /**
      * Add the product release for the tier.

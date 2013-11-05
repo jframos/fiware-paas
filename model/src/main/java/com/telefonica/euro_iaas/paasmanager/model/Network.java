@@ -103,6 +103,20 @@ public class Network {
         subNets.add(subNet);
         subNetCount++;
     }
+    
+    /**
+     * It deletes a subnet to the network.
+     * 
+     * @param subNet
+     * @return
+     */
+    public void deleteSubNet(SubNetwork subNet) {
+        if (subNets.contains(subNet)) {
+            subNets.remove(subNet); 
+        }
+
+        subNetCount--;
+    }
 
     /**
      * 
