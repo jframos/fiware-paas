@@ -167,6 +167,17 @@ public class Tier {
         networks.add(network);
 
     }
+    
+    /**
+     * @param network
+     *            the network list
+     */
+    public void deleteNetwork(Network network) {
+        if (networks.contains (network)){
+            networks.remove(network);
+        }
+
+    }
 
     /**
      * Add the product release for the tier.
@@ -501,7 +512,7 @@ public class Tier {
             payload = payload + "\"security_groups\": [{ \"name\": \""
             + getSecurityGroup().getName() + "\"}], ";
         }
-        if (getNetworks() != null) {
+     /*   if (getNetworks() != null) {
             payload = payload + "\"networks\": [";
             for (Network net: this.getNetworks()){
 
@@ -510,7 +521,7 @@ public class Tier {
             }
             payload = payload + "], ";
 
-        }
+        }*/
 
         payload = payload
         + "\"flavorRef\": \"" + getFlavour() + "\", " + "\"imageRef\": \""

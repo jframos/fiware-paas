@@ -7,6 +7,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -50,11 +51,11 @@ public class NetworkManagerImpl implements NetworkManager {
         log.debug("Create network " + network.getNetworkName());
 
         try {
-            Network dbNetwork = networkDao.load(network.getNetworkName());
+        	network = networkDao.load(network.getNetworkName());
             log.debug("The network already exists");
             for (SubNetwork subnet: network.getSubNets()) {
-                if (!dbNetwork.contains(subnet)) {
-                    createSubNetwork(dbNetwork, subnet);
+                if (!network.contains(subnet)) {
+                    createSubNetwork(network, subnet);
                 }
             }
             return network;
@@ -64,13 +65,14 @@ public class NetworkManagerImpl implements NetworkManager {
                 createSubNetwork(network, null);
                 network = networkDao.create(network);
             } catch (Exception e) {
-                log.error("Error to create the network in BD " + e.getMessage());
+                log.error("Error to create the network " + e.getMessage());
                 throw new InvalidEntityException(network);
             }
         }
 
         return network;
     }
+
 
     /**
      * It creates a subnet in the network.
@@ -80,9 +82,10 @@ public class NetworkManagerImpl implements NetworkManager {
      * @throws InvalidEntityException
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
+     * @throws InfrastructureException 
      */
     public void createSubNetwork(Network network, SubNetwork subNetwork)
-        throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException
+        throws InvalidEntityException, AlreadyExistsEntityException
     {
 
         SubNetwork subNet = subNetwork;
@@ -103,12 +106,22 @@ public class NetworkManagerImpl implements NetworkManager {
      * @params network
      */
     public void delete(Network network) throws EntityNotFoundException,
-    InvalidEntityException, InfrastructureException {
+    InvalidEntityException {
         log.debug("Destroying network " + network.getNetworkName());
+
         log.debug("Deleting the subnets");
+        List<SubNetwork> subNetsAux = new ArrayList<SubNetwork> ();
         for (SubNetwork subNet: network.getSubNets()) {
+        	subNetsAux.add(subNet);
+        }
+        
+        for (SubNetwork subNet: subNetsAux) {
+        	network.deleteSubNet(subNet);
+        	networkDao.update(network);
             subNetworkManager.delete(subNet);
         }
+
+        log.debug("Deleting the network");
         try {
             networkDao.remove(network);
         } catch (Exception e) {

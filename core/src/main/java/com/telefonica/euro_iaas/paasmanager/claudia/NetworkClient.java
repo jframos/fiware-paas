@@ -17,6 +17,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 
 /**
  * @author henar
@@ -24,15 +25,23 @@ import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 public interface NetworkClient {
 
 
-
+    /**
+     * Add the network to the public router.
+     * 
+     * @param network
+     */
+    void addNetworkToPublicRouter(ClaudiaData claudiaData,NetworkInstance net) throws InfrastructureException;
+    
     /**
      * Add the network to the router.
      * 
      * @param claudiaData
-     * @param router
+     * @param routerId
      * @param network
      */
-    void addNetworkToRouter(ClaudiaData claudiaData, RouterInstance router, Network network) throws InfrastructureException;
+
+    void addNetworkToRouter(ClaudiaData claudiaData, RouterInstance router, NetworkInstance network) throws InfrastructureException;
+
 
     /**
      * Remove the network from the router.
@@ -41,7 +50,8 @@ public interface NetworkClient {
      * @param router
      * @param idNet
      */
-    void deleteNetworkFromRouter(ClaudiaData claudiaData, RouterInstance router, Network idNet)
+
+    void deleteNetworkFromRouter(ClaudiaData claudiaData, RouterInstance router, NetworkInstance idNet)
     throws InfrastructureException;
 
     /**
@@ -50,7 +60,7 @@ public interface NetworkClient {
      * @param claudiaData
      * @param network
      */
-    void deployNetwork(ClaudiaData claudiaData, Network network) throws InfrastructureException;
+    void deployNetwork(ClaudiaData claudiaData, NetworkInstance network) throws InfrastructureException;
 
     /**
      * Deploy the router.
@@ -68,7 +78,7 @@ public interface NetworkClient {
      * @param claudiaData
      * @param subNet
      */
-    void deploySubNetwork(ClaudiaData claudiaData, SubNetwork subNet) throws InfrastructureException;
+    void deploySubNetwork(ClaudiaData claudiaData, SubNetworkInstance subNet) throws InfrastructureException;
 
     /**
      * Destroy the network in the infrastructure.
@@ -96,7 +106,7 @@ public interface NetworkClient {
      * @return
      * @throws EntityNotFoundException
      */
-    void destroySubNetwork(ClaudiaData claudiaData, SubNetwork subnet) throws InfrastructureException;
+    void destroySubNetwork(ClaudiaData claudiaData, SubNetworkInstance subnet) throws InfrastructureException;
 
     /**
      * Loads all network associated to a certain vdc.
@@ -114,6 +124,6 @@ public interface NetworkClient {
      * @return
      * @throws EntityNotFoundException
      */
-    String loadNetwork(ClaudiaData claudiaData, Network network) throws EntityNotFoundException;
+    String loadNetwork(ClaudiaData claudiaData, NetworkInstance network) throws EntityNotFoundException;
 
 }

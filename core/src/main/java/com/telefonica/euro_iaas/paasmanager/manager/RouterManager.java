@@ -25,7 +25,7 @@ public interface RouterManager {
     /**
      * It adds a network to the router.
      */
-    void addNetwork(ClaudiaData claudiaData, RouterInstance router, Network network) throws InfrastructureException;
+    void addNetwork(ClaudiaData claudiaData, RouterInstance router, NetworkInstance network) throws InfrastructureException;
 
     /**
      * Create a router.

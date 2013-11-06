@@ -13,13 +13,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -30,6 +35,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.openstack.docs.compute.api.v1.Server;
 import org.w3c.dom.Document;
@@ -43,8 +49,10 @@ import com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientImpl;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
-import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
+
+import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
 /**
@@ -57,6 +65,9 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      */
     private static Logger log = Logger.getLogger(ClaudiaClientImpl.class);
 
+    /**
+     * the properties configuration.
+     */
     private SystemPropertiesProvider systemPropertiesProvider;
     /**
      * HTTP code for accepted requests.
@@ -89,10 +100,13 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      */
     private String user;
 
+
     private HttpClientConnectionManager connectionManager;
 
+    /**
+     * The constructor.
+     */
     public OpenStackUtilImpl() {
-
         connectionManager = new PoolingHttpClientConnectionManager();
     }
 
@@ -103,17 +117,18 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     public void setConnectionManager(HttpClientConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
     }
+    
 
     /**
      * Returns an InputStream as String.
-     * 
      * @param is
      *            InputStream from response
      * @return Compute Compute
      * @throws OpenStackException
      *             OCCIException
      */
-    private static String convertStreamToString(InputStream is) throws OpenStackException {
+    private static String convertStreamToString(InputStream is)
+        throws OpenStackException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
 
@@ -137,28 +152,33 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     /**
      * It adds an interface to the router.
      */
-    public String addInterface(RouterInstance router, Network net, PaasManagerUser user) throws OpenStackException {
+
+	public String addInterface(String idRouter, NetworkInstance net,
+			PaasManagerUser user) throws OpenStackException {
+
 
         // PUT /v2.0/routers/8604a0de-7f6b-409a-a47c-a1cc7bc77b2e/add_router_interface
         // Accept: application/json
 
-        log.debug("Adding an interface from network " + net.getNetworkName() + " to router " + router.getName());
+        log.debug("Adding an interface from network " + net.getNetworkName() + " to router " + idRouter);
         String response = null;
 
         try {
             String payload = net.toAddInterfaceJson();
             log.debug(payload);
 
-            HttpUriRequest request = createQuantumPutRequest(RESOURCE_ROUTERS + "/" + router.getIdRouter() + "/"
-                    + RESOURCE_ADD_INTERFACE, payload, APPLICATION_JSON, user);
+
+            HttpUriRequest request = createQuantumPutRequest(RESOURCE_ROUTERS
+                    + "/" + idRouter + "/" + RESOURCE_ADD_INTERFACE, payload, APPLICATION_JSON, user);
+
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error creating router in " + router.getName() + ": " + e;
+            String errorMessage = "Error creating router in " + idRouter + ": " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error creating router " + router.getName() + " from OpenStack: " + e;
+            String errorMessage = "Error creating router " + idRouter+ " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
@@ -166,6 +186,44 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         return response;
 
     }
+
+	/**
+     * It adds an interface to the router.
+     */
+    public String addInterfaceToPublicRouter(PaasManagerUser user, NetworkInstance net) throws OpenStackException {
+
+        String idRouter = systemPropertiesProvider.getProperty(SystemPropertiesProvider.PUBLIC_ROUTER_ID);
+        PaasManagerUser user2 = this.getAdminUser(user);
+        
+        log.debug ("tenantid " + user2.getTenantId());
+        log.debug ("token " + user2.getToken());
+        log.debug ("user name " + user2.getUserName());
+
+        log.debug("Adding an interface from network " + net.getNetworkName() + " to router " + idRouter);
+        String response = null;
+
+        try {
+            String payload = net.toAddInterfaceJson();
+            log.debug(payload);
+
+            HttpUriRequest request = createQuantumPutRequest(RESOURCE_ROUTERS
+                    + "/" + idRouter + "/" + RESOURCE_ADD_INTERFACE, payload, APPLICATION_JSON, user2);
+            response = executeNovaRequest(request);
+
+        } catch (OpenStackException e) {
+            String errorMessage = "Error creating router in " + idRouter + ": " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        } catch (Exception e) {
+            String errorMessage = "Error creating router " + idRouter+ " from OpenStack: " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        }
+
+        return response;
+
+    }
+
 
     /**
      * It add a network interface to the router.
@@ -203,7 +261,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     /**
      * Add a floatingIP to a full ip pool
-     * 
      * @param payload
      * @return
      * @throws OpenStackException
@@ -316,8 +373,142 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             throw new OpenStackException(ERROR_AUTHENTICATION_HEADERS);
         }
     }
+    
+    /**
+     * It obtains the credentials to invoke as a admin user.
+     * @return
+     * @throws OpenStackException 
+     */
+    private PaasManagerUser getAdminUser(PaasManagerUser user) throws OpenStackException {
+        HttpPost postRequest = createKeystonePostRequest();
+        ArrayList<Object> response = executePostRequest(postRequest);
+        return extractData(response, user);
+    }
+        
+       
+    /**
+     * It obtains the request for invoking Openstack keystone with admin credentials.
+     * @return
+     * @throws OpenStackException 
+     */
+    private HttpPost createKeystonePostRequest() throws OpenStackException {
+        // curl -d '{"auth": {"tenantName": "demo", "passwordCredentials":
+        // {"username": "admin", "password": "temporal"}}}'
+        // -H "Content-type: application/json"
+        // -H "Accept: application/xml"�
+        // http://10.95.171.115:35357/v2.0/tokens
+            
+        String keystoneURL = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_URL);
+        String adminUser = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_USER);
+        String adminPass = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_PASS);
+        String adminTenant = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_TENANT);
 
-    public String createNetwork(Network net, PaasManagerUser user) throws OpenStackException {
+        HttpEntity entity = null;
+        HttpPost postRequest = new HttpPost(keystoneURL + "tokens");
+        postRequest.setHeader("Content-Type", "application/json");
+        postRequest.setHeader("Accept", "application/xml");
+
+        String msg = "{\"auth\": {\"tenantName\": \"" + adminTenant + "\", \"" + "passwordCredentials\":{\"username\": \""
+                    + adminUser + "\"," + " \"password\": \"" + adminPass + "\"}}}";
+
+        try {
+            entity = new StringEntity(msg);
+        } catch (UnsupportedEncodingException ex) {
+            log.error("Unsupported encoding exception");
+            throw new OpenStackException("Unsupported encoding exception " + ex.getMessage());
+        }
+        postRequest.setEntity(entity);
+        return postRequest;
+    }
+        
+    private ArrayList<Object> executePostRequest(HttpPost postRequest) throws OpenStackException {
+        HttpResponse response;
+        CloseableHttpClient httpClient = getHttpClient();
+        ArrayList<Object> message = new ArrayList();
+
+        Date localDate = null;
+        String aux;
+        try {
+            response = httpClient.execute(postRequest);
+            localDate = new Date();
+            if ((response.getStatusLine().getStatusCode() != 201)
+                    && (response.getStatusLine().getStatusCode() != 200)) {
+                log.error("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
+                throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
+            }
+            BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
+            String temp = "";
+
+            while ((aux = br.readLine()) != null) {
+                temp += aux;
+            }
+
+            message.add(temp);
+
+            String aux1 = response.getHeaders("Date")[0].getValue();
+            log.info("Date recibido: " + aux1);
+            message.add(response.getHeaders("Date")[0].getValue());
+            HttpEntity ent = response.getEntity();
+            if (ent != null) {
+                EntityUtils.consume(ent);
+            }
+
+        } catch (ClientProtocolException ex) {
+            log.error("Client protocol exception");
+            throw new OpenStackException("Client protocol exception " + ex.getMessage());
+        } catch (IOException ex) {
+            log.error("I/O exception of some sort has occurred");
+            throw new OpenStackException("I/O exception of some sort has occurred " + ex.getMessage());
+        }
+        return message;
+    }
+        
+    protected PaasManagerUser extractData(ArrayList<Object> response, PaasManagerUser user) {
+            String payload = (String) response.get(0);
+
+            int i = payload.indexOf("token");
+            int j = payload.indexOf(">", i);
+            String token = payload.substring(i - 1, j + 1);
+            String tenantId = "";
+
+            // token = "<token expires=\"2012-11-13T15:01:51Z\" id=\"783bec9d7d734f1e943986485a90966d\">";
+            // Regular Expression <\s*token\s*(issued_at=\".*?\"\s*)?expires=\"(.*?)(\"\s*id=\")(.*)\"\/*>
+            // as a Java string "<\\s*token\\s*(issued_at=\\\".*?\\\"\\s*)?expires=\\\"(.*?)(\\\"\\s*id=\\\")(.*)\\\"\\/*>"
+            String pattern1 = "<\\s*token\\s*(issued_at=\\\".*?\\\"\\s*)?expires=\\\"(.*?)(\\\"\\s*id=\\\")(.*)\\\"\\/*>";
+
+            if (token.matches(pattern1)) {
+
+                token = token.replaceAll(pattern1, "$4");
+                log.info("token id: " + token);
+            } else {
+                log.error("Token format unknown: " + token);
+
+                throw new RuntimeException("Token format unknown:\n " + token);
+            }
+
+            i = payload.indexOf("tenant");
+            j = payload.indexOf(">", i);
+            tenantId = payload.substring(i - 1, j + 1);
+
+            // Regular Expression (<\s*tenant\s*.*)("\s*id=")(.*?)("\s*.*/*>)
+            // as a Java string "(<\\s*tenant\\s*.*)(\"\\s*id=\")(.*?)(\"\\s*.*/*>)"
+            pattern1 = "(<\\s*tenant\\s*.*)(\"\\s*id=\")(.*?)(\"\\s*.*/*>)";
+
+            if (tenantId.matches(pattern1)) {
+                tenantId = tenantId.replaceAll(pattern1, "$3");
+            } else {
+                log.error("Tenant format unknown:\n " + tenantId);
+
+                throw new RuntimeException("Tenant format unknown:\n " + tenantId);
+            }
+            user.setToken(token);
+            user.setTenantId(tenantId);
+            PaasManagerUser user2 = new PaasManagerUser (tenantId, token, user.getAuthorities());
+            return user2;
+
+        }
+
+    public String createNetwork(NetworkInstance net, PaasManagerUser user) throws OpenStackException {
         // throw new UnsupportedOperationException("Not supported yet.");
         // I need to know X-Auth-Token, orgID-Tennat, IP and Port
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
@@ -665,7 +856,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     /**
      * It creates a subnet in Openstack.
      */
-    public String createSubNet(SubNetwork subNet, PaasManagerUser user) throws OpenStackException {
+    public String createSubNet(SubNetworkInstance subNet, PaasManagerUser user) throws OpenStackException {
         // throw new UnsupportedOperationException("Not supported yet.");
         // I need to know X-Auth-Token, orgID-Tennat, IP and Port
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
@@ -843,8 +1034,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
                 is.close();
 
                 if ((response.getStatusLine().getStatusCode() == http_code_ok)
-                        || (response.getStatusLine().getStatusCode() == http_code_accepted)
-                        || (response.getStatusLine().getStatusCode() == http_code_created)) {
+                    || (response.getStatusLine().getStatusCode() == http_code_accepted)
+                    || (response.getStatusLine().getStatusCode() == http_code_created)) {
 
                     newHeaders = result.split("\n");
                 } else {
@@ -1174,13 +1365,11 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * Accept: application/json
      * X-Auth-Token: ea90309ce14b4da490fe035c618515db
      * </pre>
-     * 
      * @param paasManagerUser
      *            parameter to rest client
      * @return a string with data
      * @throws OpenStackException
      */
-    @Override
     public String getAbsoluteLimits(PaasManagerUser paasManagerUser) throws OpenStackException {
 
         HttpUriRequest request = createNovaGetRequest("limits", APPLICATION_JSON, paasManagerUser);
@@ -1197,5 +1386,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
+
+
 
 }

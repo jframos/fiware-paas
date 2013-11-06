@@ -16,18 +16,22 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
 import com.telefonica.euro_iaas.paasmanager.dao.SubNetworkDao;
+import com.telefonica.euro_iaas.paasmanager.dao.SubNetworkInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.manager.SubNetworkInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.SubNetworkManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 
 /**
  * @author henar
  */
-public class SubNetworkManagerImpl implements SubNetworkManager {
+public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager {
 
-    private SubNetworkDao subNetworkDao = null;
-    private static Logger log = Logger.getLogger(SubNetworkManagerImpl.class);
+    private SubNetworkInstanceDao subNetworkInstanceDao = null;
+    private NetworkClient networkClient = null;
+    private static Logger log = Logger.getLogger(SubNetworkInstanceManagerImpl.class);
 
     /**
      * To create a network.
@@ -37,17 +41,21 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
      * @params claudiaData
      * @params network
      */
-    public void create(SubNetwork subNetwork) throws InvalidEntityException,
-        AlreadyExistsEntityException {
+    public void create(ClaudiaData claudiaData, SubNetworkInstance subNetwork) throws InvalidEntityException,
+    InfrastructureException, AlreadyExistsEntityException {
         log.debug("Create subnetwork " + subNetwork.getName());
 
         try {
-            subNetworkDao.load(subNetwork.getName());
+            subNetworkInstanceDao.load(subNetwork.getName());
             throw new AlreadyExistsEntityException(subNetwork);
 
         } catch (EntityNotFoundException e1) {
             try {
-                subNetwork = subNetworkDao.create(subNetwork);
+
+                networkClient.deploySubNetwork(claudiaData, subNetwork);
+                log.debug("SubNetwork " + subNetwork.getName() + " in network " + subNetwork.getIdNetwork()
+                    + " deployed with id " + subNetwork.getIdSubNet());
+                subNetwork = subNetworkInstanceDao.create(subNetwork);
             } catch (Exception e) {
                 log.error("Error to create the subnetwork in BD " + e.getMessage());
                 throw new InvalidEntityException(subNetwork);
@@ -61,14 +69,15 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
      * @params claudiaData
      * @params subNetwork
      */
-    public void delete(SubNetwork subNetwork) throws EntityNotFoundException,
-    InvalidEntityException {
-        log.debug("Destroying the subnetwork " + subNetwork.getName());
+    public void delete(ClaudiaData claudiaData, SubNetworkInstance subNetworkInstance) throws EntityNotFoundException,
+    InvalidEntityException, InfrastructureException {
+        log.debug("Destroying the subnetwork " + subNetworkInstance.getName());
         try {
-            subNetworkDao.remove(subNetwork);
+            networkClient.destroySubNetwork(claudiaData, subNetworkInstance);
+            subNetworkInstanceDao.remove(subNetworkInstance);
         } catch (Exception e) {
             log.error("Error to remove the subnetwork in BD " + e.getMessage());
-            throw new InvalidEntityException(subNetwork);
+            throw new InvalidEntityException(subNetworkInstance);
         }
 
     }
@@ -78,8 +87,8 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
      * 
      * @return the subnetwork list
      */
-    public List<SubNetwork> findAll() {
-        return subNetworkDao.findAll();
+    public List<SubNetworkInstance> findAll() {
+        return subNetworkInstanceDao.findAll();
     }
 
     /**
@@ -90,12 +99,16 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
      * @param networkName
      * @return the network
      */
-    public SubNetwork load(String name) throws EntityNotFoundException {
-        return subNetworkDao.load(name);
+    public SubNetworkInstance load(String name) throws EntityNotFoundException {
+        return subNetworkInstanceDao.load(name);
     }
 
-    public void setSubNetworkDao(SubNetworkDao subNetworkDao) {
-        this.subNetworkDao = subNetworkDao;
+    public void setNetworkClient(NetworkClient networkClient) {
+        this.networkClient = networkClient;
+    }
+
+    public void setSubNetworkDao(SubNetworkInstanceDao subNetworkInstanceDao) {
+        this.subNetworkInstanceDao = subNetworkInstanceDao;
     }
 
     /**
@@ -104,8 +117,8 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
      * @param subNetwork
      * @return the subNetwork
      */
-    public SubNetwork update(SubNetwork subNetwork) throws InvalidEntityException {
-    	return subNetworkDao.update(subNetwork);
+    public SubNetworkInstance update(SubNetworkInstance subNetworkInstance) throws InvalidEntityException {
+    	return subNetworkInstanceDao.update(subNetworkInstance);
     }
 
 }

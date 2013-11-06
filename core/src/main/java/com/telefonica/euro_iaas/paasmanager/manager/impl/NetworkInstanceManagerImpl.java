@@ -77,7 +77,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
 
         } catch (EntityNotFoundException e1) {
             try {
-                networkClient.deployNetwork(claudiaData, network);
+                networkClient.deployNetwork(claudiaData, networkInstance);
                 log.debug("Network isntance " + networkInstance.getNetworkName()
                     + " : " + networkInstance.getIdNetwork() + " deployed");
                 createSubNetwork(claudiaData, networkInstance, null);

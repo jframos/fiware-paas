@@ -8,10 +8,14 @@
 package com.telefonica.euro_iaas.paasmanager.util;
 
 // import org.openstack.docs.compute.api.v1.Server;
+import java.net.NetworkInterface;
+
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
 /**
@@ -103,20 +107,33 @@ public interface OpenStackUtil {
     /**
      * path for a detailed resource.
      */
+
     String ERROR_AUTHENTICATION_HEADERS = "Authentication Token, Tenant ID and User must be initialized...";
 
+
+
     /**
-     * @param router
+     * It adds an network interface to the public router.
      * @param net
-     * @param user
      * @return
      * @throws OpenStackException
      */
-    String addInterface(RouterInstance router, Network net, PaasManagerUser user) throws OpenStackException;
+    String addInterfaceToPublicRouter(PaasManagerUser user, NetworkInstance net) throws OpenStackException;
+    
+   /**
+    * It adds an interface to the router.
+    * @param router
+    * @param net
+    * @param user
+    * @return the id
+    * @throws OpenStackException
+    */
+    String addInterface(String router, NetworkInstance net, PaasManagerUser user)
+        throws OpenStackException;
+
 
     /**
      * Method to add an interface to the router.
-     * 
      * @param routerId
      *            the id of the router
      * @param subNetId
@@ -127,21 +144,22 @@ public interface OpenStackUtil {
      * @throws OpenStackException
      *             OpenStackException
      */
-    String addRouterInterface(String routerId, String subNetId, PaasManagerUser user) throws OpenStackException;
+    String addRouterInterface(String routerId, String subNetId, PaasManagerUser user)
+        throws OpenStackException;
 
     /**
      * Assign FloatingIP to a serverId.
-     * 
      * @param serverId
+     * @param floatingIP
      * @param floatingIP
      * @return
      * @throws OpenStackException
      */
-    String assignFloatingIP(String serverId, String floatingIP, PaasManagerUser user) throws OpenStackException;
+    String assignFloatingIP(String serverId, String floatingIP, PaasManagerUser user)
+        throws OpenStackException;
 
     /**
      * Method to create a new network.
-     * 
      * @param net
      * @param user
      *            the user
@@ -149,7 +167,8 @@ public interface OpenStackUtil {
      * @throws OpenStackException
      *             OpenStackException
      */
-    String createNetwork(Network net, PaasManagerUser user) throws OpenStackException;
+    String createNetwork(NetworkInstance net, PaasManagerUser user)
+        throws OpenStackException;
 
     /**
      * Method to create a new router.
@@ -183,7 +202,7 @@ public interface OpenStackUtil {
      * @throws OpenStackException
      *             OpenStackException
      */
-    String createSubNet(SubNetwork subNet, PaasManagerUser user) throws OpenStackException;
+    String createSubNet(SubNetworkInstance subNet, PaasManagerUser user) throws OpenStackException;
 
     /**
      * Method to delete a network.

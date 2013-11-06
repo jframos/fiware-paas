@@ -15,8 +15,10 @@ import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 
 /**
  * @author henar.munoz
@@ -31,14 +33,22 @@ public class NetworkClientDummyImpl implements NetworkClient {
      * @params network
      * @throws InfrastructureException
      */
-    public void addNetworkToRouter(ClaudiaData claudiaData, RouterInstance router, Network network)
+
+    public void addNetworkToRouter(ClaudiaData claudiaData, RouterInstance router, NetworkInstance network)
     throws InfrastructureException {
 
     }
 
-    public void deleteNetworkFromRouter(ClaudiaData claudiaData, RouterInstance router, Network network)
-    throws InfrastructureException {
-        // TODO Auto-generated method stub
+
+    /**
+     * Its delete the network from the router.
+     * @params claudiaData
+     * @params router
+     * @params network
+     * @throws InfrastructureException
+     */
+    public void deleteNetworkFromRouter(ClaudiaData claudiaData, RouterInstance router, NetworkInstance network)
+        throws InfrastructureException {
 
     }
 
@@ -48,8 +58,7 @@ public class NetworkClientDummyImpl implements NetworkClient {
      * @params claudiaData
      * @params network
      */
-    public void deployNetwork(ClaudiaData claudiaData, Network network) throws InfrastructureException {
-        network.setIdNetwork("id");
+    public void deployNetwork(ClaudiaData claudiaData, NetworkInstance network) throws InfrastructureException {
     }
 
     /**
@@ -69,8 +78,7 @@ public class NetworkClientDummyImpl implements NetworkClient {
      * @params claudiaData
      * @params subNet
      */
-    public void deploySubNetwork(ClaudiaData claudiaData, SubNetwork subNet) throws InfrastructureException {
-        subNet.setIdSubNet("id");
+    public void deploySubNetwork(ClaudiaData claudiaData, SubNetworkInstance subNet) throws InfrastructureException {
 
     }
 
@@ -80,7 +88,7 @@ public class NetworkClientDummyImpl implements NetworkClient {
      * @params claudiaData
      * @params network
      */
-    public void destroyNetwork(ClaudiaData claudiaData, Network network) throws InfrastructureException {
+    public void destroyNetwork(ClaudiaData claudiaData, NetworkInstance network) throws InfrastructureException {
 
     }
 
@@ -101,7 +109,7 @@ public class NetworkClientDummyImpl implements NetworkClient {
      * @params claudiaData
      * @params network
      */
-    public void destroySubNetwork(ClaudiaData claudiaData, SubNetwork subnet) throws InfrastructureException {
+    public void destroySubNetwork(ClaudiaData claudiaData, SubNetworkInstance subnet) throws InfrastructureException {
 
     }
 
@@ -122,8 +130,16 @@ public class NetworkClientDummyImpl implements NetworkClient {
      * @params network
      * @return network information
      */
-    public String loadNetwork(ClaudiaData claudiaData, Network network) throws EntityNotFoundException {
+    public String loadNetwork(ClaudiaData claudiaData, NetworkInstance network) throws EntityNotFoundException {
         return "";
+    }
+
+    /**
+     * It add the network interface to the public router.
+     */
+    public void addNetworkToPublicRouter(ClaudiaData claudiaData, NetworkInstance net) throws InfrastructureException {
+        // TODO Auto-generated method stub
+        
     }
 
 }

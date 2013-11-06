@@ -29,7 +29,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.SubNetworkDto;
  * A network.
  * 
  * @author Henar Munoz
- */
+ */ 
 
 @SuppressWarnings("serial")
 @Entity
@@ -92,6 +92,18 @@ public class Network {
         subNets.add(subNet);
     //    subNetCount++;
     }
+    
+    /**
+     * It deletes a subnet to the network.
+     * 
+     * @param subNet
+     * @return
+     */
+    public void deleteSubNet(SubNetwork subNet) {
+        if (subNets.contains(subNet)) {
+            subNets.remove(subNet); 
+        }
+    }
 
     /**
      * 
@@ -151,5 +163,6 @@ public class Network {
        }
        return networkInstance;
    }
+
 
 }
