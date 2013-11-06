@@ -20,7 +20,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.manager.RouterManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
-import com.telefonica.euro_iaas.paasmanager.model.Router;
+import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 
 /**
  * @author henar
@@ -39,7 +39,7 @@ public class RouterManagerImpl implements RouterManager {
      * @params router
      * @network
      */
-    public void addNetwork(ClaudiaData claudiaData, Router router, Network network) throws InfrastructureException {
+    public void addNetwork(ClaudiaData claudiaData, RouterInstance router, Network network) throws InfrastructureException {
         networkClient.addNetworkToRouter(claudiaData, router, network);
         network.addRouter(router);
 
@@ -52,7 +52,7 @@ public class RouterManagerImpl implements RouterManager {
      * @params router
      */
 
-    public void create(ClaudiaData claudiaData, Router router, Network network)
+    public void create(ClaudiaData claudiaData, RouterInstance router, Network network)
         throws InvalidEntityException, InfrastructureException {
         log.debug("Create router " + router.getName());
 
@@ -88,7 +88,7 @@ public class RouterManagerImpl implements RouterManager {
      * @params claudiaData
      * @params router
      */
-    public void delete(ClaudiaData claudiaData, Router router, Network network) throws
+    public void delete(ClaudiaData claudiaData, RouterInstance router, Network network) throws
     EntityNotFoundException, InvalidEntityException,
     InfrastructureException {
         log.debug("Destroying router " + router.getName());
@@ -112,7 +112,7 @@ public class RouterManagerImpl implements RouterManager {
      * @params router
      * @network
      */
-    private void deleteInterfacesNetworks(ClaudiaData claudiaData, Router router, Network net)
+    private void deleteInterfacesNetworks(ClaudiaData claudiaData, RouterInstance router, Network net)
         throws InfrastructureException, InvalidEntityException {
         log.debug("Removing the network interface " + net.getNetworkName() + " " + net.getIdNetRouter()
             + " from router " + router.getName());
@@ -126,7 +126,7 @@ public class RouterManagerImpl implements RouterManager {
      * 
      * @return the router list
      */
-    public List<Router> findAll() {
+    public List<RouterInstance> findAll() {
         return routerDao.findAll();
     }
 
@@ -138,7 +138,7 @@ public class RouterManagerImpl implements RouterManager {
      * @param networkName
      * @return the network
      */
-    public Router load(String name) throws EntityNotFoundException {
+    public RouterInstance load(String name) throws EntityNotFoundException {
         return routerDao.load(name);
     }
 
@@ -156,7 +156,7 @@ public class RouterManagerImpl implements RouterManager {
      * @param router
      * @return the router
      */
-    public Router update(Router subNetwork) throws InvalidEntityException {
+    public RouterInstance update(RouterInstance subNetwork) throws InvalidEntityException {
         // TODO Auto-generated method stub
         return null;
     }

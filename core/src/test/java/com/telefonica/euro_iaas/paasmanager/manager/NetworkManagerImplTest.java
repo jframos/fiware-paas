@@ -22,7 +22,7 @@ import com.telefonica.euro_iaas.paasmanager.dao.NetworkDao;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.NetworkManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
-import com.telefonica.euro_iaas.paasmanager.model.Router;
+import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
@@ -79,7 +79,7 @@ public class NetworkManagerImplTest extends TestCase {
         when(systemPropertiesProvider.getProperty("key")).thenReturn("VALUE");
         Mockito.doNothing().when(networkClient).deployNetwork(any(ClaudiaData.class), any(Network.class));
         Mockito.doNothing().when(subNetworkManager).create(any(ClaudiaData.class), any(SubNetwork.class));
-        Mockito.doNothing().when(routerManager).create(any(ClaudiaData.class), any(Router.class), any(Network.class));
+        Mockito.doNothing().when(routerManager).create(any(ClaudiaData.class), any(RouterInstance.class), any(Network.class));
         when(networkDao.create(any(Network.class))).thenReturn(net);
 
         // Verity

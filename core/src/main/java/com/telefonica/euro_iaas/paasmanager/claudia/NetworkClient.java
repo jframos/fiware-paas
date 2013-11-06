@@ -14,7 +14,8 @@ import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
-import com.telefonica.euro_iaas.paasmanager.model.Router;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
+import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 
 /**
@@ -31,7 +32,7 @@ public interface NetworkClient {
      * @param router
      * @param network
      */
-    void addNetworkToRouter(ClaudiaData claudiaData, Router router, Network network) throws InfrastructureException;
+    void addNetworkToRouter(ClaudiaData claudiaData, RouterInstance router, Network network) throws InfrastructureException;
 
     /**
      * Remove the network from the router.
@@ -40,7 +41,7 @@ public interface NetworkClient {
      * @param router
      * @param idNet
      */
-    void deleteNetworkFromRouter(ClaudiaData claudiaData, Router router, Network idNet)
+    void deleteNetworkFromRouter(ClaudiaData claudiaData, RouterInstance router, Network idNet)
     throws InfrastructureException;
 
     /**
@@ -59,7 +60,7 @@ public interface NetworkClient {
      * @return
      * @throws InfrastructureException
      */
-    void deployRouter(ClaudiaData claudiaData, Router router) throws InfrastructureException;
+    void deployRouter(ClaudiaData claudiaData, RouterInstance router) throws InfrastructureException;
 
     /**
      * Deploy the subnetwork in the infrastructure.
@@ -73,9 +74,9 @@ public interface NetworkClient {
      * Destroy the network in the infrastructure.
      * 
      * @param claudiaData
-     * @param network
+     * @param networkInstance
      */
-    void destroyNetwork(ClaudiaData claudiaData, Network network) throws InfrastructureException;
+    void destroyNetwork(ClaudiaData claudiaData, NetworkInstance networkInstance) throws InfrastructureException;
 
 
 
@@ -85,7 +86,7 @@ public interface NetworkClient {
      * @param router
      * @throws InfrastructureException
      */
-    void destroyRouter(ClaudiaData claudiaData, Router router) throws InfrastructureException;
+    void destroyRouter(ClaudiaData claudiaData, RouterInstance router) throws InfrastructureException;
 
     /**
      * Destroy a subnet in OpenStack.

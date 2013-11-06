@@ -12,7 +12,7 @@ import java.util.HashSet;
 import com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientOpenStackImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
-import com.telefonica.euro_iaas.paasmanager.model.Router;
+import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
@@ -85,7 +85,7 @@ public class ClaudiaClientOpenStackImplTest {
         when(openStackUtil.createServer(any(String.class), any(PaasManagerUser.class))).thenReturn("response");
         when(openStackUtil.createNetwork(any(Network.class), any(PaasManagerUser.class))).thenReturn(expectedNetwork);
         when(openStackUtil.createSubNet(any(SubNetwork.class), any(PaasManagerUser.class))).thenReturn(expectedSubnet);
-        when(openStackUtil.createRouter(any(Router.class), any(PaasManagerUser.class))).thenReturn(expectedRouter);
+        when(openStackUtil.createRouter(any(RouterInstance.class), any(PaasManagerUser.class))).thenReturn(expectedRouter);
         when(openStackUtil.addRouterInterface(any(String.class), any(String.class), any(PaasManagerUser.class)))
                 .thenReturn("OK");
         when(openStackUtil.getNetworks(any(PaasManagerUser.class))).thenReturn(expectedNetworks);

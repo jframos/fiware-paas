@@ -43,7 +43,7 @@ import com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientImpl;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
-import com.telefonica.euro_iaas.paasmanager.model.Router;
+import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
@@ -137,7 +137,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     /**
      * It adds an interface to the router.
      */
-    public String addInterface(Router router, Network net, PaasManagerUser user) throws OpenStackException {
+    public String addInterface(RouterInstance router, Network net, PaasManagerUser user) throws OpenStackException {
 
         // PUT /v2.0/routers/8604a0de-7f6b-409a-a47c-a1cc7bc77b2e/add_router_interface
         // Accept: application/json
@@ -586,7 +586,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * @see com.telefonica.claudia.smi.OpenStackClient#createRouter(java.lang.String,
      * com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser )
      */
-    public String createRouter(Router router, PaasManagerUser user) throws OpenStackException {
+    public String createRouter(RouterInstance router, PaasManagerUser user) throws OpenStackException {
         // throw new UnsupportedOperationException("Not supported yet.");
         // I need to know X-Auth-Token, orgID-Tennat, IP and Port
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
@@ -1134,7 +1134,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     /**
      * It adds an interface to the router
      */
-    public String removeInterface(Router router, String net, PaasManagerUser user) throws OpenStackException {
+    public String removeInterface(RouterInstance router, String net, PaasManagerUser user) throws OpenStackException {
 
         // PUT /v2.0/routers/8604a0de-7f6b-409a-a47c-a1cc7bc77b2e/remove_router_interface
         // Accept: application/json

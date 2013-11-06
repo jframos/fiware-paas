@@ -12,27 +12,27 @@ import java.util.List;
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.RouterDao;
-import com.telefonica.euro_iaas.paasmanager.model.Router;
+import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 
 /**
  * @author Henar Munoz
  */
-public class RouterDaoJpaImpl extends AbstractBaseDao<Router, String> implements RouterDao {
+public class RouterDaoJpaImpl extends AbstractBaseDao<RouterInstance, String> implements RouterDao {
 
     /**
      * find all networks.
      * 
      * @return network list
      */
-    public List<Router> findAll() {
-        return super.findAll(Router.class);
+    public List<RouterInstance> findAll() {
+        return super.findAll(RouterInstance.class);
     }
 
     /**
      * Loads the subnet.
      */
-    public Router load(String arg0) throws EntityNotFoundException {
-        return super.loadByField(Router.class, "name", arg0);
+    public RouterInstance load(String arg0) throws EntityNotFoundException {
+        return super.loadByField(RouterInstance.class, "name", arg0);
     }
 
 }

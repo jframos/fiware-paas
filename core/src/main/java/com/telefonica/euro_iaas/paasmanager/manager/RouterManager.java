@@ -14,7 +14,8 @@ import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
-import com.telefonica.euro_iaas.paasmanager.model.Router;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
+import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 
 /**
  * @author henar
@@ -24,18 +25,18 @@ public interface RouterManager {
     /**
      * It adds a network to the router.
      */
-    void addNetwork(ClaudiaData claudiaData, Router router, Network network) throws InfrastructureException;
+    void addNetwork(ClaudiaData claudiaData, RouterInstance router, Network network) throws InfrastructureException;
 
     /**
      * Create a router.
      * 
      * @param claudiaData
      * @param router
-     * @param net
+     * @param network
      * @throws InfrastructureException
      */
 
-    void create(ClaudiaData claudiaData, Router router, Network net)
+    void create(ClaudiaData claudiaData, RouterInstance router, NetworkInstance network)
     throws InvalidEntityException, InfrastructureException;
 
     /**
@@ -47,7 +48,7 @@ public interface RouterManager {
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    void delete(ClaudiaData claudiaData, Router router, Network network) throws EntityNotFoundException, InvalidEntityException,
+    void delete(ClaudiaData claudiaData, RouterInstance router, NetworkInstance network) throws EntityNotFoundException, InvalidEntityException,
     InfrastructureException;
 
     /**
@@ -55,14 +56,14 @@ public interface RouterManager {
      * 
      * @return the existent networks.
      */
-    List<Router> findAll();
+    List<RouterInstance> findAll();
 
     /**
      * Load the router.
      * 
      * @return the router.
      */
-    Router load(String name) throws EntityNotFoundException;
+    RouterInstance load(String name) throws EntityNotFoundException;
 
     /**
      * Update a router.
@@ -70,6 +71,6 @@ public interface RouterManager {
      * @param router
      * @return the router updated
      */
-    Router update(Router router) throws InvalidEntityException;
+    RouterInstance update(RouterInstance router) throws InvalidEntityException;
 
 }

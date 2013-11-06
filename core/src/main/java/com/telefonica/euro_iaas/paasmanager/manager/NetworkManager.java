@@ -23,25 +23,22 @@ public interface NetworkManager {
     /**
      * Create a network.
      * 
-     * @param claudiaData
      * @param network
      * @return the tierInstance created
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
      */
-    Network create(ClaudiaData claudiaData, Network network) throws InvalidEntityException, InfrastructureException,
+    Network create(Network network) throws InvalidEntityException, InfrastructureException,
             AlreadyExistsEntityException;
 
     /**
      * Delete a Network.
-     * 
-     * @param claudiaData
      * @param network
      * @throws EntityNotFoundException
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    void delete(ClaudiaData claudiaData, Network network) throws EntityNotFoundException, InvalidEntityException,
+    void delete(Network network) throws EntityNotFoundException, InvalidEntityException,
             InfrastructureException;
 
     /**

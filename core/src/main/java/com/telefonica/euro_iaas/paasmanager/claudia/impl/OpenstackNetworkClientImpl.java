@@ -19,7 +19,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
-import com.telefonica.euro_iaas.paasmanager.model.Router;
+import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackUtil;
 
@@ -41,7 +41,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @throws InfrastructureException
      */
 
-    public void addNetworkToRouter(ClaudiaData claudiaData, Router router, Network net) throws InfrastructureException {
+    public void addNetworkToRouter(ClaudiaData claudiaData, RouterInstance router, Network net) throws InfrastructureException {
         log.info("Add Interfact from net " + net.getNetworkName() + " to router " + router.getName()
                 + " for user " + claudiaData.getUser().getTenantName());
 
@@ -60,7 +60,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
     /**
      * It deletes the interface of the network in the router.
      */
-    public void deleteNetworkFromRouter(ClaudiaData claudiaData, Router router, Network net)
+    public void deleteNetworkFromRouter(ClaudiaData claudiaData, RouterInstance router, Network net)
     throws InfrastructureException {
         log.info("Delete Interfact net " + net.getNetworkName()+ " " + net.getIdNetRouter() + " from router " + router.getName()
                 + " for user " + claudiaData.getUser().getTenantName());
@@ -111,7 +111,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @params claudiaData
      * @params network
      */
-    public void deployRouter(ClaudiaData claudiaData, Router router) throws InfrastructureException {
+    public void deployRouter(ClaudiaData claudiaData, RouterInstance router) throws InfrastructureException {
         log.info("Deploy router " + router.getName() + " for user " + claudiaData.getUser().getTenantName());
 
         try {
@@ -188,7 +188,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
     /**
      * It delete the router in Openstack.
      */
-    public void destroyRouter(ClaudiaData claudiaData, Router router) throws InfrastructureException {
+    public void destroyRouter(ClaudiaData claudiaData, RouterInstance router) throws InfrastructureException {
         try {
             openStackUtil.deleteRouter(router.getIdRouter(), claudiaData.getUser());
         } catch (OpenStackException e) {

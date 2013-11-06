@@ -23,25 +23,23 @@ public interface SubNetworkManager {
     /**
      * Create a subnetwork.
      * 
-     * @param claudiaData
      * @param subNetwork
      * @return the tierInstance created
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
      */
-    void create(ClaudiaData claudiaData, SubNetwork subNetwork) throws InvalidEntityException, InfrastructureException,
+    void create(SubNetwork subNetwork) throws InvalidEntityException, InfrastructureException,
             AlreadyExistsEntityException;
 
     /**
      * Delete a subnetwork.
      * 
-     * @param claudiaData
      * @param subNetwork
      * @throws EntityNotFoundException
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    void delete(ClaudiaData claudiaData, SubNetwork subNetwork) throws EntityNotFoundException, InvalidEntityException,
+    void delete(SubNetwork subNetwork) throws EntityNotFoundException, InvalidEntityException,
             InfrastructureException;
 
     /**

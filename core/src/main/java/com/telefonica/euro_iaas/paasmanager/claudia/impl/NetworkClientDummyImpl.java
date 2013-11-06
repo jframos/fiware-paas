@@ -15,7 +15,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
-import com.telefonica.euro_iaas.paasmanager.model.Router;
+import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 
 /**
@@ -31,12 +31,12 @@ public class NetworkClientDummyImpl implements NetworkClient {
      * @params network
      * @throws InfrastructureException
      */
-    public void addNetworkToRouter(ClaudiaData claudiaData, Router router, Network network)
+    public void addNetworkToRouter(ClaudiaData claudiaData, RouterInstance router, Network network)
     throws InfrastructureException {
 
     }
 
-    public void deleteNetworkFromRouter(ClaudiaData claudiaData, Router router, Network network)
+    public void deleteNetworkFromRouter(ClaudiaData claudiaData, RouterInstance router, Network network)
     throws InfrastructureException {
         // TODO Auto-generated method stub
 
@@ -58,7 +58,7 @@ public class NetworkClientDummyImpl implements NetworkClient {
      * @params claudiaData
      * @params network
      */
-    public void deployRouter(ClaudiaData claudiaData, Router router) throws InfrastructureException {
+    public void deployRouter(ClaudiaData claudiaData, RouterInstance router) throws InfrastructureException {
         router.setIdRouter("id");
 
     }
@@ -90,7 +90,7 @@ public class NetworkClientDummyImpl implements NetworkClient {
      * @params claudiaData
      * @params router
      */
-    public void destroyRouter(ClaudiaData claudiaData, Router router) {
+    public void destroyRouter(ClaudiaData claudiaData, RouterInstance router) {
         // TODO Auto-generated method stub
 
     }

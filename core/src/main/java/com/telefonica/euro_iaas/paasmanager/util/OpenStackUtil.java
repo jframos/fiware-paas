@@ -10,7 +10,7 @@ package com.telefonica.euro_iaas.paasmanager.util;
 // import org.openstack.docs.compute.api.v1.Server;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
-import com.telefonica.euro_iaas.paasmanager.model.Router;
+import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
@@ -112,7 +112,7 @@ public interface OpenStackUtil {
      * @return
      * @throws OpenStackException
      */
-    String addInterface(Router router, Network net, PaasManagerUser user) throws OpenStackException;
+    String addInterface(RouterInstance router, Network net, PaasManagerUser user) throws OpenStackException;
 
     /**
      * Method to add an interface to the router.
@@ -162,7 +162,7 @@ public interface OpenStackUtil {
      * @throws OpenStackException
      *             OpenStackException
      */
-    String createRouter(Router router, PaasManagerUser user) throws OpenStackException;
+    String createRouter(RouterInstance router, PaasManagerUser user) throws OpenStackException;
 
     /**
      * Deploys a VM inOpenStack.
@@ -280,7 +280,7 @@ public interface OpenStackUtil {
      * @return
      * @throws OpenStackException
      */
-    String removeInterface(Router router, String net, PaasManagerUser user) throws OpenStackException;
+    String removeInterface(RouterInstance router, String net, PaasManagerUser user) throws OpenStackException;
 
     /**
      * It return all absolute limit values by tenantId.

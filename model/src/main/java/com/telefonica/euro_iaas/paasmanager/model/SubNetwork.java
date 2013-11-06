@@ -41,15 +41,8 @@ public class SubNetwork {
     // the network name //
     private String name;
 
-    private String idSubNet;
-
-    private String idNetwork;
-
     private String cidr;
 
-    private String allocationPoolsStart;
-
-    private String allocationPoolsEnd;
 
     /**
      * Constructor.
@@ -62,15 +55,14 @@ public class SubNetwork {
      */
     public SubNetwork(String name) {
         this.name = name;
-        this.cidr = "10.100." + 1 + ".0/24";
     }
 
     /**
      * @param networkName
      */
-    public SubNetwork(String name, String id) {
+    public SubNetwork(String name, String cidr) {
         this.name = name;
-        this.cidr = "10.100." + id + ".0/24";
+        this.cidr = cidr;
     }
 
     /**
@@ -79,22 +71,6 @@ public class SubNetwork {
     public String getCidr() {
         return cidr;
     }
-
-    /**
-     * @return the id
-     */
-    public String getIdNetwork() {
-        return idNetwork;
-    }
-
-    /**
-     * @return the id
-     */
-    public String getIdSubNet() {
-        return idSubNet;
-    }
-
-
 
     /**
      * @return the networkName
@@ -110,19 +86,6 @@ public class SubNetwork {
         this.cidr = cidr;
     }
 
-    /**
-     * @param id
-     */
-    public void setIdNetwork(String id) {
-        this.idNetwork = id;
-    }
-
-    /**
-     * @param id
-     */
-    public void setIdSubNet(String id) {
-        this.idSubNet = id;
-    }
 
     /**
      * To the subnetwork Dto.
@@ -134,24 +97,17 @@ public class SubNetwork {
         return subNetworkDto;
 
     }
-
+    
     /**
-     * the json for the OPenstack request.
-     * 
+     * To the subnetwork Dto.
      * @return
      */
-    public String toJson() {
+    public SubNetworkInstance toInstance() {
+    	SubNetworkInstance subNetworkInstance = new SubNetworkInstance(this.getName());
+    	subNetworkInstance.setCidr(this.getCidr());
+        return subNetworkInstance;
 
-        return "{\"subnet\":{" + "      \"name\":\"" + name + "\"," + "      \"network_id\":\"" + this.idNetwork
-        + "\"," + "      \"ip_version\":4," + "      \"cidr\":\"" + this.cidr + "\"   }" + "}";
     }
 
-    /**
-     * It obtains the json for adding this subnet into a router.
-     * @return
-     */
-    public String toJsonAddInterface() {
-        return  "{\"subnet_id\": \"" + getIdSubNet()+ "\" }";
-    }
 
 }

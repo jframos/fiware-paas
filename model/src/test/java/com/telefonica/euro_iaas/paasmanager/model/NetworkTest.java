@@ -99,7 +99,7 @@ public class NetworkTest extends TestCase {
         Network network = new Network(NETWORK_NAME);
         SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, "" + network.getSubNetCounts());
         network.addSubNet(subnet);
-        Router router = new Router(ID_PUBLIC_NET, ROUTER_NAME);
+        RouterInstance router = new RouterInstance(ID_PUBLIC_NET, ROUTER_NAME);
 
         router.setIdRouter(ID);
         assertEquals(network.getNetworkName(), NETWORK_NAME);
