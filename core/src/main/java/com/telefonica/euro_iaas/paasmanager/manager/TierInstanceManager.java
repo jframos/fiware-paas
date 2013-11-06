@@ -31,9 +31,10 @@ public interface TierInstanceManager {
      * 
      * @param tierInstance
      * @return the tierInstance created
+     * @throws InfrastructureException 
      */
     TierInstance update(ClaudiaData claudiaData, String envName, TierInstance tierInstance)
-            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException;
+            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException, InfrastructureException;
 
     /**
      * Scale a TierInstance
@@ -96,8 +97,9 @@ public interface TierInstanceManager {
      * @param tierInstance
      * @return
      * @throws InvalidEntityException
+     * @throws InfrastructureException 
      */
-    TierInstance create(ClaudiaData claudiaa, String envName, TierInstance tierInstance) throws InvalidEntityException;
+    TierInstance create(ClaudiaData claudiaa, String envName, TierInstance tierInstance) throws InvalidEntityException, InfrastructureException;
 
     /**
      * @param org

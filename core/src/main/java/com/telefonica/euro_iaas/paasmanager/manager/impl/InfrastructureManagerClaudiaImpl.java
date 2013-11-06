@@ -575,7 +575,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
     }
 
     private TierInstance insertTierInstanceBD(ClaudiaData claudiaData, String envName, TierInstance tierInstance)
-            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
+            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
 
         log.debug("Inserting in database");
         TierInstance tierInstanceDB = null;

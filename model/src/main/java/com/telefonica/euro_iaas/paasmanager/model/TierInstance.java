@@ -8,7 +8,10 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -56,6 +59,10 @@ public class TierInstance extends InstallableInstance {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tierinstance_has_productinstances", joinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "productinstance_ID", nullable = false, updatable = false) })
     private List<ProductInstance> productInstances;
+    
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "tierinstance_has_networkinstance", joinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "networkinstance_ID", nullable = false, updatable = false) })
+    private Set<NetworkInstance> networkInstances;
 
     /**
      * Constructor.
@@ -115,6 +122,16 @@ public class TierInstance extends InstallableInstance {
         }
         this.productInstances.add(productInstance);
     }
+    
+    /**
+     * @param productInstance
+     */
+    public void addNetworkInstance(NetworkInstance networkInstance) {
+        if (networkInstances == null) {
+        	networkInstances = new HashSet<NetworkInstance>();
+        }
+        this.networkInstances.add(networkInstance);
+    }
 
     /**
      * @param productInstance
@@ -122,6 +139,15 @@ public class TierInstance extends InstallableInstance {
     public void deleteProductInstance(ProductInstance productInstance) {
         if (productInstances.contains(productInstance)) {
             this.productInstances.remove(productInstance);
+        }
+    }
+    
+    /**
+     * @param productInstance
+     */
+    public void deleteNetworkInstance(NetworkInstance networkInstance) {
+        if (networkInstances.contains(networkInstance)) {
+            this.networkInstances.remove(networkInstance);
         }
     }
 
@@ -146,6 +172,16 @@ public class TierInstance extends InstallableInstance {
      */
     public List<ProductInstance> getProductInstances() {
         return productInstances;
+    }
+    
+    /**
+     * @return the productInstances
+     */
+    public Set<NetworkInstance> getNetworkInstances() {
+    	if (networkInstances == null) {
+    		networkInstances = new HashSet<NetworkInstance> ();
+    	}
+        return networkInstances;
     }
 
     public String getTaskId() {

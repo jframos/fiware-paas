@@ -59,6 +59,7 @@ public class NetworkClientDummyImpl implements NetworkClient {
      * @params network
      */
     public void deployNetwork(ClaudiaData claudiaData, NetworkInstance network) throws InfrastructureException {
+    	network.setIdNetwork("id");
     }
 
     /**
@@ -79,6 +80,7 @@ public class NetworkClientDummyImpl implements NetworkClient {
      * @params subNet
      */
     public void deploySubNetwork(ClaudiaData claudiaData, SubNetworkInstance subNet) throws InfrastructureException {
+    	subNet.setIdNetwork("id");
 
     }
 

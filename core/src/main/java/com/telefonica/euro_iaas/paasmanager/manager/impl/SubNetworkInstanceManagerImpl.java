@@ -43,7 +43,7 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
      */
     public void create(ClaudiaData claudiaData, SubNetworkInstance subNetwork) throws InvalidEntityException,
     InfrastructureException, AlreadyExistsEntityException {
-        log.debug("Create subnetwork " + subNetwork.getName());
+        log.debug("Create subnetwork instance " + subNetwork.getName());
 
         try {
             subNetworkInstanceDao.load(subNetwork.getName());
@@ -107,7 +107,7 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
         this.networkClient = networkClient;
     }
 
-    public void setSubNetworkDao(SubNetworkInstanceDao subNetworkInstanceDao) {
+    public void setSubNetworkInstanceDao(SubNetworkInstanceDao subNetworkInstanceDao) {
         this.subNetworkInstanceDao = subNetworkInstanceDao;
     }
 

@@ -100,7 +100,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network");
+        Network net = new Network("network_creation22");
         tierbk.addNetwork(net);
 
         environmentBk.addTier(tierbk);
@@ -113,18 +113,11 @@ public class NetworkinEnvironmenInstanceTest {
         envInst.setBlueprintName("blueprintname2");
         envInst.setDescription("description");
         envInst.setEnvironmentDto(environmentBk.toDto());
-        List<TierInstanceDto> tierInstanceDtos = new ArrayList(2);
-        TierInstanceDto tierInstanceDto = new TierInstanceDto();
-        TierDto tierDto = new TierDto();
-        tierDto.setInitialNumberInstances(1);
-        tierDto.setFloatingip("true");
-        tierInstanceDto.setTierDto(tierDto);
-        tierInstanceDtos.add(tierInstanceDto);
-        envInst.setTierInstances(tierInstanceDtos);
+  
 
         Task task = environmentInstanceResource.create(org, vdc, envInst, "");
 
-        Thread.sleep(5000);
+        Thread.sleep(100000);
 
         assertEquals(task.getStatus(), Task.TaskStates.RUNNING);
 

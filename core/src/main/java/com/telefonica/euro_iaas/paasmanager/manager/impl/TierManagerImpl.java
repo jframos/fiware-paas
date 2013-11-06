@@ -96,7 +96,7 @@ public class TierManagerImpl implements TierManager {
                 SecurityGroup securityGroup = createSecurityGroup(claudiaData, tier);
                 tier.setSecurityGroup(securityGroup);
             }
-            /*   List<Network> networkToBeDeployed = new ArrayList<Network>();
+            List<Network> networkToBeDeployed = new ArrayList<Network>();
             for (Network network: tier.getNetworks()) {
                 networkToBeDeployed.add(network);
             }
@@ -109,13 +109,13 @@ public class TierManagerImpl implements TierManager {
                     log.debug("the network " + network.getNetworkName() + " already exists");
                 } catch (EntityNotFoundException e1) {
                     try {
-                        network = networkManager.create(claudiaData, network);
+                        network = networkManager.create(network);
                     } catch (AlreadyExistsEntityException e2) {
                         throw new InvalidEntityException(network);
                     }
                 }
                 tier.addNetwork(network);
-            }*/
+            }
             return tierInsertBD(tier, claudiaData);
         }
     }

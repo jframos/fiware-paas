@@ -58,21 +58,15 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
      */
-    public NetworkInstance create(ClaudiaData claudiaData, Network network)
+    public NetworkInstance create(ClaudiaData claudiaData, NetworkInstance networkInstance)
         throws InvalidEntityException, InfrastructureException,
         AlreadyExistsEntityException {
-        log.debug("Create network " + network.getNetworkName());
-        NetworkInstance networkInstance = network.toNetworkInstance();
+        log.debug("Create network " + networkInstance.getNetworkName());
         try {
             
             networkInstance = networkInstanceDao.
                 load(networkInstance.getNetworkName());
             log.debug("The network already exists");
-            for (SubNetworkInstance subnet: networkInstance.getSubNets()) {
-                if (!networkInstance.contains(subnet)) {
-                    createSubNetwork(claudiaData, networkInstance, subnet);
-                }
-            }
             return networkInstance;
 
         } catch (EntityNotFoundException e1) {
@@ -80,12 +74,13 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
                 networkClient.deployNetwork(claudiaData, networkInstance);
                 log.debug("Network isntance " + networkInstance.getNetworkName()
                     + " : " + networkInstance.getIdNetwork() + " deployed");
-                createSubNetwork(claudiaData, networkInstance, null);
-                createRouter(claudiaData, networkInstance);
-                networkInstance = networkInstanceDao.create(networkInstance);
+                createSubNetworksInstance(claudiaData, networkInstance);
+                networkClient.addNetworkToPublicRouter(claudiaData, networkInstance);
+            
+               networkInstance = networkInstanceDao.create(networkInstance);
             } catch (Exception e) {
                 log.error("Error to create the network in BD " + e.getMessage());
-                throw new InvalidEntityException(network);
+                throw new InvalidEntityException(networkInstance);
             }
         }
 
@@ -118,20 +113,13 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
      */
-    public void createSubNetwork(ClaudiaData claudiaData, NetworkInstance networkInstance, SubNetworkInstance subNetwork)
+    public void createSubNetworksInstance(ClaudiaData claudiaData, NetworkInstance networkInstance)
         throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException
     {
-
-        SubNetworkInstance subNet = subNetwork;
-        if (subNet == null) {
-            int cidrCount = findAll().size() + 1;
-            subNet = new SubNetworkInstance("sub-net-" + networkInstance.getNetworkName() + "-"
-                    + cidrCount, "" + cidrCount);
-        }
-
-        networkInstance.addSubNet(subNet);
-        subNetworkInstanceManager.create(claudiaData, subNet);
-        log.debug("SubNetwork " + subNet.getName() + " in network  " + networkInstance.getNetworkName() + " deployed");
+    	for (SubNetworkInstance subNet: networkInstance.getSubNets()) {
+            subNetworkInstanceManager.create(claudiaData, subNet);
+            log.debug("SubNetwork " + subNet.getName() + " in network  " + networkInstance.getNetworkName() + " deployed");
+    	}
     }
 
     /**

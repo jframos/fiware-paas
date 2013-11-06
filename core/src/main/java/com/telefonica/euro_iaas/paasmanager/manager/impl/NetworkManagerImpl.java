@@ -51,18 +51,21 @@ public class NetworkManagerImpl implements NetworkManager {
         log.debug("Create network " + network.getNetworkName());
 
         try {
-        	network = networkDao.load(network.getNetworkName());
+        	Network networkDB = networkDao.load(network.getNetworkName());
             log.debug("The network already exists");
             for (SubNetwork subnet: network.getSubNets()) {
-                if (!network.contains(subnet)) {
+                if (!networkDB.contains(subnet)) {
                     createSubNetwork(network, subnet);
                 }
+            }
+            if (network.getSubNets().size() ==0) {
+            	 createSubNetwork(network);
             }
             return network;
 
         } catch (EntityNotFoundException e1) {
             try {
-                createSubNetwork(network, null);
+                createSubNetwork(network);
                 network = networkDao.create(network);
             } catch (Exception e) {
                 log.error("Error to create the network " + e.getMessage());
@@ -97,6 +100,25 @@ public class NetworkManagerImpl implements NetworkManager {
         network.addSubNet(subNet);
         subNetworkManager.create(subNet);
         log.debug("SubNetwork " + subNet.getName() + " in network  " + network.getNetworkName() + " deployed");
+    }
+    
+    /**
+     * It creates a subnet in the network.
+     * @param claudiaData
+     * @param network
+     * @param subNetwork
+     * @throws InvalidEntityException
+     * @throws InfrastructureException
+     * @throws AlreadyExistsEntityException
+     * @throws InfrastructureException 
+     */
+    public void createSubNetwork(Network network)
+        throws InvalidEntityException, AlreadyExistsEntityException
+    {
+        int cidrCount = findAll().size() + 1;
+        SubNetwork subNet = new SubNetwork("sub-net-" + network.getNetworkName() + "-"
+                   + cidrCount, "" + cidrCount);
+        createSubNetwork (network, subNet);
     }
 
     /**

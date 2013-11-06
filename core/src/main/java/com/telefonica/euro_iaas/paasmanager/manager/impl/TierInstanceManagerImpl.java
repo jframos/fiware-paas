@@ -24,6 +24,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.ProductReconfigurationExce
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager;
+import com.telefonica.euro_iaas.paasmanager.manager.NetworkInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
@@ -33,6 +34,8 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
@@ -51,12 +54,12 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     private ProductReleaseManager productReleaseManager;
     private EnvironmentInstanceManager environmentInstanceManager;
     private EnvironmentManager environmentManager;
-    private NetworkManager networkManager;
+    private NetworkInstanceManager networkInstanceManager;
 
     private static Logger log = Logger.getLogger(TierInstanceManagerImpl.class);
 
     public TierInstance create(ClaudiaData data, String envName, TierInstance tierInstance)
-            throws InvalidEntityException {
+            throws InvalidEntityException, InfrastructureException {
         log.debug("Inserting in database tierInstance" + tierInstance.getName());
 
         TierInstance tierInstanceDB = new TierInstance();
@@ -78,6 +81,31 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                     + e.getMessage());
         }
         tierInstanceDB.setTier(tierDB);
+        
+        // Creating networks...
+        List<NetworkInstance> networkToBeDeployed = new ArrayList<NetworkInstance>();
+        for (Network network: tierDB.getNetworks()) {
+            networkToBeDeployed.add(network.toNetworkInstance());
+        }
+        
+        for (NetworkInstance network: networkToBeDeployed) {
+            log.debug("Network instance to be deployed: " + network.getNetworkName());
+
+            try {
+                network = networkInstanceManager.load(network.getNetworkName());
+                log.debug("the network " + network.getNetworkName() + " already exists");
+            } catch (EntityNotFoundException e1) {
+                try {
+                    network = networkInstanceManager.create(data, network);
+                } catch (AlreadyExistsEntityException e2) {
+                    throw new InvalidEntityException(network);
+                } catch (InfrastructureException e) { 
+                	String mens = "Error to deploy a network " + network.getNetworkName() + " :" + e.getMessage();
+                	throw new InfrastructureException(mens);
+				}
+            }
+            tierInstanceDB.addNetworkInstance(network);
+        }
 
         if (tierInstance.getProductInstances() != null) {
             for (ProductInstance productInstance : tierInstance.getProductInstances()) {
@@ -114,6 +142,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         }
 
         tierInstanceDB.setNumberReplica(tierInstance.getNumberReplica());
+
+        
 
         try {
             tierInstanceDB.setStatus(tierInstance.getStatus());
@@ -441,8 +471,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         this.infrastructureManager = infrastructureManager;
     }
 
-    public void setNetworkManager(NetworkManager networkManager) {
-        this.networkManager = networkManager;
+    public void setNetworkInstanceManager(NetworkInstanceManager networkInstanceManager) {
+        this.networkInstanceManager = networkInstanceManager;
     }
 
     public void setProductInstanceManager(ProductInstanceManager productInstanceManager) {
@@ -462,7 +492,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     }
 
     public TierInstance update(ClaudiaData claudiaData, String envName, TierInstance tierInstance)
-            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
+            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
 
         if (tierInstance.getId() != null)
             tierInstance = tierInstanceDao.update(tierInstance);

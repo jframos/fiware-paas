@@ -31,7 +31,7 @@ public interface NetworkInstanceManager {
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
      */
-	NetworkInstance create(ClaudiaData claudiaData, Network network) throws InvalidEntityException, InfrastructureException,
+	NetworkInstance create(ClaudiaData claudiaData, NetworkInstance network) throws InvalidEntityException, InfrastructureException,
             AlreadyExistsEntityException;
 
     /**

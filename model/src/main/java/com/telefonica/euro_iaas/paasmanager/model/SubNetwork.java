@@ -60,9 +60,9 @@ public class SubNetwork {
     /**
      * @param networkName
      */
-    public SubNetwork(String name, String cidr) {
+    public SubNetwork(String name, String id) {
         this.name = name;
-        this.cidr = cidr;
+        this.cidr = "10.100." + id + ".0/24";
     }
 
     /**

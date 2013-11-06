@@ -196,7 +196,7 @@ public class NetworkInstance {
      * @return the json representation
      */
     public String toJson() {
-        return "{" + " \"network\":{" + "    \"name\": \"" + this.name + "\"," + "    \"admin_state_up\": false,"
+        return "{" + " \"network\":{" + "    \"name\": \"" + this.name + "\"," + "    \"admin_state_up\": true,"
         + "    \"shared\": false" + "  }" + "}";
 
     }

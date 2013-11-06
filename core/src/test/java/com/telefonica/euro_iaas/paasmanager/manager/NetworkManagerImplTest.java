@@ -63,15 +63,18 @@ public class NetworkManagerImplTest extends TestCase {
         Network net = new Network(NETWORK_NAME);
 
         // When
-        when(networkDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
-        Mockito.doNothing().when(subNetworkManager).create(any(SubNetwork.class));
+        when(networkDao.load(any(String.class))).
+            thenThrow(new EntityNotFoundException(Network.class, "test", net));
+        Mockito.doNothing().when(subNetworkManager).
+            create(any(SubNetwork.class));
         when(networkDao.create(any(Network.class))).thenReturn(net);
 
         // Verity
         networkManager.create(net);
         assertEquals(net.getNetworkName(), NETWORK_NAME);
         assertEquals(net.getSubNets().size(), 1);
-        assertEquals(net.getSubNets().get(0).getName(), "sub-net-" + NETWORK_NAME + "-1");
+        assertEquals(net.getSubNets().get(0).getName(),
+            "sub-net-" + NETWORK_NAME + "-1");
         assertEquals(net.getSubNets().get(0).getCidr(), CIDR);
 
     }
@@ -86,7 +89,8 @@ public class NetworkManagerImplTest extends TestCase {
         Network net = new Network(NETWORK_NAME);
 
         // When
-        when(networkDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
+        when(networkDao.load(any(String.class))).
+            thenThrow(new EntityNotFoundException(Network.class, "test", net));
         Mockito.doNothing().when(networkDao).remove(any(Network.class));
         when(networkDao.create(any(Network.class))).thenReturn(net);
 

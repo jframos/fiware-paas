@@ -76,23 +76,58 @@ public class NetworkInstanceManagerImplTest extends TestCase {
     public void testCreateNetwork() throws Exception {
         // Given
         Network net = new Network(NETWORK_NAME);
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME);
+        net.addSubNet(subNet);
         NetworkInstance netInst = net.toNetworkInstance();
+        netInst.setIdNetwork("ID");
         ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
 
         // When
         when(networkInstanceDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
         when(systemPropertiesProvider.getProperty("key")).thenReturn("VALUE");
         Mockito.doNothing().when(networkClient).deployNetwork(any(ClaudiaData.class), any(NetworkInstance.class));
+        Mockito.doNothing().when(networkClient).addNetworkToPublicRouter(any(ClaudiaData.class), any(NetworkInstance.class));
         Mockito.doNothing().when(subNetworkInstanceManager).create(any(ClaudiaData.class), any(SubNetworkInstance.class));
         Mockito.doNothing().when(routerManager).create(any(ClaudiaData.class), any(RouterInstance.class), any(NetworkInstance.class));
         when(networkInstanceDao.create(any(NetworkInstance.class))).thenReturn(netInst);
+        
+        // Verity
+        NetworkInstance netInstOut = networkInstanceManager.create(claudiaData, netInst);
+        assertEquals(netInstOut.getNetworkName(), NETWORK_NAME);
+        assertEquals(netInstOut.getSubNets().size(), 1);
+        assertEquals(netInstOut.getSubNets().get(0).getName(), SUB_NETWORK_NAME);
+    }
+    
+    /**
+     * It tests the creation of a network.
+     * @throws Exception
+     */
+    @Test
+    public void testCreateNetworkAlreadyExist() throws Exception {
+        // Given
+        Network net = new Network(NETWORK_NAME);
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME);
+        net.addSubNet(subNet);
+        NetworkInstance netInst = net.toNetworkInstance();
+        ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
+
+        // When
+        when(networkInstanceDao.load(any(String.class))).thenReturn(netInst);
+        when(systemPropertiesProvider.getProperty("key")).thenReturn("VALUE");
+        Mockito.doNothing().when(networkClient).
+            deployNetwork(any(ClaudiaData.class), any(NetworkInstance.class));
+        Mockito.doNothing().when(subNetworkInstanceManager).
+            create(any(ClaudiaData.class), any(SubNetworkInstance.class));
+        Mockito.doNothing().when(routerManager).
+            create(any(ClaudiaData.class), any(RouterInstance.class), any(NetworkInstance.class));
+        when(networkInstanceDao.create(any(NetworkInstance.class))).
+            thenReturn(netInst);
 
         // Verity
-        networkInstanceManager.create(claudiaData, net);
-        assertEquals(net.getNetworkName(), NETWORK_NAME);
-        assertEquals(net.getSubNets().size(), 1);
-        assertEquals(net.getSubNets().get(0).getName(), "sub-net-" + NETWORK_NAME + "-1");
-        assertEquals(net.getSubNets().get(0).getCidr(), CIDR);
+        NetworkInstance netInstOut =
+            networkInstanceManager.create(claudiaData, netInst);
+        assertEquals(netInstOut.getNetworkName(), NETWORK_NAME);
+        assertEquals(netInstOut.getSubNets().size(), 1);
 
     }
 
