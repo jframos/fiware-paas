@@ -34,20 +34,20 @@ public class NetworkTest extends TestCase {
 
 
 
-    public static String SUBNETWORK_STRING = "{\"subnet\":{" +
-    "      \"name\":\"" + SUBNETWORK_NAME + "\"," +
-    "      \"network_id\":\"" + ID + "\"," +
-    "      \"ip_version\":4," +
-    "      \"cidr\":\""+ CIDR+"\""+
-    "   }" +
-    "}";
+    public static String SUBNETWORK_STRING = "{\"subnet\":{"
+        + "      \"name\":\"" + SUBNETWORK_NAME + "\","
+        + "      \"network_id\":\"" + ID + "\","
+        + "      \"ip_version\":4," 
+        + "      \"cidr\":\"" + CIDR + "\""
+        + "   }"
+        + "}";
 
     public static String ADDINTERFACE = "{\"subnet_id\": \"" + ID+ "\" }";
 
 
 
     public static String NETWORK_STRING = "{" + " \"network\":{" + "    \"name\": \"" + NETWORK_NAME + "\","
-    + "    \"admin_state_up\": false," + "    \"shared\": false" + "  }" + "}";
+        + "    \"admin_state_up\": true," + "    \"shared\": false" + "  }" + "}";
 
 
     @Override

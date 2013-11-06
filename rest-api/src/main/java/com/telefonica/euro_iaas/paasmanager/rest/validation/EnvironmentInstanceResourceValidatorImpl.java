@@ -184,7 +184,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
     }
 
-    @Override
+
     public void validateQuota(ClaudiaData claudiaData, EnvironmentInstanceDto environmentInstanceDto)
             throws InvalidEnvironmentRequestException, QuotaExceededException {
 

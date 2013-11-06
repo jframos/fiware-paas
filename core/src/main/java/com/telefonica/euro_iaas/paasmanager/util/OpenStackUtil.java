@@ -103,20 +103,30 @@ public interface OpenStackUtil {
     /**
      * path for a detailed resource.
      */
-    String ERROR_AUTHENTICATION_HEADERS = "Authentication Token, Tenant ID and User must be initialized...";
+
+    public static final String ERROR_AUTHENTICATION_HEADERS = "Authentication Token, Tenant ID and User must be initialized...";
 
     /**
-     * @param router
+     * It adds an network interface to the public router.
      * @param net
-     * @param user
      * @return
      * @throws OpenStackException
      */
-    String addInterface(Router router, Network net, PaasManagerUser user) throws OpenStackException;
+    String addInterfaceToPublicRouter(PaasManagerUser user, Network net) throws OpenStackException;
+    
+   /**
+    * It adds an interface to the router.
+    * @param router
+    * @param net
+    * @param user
+    * @return the id
+    * @throws OpenStackException
+    */
+    String addInterface(String router, Network net, PaasManagerUser user)
+        throws OpenStackException;
 
     /**
      * Method to add an interface to the router.
-     * 
      * @param routerId
      *            the id of the router
      * @param subNetId
@@ -127,21 +137,22 @@ public interface OpenStackUtil {
      * @throws OpenStackException
      *             OpenStackException
      */
-    String addRouterInterface(String routerId, String subNetId, PaasManagerUser user) throws OpenStackException;
+    String addRouterInterface(String routerId, String subNetId, PaasManagerUser user)
+        throws OpenStackException;
 
     /**
      * Assign FloatingIP to a serverId.
-     * 
      * @param serverId
+     * @param floatingIP
      * @param floatingIP
      * @return
      * @throws OpenStackException
      */
-    String assignFloatingIP(String serverId, String floatingIP, PaasManagerUser user) throws OpenStackException;
+    String assignFloatingIP(String serverId, String floatingIP, PaasManagerUser user)
+        throws OpenStackException;
 
     /**
      * Method to create a new network.
-     * 
      * @param net
      * @param user
      *            the user
@@ -149,7 +160,8 @@ public interface OpenStackUtil {
      * @throws OpenStackException
      *             OpenStackException
      */
-    String createNetwork(Network net, PaasManagerUser user) throws OpenStackException;
+    String createNetwork(Network net, PaasManagerUser user)
+        throws OpenStackException;
 
     /**
      * Method to create a new router.

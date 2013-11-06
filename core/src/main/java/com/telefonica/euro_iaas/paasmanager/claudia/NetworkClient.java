@@ -23,15 +23,21 @@ import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 public interface NetworkClient {
 
 
-
+    /**
+     * Add the network to the public router.
+     * 
+     * @param network
+     */
+    void addNetworkToPublicRouter(ClaudiaData claudiaData,Network net) throws InfrastructureException;
+    
     /**
      * Add the network to the router.
      * 
      * @param claudiaData
-     * @param router
+     * @param routerId
      * @param network
      */
-    void addNetworkToRouter(ClaudiaData claudiaData, Router router, Network network) throws InfrastructureException;
+    void addNetworkToRouter(ClaudiaData claudiaData, String routerId, Network network) throws InfrastructureException;
 
     /**
      * Remove the network from the router.
@@ -41,7 +47,7 @@ public interface NetworkClient {
      * @param idNet
      */
     void deleteNetworkFromRouter(ClaudiaData claudiaData, Router router, Network idNet)
-    throws InfrastructureException;
+        throws InfrastructureException;
 
     /**
      * Deploy the network in the infrastructure.

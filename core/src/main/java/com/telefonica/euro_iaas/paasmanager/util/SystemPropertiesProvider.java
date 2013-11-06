@@ -112,6 +112,7 @@ public interface SystemPropertiesProvider {
     public static final String KEYSTONE_DATABASE_PASSWORD = "keystone.database.password";
 
     public static final String PUBLIC_NETWORK_ID = "openstack.network.public";
+    public static final String PUBLIC_ROUTER_ID = "openstack.router.public";
 
     /**
      * pool name in nova *
