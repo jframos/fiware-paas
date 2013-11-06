@@ -47,7 +47,7 @@ public class NetworkManagerImpl implements NetworkManager {
      * @params network
      */
     public Network create(Network network) throws InvalidEntityException,
-    InfrastructureException, AlreadyExistsEntityException {
+        InfrastructureException, AlreadyExistsEntityException {
         log.debug("Create network " + network.getNetworkName());
 
         try {
@@ -58,7 +58,7 @@ public class NetworkManagerImpl implements NetworkManager {
                     createSubNetwork(network, subnet);
                 }
             }
-            if (network.getSubNets().size() ==0) {
+            if (network.getSubNets().size() == 0) {
             	 createSubNetwork(network);
             }
             return network;
@@ -85,11 +85,9 @@ public class NetworkManagerImpl implements NetworkManager {
      * @throws InvalidEntityException
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
-     * @throws InfrastructureException 
-     */
+     * @throws InfrastructureException     */
     public void createSubNetwork(Network network, SubNetwork subNetwork)
-        throws InvalidEntityException, AlreadyExistsEntityException
-    {
+        throws InvalidEntityException, AlreadyExistsEntityException {
 
         SubNetwork subNet = subNetwork;
         if (subNet == null) {
@@ -99,40 +97,38 @@ public class NetworkManagerImpl implements NetworkManager {
         }
         network.addSubNet(subNet);
         subNetworkManager.create(subNet);
-        log.debug("SubNetwork " + subNet.getName() + " in network  " + network.getNetworkName() + " deployed");
+        log.debug("SubNetwork " + subNet.getName() + " in network  "
+            + network.getNetworkName() + " deployed");
     }
     
     /**
      * It creates a subnet in the network.
      * @param claudiaData
      * @param network
-     * @param subNetwork
      * @throws InvalidEntityException
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
-     * @throws InfrastructureException 
      */
     public void createSubNetwork(Network network)
-        throws InvalidEntityException, AlreadyExistsEntityException
-    {
+        throws InvalidEntityException, AlreadyExistsEntityException {
         int cidrCount = findAll().size() + 1;
-        SubNetwork subNet = new SubNetwork("sub-net-" + network.getNetworkName() + "-"
-                   + cidrCount, "" + cidrCount);
+        SubNetwork subNet = new SubNetwork("sub-net-" + network.getNetworkName()
+            + "-" + cidrCount, "" + cidrCount);
         createSubNetwork (network, subNet);
     }
 
     /**
      * To remove a network.
-     * 
+     *
      * @params claudiaData
      * @params network
      */
     public void delete(Network network) throws EntityNotFoundException,
-    InvalidEntityException {
+        InvalidEntityException {
         log.debug("Destroying network " + network.getNetworkName());
 
         log.debug("Deleting the subnets");
-        List<SubNetwork> subNetsAux = new ArrayList<SubNetwork> ();
+        List<SubNetwork> subNetsAux = new ArrayList<SubNetwork>();
         for (SubNetwork subNet: network.getSubNets()) {
         	subNetsAux.add(subNet);
         }
@@ -155,7 +151,7 @@ public class NetworkManagerImpl implements NetworkManager {
 
     /**
      * To obtain the list of networks.
-     * 
+     *
      * @return the network list
      */
     public List<Network> findAll() {
@@ -164,7 +160,7 @@ public class NetworkManagerImpl implements NetworkManager {
 
     /**
      * To obtain the network.
-     * 
+     *
      * @param name
      * @param vdc
      * @param networkName
@@ -187,7 +183,7 @@ public class NetworkManagerImpl implements NetworkManager {
 
     /**
      * To update the network.
-     * 
+     *
      * @param network
      * @return the network
      */

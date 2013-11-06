@@ -82,30 +82,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         }
         tierInstanceDB.setTier(tierDB);
         
-        // Creating networks...
-        List<NetworkInstance> networkToBeDeployed = new ArrayList<NetworkInstance>();
-        for (Network network: tierDB.getNetworks()) {
-            networkToBeDeployed.add(network.toNetworkInstance());
-        }
         
-        for (NetworkInstance network: networkToBeDeployed) {
-            log.debug("Network instance to be deployed: " + network.getNetworkName());
-
-            try {
-                network = networkInstanceManager.load(network.getNetworkName());
-                log.debug("the network " + network.getNetworkName() + " already exists");
-            } catch (EntityNotFoundException e1) {
-                try {
-                    network = networkInstanceManager.create(data, network);
-                } catch (AlreadyExistsEntityException e2) {
-                    throw new InvalidEntityException(network);
-                } catch (InfrastructureException e) { 
-                	String mens = "Error to deploy a network " + network.getNetworkName() + " :" + e.getMessage();
-                	throw new InfrastructureException(mens);
-				}
-            }
-            tierInstanceDB.addNetworkInstance(network);
-        }
 
         if (tierInstance.getProductInstances() != null) {
             for (ProductInstance productInstance : tierInstance.getProductInstances()) {
@@ -157,6 +134,32 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         return tierInstance;
     }
 
+    private void deployNetworks (ClaudiaData data, TierInstance tierInstance) throws InvalidEntityException, InfrastructureException {
+    	// Creating networks...
+        List<NetworkInstance> networkToBeDeployed = new ArrayList<NetworkInstance>();
+        for (Network network: tierInstance.getTier().getNetworks()) {
+            networkToBeDeployed.add(network.toNetworkInstance());
+        }
+        
+        for (NetworkInstance network: networkToBeDeployed) {
+            log.debug("Network instance to be deployed: " + network.getNetworkName());
+
+            try {
+                network = networkInstanceManager.load(network.getNetworkName());
+                log.debug("the network " + network.getNetworkName() + " already exists");
+            } catch (EntityNotFoundException e1) {
+                try {
+                    network = networkInstanceManager.create(data, network);
+                } catch (AlreadyExistsEntityException e2) {
+                    throw new InvalidEntityException(network);
+                } catch (InfrastructureException e) { 
+                	String mens = "Error to deploy a network " + network.getNetworkName() + " :" + e.getMessage();
+                	throw new InfrastructureException(mens);
+				}
+            }
+            tierInstance.addNetworkInstance(network);
+        }
+    }
     public void create(ClaudiaData claudiaData, TierInstance tierInstance, EnvironmentInstance envInstance,
             SystemPropertiesProvider systemPropertiesProvider) throws InfrastructureException, EntityNotFoundException,
             InvalidEntityException, AlreadyExistsEntityException, NotUniqueResultException,
@@ -187,6 +190,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         /*
          * for (Network network: tierInstance.getTier().getNetworks()) { networkManager.create(claudiaData, network); }
          */
+        
+        deployNetworks (claudiaData, tierInstance);
 
         infrastructureManager.deployVM(claudiaData, tierInstance.getTier(), replicaNumber, tierInstance.getOvf(), vm);
 

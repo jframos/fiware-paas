@@ -43,7 +43,7 @@ public class NetworkInstance {
     @XmlTransient
     private Long id;
 
-    // the network name //
+    /** the network name */
     private String name;
 
     private String idNetwork;
@@ -78,7 +78,7 @@ public class NetworkInstance {
 
     /**
      * It adds a router to the network.
-     * 
+     *
      * @param router
      * @return
      */
@@ -91,7 +91,7 @@ public class NetworkInstance {
 
     /**
      * It adds a subnet to the network.
-     * 
+     *
      * @param subNet
      * @return
      */
@@ -105,7 +105,7 @@ public class NetworkInstance {
     }
 
     /**
-     * 
+     *
      * @param subNet
      * @return
      */
@@ -184,8 +184,7 @@ public class NetworkInstance {
     public String toAddInterfaceJson() {
         if (getSubNets().size() != 0) {
             return this.getSubNets().get(0).toJsonAddInterface();
-        }
-        else {
+        } else {
             return "";
         }
     }

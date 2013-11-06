@@ -100,7 +100,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network_creation22");
+        Network net = new Network("network_creation1");
         tierbk.addNetwork(net);
 
         environmentBk.addTier(tierbk);
@@ -117,7 +117,7 @@ public class NetworkinEnvironmenInstanceTest {
 
         Task task = environmentInstanceResource.create(org, vdc, envInst, "");
 
-        Thread.sleep(100000);
+        Thread.sleep(5000);
 
         assertEquals(task.getStatus(), Task.TaskStates.RUNNING);
 
@@ -156,7 +156,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network");
+        Network net = new Network("network2");
         tierbk.addNetwork(net);
 
         environmentBk.addTier(tierbk);
@@ -174,7 +174,7 @@ public class NetworkinEnvironmenInstanceTest {
         assertNotNull(env2);
         assertNotNull(env2.getTiers().get(0).getNetworks());
         assertEquals(env2.getTiers().get(0).getNetworks().size(), 1);
-        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(), "network");
+        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(), "network2");
         assertEquals(env2.getTiers().get(0).getNetworks().get(0).getSubNets().size(), 1);
 
     }
@@ -202,7 +202,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network");
+        Network net = new Network("network3");
 
         tierbk.addNetwork(net);
 
@@ -226,7 +226,7 @@ public class NetworkinEnvironmenInstanceTest {
         assertNotNull(env2);
         assertNotNull(env2.getTiers().get(0).getNetworks());
         assertEquals(env2.getTiers().get(0).getNetworks().size(), 1);
-        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(), "network");
+        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(), "network3");
         assertEquals(env2.getTiers().get(0).getNetworks().get(0).getSubNets().size(), 1);
 
     }
@@ -254,7 +254,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network");
+        Network net = new Network("network4");
 
         tierbk.addNetwork(net);
 
@@ -267,7 +267,7 @@ public class NetworkinEnvironmenInstanceTest {
         assertNotNull(env2);
         assertNotNull(env2.getTiers().get(0).getNetworks());
         assertEquals(env2.getTiers().get(0).getNetworks().size(), 1);
-        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(), "network");
+        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(), "network4");
         assertEquals(env2.getTiers().get(0).getNetworks().get(0).getSubNets().size(), 1);
         
         environmentResource.delete(org, vdc, "testDeleteEnvwitNetwor");
