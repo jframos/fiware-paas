@@ -232,7 +232,14 @@ public class TierInstance extends InstallableInstance {
     public void setProductInstances(List<ProductInstance> productInstances) {
         this.productInstances = productInstances;
     }
-
+    /**
+    * @param productInstances
+    *            the productInstances to set
+    */
+   public void setNetworkInstance(Set<NetworkInstance> networkInstances) {
+       this.networkInstances = networkInstances;
+   }
+    
     public void setTaskId(String id) {
         taskId = id;
 
@@ -286,6 +293,35 @@ public class TierInstance extends InstallableInstance {
         }
 
         return tierInstanceDto;
+    }
+    
+    /**
+     * to json.
+     * @return
+     */
+    public String toJson() {
+        String payload = "{\"server\": " + "{\"key_name\": \""
+        + getTier().getKeypair() + "\", ";
+        if (getTier().getSecurityGroup() != null) {
+            payload = payload + "\"security_groups\": [{ \"name\": \""
+            + getTier().getSecurityGroup().getName() + "\"}], ";
+        }
+        if (this.getNetworkInstances() != null) {
+            payload = payload + "\"networks\": [";
+            for (NetworkInstance net: this.getNetworkInstances()){
+
+                payload = payload + "{ \"uuid\": \""
+                + net.getIdNetwork() + "\"}";
+            }
+            payload = payload + "], ";
+
+        }
+
+        payload = payload
+        + "\"flavorRef\": \"" + getTier().getFlavour() + "\", " + "\"imageRef\": \""
+        + getTier().getImage() + "\", " + "\"name\": \"" + name + "\"}}";
+        return payload;
+
     }
 
 }

@@ -28,7 +28,7 @@ public interface SubNetworkManager {
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
      */
-    void create(SubNetwork subNetwork) throws InvalidEntityException, AlreadyExistsEntityException;
+    SubNetwork create(SubNetwork subNetwork) throws InvalidEntityException, AlreadyExistsEntityException;
 
     /**
      * Delete a subnetwork.

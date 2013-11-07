@@ -470,8 +470,9 @@ public class ClaudiaClientImpl implements ClaudiaClient {
      * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#deployVM(java .lang.String, java.lang.String,
      * java.lang.String, java.lang.String)
      */
-    public void deployVM(ClaudiaData claudiaData, Tier tier, int replica, VM vm) throws InfrastructureException {
+    public void deployVM(ClaudiaData claudiaData, TierInstance tierInstance, int replica, VM vm) throws InfrastructureException {
 
+    	Tier tier = tierInstance.getTier();
         String fqn = claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc() + ".services."
                 + claudiaData.getService() + ".vees." + tier.getName() + ".replicas." + replica;
         String hostname = claudiaData.getService() + "-" + tier.getName() + "-" + replica;

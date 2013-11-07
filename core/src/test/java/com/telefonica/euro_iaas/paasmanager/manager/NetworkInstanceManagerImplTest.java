@@ -87,10 +87,11 @@ public class NetworkInstanceManagerImplTest extends TestCase {
         when(systemPropertiesProvider.getProperty("key")).thenReturn("VALUE");
         Mockito.doNothing().when(networkClient).deployNetwork(any(ClaudiaData.class), any(NetworkInstance.class));
         Mockito.doNothing().when(networkClient).addNetworkToPublicRouter(any(ClaudiaData.class), any(NetworkInstance.class));
-        Mockito.doNothing().when(subNetworkInstanceManager).create(any(ClaudiaData.class), any(SubNetworkInstance.class));
+        when(subNetworkInstanceManager.create(any(ClaudiaData.class),
+            	any(SubNetworkInstance.class))).thenReturn(subNet.toInstance());
         Mockito.doNothing().when(routerManager).create(any(ClaudiaData.class), any(RouterInstance.class), any(NetworkInstance.class));
         when(networkInstanceDao.create(any(NetworkInstance.class))).thenReturn(netInst);
-        
+
         // Verity
         NetworkInstance netInstOut = networkInstanceManager.create(claudiaData, netInst);
         assertEquals(netInstOut.getNetworkName(), NETWORK_NAME);
@@ -116,8 +117,8 @@ public class NetworkInstanceManagerImplTest extends TestCase {
         when(systemPropertiesProvider.getProperty("key")).thenReturn("VALUE");
         Mockito.doNothing().when(networkClient).
             deployNetwork(any(ClaudiaData.class), any(NetworkInstance.class));
-        Mockito.doNothing().when(subNetworkInstanceManager).
-            create(any(ClaudiaData.class), any(SubNetworkInstance.class));
+        when(subNetworkInstanceManager.create(any(ClaudiaData.class),
+        	any(SubNetworkInstance.class))).thenReturn(subNet.toInstance());
         Mockito.doNothing().when(routerManager).
             create(any(ClaudiaData.class), any(RouterInstance.class), any(NetworkInstance.class));
         when(networkInstanceDao.create(any(NetworkInstance.class))).

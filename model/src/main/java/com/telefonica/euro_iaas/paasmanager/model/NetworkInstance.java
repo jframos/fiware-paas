@@ -105,6 +105,36 @@ public class NetworkInstance {
     }
 
     /**
+     * It updates a subnet to the network.
+     * 
+     * @param subNet
+     * @return
+     */
+    public void updateSubNet(SubNetworkInstance subNet) {
+        if (contains(subNet.getName())) {
+            removes(subNet); 
+        }
+        subNets.add(subNet);
+    }
+    
+    public boolean contains(String subNetName) {
+        for (SubNetworkInstance subNet: subNets) {
+        	return subNet.getName().equals(subNetName);
+        }
+        return false;
+    }
+    
+    public void removes(SubNetworkInstance subNetwork) {
+    	SubNetworkInstance subNetw =null;
+        for (SubNetworkInstance subNet: subNets) {
+        	if (subNet.getName().equals(subNetwork.getName())) {
+        		subNetw = subNet;
+        	}
+        }
+        subNets.remove(subNetw);
+    }
+    
+    /**
      *
      * @param subNet
      * @return

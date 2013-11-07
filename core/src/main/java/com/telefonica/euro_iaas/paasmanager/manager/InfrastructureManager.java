@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.paasmanager.manager;
 
 import java.util.List;
 
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidVappException;
@@ -55,10 +56,11 @@ public interface InfrastructureManager {
      * @return
      * @throws InfrastructureException
      * @throws InvalidVappException
+     * @throws InvalidEntityException 
      */
     EnvironmentInstance createInfrasctuctureEnvironmentInstance(EnvironmentInstance environmentInstance,
             List<Tier> tiers, ClaudiaData claudiaData) throws InfrastructureException, InvalidVappException,
-            InvalidOVFException;
+            InvalidOVFException, InvalidEntityException;
 
     /**
      * Delete the environemnt (vms associated to the environmentInstance)
@@ -131,7 +133,7 @@ public interface InfrastructureManager {
      * @return
      * @throws InfrastructureException
      */
-    void deployVM(ClaudiaData claudiaData, Tier tier, int replica, String vmOVF, VM vm) throws InfrastructureException;
+    void deployVM(ClaudiaData claudiaData, TierInstance tier, int replica, String vmOVF, VM vm) throws InfrastructureException;
 
     /**
      * Delete a Vm replica

@@ -58,14 +58,23 @@ public class NetworkManagerImpl implements NetworkManager {
                     createSubNetwork(network, subnet);
                 }
             }
+            
             if (network.getSubNets().size() == 0) {
-            	 createSubNetwork(network);
+           	 createSubNetwork(network);
             }
+            
             return network;
 
         } catch (EntityNotFoundException e1) {
             try {
-                createSubNetwork(network);
+            	for (SubNetwork subnet: network.getSubNets()) {
+                   createSubNetwork(network, subnet);
+                }
+                
+                if (network.getSubNets().size() == 0) {
+               	 createSubNetwork(network);
+                }
+
                 network = networkDao.create(network);
             } catch (Exception e) {
                 log.error("Error to create the network " + e.getMessage());
@@ -75,6 +84,7 @@ public class NetworkManagerImpl implements NetworkManager {
 
         return network;
     }
+
 
 
     /**
@@ -89,15 +99,9 @@ public class NetworkManagerImpl implements NetworkManager {
     public void createSubNetwork(Network network, SubNetwork subNetwork)
         throws InvalidEntityException, AlreadyExistsEntityException {
 
-        SubNetwork subNet = subNetwork;
-        if (subNet == null) {
-            int cidrCount = findAll().size() + 1;
-            subNet = new SubNetwork("sub-net-" + network.getNetworkName() + "-"
-                    + cidrCount, "" + cidrCount);
-        }
-        network.addSubNet(subNet);
-        subNetworkManager.create(subNet);
-        log.debug("SubNetwork " + subNet.getName() + " in network  "
+        subNetwork = subNetworkManager.create(subNetwork);
+        network.updateSubNet(subNetwork);
+        log.debug("SubNetwork " + subNetwork.getName() + " in network  "
             + network.getNetworkName() + " deployed");
     }
     
@@ -114,7 +118,10 @@ public class NetworkManagerImpl implements NetworkManager {
         int cidrCount = findAll().size() + 1;
         SubNetwork subNet = new SubNetwork("sub-net-" + network.getNetworkName()
             + "-" + cidrCount, "" + cidrCount);
-        createSubNetwork (network, subNet);
+        subNet = subNetworkManager.create(subNet);
+        network.addSubNet(subNet);
+        log.debug("SubNetwork " + subNet.getName() + " in network  "
+            + network.getNetworkName() + " deployed");
     }
 
     /**

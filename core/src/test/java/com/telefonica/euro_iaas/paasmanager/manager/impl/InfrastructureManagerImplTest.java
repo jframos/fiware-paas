@@ -123,7 +123,7 @@ public class InfrastructureManagerImplTest {
         when(claudiaClient.getIP(any(ClaudiaData.class), any(String.class), Matchers.anyInt(), any(VM.class)))
                 .thenReturn(ips);
         Mockito.doNothing().when(claudiaClient)
-                .deployVM(any(ClaudiaData.class), any(Tier.class), Matchers.anyInt(), any(VM.class));
+                .deployVM(any(ClaudiaData.class), any(TierInstance.class), Matchers.anyInt(), any(VM.class));
         when(ovfUtils.changeInitialResources(any(String.class))).thenReturn(null);
         when(ovfUtils.getOvfsSingleVM(any(String.class))).thenReturn(ovfs);
         when(claudiaClient.browseVDC(any(ClaudiaData.class))).thenReturn("vdc");
@@ -158,6 +158,8 @@ public class InfrastructureManagerImplTest {
     public void testDeployVMNoFIWARE() throws Exception {
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
                 "keypair", "floatingip", "payload");
+        TierInstance tierInstance = new TierInstance ();
+        tierInstance.setTier (tier);
         when(propertiesProvider.getProperty(any(String.class))).thenReturn("1");
         List<String> ips = new ArrayList();
         ips.add("IP");
@@ -174,11 +176,11 @@ public class InfrastructureManagerImplTest {
         when(claudiaClient.getIP(any(ClaudiaData.class), any(String.class), Matchers.anyInt(), any(VM.class)))
                 .thenReturn(ips);
         Mockito.doNothing().when(claudiaClient)
-                .deployVM(any(ClaudiaData.class), any(Tier.class), Matchers.anyInt(), any(VM.class));
+                .deployVM(any(ClaudiaData.class), any(TierInstance.class), Matchers.anyInt(), any(VM.class));
         when(ovfUtils.changeInitialResources(any(String.class))).thenReturn("ovf");
         Mockito.doNothing().when(monitoringClient).startMonitoring(any(String.class), any(String.class));
 
-        manager.deployVM(claudiaData, tier, 1, "ovf", vm);
+        manager.deployVM(claudiaData, tierInstance, 1, "ovf", vm);
         assertEquals(vm.getDomain(), "");
 
         assertEquals(vm.getHostname(), hostname);

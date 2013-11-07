@@ -107,19 +107,19 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
      * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#undeployVMReplica (java.lang.String,
      *      java.lang.String)
      */
-    private String buildCreateServerPayload(ClaudiaData claudiaData, Tier tier, int replica)
+    private String buildCreateServerPayload(ClaudiaData claudiaData, TierInstance tierInstance, int replica)
     throws InfrastructureException {
 
-        if ((tier.getImage() == null) || (tier.getFlavour() == null) || (tier.getKeypair() == null)) {
-            String errorMsg = " The tier does not include a not-null information: " + "Image: " + tier.getImage()
-            + "Flavour: " + tier.getFlavour() + "KeyPair: " + tier.getKeypair();
+        if ((tierInstance.getTier().getImage() == null) || (tierInstance.getTier().getFlavour() == null) || (tierInstance.getTier().getKeypair() == null)) {
+            String errorMsg = " The tier does not include a not-null information: " + "Image: " + tierInstance.getTier().getImage()
+            + "Flavour: " + tierInstance.getTier().getFlavour() + "KeyPair: " + tierInstance.getTier().getKeypair();
             log.error(errorMsg);
             throw new InfrastructureException(errorMsg);
         }
 
-        String name = claudiaData.getService() + "-" + tier.getName() + "-" + replica;
-        tier.setName(claudiaData.getService() + "-" + tier.getName() + "-" + replica);
-        String payload = tier.toJson();
+        String name = claudiaData.getService() + "-" + tierInstance.getTier().getName() + "-" + replica;
+        tierInstance.getTier().setName(claudiaData.getService() + "-" + tierInstance.getTier().getName() + "-" + replica);
+        String payload = tierInstance.toJson();
         log.debug("Payload " + payload);
 
         return payload;
@@ -180,7 +180,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
      * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#deployVM(com
      * .telefonica.euro_iaas.paasmanager.model.ClaudiaData, java.lang.String)
      */
-    public void deployVM(ClaudiaData claudiaData, Tier tier, int replica, VM vm) throws InfrastructureException {
+    public void deployVM(ClaudiaData claudiaData, TierInstance tierInstance, int replica, VM vm) throws InfrastructureException {
         // URL:http://130.206.80.63:8774/v2/ebe6d9ec7b024361b7a3882c65a57dda/servers
         // Headers
         // X-Auth-Token: 30e2a5dd40b3453b833780657a253ec9
@@ -193,13 +193,13 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 
         // openStackUtilImpl = new OpenStackUtilImpl(claudiaData.getUser());
 
-        log.debug("Deploy server " + claudiaData.getService() + " tier " + tier.getName() + " replica " + replica);
-        String payload = buildCreateServerPayload(claudiaData, tier, replica);
+        log.debug("Deploy server " + claudiaData.getService() + " tier " + tierInstance.getName() + " replica " + replica);
+        String payload = buildCreateServerPayload(claudiaData, tierInstance, replica);
 
         try {
 
             String serverId = openStackUtil.createServer(payload, claudiaData.getUser());
-            if (tier.getFloatingip().equals("true")) {
+            if (tierInstance.getTier().getFloatingip().equals("true")) {
                 String floatingIP = openStackUtil.getFloatingIP(claudiaData.getUser());
                 openStackUtil.assignFloatingIP(serverId, floatingIP, claudiaData.getUser());
             }

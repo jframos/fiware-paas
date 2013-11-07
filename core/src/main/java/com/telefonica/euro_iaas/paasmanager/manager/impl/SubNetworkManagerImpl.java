@@ -37,12 +37,12 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
      * @params claudiaData
      * @params network
      */
-    public void create(SubNetwork subNetwork) throws InvalidEntityException,
+    public SubNetwork create(SubNetwork subNetwork) throws InvalidEntityException,
         AlreadyExistsEntityException {
         log.debug("Create subnetwork " + subNetwork.getName());
 
         try {
-            subNetworkDao.load(subNetwork.getName());
+        	subNetwork = subNetworkDao.load(subNetwork.getName());
             throw new AlreadyExistsEntityException(subNetwork);
 
         } catch (EntityNotFoundException e1) {
@@ -53,6 +53,7 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
                 throw new InvalidEntityException(subNetwork);
             }
         }
+        return subNetwork;
     }
 
     /**

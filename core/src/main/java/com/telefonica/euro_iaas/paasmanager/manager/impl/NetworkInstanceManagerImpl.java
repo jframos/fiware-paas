@@ -11,6 +11,7 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -61,7 +62,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
     public NetworkInstance create(ClaudiaData claudiaData, NetworkInstance networkInstance)
         throws InvalidEntityException, InfrastructureException,
         AlreadyExistsEntityException {
-        log.debug("Create network " + networkInstance.getNetworkName());
+        log.debug("Create network instance " + networkInstance.getNetworkName());
         try {
             
             networkInstance = networkInstanceDao.
@@ -116,8 +117,13 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
     public void createSubNetworksInstance(ClaudiaData claudiaData, NetworkInstance networkInstance)
         throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException
     {
+    	List<SubNetworkInstance> subNetAxu = new ArrayList ();
     	for (SubNetworkInstance subNet: networkInstance.getSubNets()) {
-            subNetworkInstanceManager.create(claudiaData, subNet);
+    		subNetAxu.add(subNet);
+    	}
+    	for (SubNetworkInstance subNet: subNetAxu) {
+    		subNet = subNetworkInstanceManager.create(claudiaData, subNet);
+    		networkInstance.updateSubNet(subNet);
             log.debug("SubNetwork " + subNet.getName() + " in network  " + networkInstance.getNetworkName() + " deployed");
     	}
     }

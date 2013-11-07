@@ -197,11 +197,11 @@ public interface ClaudiaClient {
      * Deploy a VM from claudiaData and a tier
      * 
      * @param claudiaData
-     * @param tier
+     * @param tierInstance
      * @return
      * @throws InfrastructureException
      */
-    void deployVM(ClaudiaData claudiaData, Tier tier, int replica, VM vm) throws InfrastructureException;
+    void deployVM(ClaudiaData claudiaData, TierInstance tierInstance, int replica, VM vm) throws InfrastructureException;
 
     /**
      * @param fqn

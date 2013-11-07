@@ -347,7 +347,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
         }
     }
 
-    public void deployVM(ClaudiaData claudiaData, Tier tier, int replica, String vmOVF, VM vm)
+    public void deployVM(ClaudiaData claudiaData, TierInstance tier, int replica, String vmOVF, VM vm)
             throws InfrastructureException {
         return;
     }

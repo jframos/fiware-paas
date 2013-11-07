@@ -104,6 +104,19 @@ public class Network {
             subNets.remove(subNet); 
         }
     }
+    
+    /**
+     * It updates a subnet to the network.
+     * 
+     * @param subNet
+     * @return
+     */
+    public void updateSubNet(SubNetwork subNet) {
+        if (subNets.contains(subNet)) {
+            subNets.remove(subNet); 
+        }
+        subNets.add(subNet);
+    }
 
     /**
      * 

@@ -41,13 +41,13 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
      * @params claudiaData
      * @params network
      */
-    public void create(ClaudiaData claudiaData, SubNetworkInstance subNetwork) throws InvalidEntityException,
+    public SubNetworkInstance create(ClaudiaData claudiaData, SubNetworkInstance subNetwork) throws InvalidEntityException,
     InfrastructureException, AlreadyExistsEntityException {
         log.debug("Create subnetwork instance " + subNetwork.getName());
 
         try {
-            subNetworkInstanceDao.load(subNetwork.getName());
-            throw new AlreadyExistsEntityException(subNetwork);
+        	subNetwork =subNetworkInstanceDao.load(subNetwork.getName());
+           // throw new AlreadyExistsEntityException(subNetwork);
 
         } catch (EntityNotFoundException e1) {
             try {
@@ -61,6 +61,7 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
                 throw new InvalidEntityException(subNetwork);
             }
         }
+        return subNetwork;
     }
 
     /**

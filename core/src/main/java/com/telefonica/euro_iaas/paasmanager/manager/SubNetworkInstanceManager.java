@@ -29,7 +29,7 @@ public interface SubNetworkInstanceManager {
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
      */
-    void create(ClaudiaData claudiaData, SubNetworkInstance subNetworkInstance) throws InvalidEntityException, InfrastructureException,
+    SubNetworkInstance create(ClaudiaData claudiaData, SubNetworkInstance subNetworkInstance) throws InvalidEntityException, InfrastructureException,
             AlreadyExistsEntityException;
 
     /**

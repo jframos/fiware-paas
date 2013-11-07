@@ -37,6 +37,7 @@ public class NetworkManagerImplTest extends TestCase {
     private static String NETWORK_NAME = "name";
     private static String SUB_NETWORK_NAME = "subname";
     private static String CIDR = "10.100.1.0/24";
+    private static String CIDR_ID = "1";
 
     private NetworkManagerImpl networkManager;
     private NetworkDao networkDao;
@@ -61,12 +62,12 @@ public class NetworkManagerImplTest extends TestCase {
     public void testCreateNetwork() throws Exception {
         // Given
         Network net = new Network(NETWORK_NAME);
-
+        SubNetwork subNet = new SubNetwork("sub-net-" + NETWORK_NAME + "-1", CIDR_ID);
         // When
         when(networkDao.load(any(String.class))).
             thenThrow(new EntityNotFoundException(Network.class, "test", net));
-        Mockito.doNothing().when(subNetworkManager).
-            create(any(SubNetwork.class));
+        when(subNetworkManager.create(any(SubNetwork.class))).
+        thenReturn(subNet);
         when(networkDao.create(any(Network.class))).thenReturn(net);
 
         // Verity
@@ -75,6 +76,62 @@ public class NetworkManagerImplTest extends TestCase {
         assertEquals(net.getSubNets().size(), 1);
         assertEquals(net.getSubNets().get(0).getName(),
             "sub-net-" + NETWORK_NAME + "-1");
+        assertEquals(net.getSubNets().get(0).getCidr(), CIDR);
+
+    }
+    
+    /**
+     * It tests the creation of a network.
+     * @throws Exception
+     */
+    @Test
+    public void testCreateNetworkSubNetSpecified() throws Exception {
+        // Given
+        Network net = new Network(NETWORK_NAME);
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, CIDR_ID);
+        net.addSubNet(subNet);
+
+        // When
+        when(networkDao.load(any(String.class))).
+            thenThrow(new EntityNotFoundException(Network.class, "test", net));
+        when(subNetworkManager.create(any(SubNetwork.class))).
+            thenReturn(subNet);
+        when(networkDao.create(any(Network.class))).thenReturn(net);
+
+        // Verity
+        networkManager.create(net);
+        assertEquals(net.getNetworkName(), NETWORK_NAME);
+        assertEquals(net.getSubNets().size(), 1);
+        assertEquals(net.getSubNets().get(0).getName(),
+            SUB_NETWORK_NAME);
+        assertEquals(net.getSubNets().get(0).getCidr(), CIDR);
+
+    }
+    
+    /**
+     * It tests the creation of a network.
+     * @throws Exception
+     */
+    @Test
+    public void testCreateNetworkAlreadyexist() throws Exception {
+        // Given
+        Network net = new Network(NETWORK_NAME);
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, CIDR_ID);
+        net.addSubNet(subNet);
+
+        // When
+        when(networkDao.load(any(String.class))).thenReturn(net);
+         
+        when(subNetworkManager.create(any(SubNetwork.class))).
+            thenReturn(subNet);
+        when(networkDao.create(any(Network.class))).thenReturn(net);
+
+        // Verity
+        networkManager.create(net);
+        assertEquals(net.getNetworkName(), NETWORK_NAME);
+        assertEquals(net.getSubNets().size(), 1);
+        assertEquals(net.getSubNets().get(0).getName(),
+        		SUB_NETWORK_NAME);
         assertEquals(net.getSubNets().get(0).getCidr(), CIDR);
 
     }
