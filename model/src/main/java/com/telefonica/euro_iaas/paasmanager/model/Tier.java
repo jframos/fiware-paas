@@ -292,6 +292,9 @@ public class Tier {
      * @return networks the network list
      */
     public List<Network> getNetworks() {
+    	if (networks == null) {
+    		networks = new ArrayList<Network> ();
+    	}
         return this.networks;
     }
 

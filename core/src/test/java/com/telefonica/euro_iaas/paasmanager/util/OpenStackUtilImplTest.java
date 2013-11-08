@@ -105,8 +105,8 @@ public class OpenStackUtilImplTest {
 
         verify(systemPropertiesProvider, times(2)).getProperty(anyString());
         verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
-        verify(httpResponse, times(2)).getStatusLine();
-        verify(statusLine).getStatusCode();
+        verify(httpResponse, times(3)).getStatusLine();
+        verify(statusLine, times(2)).getStatusCode();
         verify(statusLine).getReasonPhrase();
     }
     
@@ -163,8 +163,8 @@ public class OpenStackUtilImplTest {
 
         verify(systemPropertiesProvider, times(SEVEN_TIMES)).getProperty(anyString());
         verify(closeableHttpClientMock, times(TWICE)).execute(any(HttpUriRequest.class));
-        verify(httpResponse, times(FOUR_TIMES)).getStatusLine();
-        verify(statusLine, times(FOUR_TIMES)).getStatusCode();
+        verify(httpResponse, times(5)).getStatusLine();
+        verify(statusLine, times(5)).getStatusCode();
 
     }
 
@@ -205,8 +205,8 @@ public class OpenStackUtilImplTest {
 
         verify(systemPropertiesProvider, times(TWICE)).getProperty(anyString());
         verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
-        verify(httpResponse, times(TWICE)).getStatusLine();
-        verify(statusLine, times(TWICE)).getStatusCode();
+        verify(httpResponse, times(3)).getStatusLine();
+        verify(statusLine, times(3)).getStatusCode();
 
     }
     

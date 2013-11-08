@@ -63,7 +63,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     /**
      * The log.
      */
-    private static Logger log = Logger.getLogger(ClaudiaClientImpl.class);
+    private static Logger log = Logger.getLogger(OpenStackUtilImpl.class);
 
     /**
      * the properties configuration.
@@ -516,10 +516,12 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // -X POST "http://10.95.171.115:9696/v2/networks"
         // -d '{"network" : {"name" : "testNetwork", "admin_state_up": false}}'
 
+    	log.debug("Create network isntance " + net.getNetworkName());
         String response = null;
 
         try {
             String payload = net.toJson();
+            log.debug("Payload " + payload);
 
             HttpUriRequest request = createQuantumPostRequest(RESOURCE_NETWORKS, payload, APPLICATION_JSON, user);
             response = executeNovaRequest(request);
@@ -697,6 +699,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      */
     private HttpPost createQuantumPostRequest(String resource, String payload, String content, PaasManagerUser user)
             throws OpenStackException {
+    	log.debug ("createQuantumPostRequest " + resource);
         HttpPost request;
 
         // Check that the authtoken, tenant and user was initialized
@@ -724,8 +727,11 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         request.setHeader(ACCEPT, APPLICATION_JSON);
 
         request.setHeader(CONTENT_TYPE, content);
+        log.debug ("Content " + content);
 
         request.setHeader(X_AUTH_TOKEN, user.getToken());
+        log.debug ("user.getToken() " + user.getToken());
+        
 
         return request;
     }
@@ -1011,6 +1017,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * @throws OpenStackException
      */
     private String executeNovaRequest(HttpUriRequest request) throws OpenStackException {
+    	log.debug ("executeNovaRequest " + request.getURI().toString());
         String[] newHeaders = null;
         // Where the response is located. 0 for json, 1 for XML (it depends on
         // the \n)
@@ -1025,6 +1032,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
         try {
             response = httpClient.execute(request);
+            log.debug("Status : "+ response.getStatusLine().getStatusCode());
             // if (response.getEntity() != null) {
             if ((response.getStatusLine().getStatusCode() != http_code_deleted)) {
 
@@ -1049,6 +1057,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             }
 
         } catch (Exception e) {
+        	log.warn("Error to execute the request " + e.getMessage());
             if (response.getStatusLine().getStatusCode() == http_code_accepted) {
                 return response.getStatusLine().getReasonPhrase();
             } else {
@@ -1056,6 +1065,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             }
         } finally {
             try {
+            	log.debug("Closing the connection");
                 httpClient.close();
             } catch (IOException e) {
                 log.warn("Error in close httpclient");

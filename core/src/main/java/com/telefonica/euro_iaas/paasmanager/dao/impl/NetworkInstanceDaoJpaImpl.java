@@ -10,10 +10,22 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
+import javax.persistence.Query;
+
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
+
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.NetworkInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
+import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
+import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductReleaseSearchCriteria;
 
 
 /**
@@ -22,6 +34,8 @@ import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 public class NetworkInstanceDaoJpaImpl 
     extends AbstractBaseDao<NetworkInstance, String> implements NetworkInstanceDao {
 
+	@PersistenceContext(unitName = "paasmanager")
+    private EntityManager entityManager;
     /**k7
      * find all networks.
      * @return network list
@@ -35,7 +49,32 @@ public class NetworkInstanceDaoJpaImpl
      * @param name of the network instance
      */
     public NetworkInstance load(String name) throws EntityNotFoundException {
-        return super.loadByField(NetworkInstance.class, "name", name);
+    	
+    	try {
+            return findByNetworkInstanceName(name);
+        } catch (Exception e) {
+        	return super.loadByField(NetworkInstance.class, "name", name);
+        }
+        
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang .String)
+     */
+    private NetworkInstance findByNetworkInstanceName(String name) throws EntityNotFoundException {
+        Query query = entityManager.createQuery("select p from NetworkInstance p join "
+                + "fetch p.subNets where p.name = :name");
+        query.setParameter("name", name);
+        NetworkInstance networkInstance = null;
+        try {
+        	networkInstance = (NetworkInstance) query.getSingleResult();
+        } catch (NoResultException e) {
+            String message = " No NetworkInstance found in the database with id: " + name + " Exception: "
+                    + e.getMessage();
+            throw new EntityNotFoundException(NetworkInstance.class, "name", name);
+        }
+        return networkInstance;
     }
 
 }
