@@ -30,7 +30,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.SubNetworkDto;
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@Table(name = "SubNetwork")
+@Table(name = "SubNetworkInstance")
 public class SubNetworkInstance {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

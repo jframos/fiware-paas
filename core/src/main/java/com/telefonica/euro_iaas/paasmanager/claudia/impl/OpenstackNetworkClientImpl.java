@@ -162,7 +162,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @params subNet
      */
     public void deploySubNetwork(ClaudiaData claudiaData, SubNetworkInstance subNet) throws InfrastructureException {
-        log.info("Deploy network " + subNet.getName() + " for user " + claudiaData.getUser().getTenantName());
+        log.info("Deploy subNetworknetwork " + subNet.getName() + " for user " + claudiaData.getUser().getTenantName());
         log.debug("Payload " + subNet.toJson());
         String response;
         try {

@@ -47,7 +47,8 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
 
         try {
         	subNetwork =subNetworkInstanceDao.load(subNetwork.getName());
-           // throw new AlreadyExistsEntityException(subNetwork);
+        	log.warn ("Subred already created " + subNetwork.getName());
+            throw new AlreadyExistsEntityException(subNetwork);
 
         } catch (EntityNotFoundException e1) {
             try {
