@@ -24,6 +24,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -67,7 +68,6 @@ public class ProductRelease {
 
     @Column(length = 2048)
     private String description;
-
 
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Attribute> attributes = null;
