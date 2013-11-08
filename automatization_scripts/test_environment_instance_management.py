@@ -21,9 +21,9 @@ if __name__ == "__main__":
 
     cmd_args = []
     cmd_args.append('hola')
-    cmd_args.append('environment')
-    cmd_args.append('blueprint')
-    cmd_args.append('tier1')
+    cmd_args.append('environment7')
+    cmd_args.append('blueprint7')
+    cmd_args.append('tier14')
     cmd_args.append('nodejs=0.6.15')
 
     config = {}

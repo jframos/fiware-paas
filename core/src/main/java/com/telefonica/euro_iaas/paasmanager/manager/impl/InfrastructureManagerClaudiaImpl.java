@@ -584,7 +584,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
     
     private void deployNetworks (ClaudiaData data, TierInstance tierInstance) throws InvalidEntityException, InfrastructureException {
     	// Creating networks...
-    	log.debug ("Deploying network for tier instance " + tierInstance.getName());
+    	log.debug ("Deploying network for tier instance " + tierInstance.getName() + " " + tierInstance.getTier().getNetworks());
         List<NetworkInstance> networkToBeDeployed = new ArrayList<NetworkInstance>();
         for (Network network: tierInstance.getTier().getNetworks()) {
         	log.debug ("Network to be added " + network.getNetworkName());

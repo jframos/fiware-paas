@@ -122,6 +122,9 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="infrastructureManager" ref="infrastructureManager"/>
             <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
             <property name="environmentManager" ref="environmentManager"/>
+            <property name="networkInstanceManager" ref="networkInstanceManager"/>
+            
+            
         </bean>
         <bean id="environmentManager" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl">
@@ -158,6 +161,11 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         <bean id="subNetworkManager" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.manager.impl.SubNetworkManagerImpl">
             <property name="subNetworkDao" ref="subNetworkDao"/>
+        </bean>
+        
+          <bean id="subNetworkInstanceManager" lazy-init="true"
+              class="com.telefonica.euro_iaas.paasmanager.manager.impl.SubNetworkInstanceManagerImpl">
+            <property name="subNetworkInstanceDao" ref="subNetworkInstanceDao"/>
             <property name="networkClient" ref="networkClient"/>
         </bean>
         <bean id="routerManager" lazy-init="true"
@@ -169,8 +177,14 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         <bean id="networkManager" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.manager.impl.NetworkManagerImpl">
             <property name="networkDao" ref="networkDao"/>
-            <property name="networkClient" ref="networkClient"/>
             <property name="subNetworkManager" ref="subNetworkManager"/>
+        </bean>
+        
+         <bean id="networkInstanceManager" lazy-init="true"
+              class="com.telefonica.euro_iaas.paasmanager.manager.impl.NetworkInstanceManagerImpl">
+            <property name="networkInstanceDao" ref="networkInstanceDao"/>
+            <property name="networkClient" ref="networkClient"/>
+            <property name="subNetworkInstanceManager" ref="subNetworkInstanceManager"/>
             <property name="routerManager" ref="routerManager"/>
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
         </bean>
@@ -263,6 +277,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="ovfUtils" ref="ovfUtils"/>
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
+            <property name="networkInstanceManager" ref="networkInstanceManager"/>   
 
 
         </bean>
@@ -364,6 +379,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="environmentUtils" ref="environmentUtils"/>
             <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
+            <property name ="networkInstanceManager" ref="networkInstanceManager"/>
         </bean>
 
     </beans>
@@ -478,6 +494,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="environmentUtils" ref="environmentUtils"/>
             <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
+            <property name ="networkInstanceManager" ref="networkInstanceManager"/>
         </bean>
 
     </beans>
@@ -528,6 +545,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="environmentUtils" ref="environmentUtils"/>
             <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
+            <property name ="networkInstanceManager" ref="networkInstanceManager"/>
 
         </bean>
 
