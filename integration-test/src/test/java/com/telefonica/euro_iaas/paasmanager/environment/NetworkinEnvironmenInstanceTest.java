@@ -138,7 +138,7 @@ public class NetworkinEnvironmenInstanceTest {
         Set <NetworkInstance> nets= tierInstance.getNetworkInstances();
         for (NetworkInstance outNet: tierInstance.getNetworkInstances()) {
         	assertEquals(outNet.getNetworkName(), "network_creation1");
-        	assertEquals(outNet.getSubNets().size(), 1);
+        	
         }
        
 
@@ -292,7 +292,6 @@ public class NetworkinEnvironmenInstanceTest {
         assertNotNull(env2.getTiers().get(0).getNetworks());
         assertEquals(env2.getTiers().get(0).getNetworks().size(), 1);
         assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(), "network3");
-        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getSubNets().size(), 1);
 
     }
     

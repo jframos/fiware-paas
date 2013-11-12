@@ -71,9 +71,11 @@ public class OpenStackUtilImplTest {
         	new OpenStackUtilImplTestable();
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         openStackUtil.setSystemPropertiesProvider(systemPropertiesProvider);
+        GrantedAuthority grantedAuthority = mock(GrantedAuthority.class);
         Collection<GrantedAuthority> authorities = new HashSet();
-        paasManagerUser = new PaasManagerUser("username", "password", authorities);
-        paasManagerUser.setTenantId("tenantId");
+        authorities.add(grantedAuthority);
+        paasManagerUser = new PaasManagerUser("user", "aa", authorities);
+    
         HttpClientConnectionManager httpClientConnectionManager =
         	mock(HttpClientConnectionManager.class);
         openStackUtil.setConnectionManager(httpClientConnectionManager);

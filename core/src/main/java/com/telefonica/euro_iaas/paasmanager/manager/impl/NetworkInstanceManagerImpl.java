@@ -122,9 +122,11 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
     		subNetAxu.add(subNet);
     	}
     	for (SubNetworkInstance subNet: subNetAxu) {
+    		log.debug("SubNetwork " + subNet.getName() + " id net " + subNet.getIdNetwork() );
+    		subNet.setIdNetwork(networkInstance.getIdNetwork());
     		subNet = subNetworkInstanceManager.create(claudiaData, subNet);
     		networkInstance.updateSubNet(subNet);
-            log.debug("SubNetwork " + subNet.getName() + " in network  " + networkInstance.getNetworkName() + " deployed");
+            log.debug("SubNetwork " + subNet.getName() + " id net " + subNet.getIdNetwork() + " in network  " + networkInstance.getNetworkName() + " deployed");
     	}
     }
 

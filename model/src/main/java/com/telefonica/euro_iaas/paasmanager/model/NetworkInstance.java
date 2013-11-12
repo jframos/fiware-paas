@@ -56,14 +56,14 @@ public class NetworkInstance {
 
     @OneToMany()
 
-    @JoinTable(name = "networkinstancehassubnetworkinstance",
+  /*  @JoinTable(name = "networkinstancehassubnetworkinstance",
     joinColumns = {
         @JoinColumn(name="networkinstance_ID", unique = true)           
     },
     inverseJoinColumns = {
         @JoinColumn(name="subnetworkinstance_ID")
      }
-   )
+   )*/
 
   
     private List<SubNetworkInstance> subNets;

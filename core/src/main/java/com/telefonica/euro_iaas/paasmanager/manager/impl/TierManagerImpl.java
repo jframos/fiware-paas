@@ -31,15 +31,14 @@ import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
-import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * It is the manager for the Tier.
+ * 
  * @author henar
- *
  */
 public class TierManagerImpl implements TierManager {
 
@@ -58,7 +57,7 @@ public class TierManagerImpl implements TierManager {
      * It add teh security groups related the products.
      */
     public void addSecurityGroupToProductRelease(ClaudiaData claudiaData, Tier tier, ProductRelease productRelease)
-        throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
+            throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
         Attribute openPortsAttribute = productRelease.getAttribute("openports");
         if (openPortsAttribute != null) {
             StringTokenizer st = new StringTokenizer(openPortsAttribute.getValue());
@@ -76,14 +75,13 @@ public class TierManagerImpl implements TierManager {
      */
 
     public Tier create(ClaudiaData claudiaData, String envName, Tier tier) throws InvalidEntityException,
-    InvalidSecurityGroupRequestException, InfrastructureException {
+            InvalidSecurityGroupRequestException, InfrastructureException {
         log.debug("Create tier name " + tier.getName() + " image " + tier.getImage() + " flavour " + tier.getFlavour()
                 + " initial_number_instances " + tier.getInitialNumberInstances() + " maximum_number_instances "
                 + tier.getMaximumNumberInstances() + " minimum_number_instances " + tier.getMinimumNumberInstances()
                 + " floatingip " + tier.getFloatingip() + " keypair " + tier.getKeypair() + " icono " + tier.getIcono()
                 + " product releases " + tier.getProductReleases() + "  vdc " + claudiaData.getVdc() + " networks "
                 + tier.getNetworks());
-
 
         try {
             tier = load(tier.getName(), claudiaData.getVdc(), envName);
@@ -97,10 +95,11 @@ public class TierManagerImpl implements TierManager {
                 tier.setSecurityGroup(securityGroup);
             }
             List<Network> networkToBeDeployed = new ArrayList<Network>();
-            for (Network network: tier.getNetworks()) {
+            for (Network network : tier.getNetworks()) {
                 networkToBeDeployed.add(network);
             }
 
+<<<<<<< HEAD
            for (Network network: networkToBeDeployed) {
                 log.debug("Network to be deployed: " + network.getNetworkName());
 
@@ -115,17 +114,30 @@ public class TierManagerImpl implements TierManager {
                     }
                 }
                 tier.addNetwork(network);
+=======
+            for (Network network : networkToBeDeployed) {
+                log.debug("Network to be deployed: " + network.getNetworkName());
+
+                try {
+                    network = networkManager.load(network.getNetworkName());
+                    log.debug("the network " + network.getNetworkName() + " already exists");
+                } catch (EntityNotFoundException e1) {
+                    try {
+                        network = networkManager.create(claudiaData, network);
+                    } catch (AlreadyExistsEntityException e2) {
+                        throw new InvalidEntityException(network);
+                    }
+                }
+                tier.addNetwork(network);
+>>>>>>> 03ee2ba6788d8fe446bbaae656c978727a760d14
             }
             return tierInsertBD(tier, claudiaData);
         }
     }
 
-
-
-
-
     /**
      * It creates the rule port for ssh.
+     * 
      * @param port
      * @return
      */
@@ -136,9 +148,9 @@ public class TierManagerImpl implements TierManager {
         return rule;
     }
 
-
     /**
      * It creates the specified security groups.
+     * 
      * @param claudiaData
      * @param tier
      * @return
@@ -146,7 +158,7 @@ public class TierManagerImpl implements TierManager {
      */
 
     private SecurityGroup createSecurityGroup(ClaudiaData claudiaData, Tier tier)
-    throws InvalidSecurityGroupRequestException {
+            throws InvalidSecurityGroupRequestException {
         SecurityGroup securityGroup = generateSecurityGroup(claudiaData, tier);
         try {
             securityGroup = securityGroupManager.create(claudiaData, securityGroup);
@@ -157,20 +169,18 @@ public class TierManagerImpl implements TierManager {
                     + securityGroup.getName() + " " + e.getMessage(), e);
         } catch (InvalidEnvironmentRequestException e) {
 
-            log.error("It is not posssible to create the security group "
-                    + securityGroup.getName() + " " + e.getMessage());
-            throw new InvalidSecurityGroupRequestException(
-                    "It is not posssible to create the security group "
+            log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
+                    + e.getMessage());
+            throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
                     + securityGroup.getName() + " " + e.getMessage(), e);
         } catch (AlreadyExistsEntityException e) {
-            log.error("It is not posssible to create the security group "
-                    + securityGroup.getName() + " " + e.getMessage());
-            throw new InvalidSecurityGroupRequestException(
-                    "It is not posssible to create the security group "
+            log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
+                    + e.getMessage());
+            throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
                     + securityGroup.getName() + " " + e.getMessage(), e);
         } catch (InfrastructureException e) {
-            log.error("It is not posssible to create the security group "
-                    + securityGroup.getName() + " " + e.getMessage());
+            log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
+                    + e.getMessage());
 
             throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
                     + securityGroup.getName() + " " + e.getMessage(), e);
@@ -181,11 +191,12 @@ public class TierManagerImpl implements TierManager {
 
     /**
      * It deletes the tier.
+     * 
      * @param claudiaData
      * @param tier
      */
     public void delete(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException, InvalidEntityException,
-    InfrastructureException {
+            InfrastructureException {
 
         log.debug("Deleting tier " + tier.getName());
         try {
@@ -209,6 +220,7 @@ public class TierManagerImpl implements TierManager {
             tier.setSecurityGroup(null);
             tierDao.update(tier);
             securityGroupManager.destroy(claudiaData, sec);
+<<<<<<< HEAD
         }
         
     /*    log.debug("Deleting the networks");
@@ -224,6 +236,23 @@ public class TierManagerImpl implements TierManager {
             networkManager.delete(claudiaData, net);      
         }
 */
+=======
+        }
+
+        log.debug("Deleting the networks");
+        List<Network> netsAux = new ArrayList<Network>();
+        for (Network netNet : tier.getNetworks()) {
+            netsAux.add(netNet);
+        }
+
+        for (Network net : netsAux) {
+            tier.deleteNetwork(net);
+            tierDao.update(tier);
+            log.debug("Deleting network " + net.getNetworkName());
+            networkManager.delete(claudiaData, net);
+        }
+
+>>>>>>> 03ee2ba6788d8fe446bbaae656c978727a760d14
         try {
             tierDao.remove(tier);
         } catch (Exception e) {
@@ -265,10 +294,10 @@ public class TierManagerImpl implements TierManager {
                     try {
 
                         productRelease = productReleaseManager.load(productRelease.getProduct() + "-"
-                            + productRelease.getVersion());
-                    } catch (Exception e){
+                                + productRelease.getVersion());
+                    } catch (Exception e) {
                         log.warn("The product does not exists " + productRelease.getProduct() + "-"
-                            + productRelease.getVersion());
+                                + productRelease.getVersion());
                     }
                 }
                 Attribute openPortsAttribute = productRelease.getAttribute("openports");
@@ -308,6 +337,17 @@ public class TierManagerImpl implements TierManager {
         }
     }
 
+    @Override
+    public Tier loadTierWithProductReleaseAndMetadata(String tierName, String environmentName, String vdc)
+            throws EntityNotFoundException {
+        try {
+            return tierDao.loadTierWithProductReleaseAndMetadata(tierName, vdc, environmentName);
+        } catch (Exception e) {
+            String message = "Tier " + tierName + " not found";
+            throw new EntityNotFoundException(Tier.class, message, e.getMessage());
+        }
+    }
+
     private void restore(ClaudiaData claudiaData, Tier tier) throws InvalidEntityException, InfrastructureException {
         if (tier.getSecurityGroup() != null) {
             securityGroupManager.destroy(claudiaData, tier.getSecurityGroup());
@@ -343,14 +383,14 @@ public class TierManagerImpl implements TierManager {
 
     /**
      * It insert the tier in the database.
+     * 
      * @param tier
      * @param data
      * @return
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    public Tier tierInsertBD(Tier tier, ClaudiaData data)
-        throws InvalidEntityException, InfrastructureException {
+    public Tier tierInsertBD(Tier tier, ClaudiaData data) throws InvalidEntityException, InfrastructureException {
         List<Network> networskout = new ArrayList();
         try {
             tier = load(tier.getName(), data.getVdc(), data.getService());
@@ -370,7 +410,7 @@ public class TierManagerImpl implements TierManager {
                 log.warn("There is not any product release associated to the tier " + tier.getName());
             }
 
-            for (Network p: tier.getNetworks()) {
+            for (Network p : tier.getNetworks()) {
                 networskout.add(p);
             }
 
@@ -387,7 +427,7 @@ public class TierManagerImpl implements TierManager {
 
             if (productReleases != null && productReleases.size() != 0) {
 
-                for (ProductRelease prod: productReleases) {
+                for (ProductRelease prod : productReleases) {
 
                     try {
                         prod = productReleaseManager.load(prod.getProduct() + "-" + prod.getVersion());
@@ -397,7 +437,7 @@ public class TierManagerImpl implements TierManager {
                         update(tier);
                     } catch (Exception e2) {
                         String errorMessage = "The ProductRelease Object " + prod.getProduct() + "-"
-                            + prod.getVersion() + " is " + "NOT present in Database";
+                                + prod.getVersion() + " is " + "NOT present in Database";
                         log.error(errorMessage);
                         throw new InvalidEntityException(e2);
                     }
@@ -405,25 +445,19 @@ public class TierManagerImpl implements TierManager {
             }
         }
 
-
-        for (Network net: networskout) {
+        for (Network net : networskout) {
 
             try {
-                net = networkManager
-                .load(net.getNetworkName());
-                log.debug("Adding network " + net.getNetworkName() + "-" +
-                        " to tier " + tier.getName());
+                net = networkManager.load(net.getNetworkName());
+                log.debug("Adding network " + net.getNetworkName() + "-" + " to tier " + tier.getName());
                 tier.addNetwork(net);
                 update(tier);
             } catch (Exception e2) {
-                String errorMessage = "The Network Object "
-                    + net.getNetworkName()
-                    + " is " + "NOT present in Database";
+                String errorMessage = "The Network Object " + net.getNetworkName() + " is " + "NOT present in Database";
                 log.error(errorMessage);
                 throw new InvalidEntityException(e2);
             }
         }
-
 
         return tier;
     }
@@ -439,4 +473,5 @@ public class TierManagerImpl implements TierManager {
         }
 
     }
+
 }

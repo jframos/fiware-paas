@@ -25,6 +25,7 @@ import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
+import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
 
@@ -197,5 +198,18 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
                 filterTiers.add(tier);
         }
         return filterTiers;
+    }
+
+    @Override
+    public Tier loadTierWithProductReleaseAndMetadata(String tierName, String vdc, String environmentName)
+            throws EntityNotFoundException {
+        Tier tier = findByNameAndVdcAndEnvironment(tierName, vdc, environmentName);
+
+        for (ProductRelease productRelease : tier.getProductReleases()) {
+
+            productRelease.getMetadatas();
+        }
+
+        return tier;
     }
 }

@@ -499,9 +499,23 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
             throw new RuntimeException("Token format unknown:\n " + token);
         }
-        PaasManagerUser user2 = user;
-        user2.setTenantId(tenantId);
-        user2.setToken(token);
+        
+        i = payload.indexOf("tenant");
+        j = payload.indexOf(">", i);
+        tenantId = payload.substring(i - 1, j + 1);
+
+        // Regular Expression (<\s*tenant\s*.*)("\s*id=")(.*?)("\s*.*/*>)
+        // as a Java string "(<\\s*tenant\\s*.*)(\"\\s*id=\")(.*?)(\"\\s*.*/*>)"
+        pattern1 = "(<\\s*tenant\\s*.*)(\"\\s*id=\")(.*?)(\"\\s*.*/*>)";
+
+        if (tenantId.matches(pattern1)) {
+            tenantId = tenantId.replaceAll(pattern1, "$3");
+        } else {
+            log.error("Tenant format unknown:\n " + tenantId);
+
+            throw new RuntimeException("Tenant format unknown:\n " + tenantId);
+        }
+        PaasManagerUser user2 = new PaasManagerUser (tenantId, token, user.getAuthorities());
         return user2;
     }
 

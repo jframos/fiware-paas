@@ -54,7 +54,6 @@ public class AProductReleaseTest {
         assertNotNull(productRelease);
         assertEquals(productRelease.getProduct(), "mysql");
         assertEquals(productRelease.getVersion(), "2");
-        assertEquals(productRelease.getAttributes().size(), 0);
 
     }
 
@@ -84,6 +83,7 @@ public class AProductReleaseTest {
         assertNotNull(productRelease);
         assertEquals(productRelease.getProduct(), "henar");
         assertEquals(productRelease.getVersion(), "0.1");
+
 
     }
 

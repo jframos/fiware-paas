@@ -104,6 +104,7 @@
         <property name="claudiaUtil" ref="claudiaUtil"/>
         <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
         <property name="quotaClient" ref="quotaClient"/>
+        <property name="tierResourceValidator" ref="tierResourceValidator"/>
 
     </bean>
 

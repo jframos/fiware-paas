@@ -7,7 +7,11 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -20,6 +24,8 @@ import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.Metadata;
+import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
@@ -113,7 +119,7 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
         String system = systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
 
         try {
-            tierManager.load(tierDto.getName(), vdc, environmentName);
+            Tier tier = tierManager.load(tierDto.getName(), vdc, environmentName);
 
         } catch (EntityNotFoundException e1) {
             log.error("The tier " + tierDto.getName() + " does not  exists vdc " + vdc + " environmentName "
@@ -176,6 +182,86 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
             throw new InvalidEnvironmentRequestException("The enviornmetn is being used by an env instance");
         }
 
+    }
+
+    public void validateTiersDependencies(String environmentName, String vdc, List<TierDto> tierDtoList)
+            throws InvalidEnvironmentRequestException {
+
+        List<Tier> tiers = new ArrayList<Tier>(2);
+        try {
+            for (TierDto tierDto : tierDtoList) {
+
+                Tier tier = tierManager.loadTierWithProductReleaseAndMetadata(tierDto.getName(), environmentName, vdc);
+                tiers.add(tier);
+            }
+        } catch (EntityNotFoundException e) {
+            log.error("Some tier in vdc " + vdc + " with environment " + environmentName + " does not exist");
+        }
+
+        List<String> allDependencies = createDependenciesForTiers(tiers);
+        Map<String, String> allProducts = createProductList(tiers);
+        boolean result = checkTierProductsInDependencyList(allDependencies, allProducts);
+        if (!result) {
+            String message = "Please review dependencies. Some productrelease is mandatory";
+            throw new InvalidEnvironmentRequestException(message);
+        }
+
+    }
+
+    /**
+     * Check all the dependencies for a product in a map of dependencies.
+     * 
+     * @param productDependencies
+     * @param dependenciesMap
+     * @return
+     */
+    public boolean checkTierProductsInDependencyList(List<String> productDependencies,
+            Map<String, String> dependenciesMap) {
+
+        boolean exist = true;
+
+        final Iterator<String> iterator = productDependencies.iterator();
+        while (exist && iterator.hasNext()) {
+            String productDependency = iterator.next();
+
+            if (!dependenciesMap.containsKey(productDependency)) {
+                exist = false;
+            }
+        }
+
+        return exist;
+
+    }
+
+    public List<String> createDependenciesForTiers(List<Tier> tiers) {
+        List<String> dependenciesList = new ArrayList<String>();
+
+        for (Tier tier : tiers) {
+            for (ProductRelease productRelease : tier.getProductReleases()) {
+
+                List<Metadata> metadataList = productRelease.getMetadatas();
+                for (Metadata metadata : metadataList) {
+                    if (metadata.getKey().startsWith("dep")) {
+                        dependenciesList.add(metadata.getValue());
+                    }
+                }
+            }
+        }
+
+        return dependenciesList;
+    }
+
+    public Map<String, String> createProductList(List<Tier> tiers) {
+        Map<String, String> productNameList = new HashMap<String, String>();
+
+        for (Tier tier : tiers) {
+            for (ProductRelease productRelease : tier.getProductReleases()) {
+
+                productNameList.put(productRelease.getName() + "-" + productRelease.getVersion(), "");
+            }
+        }
+
+        return productNameList;
     }
 
     public void setTierManager(TierManager tierManager) {
