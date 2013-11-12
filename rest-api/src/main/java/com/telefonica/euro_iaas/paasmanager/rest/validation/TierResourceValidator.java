@@ -7,6 +7,8 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
+import java.util.List;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
@@ -34,4 +36,6 @@ public interface TierResourceValidator {
 
     void validateDelete(String vdc, String environmentName, SystemPropertiesProvider systemPropertiesProvider)
             throws InvalidEntityException, EntityNotFoundException;
+
+    void validateTiersDependencies(String name, String vdc, List<TierDto> tierDtos) throws InvalidEnvironmentRequestException;
 }

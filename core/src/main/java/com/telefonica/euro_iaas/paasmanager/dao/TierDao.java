@@ -40,4 +40,11 @@ public interface TierDao extends BaseDAO<Tier, String> {
      */
     List<Tier> findByCriteria(TierSearchCriteria criteria) throws EntityNotFoundException;
 
+    /**
+     * @param tierName
+     * @param vdc
+     * @param environmentName
+     * @return
+     */
+    Tier loadTierWithProductReleaseAndMetadata(String tierName, String vdc, String environmentName) throws EntityNotFoundException;
 }

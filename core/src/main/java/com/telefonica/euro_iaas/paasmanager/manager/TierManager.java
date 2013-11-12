@@ -46,6 +46,15 @@ public interface TierManager {
     Tier load(String name, String vdc, String environmentNamae) throws EntityNotFoundException;
 
     /**
+     * Find de Tier with ProductRelease and metadata info.
+     * 
+     * @return a valid Tier object with productRelease list and metadata
+     * @throws EntityNotFoundException
+     */
+    Tier loadTierWithProductReleaseAndMetadata(String tierName, String environmentName, String vdc)
+            throws EntityNotFoundException;
+
+    /**
      * Retrieve all Environment created in the system.
      * 
      * @return the existent environments.
