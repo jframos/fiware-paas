@@ -99,7 +99,6 @@ public class TierManagerImpl implements TierManager {
                 networkToBeDeployed.add(network);
             }
 
-<<<<<<< HEAD
            for (Network network: networkToBeDeployed) {
                 log.debug("Network to be deployed: " + network.getNetworkName());
 
@@ -114,22 +113,7 @@ public class TierManagerImpl implements TierManager {
                     }
                 }
                 tier.addNetwork(network);
-=======
-            for (Network network : networkToBeDeployed) {
-                log.debug("Network to be deployed: " + network.getNetworkName());
 
-                try {
-                    network = networkManager.load(network.getNetworkName());
-                    log.debug("the network " + network.getNetworkName() + " already exists");
-                } catch (EntityNotFoundException e1) {
-                    try {
-                        network = networkManager.create(claudiaData, network);
-                    } catch (AlreadyExistsEntityException e2) {
-                        throw new InvalidEntityException(network);
-                    }
-                }
-                tier.addNetwork(network);
->>>>>>> 03ee2ba6788d8fe446bbaae656c978727a760d14
             }
             return tierInsertBD(tier, claudiaData);
         }
@@ -220,23 +204,7 @@ public class TierManagerImpl implements TierManager {
             tier.setSecurityGroup(null);
             tierDao.update(tier);
             securityGroupManager.destroy(claudiaData, sec);
-<<<<<<< HEAD
-        }
-        
-    /*    log.debug("Deleting the networks");
-        List<Network> netsAux = new ArrayList<Network> ();
-        for (Network netNet: tier.getNetworks()) {
-        	netsAux.add(netNet);
-        }
-        
-        for (Network net: netsAux) {
-        	tier.deleteNetwork(net);
-        	tierDao.update(tier);
-        	log.debug("Deleting network " + net.getNetworkName());
-            networkManager.delete(claudiaData, net);      
-        }
-*/
-=======
+
         }
 
         log.debug("Deleting the networks");
@@ -249,10 +217,10 @@ public class TierManagerImpl implements TierManager {
             tier.deleteNetwork(net);
             tierDao.update(tier);
             log.debug("Deleting network " + net.getNetworkName());
-            networkManager.delete(claudiaData, net);
+            networkManager.delete(net);
         }
 
->>>>>>> 03ee2ba6788d8fe446bbaae656c978727a760d14
+
         try {
             tierDao.remove(tier);
         } catch (Exception e) {
