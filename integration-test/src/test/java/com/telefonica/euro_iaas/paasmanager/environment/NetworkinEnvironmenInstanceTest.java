@@ -237,5 +237,55 @@ public class NetworkinEnvironmenInstanceTest {
         assertEquals(env2.getTiers().get(0).getNetworks().get(0).getSubNets().size(), 1);
 
     }
+    
+    @Test
+    public void testDeleteEnvironmentWithNetwork() throws Exception {
+
+        ProductRelease product = new ProductRelease("tomcat224", "7", "Tomcat server 22", null);
+
+        product = productReleaseDao.create(product);
+        assertNotNull(product);
+        assertNotNull(product.getId());
+        assertEquals(product.getProduct(), "tomcat224");
+        assertEquals(product.getVersion(), "7");
+
+        Environment environmentBk = new Environment();
+        environmentBk.setName("testDeleteEnvwitNetwor");
+        environmentBk.setDescription("Description First environment");
+        Tier tierbk = new Tier("tierdtotest", new Integer(1), new Integer(1), new Integer(1), null);
+        tierbk.setImage("image");
+        tierbk.setIcono("icono");
+        tierbk.setFlavour("flavour");
+        tierbk.setFloatingip("floatingip");
+        tierbk.setPayload("");
+        tierbk.setKeypair("keypair");
+        tierbk.addProductRelease(product);
+
+        Network net = new Network("network");
+
+        tierbk.addNetwork(net);
+
+        environmentBk.addTier(tierbk);
+
+        environmentResource.insert(org, vdc, environmentBk.toDto());
+
+
+        Environment env2 = environmentManager.load("testDeleteEnvwitNetwor");
+        assertNotNull(env2);
+        assertNotNull(env2.getTiers().get(0).getNetworks());
+        assertEquals(env2.getTiers().get(0).getNetworks().size(), 1);
+        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(), "network");
+        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getSubNets().size(), 1);
+        
+        environmentResource.delete(org, vdc, "testDeleteEnvwitNetwor");
+        try {
+        environmentManager.load("testDeleteEnvwitNetwor");
+        }
+        catch (Exception e)
+        {
+        	assertNotNull(e);
+        }
+
+    }
 
 }

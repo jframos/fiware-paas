@@ -40,9 +40,8 @@ public class RouterManagerImpl implements RouterManager {
      * @network
      */
     public void addNetwork(ClaudiaData claudiaData, Router router, Network network) throws InfrastructureException {
-        networkClient.addNetworkToRouter(claudiaData, router, network);
+        networkClient.addNetworkToRouter(claudiaData, router.getIdRouter(), network);
         network.addRouter(router);
-
     }
 
     /**

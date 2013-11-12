@@ -205,10 +205,19 @@ public class TierManagerImpl implements TierManager {
             securityGroupManager.destroy(claudiaData, sec);
         }
 
-        for (Network network : tier.getNetworks()) {
-            log.debug("Deleting network " + network.getNetworkName());
-            networkManager.delete(claudiaData, network);
+        log.debug("Deleting the networks");
+        List<Network> netsAux = new ArrayList<Network>();
+        for (Network netNet : tier.getNetworks()) {
+            netsAux.add(netNet);
         }
+
+        for (Network net : netsAux) {
+            tier.deleteNetwork(net);
+            tierDao.update(tier);
+            log.debug("Deleting network " + net.getNetworkName());
+            networkManager.delete(claudiaData, net);
+        }
+
         try {
             tierDao.remove(tier);
         } catch (Exception e) {
