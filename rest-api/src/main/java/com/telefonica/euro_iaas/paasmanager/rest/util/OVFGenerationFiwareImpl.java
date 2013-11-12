@@ -173,8 +173,7 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
         String productAttributeAux = "";
 
         if (productInstanceDto.getAttributes() != null) {
-            for (int i = 0; i < productInstanceDto.getAttributes().size(); i++) {
-                Attribute attribute = productInstanceDto.getAttributes().get(i);
+            for (Attribute attribute: productInstanceDto.getAttributes() ) {
 
                 productAttributeAux = replace(productAttributeTemplate, "\\$\\{attributeKey\\}", attribute.getKey());
                 productAttributeAux = replace(productAttributeAux, "\\$\\{attributeValue\\}", attribute.getValue());
@@ -197,8 +196,7 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
         String productAttributeAux = "";
 
         if (productReleaseDto.getPrivateAttributes() != null) {
-            for (int i = 0; i < productReleaseDto.getPrivateAttributes().size(); i++) {
-                Attribute attribute = productReleaseDto.getPrivateAttributes().get(i);
+            for (Attribute attribute: productReleaseDto.getPrivateAttributes() ) {
 
                 productAttributeAux = replace(productAttributeTemplate, "\\$\\{attributeKey\\}", attribute.getKey());
                 productAttributeAux = replace(productAttributeAux, "\\$\\{attributeValue\\}", attribute.getValue());

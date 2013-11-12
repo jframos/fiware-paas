@@ -71,7 +71,7 @@ public class AProductReleaseTest {
 
         int number = productReleases.size();
 
-        List<Attribute> attproduct = new ArrayList<Attribute>();
+        Set<Attribute> attproduct = new HashSet<Attribute>();
         attproduct.add(new Attribute("product", "product", "product"));
 
         ProductRelease productproduct = new ProductRelease("product", "0.1", "product 0.1", attproduct);
@@ -161,6 +161,7 @@ public class AProductReleaseTest {
         assertEquals(productRelease.getAttributes().size(), 0);
 
     }
+
 
 
 }

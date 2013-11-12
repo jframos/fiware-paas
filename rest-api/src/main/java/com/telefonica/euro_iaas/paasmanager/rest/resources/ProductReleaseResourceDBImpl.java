@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
@@ -56,7 +58,7 @@ public class ProductReleaseResourceDBImpl implements ProductReleaseDBResource {
         } catch (EntityNotFoundException e) {
             try {
                 if (productReleaseDto.getPrivateAttributes() == null) {
-                    List<Attribute> atts = new ArrayList<Attribute>();
+                    Set<Attribute> atts = new HashSet<Attribute>();
                     atts.add(new Attribute("openports", "80", "The port opens"));
                     productRelease.setAttributes(atts);
 

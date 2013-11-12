@@ -37,6 +37,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anySet;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -143,7 +144,7 @@ public class EnvironmentInstanceManagerImplTest {
         productInstanceManager = mock(ProductInstanceManager.class);
         when(
                 productInstanceManager.install(any(TierInstance.class), any(ClaudiaData.class), any(String.class),
-                        any(ProductRelease.class), anyList())).thenReturn(productInstance);
+                        any(ProductRelease.class), anySet())).thenReturn(productInstance);
 
         List<ProductInstance> productInstances = new ArrayList<ProductInstance>();
         productInstances.add(productInstance);

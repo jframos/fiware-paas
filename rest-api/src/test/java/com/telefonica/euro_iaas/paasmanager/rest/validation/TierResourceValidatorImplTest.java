@@ -16,8 +16,10 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -128,7 +130,7 @@ public class TierResourceValidatorImplTest {
         ProductRelease product3 = new ProductRelease();
         product3.setName("contexbroker");
         product3.setVersion("1.0");
-        List<Metadata> metadatas = new ArrayList<Metadata>(2);
+        Set<Metadata> metadatas = new HashSet<Metadata>(2);
         product3.setMetadatas(metadatas);
         products2.add(product3);
         Metadata metadataDep = new Metadata();
@@ -169,7 +171,7 @@ public class TierResourceValidatorImplTest {
         ProductRelease product3 = new ProductRelease();
         product3.setName("contexbroker");
         product3.setVersion("1.0");
-        List<Metadata> metadatas = new ArrayList<Metadata>(2);
+        Set<Metadata> metadatas = new HashSet<Metadata>(2);
         product3.setMetadatas(metadatas);
         products2.add(product3);
         Metadata metadataDep = new Metadata();
@@ -224,7 +226,7 @@ public class TierResourceValidatorImplTest {
         List<ProductRelease> productReleaseList = new ArrayList<ProductRelease>(2);
         ProductRelease productRelease = new ProductRelease();
         productRelease.setName("tomcat");
-        List<Metadata> metadatas = new ArrayList<Metadata>(2);
+        Set<Metadata> metadatas = new HashSet<Metadata>(2);
         Metadata metadata = new Metadata();
         metadata.setKey("dep");
         metadata.setValue("mysql");

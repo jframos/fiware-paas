@@ -11,7 +11,9 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
@@ -99,9 +101,9 @@ public class OVFMacroImplTest {
         productReleaseMysql.setSupportedOOSS(oss);
 
         // Attributes;
-        List<Attribute> attributesMysql = new ArrayList<Attribute>();
-        List<Attribute> attributesWar = new ArrayList<Attribute>();
-        List<Attribute> attributesTomcat = new ArrayList<Attribute>();
+        Set<Attribute> attributesMysql = new HashSet<Attribute>();
+        Set<Attribute> attributesWar = new HashSet<Attribute>();
+        Set<Attribute> attributesTomcat = new HashSet<Attribute>();
 
         Attribute attr1 = new Attribute("login", "login1");
         Attribute attr2 = new Attribute("password", "password1");

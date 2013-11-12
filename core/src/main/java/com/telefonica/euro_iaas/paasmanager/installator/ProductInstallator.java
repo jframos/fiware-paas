@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.installator;
 
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
@@ -33,7 +34,7 @@ public interface ProductInstallator {
     // ProductInstallatorException;
 
     ProductInstance install(ClaudiaData claudiaData, String envName, TierInstance tierInstance,
-            ProductRelease productRelease, List<Attribute> attributes) throws ProductInstallatorException;
+            ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException;
 
     /**
      * Operation that installs an artefact in the productInstance

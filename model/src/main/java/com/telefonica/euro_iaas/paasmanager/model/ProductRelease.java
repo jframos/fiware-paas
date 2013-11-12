@@ -70,7 +70,7 @@ public class ProductRelease {
     private String description;
 
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Attribute> attributes = null;
+    private Set<Attribute> attributes = null;
 
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Metadata> metadatas;
@@ -125,7 +125,7 @@ public class ProductRelease {
      * @param description
      * @param attributes
      */
-    public ProductRelease(String name, String version, String description, List<Attribute> attributes) {
+    public ProductRelease(String name, String version, String description, Set<Attribute> attributes) {
         this.product = name;
         this.version = version;
         this.name = product + "-" + version;
@@ -168,7 +168,7 @@ public class ProductRelease {
      */
     public void addAttribute(Attribute attribute) {
         if (attributes == null) {
-            attributes = new ArrayList<Attribute>();
+            attributes = new HashSet<Attribute>();
         }
         attributes.add(attribute);
     }
@@ -246,7 +246,7 @@ public class ProductRelease {
         JSONObject productJson = jsonNode.getJSONObject("product");
         // Attributes
         if (productJson.containsKey("attributes")) {
-            List<Attribute> attributes = new ArrayList<Attribute>();
+            Set<Attribute> attributes = new HashSet<Attribute>();
             productJson = formatJsonArray(productJson);
             JSONArray attributtesJsonArray = productJson.getJSONArray("attributes");
             for (int i = 0; i < attributtesJsonArray.size(); i++) {
@@ -293,9 +293,9 @@ public class ProductRelease {
     /**
      * @return the attributes
      */
-    public List<Attribute> getAttributes() {
+    public Set<Attribute> getAttributes() {
     	if (attributes == null) {
-    		attributes = new ArrayList<Attribute> ();
+    		attributes = new HashSet<Attribute> ();
     	}
         return attributes;
     }
@@ -403,7 +403,7 @@ public class ProductRelease {
      * @param attributes
      *            the attributes to set
      */
-    public void setAttributes(List<Attribute> attributes) {
+    public void setAttributes(Set<Attribute> attributes) {
         this.attributes = attributes;
     }
 
@@ -427,7 +427,7 @@ public class ProductRelease {
      * @param metadatas
      *            the metadatas to set
      */
-    public void setMetadatas(HashSet<Metadata> metadatas) {
+    public void setMetadatas(Set<Metadata> metadatas) {
         this.metadatas = metadatas;
     }
 

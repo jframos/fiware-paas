@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.paasmanager.manager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.paasmanager.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.installator.ProductInstallator;
@@ -82,7 +83,7 @@ public class ProductInstanceImplTest extends TestCase {
         when(productInstanceDao.load(any(String.class))).thenReturn(productInstance);
         when(
                 productInstallator.install(any(ClaudiaData.class), any(String.class), any(TierInstance.class),
-                        any(ProductRelease.class), Matchers.<List<Attribute>> any())).thenReturn(productInstance);
+                        any(ProductRelease.class), Matchers.<Set<Attribute>> any())).thenReturn(productInstance);
     }
 
     @Test

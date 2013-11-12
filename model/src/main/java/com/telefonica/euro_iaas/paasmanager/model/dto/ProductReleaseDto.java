@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,7 +33,7 @@ public class ProductReleaseDto {
     private String version;
 
     // private String releaseNotes;
-    private List<Attribute> attributes;
+    private Set<Attribute> attributes;
 
     // private List<OS> supportedOS;
     // private List<ProductRelease> transitableReleases;
@@ -51,7 +52,7 @@ public class ProductReleaseDto {
      * @param transitableReleases
      */
     public ProductReleaseDto(String productName, String productDescription, String version, String releaseNotes,
-            List<Attribute> privateAttributes, List<OS> supportedOS, List<ProductRelease> transitableReleases) {
+            Set<Attribute> privateAttributes, List<OS> supportedOS, List<ProductRelease> transitableReleases) {
         this.productName = productName;
         this.productDescription = productDescription;
         this.version = version;
@@ -90,11 +91,11 @@ public class ProductReleaseDto {
      * public String getReleaseNotes() { return releaseNotes; } public void setReleaseNotes(String releaseNotes) {
      * this.releaseNotes = releaseNotes; }
      */
-    public List<Attribute> getPrivateAttributes() {
+    public Set<Attribute> getPrivateAttributes() {
         return attributes;
     }
 
-    public void setPrivateAttributes(List<Attribute> attributes) {
+    public void setPrivateAttributes(Set<Attribute> attributes) {
         this.attributes = attributes;
     }
 

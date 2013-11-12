@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
@@ -187,7 +188,7 @@ public class TestClaudiaServiceandVAppUtils {
         try {
             when(
                     productInstanceManager.install(any(TierInstance.class), any(ClaudiaData.class), any(String.class),
-                            any(ProductRelease.class), any(List.class))).thenReturn(productInstance);
+                            any(ProductRelease.class), any(Set.class))).thenReturn(productInstance);
         } catch (ProductInstallatorException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -298,7 +299,7 @@ public class TestClaudiaServiceandVAppUtils {
         try {
             when(
                     productInstanceManager.install(any(TierInstance.class), any(ClaudiaData.class), any(String.class),
-                            any(ProductRelease.class), any(List.class))).thenReturn(productInstance);
+                            any(ProductRelease.class), any(Set.class))).thenReturn(productInstance);
         } catch (ProductInstallatorException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

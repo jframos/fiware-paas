@@ -13,6 +13,7 @@ import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -156,7 +157,7 @@ public class ProductInstallatorRECManagerImpl implements ProductInstallator {
     }
 
     public ProductInstance install(ClaudiaData claudiaData, String envName, TierInstance tierInstance,
-            ProductRelease productRelease, List<Attribute> attributes) throws ProductInstallatorException {
+            ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException {
 
         log.info("Install " + productRelease.getProduct() + " in tier instance " + tierInstance.getName());
         String baseUrl = systemPropertiesProvider.getProperty(REC_SERVER_URL);

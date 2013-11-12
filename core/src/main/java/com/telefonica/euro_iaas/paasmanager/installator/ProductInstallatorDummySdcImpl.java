@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.installator;
 
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
@@ -67,7 +68,7 @@ public class ProductInstallatorDummySdcImpl implements ProductInstallator {
     }
 
     public ProductInstance install(ClaudiaData claudiaData, String envName, TierInstance tierInstance,
-            ProductRelease productRelease, List<Attribute> attributes) throws ProductInstallatorException {
+            ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException {
 
         ProductInstance productInstance = new ProductInstance();
         productInstance.setStatus(Status.INSTALLED);

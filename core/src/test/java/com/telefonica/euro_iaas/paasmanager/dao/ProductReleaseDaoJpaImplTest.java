@@ -7,7 +7,9 @@
 package com.telefonica.euro_iaas.paasmanager.dao;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -23,6 +25,7 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
 
     private ProductReleaseDao productReleaseDao;
+    private AttributeDao attributeDao;
 
     @Test
     public void testProductReleasesNotAttributes() throws Exception {
@@ -52,7 +55,7 @@ public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
 
         int number = productReleases.size();
 
-        List<Attribute> attproduct = new ArrayList<Attribute>();
+        Set<Attribute> attproduct = new HashSet<Attribute>();
         attproduct.add(new Attribute("product", "product", "product"));
 
         ProductRelease productproduct = new ProductRelease("product", "0.1", "product 0.1", attproduct);
@@ -103,6 +106,7 @@ public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
 
         Metadata metproduct = new Metadata("product", "product", "product");
         Attribute attribute = new Attribute("product", "product", "product");
+        attribute = attributeDao.create(attribute);
         
         ProductRelease productproduct = new ProductRelease("product2", "0.1");
         productproduct.addMetadata(metproduct);
@@ -119,8 +123,9 @@ public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
         assertNotNull(productRelease);
         assertEquals(productRelease.getProduct(), "product2");
         assertEquals(productRelease.getVersion(), "0.1");
-        assertEquals(productRelease.getMetadatas().size(), 1);
         assertEquals(productRelease.getAttributes().size(), 1);
+        assertEquals(productRelease.getMetadatas().size(), 1);
+        
 
     }
     @Test
@@ -143,6 +148,7 @@ public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
         assertNotNull(productRelease);
         assertEquals(productRelease.getProduct(), "product3");
         assertEquals(productRelease.getVersion(), "0.3");
+        assertEquals(productRelease.getMetadatas().size(), 0);
         assertEquals(productRelease.getAttributes().size(), 1);
 
     }
@@ -164,6 +170,7 @@ public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(productRelease.getProduct(), "product4");
         assertEquals(productRelease.getVersion(), "0.1");
         assertEquals(productRelease.getAttributes().size(), 0);
+        assertEquals(productRelease.getMetadatas().size(), 0);
 
     }
     
@@ -175,4 +182,7 @@ public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
         this.productReleaseDao = productReleaseDao;
     }
     
+    public void setAttributeDao(AttributeDao attributeDao) {
+        this.attributeDao = attributeDao;
+    }
 }
