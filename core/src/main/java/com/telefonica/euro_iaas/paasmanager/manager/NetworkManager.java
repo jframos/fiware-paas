@@ -27,9 +27,10 @@ public interface NetworkManager {
      * @return the tierInstance created
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
+     * @throws EntityNotFoundException 
      */
     Network create(Network network) throws InvalidEntityException, InfrastructureException,
-            AlreadyExistsEntityException;
+            AlreadyExistsEntityException, EntityNotFoundException;
 
     /**
      * Delete a Network.
@@ -54,6 +55,13 @@ public interface NetworkManager {
      * @return the network.
      */
     Network load(String networkName) throws EntityNotFoundException;
+    
+    /**
+     * If the network exists in DB.
+     * 
+     * @return .
+     */
+    boolean exists(String networkName);
 
     /**
      * Update a network.

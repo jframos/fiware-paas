@@ -43,45 +43,38 @@ public class NetworkManagerImpl implements NetworkManager {
      * To create a network.
      * 
      * @throws AlreadyExistsEntityException
+     * @throws EntityNotFoundException 
      * @params claudiaData
      * @params network
      */
     public Network create(Network network) throws InvalidEntityException,
-        InfrastructureException, AlreadyExistsEntityException {
+        InfrastructureException, AlreadyExistsEntityException, EntityNotFoundException {
         log.debug("Create network " + network.getNetworkName());
-
-        try {
+        
+        if (networkDao.exists(network.getNetworkName())) {
+        	log.debug("The network " + network.getNetworkName() + " already exists");
         	Network networkDB = networkDao.load(network.getNetworkName());
-            log.debug("The network already exists");
             for (SubNetwork subnet: network.getSubNets()) {
                 if (!networkDB.contains(subnet)) {
                     createSubNetwork(network, subnet);
                 }
             }
             
-            if (network.getSubNets().size() == 0) {
-           	 createSubNetwork(network);
+            if (network.getSubNets().isEmpty()) {
+           	    createDefaultSubNetwork(network);
             }
+            networkDao.update (network);
             
-            return network;
-
-        } catch (EntityNotFoundException e1) {
-            try {
-            	for (SubNetwork subnet: network.getSubNets()) {
-                   createSubNetwork(network, subnet);
-                }
-                
-                if (network.getSubNets().size() == 0) {
-               	 createSubNetwork(network);
-                }
-
-                network = networkDao.create(network);
-            } catch (Exception e) {
-                log.error("Error to create the network " + e.getMessage());
-                throw new InvalidEntityException(network);
-            }
+        } else {
+        	for (SubNetwork subnet: network.getSubNets()) {
+                createSubNetwork(network, subnet);
+             }
+             
+             if (network.getSubNets().isEmpty()) {
+            	 createDefaultSubNetwork(network);
+             }
+             network = networkDao.create(network);
         }
-
         return network;
     }
 
@@ -113,7 +106,7 @@ public class NetworkManagerImpl implements NetworkManager {
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
      */
-    public void createSubNetwork(Network network)
+    public void createDefaultSubNetwork(Network network)
         throws InvalidEntityException, AlreadyExistsEntityException {
         int cidrCount = findAll().size() + 1;
         SubNetwork subNet = new SubNetwork("sub-net-" + network.getNetworkName()
@@ -168,15 +161,13 @@ public class NetworkManagerImpl implements NetworkManager {
     /**
      * To obtain the network.
      *
-     * @param name
-     * @param vdc
      * @param networkName
      * @return the network
      */
     public Network load(String networkName) throws EntityNotFoundException {
         return networkDao.load(networkName);
     }
-
+    
 
     public void setNetworkDao(NetworkDao networkDao) {
         this.networkDao = networkDao;
@@ -197,5 +188,10 @@ public class NetworkManagerImpl implements NetworkManager {
     public Network update(Network network) throws InvalidEntityException {
         return networkDao.update(network);
     }
+
+
+	public boolean exists(String networkName) {
+		return networkDao.exists(networkName);
+	}
 
 }

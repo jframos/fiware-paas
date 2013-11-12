@@ -9,16 +9,25 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
+import javax.persistence.Query;
+
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.NetworkDao;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 
 /**
  * @author Henar Munoz
  */
 public class NetworkDaoJpaImpl extends AbstractBaseDao<Network, String> implements NetworkDao {
 
+	@PersistenceContext(unitName = "paasmanager", type = PersistenceContextType.EXTENDED)
+    private EntityManager entityManager;
     /*
      * find all networks.
      * @return network list
@@ -31,8 +40,34 @@ public class NetworkDaoJpaImpl extends AbstractBaseDao<Network, String> implemen
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.commons.dao.BaseDAO#load(java.io.Serializable)
      */
-    public Network load(String arg0) throws EntityNotFoundException {
-        return super.loadByField(Network.class, "name", arg0);
+    public Network load(String networkName) throws EntityNotFoundException {
+    	return findNetworkWithSubNetInst(networkName);
+    }
+    
+    public boolean exists(String networkName) {
+        try {
+        	super.loadByField(Network.class, "name", networkName);
+        	return true;
+        	
+        } catch (EntityNotFoundException e) {
+        	return false;
+        }
+        
+    }
+    
+    private Network findNetworkWithSubNetInst(String name) throws EntityNotFoundException {
+        Query query = entityManager.createQuery("select p from Network p join "
+                + "left fetch p.subNets where p.name = :name");
+        query.setParameter("name", name);
+        Network network = null;
+        try {
+        	network = (Network) query.getSingleResult();
+        } catch (NoResultException e) {
+            String message = " No network found in the database with id: " + name + " Exception: "
+                    + e.getMessage();
+            throw new EntityNotFoundException(ProductRelease.class, "name", name);
+        }
+        return network;
     }
 
 }

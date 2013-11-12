@@ -72,10 +72,12 @@ public class TierManagerImpl implements TierManager {
 
     /**
      * It creates a tier.
+     * @throws EntityNotFoundException 
+     * @throws AlreadyExistsEntityException 
      */
 
     public Tier create(ClaudiaData claudiaData, String envName, Tier tier) throws InvalidEntityException,
-            InvalidSecurityGroupRequestException, InfrastructureException {
+            InvalidSecurityGroupRequestException, InfrastructureException, EntityNotFoundException, AlreadyExistsEntityException {
         log.debug("Create tier name " + tier.getName() + " image " + tier.getImage() + " flavour " + tier.getFlavour()
                 + " initial_number_instances " + tier.getInitialNumberInstances() + " maximum_number_instances "
                 + tier.getMaximumNumberInstances() + " minimum_number_instances " + tier.getMinimumNumberInstances()
@@ -100,19 +102,14 @@ public class TierManagerImpl implements TierManager {
             }
 
            for (Network network: networkToBeDeployed) {
-                log.debug("Network to be deployed: " + network.getNetworkName());
-
-                try {
-                    network = networkManager.load(network.getNetworkName());
-                    log.debug("the network " + network.getNetworkName() + " already exists");
-                } catch (EntityNotFoundException e1) {
-                    try {
-                        network = networkManager.create(network);
-                    } catch (AlreadyExistsEntityException e2) {
-                        throw new InvalidEntityException(network);
-                    }
-                }
-                tier.addNetwork(network);
+        	   if (networkManager.exists(network.getNetworkName())) {
+        		   log.debug("the network " + network.getNetworkName() + " already exists");
+        		   network = networkManager.load(network.getNetworkName());
+                   
+        	   } else {
+        		   network = networkManager.create(network);
+        	   }
+        	   tier.addNetwork(network);
 
             }
             return tierInsertBD(tier, claudiaData);
@@ -304,6 +301,11 @@ public class TierManagerImpl implements TierManager {
             throw new EntityNotFoundException(Tier.class, "error", e.getMessage());
         }
     }
+    
+    public boolean exists(String name, String vdc, String environmentName) throws EntityNotFoundException {
+        return tierDao.exists(name, vdc, environmentName);
+    }
+
 
     @Override
     public Tier loadTierWithProductReleaseAndMetadata(String tierName, String environmentName, String vdc)

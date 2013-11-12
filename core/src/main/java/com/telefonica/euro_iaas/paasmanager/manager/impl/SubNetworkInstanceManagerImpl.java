@@ -41,26 +41,18 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
      * @params claudiaData
      * @params network
      */
-    public SubNetworkInstance create(ClaudiaData claudiaData, SubNetworkInstance subNetwork) throws InvalidEntityException,
-    InfrastructureException, AlreadyExistsEntityException {
+    public SubNetworkInstance create(ClaudiaData claudiaData, SubNetworkInstance subNetwork)
+        throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
         log.debug("Create subnetwork instance " + subNetwork.getName());
-
-        try {
-        	subNetwork =subNetworkInstanceDao.load(subNetwork.getName());
+        if (!subNetworkInstanceDao.exists(subNetwork.getName())) {
+            networkClient.deploySubNetwork(claudiaData, subNetwork);
+            log.debug("SubNetwork " + subNetwork.getName() + " in network "
+                + subNetwork.getIdNetwork()
+                + " deployed with id " + subNetwork.getIdSubNet());
+            subNetwork = subNetworkInstanceDao.create(subNetwork);
+        } else {
         	log.warn ("Subred already created " + subNetwork.getName());
             throw new AlreadyExistsEntityException(subNetwork);
-
-        } catch (EntityNotFoundException e1) {
-            try {
-
-                networkClient.deploySubNetwork(claudiaData, subNetwork);
-                log.debug("SubNetwork " + subNetwork.getName() + " in network " + subNetwork.getIdNetwork()
-                    + " deployed with id " + subNetwork.getIdSubNet());
-                subNetwork = subNetworkInstanceDao.create(subNetwork);
-            } catch (Exception e) {
-                log.error("Error to create the subnetwork in BD " + e.getMessage());
-                throw new InvalidEntityException(subNetwork);
-            }
         }
         return subNetwork;
     }
@@ -86,7 +78,7 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
 
     /**
      * To obtain the list of subnetworks.
-     * 
+     *
      * @return the subnetwork list
      */
     public List<SubNetworkInstance> findAll() {
@@ -95,7 +87,7 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
 
     /**
      * To obtain the subnetwork.
-     * 
+     *
      * @param name
      * @param vdc
      * @param networkName

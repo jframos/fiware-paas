@@ -7,8 +7,12 @@
 
 package com.telefonica.euro_iaas.paasmanager.dao;
 
+import java.util.List;
+
 import com.telefonica.euro_iaas.commons.dao.BaseDAO;
+import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
+import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductReleaseSearchCriteria;
 
 /**
  * Defines the methods needed to persist Network objects.
@@ -17,5 +21,7 @@ import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
  */
 public interface SubNetworkInstanceDao extends
     BaseDAO<SubNetworkInstance, String> {
+	
+	boolean exists(String key);
 
 }

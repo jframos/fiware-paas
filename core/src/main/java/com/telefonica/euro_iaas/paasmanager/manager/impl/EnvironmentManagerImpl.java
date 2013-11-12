@@ -53,37 +53,21 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
             log.debug("Number of Tiers " + environment.getTiers().size());
             for (Tier tier : environment.getTiers()) {
                 Tier tierDB = null;
+
                 try {
+				    tierDB = tierManager.load(tier.getName(), claudiaData.getVdc(), environment.getName());
+				} catch (EntityNotFoundException e) {
+				    try {
+						tierDB = tierManager.create(claudiaData, environment.getName(), tier);
+					} catch (Exception e2) {
+						 throw new InvalidEnvironmentRequestException(e2.getMessage(), e2);
+					}
+				}
 
-                    try {
-                        tierDB = tierManager.load(tier.getName(), claudiaData.getVdc(), environment.getName());
-                    } catch (EntityNotFoundException e) {
-                        try {
-                            tierDB = tierManager.create(claudiaData, environment.getName(), tier);
-                        } catch (InfrastructureException e1) {
-                            throw new InvalidEnvironmentRequestException(e1.getMessage(), e1);
-                        }
-                    }
-
-                    environmentDB.addTier(tierDB);
-
-                } catch (InvalidEntityException e) {
-                    throw new InvalidEnvironmentRequestException(e.getMessage(), e);
-                } catch (InvalidSecurityGroupRequestException e) {
-                    throw new InvalidEnvironmentRequestException(e.getMessage(), e);
-                }
+				environmentDB.addTier(tierDB);
             }
         }
 
-        /*
-         * try { environmentType = environmentTypeDao.load(environment .getEnvironmentType().getName()); } catch
-         * (EntityNotFoundException e) { try { environmentType = environmentTypeDao.create(environment
-         * .getEnvironmentType()); } catch (AlreadyExistsEntityException e1) { String errorMessage =
-         * "The EnvironmentType Object " + environmentType.getName() + "is already in Database"; throw new
-         * InvalidEnvironmentRequestException (errorMessage); } catch (InvalidEntityException e2) { String errorMessage
-         * = " The EnvironmentType Object " + environmentType.getName() + "is invaled" + e2.getMessage(); throw new
-         * InvalidEnvironmentRequestException (errorMessage); } } environmentDB.setEnvironmentType(environmentType);
-         */
 
         try {
             environmentDB = environmentDao.create(environmentDB);

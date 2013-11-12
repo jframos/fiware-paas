@@ -212,4 +212,15 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
 
         return tier;
     }
+
+	@Override
+	public boolean exists(String name, String vdc, String environmentName) {
+		try {
+			 super.loadByField(Tier.class, "name", name);
+			 return true;
+		} catch (EntityNotFoundException e) {
+			return false;
+		}
+		
+	}
 }
