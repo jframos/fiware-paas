@@ -132,8 +132,8 @@ public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, St
     
     private ProductRelease findByProductReleaseWithMetadataAndAtt(String name) throws EntityNotFoundException {
     	
-    	Query query = entityManager.createQuery("select p from ProductRelease p  join"
-                + " fetch p.attributes as attributes join fetch p.metadatas as metadatas where p.name = :name");
+    	Query query = entityManager.createQuery("select p from ProductRelease p left join"
+                + " fetch p.attributes as attributes left join fetch p.metadatas as metadatas where p.name = :name");
         query.setParameter("name", name);
         ProductRelease productRelease = null;
         try {
