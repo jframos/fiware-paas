@@ -29,6 +29,7 @@ import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
+import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Limits;
@@ -50,6 +51,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
     private TierResourceValidator tierResourceValidator;
 
     private QuotaClient quotaClient;
+    private ProductReleaseManager productReleaseManager;
 
     /** The log. */
     private static Logger log = Logger.getLogger(EnvironmentInstanceResourceValidatorImpl.class);
@@ -149,8 +151,11 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
         String system = systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
         if ("FIWARE".equals(system)) {
-            for (TierDto tierDto : environmentInstanceDto.getEnvironmentDto().getTierDtos())
-                validateTiers(tierDto);
+            for (TierDto tierDto : environmentInstanceDto.getEnvironmentDto().getTierDtos()) {
+                validateTier(tierDto);
+            }
+            tierResourceValidator.validateTiersDependencies(environmentInstanceDto.getEnvironmentDto().getName(),
+                    claudiaData.getVdc(), environmentInstanceDto.getEnvironmentDto().getTierDtos());
         }
 
         // Validating length of hostname (maximum =64)
@@ -173,18 +178,21 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
         validateQuota(claudiaData, environmentInstanceDto);
     }
 
-    public void validateTiers(TierDto tierDto) throws InvalidEnvironmentRequestException {
+    public void validateTier(TierDto tierDto) throws InvalidEnvironmentRequestException {
 
-        if (tierDto.getName() == null)
+        if (tierDto.getName() == null) {
             throw new InvalidEnvironmentRequestException("Tier Name " + "from tierDto is null");
-        if (tierDto.getImage() == null)
+        }
+        if (tierDto.getImage() == null) {
             throw new InvalidEnvironmentRequestException("Tier Image " + "from tierDto is null");
-        if (tierDto.getFlavour() == null)
+        }
+        if (tierDto.getFlavour() == null) {
             throw new InvalidEnvironmentRequestException("Tier Flavour " + "from tierDto is null");
+        }
 
     }
 
-    @Override
+
     public void validateQuota(ClaudiaData claudiaData, EnvironmentInstanceDto environmentInstanceDto)
             throws InvalidEnvironmentRequestException, QuotaExceededException {
 

@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -138,6 +139,22 @@ public class EnvironmentInstanceResourceValidatorImplTest {
             verify(quotaClient).getLimits(claudiaData);
         }
 
+    }
+
+    @Test
+    public void shouldValidateTierWithValidTierDto() throws InvalidEnvironmentRequestException {
+        // given
+        EnvironmentInstanceResourceValidatorImpl environmentInstanceResourceValidatorImpl = new EnvironmentInstanceResourceValidatorImpl();
+        TierDto tierDto = new TierDto();
+        tierDto.setName("name");
+        tierDto.setFlavour("flavour");
+        tierDto.setImage("image");
+
+        // when
+        environmentInstanceResourceValidatorImpl.validateTier(tierDto);
+
+        // then
+        assertTrue(true);
     }
 
 }

@@ -7,6 +7,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -67,10 +68,10 @@ public class NetworkManagerImpl implements NetworkManager {
                 networkClient.deployNetwork(claudiaData, network);
                 log.debug("Network " + network.getNetworkName() + " : " + network.getIdNetwork() + " deployed");
                 createSubNetwork(claudiaData, network, null);
-                createRouter(claudiaData, network);
+                addNetworkToInternetRouter(claudiaData,network);
                 network = networkDao.create(network);
             } catch (Exception e) {
-                log.error("Error to create the network in BD " + e.getMessage());
+                log.error("Error to create the network " + e.getMessage());
                 throw new InvalidEntityException(network);
             }
         }
@@ -79,7 +80,7 @@ public class NetworkManagerImpl implements NetworkManager {
     }
 
     /**
-     * It creates a router and associted it to the network.
+     * It creates a router and associated it to the network.
      * @param claudiaData
      * @param network
      * @throws InvalidEntityException
@@ -94,7 +95,20 @@ public class NetworkManagerImpl implements NetworkManager {
 
         routerManager.create(claudiaData, router, network);
     }
+    
+    /**
+     * It adds the network to the internet router.
+     * @param network
+     * @throws InvalidEntityException
+     * @throws InfrastructureException
+     */
+    public void addNetworkToInternetRouter(ClaudiaData claudiaData, Network network )
+        throws InvalidEntityException, InfrastructureException {
+        networkClient.addNetworkToPublicRouter(claudiaData,network);
+    }
 
+    
+    
     /**
      * It creates a subnet in the network.
      * @param claudiaData
@@ -133,10 +147,19 @@ public class NetworkManagerImpl implements NetworkManager {
         for (Router router: network.getRouters()) {
             routerManager.delete(claudiaData, router, network);
         }
+        
         log.debug("Deleting the subnets");
+        List<SubNetwork> subNetsAux = new ArrayList<SubNetwork> ();
         for (SubNetwork subNet: network.getSubNets()) {
+        	subNetsAux.add(subNet);
+        }
+        
+        for (SubNetwork subNet: subNetsAux) {
+        	network.deleteSubNet(subNet);
+        	networkDao.update(network);
             subNetworkManager.delete(claudiaData, subNet);
         }
+
         log.debug("Deleting the network");
         networkClient.destroyNetwork(claudiaData, network);
         try {
