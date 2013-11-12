@@ -100,7 +100,7 @@ public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, St
      * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang .String)
      */
     private ProductRelease findByProductReleaseWithAtt(String name) throws EntityNotFoundException {
-        Query query = entityManager.createQuery("select p from ProductRelease p join "
+        Query query = entityManager.createQuery("select p from ProductRelease p left join "
                 + " fetch p.attributes where p.name = :name");
         query.setParameter("name", name);
         ProductRelease productRelease = null;
