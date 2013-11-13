@@ -109,6 +109,18 @@ public class NetworkInstance {
         subNets.add(subNet);
         subNetCount++;
     }
+    
+    /**
+     * It does a clone of the collection.
+     * @return
+     */
+    public Set<SubNetworkInstance> cloneSubNets () {
+   	 Set<SubNetworkInstance> subNetAux = new HashSet<SubNetworkInstance> ();
+        for (SubNetworkInstance subNet2: getSubNets()) {
+        	subNetAux.add(subNet2);
+        }
+        return subNetAux;
+   }
 
     /**
      * It updates a subnet to the network.

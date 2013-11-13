@@ -17,14 +17,10 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
 import com.telefonica.euro_iaas.paasmanager.dao.NetworkDao;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.NetworkManagerImpl;
-import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
-import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
-import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 
 /**
@@ -160,5 +156,6 @@ public class NetworkManagerImplTest extends TestCase {
         networkManager.delete(net);
 
     }
+
 
 }
