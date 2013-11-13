@@ -73,7 +73,7 @@ public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
         assertNotNull(productRelease);
         assertEquals(productRelease.getProduct(), "product");
         assertEquals(productRelease.getVersion(), "0.1");
-    //    assertEquals(productRelease.getAttributes().size(), 1);
+        assertEquals(productRelease.getAttributes().size(), 1);
 
     }
     
@@ -97,7 +97,7 @@ public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
         assertNotNull(productRelease);
         assertEquals(productRelease.getProduct(), "product2");
         assertEquals(productRelease.getVersion(), "0.1");
-     //   assertEquals(productRelease.getMetadatas().size(), 1);
+        assertEquals(productRelease.getMetadatas().size(), 1);
 
     }
     
@@ -123,8 +123,8 @@ public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
         assertNotNull(productRelease);
         assertEquals(productRelease.getProduct(), "product2");
         assertEquals(productRelease.getVersion(), "0.1");
-   //     assertEquals(productRelease.getAttributes().size(), 1);
-    //    assertEquals(productRelease.getMetadatas().size(), 1);
+        assertEquals(productRelease.getAttributes().size(), 1);
+        assertEquals(productRelease.getMetadatas().size(), 1);
         
 
     }
@@ -149,7 +149,7 @@ public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(productRelease.getProduct(), "product3");
         assertEquals(productRelease.getVersion(), "0.3");
         assertEquals(productRelease.getMetadatas().size(), 0);
-    //    assertEquals(productRelease.getAttributes().size(), 1);
+        assertEquals(productRelease.getAttributes().size(), 1);
 
     }
     
