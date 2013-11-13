@@ -287,6 +287,7 @@
                         <instrumentation>
                             <excludes>
                                 <exclude>**/*Test*.class</exclude>
+                                <exclude>**/model/**.class</exclude>
                             </excludes>
                         </instrumentation>
                     </configuration>
