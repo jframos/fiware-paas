@@ -118,8 +118,10 @@ public class NetworkTest extends TestCase {
         assertEquals(networkInstance.getNetworkName(), NETWORK_NAME);
         assertEquals(networkInstance.toJson(), NETWORK_STRING);
         assertEquals(networkInstance.getSubNets().size(), 1);
-        assertEquals(networkInstance.getSubNets().get(0).getName(),
+        for (SubNetworkInstance subNet2: networkInstance.getSubNets()) {
+            assertEquals(subNet2.getName(),
             SUBNETWORK_NAME);
+        }
     }
     
     /**

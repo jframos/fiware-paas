@@ -98,7 +98,10 @@ public class NetworkInstanceManagerImplTest {
         NetworkInstance netInstOut = networkInstanceManager.create(claudiaData, netInst);
         assertEquals(netInstOut.getNetworkName(), NETWORK_NAME);
         assertEquals(netInstOut.getSubNets().size(), 1);
-        assertEquals(netInstOut.getSubNets().get(0).getName(), SUB_NETWORK_NAME);
+        for (SubNetworkInstance subNet2: netInstOut.getSubNets()) {
+        	assertEquals(subNet2.getName(), SUB_NETWORK_NAME);
+        }
+        
     }
     
     /**

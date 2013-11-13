@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,30 +56,19 @@ public class NetworkInstance {
 
     private int subNetCount;
 
-    @OneToMany()
-
-  /*  @JoinTable(name = "networkinstancehassubnetworkinstance",
-    joinColumns = {
-        @JoinColumn(name="networkinstance_ID", unique = true)           
-    },
-    inverseJoinColumns = {
-        @JoinColumn(name="subnetworkinstance_ID")
-     }
-   )*/
-
-  
-    private List<SubNetworkInstance> subNets;
+    @OneToMany()  
+    private Set<SubNetworkInstance> subNets;
 
     @OneToMany
-    private List<RouterInstance> routers;
+    private Set<RouterInstance> routers;
 
     /**
      * Constructor.
      */
     public NetworkInstance() {
         subNetCount = 1;
-        subNets = new ArrayList<SubNetworkInstance>();
-        routers = new ArrayList<RouterInstance>();
+        subNets = new HashSet<SubNetworkInstance>();
+        routers = new HashSet<RouterInstance>();
 
     }
 
@@ -86,8 +77,8 @@ public class NetworkInstance {
      */
     public NetworkInstance(String name) {
         this.name = name;
-        subNets = new ArrayList<SubNetworkInstance>();
-        routers = new ArrayList<RouterInstance>();
+        subNets = new HashSet<SubNetworkInstance>();
+        routers = new HashSet<RouterInstance>();
         subNetCount = 1;
     }
 
@@ -99,7 +90,7 @@ public class NetworkInstance {
      */
     public void addRouter(RouterInstance router) {
         if (routers == null) {
-            routers = new ArrayList<RouterInstance>();
+            routers = new HashSet<RouterInstance>();
         }
         routers.add(router);
     }
@@ -112,7 +103,7 @@ public class NetworkInstance {
      */
     public void addSubNet(SubNetworkInstance subNet) {
         if (subNets == null) {
-            subNets = new ArrayList<SubNetworkInstance>();
+            subNets = new HashSet<SubNetworkInstance>();
         }
         subNet.setIdNetwork(this.getIdNetwork());
         subNets.add(subNet);
@@ -155,9 +146,6 @@ public class NetworkInstance {
      * @return
      */
     public boolean contains(SubNetworkInstance subNet) {
-        if (subNets == null) {
-            subNets = new ArrayList<SubNetworkInstance>();
-        }
         return subNets.contains(subNet);
     }
 
@@ -166,12 +154,10 @@ public class NetworkInstance {
      * @return
      */
     public String getIdNetRouter() {
-        if (getSubNets().size() != 0) {
-            return this.getSubNets().get(0).getIdSubNet();
-        }
-        else {
-            return "";
-        }
+    	for (SubNetworkInstance subNet: this.getSubNets()) {
+    		return subNet.getIdSubNet();
+    	}
+        return "";
     }
 
     /**
@@ -193,7 +179,7 @@ public class NetworkInstance {
      * 
      * @return List<Router>
      */
-    public List<RouterInstance> getRouters() {
+    public Set<RouterInstance> getRouters() {
         return this.routers;
     }
 
@@ -211,7 +197,7 @@ public class NetworkInstance {
      * 
      * @return List<SubNetwork>
      */
-    public List<SubNetworkInstance> getSubNets() {
+    public Set<SubNetworkInstance> getSubNets() {
         return this.subNets;
     }
 
@@ -227,11 +213,10 @@ public class NetworkInstance {
      * @return
      */
     public String toAddInterfaceJson() {
-        if (getSubNets().size() != 0) {
-            return this.getSubNets().get(0).toJsonAddInterface();
-        } else {
-            return "";
-        }
+    	for (SubNetworkInstance subNet: this.getSubNets()) {
+    		return subNet.toJsonAddInterface();
+    	}
+        return "";
     }
 
     /**
@@ -244,5 +229,10 @@ public class NetworkInstance {
         + "    \"shared\": false" + "  }" + "}";
 
     }
+
+	public void setSubNets(Set<SubNetworkInstance> subNets2) {
+		this.subNets = subNets2;
+		
+	}
 
 }
