@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -51,7 +53,7 @@ public class Network {
 //    private int subNetCount;
 
     @OneToMany
-    private List<SubNetwork> subNets;
+    private Set<SubNetwork> subNets;
 
   //  @OneToMany
    // private List<Router> routers;
@@ -60,10 +62,7 @@ public class Network {
      * Constructor.
      */
     public Network() {
-    //    subNetCount = 1;
-        subNets = new ArrayList<SubNetwork>();
-     //   routers = new ArrayList<Router>();
-
+        subNets = new HashSet<SubNetwork>();
     }
 
     /**
@@ -71,10 +70,7 @@ public class Network {
      */
     public Network(String name) {
         this.name = name;
-        subNets = new ArrayList<SubNetwork>();
-    //    routers = new ArrayList<Router>();
-     //   subNetCount = 1;
-       
+        subNets = new HashSet<SubNetwork>();       
     }
 
 
@@ -86,11 +82,9 @@ public class Network {
      */
     public void addSubNet(SubNetwork subNet) {
         if (subNets == null) {
-            subNets = new ArrayList<SubNetwork>();
+            subNets = new HashSet<SubNetwork>();
         }
-  //      subNet.setIdNetwork(this.getIdNetwork());
         subNets.add(subNet);
-    //    subNetCount++;
     }
     
     /**
@@ -124,9 +118,6 @@ public class Network {
      * @return
      */
     public boolean contains(SubNetwork subNet) {
-        if (subNets == null) {
-            subNets = new ArrayList<SubNetwork>();
-        }
         return subNets.contains(subNet);
     }
 
@@ -144,8 +135,16 @@ public class Network {
      * 
      * @return List<SubNetwork>
      */
-    public List<SubNetwork> getSubNets() {
+    public Set<SubNetwork> getSubNets() {
         return this.subNets;
+    }
+    
+    /**
+     * It add the subnet collection
+     * @param subNets
+     */
+    public void setSubNets(Set<SubNetwork> subNets) {
+        this.subNets = subNets;
     }
 
 

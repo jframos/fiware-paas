@@ -74,9 +74,12 @@ public class NetworkManagerImplTest extends TestCase {
         networkManager.create(net);
         assertEquals(net.getNetworkName(), NETWORK_NAME);
         assertEquals(net.getSubNets().size(), 1);
-        assertEquals(net.getSubNets().get(0).getName(),
-            "sub-net-" + NETWORK_NAME + "-1");
-        assertEquals(net.getSubNets().get(0).getCidr(), CIDR);
+        
+        for (SubNetwork subNet2: net.getSubNets()) {
+            assertEquals(subNet2.getName(),  "sub-net-" + NETWORK_NAME + "-1");
+            assertEquals(subNet2.getCidr(), CIDR);
+        }
+
 
     }
     
@@ -102,9 +105,10 @@ public class NetworkManagerImplTest extends TestCase {
         networkManager.create(net);
         assertEquals(net.getNetworkName(), NETWORK_NAME);
         assertEquals(net.getSubNets().size(), 1);
-        assertEquals(net.getSubNets().get(0).getName(),
-            SUB_NETWORK_NAME);
-        assertEquals(net.getSubNets().get(0).getCidr(), CIDR);
+        for (SubNetwork subNet2: net.getSubNets()) {
+            assertEquals(subNet2.getName(),  SUB_NETWORK_NAME);
+            assertEquals(subNet2.getCidr(), CIDR);
+        }
 
     }
     
@@ -130,9 +134,10 @@ public class NetworkManagerImplTest extends TestCase {
         networkManager.create(net);
         assertEquals(net.getNetworkName(), NETWORK_NAME);
         assertEquals(net.getSubNets().size(), 1);
-        assertEquals(net.getSubNets().get(0).getName(),
-        		SUB_NETWORK_NAME);
-        assertEquals(net.getSubNets().get(0).getCidr(), CIDR);
+        for (SubNetwork subNet2: net.getSubNets()) {
+            assertEquals(subNet2.getName(),  SUB_NETWORK_NAME);
+            assertEquals(subNet2.getCidr(), CIDR);
+        }
 
     }
 

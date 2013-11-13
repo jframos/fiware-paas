@@ -98,8 +98,10 @@ public class NetworkTest extends TestCase {
         network.addSubNet(subnet);
         assertEquals(network.getNetworkName(), NETWORK_NAME);
         assertEquals(network.getSubNets().size(), 1);
-        assertEquals(network.getSubNets().get(0).getName(), SUBNETWORK_NAME);
-        assertEquals(network.getSubNets().get(0).getCidr(), CIDR);
+        for (SubNetwork subNet: network.getSubNets()) {
+            assertEquals(subNet.getName(), SUBNETWORK_NAME);
+            assertEquals(subNet.getCidr(), CIDR);
+        }
     }
 
     /**
@@ -135,8 +137,10 @@ public class NetworkTest extends TestCase {
         router.setIdRouter(ID);
         assertEquals(network.getNetworkName(), NETWORK_NAME);
         assertEquals(network.getSubNets().size(), 1);
-        assertEquals(network.getSubNets().get(0).getName(), SUBNETWORK_NAME);
-        assertEquals(network.getSubNets().get(0).getCidr(), CIDR);
+        for (SubNetwork subNet: network.getSubNets()) {
+            assertEquals(subNet.getName(), SUBNETWORK_NAME);
+            assertEquals(subNet.getCidr(), CIDR);
+        }
     }
 
     /**
@@ -190,8 +194,10 @@ public class NetworkTest extends TestCase {
 
         assertEquals(net.getNetworkName(), NETWORK_NAME);
         assertEquals(net.getSubNets().size(), 1);
-        assertEquals(net.getSubNets().get(0).getName(), SUBNETWORK_NAME);
-        assertEquals(net.getSubNets().get(0).getCidr(), CIDR);
+        for (SubNetwork subNet: net.getSubNets()) {
+            assertEquals(subNet.getName(), SUBNETWORK_NAME);
+            assertEquals(subNet.getCidr(), CIDR);
+        }
     }
 
 }
