@@ -85,40 +85,19 @@ public class TierManagerImpl implements TierManager {
                 + " product releases " + tier.getProductReleases() + "  vdc " + claudiaData.getVdc() + " networks "
                 + tier.getNetworks());
 
-        try {
-            tier = load(tier.getName(), claudiaData.getVdc(), envName);
-            return tier;
-        } catch (EntityNotFoundException e) {
+        if (exists(tier.getName(), claudiaData.getVdc(), envName)) {
+        	return load(tier.getName(), claudiaData.getVdc(), envName);
+        } else {
+        	createSecurityGroups(claudiaData, tier);
+        	createNetworks(tier);
+        	return tierInsertBD(tier, claudiaData);
 
-            if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")
-                    && claudiaData.getVdc() != null && claudiaData.getVdc().length() > 0) {
-
-                SecurityGroup securityGroup = createSecurityGroup(claudiaData, tier);
-                tier.setSecurityGroup(securityGroup);
-            }
-            List<Network> networkToBeDeployed = new ArrayList<Network>();
-            for (Network network : tier.getNetworks()) {
-                networkToBeDeployed.add(network);
-            }
-
-           for (Network network: networkToBeDeployed) {
-        	   if (networkManager.exists(network.getNetworkName())) {
-        		   log.debug("the network " + network.getNetworkName() + " already exists");
-        		   network = networkManager.load(network.getNetworkName());
-                   
-        	   } else {
-        		   network = networkManager.create(network);
-        	   }
-        	   tier.addNetwork(network);
-
-            }
-            return tierInsertBD(tier, claudiaData);
         }
     }
 
     /**
      * It creates the rule port for ssh.
-     * 
+     *
      * @param port
      * @return
      */
@@ -138,8 +117,11 @@ public class TierManagerImpl implements TierManager {
      * @throws InvalidSecurityGroupRequestException
      */
 
-    private SecurityGroup createSecurityGroup(ClaudiaData claudiaData, Tier tier)
+    private void createSecurityGroups(ClaudiaData claudiaData, Tier tier)
             throws InvalidSecurityGroupRequestException {
+    	if ((systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")
+                && claudiaData.getVdc() != null && claudiaData.getVdc().length() > 0)) {
+            
         SecurityGroup securityGroup = generateSecurityGroup(claudiaData, tier);
         try {
             securityGroup = securityGroupManager.create(claudiaData, securityGroup);
@@ -162,12 +144,32 @@ public class TierManagerImpl implements TierManager {
         } catch (InfrastructureException e) {
             log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
                     + e.getMessage());
-
             throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
                     + securityGroup.getName() + " " + e.getMessage(), e);
-
+            
         }
-        return securityGroup;
+        tier.setSecurityGroup(securityGroup);
+    	}
+    	
+    }
+    
+    public void createNetworks (Tier tier) throws EntityNotFoundException,
+        InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
+    	List<Network> networkToBeDeployed = new ArrayList<Network>();
+        for (Network network : tier.getNetworks()) {
+            networkToBeDeployed.add(network);
+        }
+
+       for (Network network: networkToBeDeployed) {
+    	   if (networkManager.exists(network.getNetworkName())) {
+    		   log.debug("the network " + network.getNetworkName() + " already exists");
+    		   network = networkManager.load(network.getNetworkName());
+               
+    	   } else {
+    		   network = networkManager.create(network);
+    	   }
+    	   tier.addNetwork(network);
+        }
     }
 
     /**
@@ -302,8 +304,13 @@ public class TierManagerImpl implements TierManager {
         }
     }
     
-    public boolean exists(String name, String vdc, String environmentName) throws EntityNotFoundException {
-        return tierDao.exists(name, vdc, environmentName);
+    public boolean exists(String name, String vdc, String environmentName){
+    	try {
+            tierDao.load(name, vdc, environmentName);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 

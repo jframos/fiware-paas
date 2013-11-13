@@ -17,7 +17,5 @@ import com.telefonica.euro_iaas.paasmanager.model.Network;
  * @author Henar Munoz
  */
 public interface NetworkDao extends BaseDAO<Network, String> {
-	
-	boolean exists(String networkName);
 
 }

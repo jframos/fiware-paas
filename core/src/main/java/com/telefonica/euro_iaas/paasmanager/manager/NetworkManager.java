@@ -29,7 +29,7 @@ public interface NetworkManager {
      * @throws AlreadyExistsEntityException
      * @throws EntityNotFoundException 
      */
-    Network create(Network network) throws InvalidEntityException, InfrastructureException,
+    Network create(Network network) throws InvalidEntityException, 
             AlreadyExistsEntityException, EntityNotFoundException;
 
     /**

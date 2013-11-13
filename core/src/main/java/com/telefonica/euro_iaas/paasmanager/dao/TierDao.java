@@ -48,5 +48,4 @@ public interface TierDao extends BaseDAO<Tier, String> {
      */
     Tier loadTierWithProductReleaseAndMetadata(String tierName, String vdc, String environmentName) throws EntityNotFoundException;
 
-	boolean exists(String name, String vdc, String environmentName);
 }
