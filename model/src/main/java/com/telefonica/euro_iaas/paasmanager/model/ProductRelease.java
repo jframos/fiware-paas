@@ -96,7 +96,7 @@ public class ProductRelease {
      * Constructor.
      */
     public ProductRelease() {
-      //  attributes = new ArrayList<Attribute>();
+        attributes = new HashSet<Attribute>();
         metadatas = new HashSet<Metadata>();
 
     }
@@ -115,7 +115,7 @@ public class ProductRelease {
         this.name = product + "-" + version;
         this.product = product;
         this.version = version;
-      //  attributes = new ArrayList<Attribute>();
+        attributes = new HashSet<Attribute>();
         metadatas = new HashSet<Metadata>();
     }
 
@@ -131,7 +131,7 @@ public class ProductRelease {
         this.name = product + "-" + version;
         this.description = description;
         this.attributes = attributes;
-     //   attributes = new ArrayList<Attribute>();
+        attributes = new HashSet<Attribute>();
         metadatas = new HashSet<Metadata>();
     }
 
@@ -145,19 +145,18 @@ public class ProductRelease {
      * @param withArtifact
      * @param productType
      */
-    public ProductRelease(String product, String version, String description, List<Attribute> attributes,
+    public ProductRelease(String product, String version, String description, Set<Attribute> attributes,
             List<ProductRelease> transitableReleases, List<OS> supportedOOSS, Boolean withArtifact,
             ProductType productType) {
         this.name = product + "-" + version;
         this.product = product;
         this.version = version;
         this.description = description;
-        // this.attributes = attributes;
+        this.attributes = attributes;
         this.transitableReleases = transitableReleases;
         this.supportedOOSS = supportedOOSS;
         this.withArtifact = withArtifact;
         this.productType = productType;
-     //   attributes = new ArrayList<Attribute>();
         metadatas = new HashSet<Metadata>();
     }
 
@@ -294,9 +293,6 @@ public class ProductRelease {
      * @return the attributes
      */
     public Set<Attribute> getAttributes() {
-    	if (attributes == null) {
-    		attributes = new HashSet<Attribute> ();
-    	}
         return attributes;
     }
 

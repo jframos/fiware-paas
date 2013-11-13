@@ -35,7 +35,7 @@ public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, St
     }
 
     public ProductRelease load(String name) throws EntityNotFoundException {
-        try {
+    	try{
             return findByProductReleaseWithMetadataAndAtt(name);
         } catch (Exception e) {
         	try {
