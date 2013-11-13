@@ -89,23 +89,6 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
     }
 
     /**
-     * It creates a router and associted it to the network.
-     * @param claudiaData
-     * @param network
-     * @throws InvalidEntityException
-     * @throws InfrastructureException
-     */
-    public void createRouter(ClaudiaData claudiaData, NetworkInstance network)
-        throws InvalidEntityException, InfrastructureException {
-        log.debug("The internet network is in "
-            + systemPropertiesProvider.getProperty(SystemPropertiesProvider.PUBLIC_NETWORK_ID));
-        RouterInstance router = new RouterInstance(systemPropertiesProvider.getProperty(SystemPropertiesProvider.PUBLIC_NETWORK_ID),
-            "router-" + network.getNetworkName());
-
-        routerManager.create(claudiaData, router, network);
-    }
-
-    /**
      * It creates a subnet in the network.
      * @param claudiaData
      * @param network
@@ -114,7 +97,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
      */
-    public void createSubNetworksInstance(ClaudiaData claudiaData, NetworkInstance networkInstance)
+    private void createSubNetworksInstance(ClaudiaData claudiaData, NetworkInstance networkInstance)
         throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException
     {
     	List<SubNetworkInstance> subNetAxu = new ArrayList ();

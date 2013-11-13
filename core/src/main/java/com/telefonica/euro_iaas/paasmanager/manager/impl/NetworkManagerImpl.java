@@ -89,7 +89,7 @@ public class NetworkManagerImpl implements NetworkManager {
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
      * @throws InfrastructureException     */
-    public void createSubNetwork(Network network, SubNetwork subNetwork)
+    private void createSubNetwork(Network network, SubNetwork subNetwork)
         throws InvalidEntityException, AlreadyExistsEntityException {
 
         subNetwork = subNetworkManager.create(subNetwork);
@@ -106,7 +106,7 @@ public class NetworkManagerImpl implements NetworkManager {
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
      */
-    public void createDefaultSubNetwork(Network network)
+    private void createDefaultSubNetwork(Network network)
         throws InvalidEntityException, AlreadyExistsEntityException {
         int cidrCount = findAll().size() + 1;
         SubNetwork subNet = new SubNetwork("sub-net-" + network.getNetworkName()
