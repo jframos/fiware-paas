@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 
@@ -22,7 +23,7 @@ public class ProductInstanceDto {
 
     private ProductReleaseDto productReleaseDto;
 
-    private List<Attribute> attributes;
+    private Set<Attribute> attributes;
     private String vdc;
     private String name;
     private String taskId;
@@ -59,7 +60,7 @@ public class ProductInstanceDto {
     /**
      * @return the attributes
      */
-    public List<Attribute> getAttributes() {
+    public Set<Attribute> getAttributes() {
         return attributes;
     }
 
@@ -67,7 +68,7 @@ public class ProductInstanceDto {
      * @param attributes
      *            the attributes to set
      */
-    public void setAttributes(List<Attribute> attributes) {
+    public void setAttributes(Set<Attribute> attributes) {
         this.attributes = attributes;
     }
 

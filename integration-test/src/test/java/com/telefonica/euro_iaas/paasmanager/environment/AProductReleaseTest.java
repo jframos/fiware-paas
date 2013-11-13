@@ -11,7 +11,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,9 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
+import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 
 /**
@@ -54,6 +58,9 @@ public class AProductReleaseTest {
         assertNotNull(productRelease);
         assertEquals(productRelease.getProduct(), "mysql");
         assertEquals(productRelease.getVersion(), "2");
+    
+        assertEquals(productRelease.getMetadatas().size(), 0);
+        assertEquals(productRelease.getAttributes().size(), 0);
 
     }
 
@@ -65,25 +72,97 @@ public class AProductReleaseTest {
 
         int number = productReleases.size();
 
-        List<Attribute> attHenar = new ArrayList<Attribute>();
-        attHenar.add(new Attribute("henar", "henar", "henar"));
+        Set<Attribute> attproduct = new HashSet<Attribute>();
+        attproduct.add(new Attribute("product", "product", "product"));
 
-        ProductRelease productHenar = new ProductRelease("henar", "0.1", "henar 0.1", attHenar);
+        ProductRelease productproduct = new ProductRelease("product", "0.1", "product 0.1", attproduct);
 
-        productHenar = productReleaseDao.create(productHenar);
-        assertNotNull(productHenar);
-        assertEquals(productHenar.getProduct(), "henar");
-        assertEquals(productHenar.getVersion(), "0.1");
+        productproduct = productReleaseDao.create(productproduct);
+        assertNotNull(productproduct);
+        assertEquals(productproduct.getProduct(), "product");
+        assertEquals(productproduct.getVersion(), "0.1");
 
         productReleases = productReleaseDao.findAll();
         assertNotNull(productReleases);
         assertEquals(productReleases.size(), number + 1);
 
-        ProductRelease productRelease = productReleaseDao.load("henar-0.1");
+        ProductRelease productRelease = productReleaseDao.load("product-0.1");
         assertNotNull(productRelease);
-        assertEquals(productRelease.getProduct(), "henar");
+        assertEquals(productRelease.getProduct(), "product");
         assertEquals(productRelease.getVersion(), "0.1");
+        assertEquals(productRelease.getAttributes().size(), 1);
 
     }
+    
+    
+    
+    @Test
+    public void testProductReleasesWithMetadata() throws Exception {
+
+        Metadata metproduct = new Metadata("product", "product", "product");
+
+        ProductRelease productproduct = new ProductRelease("product2", "0.1");
+        productproduct.addMetadata(metproduct);
+
+        productproduct = productReleaseDao.create(productproduct);
+        assertNotNull(productproduct);
+        assertEquals(productproduct.getProduct(), "product2");
+        assertEquals(productproduct.getVersion(), "0.1");
+        assertEquals(productproduct.getMetadatas().size(), 1);
+
+        ProductRelease productRelease = productReleaseDao.load("product2-0.1");
+        assertNotNull(productRelease);
+        assertEquals(productRelease.getProduct(), "product2");
+        assertEquals(productRelease.getVersion(), "0.1");
+        assertEquals(productRelease.getMetadatas().size(), 1);
+        assertEquals(productRelease.getAttributes().size(), 0);
+
+    }
+    
+    @Test
+    public void testProductReleasesWithAttributes2() throws Exception {
+
+        Attribute att = new Attribute("product", "product", "product");
+
+        ProductRelease productproduct = new ProductRelease("product3", "0.3");
+        productproduct.addAttribute(att);
+
+        productproduct = productReleaseDao.create(productproduct);
+        assertNotNull(productproduct);
+        assertEquals(productproduct.getProduct(), "product3");
+        assertEquals(productproduct.getVersion(), "0.3");
+        assertEquals(productproduct.getAttributes().size(), 1);
+        assertEquals(productproduct.getMetadatas().size(), 0);
+
+
+        ProductRelease productRelease = productReleaseDao.load("product3-0.3");
+        assertNotNull(productRelease);
+        assertEquals(productRelease.getProduct(), "product3");
+        assertEquals(productRelease.getVersion(), "0.3");
+        assertEquals(productRelease.getAttributes().size(), 1);
+
+    }
+    
+    @Test
+    public void testProductReleasesWithEmptyAttributes() throws Exception {
+
+        ProductRelease productproduct = new ProductRelease("product4", "0.1");
+
+        productproduct = productReleaseDao.create(productproduct);
+        assertNotNull(productproduct);
+        assertEquals(productproduct.getProduct(), "product4");
+        assertEquals(productproduct.getVersion(), "0.1");
+        assertEquals(productproduct.getMetadatas().size(), 0);
+        assertEquals(productproduct.getAttributes().size(), 0);
+
+        ProductRelease productRelease = productReleaseDao.load("product4-0.1");
+        assertNotNull(productRelease);
+        assertEquals(productRelease.getProduct(), "product4");
+        assertEquals(productRelease.getVersion(), "0.1");
+        assertEquals(productRelease.getAttributes().size(), 0);
+
+    }
+
+
 
 }

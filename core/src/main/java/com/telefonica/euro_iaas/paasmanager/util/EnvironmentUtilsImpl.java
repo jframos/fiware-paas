@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.util;
 
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
@@ -38,12 +39,12 @@ public class EnvironmentUtilsImpl implements EnvironmentUtils {
             List<ProductRelease> productReleases = tiers.get(i).getProductReleases();
             for (int j = 0; j < productReleases.size(); j++) {
                 if (productReleases.get(j).getAttributes() != null) {
-                    List<Attribute> attributes = productReleases.get(j).getAttributes();
-                    for (int k = 0; k < attributes.size(); k++) {
+                    Set<Attribute> attributes = productReleases.get(j).getAttributes();
+                    for (Attribute att: attributes) {
                         // Look at attribute whose value contains @ip
-                        if (attributes.get(k).getValue().contains(IP_MACRO_ID)) {
+                        if (att.getValue().contains(IP_MACRO_ID)) {
                             // Recover the ipmacro
-                            String macroLine = attributes.get(k).getValue();
+                            String macroLine = att.getValue();
                             String ipmacro = getIPMacro(macroLine);
 
                             // Recover vmname from macro @ip(vmname,network)
@@ -52,8 +53,9 @@ public class EnvironmentUtilsImpl implements EnvironmentUtils {
                             String vm = getVMNameFromMacro(ipmacro);
                             // Look for ip of VM whose fqn contains vmname
                             for (int l = 0; l < vms.size(); l++) {
-                                if (vms.get(l).getFqn().contains(vm))
-                                    attributes.get(k).setValue(macroLine.replace(ipmacro, vms.get(l).getIp()));
+                                if (vms.get(l).getFqn().contains(vm)) {
+                                    att.setValue(macroLine.replace(ipmacro, vms.get(l).getIp()));
+                                }
                             }
                         }
                     }
@@ -72,12 +74,12 @@ public class EnvironmentUtilsImpl implements EnvironmentUtils {
             List<ProductRelease> productReleases = tiers.get(i).getProductReleases();
             for (int j = 0; j < productReleases.size(); j++) {
                 if (productReleases.get(j).getAttributes() != null) {
-                    List<Attribute> attributes = productReleases.get(j).getAttributes();
-                    for (int k = 0; k < attributes.size(); k++) {
+                    Set<Attribute> attributes = productReleases.get(j).getAttributes();
+                    for (Attribute att: attributes) {
                         // Look at attribute whose value contains @ip
-                        if (attributes.get(k).getValue().contains(IP_MACRO_ID)) {
+                        if (att.getValue().contains(IP_MACRO_ID)) {
                             // Recover the ipmacro
-                            String macroLine = attributes.get(k).getValue();
+                            String macroLine = att.getValue();
                             String ipmacro = getIPMacro(macroLine);
 
                             // Recover vmname from macro @ip(vmname,network)
@@ -86,7 +88,7 @@ public class EnvironmentUtilsImpl implements EnvironmentUtils {
                             String nameVm = getVMNameFromMacro(ipmacro);
 
                             VM vm = getVmWithName(envInst, nameVm);
-                            attributes.get(k).setValue(macroLine.replace(ipmacro, vm.getIp()));
+                            att.setValue(macroLine.replace(ipmacro, vm.getIp()));
                         }
                     }
                 }

@@ -166,11 +166,9 @@ public class OVFMacroImpl implements OVFMacro {
                 ProductRelease productRelease = tier.getProductReleases().get(j);
 
                 if ((productRelease.getName().contains(macroProductName)) && (productRelease.getAttributes() != null)) {
-                    List<Attribute> attributes = productRelease.getAttributes();
-
-                    for (int k = 0; k < attributes.size(); k++) {
-                        if (attributes.get(k).getKey().equals(macroAttribute)) {
-                            macroValue = attributes.get(k).getValue();
+                    for (Attribute att: productRelease.getAttributes()) {
+                        if (att.getKey().equals(macroAttribute)) {
+                            macroValue = att.getValue();
                         }
                     }
                 }

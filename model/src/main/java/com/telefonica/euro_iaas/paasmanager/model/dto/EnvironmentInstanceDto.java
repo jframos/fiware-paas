@@ -8,6 +8,8 @@
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.List;
+import java.util.Set;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -36,7 +38,7 @@ public class EnvironmentInstanceDto {
 
     private List<TierInstanceDto> tierInstanceDtos;
 
-    private List<Attribute> attributes;
+    private Set<Attribute> attributes;
 
     /**
      * 
@@ -81,7 +83,7 @@ public class EnvironmentInstanceDto {
     /**
      * @return the attributes
      */
-    public List<Attribute> getAttributes() {
+    public Set<Attribute> getAttributes() {
         return attributes;
     }
 
@@ -130,7 +132,7 @@ public class EnvironmentInstanceDto {
      * @param attributes
      *            the attributes to set
      */
-    public void setAttributes(List<Attribute> attributes) {
+    public void setAttributes(Set<Attribute> attributes) {
         this.attributes = attributes;
     }
 

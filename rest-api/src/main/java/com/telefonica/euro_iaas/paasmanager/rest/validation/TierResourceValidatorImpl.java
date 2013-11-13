@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -239,7 +240,7 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
         for (Tier tier : tiers) {
             for (ProductRelease productRelease : tier.getProductReleases()) {
 
-                List<Metadata> metadataList = productRelease.getMetadatas();
+                Set<Metadata> metadataList = productRelease.getMetadatas();
                 for (Metadata metadata : metadataList) {
                     if (metadata.getKey().startsWith("dep")) {
                         dependenciesList.add(metadata.getValue());

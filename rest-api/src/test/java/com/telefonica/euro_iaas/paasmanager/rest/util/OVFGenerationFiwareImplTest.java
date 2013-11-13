@@ -12,7 +12,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,11 +60,11 @@ public class OVFGenerationFiwareImplTest {
         Attribute attr2 = new Attribute("key2", "value2");
         Attribute attr3 = new Attribute("key3", "value3");
 
-        List<Attribute> privateAttributes1 = new ArrayList<Attribute>();
+        Set<Attribute> privateAttributes1 = new HashSet<Attribute>();
         privateAttributes1.add(attr1);
         privateAttributes1.add(attr2);
 
-        List<Attribute> privateAttributes2 = new ArrayList<Attribute>();
+        Set<Attribute> privateAttributes2 = new HashSet<Attribute>();
         privateAttributes2.add(attr2);
         privateAttributes2.add(attr3);
 
