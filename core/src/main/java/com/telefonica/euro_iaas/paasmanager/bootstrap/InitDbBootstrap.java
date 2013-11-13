@@ -99,7 +99,7 @@ public class InitDbBootstrap implements ServletContextListener {
         // Taking the ProductRelease from SDC *******************
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
         try {
-         //   productReleases = productReleaseSdcDao.findAll();
+           productReleases = productReleaseSdcDao.findAll();
 
             for (int i = 0; i < productReleases.size(); i++) {
                 ProductRelease pRelease = productReleases.get(i);
@@ -130,12 +130,12 @@ public class InitDbBootstrap implements ServletContextListener {
                 }
             }
             // Taking the ProductRelease from SDC *******************
-        } /*catch (SdcException ex1) {
+        } catch (SdcException ex1) {
             String msg = " Impossible to recover ProductReleases from SDC. "
                     + "Either connection problem or Product Release Resource problem";
             log.error(msg);
             throw new RuntimeException(ex1);
-       } */ catch (AlreadyExistsEntityException ex2) {
+       }  catch (AlreadyExistsEntityException ex2) {
             throw new RuntimeException(ex2);
         } catch (InvalidEntityException ex3) {
             throw new RuntimeException(ex3);
