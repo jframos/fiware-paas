@@ -7,8 +7,10 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
 
@@ -16,9 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
-import com.telefonica.euro_iaas.paasmanager.dao.NetworkDao;
 import com.telefonica.euro_iaas.paasmanager.dao.NetworkInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.NetworkInstanceManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.NetworkManagerImpl;
@@ -36,7 +38,7 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
  * 
  * @author henar
  */
-public class NetworkInstanceManagerImplTest extends TestCase {
+public class NetworkInstanceManagerImplTest {
 
     private static String NETWORK_NAME = "name";
     private static String SUB_NETWORK_NAME = "subname";
@@ -49,7 +51,7 @@ public class NetworkInstanceManagerImplTest extends TestCase {
     private RouterManager routerManager = null;
     private SystemPropertiesProvider systemPropertiesProvider = null;
 
-    @Override
+
     @Before
     public void setUp() throws Exception {
 
@@ -92,7 +94,7 @@ public class NetworkInstanceManagerImplTest extends TestCase {
         Mockito.doNothing().when(routerManager).create(any(ClaudiaData.class), any(RouterInstance.class), any(NetworkInstance.class));
         when(networkInstanceDao.create(any(NetworkInstance.class))).thenReturn(netInst);
 
-        // Verity
+        // Verify
         NetworkInstance netInstOut = networkInstanceManager.create(claudiaData, netInst);
         assertEquals(netInstOut.getNetworkName(), NETWORK_NAME);
         assertEquals(netInstOut.getSubNets().size(), 1);
@@ -124,9 +126,10 @@ public class NetworkInstanceManagerImplTest extends TestCase {
         when(networkInstanceDao.create(any(NetworkInstance.class))).
             thenReturn(netInst);
 
-        // Verity
         NetworkInstance netInstOut =
             networkInstanceManager.create(claudiaData, netInst);
+        
+        // Verify
         assertEquals(netInstOut.getNetworkName(), NETWORK_NAME);
         assertEquals(netInstOut.getSubNets().size(), 1);
 
@@ -148,10 +151,12 @@ public class NetworkInstanceManagerImplTest extends TestCase {
         Mockito.doNothing().when(networkClient).deployNetwork(any(ClaudiaData.class), any(NetworkInstance.class));
         Mockito.doNothing().when(subNetworkInstanceManager).delete(any(ClaudiaData.class), any(SubNetworkInstance.class));
         Mockito.doNothing().when(networkInstanceDao).remove(any(NetworkInstance.class));
-        when(networkInstanceDao.create(any(NetworkInstance.class))).thenReturn(net);
 
-        // Verity
+
+        // Verify
         networkInstanceManager.delete(claudiaData, net);
+        verify(networkInstanceDao).remove(any(NetworkInstance.class));
+
 
     }
 
