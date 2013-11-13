@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -37,7 +38,7 @@ public interface ProductInstanceManager {
      * @param org
      * @param vdc
      * @param product
-     * @param attributes
+     * @param set
      * @return
      * @throws ProductInstallatorException
      * @throws InvalidEntityException
@@ -45,7 +46,7 @@ public interface ProductInstanceManager {
      * @throws InvalidEntityException
      */
     ProductInstance install(TierInstance tierInstance, ClaudiaData claudiaData, String envName, ProductRelease product,
-            List<Attribute> attributes) throws ProductInstallatorException, InvalidProductInstanceRequestException,
+            Set<Attribute> set) throws ProductInstallatorException, InvalidProductInstanceRequestException,
             NotUniqueResultException, InvalidEntityException;
 
     /**

@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -38,7 +39,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
     private static Logger log = Logger.getLogger(ProductInstanceManagerImpl.class);
 
     public ProductInstance install(TierInstance tierInstance, ClaudiaData claudiaData, String envName,
-            ProductRelease productRelease, List<Attribute> attributes) throws ProductInstallatorException,
+            ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException,
             InvalidProductInstanceRequestException, NotUniqueResultException, InvalidEntityException {
         log.debug("Installing software " + productRelease.getProduct() + " in tier Instance " + tierInstance.getName()
                 + " in vdc " + claudiaData.getVdc());

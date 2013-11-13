@@ -12,6 +12,7 @@ import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
@@ -46,7 +47,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     private TaskNotificator taskNotificator;
 
     public void install(TierInstance tierInstance, ClaudiaData claudiaData, String envName,
-            ProductRelease productRelease, List<Attribute> attributes, Task task, String callback) {
+            ProductRelease productRelease, Set<Attribute> attributes, Task task, String callback) {
 
         try {
             ProductInstance productInstance = productInstanceManager.install(tierInstance, claudiaData, envName,

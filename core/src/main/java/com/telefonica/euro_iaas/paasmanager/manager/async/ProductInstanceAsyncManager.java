@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.manager.async;
 
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.NotUniqueResultException;
@@ -42,7 +43,7 @@ public interface ProductInstanceAsyncManager {
      *            if not empty, contains the url where the result of the execution will be sent
      */
     void install(TierInstance tierInstance, ClaudiaData claudiaData, String envName, ProductRelease product,
-            List<Attribute> attributes, Task task, String callback);
+            Set<Attribute> attributes, Task task, String callback);
 
     /**
      * Configure an installed product

@@ -11,7 +11,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -276,9 +279,9 @@ public class ExtendedOVFUtilImpl implements ExtendedOVFUtil {
         return productRelease;
     }
 
-    private List<Attribute> getProductSectionProperties(Node productSectionNode) {
+    private Set<Attribute> getProductSectionProperties(Node productSectionNode) {
 
-        List<Attribute> attributes = new ArrayList<Attribute>();
+        Set<Attribute> attributes = new HashSet<Attribute>();
         NodeList propertyList = productSectionNode.getChildNodes();
 
         if (propertyList == null) {

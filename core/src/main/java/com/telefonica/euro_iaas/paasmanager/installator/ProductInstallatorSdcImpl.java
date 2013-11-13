@@ -12,6 +12,7 @@ import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -46,7 +47,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
     private static Logger log = Logger.getLogger(ProductInstallatorSdcImpl.class);
 
     public ProductInstance install(ClaudiaData claudiaData, String envName, TierInstance tierInstance,
-            ProductRelease productRelease, List<Attribute> attributes) throws ProductInstallatorException {
+            ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException {
 
         String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
         String sdcMediaType = systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
@@ -384,7 +385,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         }
     }
 
-    public Attribute getAttribute(List<Attribute> attributes, String key) {
+    public Attribute getAttribute(Set<Attribute> attributes, String key) {
         if (attributes == null)
             return null;
         for (Attribute attribute : attributes) {

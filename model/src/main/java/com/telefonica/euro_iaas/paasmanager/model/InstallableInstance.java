@@ -9,6 +9,8 @@ package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -80,7 +82,7 @@ public class InstallableInstance {
     private String vdc;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Attribute> privateAttributes;
+    private Set<Attribute> privateAttributes;
 
     /**
      * Constructor.
@@ -162,7 +164,7 @@ public class InstallableInstance {
     /**
      * @return the privateAttributes
      */
-    public List<Attribute> getPrivateAttributes() {
+    public Set<Attribute> getPrivateAttributes() {
         return privateAttributes;
     }
 
@@ -212,7 +214,7 @@ public class InstallableInstance {
      * @param privateAttributes
      *            the privateAttributes to set
      */
-    public void setPrivateAttributes(List<Attribute> privateAttributes) {
+    public void setPrivateAttributes(Set<Attribute> privateAttributes) {
         this.privateAttributes = privateAttributes;
     }
 

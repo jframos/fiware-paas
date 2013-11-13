@@ -9,6 +9,8 @@ package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -26,7 +28,7 @@ public class TierInstanceDto {
 
     private String tierInstanceName;
     private TierDto tierDto;
-    private List<Attribute> attributes;
+    private Set<Attribute> attributes;
     private int replicaNumber;
     private List<ProductInstanceDto> productInstanceDtos;
     private VMDto vm;
@@ -97,7 +99,7 @@ public class TierInstanceDto {
         this.productInstanceDtos.add(productInstanceDto);
     }
 
-    public List<Attribute> getAttributes() {
+    public Set<Attribute> getAttributes() {
         return attributes;
     }
 
@@ -118,7 +120,7 @@ public class TierInstanceDto {
         return tierInstanceName;
     }
 
-    public void setAttributes(List<Attribute> attributes) {
+    public void setAttributes(Set<Attribute> attributes) {
         this.attributes = attributes;
     }
 

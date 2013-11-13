@@ -9,7 +9,9 @@ package com.telefonica.euro_iaas.paasmanager.installator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.paasmanager.installator.sdc.util.SDCUtil;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
@@ -60,6 +62,7 @@ public class ProductInstallatorSdcImplTest {
     private TierInstance tierInstance;
     private ProductRelease productRelease;
     private OS os;
+    private Set<Attribute> lAttributes;
     private Attribute attribute;
     private final VM host = new VM("fqn", "ip", "hostname", "domain");
     private Task task;
@@ -71,8 +74,9 @@ public class ProductInstallatorSdcImplTest {
         os = new OS("os1", "1", "os1 description", "v1");
         host.setOsType(os.getOsType());
         host.setFqn("xx.vees.xx");
-        
+        Set<Attribute> lAttributes = new HashSet<Attribute> ();
         attribute = new Attribute("key", "value");
+        lAttributes.add(attribute);
 
         ProductType productType = new ProductType("type A", "Type A desc");
         tierInstance = new TierInstance();
@@ -90,7 +94,7 @@ public class ProductInstallatorSdcImplTest {
         productRelease.setWithArtifact(true);
 
         expectedProductInstance = new ProductInstance(productRelease, Status.INSTALLED, "vdc");
-        expectedProductInstance.setPrivateAttributes(Arrays.asList(attribute));
+        expectedProductInstance.setPrivateAttributes(lAttributes);
 
         tierInstance.addProductInstance(expectedProductInstance);
         tierInstance.setVM(host);
@@ -135,7 +139,7 @@ public class ProductInstallatorSdcImplTest {
         ProductInstance productInstance = new ProductInstance(productRelease, Status.INSTALLED, "vdc");
         productInstance.setName("service-tier-1_" + productRelease.getProduct() + "_" + productRelease.getVersion());
 
-        productInstance.setPrivateAttributes(Arrays.asList(attribute));
+        productInstance.setPrivateAttributes(lAttributes);
         List<Attribute> attributes = new ArrayList();
         attributes.add(new Attribute("dd", "ddd"));
 
