@@ -33,8 +33,10 @@
         <class>com.telefonica.euro_iaas.paasmanager.model.Rule</class>
 
         <class>com.telefonica.euro_iaas.paasmanager.model.Network</class>
+        <class>com.telefonica.euro_iaas.paasmanager.model.NetworkInstance</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.SubNetwork</class>
-        <class>com.telefonica.euro_iaas.paasmanager.model.Router</class>
+        <class>com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance</class>
+        <class>com.telefonica.euro_iaas.paasmanager.model.RouterInstance</class>
 
         <exclude-unlisted-classes></exclude-unlisted-classes>
     </persistence-unit>

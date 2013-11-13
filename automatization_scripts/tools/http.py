@@ -78,11 +78,11 @@ def post(url, headers, payload):
 def get_token(keystone_url, tenant, user, password):
 
    # url="%s/%s" %(keystone_url,"v2.0/tokens")
-
+    print keystone_url
     headers={'Content-Type': 'application/json',
              'Accept': "application/xml"}
     payload='{"auth":{"tenantName":"'+tenant+'","passwordCredentials":{"username":"'+user+'","password":"'+password+'"}}}'
-
+    print payload
     response=post(keystone_url, headers, payload)
 
     data = response.read()

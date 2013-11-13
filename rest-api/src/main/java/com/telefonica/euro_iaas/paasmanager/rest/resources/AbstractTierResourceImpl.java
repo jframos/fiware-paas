@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
@@ -127,8 +128,10 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
     }
 
-    public void insert(String org, String environmentName, TierDto tierDto) throws EntityNotFoundException,
-            InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException {
+    public void insert(String org, String environmentName, TierDto tierDto)
+        throws EntityNotFoundException, InvalidEntityException,
+        InvalidSecurityGroupRequestException, InfrastructureException,
+        AlreadyExistsEntityException {
 
         log.debug("Insert tier " + tierDto.getName() + " from env " + environmentName + " with product release "
                 + tierDto.getProductReleaseDtos());
@@ -142,7 +145,8 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
             throw new WebApplicationException(e1, 500);
         }
 
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).
+            equals("FIWARE")) {
             claudiaData.setUser(getCredentials());
         }
         Tier tier = tierDto.fromDto();

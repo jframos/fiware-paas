@@ -14,32 +14,34 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 
 /**
  * @author henar
  */
-public interface NetworkManager {
+public interface SubNetworkInstanceManager {
     /**
-     * Create a network.
+     * Create a subnetwork.
      * 
-     * @param network
+     * @param claudiaData
+     * @param subNetwork
      * @return the tierInstance created
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
-     * @throws EntityNotFoundException 
      */
-    Network create(Network network) throws InvalidEntityException, 
-            AlreadyExistsEntityException, EntityNotFoundException;
+    SubNetworkInstance create(ClaudiaData claudiaData, SubNetworkInstance subNetworkInstance) throws InvalidEntityException, InfrastructureException,
+            AlreadyExistsEntityException;
 
     /**
-     * Delete a Network.
-     * @param network
+     * Delete a subnetwork.
+     * 
+     * @param claudiaData
+     * @param subNetwork
      * @throws EntityNotFoundException
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    void delete(Network network) throws EntityNotFoundException, InvalidEntityException,
+    void delete(ClaudiaData claudiaData, SubNetworkInstance subNetworkInstance) throws EntityNotFoundException, InvalidEntityException,
             InfrastructureException;
 
     /**
@@ -47,28 +49,21 @@ public interface NetworkManager {
      * 
      * @return the existent networks.
      */
-    List<Network> findAll();
+    List<SubNetworkInstance> findAll();
 
     /**
-     * Load the network.
+     * Load the SubNetwork.
      * 
-     * @return the network.
+     * @return the subnetwork.
      */
-    Network load(String networkName) throws EntityNotFoundException;
-    
-    /**
-     * If the network exists in DB.
-     * 
-     * @return .
-     */
-    boolean exists(String networkName);
+    SubNetworkInstance load(String name) throws EntityNotFoundException;
 
     /**
-     * Update a network.
+     * Update a subNetwork.
      * 
-     * @param network
-     * @return the tierInstance created
+     * @param subNetworkInstance
+     * @return the subnet updated
      */
-    Network update(Network network) throws InvalidEntityException;
+    SubNetworkInstance update(SubNetworkInstance subNetworkInstance) throws InvalidEntityException;
 
 }

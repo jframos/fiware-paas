@@ -11,7 +11,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +30,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
@@ -100,7 +103,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network");
+        Network net = new Network("network_creation1");
         tierbk.addNetwork(net);
 
         environmentBk.addTier(tierbk);
@@ -113,14 +116,7 @@ public class NetworkinEnvironmenInstanceTest {
         envInst.setBlueprintName("blueprintname2");
         envInst.setDescription("description");
         envInst.setEnvironmentDto(environmentBk.toDto());
-        List<TierInstanceDto> tierInstanceDtos = new ArrayList(2);
-        TierInstanceDto tierInstanceDto = new TierInstanceDto();
-        TierDto tierDto = new TierDto();
-        tierDto.setInitialNumberInstances(1);
-        tierDto.setFloatingip("true");
-        tierInstanceDto.setTierDto(tierDto);
-        tierInstanceDtos.add(tierInstanceDto);
-        envInst.setTierInstances(tierInstanceDtos);
+  
 
         Task task = environmentInstanceResource.create(org, vdc, envInst, "");
 
@@ -132,15 +128,77 @@ public class NetworkinEnvironmenInstanceTest {
         assertNotNull(envInstResult);
         assertEquals(envInstResult.getBlueprintName(), "blueprintname2");
         assertEquals(envInstResult.getEnvironment().getName(), "testCreatedEnvirionmentInstance2");
+        assertEquals(envInstResult.getTierInstances().size(), 1);
 
         TierInstance tierInstance = tierInstanceManager.load("blueprintname2-tierdtotest-1");
         assertEquals(tierInstance.getName(), "blueprintname2-tierdtotest-1");
         assertEquals(tierInstance.getNumberReplica(), 1);
         assertEquals(tierInstance.getTier().getName(), "tierdtotest");
+        assertEquals(tierInstance.getNetworkInstances().size(), 1);
+        Set <NetworkInstance> nets= tierInstance.getNetworkInstances();
+        for (NetworkInstance outNet: tierInstance.getNetworkInstances()) {
+        	assertEquals(outNet.getNetworkName(), "network_creation1");
+        	
+        }
+       
+
+    }
+    
+    @Test
+    public void testDeleteEnvironmentInstanceWithAliasNetwork() throws Exception {
+
+        ProductRelease product = new ProductRelease("tomcat227", "7", "Tomcat server 22", null);
+
+        product = productReleaseDao.create(product);
+        assertNotNull(product);
+        assertNotNull(product.getId());
+        assertEquals(product.getProduct(), "tomcat227");
+        assertEquals(product.getVersion(), "7");
+
+        Environment environmentBk = new Environment();
+        environmentBk.setName("testDeleteEnvirionmentInstance2");
+        environmentBk.setDescription("Description First environment");
+        Tier tierbk = new Tier("tierdtotest", new Integer(1), new Integer(1), new Integer(1), null);
+        tierbk.setImage("image");
+        tierbk.setIcono("icono");
+        tierbk.setFlavour("flavour");
+        tierbk.setFloatingip("floatingip");
+        tierbk.setPayload("");
+        tierbk.setKeypair("keypair");
+        tierbk.addProductRelease(product);
+
+        Network net = new Network("network_deletion");
+        tierbk.addNetwork(net);
+
+        environmentBk.addTier(tierbk);
+
+        environmentResource.insert(org, vdc, environmentBk.toDto());
+
+        EnvironmentInstanceDto envInst = new EnvironmentInstanceDto();
+        envInst.setBlueprintName("blueprintnamedelete");
+        envInst.setDescription("description");
+        envInst.setEnvironmentDto(environmentBk.toDto());
+  
+
+        Task task = environmentInstanceResource.create(org, vdc, envInst, "");
+
+        Thread.sleep(5000);
+
+        assertEquals(task.getStatus(), Task.TaskStates.RUNNING);
+
+        EnvironmentInstance envInstResult = environmentInstanceManager.load(vdc, "blueprintnamedelete");
+        assertNotNull(envInstResult);
+        assertEquals(envInstResult.getBlueprintName(), "blueprintnamedelete");
+        assertEquals(envInstResult.getEnvironment().getName(), "testDeleteEnvirionmentInstance2");
+        assertEquals(envInstResult.getTierInstances().size(), 1);
+        
+        environmentInstanceResource.destroy(org, vdc, "blueprintnamedelete", "");
+       
+       
 
     }
 
-    @Test
+   @Test
     public void testCreateEnvironmentWithNetworkAlreadyExist() throws Exception {
 
         ProductRelease product = new ProductRelease("tomcat222", "7", "Tomcat server 22", null);
@@ -163,7 +221,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network");
+        Network net = new Network("network2");
         tierbk.addNetwork(net);
 
         environmentBk.addTier(tierbk);
@@ -181,7 +239,7 @@ public class NetworkinEnvironmenInstanceTest {
         assertNotNull(env2);
         assertNotNull(env2.getTiers().get(0).getNetworks());
         assertEquals(env2.getTiers().get(0).getNetworks().size(), 1);
-        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(), "network");
+        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(), "network2");
         assertEquals(env2.getTiers().get(0).getNetworks().get(0).getSubNets().size(), 1);
 
     }
@@ -209,7 +267,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network");
+        Network net = new Network("network3");
 
         tierbk.addNetwork(net);
 
@@ -233,8 +291,7 @@ public class NetworkinEnvironmenInstanceTest {
         assertNotNull(env2);
         assertNotNull(env2.getTiers().get(0).getNetworks());
         assertEquals(env2.getTiers().get(0).getNetworks().size(), 1);
-        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(), "network");
-        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getSubNets().size(), 1);
+        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(), "network3");
 
     }
     
@@ -261,7 +318,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network");
+        Network net = new Network("network4");
 
         tierbk.addNetwork(net);
 
@@ -274,7 +331,7 @@ public class NetworkinEnvironmenInstanceTest {
         assertNotNull(env2);
         assertNotNull(env2.getTiers().get(0).getNetworks());
         assertEquals(env2.getTiers().get(0).getNetworks().size(), 1);
-        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(), "network");
+        assertEquals(env2.getTiers().get(0).getNetworks().get(0).getNetworkName(), "network4");
         assertEquals(env2.getTiers().get(0).getNetworks().get(0).getSubNets().size(), 1);
         
         environmentResource.delete(org, vdc, "testDeleteEnvwitNetwor");

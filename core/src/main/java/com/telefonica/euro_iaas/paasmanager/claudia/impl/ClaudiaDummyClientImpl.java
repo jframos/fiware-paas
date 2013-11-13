@@ -102,7 +102,7 @@ public class ClaudiaDummyClientImpl implements ClaudiaClient {
         return null;
     }
 
-    public void deployVM(ClaudiaData claudiaData, Tier tier, int replica, VM vm) throws InfrastructureException {
+    public void deployVM(ClaudiaData claudiaData, TierInstance tierInstance, int replica, VM vm) throws InfrastructureException {
         // TODO Auto-generated method stub
         return;
         // return

@@ -19,11 +19,12 @@ g=EnvironmentRequest(config['keystone_url'], config['paasmanager_url'], config['
 instance_request = EnvironmentInstanceRequest (config['keystone_url'], config['paasmanager_url'], config['tenant'], config['user'], config['password'],
                                                config['vdc'],config['sdc_url'])
 
-environment_name = 'networkenv6sssdedg43s34'
-blueprintname ="blueudno54s44"
-network ="cincotedsts9444"
+environment_name = 'test1d19'
+blueprintname ="test1d19"
+network ="test1d19"
 
-
+print('Delete an environment Instance' + blueprintname )
+instance_request.delete_blueprint_instance (blueprintname)
 
 print('Create a template for network: ')
 g.add_environment(environment_name,'description')
@@ -34,9 +35,18 @@ tier_name = 'tiername'
 g.add_tier_environment_network(environment_name,tier_name, "nodejs=0.6.15",network)
 print("  OK")
 
+print('Get Information about the Blueprint: ' + environment_name )
+env = g.get_environment(environment_name)
+env.to_string()
+print("  OK")
 
+print('Deploy an environment Instance' + blueprintname )
+blueprint_instance = EnvironmentInstance (blueprintname, 'description',  env, 'INIT')
+instance_request.add_blueprint_instance(blueprint_instance)
+print ('OK')
 
-
+print('Delete an environment Instance' + blueprintname )
+instance_request.delete_blueprint_instance (blueprintname)
 
 # Network already created
 

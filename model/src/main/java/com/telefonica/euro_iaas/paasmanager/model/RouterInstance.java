@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Table(name = "Router")
-public class Router {
+public class RouterInstance {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", unique = true, nullable = false)
@@ -47,7 +47,7 @@ public class Router {
      * Constructor.
      * @param idPublicNetwork
      */
-    public Router(String idPublicNetwork) {
+    public RouterInstance(String idPublicNetwork) {
         this.idPublicNetwork = idPublicNetwork;
 
     }
@@ -57,7 +57,7 @@ public class Router {
      * @param idPublicNetwork
      * @param name
      */
-    public Router(String idPublicNetwork, String name) {
+    public RouterInstance(String idPublicNetwork, String name) {
         this.name = name;
         this.idPublicNetwork = idPublicNetwork;
     }

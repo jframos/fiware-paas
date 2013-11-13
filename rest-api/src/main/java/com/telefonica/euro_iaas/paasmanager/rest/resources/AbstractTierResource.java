@@ -20,6 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
@@ -51,6 +52,7 @@ public interface AbstractTierResource {
      * @throws EntityNotFoundException
      * @throws InvalidSecurityGroupRequestException
      * @throws InfrastructureException
+     * @throws AlreadyExistsEntityException 
      */
 
     @POST
@@ -58,7 +60,7 @@ public interface AbstractTierResource {
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void insert(@PathParam("org") String org, @PathParam("environment") String environment, TierDto TierDto)
             throws InvalidEntityException, AlreadyExistEntityException, EntityNotFoundException,
-            InvalidSecurityGroupRequestException, InfrastructureException;
+            InvalidSecurityGroupRequestException, InfrastructureException, AlreadyExistsEntityException;
 
     /**
      * Retrieve all Tiers available created in the system.

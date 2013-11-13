@@ -292,6 +292,9 @@ public class Tier {
      * @return networks the network list
      */
     public List<Network> getNetworks() {
+    	if (networks == null) {
+    		networks = new ArrayList<Network> ();
+    	}
         return this.networks;
     }
 
@@ -512,7 +515,7 @@ public class Tier {
             payload = payload + "\"security_groups\": [{ \"name\": \""
             + getSecurityGroup().getName() + "\"}], ";
         }
-        if (getNetworks() != null) {
+     /*   if (getNetworks() != null) {
             payload = payload + "\"networks\": [";
             for (Network net: this.getNetworks()){
 
@@ -521,7 +524,7 @@ public class Tier {
             }
             payload = payload + "], ";
 
-        }
+        }*/
 
         payload = payload
         + "\"flavorRef\": \"" + getFlavour() + "\", " + "\"imageRef\": \""

@@ -153,12 +153,12 @@ public class OpenstackDummyImpl implements ClaudiaClient {
         return null;
     }
 
-    public void deployVM(ClaudiaData claudiaData, Tier tier, int replica, VM vm) throws InfrastructureException {
+    public void deployVM(ClaudiaData claudiaData, TierInstance tierInstance, int replica, VM vm) throws InfrastructureException {
         // TODO Auto-generated method stub
 
         String fqn = claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc() + ".services."
-                + claudiaData.getService() + ".vees." + tier.getName() + ".replicas." + replica;
-        String hostname = claudiaData.getService() + "-" + tier.getName() + "-" + replica;
+                + claudiaData.getService() + ".vees." + tierInstance.getTier().getName() + ".replicas." + replica;
+        String hostname = claudiaData.getService() + "-" + tierInstance.getTier().getName() + "-" + replica;
 
         vm.setFqn(fqn);
         vm.setHostname(hostname);
@@ -167,7 +167,7 @@ public class OpenstackDummyImpl implements ClaudiaClient {
 
         String url = "http://130.206.80.63:8774/v2/" + claudiaData.getVdc() + "/servers";
 
-        String name = claudiaData.getService() + "-" + tier.getName() + "-" + replica;
+        String name = claudiaData.getService() + "-" + tierInstance.getTier().getName() + "-" + replica;
         try {
             payload = "{\"server\": \n" + "{\"name\": \"" + name
                     + "\", \"imageRef\": \"44dcdba3-a75d-46a3-b209-5e9035d2435e\", \"flavorRef\": \"2\" }}";

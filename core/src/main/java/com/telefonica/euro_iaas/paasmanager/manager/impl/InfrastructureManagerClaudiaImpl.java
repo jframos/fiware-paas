@@ -24,10 +24,13 @@ import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaRetrieveInfoExcepti
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager;
+import com.telefonica.euro_iaas.paasmanager.manager.NetworkInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Template;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
@@ -65,6 +68,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
     private TierInstanceManager tierInstanceManager;
     private EnvironmentUtils environmentUtils;
     private EnvironmentInstanceDao environmentInstanceDao;
+    private NetworkInstanceManager networkInstanceManager;
 
     /** The log. */
     private static Logger log = Logger.getLogger(InfrastructureManagerClaudiaImpl.class);
@@ -159,7 +163,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
     }
 
     public EnvironmentInstance createInfrasctuctureEnvironmentInstance(EnvironmentInstance environmentInstance,
-            List<Tier> tiers, ClaudiaData claudiaData) throws InvalidOVFException, InfrastructureException {
+            List<Tier> tiers, ClaudiaData claudiaData) throws InvalidOVFException, InfrastructureException, InvalidEntityException {
 
         // Deploy MVs
         log.debug("Creating infrastructure for environemnt instance " + environmentInstance.getBlueprintName());
@@ -198,6 +202,8 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 vm.setFqn(fqn);
                 vm.setHostname(hostname);
                 tierInstance.setVM(vm);
+                
+                this.deployNetworks(claudiaData, tierInstance);
 
                 try {
                     log.debug("Inserting in database ");
@@ -215,13 +221,15 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                     log.error("AllReady found: Tier " + tierInstance.getTier().getName() + " " + e.getMessage());
                     throw new InfrastructureException(e);
                 }
+                
+                
 
                 String vAppReplica = null;
                 try {
                     if (ovfSingleVM == null || ovfSingleVM.size() == 0) {
-                        deployVM(claudiaData, tier, numReplica, null, vm);
+                        deployVM(claudiaData, tierInstance, numReplica, null, vm);
                     } else {
-                        deployVM(claudiaData, tier, numReplica, ovfSingleVM.get(numberTier), vm);
+                        deployVM(claudiaData, tierInstance, numReplica, ovfSingleVM.get(numberTier), vm);
                     }
                 } catch (InfrastructureException e) {
                     log.error("Error deploying a VM: " + e.getMessage());
@@ -360,7 +368,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
      * @param vmOVF
      * @throws InfrastructureException
      */
-    private void deployVM(ClaudiaData claudiaData, Tier tier, int replicaNumber) throws InfrastructureException {
+    private void deployVM(ClaudiaData claudiaData, TierInstance tier, int replicaNumber) throws InfrastructureException {
 
         // claudiaData = claudiaClient.deployVM(claudiaData, tier,
         // replicaNumber);
@@ -379,10 +387,10 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
          */
     }
 
-    public void deployVM(ClaudiaData claudiaData, Tier tier, int replica, String vmOVF, VM vm)
+    public void deployVM(ClaudiaData claudiaData, TierInstance tierInstance, int replica, String vmOVF, VM vm)
             throws InfrastructureException {
 
-        log.debug("Deploy VM for tier " + tier.getName());
+        log.debug("Deploy VM for tier " + tierInstance.getTier().getName());
 
         if (vmOVF == null) {
             String errorMessage = "The VEE OVF could not be procesed, " + "the OVF is null";
@@ -400,13 +408,13 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 if (replica != 1) {
                     simpleVmOVF = ovfUtils.deleteRules(simpleVmOVF);
                 }
-                tier.setPayload(simpleVmOVF);
+                tierInstance.getTier().setPayload(simpleVmOVF);
             }
         } catch (Exception e) {
             log.warn("Error to modify the OVFs for the tier instance");
         }
 
-        claudiaClient.deployVM(claudiaData, tier, replica, vm);
+        claudiaClient.deployVM(claudiaData, tierInstance, replica, vm);
 
         String vAppReplica = null;
         // String ip = null;
@@ -414,7 +422,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         String networks = null;
         String vmName = null;
 
-        List<String> ips = claudiaClient.getIP(claudiaData, tier.getName(), replica, vm);
+        List<String> ips = claudiaClient.getIP(claudiaData, tierInstance.getTier().getName(), replica, vm);
         if (ips != null) {
             for (String ip : ips) {
                 log.debug("Ip " + ip);
@@ -426,7 +434,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         // To-Do
         // networks = vappUtils.getNetworks(vAppReplica);
 
-        fqn = getFQNPaas(claudiaData, tier.getName(), replica);
+        fqn = getFQNPaas(claudiaData, tierInstance.getTier().getName(), replica);
         log.info("fqn replica " + fqn);
 
         // A probar
@@ -573,9 +581,38 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
              */
         }
     }
+    
+    private void deployNetworks (ClaudiaData data, TierInstance tierInstance) throws InvalidEntityException, InfrastructureException {
+    	// Creating networks...
+    	log.debug ("Deploying network for tier instance " + tierInstance.getName() + " " + tierInstance.getTier().getNetworks());
+        List<NetworkInstance> networkToBeDeployed = new ArrayList<NetworkInstance>();
+        for (Network network: tierInstance.getTier().getNetworks()) {
+        	log.debug ("Network to be added " + network.getNetworkName());
+            networkToBeDeployed.add(network.toNetworkInstance());
+        }
+        
+        for (NetworkInstance network: networkToBeDeployed) {
+            log.debug("Network instance to be deployed: " + network.getNetworkName());
+
+            try {
+                network = networkInstanceManager.load(network.getNetworkName());
+                log.debug("the network " + network.getNetworkName() + " already exists");
+            } catch (EntityNotFoundException e1) {
+                try {
+                    network = networkInstanceManager.create(data, network);
+                } catch (AlreadyExistsEntityException e2) {
+                    throw new InvalidEntityException(network);
+                } catch (InfrastructureException e) { 
+                	String mens = "Error to deploy a network " + network.getNetworkName() + " :" + e.getMessage();
+                	throw new InfrastructureException(mens);
+				}
+            }
+            tierInstance.addNetworkInstance(network);
+        }
+    }
 
     private TierInstance insertTierInstanceBD(ClaudiaData claudiaData, String envName, TierInstance tierInstance)
-            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
+            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
 
         log.debug("Inserting in database");
         TierInstance tierInstanceDB = null;
@@ -683,6 +720,10 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
     public String StartStopScalability(ClaudiaData claudiaData, boolean b) throws InfrastructureException {
         String scalalility = claudiaClient.onOffScalability(claudiaData, claudiaData.getService(), b);
         return scalalility;
+    }
+    
+    public void setNetworkInstanceManager(NetworkInstanceManager networkInstanceManager) {
+        this.networkInstanceManager = networkInstanceManager;
     }
 
 }

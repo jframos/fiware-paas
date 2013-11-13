@@ -35,7 +35,9 @@ import org.springframework.security.core.GrantedAuthority;
 
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
 public class OpenStackUtilImplTest {
@@ -69,9 +71,11 @@ public class OpenStackUtilImplTest {
         	new OpenStackUtilImplTestable();
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         openStackUtil.setSystemPropertiesProvider(systemPropertiesProvider);
+        GrantedAuthority grantedAuthority = mock(GrantedAuthority.class);
         Collection<GrantedAuthority> authorities = new HashSet();
-        paasManagerUser = new PaasManagerUser("username", "password", authorities);
-        paasManagerUser.setTenantId("tenantId");
+        authorities.add(grantedAuthority);
+        paasManagerUser = new PaasManagerUser("user", "aa", authorities);
+    
         HttpClientConnectionManager httpClientConnectionManager =
         	mock(HttpClientConnectionManager.class);
         openStackUtil.setConnectionManager(httpClientConnectionManager);
@@ -103,8 +107,8 @@ public class OpenStackUtilImplTest {
 
         verify(systemPropertiesProvider, times(2)).getProperty(anyString());
         verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
-        verify(httpResponse, times(2)).getStatusLine();
-        verify(statusLine).getStatusCode();
+        verify(httpResponse, times(3)).getStatusLine();
+        verify(statusLine, times(2)).getStatusCode();
         verify(statusLine).getReasonPhrase();
     }
     
@@ -117,8 +121,8 @@ public class OpenStackUtilImplTest {
     public void shouldAddNetworkInterfacetoPublicRouter()
         throws OpenStackException, IOException {
     	// given
-    	Network net = new Network("NETWORK");
-    	SubNetwork subNet = new SubNetwork("SUBNET", "CIDR");
+    	NetworkInstance net = new NetworkInstance("NETWORK");
+    	SubNetworkInstance subNet = new SubNetworkInstance("SUBNET", "CIDR");
     	net.addSubNet(subNet);
     	
     	String content = " <?xml version=\"1.0\" encoding=\"UTF-8\"?> \n"
@@ -161,8 +165,8 @@ public class OpenStackUtilImplTest {
 
         verify(systemPropertiesProvider, times(SEVEN_TIMES)).getProperty(anyString());
         verify(closeableHttpClientMock, times(TWICE)).execute(any(HttpUriRequest.class));
-        verify(httpResponse, times(FOUR_TIMES)).getStatusLine();
-        verify(statusLine, times(FOUR_TIMES)).getStatusCode();
+        verify(httpResponse, times(5)).getStatusLine();
+        verify(statusLine, times(5)).getStatusCode();
 
     }
 
@@ -203,8 +207,8 @@ public class OpenStackUtilImplTest {
 
         verify(systemPropertiesProvider, times(TWICE)).getProperty(anyString());
         verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
-        verify(httpResponse, times(TWICE)).getStatusLine();
-        verify(statusLine, times(TWICE)).getStatusCode();
+        verify(httpResponse, times(3)).getStatusLine();
+        verify(statusLine, times(3)).getStatusCode();
 
     }
     

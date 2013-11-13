@@ -7,6 +7,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
+
 import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
@@ -15,31 +16,34 @@ import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 
 /**
  * @author henar
  */
-public interface NetworkManager {
+public interface NetworkInstanceManager {
     /**
      * Create a network.
      * 
+     * @param claudiaData
      * @param network
      * @return the tierInstance created
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
-     * @throws EntityNotFoundException 
      */
-    Network create(Network network) throws InvalidEntityException, 
-            AlreadyExistsEntityException, EntityNotFoundException;
+	NetworkInstance create(ClaudiaData claudiaData, NetworkInstance network) throws InvalidEntityException, InfrastructureException,
+            AlreadyExistsEntityException;
 
     /**
      * Delete a Network.
+     * 
+     * @param claudiaData
      * @param network
      * @throws EntityNotFoundException
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    void delete(Network network) throws EntityNotFoundException, InvalidEntityException,
+    void delete(ClaudiaData claudiaData, NetworkInstance network) throws EntityNotFoundException, InvalidEntityException,
             InfrastructureException;
 
     /**
@@ -47,21 +51,14 @@ public interface NetworkManager {
      * 
      * @return the existent networks.
      */
-    List<Network> findAll();
+    List<NetworkInstance> findAll();
 
     /**
      * Load the network.
      * 
      * @return the network.
      */
-    Network load(String networkName) throws EntityNotFoundException;
-    
-    /**
-     * If the network exists in DB.
-     * 
-     * @return .
-     */
-    boolean exists(String networkName);
+    NetworkInstance load(String networkName) throws EntityNotFoundException;
 
     /**
      * Update a network.
@@ -69,6 +66,6 @@ public interface NetworkManager {
      * @param network
      * @return the tierInstance created
      */
-    Network update(Network network) throws InvalidEntityException;
+    NetworkInstance update(NetworkInstance network) throws InvalidEntityException;
 
 }

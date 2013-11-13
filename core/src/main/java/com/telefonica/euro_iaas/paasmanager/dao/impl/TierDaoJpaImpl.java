@@ -212,4 +212,5 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
 
         return tier;
     }
+
 }

@@ -31,7 +31,7 @@ public interface TierManager {
     Tier update(Tier tier) throws InvalidEntityException;
 
     Tier create(ClaudiaData claudiaData, String envName, Tier tier) throws InvalidEntityException,
-            InvalidSecurityGroupRequestException, InfrastructureException;
+            InvalidSecurityGroupRequestException, InfrastructureException, EntityNotFoundException, AlreadyExistsEntityException;
 
     /**
      * Find the Environment using the given name.

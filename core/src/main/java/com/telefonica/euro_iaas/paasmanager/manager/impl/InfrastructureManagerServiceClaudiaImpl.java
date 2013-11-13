@@ -347,7 +347,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
         }
     }
 
-    public void deployVM(ClaudiaData claudiaData, Tier tier, int replica, String vmOVF, VM vm)
+    public void deployVM(ClaudiaData claudiaData, TierInstance tier, int replica, String vmOVF, VM vm)
             throws InfrastructureException {
         return;
     }
@@ -551,7 +551,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     private TierInstance insertTierInstanceBD(ClaudiaData claudiaData, String envName, TierInstance tierInstance)
-            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
+            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
 
         TierInstance tierInstanceDB = null;
         if (tierInstance.getOvf() != null && tierInstance.getOvf().length() > MAX_SIZE) {

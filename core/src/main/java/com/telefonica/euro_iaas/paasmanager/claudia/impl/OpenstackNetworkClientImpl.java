@@ -19,8 +19,9 @@ import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
-import com.telefonica.euro_iaas.paasmanager.model.Router;
-import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
+import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackUtil;
 
 /**
@@ -41,15 +42,15 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @throws InfrastructureException
      */
 
-    public void addNetworkToRouter(ClaudiaData claudiaData, String routerId, Network net) throws InfrastructureException {
-        log.info("Add Interfact from net " + net.getNetworkName() + " to router " + routerId
-                + " for user " + claudiaData.getUser().getTenantName());
 
+    public void addNetworkToRouter(ClaudiaData claudiaData, RouterInstance router, NetworkInstance netInstance) throws InfrastructureException {
+        log.info("Add Interfact from net " + netInstance.getNetworkName() + " to router " + router.getName()
+                + " for user " + claudiaData.getUser().getTenantName());
         try {
-            String response = openStackUtil.addInterface(routerId, net, claudiaData.getUser());
+            String response = openStackUtil.addInterface(router.getIdRouter(), netInstance, claudiaData.getUser());
             log.debug(response);
         } catch (OpenStackException e) {
-            String msm = "Error to deploy the network " + routerId+ ":" + e.getMessage();
+            String msm = "Error to deploy the network " + router.getIdRouter()+ ":" + e.getMessage();
             log.error(msm);
             throw new InfrastructureException(msm, e);
         }
@@ -63,14 +64,14 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @throws InfrastructureException
      */
 
-    public void addNetworkToPublicRouter(ClaudiaData claudiaData, Network net) throws InfrastructureException {
-        log.info("Add Interfact from net " + net.getNetworkName() + " to public router ");
+    public void addNetworkToPublicRouter(ClaudiaData claudiaData, NetworkInstance netInstance) throws InfrastructureException {
+        log.info("Add Interfact from net " + netInstance.getNetworkName() + " to public router ");
 
         try {
-            String response = openStackUtil.addInterfaceToPublicRouter(claudiaData.getUser(), net);
+            String response = openStackUtil.addInterfaceToPublicRouter(claudiaData.getUser(), netInstance);
             log.debug(response);
         } catch (OpenStackException e) {
-            String msm = "Error to add the network " + net.getNetworkName() + " to the public router :" + e.getMessage();
+            String msm = "Error to add the network " + netInstance.getNetworkName() + " to the public router :" + e.getMessage();
             log.error(msm);
             throw new InfrastructureException(msm, e);
         }
@@ -80,11 +81,11 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
     /**
      * It deletes the interface of the network in the router.
      */
-    public void deleteNetworkFromRouter(ClaudiaData claudiaData, Router router, Network net)
-        throws InfrastructureException {
-        log.info("Delete Interfact net " + net.getNetworkName()+ " " + net.getIdNetRouter() +  " from router "
-                + router.getName() + " for user " + claudiaData.getUser().getTenantName());
 
+    public void deleteNetworkFromRouter(ClaudiaData claudiaData, RouterInstance router, NetworkInstance net)
+    throws InfrastructureException {
+        log.info("Delete Interfact net " + net.getNetworkName()+ " " + net.getIdNetRouter() + " from router " + router.getName()
+                + " for user " + claudiaData.getUser().getTenantName());
         try {
 
             String response = openStackUtil.removeInterface(router, net.getIdNetRouter(), claudiaData.getUser());
@@ -103,24 +104,24 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @params claudiaData
      * @params network
      */
-    public void deployNetwork(ClaudiaData claudiaData, Network network) throws InfrastructureException {
-        log.info("Deploy network " + network.getNetworkName() + " for user " + claudiaData.getUser().getTenantName());
-        log.debug("Payload " + network.toJson());
+    public void deployNetwork(ClaudiaData claudiaData, NetworkInstance networkInstance) throws InfrastructureException {
+        log.info("Deploy network " + networkInstance.getNetworkName() + " for user " + claudiaData.getUser().getTenantName());
+        log.debug("Payload " + networkInstance.toJson());
         String response;
         try {
-            response = openStackUtil.createNetwork(network, claudiaData.getUser());
+            response = openStackUtil.createNetwork(networkInstance, claudiaData.getUser());
             log.debug(response);
             // "network-" + claudiaData.getUser().getTenantName()
             JSONObject networkString = new JSONObject(response);
             String id = networkString.getJSONObject("network").getString("id");
             log.debug("Network id " + id);
-            network.setIdNetwork(id);
+            networkInstance.setIdNetwork(id);
         } catch (OpenStackException e) {
-            String msm = "Error to deploy the network " + network.getNetworkName() + ":" + e.getMessage();
+            String msm = "Error to deploy the network " + networkInstance.getNetworkName() + ":" + e.getMessage();
             log.error(msm);
             throw new InfrastructureException(msm, e);
         } catch (JSONException e) {
-            String msm = "Error to obtain the id of the network " + network.getNetworkName() + ":" + e.getMessage();
+            String msm = "Error to obtain the id of the network " + networkInstance.getNetworkName() + ":" + e.getMessage();
             log.error(msm);
             throw new InfrastructureException(msm, e);
         }
@@ -131,7 +132,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @params claudiaData
      * @params network
      */
-    public void deployRouter(ClaudiaData claudiaData, Router router) throws InfrastructureException {
+    public void deployRouter(ClaudiaData claudiaData, RouterInstance router) throws InfrastructureException {
         log.info("Deploy router " + router.getName() + " for user " + claudiaData.getUser().getTenantName());
 
         try {
@@ -160,8 +161,8 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @params claudiaData
      * @params subNet
      */
-    public void deploySubNetwork(ClaudiaData claudiaData, SubNetwork subNet) throws InfrastructureException {
-        log.info("Deploy network " + subNet.getName() + " for user " + claudiaData.getUser().getTenantName());
+    public void deploySubNetwork(ClaudiaData claudiaData, SubNetworkInstance subNet) throws InfrastructureException {
+        log.info("Deploy subNetworknetwork " + subNet.getName() + " for user " + claudiaData.getUser().getTenantName());
         log.debug("Payload " + subNet.toJson());
         String response;
         try {
@@ -194,12 +195,12 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @params claudiaData
      * @params network
      */
-    public void destroyNetwork(ClaudiaData claudiaData, Network network) throws InfrastructureException {
+    public void destroyNetwork(ClaudiaData claudiaData, NetworkInstance networkInstance) throws InfrastructureException {
 
         try {
-            openStackUtil.deleteNetwork(network.getIdNetwork(), claudiaData.getUser());
+            openStackUtil.deleteNetwork(networkInstance.getIdNetwork(), claudiaData.getUser());
         } catch (OpenStackException e) {
-            String msm = "Error to delete the network " + network.getNetworkName() + ":" + e.getMessage();
+            String msm = "Error to delete the network " + networkInstance.getNetworkName() + ":" + e.getMessage();
             log.error(msm);
             throw new InfrastructureException(msm, e);
         }
@@ -208,7 +209,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
     /**
      * It delete the router in Openstack.
      */
-    public void destroyRouter(ClaudiaData claudiaData, Router router) throws InfrastructureException {
+    public void destroyRouter(ClaudiaData claudiaData, RouterInstance router) throws InfrastructureException {
         try {
             openStackUtil.deleteRouter(router.getIdRouter(), claudiaData.getUser());
         } catch (OpenStackException e) {
@@ -225,7 +226,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @params claudiaData
      * @params network
      */
-    public void destroySubNetwork(ClaudiaData claudiaData, SubNetwork subnet) throws InfrastructureException {
+    public void destroySubNetwork(ClaudiaData claudiaData, SubNetworkInstance subnet) throws InfrastructureException {
 
         try {
             openStackUtil.deleteSubNetwork(subnet.getIdSubNet(), claudiaData.getUser());
@@ -253,7 +254,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @params network
      * @return network information
      */
-    public String loadNetwork(ClaudiaData claudiaData, Network network) throws EntityNotFoundException {
+    public String loadNetwork(ClaudiaData claudiaData, NetworkInstance network) throws EntityNotFoundException {
         String response = "";
         try {
             response = openStackUtil.getNetworkDetails(network.getIdNetwork(), claudiaData.getUser());

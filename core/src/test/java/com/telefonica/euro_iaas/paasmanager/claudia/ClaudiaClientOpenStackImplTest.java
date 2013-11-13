@@ -12,9 +12,11 @@ import java.util.HashSet;
 import com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientOpenStackImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
+import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 
-import com.telefonica.euro_iaas.paasmanager.model.Router;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
@@ -84,9 +86,9 @@ public class ClaudiaClientOpenStackImplTest {
         openStackUtil = mock(OpenStackUtil.class);
 
         when(openStackUtil.createServer(any(String.class), any(PaasManagerUser.class))).thenReturn("response");
-        when(openStackUtil.createNetwork(any(Network.class), any(PaasManagerUser.class))).thenReturn(expectedNetwork);
-        when(openStackUtil.createSubNet(any(SubNetwork.class), any(PaasManagerUser.class))).thenReturn(expectedSubnet);
-        when(openStackUtil.createRouter(any(Router.class), any(PaasManagerUser.class))).thenReturn(expectedRouter);
+        when(openStackUtil.createNetwork(any(NetworkInstance.class), any(PaasManagerUser.class))).thenReturn(expectedNetwork);
+        when(openStackUtil.createSubNet(any(SubNetworkInstance.class), any(PaasManagerUser.class))).thenReturn(expectedSubnet);
+        when(openStackUtil.createRouter(any(RouterInstance.class), any(PaasManagerUser.class))).thenReturn(expectedRouter);
         when(openStackUtil.addRouterInterface(any(String.class), any(String.class), any(PaasManagerUser.class)))
                 .thenReturn("OK");
         when(openStackUtil.getNetworks(any(PaasManagerUser.class))).thenReturn(expectedNetworks);
@@ -100,7 +102,7 @@ public class ClaudiaClientOpenStackImplTest {
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
         VM vm = new VM();
-        claudiaClientOpenStack.deployVM(claudiaData, tier, 1, vm);
+        claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         verify(openStackUtil).createServer(any(String.class), any(PaasManagerUser.class));
 
     }

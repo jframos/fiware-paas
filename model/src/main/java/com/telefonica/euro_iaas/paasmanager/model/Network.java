@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,7 +31,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.SubNetworkDto;
  * A network.
  * 
  * @author Henar Munoz
- */
+ */ 
 
 @SuppressWarnings("serial")
 @Entity
@@ -46,24 +48,21 @@ public class Network {
     // the network name //
     private String name;
 
-    private String idNetwork;
+ //   private String idNetwork;
 
-    private int subNetCount;
-
-    @OneToMany
-    private List<SubNetwork> subNets;
+//    private int subNetCount;
 
     @OneToMany
-    private List<Router> routers;
+    private Set<SubNetwork> subNets;
+
+  //  @OneToMany
+   // private List<Router> routers;
 
     /**
      * Constructor.
      */
     public Network() {
-        subNetCount = 1;
-        subNets = new ArrayList<SubNetwork>();
-        routers = new ArrayList<Router>();
-
+        subNets = new HashSet<SubNetwork>();
     }
 
     /**
@@ -71,23 +70,9 @@ public class Network {
      */
     public Network(String name) {
         this.name = name;
-        subNets = new ArrayList<SubNetwork>();
-        routers = new ArrayList<Router>();
-        subNetCount = 1;
+        subNets = new HashSet<SubNetwork>();       
     }
 
-    /**
-     * It adds a router to the network.
-     * 
-     * @param router
-     * @return
-     */
-    public void addRouter(Router router) {
-        if (routers == null) {
-            routers = new ArrayList<Router>();
-        }
-        routers.add(router);
-    }
 
     /**
      * It adds a subnet to the network.
@@ -97,11 +82,9 @@ public class Network {
      */
     public void addSubNet(SubNetwork subNet) {
         if (subNets == null) {
-            subNets = new ArrayList<SubNetwork>();
+            subNets = new HashSet<SubNetwork>();
         }
-        subNet.setIdNetwork(this.getIdNetwork());
         subNets.add(subNet);
-        subNetCount++;
     }
     
     /**
@@ -114,8 +97,19 @@ public class Network {
         if (subNets.contains(subNet)) {
             subNets.remove(subNet); 
         }
-
-        subNetCount--;
+    }
+    
+    /**
+     * It updates a subnet to the network.
+     * 
+     * @param subNet
+     * @return
+     */
+    public void updateSubNet(SubNetwork subNet) {
+        if (subNets.contains(subNet)) {
+            subNets.remove(subNet); 
+        }
+        subNets.add(subNet);
     }
 
     /**
@@ -124,31 +118,9 @@ public class Network {
      * @return
      */
     public boolean contains(SubNetwork subNet) {
-        if (subNets == null) {
-            subNets = new ArrayList<SubNetwork>();
-        }
         return subNets.contains(subNet);
     }
 
-    /**
-     * It obtains the id of the subnet to be used for the router.
-     * @return
-     */
-    public String getIdNetRouter() {
-        if (getSubNets().size() != 0) {
-            return this.getSubNets().get(0).getIdSubNet();
-        }
-        else {
-            return "";
-        }
-    }
-
-    /**
-     * @return the networkName
-     */
-    public String getIdNetwork() {
-        return idNetwork;
-    }
 
     /**
      * @return the networkName
@@ -157,52 +129,24 @@ public class Network {
         return name;
     }
 
-    /**
-     * It gets the routers.
-     * 
-     * @return List<Router>
-     */
-    public List<Router> getRouters() {
-        return this.routers;
-    }
-
-    /**
-     * It gets the id for the subnet to specify the cidr.
-     * 
-     * @return
-     */
-    public int getSubNetCounts() {
-        return subNetCount;
-    }
 
     /**
      * It gets the subnets.
      * 
      * @return List<SubNetwork>
      */
-    public List<SubNetwork> getSubNets() {
+    public Set<SubNetwork> getSubNets() {
         return this.subNets;
     }
-
+    
     /**
-     * @param networkName
+     * It add the subnet collection
+     * @param subNets
      */
-    public void setIdNetwork(String id) {
-        this.idNetwork = id;
+    public void setSubNets(Set<SubNetwork> subNets) {
+        this.subNets = subNets;
     }
 
-    /**
-     * It obtains the json for adding this subnet into a router.
-     * @return
-     */
-    public String toAddInterfaceJson() {
-        if (getSubNets().size() != 0) {
-            return this.getSubNets().get(0).toJsonAddInterface();
-        }
-        else {
-            return "";
-        }
-    }
 
     /**
      * the dto entity.
@@ -217,16 +161,20 @@ public class Network {
         }
         return networkDto;
     }
-
+    
     /**
-     * It returns the string representations for rest rerquest.
-     * 
-     * @return the json representation
-     */
-    public String toJson() {
-        return "{" + " \"network\":{" + "    \"name\": \"" + this.name + "\"," + "    \"admin_state_up\": true,"
-            + "    \"shared\": false" + "  }" + "}";
+    * the network instance.
+    * 
+    * @return
+    */
+   public NetworkInstance toNetworkInstance() {
+       NetworkInstance networkInstance = new NetworkInstance(this.name);
+       for (SubNetwork subnet: this.getSubNets()) {
+           SubNetworkInstance subNetInstance = subnet.toInstance();
+           networkInstance.addSubNet(subNetInstance);
+       }
+       return networkInstance;
+   }
 
-    }
 
 }

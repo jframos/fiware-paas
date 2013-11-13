@@ -8,14 +8,14 @@
 package com.telefonica.euro_iaas.paasmanager.dao;
 
 import com.telefonica.euro_iaas.commons.dao.BaseDAO;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
+
 
 /**
- * Defines the methods needed to persist Network objects.
- *
+ * Defines the methods needed to persist Network interface objects.
+ * 
  * @author Henar Munoz
  */
-public interface NetworkDao extends BaseDAO<Network, String> {
+public interface NetworkInstanceDao extends BaseDAO<NetworkInstance, String> {
 
 }

@@ -30,6 +30,7 @@ public class NetworkTest extends TestCase {
     public static String ROUTER_NAME ="router";
     public static String ID_PUBLIC_NET ="IDPUBLIC";
     public static String CIDR ="10.100.1.0/24";
+    public static String CIDR_ID ="1";
     public static String ID ="id";
 
 
@@ -43,6 +44,18 @@ public class NetworkTest extends TestCase {
         + "}";
 
     public static String ADDINTERFACE = "{\"subnet_id\": \"" + ID+ "\" }";
+    
+    public static String ROUTER_STRING = "{" +
+        "    \"router\":" +
+        "    {" +
+        "        \"name\": \"" + ROUTER_NAME + "\"," +
+        "        \"admin_state_up\": true ,"+
+        "        \"external_gateway_info\" : {" +
+        "             \"network_id\": \"" + ID + "\"" +
+        "        }" +
+        "    }" +
+        "}";
+
 
 
 
@@ -57,7 +70,7 @@ public class NetworkTest extends TestCase {
 
     /**
      * Create network test.
-     * 
+     *
      * @throws Exception
      */
 
@@ -67,28 +80,50 @@ public class NetworkTest extends TestCase {
         Network network = new Network(NETWORK_NAME);
         assertEquals(network.getNetworkName(), NETWORK_NAME);
         assertEquals(network.getSubNets().size(), 0);
-        assertEquals(network.toJson(), NETWORK_STRING);
 
     }
+    
 
     /**
      * Create network and subnet test.
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testCreateNetworkAndSubNet() throws Exception {
 
         Network network = new Network(NETWORK_NAME);
-        network.setIdNetwork(ID);
-        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, "" + network.getSubNetCounts());
+   
+        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, CIDR_ID);
         network.addSubNet(subnet);
         assertEquals(network.getNetworkName(), NETWORK_NAME);
         assertEquals(network.getSubNets().size(), 1);
-        assertEquals(network.getSubNets().get(0).getName(), SUBNETWORK_NAME);
-        assertEquals(network.getSubNets().get(0).getCidr(), CIDR);
+        for (SubNetwork subNet: network.getSubNets()) {
+            assertEquals(subNet.getName(), SUBNETWORK_NAME);
+            assertEquals(subNet.getCidr(), CIDR);
+        }
     }
 
+    /**
+     * Create a network instance test.
+     * @throws Exception
+     */
+    @Test
+    public void testCreateInstanceNetwork() throws Exception {
+
+        Network network = new Network(NETWORK_NAME);
+        SubNetwork subNet = new SubNetwork(SUBNETWORK_NAME);
+        network.addSubNet(subNet);
+        NetworkInstance networkInstance = network.toNetworkInstance();
+        assertEquals(networkInstance.getNetworkName(), NETWORK_NAME);
+        assertEquals(networkInstance.toJson(), NETWORK_STRING);
+        assertEquals(networkInstance.getSubNets().size(), 1);
+        for (SubNetworkInstance subNet2: networkInstance.getSubNets()) {
+            assertEquals(subNet2.getName(),
+            SUBNETWORK_NAME);
+        }
+    }
+    
     /**
      * It tests the creation of network, subnetwork and router.
      * @throws Exception
@@ -97,27 +132,29 @@ public class NetworkTest extends TestCase {
     public void testCreateNetworkAndSubNetAndRouter() throws Exception {
 
         Network network = new Network(NETWORK_NAME);
-        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, "" + network.getSubNetCounts());
+        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, CIDR_ID);
         network.addSubNet(subnet);
-        Router router = new Router(ID_PUBLIC_NET, ROUTER_NAME);
+        RouterInstance router = new RouterInstance(ID_PUBLIC_NET, ROUTER_NAME);
 
         router.setIdRouter(ID);
         assertEquals(network.getNetworkName(), NETWORK_NAME);
         assertEquals(network.getSubNets().size(), 1);
-        assertEquals(network.getSubNets().get(0).getName(), SUBNETWORK_NAME);
-        assertEquals(network.getSubNets().get(0).getCidr(), CIDR);
+        for (SubNetwork subNet: network.getSubNets()) {
+            assertEquals(subNet.getName(), SUBNETWORK_NAME);
+            assertEquals(subNet.getCidr(), CIDR);
+        }
     }
 
     /**
      * It tests the creation o subnetwork and its json representation.
      * @throws Exception
      */
-    @Test
-    public void testCreateSubNetwork() throws Exception {
+   @Test
+    public void testCreateSubNetworkInstance() throws Exception {
 
-        Network network = new Network(NETWORK_NAME);
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME);
         network.setIdNetwork(ID);
-        SubNetwork subNetwork = new SubNetwork(SUBNETWORK_NAME);
+        SubNetworkInstance subNetwork = new SubNetworkInstance(SUBNETWORK_NAME);
         subNetwork.setIdSubNet(ID);
         network.addSubNet(subNetwork);
         assertEquals(subNetwork.toJson(), SUBNETWORK_STRING);
@@ -125,6 +162,25 @@ public class NetworkTest extends TestCase {
 
     }
 
+   /**
+    * It tests the creation of a router subnetwork and its json representation.
+    * @throws Exception
+    */
+  @Test
+   public void testCreateRouter() throws Exception {
+
+       NetworkInstance network = new NetworkInstance(NETWORK_NAME);
+       network.setIdNetwork(ID);
+       SubNetworkInstance subNetwork = new SubNetworkInstance(SUBNETWORK_NAME);
+       subNetwork.setIdSubNet(ID);
+       network.addSubNet(subNetwork);
+       RouterInstance router = new RouterInstance ( ID, ROUTER_NAME);
+       router.setIdRouter(ID);
+       network.addRouter(router);
+       assertEquals(router.toJson(), ROUTER_STRING);
+       assertEquals(network.toAddInterfaceJson(), ADDINTERFACE);
+
+   }
     /**
      * It test the dto from the Network specification.
      * @throws Exception
@@ -140,8 +196,10 @@ public class NetworkTest extends TestCase {
 
         assertEquals(net.getNetworkName(), NETWORK_NAME);
         assertEquals(net.getSubNets().size(), 1);
-        assertEquals(net.getSubNets().get(0).getName(), SUBNETWORK_NAME);
-        assertEquals(net.getSubNets().get(0).getCidr(), CIDR);
+        for (SubNetwork subNet: net.getSubNets()) {
+            assertEquals(subNet.getName(), SUBNETWORK_NAME);
+            assertEquals(subNet.getCidr(), CIDR);
+        }
     }
 
 }
