@@ -1408,7 +1408,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
 	public String listNetworks(PaasManagerUser user)
 			throws OpenStackException {
-		HttpUriRequest request = createNovaGetRequest(RESOURCE_NETWORKS, APPLICATION_JSON, user);
+		HttpUriRequest request = createQuantumGetRequest(RESOURCE_NETWORKS, APPLICATION_JSON, user);
 
         String response = null;
 
