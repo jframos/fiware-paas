@@ -235,4 +235,12 @@ public class NetworkInstance {
 		
 	}
 
+	public Set<SubNetworkInstance> cloneSubNets() {
+		Set<SubNetworkInstance> subNets = new HashSet<SubNetworkInstance>  ();
+		for (SubNetworkInstance  subNet: this.getSubNets()) {
+			subNets.add(subNet);
+		}
+		return subNets;
+	}
+
 }
