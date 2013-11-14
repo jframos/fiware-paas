@@ -7,22 +7,23 @@
 
 package com.telefonica.euro_iaas.paasmanager.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import org.junit.Before;
 import org.junit.Test;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 
 public class OVFUtilsDomImplTest {
 
@@ -31,7 +32,7 @@ public class OVFUtilsDomImplTest {
     // String ovfTomcatVsNoInitial;
     String ovfRECVMName;
 
-    private String getFile(String file) throws IOException {
+    private String getFile(URI file) throws IOException {
         File f = new File(file);
         InputStream dd = new FileInputStream(f);
 
@@ -48,10 +49,11 @@ public class OVFUtilsDomImplTest {
     @Before
     public void setUp() throws Exception {
 
-        ovfMultipleVMS = getFile("src/test/resources/OVFFiwareMultipleVM.xml");
-        ovfOnlyVs = getFile("src/test/resources/TomcatOnlyVS.xml");
-        // ovfTomcatVsNoInitial = getFile("src/test/resources/tomcatVsNoInitial.xml");
-        ovfRECVMName = getFile("src/test/resources/OVFFiwareRecVMName.xml");
+        URI baseURI = this.getClass().getResource("/").toURI();
+
+        ovfMultipleVMS = getFile(URI.create(baseURI.toString() + "OVFFiwareMultipleVM.xml"));
+        ovfOnlyVs = getFile(URI.create(baseURI.toString() + "TomcatOnlyVS.xml"));
+        ovfRECVMName = getFile(URI.create(baseURI.toString() + "OVFFiwareRecVMName.xml"));
     }
 
     @Test

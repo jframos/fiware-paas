@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,16 +40,16 @@ public class VappUtilsDomImplTest {
     private String vappService;
     private String vappReplica;
     private String vappService2VMs;
-    private final String vappname = "src/test/resources/4caastservicevapp.xml";
-    private final String veename = "src/test/resources/4caastreplicavapp.xml";
-    private final String vappname2vms = "src/test/resources/4caastservice2vmvapp.xml";
+    private final String vappname = "/4caastservicevapp.xml";
+    private final String veename = "/4caastreplicavapp.xml";
+    private final String vappname2vms = "/4caastservice2vmvapp.xml";
 
     private ClaudiaData claudiaData;
 
     private VappUtilsImpl vappUtilsImpl;
     private SystemPropertiesProvider systemPropertiesProvider;
 
-    private String getFile(String file) throws IOException {
+    private String getFile(URI file) throws IOException {
         File f = new File(file);
         InputStream dd = new FileInputStream(f);
 
@@ -65,9 +66,9 @@ public class VappUtilsDomImplTest {
     @Before
     public void setUp() throws Exception {
 
-        vappService = getFile(vappname);
-        vappReplica = getFile(veename);
-        vappService2VMs = getFile(vappname2vms);
+        vappService = getFile(this.getClass().getResource(vappname).toURI());
+        vappReplica = getFile(this.getClass().getResource(veename).toURI());
+        vappService2VMs = getFile(this.getClass().getResource(vappname2vms).toURI());
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("");
         vappUtilsImpl = new VappUtilsImpl();
@@ -108,10 +109,10 @@ public class VappUtilsDomImplTest {
         String ovf1 = null;
 
         try {
-            ovf1 = getFile("src/test/resources/ovfForTier1.xml");
+            URI uri = this.getClass().getResource("/ovfForTier1.xml").toURI();
+            ovf1 = getFile(uri);
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         VM vm = new VM();
