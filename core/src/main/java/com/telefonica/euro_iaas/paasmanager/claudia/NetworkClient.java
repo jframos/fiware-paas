@@ -113,8 +113,9 @@ public interface NetworkClient {
      * 
      * @param claudiaData
      * @return List<Network>
+     * @throws InfrastructureException 
      */
-    List<Network> loadAllNetwork(ClaudiaData claudiaData) throws OpenStackException;
+    List<NetworkInstance> loadAllNetwork(ClaudiaData claudiaData) throws InfrastructureException;
 
     /**
      * Load a Network from OpenStack.

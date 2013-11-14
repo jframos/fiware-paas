@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -59,14 +60,13 @@ import com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientImpl;
 
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
-import com.telefonica.euro_iaas.paasmanager.model.Network;
+
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 
-import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
-import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
+
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
 /**
@@ -1405,6 +1405,23 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
+
+	public String listNetworks(PaasManagerUser user)
+			throws OpenStackException {
+		HttpUriRequest request = createNovaGetRequest(RESOURCE_NETWORKS, APPLICATION_JSON, user);
+
+        String response = null;
+
+        try {
+            response = executeNovaRequest(request);
+
+        } catch (Exception e) {
+            String errorMessage = "Error getting list of networks from OpenStack: " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        }
+        return null;
+	}
 
 
 
