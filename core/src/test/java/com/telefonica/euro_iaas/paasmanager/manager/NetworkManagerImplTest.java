@@ -166,5 +166,6 @@ public class NetworkManagerImplTest extends TestCase {
         networkManager.delete(net);
 
     }
+   
 
 }

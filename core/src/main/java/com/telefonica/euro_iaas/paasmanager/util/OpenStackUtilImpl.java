@@ -1408,19 +1408,23 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
 	public String listNetworks(PaasManagerUser user)
 			throws OpenStackException {
+		log.debug("List networks from user " + user.getTenantName());
+		
 		HttpUriRequest request = createQuantumGetRequest(RESOURCE_NETWORKS, APPLICATION_JSON, user);
 
         String response = null;
 
         try {
             response = executeNovaRequest(request);
+            log.debug ("List network response");
+            log.debug (response);
 
         } catch (Exception e) {
             String errorMessage = "Error getting list of networks from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
-        return null;
+        return response;
 	}
 
 

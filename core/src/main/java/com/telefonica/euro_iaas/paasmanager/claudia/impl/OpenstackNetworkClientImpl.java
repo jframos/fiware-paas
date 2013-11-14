@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -243,7 +244,22 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
     	List<NetworkInstance> networks = new ArrayList<NetworkInstance>  ();
     	try {
             String response= openStackUtil.listNetworks(claudiaData.getUser());
+            JSONObject lNetworkString = new JSONObject(response);
+            JSONArray jsonNetworks = lNetworkString.getJSONArray("networks");
+            
+            for (int i = 0; i< jsonNetworks.length(); i++) {
+            	
+            	JSONObject jsonNet = jsonNetworks.getJSONObject(i);
+            	String name = (String)jsonNet.get("name");
+            	NetworkInstance netInst = new NetworkInstance(name);
+            	networks.add(netInst);
+            }
+
         } catch (OpenStackException e) {
+            String msm = "Error to get the networks :" + e.getMessage();
+            log.error(msm);
+            throw new InfrastructureException(msm, e);
+        } catch (JSONException e) {
             String msm = "Error to get the networks :" + e.getMessage();
             log.error(msm);
             throw new InfrastructureException(msm, e);
