@@ -113,8 +113,9 @@ public interface NetworkClient {
      * 
      * @param claudiaData
      * @return List<Network>
+     * @throws InfrastructureException 
      */
-    List<Network> loadAllNetwork(ClaudiaData claudiaData) throws OpenStackException;
+    List<NetworkInstance> loadAllNetwork(ClaudiaData claudiaData) throws InfrastructureException;
 
     /**
      * Load a Network from OpenStack.
@@ -125,5 +126,14 @@ public interface NetworkClient {
      * @throws EntityNotFoundException
      */
     String loadNetwork(ClaudiaData claudiaData, NetworkInstance network) throws EntityNotFoundException;
+    
+    /**
+     * Load a subNet from Openstack.
+     * @param claudiaData
+     * @param subNet
+     * @return
+     * @throws EntityNotFoundException
+     */
+    String loadSubNetwork(ClaudiaData claudiaData, SubNetworkInstance subNet) throws EntityNotFoundException;
 
 }

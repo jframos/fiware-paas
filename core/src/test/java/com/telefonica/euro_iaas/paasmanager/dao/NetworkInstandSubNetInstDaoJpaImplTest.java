@@ -13,10 +13,10 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
-import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 
 
@@ -92,37 +92,27 @@ public class NetworkInstandSubNetInstDaoJpaImplTest extends AbstractJpaDaoTest {
 
     }
     
-    @Test
-    public void testDestroyNetworkInstNoSubNetInst() throws Exception {
+    @Test(expected=com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
+    public void testDestroyNetworkInstNoSubNetInst() throws Exception  {
 
         NetworkInstance network = new NetworkInstance(NETWORK_NAME);
-
         network = networkInstanceDao.create(network);
-        assertNotNull(network);
-        network = networkInstanceDao.load(NETWORK_NAME);
-        assertNotNull(network);
         networkInstanceDao.remove(network);
+        networkInstanceDao.load(NETWORK_NAME);
+        
     }
      
-    @Test
+    @Test(expected=com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
     public void testDeleteNetworkIInstanceWithSubNets() throws Exception {
 
-
         SubNetworkInstance subNet = new SubNetworkInstance(SUB_NETWORK_NAME, "1");
-        subNet = subNetworkInstanceDao.create(subNet);
-        assertNotNull(subNet);
-      
+        subNet = subNetworkInstanceDao.create(subNet);     
         Set<SubNetworkInstance> subNets = new HashSet<SubNetworkInstance>();
         subNets.add(subNet);
         NetworkInstance network = new NetworkInstance(NETWORK_NAME);
         network.setSubNets(subNets);
- 
         network = networkInstanceDao.create(network);
         assertNotNull(network);
-        
-        network = networkInstanceDao.load(NETWORK_NAME);
-        assertNotNull(network);
-        assertEquals(network.getSubNets().size(), 1);
         
         Set<SubNetworkInstance> subNetOut = network.cloneSubNets();
         network.getSubNets().clear();
@@ -130,8 +120,18 @@ public class NetworkInstandSubNetInstDaoJpaImplTest extends AbstractJpaDaoTest {
         	subNetworkInstanceDao.remove(subNet2);
         }
         networkInstanceDao.remove(network);
+        networkInstanceDao.load(NETWORK_NAME);
         
 
+    }
+    
+    @Test(expected = com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
+    public void testDeleteSubNet() throws Exception {
+
+        SubNetworkInstance subNet = new SubNetworkInstance(SUB_NETWORK_NAME, "1");
+        subNet = subNetworkInstanceDao.create(subNet);     
+        subNetworkInstanceDao.remove(subNet);
+        subNetworkInstanceDao.load(SUB_NETWORK_NAME);
     }
     /**
      * @param productReleaseDao

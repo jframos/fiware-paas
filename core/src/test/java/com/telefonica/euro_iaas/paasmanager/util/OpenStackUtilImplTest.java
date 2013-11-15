@@ -112,6 +112,87 @@ public class OpenStackUtilImplTest {
         verify(statusLine).getReasonPhrase();
     }
     
+    @Test
+    public void shouldLoadSubNetwork() throws OpenStackException, IOException {
+
+    	SubNetworkInstance subNet = new SubNetworkInstance("SUBNET", "CIDR");
+    	subNet.setIdSubNet("ID");
+
+        // when
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)).
+            thenReturn("http://localhost/");
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).
+            thenReturn("v2/");
+        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
+        when(httpResponse.getStatusLine()).thenReturn(statusLine);
+        when(statusLine.getStatusCode()).thenReturn(204);
+        when(statusLine.getReasonPhrase()).thenReturn("ok");
+
+        String response = openStackUtil.getSubNetworkDetails(subNet.getIdSubNet(), paasManagerUser);
+
+        // then
+        assertNotNull(response);
+        assertEquals("ok", response);
+
+        verify(systemPropertiesProvider, times(2)).getProperty(anyString());
+        verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
+        verify(httpResponse, times(3)).getStatusLine();
+        verify(statusLine, times(2)).getStatusCode();
+        verify(statusLine).getReasonPhrase();
+    }
+    
+    @Test
+    public void shouldDeleteSubNetwork() throws OpenStackException, IOException {
+
+    	SubNetworkInstance subNet = new SubNetworkInstance("SUBNET", "CIDR");
+    	subNet.setIdSubNet("ID");
+
+        // when
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)).
+            thenReturn("http://localhost/");
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).
+            thenReturn("v2/");
+        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
+        when(httpResponse.getStatusLine()).thenReturn(statusLine);
+        when(statusLine.getStatusCode()).thenReturn(204);
+        when(statusLine.getReasonPhrase()).thenReturn("ok");
+
+        openStackUtil.deleteSubNetwork(subNet.getIdSubNet(), paasManagerUser);
+
+
+        verify(systemPropertiesProvider, times(2)).getProperty(anyString());
+        verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
+        verify(httpResponse, times(3)).getStatusLine();
+        verify(statusLine, times(2)).getStatusCode();
+        verify(statusLine).getReasonPhrase();
+    }
+    
+    @Test
+    public void shouldDeleteNetwork() throws OpenStackException, IOException {
+
+    	NetworkInstance net = new NetworkInstance("NETWORK");
+    	net.setIdNetwork("ID");
+
+        // when
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)).
+            thenReturn("http://localhost/");
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).
+            thenReturn("v2/");
+        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
+        when(httpResponse.getStatusLine()).thenReturn(statusLine);
+        when(statusLine.getStatusCode()).thenReturn(204);
+        when(statusLine.getReasonPhrase()).thenReturn("ok");
+
+        openStackUtil.deleteSubNetwork(net.getIdNetwork(), paasManagerUser);
+
+
+        verify(systemPropertiesProvider, times(2)).getProperty(anyString());
+        verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
+        verify(httpResponse, times(3)).getStatusLine();
+        verify(statusLine, times(2)).getStatusCode();
+        verify(statusLine).getReasonPhrase();
+    }
+    
     /**
      * It adds a network interface to a public router.
      * @throws OpenStackException
@@ -169,6 +250,9 @@ public class OpenStackUtilImplTest {
         verify(statusLine, times(5)).getStatusCode();
 
     }
+    
+    
+    
 
     /**
      * It adds a network interface to a public router.
@@ -211,6 +295,56 @@ public class OpenStackUtilImplTest {
         verify(statusLine, times(3)).getStatusCode();
 
     }
+    
+    /**
+     * It adds a network interface to a public router.
+     * @throws OpenStackException
+     * @throws IOException
+     */
+    @Test
+    public void shouldListNetworks()
+        throws OpenStackException, IOException {
+    	// given
+    	String content = "{\"networks\": [{\"status\": \"ACTIVE\", \"subnets\": [\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "+
+    	" \"dia146\", \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "+
+    	" \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": false, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "+
+    	" \"provider:segmentation_id\": 8}, {\"status\": \"ACTIVE\", \"subnets\": [\"e2d10e6b-33c3-400c-88d6-f905d4cd02f2\"], \"name\": \"ext-net\","+
+    	" \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\", \"provider:network_type\": "+
+    	" \"gre\", \"router:external\": true, \"shared\": false, \"id\": \"080b5f2a-668f-45e0-be23-361c3a7d11d0\", \"provider:segmentation_id\": 1}" +
+    	 "]}";
+    	HttpEntity entity = mock(HttpEntity.class);
+
+        // when
+        when(systemPropertiesProvider
+            .getProperty(SystemPropertiesProvider.URL_QUANTUM_PROPERTY)).
+            thenReturn("http://localhost/");
+        when(systemPropertiesProvider
+            .getProperty(SystemPropertiesProvider.URL_QUANTUM_VERSION)).
+            thenReturn("v2/");
+
+        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).
+            thenReturn(httpResponse);
+        when(httpResponse.getStatusLine()).thenReturn(statusLine);
+        when(statusLine.getStatusCode()).thenReturn(200);
+        when(statusLine.getReasonPhrase()).thenReturn("ok");
+        when(httpResponse.getEntity()).thenReturn(entity);
+        when(entity.getContent()).thenReturn(
+            new ByteArrayInputStream(content.getBytes()));
+
+        String response = openStackUtil.listNetworks(paasManagerUser);
+     
+
+        // then
+        assertNotNull(response);
+
+        verify(systemPropertiesProvider, times(TWICE)).getProperty(anyString());
+        verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
+        verify(httpResponse, times(3)).getStatusLine();
+        verify(statusLine, times(3)).getStatusCode();
+
+    }
+    
+    
     
     /**
      * OpenStackUtilImplTestable.

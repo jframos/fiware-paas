@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.paasmanager.util;
 
 // import org.openstack.docs.compute.api.v1.Server;
 import java.net.NetworkInterface;
+import java.util.List;
 
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
@@ -309,4 +310,20 @@ public interface OpenStackUtil {
      * @throws OpenStackException
      */
     String getAbsoluteLimits(PaasManagerUser paasManagerUser) throws OpenStackException;
+    
+    /**
+     * It gets the subnetwork details.
+     * @param subNetworkId
+     * @param user
+     * @return
+     * @throws OpenStackException
+     */
+    String getSubNetworkDetails(String subNetworkId, PaasManagerUser user) throws OpenStackException;
+    /**
+     * It gets the network from the user.
+     * @param user
+     * @return
+     */
+
+	String listNetworks(PaasManagerUser user) throws OpenStackException;
 }

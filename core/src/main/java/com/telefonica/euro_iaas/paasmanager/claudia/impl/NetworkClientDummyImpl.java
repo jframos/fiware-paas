@@ -7,17 +7,15 @@
 
 package com.telefonica.euro_iaas.paasmanager.claudia.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
-import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 
 /**
@@ -120,9 +118,8 @@ public class NetworkClientDummyImpl implements NetworkClient {
      * 
      * @params claudiaData
      */
-    public List<Network> loadAllNetwork(ClaudiaData claudiaData) throws OpenStackException {
-        // TODO Auto-generated method stub
-        return null;
+    public List<NetworkInstance> loadAllNetwork(ClaudiaData claudiaData) {
+        return new ArrayList<NetworkInstance> ();
     }
 
     /**
@@ -143,5 +140,13 @@ public class NetworkClientDummyImpl implements NetworkClient {
         // TODO Auto-generated method stub
         
     }
+
+
+	@Override
+	public String loadSubNetwork(ClaudiaData claudiaData,
+			SubNetworkInstance subNet) throws EntityNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

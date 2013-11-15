@@ -52,16 +52,22 @@ public class NetworkandSubNetDaoJpaImplTest extends AbstractJpaDaoTest {
 
     }
     
-    @Test
+    @Test(expected=com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
     public void testDestroyNetworkNoSubNet() throws Exception {
 
         Network network = new Network(NETWORK_NAME);
 
         network = networkDao.create(network);
-        assertNotNull(network);
-        network = networkDao.load(NETWORK_NAME);
-        assertNotNull(network);
-        networkDao.remove(network);
+        networkDao.load(NETWORK_NAME);
+    }
+    
+    @Test(expected=com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
+    public void testDestroySubNet() throws Exception {
+
+    	SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, "1");
+        subNet = subNetworkDao.create(subNet);
+        subNetworkDao.create(subNet);
+        subNetworkDao.load(SUB_NETWORK_NAME);
     }
 
     @Test
@@ -103,25 +109,18 @@ public class NetworkandSubNetDaoJpaImplTest extends AbstractJpaDaoTest {
         }
     }
     
-    @Test(expected = EntityNotFoundException.class)
-    public void testDeleteNetworkWithSubNets() throws InvalidEntityException, AlreadyExistsEntityException, EntityNotFoundException  {
+    @Test(expected=com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
+    public void testDeleteNetworkWithSubNets() throws Exception {
 
 
         SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, "1");
-        subNet = subNetworkDao.create(subNet);
-        assertNotNull(subNet);
-      
+        subNet = subNetworkDao.create(subNet);      
         Set<SubNetwork> subNets = new HashSet<SubNetwork>();
         subNets.add(subNet);
         Network network = new Network(NETWORK_NAME);
         network.setSubNets(subNets);
  
         network = networkDao.create(network);
-        assertNotNull(network);
-        
-        network = networkDao.load(NETWORK_NAME);
-        assertNotNull(network);
-        assertEquals(network.getSubNets().size(), 1);
         Set<SubNetwork> subNetAux = network.cloneSubNets();
 
         network.setSubNets(null);
@@ -130,7 +129,7 @@ public class NetworkandSubNetDaoJpaImplTest extends AbstractJpaDaoTest {
         }
         
         networkDao.remove(network);
-        
+        networkDao.load(NETWORK_NAME);
 
     }
      

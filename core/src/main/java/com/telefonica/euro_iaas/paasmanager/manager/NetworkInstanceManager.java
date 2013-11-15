@@ -30,9 +30,10 @@ public interface NetworkInstanceManager {
      * @return the tierInstance created
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
+     * @throws EntityNotFoundException 
      */
 	NetworkInstance create(ClaudiaData claudiaData, NetworkInstance network) throws InvalidEntityException, InfrastructureException,
-            AlreadyExistsEntityException;
+            AlreadyExistsEntityException, EntityNotFoundException;
 
     /**
      * Delete a Network.
@@ -67,5 +68,8 @@ public interface NetworkInstanceManager {
      * @return the tierInstance created
      */
     NetworkInstance update(NetworkInstance network) throws InvalidEntityException;
+    
+
+	int getNumberDeployedNetwork(ClaudiaData claudiaData) throws InfrastructureException;
 
 }

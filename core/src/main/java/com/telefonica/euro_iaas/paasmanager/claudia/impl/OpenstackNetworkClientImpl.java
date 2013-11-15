@@ -7,9 +7,11 @@
 
 package com.telefonica.euro_iaas.paasmanager.claudia.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -170,11 +172,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             // "network-" + claudiaData.getUser().getTenantName()
             JSONObject networkString = new JSONObject(response);
             log.debug(response);
-            /* {"subnet": {"name": "sub-net-uno-1", "enable_dhcp": true, "network_id": "70705cae-3078-43a9-babe-37d69bc16438",
-             * "tenant_id": "67c979f51c5b4e89b85c1f876bdffe31", "dns_nameservers": [],
-                "allocation_pools": [{"start": "10.100.1.2", "end": "10.100.1.254"}],
-                    "host_routes": [], "ip_version": 4, "gateway_ip": "10.100.1.1", "cidr": "10.100.1.0/24", "id": "ec14e8d0-8612-4db4-a585-cdc15593ec8f"}}
-             */
+
             String id = networkString.getJSONObject("subnet").getString("id");
             log.debug("Network id " + id);
             subNet.setIdSubNet(id);
@@ -242,9 +240,31 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * 
      * @params claudiaData
      */
-    public List<Network> loadAllNetwork(ClaudiaData claudiaData) throws OpenStackException {
-        // TODO Auto-generated method stub
-        return null;
+    public List<NetworkInstance> loadAllNetwork(ClaudiaData claudiaData) throws InfrastructureException {
+    	List<NetworkInstance> networks = new ArrayList<NetworkInstance>  ();
+    	try {
+            String response= openStackUtil.listNetworks(claudiaData.getUser());
+            JSONObject lNetworkString = new JSONObject(response);
+            JSONArray jsonNetworks = lNetworkString.getJSONArray("networks");
+            
+            for (int i = 0; i< jsonNetworks.length(); i++) {
+            	
+            	JSONObject jsonNet = jsonNetworks.getJSONObject(i);
+            	String name = (String)jsonNet.get("name");
+            	NetworkInstance netInst = new NetworkInstance(name);
+            	networks.add(netInst);
+            }
+
+        } catch (OpenStackException e) {
+            String msm = "Error to get the networks :" + e.getMessage();
+            log.error(msm);
+            throw new InfrastructureException(msm, e);
+        } catch (JSONException e) {
+            String msm = "Error to get the networks :" + e.getMessage();
+            log.error(msm);
+            throw new InfrastructureException(msm, e);
+        }
+        return networks;
     }
 
     /**
@@ -274,5 +294,22 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
     public void setOpenStackUtil(OpenStackUtil openStackUtil) {
         this.openStackUtil = openStackUtil;
     }
+
+
+    /**
+     * It load the subNet.
+     */
+	public String loadSubNetwork(ClaudiaData claudiaData,
+			SubNetworkInstance subNet) throws EntityNotFoundException {
+	    String response = "";
+	    try {
+	        response = openStackUtil.getSubNetworkDetails(subNet.getIdNetwork(), claudiaData.getUser());
+	    } catch (OpenStackException e) {
+	        String msm = "Error to obtain the network infromation " + subNet.getName()+ ":" + e.getMessage();
+	        log.error(msm);
+	        throw new EntityNotFoundException(Network.class, msm, e);
+	    }
+	    return response;
+	}
 
 }

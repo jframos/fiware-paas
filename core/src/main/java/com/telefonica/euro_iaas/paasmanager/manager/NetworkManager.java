@@ -28,9 +28,10 @@ public interface NetworkManager {
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
      * @throws EntityNotFoundException 
+     * @throws InfrastructureException 
      */
-    Network create(Network network) throws InvalidEntityException, 
-            AlreadyExistsEntityException, EntityNotFoundException;
+    Network create(ClaudiaData claudiaData, Network network) throws InvalidEntityException, 
+            AlreadyExistsEntityException, EntityNotFoundException, InfrastructureException;
 
     /**
      * Delete a Network.

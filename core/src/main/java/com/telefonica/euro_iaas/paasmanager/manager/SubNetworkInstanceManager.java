@@ -65,5 +65,12 @@ public interface SubNetworkInstanceManager {
      * @return the subnet updated
      */
     SubNetworkInstance update(SubNetworkInstance subNetworkInstance) throws InvalidEntityException;
+    
+    /**
+     * Check if the network has been deployed.
+     * @param claudiaData
+     * @param subNet
+     */
+    boolean isSubNetworkDeployed (ClaudiaData claudiaData, SubNetworkInstance subNet);
 
 }
