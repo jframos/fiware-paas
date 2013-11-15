@@ -312,6 +312,14 @@ public interface OpenStackUtil {
     String getAbsoluteLimits(PaasManagerUser paasManagerUser) throws OpenStackException;
     
     /**
+     * It gets the subnetwork details.
+     * @param subNetworkId
+     * @param user
+     * @return
+     * @throws OpenStackException
+     */
+    String getSubNetworkDetails(String subNetworkId, PaasManagerUser user) throws OpenStackException;
+    /**
      * It gets the network from the user.
      * @param user
      * @return

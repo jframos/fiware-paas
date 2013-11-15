@@ -16,20 +16,16 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 
-import java.net.NetworkInterface;
+
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+
 import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -56,9 +52,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.telefonica.claudia.util.JAXBUtils;
-import com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientImpl;
-
-import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
@@ -1226,6 +1219,34 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
             String errorMessage = "Error getting network " + networkId + " from OpenStack: " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        }
+
+        return response;
+    }
+    
+    /**
+     * It obtains subnetwork details.
+     */
+    public String getSubNetworkDetails(String subNetworkId, PaasManagerUser user) throws OpenStackException {
+        // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
+        // -H "Accept: application/xml"
+        // -X GET "http://10.95.171.115:9696/v2/networks/5867b6bd-ba18-4ae3-a34f-dd0f2e189eb6"
+        HttpUriRequest request = createQuantumGetRequest(RESOURCE_SUBNETS + "/" + subNetworkId, APPLICATION_XML, user);
+
+        String response = null;
+
+        try {
+
+            response = executeNovaRequest(request);
+
+        } catch (OpenStackException e) {
+            String errorMessage = "Error getting network " + subNetworkId + ": " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        } catch (Exception e) {
+            String errorMessage = "Error getting network " + subNetworkId + " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
