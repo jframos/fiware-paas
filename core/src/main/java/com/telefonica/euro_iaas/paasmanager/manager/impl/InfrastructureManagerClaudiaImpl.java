@@ -162,8 +162,9 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         return null;
     }
 
-    public EnvironmentInstance createInfrasctuctureEnvironmentInstance(EnvironmentInstance environmentInstance,
-            List<Tier> tiers, ClaudiaData claudiaData) throws InvalidOVFException, InfrastructureException, InvalidEntityException {
+    public EnvironmentInstance createInfrasctuctureEnvironmentInstance
+        (EnvironmentInstance environmentInstance, List<Tier> tiers, ClaudiaData claudiaData)
+        throws InvalidOVFException, InfrastructureException, InvalidEntityException, EntityNotFoundException {
 
         // Deploy MVs
         log.debug("Creating infrastructure for environemnt instance " + environmentInstance.getBlueprintName());
@@ -582,7 +583,8 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         }
     }
     
-    private void deployNetworks (ClaudiaData data, TierInstance tierInstance) throws InvalidEntityException, InfrastructureException {
+    private void deployNetworks (ClaudiaData data, TierInstance tierInstance)
+        throws InvalidEntityException, InfrastructureException, EntityNotFoundException {
     	// Creating networks...
     	log.debug ("Deploying network for tier instance " + tierInstance.getName() + " " + tierInstance.getTier().getNetworks());
         List<NetworkInstance> networkToBeDeployed = new ArrayList<NetworkInstance>();

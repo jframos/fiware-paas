@@ -22,6 +22,7 @@ import org.mockito.Mockito;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
 import com.telefonica.euro_iaas.paasmanager.dao.NetworkInstanceDao;
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.NetworkInstanceManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.NetworkManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -102,6 +103,43 @@ public class NetworkInstanceManagerImplTest {
         	assertEquals(subNet2.getName(), SUB_NETWORK_NAME);
         }
         
+    }
+    
+    /**
+     * It tests the creation of a network.
+     * @throws Exception
+     */
+    @Test(expected=InfrastructureException.class)
+    public void testCreateNetworkSubNetFailure() throws Exception {
+        // Given
+        Network net = new Network(NETWORK_NAME);
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME);
+        net.addSubNet(subNet);
+        NetworkInstance netInst = net.toNetworkInstance();
+        netInst.setIdNetwork("ID");
+        ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
+
+        // When
+        when(networkInstanceDao.load(any(String.class)))
+            .thenThrow(new EntityNotFoundException(Network.class, "test", net));
+        when(systemPropertiesProvider.getProperty("key")).thenReturn("VALUE");
+        Mockito.doNothing().when(networkClient)
+            .deployNetwork(any(ClaudiaData.class), any(NetworkInstance.class));
+        Mockito.doNothing().when(networkClient).addNetworkToPublicRouter(any(ClaudiaData.class), 
+            any(NetworkInstance.class));
+        when(subNetworkInstanceManager.create(any(ClaudiaData.class),
+            	any(SubNetworkInstance.class))).thenThrow(InfrastructureException.class);
+        when(subNetworkInstanceManager.isSubNetworkDeployed(any(ClaudiaData.class),
+            	any(SubNetworkInstance.class))).thenReturn(false);
+
+            	
+        Mockito.doNothing().when(routerManager).
+            create(any(ClaudiaData.class), any(RouterInstance.class), any(NetworkInstance.class));
+        when(networkInstanceDao.create(any(NetworkInstance.class))).
+            thenReturn(netInst);
+
+        // Verify
+        networkInstanceManager.create(claudiaData, netInst);
     }
     
     /**
