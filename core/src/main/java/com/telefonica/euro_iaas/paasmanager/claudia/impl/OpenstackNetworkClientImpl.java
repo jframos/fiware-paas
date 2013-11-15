@@ -275,4 +275,21 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         this.openStackUtil = openStackUtil;
     }
 
+
+    /**
+     * It load the subNet.
+     */
+	public String loadSubNetwork(ClaudiaData claudiaData,
+			SubNetworkInstance subNet) throws EntityNotFoundException {
+	    String response = "";
+	    try {
+	        response = openStackUtil.getSubNetworkDetails(subNet.getIdNetwork(), claudiaData.getUser());
+	    } catch (OpenStackException e) {
+	        String msm = "Error to obtain the network infromation " + subNet.getName()+ ":" + e.getMessage();
+	        log.error(msm);
+	        throw new EntityNotFoundException(Network.class, msm, e);
+	    }
+	    return response;
+	}
+
 }

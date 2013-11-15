@@ -125,5 +125,14 @@ public interface NetworkClient {
      * @throws EntityNotFoundException
      */
     String loadNetwork(ClaudiaData claudiaData, NetworkInstance network) throws EntityNotFoundException;
+    
+    /**
+     * Load a subNet from Openstack.
+     * @param claudiaData
+     * @param subNet
+     * @return
+     * @throws EntityNotFoundException
+     */
+    String loadSubNetwork(ClaudiaData claudiaData, SubNetworkInstance subNet) throws EntityNotFoundException;
 
 }

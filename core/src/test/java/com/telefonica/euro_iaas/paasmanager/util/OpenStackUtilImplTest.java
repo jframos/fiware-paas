@@ -112,6 +112,87 @@ public class OpenStackUtilImplTest {
         verify(statusLine).getReasonPhrase();
     }
     
+    @Test
+    public void shouldLoadSubNetwork() throws OpenStackException, IOException {
+
+    	SubNetworkInstance subNet = new SubNetworkInstance("SUBNET", "CIDR");
+    	subNet.setIdSubNet("ID");
+
+        // when
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)).
+            thenReturn("http://localhost/");
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).
+            thenReturn("v2/");
+        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
+        when(httpResponse.getStatusLine()).thenReturn(statusLine);
+        when(statusLine.getStatusCode()).thenReturn(204);
+        when(statusLine.getReasonPhrase()).thenReturn("ok");
+
+        String response = openStackUtil.getSubNetworkDetails(subNet.getIdSubNet(), paasManagerUser);
+
+        // then
+        assertNotNull(response);
+        assertEquals("ok", response);
+
+        verify(systemPropertiesProvider, times(2)).getProperty(anyString());
+        verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
+        verify(httpResponse, times(3)).getStatusLine();
+        verify(statusLine, times(2)).getStatusCode();
+        verify(statusLine).getReasonPhrase();
+    }
+    
+    @Test
+    public void shouldDeleteSubNetwork() throws OpenStackException, IOException {
+
+    	SubNetworkInstance subNet = new SubNetworkInstance("SUBNET", "CIDR");
+    	subNet.setIdSubNet("ID");
+
+        // when
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)).
+            thenReturn("http://localhost/");
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).
+            thenReturn("v2/");
+        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
+        when(httpResponse.getStatusLine()).thenReturn(statusLine);
+        when(statusLine.getStatusCode()).thenReturn(204);
+        when(statusLine.getReasonPhrase()).thenReturn("ok");
+
+        openStackUtil.deleteSubNetwork(subNet.getIdSubNet(), paasManagerUser);
+
+
+        verify(systemPropertiesProvider, times(2)).getProperty(anyString());
+        verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
+        verify(httpResponse, times(3)).getStatusLine();
+        verify(statusLine, times(2)).getStatusCode();
+        verify(statusLine).getReasonPhrase();
+    }
+    
+    @Test
+    public void shouldDeleteNetwork() throws OpenStackException, IOException {
+
+    	NetworkInstance net = new NetworkInstance("NETWORK");
+    	net.setIdNetwork("ID");
+
+        // when
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)).
+            thenReturn("http://localhost/");
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).
+            thenReturn("v2/");
+        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
+        when(httpResponse.getStatusLine()).thenReturn(statusLine);
+        when(statusLine.getStatusCode()).thenReturn(204);
+        when(statusLine.getReasonPhrase()).thenReturn("ok");
+
+        openStackUtil.deleteSubNetwork(net.getIdNetwork(), paasManagerUser);
+
+
+        verify(systemPropertiesProvider, times(2)).getProperty(anyString());
+        verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
+        verify(httpResponse, times(3)).getStatusLine();
+        verify(statusLine, times(2)).getStatusCode();
+        verify(statusLine).getReasonPhrase();
+    }
+    
     /**
      * It adds a network interface to a public router.
      * @throws OpenStackException
@@ -169,6 +250,9 @@ public class OpenStackUtilImplTest {
         verify(statusLine, times(5)).getStatusCode();
 
     }
+    
+    
+    
 
     /**
      * It adds a network interface to a public router.

@@ -84,6 +84,21 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
     public List<SubNetworkInstance> findAll() {
         return subNetworkInstanceDao.findAll();
     }
+    
+    /**
+     * Is the subNetwork deployed.
+     * @param claudiaData
+     * @param subNet
+     * @return
+     */
+    public boolean isSubNetworkDeployed (ClaudiaData claudiaData, SubNetworkInstance subNet) {
+    	try {
+			networkClient.loadSubNetwork(claudiaData, subNet);
+			return true;
+		} catch (EntityNotFoundException e) {
+			return false;
+		}
+    }
 
     /**
      * To obtain the subnetwork.

@@ -144,4 +144,12 @@ public class NetworkClientDummyImpl implements NetworkClient {
         
     }
 
+
+	@Override
+	public String loadSubNetwork(ClaudiaData claudiaData,
+			SubNetworkInstance subNet) throws EntityNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

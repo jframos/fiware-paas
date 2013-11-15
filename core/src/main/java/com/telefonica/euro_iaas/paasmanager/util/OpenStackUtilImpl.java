@@ -1232,6 +1232,34 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
         return response;
     }
+    
+    /**
+     * It obtains subnetwork details.
+     */
+    public String getSubNetworkDetails(String subNetworkId, PaasManagerUser user) throws OpenStackException {
+        // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
+        // -H "Accept: application/xml"
+        // -X GET "http://10.95.171.115:9696/v2/networks/5867b6bd-ba18-4ae3-a34f-dd0f2e189eb6"
+        HttpUriRequest request = createQuantumGetRequest(RESOURCE_SUBNETS + "/" + subNetworkId, APPLICATION_XML, user);
+
+        String response = null;
+
+        try {
+
+            response = executeNovaRequest(request);
+
+        } catch (OpenStackException e) {
+            String errorMessage = "Error getting network " + subNetworkId + ": " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        } catch (Exception e) {
+            String errorMessage = "Error getting network " + subNetworkId + " from OpenStack: " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        }
+
+        return response;
+    }
 
     /*
      * (non-Javadoc)
