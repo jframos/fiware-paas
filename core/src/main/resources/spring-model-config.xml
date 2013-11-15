@@ -178,6 +178,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
               class="com.telefonica.euro_iaas.paasmanager.manager.impl.NetworkManagerImpl">
             <property name="networkDao" ref="networkDao"/>
             <property name="subNetworkManager" ref="subNetworkManager"/>
+            <property name="networkInstanceManager" ref="networkInstanceManager"/>
         </bean>
         
          <bean id="networkInstanceManager" lazy-init="true"

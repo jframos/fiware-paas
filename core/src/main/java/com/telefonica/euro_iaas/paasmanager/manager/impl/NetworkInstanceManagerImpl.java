@@ -13,6 +13,7 @@ import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -22,6 +23,7 @@ import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
 import com.telefonica.euro_iaas.paasmanager.dao.NetworkInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.manager.NetworkInstanceManager;
 
 import com.telefonica.euro_iaas.paasmanager.manager.RouterManager;
@@ -131,10 +133,8 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException
   
     {
-    	List<SubNetworkInstance> subNetAxu = new ArrayList ();
-    	for (SubNetworkInstance subNet: networkInstance.getSubNets()) {
-    		subNetAxu.add(subNet);
-    	}
+    	Set<SubNetworkInstance> subNetAxu = networkInstance.cloneSubNets();
+    
     	for (SubNetworkInstance subNet: subNetAxu) {
     		
     		log.debug("SubNetwork " + subNet.getName() + " id net " + subNet.getIdNetwork() );
@@ -239,5 +239,9 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
     public NetworkInstance update(NetworkInstance networkInstance) throws InvalidEntityException {
     	return networkInstanceDao.update(networkInstance);
     }
+
+	public int getNumberDeployedNetwork(ClaudiaData claudiaData) throws InfrastructureException {
+		return networkClient.loadAllNetwork(claudiaData).size();
+	}
 
 }

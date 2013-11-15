@@ -68,5 +68,8 @@ public interface NetworkInstanceManager {
      * @return the tierInstance created
      */
     NetworkInstance update(NetworkInstance network) throws InvalidEntityException;
+    
+
+	int getNumberDeployedNetwork(ClaudiaData claudiaData) throws InfrastructureException;
 
 }

@@ -89,7 +89,7 @@ public class TierManagerImpl implements TierManager {
         	return load(tier.getName(), claudiaData.getVdc(), envName);
         } else {
         	createSecurityGroups(claudiaData, tier);
-        	createNetworks(tier);
+        	createNetworks(claudiaData, tier);
         	return tierInsertBD(tier, claudiaData);
 
         }
@@ -153,7 +153,7 @@ public class TierManagerImpl implements TierManager {
     	
     }
     
-    public void createNetworks (Tier tier) throws EntityNotFoundException,
+    public void createNetworks (ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException,
         InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
     	List<Network> networkToBeDeployed = new ArrayList<Network>();
         for (Network network : tier.getNetworks()) {
@@ -166,7 +166,7 @@ public class TierManagerImpl implements TierManager {
     		   network = networkManager.load(network.getNetworkName());
                
     	   } else {
-    		   network = networkManager.create(network);
+    		   network = networkManager.create(claudiaData, network);
     	   }
     	   tier.addNetwork(network);
         }
