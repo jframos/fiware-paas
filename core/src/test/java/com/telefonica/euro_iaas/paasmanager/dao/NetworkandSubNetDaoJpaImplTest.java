@@ -129,7 +129,7 @@ public class NetworkandSubNetDaoJpaImplTest extends AbstractJpaDaoTest {
         }
         
         networkDao.remove(network);
-        networkDao.load(NETWORK_NAME);
+    //    networkDao.load(NETWORK_NAME);
 
     }
      

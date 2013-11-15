@@ -326,4 +326,13 @@ public interface OpenStackUtil {
      */
 
 	String listNetworks(PaasManagerUser user) throws OpenStackException;
+
+	/**
+	 * It deletes the interface in the public router.
+	 * @param user
+	 * @param netInstance
+	 * @return
+	 */
+	String deleteInterfaceToPublicRouter(PaasManagerUser user,
+			NetworkInstance netInstance) throws OpenStackException;
 }

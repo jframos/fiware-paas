@@ -251,6 +251,64 @@ public class OpenStackUtilImplTest {
 
     }
     
+    /**
+     * It deletes a network interface to a public router.
+     * @throws OpenStackException
+     * @throws IOException
+     */
+    @Test
+    public void shouldDeleteNetworkInterfacetoPublicRouter()
+        throws OpenStackException, IOException {
+    	// given
+    	NetworkInstance net = new NetworkInstance("NETWORK");
+    	SubNetworkInstance subNet = new SubNetworkInstance("SUBNET", "CIDR");
+    	net.addSubNet(subNet);
+
+    	HttpEntity entity = mock(HttpEntity.class);
+    	Header header = mock(Header.class);
+    	String content = " <?xml version=\"1.0\" encoding=\"UTF-8\"?> \n"
+            + "<access xmlns=\"http://docs.openstack.org/identity/api/v2.0\">\n"
+            + "<token expires=\"2013-11-06T12:02:42Z\" id=\"e563937547fd447985db4a9567528393\">\n"
+            + "<tenant enabled=\"true\" name=\"admin\" id=\"6571e3422ad84f7d828ce2f30373b3d4\">\n"
+            + "<description>Default tenant</description>   \n"
+            + "</tenant>   \n"
+            + "</token>   \n"
+            + "</access> \n";
+
+        // when
+        when(systemPropertiesProvider
+            .getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)).
+            thenReturn("http://localhost/");
+        when(systemPropertiesProvider.
+        	getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).thenReturn("v2/");
+        when(systemPropertiesProvider.
+            	getProperty(SystemPropertiesProvider.PUBLIC_ROUTER_ID)).thenReturn("ID");
+
+        when(entity.getContent()).
+            thenReturn(new ByteArrayInputStream(content.getBytes()));
+        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).
+            thenReturn(httpResponse);
+        when(httpResponse.getStatusLine()).thenReturn(statusLine);
+        when(httpResponse.getEntity()).thenReturn(entity);
+        when(httpResponse.getHeaders(any(String.class))).
+            thenReturn(new Header []{header});
+        when(header.getValue()).thenReturn("value");
+
+        when(statusLine.getStatusCode()).thenReturn(200);
+        when(statusLine.getReasonPhrase()).thenReturn("ok");
+
+        String response = openStackUtil.deleteInterfaceToPublicRouter(paasManagerUser, net);
+
+        // then
+        assertNotNull(response);
+
+        verify(systemPropertiesProvider, times(SEVEN_TIMES)).getProperty(anyString());
+        verify(closeableHttpClientMock, times(TWICE)).execute(any(HttpUriRequest.class));
+        verify(httpResponse, times(5)).getStatusLine();
+        verify(statusLine, times(5)).getStatusCode();
+
+    }
+    
     
     
 

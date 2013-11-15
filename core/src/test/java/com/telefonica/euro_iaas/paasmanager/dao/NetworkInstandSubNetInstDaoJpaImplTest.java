@@ -98,7 +98,7 @@ public class NetworkInstandSubNetInstDaoJpaImplTest extends AbstractJpaDaoTest {
         NetworkInstance network = new NetworkInstance(NETWORK_NAME);
         network = networkInstanceDao.create(network);
         networkInstanceDao.remove(network);
-        networkInstanceDao.load(NETWORK_NAME);
+      //  networkInstanceDao.load(NETWORK_NAME);
         
     }
      
@@ -120,7 +120,7 @@ public class NetworkInstandSubNetInstDaoJpaImplTest extends AbstractJpaDaoTest {
         	subNetworkInstanceDao.remove(subNet2);
         }
         networkInstanceDao.remove(network);
-        networkInstanceDao.load(NETWORK_NAME);
+    //    networkInstanceDao.load(NETWORK_NAME);
         
 
     }
@@ -131,7 +131,7 @@ public class NetworkInstandSubNetInstDaoJpaImplTest extends AbstractJpaDaoTest {
         SubNetworkInstance subNet = new SubNetworkInstance(SUB_NETWORK_NAME, "1");
         subNet = subNetworkInstanceDao.create(subNet);     
         subNetworkInstanceDao.remove(subNet);
-        subNetworkInstanceDao.load(SUB_NETWORK_NAME);
+      //  subNetworkInstanceDao.load(SUB_NETWORK_NAME);
     }
     /**
      * @param productReleaseDao

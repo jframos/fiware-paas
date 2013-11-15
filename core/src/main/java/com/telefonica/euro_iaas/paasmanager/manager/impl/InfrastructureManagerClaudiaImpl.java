@@ -301,7 +301,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
      * (com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance)
      */
     public void deleteEnvironment(ClaudiaData claudiaData, EnvironmentInstance envInstance)
-            throws InfrastructureException {
+            throws InfrastructureException, EntityNotFoundException, InvalidEntityException {
 
         List<TierInstance> tierInstances = envInstance.getTierInstances();
 
@@ -317,6 +317,30 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
             claudiaClient.undeployVMReplica(claudiaData, tierInstance);
             monitoringClient.stopMonitoring(tierInstance.getVM().getFqn());
         }
+        
+        deleteNetworksInEnv (claudiaData, envInstance);
+        
+    }
+    
+    private List<NetworkInstance> getNetworkInstInEnv (EnvironmentInstance envInstance) {
+    	List<NetworkInstance> netInst = new ArrayList<NetworkInstance>  ();
+    	for (TierInstance tierInstance: envInstance.getTierInstances()) {
+    		for (NetworkInstance net: tierInstance.getNetworkInstances()) {
+    			if (!netInst.contains(net)) {
+    				netInst.add(net);
+    			}
+    		}
+    	}
+    	return netInst;
+    }
+    
+    private void deleteNetworksInEnv (ClaudiaData claudiaData, EnvironmentInstance envInstance)
+        throws EntityNotFoundException, InvalidEntityException, InfrastructureException {
+    	log.debug ("Delete the networks in env if there are not being used");
+    	List<NetworkInstance> netInsts = getNetworkInstInEnv (envInstance); 
+    	for (NetworkInstance network: netInsts) {
+    		networkInstanceManager.delete(claudiaData, network);
+    	}
     }
 
     public void deleteVMReplica(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
