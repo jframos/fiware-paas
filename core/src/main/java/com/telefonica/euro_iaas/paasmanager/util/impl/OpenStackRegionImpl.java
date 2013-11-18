@@ -45,16 +45,18 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     public String getEndPointByNameAndRegionName(String name, String regionName, String token)
             throws OpenStackException {
 
-        String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_KEYSTONE_PROPERTY)
-                + systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY) + "/tokens/" + token
+        String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_URL) + "tokens/" + token
                 + "/endpoints";
 
         WebResource webResource = client.resource(url);
 
-        ClientResponse response = webResource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+        WebResource.Builder builder = webResource.accept(MediaType.APPLICATION_JSON);
+        builder.header("X-Auth-Token", token);
+
+        ClientResponse response = builder.get(ClientResponse.class);
 
         if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+            throw new RuntimeException("Failed : HTTP (url:" + url + ") error code : " + response.getStatus());
         }
 
         String result = parseEndpoint(response.getEntity(String.class), name, regionName);

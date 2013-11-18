@@ -45,9 +45,8 @@ public class OpenStackRegionImplTest {
         ClientResponse clientResponse = mock(ClientResponse.class);
 
         // when
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_KEYSTONE_PROPERTY)).thenReturn(
-                "http://domain.com/");
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).thenReturn("v2.0");
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_URL)).thenReturn(
+                "http://domain.com/v2.0/");
         when(client.resource(url)).thenReturn(webResource);
         when(webResource.accept(MediaType.APPLICATION_JSON)).thenReturn(builder);
         when(builder.get(ClientResponse.class)).thenReturn(clientResponse);
@@ -81,9 +80,8 @@ public class OpenStackRegionImplTest {
         ClientResponse clientResponse = mock(ClientResponse.class);
 
         // when
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_KEYSTONE_PROPERTY)).thenReturn(
-                "http://domain.com/");
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).thenReturn("v2.0");
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_URL)).thenReturn(
+                "http://domain.com/v2.0/");
         when(client.resource(url)).thenReturn(webResource);
         when(webResource.accept(MediaType.APPLICATION_JSON)).thenReturn(builder);
         when(builder.get(ClientResponse.class)).thenReturn(clientResponse);

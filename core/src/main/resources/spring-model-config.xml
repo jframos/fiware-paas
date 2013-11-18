@@ -8,6 +8,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         <bean id="restClient" class="com.sun.jersey.api.client.Client" factory-method="create"/>
 
         <bean id="openStackRegion" class="com.telefonica.euro_iaas.paasmanager.util.impl.OpenStackRegionImpl">
+            <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
 
         </bean>
 
@@ -155,6 +156,8 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         <bean id="firewallingClient" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.claudia.impl.OpenstackFirewallingClientImpl">
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
+            <property name="openStackRegion" ref="openStackRegion"/>
+
         </bean>
 
 
@@ -442,7 +445,10 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="vappUtils" ref="vappUtils"/>
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
         </bean> -->
+        <bean id="openStackRegion" class="com.telefonica.euro_iaas.paasmanager.util.impl.OpenStackRegionImpl">
+            <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
 
+        </bean>
 
         <bean id="quotaClient" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.claudia.impl.OpenStackQuotaClientImpl">
@@ -486,6 +492,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         <bean id="openStackUtil" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.util.OpenStackUtilImpl">
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
+            <property name="openStackRegion" ref="openStackRegion"/>
         </bean>
 
         <bean id="infrastructureManager" lazy-init="true"

@@ -34,7 +34,7 @@ public interface FirewallingClient {
      * @return
      * @throws EntityNotFoundException
      */
-    SecurityGroup loadSecurityGroup(ClaudiaData claudiaData, String securityGroupId) throws EntityNotFoundException;
+    SecurityGroup loadSecurityGroup(ClaudiaData claudiaData, String securityGroupId) throws EntityNotFoundException, OpenStackException;
 
     /**
      * Loads all securityGroups associated to a certain vdc
