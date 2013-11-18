@@ -30,6 +30,13 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     private Client client;
 
     /**
+     * Default constructor. It creates a jersey client.
+     */
+    public OpenStackRegionImpl() {
+        client = Client.create();
+    }
+
+    /**
      * the properties configuration.
      */
     private SystemPropertiesProvider systemPropertiesProvider;

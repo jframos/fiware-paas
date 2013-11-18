@@ -34,6 +34,11 @@ public class PaasManagerUser extends User {
     private String username = "";
 
     /**
+     * The region name for openstack.
+     */
+    private String regionName = "";
+
+    /**
      * Instantiates a new open stack user.
      * 
      * @param username
@@ -49,8 +54,6 @@ public class PaasManagerUser extends User {
         this.token = password;
         this.username = username;
     }
-    
-
 
     // /**
     // * Constructor.
@@ -125,5 +128,13 @@ public class PaasManagerUser extends User {
      */
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getRegionName() {
+        return regionName;
+    }
+
+    public void setRegionName(String regionName) {
+        this.regionName = regionName;
     }
 }

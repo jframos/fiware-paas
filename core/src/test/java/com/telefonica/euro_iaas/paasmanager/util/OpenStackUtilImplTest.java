@@ -45,6 +45,8 @@ public class OpenStackUtilImplTest {
     private StatusLine statusLine;
     private CloseableHttpResponse httpResponse;
     private PaasManagerUser paasManagerUser;
+
+    private OpenStackRegion openStackRegion;
     final int TWICE = 2;
     final int SEVEN_TIMES = 7;
     final int FOUR_TIMES = 4;
@@ -71,6 +73,8 @@ public class OpenStackUtilImplTest {
         Collection<GrantedAuthority> authorities = new HashSet();
         authorities.add(grantedAuthority);
         paasManagerUser = new PaasManagerUser("user", "aa", authorities);
+        paasManagerUser.setRegionName("regionOne");
+        paasManagerUser.setToken("1234567891234567989");
 
         HttpClientConnectionManager httpClientConnectionManager = mock(HttpClientConnectionManager.class);
         openStackUtil.setConnectionManager(httpClientConnectionManager);
@@ -78,15 +82,17 @@ public class OpenStackUtilImplTest {
         httpResponse = mock(CloseableHttpResponse.class);
         statusLine = mock(StatusLine.class);
         closeableHttpClientMock = mock(CloseableHttpClient.class);
+        openStackRegion = mock(OpenStackRegion.class);
+        openStackUtil.setOpenStackRegion(openStackRegion);
     }
 
     @Test
     public void shouldGetAbsoluteLimitsWithResponse204() throws OpenStackException, IOException {
 
         // when
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)).thenReturn(
-                "http://localhost/");
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).thenReturn("v2/");
+
+        when(openStackRegion.getNovaEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0");
+
         when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
         when(statusLine.getStatusCode()).thenReturn(204);
@@ -98,7 +104,7 @@ public class OpenStackUtilImplTest {
         assertNotNull(response);
         assertEquals("ok", response);
 
-        verify(systemPropertiesProvider, times(2)).getProperty(anyString());
+        verify(openStackRegion).getNovaEndPoint(anyString(), anyString());
         verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
         verify(httpResponse, times(3)).getStatusLine();
         verify(statusLine, times(2)).getStatusCode();
@@ -112,9 +118,7 @@ public class OpenStackUtilImplTest {
         subNet.setIdSubNet("ID");
 
         // when
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)).thenReturn(
-                "http://localhost/");
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).thenReturn("v2/");
+        when(openStackRegion.getQuantumEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0/");
         when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
         when(statusLine.getStatusCode()).thenReturn(204);
@@ -126,7 +130,7 @@ public class OpenStackUtilImplTest {
         assertNotNull(response);
         assertEquals("ok", response);
 
-        verify(systemPropertiesProvider, times(2)).getProperty(anyString());
+        verify(openStackRegion).getQuantumEndPoint(anyString(), anyString());
         verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
         verify(httpResponse, times(3)).getStatusLine();
         verify(statusLine, times(2)).getStatusCode();
@@ -140,9 +144,7 @@ public class OpenStackUtilImplTest {
         subNet.setIdSubNet("ID");
 
         // when
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)).thenReturn(
-                "http://localhost/");
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).thenReturn("v2/");
+        when(openStackRegion.getNovaEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0/");
         when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
         when(statusLine.getStatusCode()).thenReturn(204);
@@ -150,7 +152,7 @@ public class OpenStackUtilImplTest {
 
         openStackUtil.deleteSubNetwork(subNet.getIdSubNet(), paasManagerUser);
 
-        verify(systemPropertiesProvider, times(2)).getProperty(anyString());
+        verify(openStackRegion).getNovaEndPoint(anyString(), anyString());
         verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
         verify(httpResponse, times(3)).getStatusLine();
         verify(statusLine, times(2)).getStatusCode();
@@ -164,9 +166,7 @@ public class OpenStackUtilImplTest {
         net.setIdNetwork("ID");
 
         // when
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)).thenReturn(
-                "http://localhost/");
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).thenReturn("v2/");
+        when(openStackRegion.getNovaEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0/");
         when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
         when(statusLine.getStatusCode()).thenReturn(204);
@@ -174,7 +174,7 @@ public class OpenStackUtilImplTest {
 
         openStackUtil.deleteSubNetwork(net.getIdNetwork(), paasManagerUser);
 
-        verify(systemPropertiesProvider, times(2)).getProperty(anyString());
+        verify(openStackRegion).getNovaEndPoint(anyString(), anyString());
         verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
         verify(httpResponse, times(3)).getStatusLine();
         verify(statusLine, times(2)).getStatusCode();
@@ -204,10 +204,7 @@ public class OpenStackUtilImplTest {
         Header header = mock(Header.class);
 
         // when
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)).thenReturn(
-                "http://localhost/");
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).thenReturn("v2/");
-
+        when(openStackRegion.getQuantumEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0/");
         when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
         when(httpResponse.getEntity()).thenReturn(entity);
@@ -222,7 +219,8 @@ public class OpenStackUtilImplTest {
         // then
         assertNotNull(response);
 
-        verify(systemPropertiesProvider, times(SEVEN_TIMES)).getProperty(anyString());
+        verify(openStackRegion).getQuantumEndPoint(anyString(), anyString());
+        verify(systemPropertiesProvider, times(5)).getProperty(anyString());
         verify(closeableHttpClientMock, times(TWICE)).execute(any(HttpUriRequest.class));
         verify(httpResponse, times(5)).getStatusLine();
         verify(statusLine, times(5)).getStatusCode();
@@ -242,9 +240,7 @@ public class OpenStackUtilImplTest {
         HttpEntity entity = mock(HttpEntity.class);
 
         // when
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)).thenReturn(
-                "http://localhost/");
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).thenReturn("v2/");
+        when(openStackRegion.getQuantumEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0/");
 
         when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
@@ -258,7 +254,7 @@ public class OpenStackUtilImplTest {
         // then
         assertNotNull(response);
 
-        verify(systemPropertiesProvider, times(TWICE)).getProperty(anyString());
+        verify(openStackRegion).getQuantumEndPoint(anyString(), anyString());
         verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
         verify(httpResponse, times(3)).getStatusLine();
         verify(statusLine, times(3)).getStatusCode();
@@ -284,9 +280,7 @@ public class OpenStackUtilImplTest {
         HttpEntity entity = mock(HttpEntity.class);
 
         // when
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_QUANTUM_PROPERTY)).thenReturn(
-                "http://localhost/");
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_QUANTUM_VERSION)).thenReturn("v2/");
+        when(openStackRegion.getQuantumEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0/");
 
         when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
@@ -300,7 +294,7 @@ public class OpenStackUtilImplTest {
         // then
         assertNotNull(response);
 
-        verify(systemPropertiesProvider, times(TWICE)).getProperty(anyString());
+        verify(openStackRegion).getQuantumEndPoint(anyString(), anyString());
         verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
         verify(httpResponse, times(3)).getStatusLine();
         verify(statusLine, times(3)).getStatusCode();

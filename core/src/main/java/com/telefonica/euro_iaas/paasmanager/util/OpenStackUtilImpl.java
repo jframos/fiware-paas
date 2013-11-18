@@ -97,6 +97,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     private HttpClientConnectionManager connectionManager;
 
+    private OpenStackRegion openStackRegion;
+
     /**
      * The constructor.
      */
@@ -535,7 +537,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      *            the target resource
      * @return HttpUriRequest the request
      */
-    private HttpUriRequest createNovaDeleteRequest(String resource, PaasManagerUser user) {
+    private HttpUriRequest createNovaDeleteRequest(String resource, PaasManagerUser user) throws OpenStackException {
         HttpUriRequest request;
 
         try {
@@ -544,9 +546,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             java.util.logging.Logger.getLogger(OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        request = new HttpDelete(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)
-                + systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY) + user.getTenantId()
-                + "/" + resource);
+        String novaUrl = openStackRegion.getNovaEndPoint(user.getRegionName(), user.getToken());
+        request = new HttpDelete(novaUrl + user.getTenantId() + "/" + resource);
 
         // request.setHeader(OpenStackConstants.CONTENT_TYPE,
         // OpenStackConstants.APPLICATION_JSON);
@@ -564,7 +565,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * @param user
      * @return
      */
-    private HttpUriRequest createNovaGetRequest(String resource, String accept, PaasManagerUser user) {
+    private HttpUriRequest createNovaGetRequest(String resource, String accept, PaasManagerUser user)
+            throws OpenStackException {
         HttpUriRequest request;
 
         try {
@@ -573,9 +575,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             java.util.logging.Logger.getLogger(OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        request = new HttpGet(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)
-                + systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY) + user.getTenantId()
-                + "/" + resource);
+        String novaUrl = openStackRegion.getNovaEndPoint(user.getRegionName(), user.getToken());
+        request = new HttpGet(novaUrl + user.getTenantId() + "/" + resource);
 
         // request.setHeader(OpenStackConstants.CONTENT_TYPE,
         // OpenStackConstants.APPLICATION_XML);
@@ -632,7 +633,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      *            the target resource
      * @return HttpUriRequest the request
      */
-    private HttpUriRequest createQuantumDeleteRequest(String resource, PaasManagerUser user) {
+    private HttpUriRequest createQuantumDeleteRequest(String resource, PaasManagerUser user) throws OpenStackException {
         HttpUriRequest request;
 
         // Check that the authtoken, tenant and user was initialized
@@ -643,8 +644,9 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             java.util.logging.Logger.getLogger(OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        request = new HttpDelete(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_QUANTUM_PROPERTY)
-                + systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_QUANTUM_VERSION) + resource);
+        String quantumUrl = null;
+        quantumUrl = openStackRegion.getQuantumEndPoint(user.getRegionName(), user.getToken());
+        request = new HttpDelete(quantumUrl + resource);
 
         // request.setHeader(OpenStackConstants.CONTENT_TYPE, OpenStackConstants.APPLICATION_JSON);
         request.setHeader(ACCEPT, APPLICATION_JSON);
@@ -660,7 +662,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      *            the target resource
      * @return HttpUriRequest the request
      */
-    private HttpUriRequest createQuantumGetRequest(String resource, String accept, PaasManagerUser user) {
+    private HttpUriRequest createQuantumGetRequest(String resource, String accept, PaasManagerUser user)
+            throws OpenStackException {
         HttpUriRequest request;
 
         // Check that the authtoken, tenant and user was initialized
@@ -670,8 +673,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         } catch (OpenStackException ex) {
             java.util.logging.Logger.getLogger(OpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        request = new HttpGet(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_QUANTUM_PROPERTY)
-                + systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_QUANTUM_VERSION) + resource);
+        String quantumUrl = openStackRegion.getQuantumEndPoint(user.getRegionName(), user.getToken());
+        request = new HttpGet(quantumUrl + resource);
 
         request.setHeader(ACCEPT, accept);
         request.setHeader(X_AUTH_TOKEN, user.getToken());
@@ -700,8 +703,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         }
         log.info("Payload " + payload);
 
-        request = new HttpPost(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_QUANTUM_PROPERTY)
-                + systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_QUANTUM_VERSION) + resource);
+        String quantumUrl = openStackRegion.getQuantumEndPoint(user.getRegionName(), user.getToken());
+        request = new HttpPost(quantumUrl + resource);
 
         try {
 
@@ -744,8 +747,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         }
         log.info("Payload " + payload);
 
-        request = new HttpPut(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_QUANTUM_PROPERTY)
-                + systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_QUANTUM_VERSION) + resource);
+        String quantumUrl = openStackRegion.getQuantumEndPoint(user.getRegionName(), user.getToken());
+        request = new HttpPut(quantumUrl + resource);
 
         try {
 
@@ -1428,4 +1431,11 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         return response;
     }
 
+    public OpenStackRegion getOpenStackRegion() {
+        return openStackRegion;
+    }
+
+    public void setOpenStackRegion(OpenStackRegion openStackRegion) {
+        this.openStackRegion = openStackRegion;
+    }
 }
