@@ -130,7 +130,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
         EnvironmentInstanceSearchCriteria criteria = new EnvironmentInstanceSearchCriteria();
 
-        criteria.setVdc(environmentInstanceDto.getVdc());
+        criteria.setVdc(claudiaData.getVdc());
         criteria.setEnviromentName(environmentInstanceDto.getBlueprintName());
 
         List<EnvironmentInstance> envInstances = environmentInstanceDao.findByCriteria(criteria);

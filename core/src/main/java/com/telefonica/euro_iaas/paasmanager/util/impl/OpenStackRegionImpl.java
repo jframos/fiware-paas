@@ -8,8 +8,10 @@
 package com.telefonica.euro_iaas.paasmanager.util.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
 
@@ -106,14 +108,18 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         boolean notFound = true;
         Iterator it = endpointsArray.iterator();
         JSONObject endpointJson = null;
+        Map<String, String> urlMap = new HashMap<String, String>();
         while (notFound && it.hasNext()) {
 
             endpointJson = JSONObject.fromObject(it.next());
             String name1 = endpointJson.get("name").toString();
             String regionName1 = endpointJson.get("region").toString();
 
-            if (name.equals(name1) && regionName.equals(regionName1)) {
-                notFound = false;
+            if (name.equals(name1)) {
+                urlMap.put(regionName1, endpointJson.get("publicURL").toString());
+                if (regionName.equals(regionName1)) {
+                    notFound = false;
+                }
             }
         }
         if (!notFound) {
@@ -122,7 +128,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         }
         // return default regionName
 
-        return systemPropertiesProvider.getProperty(SystemPropertiesProvider.DEFAULT_REGION_NAME);
+        return urlMap.get(systemPropertiesProvider.getProperty(SystemPropertiesProvider.DEFAULT_REGION_NAME));
     }
 
     private List<String> parseRegionName(String response, String name) {

@@ -126,8 +126,8 @@ public class TierManagerImpl implements TierManager {
 
             SecurityGroup securityGroup = generateSecurityGroup(claudiaData, tier);
             try {
-                securityGroup = securityGroupManager.create(tier.getRegion(), tier.getVdc(), claudiaData.getUser()
-                        .getToken(), securityGroup);
+                securityGroup = securityGroupManager.create(tier.getRegion(), claudiaData.getUser().getToken(),
+                        claudiaData.getVdc(), securityGroup);
             } catch (InvalidEntityException e) {
                 log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
                         + e.getMessage());
