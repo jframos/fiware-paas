@@ -296,6 +296,46 @@ public class NetworkinEnvironmenInstanceTest {
     }
     
     @Test
+    public void testCreateEnvWithPublic() throws Exception {
+
+        ProductRelease product = new ProductRelease("tomcat228", "7", "Tomcat server 22", null);
+
+        product = productReleaseDao.create(product);
+
+
+        Environment environmentBk = new Environment();
+        environmentBk.setDescription("description");
+        environmentBk.setName("testCreateWithPublic");
+        Tier tierbk = new Tier("tierdtotest2", new Integer(1), new Integer(1), new Integer(1), null);
+        tierbk.setImage("image");
+        tierbk.setIcono("icono");
+        tierbk.setFlavour("flavour");
+        tierbk.setFloatingip("false");
+        tierbk.setPayload("");
+        tierbk.setKeypair("keypair");
+        tierbk.addProductRelease(product);
+
+        Network net = new Network("network5");
+        Network net2 = new Network("Internet");
+        tierbk.addNetwork(net);
+        tierbk.addNetwork(net2);
+
+        environmentBk.addTier(tierbk);
+
+        environmentResource.insert(org, vdc, environmentBk.toDto());
+        
+        environmentResource.delete(org, vdc, "testCreateWithPublic");
+        try {
+        environmentManager.load("testCreateWithPublic");
+        }
+        catch (Exception e)
+        {
+        	assertNotNull(e);
+        }
+
+    }
+    
+    @Test
     public void testDeleteEnvironmentWithNetwork() throws Exception {
 
         ProductRelease product = new ProductRelease("tomcat224", "7", "Tomcat server 22", null);

@@ -159,6 +159,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         log.debug("Deleting the subnets");
         Set<SubNetworkInstance> subNetAux = networkInstance.cloneSubNets();
         networkInstance.getSubNets().clear();
+        networkInstanceDao.update(networkInstance);
         for (SubNetworkInstance subNet: subNetAux) {
             subNetworkInstanceManager.delete(claudiaData, subNet);
         }

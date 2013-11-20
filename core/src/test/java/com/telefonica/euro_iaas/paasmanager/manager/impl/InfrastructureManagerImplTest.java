@@ -10,13 +10,18 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
 import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaResourceNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.manager.NetworkInstanceManager;
+import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
+import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
@@ -63,7 +68,9 @@ public class InfrastructureManagerImplTest {
     private PaasManagerUser user;
     private ClaudiaData claudiaData;
     private TierInstanceManager tierInstanceManager;
+    private TierManager tierManager;
     private InfrastructureManagerClaudiaImpl manager;
+    private NetworkManager networkManager;
     private Tier tier;
     private VM vm;
 
@@ -76,7 +83,9 @@ public class InfrastructureManagerImplTest {
         claudiaResponseAnalyser = mock(ClaudiaResponseAnalyser.class);
         monitoringClient = mock(MonitoringClient.class);
         tierInstanceManager = mock(TierInstanceManager.class);
+        tierManager = mock(TierManager.class);
         ovfUtils = mock(OVFUtils.class);
+        networkManager = mock (NetworkManager.class);
         environmentInstanceDao = mock(EnvironmentInstanceDao.class);
         networkInstanceManager = mock (NetworkInstanceManager.class);
         manager = new InfrastructureManagerClaudiaImpl();
@@ -89,11 +98,13 @@ public class InfrastructureManagerImplTest {
         manager.setTierInstanceManager(tierInstanceManager);
         manager.setEnvironmentInstanceDao(environmentInstanceDao);
         manager.setNetworkInstanceManager(networkInstanceManager);
+        manager.setNetworkManager(networkManager);
+        manager.setTierManager(tierManager);
         
         claudiaData = new ClaudiaData("org", "vdc", "service");
         
         tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
-                "keypair", "floatingip", "payload");
+                "keypair", "false", "payload");
         String hostname = claudiaData.getService() + "-" + tier.getName() + "-" + 1;
         String fqn = claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc() + ".services."
                 + claudiaData.getService() + ".vees." + tier.getName() + ".replicas." + 1;
@@ -264,5 +275,79 @@ public class InfrastructureManagerImplTest {
         assertEquals(vm.getIp(), "IP");
 
     }
+    
+    @Test
+    public void testDeployNetwrok() throws Exception {
+
+    	Network net = new Network ("NET");
+    	tier.addNetwork(net);
+    	TierInstance tierInstance = new TierInstance();
+        tierInstance.setTier(tier);
+       
+ 
+        when(tierInstanceManager.update(any(TierInstance.class))).thenReturn(tierInstance);
+        when(networkInstanceManager.create(any(ClaudiaData.class),any(NetworkInstance.class))).thenReturn(net.toNetworkInstance());
+        when(networkManager.load(any(String.class))).thenReturn(net);
+     
+        Mockito.doThrow(EntityNotFoundException.class).when(networkInstanceManager).load(any(String.class));
+
+        manager.deployNetworks(claudiaData, tierInstance);
+        
+        assertEquals(tierInstance.getNetworkInstances().size(),1);
+
+    }
+    
+    
+    @Test
+    public void testDeployNetwrokInternet() throws Exception {
+
+    	Network net = new Network ("NET");
+    	Network net2 = new Network ("Internet");
+    	tier.addNetwork(net);
+    	tier.addNetwork(net2);
+    	TierInstance tierInstance = new TierInstance();
+        tierInstance.setTier(tier);
+       
+        when(tierManager.load(any(String.class),any(String.class),any(String.class))).thenReturn(tier);
+        when(tierManager.update(any(Tier.class))).thenReturn(tier);
+        when(networkInstanceManager.create(any(ClaudiaData.class),any(NetworkInstance.class))).thenReturn(net.toNetworkInstance());
+        when(networkManager.load(any(String.class))).thenReturn(net);
+        Mockito.doThrow(EntityNotFoundException.class).when(networkInstanceManager).load(any(String.class));
+        
+        manager.deployNetworks(claudiaData, tierInstance);
+        
+        assertEquals(tierInstance.getNetworkInstances().size(),1);
+        assertEquals(tierInstance.getTier().getFloatingip(),"true");
+
+    }
+    
+    @Test
+    public void testDeleteNetwroksinEnv() throws Exception {
+
+    	Network net = new Network ("NET");
+    	Network net2 = new Network ("Internet");
+    	tier.addNetwork(net);
+    	tier.addNetwork(net2);
+    	TierInstance tierInstance = new TierInstance();
+        tierInstance.setTier(tier);
+        Environment env = new Environment("name",  "description", null);
+        env.addTier(tier);
+        EnvironmentInstance envInst = new EnvironmentInstance("blue", "des", env);
+        envInst.addTierInstance(tierInstance);
+       
+ 
+        when(tierInstanceManager.update(any(TierInstance.class))).thenReturn(tierInstance);
+        when(networkInstanceManager.create(any(ClaudiaData.class),any(NetworkInstance.class))).thenReturn(net.toNetworkInstance());
+        
+        Mockito.doThrow(EntityNotFoundException.class).when(networkInstanceManager).load(any(String.class));
+        
+        manager.deleteNetworksInEnv(claudiaData, envInst);
+        
+        assertEquals(envInst.getTierInstances().get(0).getNetworkInstances().size(), 0);
+
+    }
+
+    
+   
 
 }

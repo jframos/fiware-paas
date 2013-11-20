@@ -130,4 +130,12 @@ public interface TierInstanceManager {
             InvalidEntityException, AlreadyExistsEntityException, EntityNotFoundException,
             ProductReconfigurationException;
 
+    /**
+     * Update.
+     * @param tierInstance
+     * @return
+     * @throws EntityNotFoundException
+     * @throws InvalidEntityException
+     */
+    TierInstance update(TierInstance tierInstance) throws EntityNotFoundException, InvalidEntityException;
 }
