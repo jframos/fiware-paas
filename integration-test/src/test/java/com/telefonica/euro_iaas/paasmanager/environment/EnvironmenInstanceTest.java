@@ -248,7 +248,7 @@ public class EnvironmenInstanceTest {
         assertEquals(env2.getVdc(), vdc);
         assertEquals(env2.getOrg(), org);
         assertEquals(env2.getTiers().size(), 1);
-        assertEquals(env2.getTiers().get(0).getName(), "tierdAddTierInstancr");
+
 
         EnvironmentInstanceDto envInst = new EnvironmentInstanceDto();
         envInst.setBlueprintName("blueprintnameTierInstance");
@@ -317,7 +317,7 @@ public class EnvironmenInstanceTest {
         assertEquals(env.getName(), "testCreatedEnvirionmentInstanceDeleteTierInstance");
         assertEquals(env.getDescription(), "Description First environment");
         assertEquals(env.getTiers().size(), 1);
-        assertEquals(env.getTiers().get(0).getName(), "tierdAddDeleteTierInstancr");
+
 
         EnvironmentInstanceDto envInst = new EnvironmentInstanceDto();
         envInst.setBlueprintName("blueprintnameTierInstanceDelete");

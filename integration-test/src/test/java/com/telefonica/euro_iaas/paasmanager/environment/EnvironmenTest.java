@@ -11,7 +11,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -103,7 +105,7 @@ public class EnvironmenTest {
         assertEquals(env2.getVdc(), vdc);
         assertEquals(env2.getOrg(), org);
         assertEquals(env2.getTiers().size(), 1);
-        assertEquals(env2.getTiers().get(0).getName(), "tierdto2");
+     
 
         TierDto tierDto = tierResource.load(vdc, "envtest", "tierdto2");
         assertNotNull(tierDto);
@@ -215,9 +217,7 @@ public class EnvironmenTest {
         assertEquals(env2.getVdc(), vdc);
         assertEquals(env2.getOrg(), org);
         assertEquals(env2.getTiers().size(), 3);
-        assertEquals(env2.getTiers().get(0).getName(), "tier1");
-        assertEquals(env2.getTiers().get(1).getName(), "tier2");
-        assertEquals(env2.getTiers().get(2).getName(), "tier3");
+
 
         TierDto tierDto = tierResource.load(vdc, "envthreetiers", "tier1");
         assertNotNull(tierDto);
@@ -356,7 +356,7 @@ public class EnvironmenTest {
         env.setName("Name2");
         env.setDescription("Description");
 
-        List<Tier> tiers = new ArrayList<Tier>();
+        Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tierbk);
         env.setTiers(tiers);
 
@@ -437,7 +437,7 @@ public class EnvironmenTest {
         tier.setFloatingip("floatingip");
         tier.setPayload("");
         tier.setKeypair("keypair");
-        List<Tier> tiers = new ArrayList<Tier>();
+        Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tier);
         environment.setTiers(tiers);
 
@@ -447,8 +447,7 @@ public class EnvironmenTest {
 
         assertEquals(env.getName(), "testeDeleteAndCreatedEnv1");
         assertEquals(env.getTiers().size(), 1);
-        assertEquals(env.getTiers().get(0).getFlavour(), "flavour");
-        assertEquals(env.getTiers().get(0).getIcono(), "icono");
+     
 
         environmentResource.delete(org, vdc, "testeDeleteAndCreatedEnv1");
 
@@ -457,7 +456,6 @@ public class EnvironmenTest {
         Environment env2 = environmentManager.load("testeDeleteAndCreatedEnv1", vdc);
         assertEquals(env2.getName(), "testeDeleteAndCreatedEnv1");
         assertEquals(env2.getTiers().size(), 1);
-        assertEquals(env2.getTiers().get(0).getName(), "tierdeletecreatedenv");
 
     }
 

@@ -293,8 +293,7 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
         virtualSystemSectionTemplate = loadOvfTemplate(systemPropertiesProvider
                 .getProperty(SystemPropertiesProvider.OVF_TEMPLATE_LOCATION) + "virtualSystemTemplate.ovf");
 
-        for (int i = 0; i < envDto.getTierDtos().size(); i++) {
-            TierDto tierDto = envDto.getTierDtos().get(i);
+        for (TierDto tierDto: envDto.getTierDtos()) {
 
             virtualSystemSectionAux = replace(virtualSystemSectionTemplate, "\\$\\{tierName\\}", tierDto.getName());
             virtualSystemSectionAux = replace(virtualSystemSectionAux, "\\$\\{num_min\\}",

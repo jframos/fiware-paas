@@ -7,17 +7,91 @@
 
 package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
-// @RunWith(SpringJUnit4ClassRunner.class)
-// ApplicationContext will be loaded from "classpath:/app-config.xml"
-// @ContextConfiguration(locations = {"classpath:/applicationContextTest.xml"})
-// @ActiveProfiles("dummy")
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.dao.AbstractJpaDaoTest;
+import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentDao;
 
-public class EnvironmenDaoTest {
+import com.telefonica.euro_iaas.paasmanager.model.Environment;
+
+
+
+public class EnvironmenDaoTest extends AbstractJpaDaoTest{
+	EnvironmentDao environmentDao;
+	public static String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
+	public static String ORG = "org";
+	 
+	/**
+     * Test the create  method
+     */
     @Test
-    public void testFirst() {
+    public void testEnvironmentNoTiers() throws Exception {
 
+        Environment environment = new Environment();
+        environment.setName(ENVIRONMENT_NAME);
+        environment.setOrg(ORG);
+        environment.setDescription("description");
+        environment = environmentDao.create(environment);     
+        assertNotNull(environment);
+        assertNotNull(environment.getId());
+
+    }
+    
+	/**
+     * Test the load  method
+     */
+    @Test
+    public void testLoadNoTiers() throws Exception {
+
+        Environment environment = new Environment ();
+        environment.setName(ENVIRONMENT_NAME);
+        environment.setOrg(ORG);
+        environment.setVdc("vdc");
+        environment.setDescription("description");
+        environment = environmentDao.create(environment);    
+        environment = environmentDao.load(environment.getName(), "vdc");
+        assertNotNull(environment);
+        assertNotNull(environment.getId());
+
+    }
+    
+	/**
+     * Test the load  method
+	 * @throws AlreadyExistsEntityException 
+	 * @throws InvalidEntityException 
+	 * @throws EntityNotFoundException 
+     */
+    @Test(expected = com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
+    public void testDeleteNoTiers() throws InvalidEntityException, AlreadyExistsEntityException  {
+
+        Environment environment = new Environment ();
+        environment.setName(ENVIRONMENT_NAME);
+        environment.setDescription("description");
+        environment.setOrg(ORG);
+        environment.setVdc("vdc");
+        environment = environmentDao.create(environment);    
+        environmentDao.remove(environment);
+        try {
+        	environmentDao.load(environment.getName(), "vdc");
+        	fail("Should have thrown an EntityNotFoundException because the environment does not exit!");
+        } catch (EntityNotFoundException e) {
+        	assertNotNull(e);
+        }
+        
+
+    }
+  
+    
+    public void setEnvironmentDao(EnvironmentDao environmentDao) {
+    	this.environmentDao=environmentDao;
     }
 
 }

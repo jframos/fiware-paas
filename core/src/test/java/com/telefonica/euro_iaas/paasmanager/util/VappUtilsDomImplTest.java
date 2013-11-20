@@ -19,7 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -99,7 +101,7 @@ public class VappUtilsDomImplTest {
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
 
-        List<Tier> lTier = new ArrayList();
+        Set<Tier> lTier = new HashSet<Tier>();
         lTier.add(tier);
 
         Environment env = new Environment("name", lTier, "description");

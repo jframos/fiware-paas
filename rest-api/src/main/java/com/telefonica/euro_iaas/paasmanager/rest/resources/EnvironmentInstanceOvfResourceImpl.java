@@ -10,6 +10,7 @@ package com.telefonica.euro_iaas.paasmanager.rest.resources;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
@@ -84,7 +85,7 @@ public class EnvironmentInstanceOvfResourceImpl implements EnvironmentInstanceOv
             validator.validateCreatePayload(payload);
             log.debug("Validating OVF payload : OK");
             String instantiateOvfParams = extendedOVFUtil.getEnvironmentName(payload);
-            List<Tier> tiers = extendedOVFUtil.getTiers(payload, vdc);
+            Set<Tier> tiers = extendedOVFUtil.getTiers(payload, vdc);
 
             Environment environment = new Environment();
             environment.setOvf(payload);

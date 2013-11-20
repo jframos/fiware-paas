@@ -12,7 +12,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -61,7 +63,7 @@ public class EnvironmetnInstanceValidatorTest extends TestCase {
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
                 "image", "icono", "keypair", "floatingip", "payload");
 
-        List<Tier> tiers = new ArrayList<Tier>();
+        Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tier);
         tiers.add(tier);
 

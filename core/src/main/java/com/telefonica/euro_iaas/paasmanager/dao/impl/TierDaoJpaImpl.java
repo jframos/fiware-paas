@@ -127,7 +127,7 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
 
     private Tier findByNameAndVdcAndEnvironment(String name, String vdc, String environmentname)
             throws EntityNotFoundException {
-        Query query = entityManager.createQuery("select p from Tier p join "
+        Query query = entityManager.createQuery("select p from Tier p left join "
                 + "fetch p.productReleases where p.name = :name and p.vdc =:vdc "
                 + "and p.environmentname=:environmentname");
         query.setParameter("name", name);

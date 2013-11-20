@@ -134,7 +134,7 @@ public class OVFGenerationFiwareImplTest {
         TierDto tier2 = new TierDto("tierpostgres", 1, 1, 1, p2Releases, "1", "image", "icono", "security_group",
                 "keypair", "yes");
 
-        List<TierDto> tiersDto = new ArrayList<TierDto>();
+        Set<TierDto> tiersDto = new HashSet<TierDto>();
         tiersDto.add(tier1);
         tiersDto.add(tier2);
 
@@ -178,7 +178,7 @@ public class OVFGenerationFiwareImplTest {
         tier1.setImage("image");
         tier2.setImage("image2");
 
-        List<TierDto> tiersDto = new ArrayList<TierDto>();
+        Set<TierDto> tiersDto = new HashSet<TierDto>();
         tiersDto.add(tier1);
         tiersDto.add(tier2);
 
@@ -227,7 +227,7 @@ public class OVFGenerationFiwareImplTest {
                 "945689be-1231-4414-8c3e-09bcee4e8e63", "icono", "testpaas", "false");
         tiermongoconfig.setSecurityGroup("security_group");
 
-        List<TierDto> tiersDto = new ArrayList<TierDto>();
+        Set<TierDto> tiersDto = new HashSet<TierDto>();
         tiersDto.add(tiermongoconfig);
 
         /*
@@ -288,7 +288,7 @@ public class OVFGenerationFiwareImplTest {
                 "945689be-1231-4414-8c3e-09bcee4e8e63", "icono", "testpaas", "false");
         tiercontextbroker.setSecurityGroup("security_group");
 
-        List<TierDto> tiersDto = new ArrayList<TierDto>();
+        Set<TierDto> tiersDto = new HashSet<TierDto>();
         tiersDto.add(tiercontextbroker);
 
         EnvironmentDto environment = new EnvironmentDto(tiersDto, "environmentname", "description");

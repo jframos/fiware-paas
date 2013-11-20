@@ -32,11 +32,11 @@ public class EnvironmentUtilsImpl implements EnvironmentUtils {
      */
     public Environment resolveMacros(Environment environment, List<VM> vms) {
 
-        List<Tier> tiers = environment.getTiers();
+        Set<Tier> tiers = environment.getTiers();
         // Go through all attributes of al ProductReleases of all tiers from
         // environment
-        for (int i = 0; i < tiers.size(); i++) {
-            List<ProductRelease> productReleases = tiers.get(i).getProductReleases();
+        for (Tier tier: tiers) {
+            List<ProductRelease> productReleases = tier.getProductReleases();
             for (int j = 0; j < productReleases.size(); j++) {
                 if (productReleases.get(j).getAttributes() != null) {
                     Set<Attribute> attributes = productReleases.get(j).getAttributes();

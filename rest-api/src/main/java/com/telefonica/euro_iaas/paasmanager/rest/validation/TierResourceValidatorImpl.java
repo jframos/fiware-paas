@@ -185,7 +185,7 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
     }
 
-    public void validateTiersDependencies(String environmentName, String vdc, List<TierDto> tierDtoList)
+    public void validateTiersDependencies(String environmentName, String vdc, Set<TierDto> tierDtoList)
             throws InvalidEnvironmentRequestException {
 
         List<Tier> tiers = new ArrayList<Tier>(2);

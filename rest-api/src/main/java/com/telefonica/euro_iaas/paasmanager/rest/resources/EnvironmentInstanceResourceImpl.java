@@ -9,7 +9,9 @@ package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
@@ -285,19 +287,21 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
         List<EnvironmentInstance> result = new ArrayList<EnvironmentInstance>();
 
         for (EnvironmentInstance envInstance : envInstances) {
-            List<Tier> tierResult = new ArrayList<Tier>();
+            Set<Tier> tierResult = new HashSet<Tier>();
             EnvironmentInstance environmentInstance = new EnvironmentInstance();
 
             Environment environment = envInstance.getEnvironment();
-            List<Tier> tiers = environment.getTiers();
-            for (int i = 0; i < tiers.size(); i++) {
-                Tier tier = tiers.get(i);
+            Set<Tier> tiers = environment.getTiers();
+            for (Tier tier: tiers) {
+                int i=0;
                 List<Tier> tierAux = new ArrayList<Tier>();
                 for (int j = i + 1; j < tiers.size(); j++) {
-                    tierAux.add(tiers.get(j));
+                    tierAux.add(tier);
                 }
-                if (!tierAux.contains(tier))
+                i++;
+                if (!tierAux.contains(tier)) {
                     tierResult.add(tier);
+                }
             }
             environment.setTiers(tierResult);
             environmentInstance.setEnvironment(environment);

@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -61,7 +62,7 @@ public interface InfrastructureManager {
      * @throws EntityNotFoundException 
      */
     EnvironmentInstance createInfrasctuctureEnvironmentInstance(EnvironmentInstance environmentInstance,
-            List<Tier> tiers, ClaudiaData claudiaData) throws InfrastructureException, InvalidVappException,
+            Set<Tier> set, ClaudiaData claudiaData) throws InfrastructureException, InvalidVappException,
             InvalidOVFException, InvalidEntityException, EntityNotFoundException;
 
     /**

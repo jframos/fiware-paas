@@ -169,7 +169,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
     }
 
     public EnvironmentInstance createInfrasctuctureEnvironmentInstance
-        (EnvironmentInstance environmentInstance, List<Tier> tiers, ClaudiaData claudiaData)
+        (EnvironmentInstance environmentInstance, Set<Tier> tiers, ClaudiaData claudiaData)
         throws InvalidOVFException, InfrastructureException, InvalidEntityException, EntityNotFoundException {
 
         // Deploy MVs

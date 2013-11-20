@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -123,7 +125,7 @@ public class InfrastructureManagerImplTest {
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
 
-        List<Tier> lTier = new ArrayList();
+        Set<Tier> lTier = new HashSet<Tier>();
         lTier.add(tier);
         Environment env = new Environment("name", lTier, "description");
         EnvironmentInstance envInst = new EnvironmentInstance("blue", "des", env);
@@ -197,7 +199,7 @@ public class InfrastructureManagerImplTest {
         tierInstance.addNetworkInstance(net.toNetworkInstance());
         
 
-        List<Tier> lTier = new ArrayList<Tier>();
+        Set<Tier> lTier = new HashSet<Tier>();
         lTier.add(tier);
         Environment env = new Environment("name", lTier, "description");
         EnvironmentInstance envInst = new EnvironmentInstance("blue", "des", env);

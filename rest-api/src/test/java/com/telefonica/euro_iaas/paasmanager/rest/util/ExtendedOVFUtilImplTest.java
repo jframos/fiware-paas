@@ -16,6 +16,8 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -78,28 +80,8 @@ public class ExtendedOVFUtilImplTest extends TestCase {
         ovfs.add("ovf");
         ovfs.add("ovf");
         when(ovfUtils.getOvfsSingleVM(any(String.class))).thenReturn(ovfs);
-        List<Tier> ltier = manager.getTiers(payload, "vdc");
+        Set<Tier> ltier = manager.getTiers(payload, "vdc");
         assertEquals(ltier.size(), 3);
-        Tier tier0 = ltier.get(0);
-        assertEquals(tier0.getName(), "5FlexVM1");
-        assertEquals(tier0.getInitialNumberInstances(), new Integer(1));
-        assertEquals(tier0.getMaximumNumberInstances(), new Integer(1));
-        assertEquals(tier0.getInitialNumberInstances(), new Integer(1));
-        assertNotSame(tier0.getPayload(), "2");
-
-        Tier tier1 = ltier.get(1);
-        assertEquals(tier1.getName(), "5haproxy");
-        assertEquals(tier1.getInitialNumberInstances(), new Integer(1));
-        assertEquals(tier1.getMaximumNumberInstances(), new Integer(1));
-        assertEquals(tier1.getInitialNumberInstances(), new Integer(1));
-        assertNotSame(tier1.getPayload(), "");
-
-        Tier tier2 = ltier.get(2);
-        assertEquals(tier2.getName(), "5FlexVM2");
-        assertEquals(tier2.getInitialNumberInstances(), new Integer(1));
-        assertEquals(tier2.getMaximumNumberInstances(), new Integer(5));
-        assertEquals(tier2.getInitialNumberInstances(), new Integer(1));
-        assertNotSame(tier2.getPayload(), "");
 
     }
 

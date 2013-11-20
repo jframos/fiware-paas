@@ -230,6 +230,13 @@ public class Tier {
         } else if (!id.equals(other.id)) {
             return false;
         }
+        if (!name.equals(other.name)) {
+        	return false;
+        }
+        
+        if (!image.equals(other.image)) {
+        	return false;
+        }
         return true;
     }
 
