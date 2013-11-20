@@ -120,7 +120,7 @@ def processTask (headers,taskdom):
             print "ERROR : " + message + " " + majorErrorCode
         return status
     except:
-        print ("Error in parsing the taskId " )
+        print "Unexpected error:", sys.exc_info()[0]
         sys.exit(1)
 
 def get_task(url, headers):
