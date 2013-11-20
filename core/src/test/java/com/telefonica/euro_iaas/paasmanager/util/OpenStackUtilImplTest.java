@@ -73,7 +73,6 @@ public class OpenStackUtilImplTest {
         Collection<GrantedAuthority> authorities = new HashSet();
         authorities.add(grantedAuthority);
         paasManagerUser = new PaasManagerUser("user", "aa", authorities);
-        paasManagerUser.setRegionName("regionOne");
         paasManagerUser.setToken("1234567891234567989");
 
         HttpClientConnectionManager httpClientConnectionManager = mock(HttpClientConnectionManager.class);
@@ -98,7 +97,7 @@ public class OpenStackUtilImplTest {
         when(statusLine.getStatusCode()).thenReturn(204);
         when(statusLine.getReasonPhrase()).thenReturn("ok");
 
-        String response = openStackUtil.getAbsoluteLimits(paasManagerUser);
+        String response = openStackUtil.getAbsoluteLimits("region", "token", "vdc");
 
         // then
         assertNotNull(response);
@@ -124,7 +123,7 @@ public class OpenStackUtilImplTest {
         when(statusLine.getStatusCode()).thenReturn(204);
         when(statusLine.getReasonPhrase()).thenReturn("ok");
 
-        String response = openStackUtil.getSubNetworkDetails(subNet.getIdSubNet(), paasManagerUser);
+        String response = openStackUtil.getSubNetworkDetails(subNet.getIdSubNet(), "region", "token", "vdc");
 
         // then
         assertNotNull(response);
@@ -150,7 +149,7 @@ public class OpenStackUtilImplTest {
         when(statusLine.getStatusCode()).thenReturn(204);
         when(statusLine.getReasonPhrase()).thenReturn("ok");
 
-        openStackUtil.deleteSubNetwork(subNet.getIdSubNet(), paasManagerUser);
+        openStackUtil.deleteSubNetwork(subNet.getIdSubNet(), "region", "token", "vdc");
 
         verify(openStackRegion).getNovaEndPoint(anyString(), anyString());
         verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
@@ -172,7 +171,7 @@ public class OpenStackUtilImplTest {
         when(statusLine.getStatusCode()).thenReturn(204);
         when(statusLine.getReasonPhrase()).thenReturn("ok");
 
-        openStackUtil.deleteSubNetwork(net.getIdNetwork(), paasManagerUser);
+        openStackUtil.deleteSubNetwork(net.getIdNetwork(), "region", "token", "vdc");
 
         verify(openStackRegion).getNovaEndPoint(anyString(), anyString());
         verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
@@ -214,7 +213,7 @@ public class OpenStackUtilImplTest {
         when(statusLine.getStatusCode()).thenReturn(200);
         when(statusLine.getReasonPhrase()).thenReturn("ok");
 
-        String response = openStackUtil.addInterfaceToPublicRouter(paasManagerUser, net);
+        String response = openStackUtil.addInterfaceToPublicRouter(paasManagerUser, net, "token");
 
         // then
         assertNotNull(response);
@@ -249,7 +248,7 @@ public class OpenStackUtilImplTest {
         when(httpResponse.getEntity()).thenReturn(entity);
         when(entity.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes()));
 
-        String response = openStackUtil.deleteNetwork("networkId", paasManagerUser);
+        String response = openStackUtil.deleteNetwork("networkId", "region", "token", "vdc");
 
         // then
         assertNotNull(response);
@@ -289,7 +288,7 @@ public class OpenStackUtilImplTest {
         when(httpResponse.getEntity()).thenReturn(entity);
         when(entity.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes()));
 
-        String response = openStackUtil.listNetworks(paasManagerUser);
+        String response = openStackUtil.listNetworks("region", "token", "vdc");
 
         // then
         assertNotNull(response);

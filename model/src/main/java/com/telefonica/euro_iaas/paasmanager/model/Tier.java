@@ -71,6 +71,8 @@ public class Tier {
     @ManyToOne(fetch = FetchType.EAGER)
     private SecurityGroup securityGroup;
 
+    private String region = "";
+
     /**
      * Default Constructor.
      */
@@ -161,19 +163,19 @@ public class Tier {
             this.networks = new ArrayList<Network>();
         }
         int count = 0;
-        if (( count =containsNetwork(network))!=-1) {
+        if ((count = containsNetwork(network)) != -1) {
             networks.remove(count);
         }
         networks.add(network);
 
     }
-    
+
     /**
      * @param network
      *            the network list
      */
     public void deleteNetwork(Network network) {
-        if (networks.contains (network)){
+        if (networks.contains(network)) {
             networks.remove(network);
         }
 
@@ -193,12 +195,13 @@ public class Tier {
 
     /**
      * It returns the position in the array list of the network.
+     * 
      * @param net2
      * @return
      */
     public int containsNetwork(Network net2) {
         int i = 0;
-        for (Network net: networks) {
+        for (Network net : networks) {
             if (net2.getNetworkName().equals(net.getNetworkName())) {
                 return i;
             }
@@ -292,9 +295,9 @@ public class Tier {
      * @return networks the network list
      */
     public List<Network> getNetworks() {
-    	if (networks == null) {
-    		networks = new ArrayList<Network> ();
-    	}
+        if (networks == null) {
+            networks = new ArrayList<Network>();
+        }
         return this.networks;
     }
 
@@ -332,9 +335,9 @@ public class Tier {
     public String getVdc() {
         return vdc;
     } /*
-     * (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
+       * (non-Javadoc)
+       * @see java.lang.Object#hashCode()
+       */
 
     @Override
     public int hashCode() {
@@ -472,6 +475,7 @@ public class Tier {
         tierDto.setIcono(getIcono());
         tierDto.setFlavour(getFlavour());
         tierDto.setImage(getImage());
+        tierDto.setRegion(getRegion());
         if (this.getSecurityGroup() != null) {
             tierDto.setSecurityGroup(this.getSecurityGroup().getName());
         }
@@ -506,34 +510,25 @@ public class Tier {
 
     /**
      * to json.
+     * 
      * @return
      */
     public String toJson() {
-        String payload = "{\"server\": " + "{\"key_name\": \""
-        + getKeypair() + "\", ";
+        String payload = "{\"server\": " + "{\"key_name\": \"" + getKeypair() + "\", ";
         if (getSecurityGroup() != null) {
-            payload = payload + "\"security_groups\": [{ \"name\": \""
-            + getSecurityGroup().getName() + "\"}], ";
+            payload += "\"security_groups\": [{ \"name\": \"" + getSecurityGroup().getName() + "\"}], ";
         }
-     /*   if (getNetworks() != null) {
-            payload = payload + "\"networks\": [";
-            for (Network net: this.getNetworks()){
+        /*
+         * if (getNetworks() != null) { payload = payload + "\"networks\": ["; for (Network net: this.getNetworks()){
+         * payload = payload + "{ \"uuid\": \"" + net.getIdNetwork() + "\"}"; } payload = payload + "], "; }
+         */
 
-                payload = payload + "{ \"uuid\": \""
-                + net.getIdNetwork() + "\"}";
-            }
-            payload = payload + "], ";
-
-        }*/
-
-        payload = payload
-        + "\"flavorRef\": \"" + getFlavour() + "\", " + "\"imageRef\": \""
-        + getImage() + "\", " + "\"name\": \"" + name + "\"}}";
+        payload += "\"region\":\"" + getRegion() + "\",";
+        payload += "\"flavorRef\": \"" + getFlavour() + "\", " + "\"imageRef\": \"" + getImage() + "\", "
+                + "\"name\": \"" + name + "\"}}";
         return payload;
 
     }
-
-
 
     /**
      * @param network
@@ -549,5 +544,13 @@ public class Tier {
                 networks.add(network);
             }
         }
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 }

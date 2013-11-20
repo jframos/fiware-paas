@@ -18,7 +18,6 @@ import com.telefonica.euro_iaas.paasmanager.claudia.FirewallingClient;
 import com.telefonica.euro_iaas.paasmanager.dao.RuleDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.manager.RuleManager;
-import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
 
 public class RuleManagerImpl implements RuleManager {
@@ -27,19 +26,20 @@ public class RuleManagerImpl implements RuleManager {
     private FirewallingClient firewallingClient = null;
     private static Logger log = Logger.getLogger(RuleManagerImpl.class);
 
-    public Rule create(ClaudiaData claudiaData, Rule rule) throws InvalidEntityException, AlreadyExistsEntityException,
-            InfrastructureException {
+    public Rule create(String region, String token, String vdc, Rule rule) throws InvalidEntityException,
+            AlreadyExistsEntityException, InfrastructureException {
         log.debug("Create rule " + rule.getFromPort() + " from security group " + rule.getIdParent());
-        String idRule = firewallingClient.deployRule(claudiaData, rule);
+        String idRule = firewallingClient.deployRule(region, token, vdc, rule);
         log.debug("id rule " + idRule);
         rule.setIdRule(idRule);
         rule = ruleDao.create(rule);
         return rule;
     }
 
-    public void destroy(ClaudiaData claudiaData, Rule rule) throws InvalidEntityException, InfrastructureException {
+    public void destroy(String region, String token, String vdc, Rule rule) throws InvalidEntityException,
+            InfrastructureException {
         log.debug("Destroying rule " + rule.getFromPort() + " from security group " + rule.getIdParent());
-        firewallingClient.destroyRule(claudiaData, rule);
+        firewallingClient.destroyRule(region, token, vdc, rule);
         try {
             ruleDao.remove(rule);
         } catch (Exception e) {

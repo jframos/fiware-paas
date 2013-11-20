@@ -10,24 +10,23 @@ package com.telefonica.euro_iaas.paasmanager.claudia.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaRetrieveInfoException;
+import com.telefonica.euro_iaas.paasmanager.exception.IPNotRetrievedException;
+import com.telefonica.euro_iaas.paasmanager.exception.NetworkNotRetrievedException;
+import com.telefonica.euro_iaas.paasmanager.exception.OSNotRetrievedException;
+import com.telefonica.euro_iaas.paasmanager.exception.VMStatusNotRetrievedException;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import net.sf.json.JSONArray;
 
 import org.apache.log4j.Logger;
 
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
 import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaResourceNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaRetrieveInfoException;
-import com.telefonica.euro_iaas.paasmanager.exception.IPNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.NetworkNotRetrievedException;
-import com.telefonica.euro_iaas.paasmanager.exception.OSNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
-import com.telefonica.euro_iaas.paasmanager.exception.VMStatusNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
-import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackUtil;
 
@@ -45,60 +44,22 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     private OpenStackUtil openStackUtil = null;
     private final int POLLING_INTERVAL = 10000;
 
-    public String browseService(ClaudiaData claudiaData) throws ClaudiaResourceNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String browseVDC(ClaudiaData claudiaData) throws ClaudiaResourceNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#browseVDC(
-     * com.telefonica.euro_iaase.paasmanager.model.ClaudiaData)
-     */
-
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#browseVM(java .lang.String, java.lang.String,
-     * java.lang.String, java.lang.String, com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
-     */
-    public String browseVM(String org, String vdc, String service, String vm, PaasManagerUser user)
-    throws ClaudiaResourceNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#browseVMReplica
-     * (com.telefonica.euro_iaas.paasmanager.model.ClaudiaData, java.lang.String)
-     */
-    public String browseVMReplica(ClaudiaData claudiaData, String tier, int replica, VM vm)
-    throws ClaudiaResourceNotFoundException {
+    public String browseVMReplica(ClaudiaData claudiaData, String tier, int replica, VM vm, String region)
+            throws ClaudiaResourceNotFoundException {
 
         String response = "No Content";
         try {
-            response = openStackUtil.getServer(vm.getVmid(), claudiaData.getUser());
+            String token = claudiaData.getUser().getToken();
+            String vdc = claudiaData.getVdc();
+            response = openStackUtil.getServer(vm.getVmid(), region, token, vdc);
         } catch (OpenStackException e) {
 
             String errorMessage = "Error obtaining info from Server " + vm.getVmid();
             log.error(errorMessage);
             throw new ClaudiaResourceNotFoundException(errorMessage, e);
-            // if (e.getMessage().contains("itemNotFound"))
-            // break;
 
         }
         return response;
-    }
-
-    public String browseVMReplica(ClaudiaData claudiaData, TierInstance tierInstance)
-    throws ClaudiaResourceNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     /**
@@ -108,17 +69,20 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
      *      java.lang.String)
      */
     private String buildCreateServerPayload(ClaudiaData claudiaData, TierInstance tierInstance, int replica)
-    throws InfrastructureException {
+            throws InfrastructureException {
 
-        if ((tierInstance.getTier().getImage() == null) || (tierInstance.getTier().getFlavour() == null) || (tierInstance.getTier().getKeypair() == null)) {
-            String errorMsg = " The tier does not include a not-null information: " + "Image: " + tierInstance.getTier().getImage()
-            + "Flavour: " + tierInstance.getTier().getFlavour() + "KeyPair: " + tierInstance.getTier().getKeypair();
+        if ((tierInstance.getTier().getImage() == null) || (tierInstance.getTier().getFlavour() == null)
+                || (tierInstance.getTier().getKeypair() == null)) {
+            String errorMsg = " The tier does not include a not-null information: " + "Image: "
+                    + tierInstance.getTier().getImage() + "Flavour: " + tierInstance.getTier().getFlavour()
+                    + "KeyPair: " + tierInstance.getTier().getKeypair();
             log.error(errorMsg);
             throw new InfrastructureException(errorMsg);
         }
 
         String name = claudiaData.getService() + "-" + tierInstance.getTier().getName() + "-" + replica;
-        tierInstance.getTier().setName(claudiaData.getService() + "-" + tierInstance.getTier().getName() + "-" + replica);
+        tierInstance.getTier().setName(
+                claudiaData.getService() + "-" + tierInstance.getTier().getName() + "-" + replica);
         String payload = tierInstance.toJson();
         log.debug("Payload " + payload);
 
@@ -132,7 +96,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
      * @param claudiaData
      */
     private void checkDeleteServerTaskStatus(TierInstance tierInstance, ClaudiaData claudiaData)
-    throws InfrastructureException {
+            throws InfrastructureException {
 
         while (true) {
             try {
@@ -143,7 +107,8 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
                     log.warn(errorMessage);
                     throw new InfrastructureException(errorMessage);
                 }
-                String response = openStackUtil.getServer(tierInstance.getVM().getVmid(), claudiaData.getUser());
+                String response = openStackUtil.getServer(tierInstance.getVM().getVmid(), tierInstance.getTier()
+                        .getRegion(), claudiaData.getUser().getToken(), claudiaData.getUser().getToken());
             } catch (OpenStackException e) {
                 String errorMessage = "Error obtaining info from Server " + tierInstance.getVM().getVmid();
                 log.error(errorMessage);
@@ -156,31 +121,12 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         }
     }
 
-    public String createImage(ClaudiaData claudiaData, TierInstance tierInstance) throws ClaudiaRetrieveInfoException {
-        return null;
-    }
-
-    public String deployService(ClaudiaData claudiaData, String ovf) throws InfrastructureException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String deployServiceFull(ClaudiaData claudiaData, String property) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String deployVDC(ClaudiaData claudiaData, String cpu, String mem, String disk)
-    throws InfrastructureException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     /*
      * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#deployVM(com
      * .telefonica.euro_iaas.paasmanager.model.ClaudiaData, java.lang.String)
      */
-    public void deployVM(ClaudiaData claudiaData, TierInstance tierInstance, int replica, VM vm) throws InfrastructureException {
+    public void deployVM(ClaudiaData claudiaData, TierInstance tierInstance, int replica, VM vm)
+            throws InfrastructureException {
         // URL:http://130.206.80.63:8774/v2/ebe6d9ec7b024361b7a3882c65a57dda/servers
         // Headers
         // X-Auth-Token: 30e2a5dd40b3453b833780657a253ec9
@@ -193,15 +139,19 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 
         // openStackUtilImpl = new OpenStackUtilImpl(claudiaData.getUser());
 
-        log.debug("Deploy server " + claudiaData.getService() + " tier " + tierInstance.getName() + " replica " + replica);
+        log.debug("Deploy server " + claudiaData.getService() + " tier " + tierInstance.getName() + " replica "
+                + replica);
         String payload = buildCreateServerPayload(claudiaData, tierInstance, replica);
 
         try {
 
-            String serverId = openStackUtil.createServer(payload, claudiaData.getUser());
+            String region = tierInstance.getTier().getRegion();
+            String token = claudiaData.getUser().getToken();
+            String vdc = tierInstance.getTier().getVdc();
+            String serverId = openStackUtil.createServer(payload, region, token, vdc);
             if (tierInstance.getTier().getFloatingip().equals("true")) {
-                String floatingIP = openStackUtil.getFloatingIP(claudiaData.getUser());
-                openStackUtil.assignFloatingIP(serverId, floatingIP, claudiaData.getUser());
+                String floatingIP = openStackUtil.getFloatingIP(region, token, vdc);
+                openStackUtil.assignFloatingIP(serverId, floatingIP, region, token, vdc);
             }
             vm.setVmid(serverId);
         } catch (OpenStackException e) {
@@ -213,41 +163,68 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 
     }
 
-    public String deployVM(String org, String vdc, String service, String vmName, PaasManagerUser user, String vmPath)
-    throws InfrastructureException {
-        // TODO Auto-generated method stub
-        return null;
+    @Override
+    public void undeployVM(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public List<String> findAllVMs(ClaudiaData claudiaData) throws ClaudiaResourceNotFoundException {
-        List<String> vmIds = new ArrayList<String>();
+    @Override
+    public void undeployService(ClaudiaData claudiaData) throws InfrastructureException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String obtainIPFromFqn(String org, String vdc, String service, String vmName, PaasManagerUser user) throws IPNotRetrievedException, ClaudiaResourceNotFoundException, NetworkNotRetrievedException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String obtainOS(String org, String vdc, String service, String vmName, PaasManagerUser user) throws OSNotRetrievedException, ClaudiaResourceNotFoundException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getVApp(String org, String vdc, String service, String vmName, PaasManagerUser user) throws IPNotRetrievedException, ClaudiaResourceNotFoundException, NetworkNotRetrievedException, OSNotRetrievedException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String onOffScalability(ClaudiaData claudiaData, String environmentName, boolean b) throws InfrastructureException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String createImage(ClaudiaData claudiaData, TierInstance tierInstance) throws ClaudiaRetrieveInfoException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String switchVMOn(String org, String vdc, String service, String vmName, PaasManagerUser user) throws InfrastructureException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String obtainVMStatus(String vapp) throws VMStatusNotRetrievedException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public List<String> findAllVMs(ClaudiaData claudiaData, String region) throws ClaudiaResourceNotFoundException {
+        List<String> vmIds;
 
         String response = "No Content";
         try {
-            response = openStackUtil.listServers(claudiaData.getUser());
+            String token = claudiaData.getUser().getToken();
+            String vdc = claudiaData.getVdc();
+            response = openStackUtil.listServers(region, token, vdc);
             vmIds = fromJson(response);
         } catch (OpenStackException e) {
             String errorMessage = "Error obtaining list of Servers for tenant-ID "
-                + claudiaData.getUser().getTenantId();
+                    + claudiaData.getUser().getTenantId();
             log.error(errorMessage);
             throw new ClaudiaResourceNotFoundException(errorMessage, e);
-            // if (e.getMessage().contains("itemNotFound"))
-            // break;
         }
         return vmIds;
     }
-
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#undeployVMReplica (java.lang.String,
-     * java.lang.String)
-     */
-
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#obtainOS(java .lang.String, java.lang.String,
-     * java.lang.String, java.lang.String, com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
-     */
 
     private List<String> fromJson(String listServersResponse) {
         List<String> names = new ArrayList<String>();
@@ -263,12 +240,14 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         return names;
     }
 
-    public List<String> getIP(ClaudiaData claudiaData, String tierName, int replica, VM vm)
-    throws InfrastructureException {
+    public List<String> getIP(ClaudiaData claudiaData, String tierName, int replica, VM vm, String region)
+            throws InfrastructureException {
         List<String> ips = new ArrayList<String>();
 
         try {
-            String response = openStackUtil.getServer(vm.getVmid(), claudiaData.getUser());
+            String token = claudiaData.getUser().getToken();
+            String vdc = claudiaData.getVdc();
+            String response = openStackUtil.getServer(vm.getVmid(), region, token, vdc);
             String[] ipsResponse = response.split("addr=");
 
             for (int i = 1; i < ipsResponse.length; i++) {
@@ -284,43 +263,9 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         return ips;
     }
 
-    public String getVApp(String org, String vdc, String service, String vmName, PaasManagerUser user)
-    throws IPNotRetrievedException, ClaudiaResourceNotFoundException, NetworkNotRetrievedException,
-    OSNotRetrievedException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String obtainIPFromFqn(String org, String vdc, String service, String vmName, PaasManagerUser user)
-    throws IPNotRetrievedException, ClaudiaResourceNotFoundException, NetworkNotRetrievedException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String obtainOS(String org, String vdc, String service, String vmName, PaasManagerUser user)
-    throws OSNotRetrievedException, ClaudiaResourceNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#obtainVMStatus (java.lang.String)
-     */
-    public String obtainVMStatus(String vapp) throws VMStatusNotRetrievedException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#OnOffScalability
-     * (com.telefonica.euro_iaas.paasmanager.model.ClaudiaData, java.lang.String, boolean)
-     */
-    public String onOffScalability(ClaudiaData claudiaData, String environmentName, boolean b)
-    throws InfrastructureException {
-        // TODO Auto-generated method stub
-        return null;
+    @Override
+    public String deployServiceFull(ClaudiaData claudiaData, String ovf) throws InfrastructureException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
@@ -331,36 +276,49 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         this.openStackUtil = openStackUtil;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#switchVMOn (java.lang.String, java.lang.String,
-     * java.lang.String, java.lang.String, com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser)
-     */
-    public String switchVMOn(String org, String vdc, String service, String vmName, PaasManagerUser user)
-    throws InfrastructureException {
-        // TODO Auto-generated method stub
-        return null;
+    @Override
+    public String browseVDC(ClaudiaData claudiaData) throws ClaudiaResourceNotFoundException {
+        return null;  // To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void undeployService(ClaudiaData claudiaData) throws InfrastructureException {
+    @Override
+    public String browseService(ClaudiaData claudiaData) throws ClaudiaResourceNotFoundException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    /*
-     * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#undeployVM (java.lang.String)
-     */
-    public void undeployVM(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
+    @Override
+    public String browseVM(String org, String vdc, String service, String vm, PaasManagerUser user) throws ClaudiaResourceNotFoundException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
+    @Override
+    public String deployService(ClaudiaData claudiaData, String ovf) throws InfrastructureException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String deployVM(String org, String vdc, String service, String vmName, PaasManagerUser user, String vmPath) throws InfrastructureException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void undeployVMReplica(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
 
         try {
-            openStackUtil.deleteServer(tierInstance.getVM().getVmid(), claudiaData.getUser());
+
+            String region = tierInstance.getTier().getRegion();
+            String token = claudiaData.getUser().getToken();
+            String vdc = tierInstance.getTier().getVdc();
+            openStackUtil.deleteServer(tierInstance.getVM().getVmid(), region, token, vdc);
             checkDeleteServerTaskStatus(tierInstance, claudiaData);
         } catch (OpenStackException oes) {
             String errorMessage = "Error deleting serverId: " + tierInstance.getVM().getVmid();
             log.error(errorMessage);
             throw new InfrastructureException(errorMessage);
         }
+    }
+
+    @Override
+    public String deployVDC(ClaudiaData claudiaData, String cpu, String mem, String disk) throws InfrastructureException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

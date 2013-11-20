@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
@@ -22,8 +23,6 @@ import com.telefonica.euro_iaas.paasmanager.manager.impl.NetworkManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
-
-
 
 /**
  * Network, SubNetwork and Router Manager.
@@ -59,6 +58,7 @@ public class NetworkManagerImplTest extends TestCase {
 
     /**
      * It tests the creation of a network.
+     * 
      * @throws Exception
      */
     @Test
@@ -66,31 +66,28 @@ public class NetworkManagerImplTest extends TestCase {
         // Given
         Network net = new Network(NETWORK_NAME);
         SubNetwork subNet = new SubNetwork("sub-net-" + NETWORK_NAME + "-1", CIDR_ID);
-        
+
         // When
-        when(networkDao.load(any(String.class))).
-            thenThrow(new EntityNotFoundException(Network.class, "test", net));
-        when(subNetworkManager.create(any(SubNetwork.class))).
-        thenReturn(subNet);
+        when(networkDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
+        when(subNetworkManager.create(any(SubNetwork.class))).thenReturn(subNet);
         when(networkDao.create(any(Network.class))).thenReturn(net);
-        when(networkInstanceManager.getNumberDeployedNetwork(
-            any(ClaudiaData.class))).thenReturn(0);
+        when(networkInstanceManager.getNumberDeployedNetwork(any(ClaudiaData.class), anyString())).thenReturn(0);
 
         // Verity
-        networkManager.create(claudiaData, net);
+        networkManager.create(claudiaData, net, "region");
         assertEquals(net.getNetworkName(), NETWORK_NAME);
         assertEquals(net.getSubNets().size(), 1);
-        
-        for (SubNetwork subNet2: net.getSubNets()) {
-            assertEquals(subNet2.getName(),  "sub-net-" + NETWORK_NAME + "-1");
+
+        for (SubNetwork subNet2 : net.getSubNets()) {
+            assertEquals(subNet2.getName(), "sub-net-" + NETWORK_NAME + "-1");
             assertEquals(subNet2.getCidr(), CIDR);
         }
 
-
     }
-    
+
     /**
      * It tests the creation of a network.
+     * 
      * @throws Exception
      */
     @Test
@@ -101,25 +98,24 @@ public class NetworkManagerImplTest extends TestCase {
         net.addSubNet(subNet);
 
         // When
-        when(networkDao.load(any(String.class))).
-            thenThrow(new EntityNotFoundException(Network.class, "test", net));
-        when(subNetworkManager.create(any(SubNetwork.class))).
-            thenReturn(subNet);
+        when(networkDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
+        when(subNetworkManager.create(any(SubNetwork.class))).thenReturn(subNet);
         when(networkDao.create(any(Network.class))).thenReturn(net);
 
         // Verity
-        networkManager.create(claudiaData,net);
+        networkManager.create(claudiaData, net, "region");
         assertEquals(net.getNetworkName(), NETWORK_NAME);
         assertEquals(net.getSubNets().size(), 1);
-        for (SubNetwork subNet2: net.getSubNets()) {
-            assertEquals(subNet2.getName(),  SUB_NETWORK_NAME);
+        for (SubNetwork subNet2 : net.getSubNets()) {
+            assertEquals(subNet2.getName(), SUB_NETWORK_NAME);
             assertEquals(subNet2.getCidr(), CIDR);
         }
 
     }
-    
+
     /**
      * It tests the creation of a network.
+     * 
      * @throws Exception
      */
     @Test
@@ -131,17 +127,16 @@ public class NetworkManagerImplTest extends TestCase {
 
         // When
         when(networkDao.load(any(String.class))).thenReturn(net);
-         
-        when(subNetworkManager.create(any(SubNetwork.class))).
-            thenReturn(subNet);
+
+        when(subNetworkManager.create(any(SubNetwork.class))).thenReturn(subNet);
         when(networkDao.create(any(Network.class))).thenReturn(net);
 
         // Verity
-        networkManager.create(claudiaData, net);
+        networkManager.create(claudiaData, net, "region");
         assertEquals(net.getNetworkName(), NETWORK_NAME);
         assertEquals(net.getSubNets().size(), 1);
-        for (SubNetwork subNet2: net.getSubNets()) {
-            assertEquals(subNet2.getName(),  SUB_NETWORK_NAME);
+        for (SubNetwork subNet2 : net.getSubNets()) {
+            assertEquals(subNet2.getName(), SUB_NETWORK_NAME);
             assertEquals(subNet2.getCidr(), CIDR);
         }
 
@@ -149,6 +144,7 @@ public class NetworkManagerImplTest extends TestCase {
 
     /**
      * It tests the destruction of a network.
+     * 
      * @throws Exception
      */
     @Test
@@ -157,8 +153,7 @@ public class NetworkManagerImplTest extends TestCase {
         Network net = new Network(NETWORK_NAME);
 
         // When
-        when(networkDao.load(any(String.class))).
-            thenThrow(new EntityNotFoundException(Network.class, "test", net));
+        when(networkDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
         Mockito.doNothing().when(networkDao).remove(any(Network.class));
         when(networkDao.create(any(Network.class))).thenReturn(net);
 
@@ -166,6 +161,5 @@ public class NetworkManagerImplTest extends TestCase {
         networkManager.delete(net);
 
     }
-   
 
 }

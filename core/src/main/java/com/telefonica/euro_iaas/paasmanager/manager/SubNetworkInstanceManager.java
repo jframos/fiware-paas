@@ -29,8 +29,8 @@ public interface SubNetworkInstanceManager {
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
      */
-    SubNetworkInstance create(ClaudiaData claudiaData, SubNetworkInstance subNetworkInstance) throws InvalidEntityException, InfrastructureException,
-            AlreadyExistsEntityException;
+    SubNetworkInstance create(ClaudiaData claudiaData, SubNetworkInstance subNetworkInstance, String region)
+            throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException;
 
     /**
      * Delete a subnetwork.
@@ -41,8 +41,8 @@ public interface SubNetworkInstanceManager {
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    void delete(ClaudiaData claudiaData, SubNetworkInstance subNetworkInstance) throws EntityNotFoundException, InvalidEntityException,
-            InfrastructureException;
+    void delete(ClaudiaData claudiaData, SubNetworkInstance subNetworkInstance, String region)
+            throws EntityNotFoundException, InvalidEntityException, InfrastructureException;
 
     /**
      * Retrieve all Network created in the system.
@@ -65,12 +65,13 @@ public interface SubNetworkInstanceManager {
      * @return the subnet updated
      */
     SubNetworkInstance update(SubNetworkInstance subNetworkInstance) throws InvalidEntityException;
-    
+
     /**
      * Check if the network has been deployed.
+     * 
      * @param claudiaData
      * @param subNet
      */
-    boolean isSubNetworkDeployed (ClaudiaData claudiaData, SubNetworkInstance subNet);
+    boolean isSubNetworkDeployed(ClaudiaData claudiaData, SubNetworkInstance subNet, String region);
 
 }

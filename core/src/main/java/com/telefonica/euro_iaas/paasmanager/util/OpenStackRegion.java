@@ -7,6 +7,8 @@
 
 package com.telefonica.euro_iaas.paasmanager.util;
 
+import java.util.List;
+
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 
 /**
@@ -45,4 +47,12 @@ public interface OpenStackRegion {
      * @throws OpenStackException
      */
     String getQuantumEndPoint(String regionName, String token) throws OpenStackException;
+
+    /**
+     * Get a list with the name of all regions.
+     * 
+     * @param token
+     * @return
+     */
+    List<String> getRegionNames(String token);
 }

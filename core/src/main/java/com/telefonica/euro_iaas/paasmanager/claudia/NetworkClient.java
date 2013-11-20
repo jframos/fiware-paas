@@ -11,12 +11,9 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
-import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 
 /**
@@ -24,24 +21,18 @@ import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
  */
 public interface NetworkClient {
 
-
     /**
      * Add the network to the public router.
-     * 
-     * @param network
      */
-    void addNetworkToPublicRouter(ClaudiaData claudiaData,NetworkInstance net) throws InfrastructureException;
-    
+    void addNetworkToPublicRouter(ClaudiaData claudiaData, NetworkInstance net, String region)
+            throws InfrastructureException;
+
     /**
      * Add the network to the router.
-     * 
-     * @param claudiaData
-     * @param routerId
-     * @param network
      */
 
-    void addNetworkToRouter(ClaudiaData claudiaData, RouterInstance router, NetworkInstance network) throws InfrastructureException;
-
+    void addNetworkToRouter(ClaudiaData claudiaData, RouterInstance router, NetworkInstance network)
+            throws InfrastructureException;
 
     /**
      * Remove the network from the router.
@@ -51,8 +42,8 @@ public interface NetworkClient {
      * @param idNet
      */
 
-    void deleteNetworkFromRouter(ClaudiaData claudiaData, RouterInstance router, NetworkInstance idNet)
-    throws InfrastructureException;
+    void deleteNetworkFromRouter(ClaudiaData claudiaData, RouterInstance router, NetworkInstance idNet, String region)
+            throws InfrastructureException;
 
     /**
      * Deploy the network in the infrastructure.
@@ -60,7 +51,7 @@ public interface NetworkClient {
      * @param claudiaData
      * @param network
      */
-    void deployNetwork(ClaudiaData claudiaData, NetworkInstance network) throws InfrastructureException;
+    void deployNetwork(ClaudiaData claudiaData, NetworkInstance network, String region) throws InfrastructureException;
 
     /**
      * Deploy the router.
@@ -70,7 +61,7 @@ public interface NetworkClient {
      * @return
      * @throws InfrastructureException
      */
-    void deployRouter(ClaudiaData claudiaData, RouterInstance router) throws InfrastructureException;
+    void deployRouter(ClaudiaData claudiaData, RouterInstance router, String region) throws InfrastructureException;
 
     /**
      * Deploy the subnetwork in the infrastructure.
@@ -78,7 +69,8 @@ public interface NetworkClient {
      * @param claudiaData
      * @param subNet
      */
-    void deploySubNetwork(ClaudiaData claudiaData, SubNetworkInstance subNet) throws InfrastructureException;
+    void deploySubNetwork(ClaudiaData claudiaData, SubNetworkInstance subNet, String region)
+            throws InfrastructureException;
 
     /**
      * Destroy the network in the infrastructure.
@@ -86,17 +78,17 @@ public interface NetworkClient {
      * @param claudiaData
      * @param networkInstance
      */
-    void destroyNetwork(ClaudiaData claudiaData, NetworkInstance networkInstance) throws InfrastructureException;
-
-
+    void destroyNetwork(ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
+            throws InfrastructureException;
 
     /**
      * It delete a router in Openstack.
+     * 
      * @param claudiaData
      * @param router
      * @throws InfrastructureException
      */
-    void destroyRouter(ClaudiaData claudiaData, RouterInstance router) throws InfrastructureException;
+    void destroyRouter(ClaudiaData claudiaData, RouterInstance router, String region) throws InfrastructureException;
 
     /**
      * Destroy a subnet in OpenStack.
@@ -106,34 +98,32 @@ public interface NetworkClient {
      * @return
      * @throws EntityNotFoundException
      */
-    void destroySubNetwork(ClaudiaData claudiaData, SubNetworkInstance subnet) throws InfrastructureException;
+    void destroySubNetwork(ClaudiaData claudiaData, SubNetworkInstance subnet, String region)
+            throws InfrastructureException;
 
     /**
      * Loads all network associated to a certain vdc.
      * 
      * @param claudiaData
      * @return List<Network>
-     * @throws InfrastructureException 
+     * @throws InfrastructureException
      */
-    List<NetworkInstance> loadAllNetwork(ClaudiaData claudiaData) throws InfrastructureException;
+    List<NetworkInstance> loadAllNetwork(ClaudiaData claudiaData, String region) throws InfrastructureException;
 
     /**
      * Load a Network from OpenStack.
-     * 
-     * @param claudiaData
-     * @param networkId
-     * @return
-     * @throws EntityNotFoundException
      */
-    String loadNetwork(ClaudiaData claudiaData, NetworkInstance network) throws EntityNotFoundException;
-    
+    String loadNetwork(ClaudiaData claudiaData, NetworkInstance network, String region) throws EntityNotFoundException;
+
     /**
      * Load a subNet from Openstack.
+     * 
      * @param claudiaData
      * @param subNet
      * @return
      * @throws EntityNotFoundException
      */
-    String loadSubNetwork(ClaudiaData claudiaData, SubNetworkInstance subNet) throws EntityNotFoundException;
+    String loadSubNetwork(ClaudiaData claudiaData, SubNetworkInstance subNet, String region)
+            throws EntityNotFoundException;
 
 }

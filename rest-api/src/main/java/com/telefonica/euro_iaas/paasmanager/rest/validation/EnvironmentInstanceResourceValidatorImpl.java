@@ -12,7 +12,9 @@ import static com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil.PRO
 import static com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil.VIRTUALSYSTEMCOLLECTION;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -192,35 +194,39 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
     }
 
-
     public void validateQuota(ClaudiaData claudiaData, EnvironmentInstanceDto environmentInstanceDto)
             throws InvalidEnvironmentRequestException, QuotaExceededException {
 
-        Limits limits;
-        try {
-            limits = quotaClient.getLimits(claudiaData);
-
-        } catch (InfrastructureException e) {
-            throw new InvalidEnvironmentRequestException("Failed in getLimits " + e.getMessage());
-        }
+        Map<String, Limits> limits = new HashMap<String, Limits>();
 
         Integer initialNumberInstances = 0;
         Integer floatingIPs = 0;
         if (environmentInstanceDto.getTierInstances() != null) {
             for (TierInstanceDto tierInstanceDto : environmentInstanceDto.getTierInstances()) {
+                String region = tierInstanceDto.getTierDto().getRegion();
+                if (!limits.containsKey(region)) {
+                    try {
+                        limits.put(region, quotaClient.getLimits(claudiaData, region));
+                    } catch (InfrastructureException e) {
+                        throw new InvalidEnvironmentRequestException("Failed in getLimits " + e.getMessage());
+                    }
+                }
 
                 initialNumberInstances += tierInstanceDto.getTierDto().getInitialNumberInstances();
                 if ("true".equals(tierInstanceDto.getTierDto().getFloatingip())) {
                     floatingIPs++;
                 }
-            }
-            if (initialNumberInstances + limits.getTotalInstancesUsed() > limits.getMaxTotalInstances()) {
-                throw new QuotaExceededException("max number of instances exceeded: " + limits.getMaxTotalInstances());
-            }
+                if (initialNumberInstances + limits.get(region).getTotalInstancesUsed() > limits.get(region)
+                        .getMaxTotalInstances()) {
+                    throw new QuotaExceededException("max number of instances exceeded: "
+                            + limits.get(region).getMaxTotalInstances());
+                }
 
-            if (floatingIPs + limits.getTotalFloatingIpsUsed() > limits.getMaxTotalFloatingIps()) {
-                throw new QuotaExceededException("max number of floating IPs exceeded: "
-                        + limits.getMaxTotalFloatingIps());
+                if (floatingIPs + limits.get(region).getTotalFloatingIpsUsed() > limits.get(region)
+                        .getMaxTotalFloatingIps()) {
+                    throw new QuotaExceededException("max number of floating IPs exceeded: "
+                            + limits.get(region).getMaxTotalFloatingIps());
+                }
             }
         }
     }

@@ -7,9 +7,11 @@
 
 package com.telefonica.euro_iaas.paasmanager.model;
 
-import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import junit.framework.TestCase;
+
 import org.junit.Test;
+
+import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 
 /**
  * Test for Tier entity.
@@ -31,13 +33,14 @@ public class TierTest extends TestCase {
         Integer maximum = new Integer(1);
 
         Tier tier = new Tier("tier", maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes", null);
+        tier.setRegion("regionOne");
 
         SecurityGroup securityGroup = new SecurityGroup("nanme", "description");
         securityGroup.addRule(new Rule("ipProtocol", "fromPort", "toPort", "sourceGroup", "cidr"));
         tier.setSecurityGroup(securityGroup);
 
-        TierDto tier2 = tier.toDto();
-        Tier tier3 = tier2.fromDto();
+        TierDto tierDto = tier.toDto();
+        Tier tier3 = tierDto.fromDto();
 
         assertEquals(tier.getSecurityGroup().getRules().size(), 1);
         assertEquals(tier.getInitialNumberInstances(), initial);

@@ -45,6 +45,8 @@ public class TierDto {
     private String keypair = "";
     private String floatingip = "";
 
+    private String region = "";
+
     /**
      * Default Constructor.
      */
@@ -55,11 +57,12 @@ public class TierDto {
 
     /**
      * Constructor.
+     * 
      * @param name
      * @param maximumNumberInstances
      * @param minimumNumberInstances
-     * @param initial_number_instances
-     * @param productReleases
+     * @param initialNumberInstances
+     * @param productReleaseDtos
      */
 
     public TierDto(String name, Integer maximumNumberInstances, Integer minimumNumberInstances,
@@ -76,6 +79,7 @@ public class TierDto {
 
     /**
      * Constructor.
+     * 
      * @param name
      * @param maximumNumberInstances
      * @param minimumNumberInstances
@@ -88,11 +92,9 @@ public class TierDto {
      * @param floatingip
      */
 
-
     public TierDto(String name, Integer maximumNumberInstances, Integer minimumNumberInstances,
             Integer initialNumberInstances, List<ProductReleaseDto> productReleaseDtos, String flavour, String image,
             String icono, String keypair, String floatingip) {
-
 
         this.name = name;
         this.maximumNumberInstances = maximumNumberInstances;
@@ -107,10 +109,9 @@ public class TierDto {
         this.networkDto = new ArrayList<NetworkDto>();
     }
 
-
-
     /**
      * Constructor.
+     * 
      * @param name
      * @param maximumNumberInstances
      * @param minimumNumberInstances
@@ -353,13 +354,7 @@ public class TierDto {
     }
 
     /**
-<<<<<<< HEAD
      * @param productReleaseDtos
-=======
-     * /**
-     * 
-     * @param productReleases
->>>>>>> 9c6f94a55d677c2ac60e512d45d34790bfd5e6aa
      *            the productReleases to set
      */
     public void setProductReleaseDtos(List<ProductReleaseDto> productReleaseDtos) {
@@ -373,5 +368,13 @@ public class TierDto {
     public void setSecurityGroup(String securityGroup) {
         this.securityGroup = securityGroup;
 
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 }

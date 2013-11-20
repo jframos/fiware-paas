@@ -213,4 +213,20 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
         return tier;
     }
 
+    @Override
+    public String findRegionBySecurityGroup(String idSecurityGroup) throws EntityNotFoundException {
+
+        Query query = entityManager.createQuery("select p from Tier p where p.securityGroup=:securityGroupId");
+        query.setParameter("securityGroupId", idSecurityGroup);
+        Tier tier = null;
+        try {
+            tier = (Tier) query.getSingleResult();
+        } catch (NoResultException e) {
+            String message = " No Tier found in the database with security group id: " + idSecurityGroup;
+            throw new EntityNotFoundException(Tier.class, e.getMessage(), message);
+        }
+        return tier.getRegion();
+
+    }
+
 }

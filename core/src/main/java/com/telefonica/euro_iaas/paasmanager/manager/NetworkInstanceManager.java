@@ -7,7 +7,6 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
-
 import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
@@ -15,7 +14,6 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 
 /**
@@ -30,10 +28,11 @@ public interface NetworkInstanceManager {
      * @return the tierInstance created
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
-     * @throws EntityNotFoundException 
+     * @throws EntityNotFoundException
      */
-	NetworkInstance create(ClaudiaData claudiaData, NetworkInstance network) throws InvalidEntityException, InfrastructureException,
-            AlreadyExistsEntityException, EntityNotFoundException;
+    NetworkInstance create(ClaudiaData claudiaData, NetworkInstance network, String region)
+            throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException,
+            EntityNotFoundException;
 
     /**
      * Delete a Network.
@@ -44,8 +43,8 @@ public interface NetworkInstanceManager {
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    void delete(ClaudiaData claudiaData, NetworkInstance network) throws EntityNotFoundException, InvalidEntityException,
-            InfrastructureException;
+    void delete(ClaudiaData claudiaData, NetworkInstance network, String region) throws EntityNotFoundException,
+            InvalidEntityException, InfrastructureException;
 
     /**
      * Retrieve all Network created in the system.
@@ -68,8 +67,7 @@ public interface NetworkInstanceManager {
      * @return the tierInstance created
      */
     NetworkInstance update(NetworkInstance network) throws InvalidEntityException;
-    
 
-	int getNumberDeployedNetwork(ClaudiaData claudiaData) throws InfrastructureException;
+    int getNumberDeployedNetwork(ClaudiaData claudiaData, String region) throws InfrastructureException;
 
 }

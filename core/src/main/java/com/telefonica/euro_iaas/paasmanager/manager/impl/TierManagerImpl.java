@@ -62,9 +62,10 @@ public class TierManagerImpl implements TierManager {
         if (openPortsAttribute != null) {
             StringTokenizer st = new StringTokenizer(openPortsAttribute.getValue());
             while (st.hasMoreTokens()) {
-                Rule rule = createRulePort(st.nextToken());
+                String token = st.nextToken();
+                Rule rule = createRulePort(token);
 
-                securityGroupManager.addRule(claudiaData, tier.getSecurityGroup(), rule);
+                securityGroupManager.addRule(tier.getRegion(), token, tier.getVdc(), tier.getSecurityGroup(), rule);
 
             }
         }
@@ -72,12 +73,14 @@ public class TierManagerImpl implements TierManager {
 
     /**
      * It creates a tier.
-     * @throws EntityNotFoundException 
-     * @throws AlreadyExistsEntityException 
+     * 
+     * @throws EntityNotFoundException
+     * @throws AlreadyExistsEntityException
      */
 
     public Tier create(ClaudiaData claudiaData, String envName, Tier tier) throws InvalidEntityException,
-            InvalidSecurityGroupRequestException, InfrastructureException, EntityNotFoundException, AlreadyExistsEntityException {
+            InvalidSecurityGroupRequestException, InfrastructureException, EntityNotFoundException,
+            AlreadyExistsEntityException {
         log.debug("Create tier name " + tier.getName() + " image " + tier.getImage() + " flavour " + tier.getFlavour()
                 + " initial_number_instances " + tier.getInitialNumberInstances() + " maximum_number_instances "
                 + tier.getMaximumNumberInstances() + " minimum_number_instances " + tier.getMinimumNumberInstances()
@@ -86,18 +89,18 @@ public class TierManagerImpl implements TierManager {
                 + tier.getNetworks());
 
         if (exists(tier.getName(), claudiaData.getVdc(), envName)) {
-        	return load(tier.getName(), claudiaData.getVdc(), envName);
+            return load(tier.getName(), claudiaData.getVdc(), envName);
         } else {
-        	createSecurityGroups(claudiaData, tier);
-        	createNetworks(claudiaData, tier);
-        	return tierInsertBD(tier, claudiaData);
+            createSecurityGroups(claudiaData, tier);
+            createNetworks(claudiaData, tier);
+            return tierInsertBD(tier, claudiaData);
 
         }
     }
 
     /**
      * It creates the rule port for ssh.
-     *
+     * 
      * @param port
      * @return
      */
@@ -117,58 +120,58 @@ public class TierManagerImpl implements TierManager {
      * @throws InvalidSecurityGroupRequestException
      */
 
-    private void createSecurityGroups(ClaudiaData claudiaData, Tier tier)
-            throws InvalidSecurityGroupRequestException {
-    	if ((systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")
+    private void createSecurityGroups(ClaudiaData claudiaData, Tier tier) throws InvalidSecurityGroupRequestException {
+        if ((systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")
                 && claudiaData.getVdc() != null && claudiaData.getVdc().length() > 0)) {
-            
-        SecurityGroup securityGroup = generateSecurityGroup(claudiaData, tier);
-        try {
-            securityGroup = securityGroupManager.create(claudiaData, securityGroup);
-        } catch (InvalidEntityException e) {
-            log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
-                    + e.getMessage());
-            throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
-                    + securityGroup.getName() + " " + e.getMessage(), e);
-        } catch (InvalidEnvironmentRequestException e) {
 
-            log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
-                    + e.getMessage());
-            throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
-                    + securityGroup.getName() + " " + e.getMessage(), e);
-        } catch (AlreadyExistsEntityException e) {
-            log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
-                    + e.getMessage());
-            throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
-                    + securityGroup.getName() + " " + e.getMessage(), e);
-        } catch (InfrastructureException e) {
-            log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
-                    + e.getMessage());
-            throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
-                    + securityGroup.getName() + " " + e.getMessage(), e);
-            
+            SecurityGroup securityGroup = generateSecurityGroup(claudiaData, tier);
+            try {
+                securityGroup = securityGroupManager.create(tier.getRegion(), tier.getVdc(), claudiaData.getUser()
+                        .getToken(), securityGroup);
+            } catch (InvalidEntityException e) {
+                log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
+                        + e.getMessage());
+                throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
+                        + securityGroup.getName() + " " + e.getMessage(), e);
+            } catch (InvalidEnvironmentRequestException e) {
+
+                log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
+                        + e.getMessage());
+                throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
+                        + securityGroup.getName() + " " + e.getMessage(), e);
+            } catch (AlreadyExistsEntityException e) {
+                log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
+                        + e.getMessage());
+                throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
+                        + securityGroup.getName() + " " + e.getMessage(), e);
+            } catch (InfrastructureException e) {
+                log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
+                        + e.getMessage());
+                throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
+                        + securityGroup.getName() + " " + e.getMessage(), e);
+
+            }
+            tier.setSecurityGroup(securityGroup);
         }
-        tier.setSecurityGroup(securityGroup);
-    	}
-    	
+
     }
-    
-    public void createNetworks (ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException,
-        InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
-    	List<Network> networkToBeDeployed = new ArrayList<Network>();
+
+    public void createNetworks(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException,
+            InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
+        List<Network> networkToBeDeployed = new ArrayList<Network>();
         for (Network network : tier.getNetworks()) {
             networkToBeDeployed.add(network);
         }
 
-       for (Network network: networkToBeDeployed) {
-    	   if (networkManager.exists(network.getNetworkName())) {
-    		   log.debug("the network " + network.getNetworkName() + " already exists");
-    		   network = networkManager.load(network.getNetworkName());
-               
-    	   } else {
-    		   network = networkManager.create(claudiaData, network);
-    	   }
-    	   tier.addNetwork(network);
+        for (Network network : networkToBeDeployed) {
+            if (networkManager.exists(network.getNetworkName())) {
+                log.debug("the network " + network.getNetworkName() + " already exists");
+                network = networkManager.load(network.getNetworkName());
+
+            } else {
+                network = networkManager.create(claudiaData, network, tier.getRegion());
+            }
+            tier.addNetwork(network);
         }
     }
 
@@ -202,7 +205,7 @@ public class TierManagerImpl implements TierManager {
             log.debug("Deleting security group " + sec.getName() + " in tier " + tier.getName());
             tier.setSecurityGroup(null);
             tierDao.update(tier);
-            securityGroupManager.destroy(claudiaData, sec);
+            securityGroupManager.destroy(tier.getRegion(), tier.getVdc(), claudiaData.getUser().getToken(), sec);
 
         }
 
@@ -218,7 +221,6 @@ public class TierManagerImpl implements TierManager {
             log.debug("Deleting network " + net.getNetworkName());
             networkManager.delete(net);
         }
-
 
         try {
             tierDao.remove(tier);
@@ -303,16 +305,15 @@ public class TierManagerImpl implements TierManager {
             throw new EntityNotFoundException(Tier.class, "error", e.getMessage());
         }
     }
-    
-    public boolean exists(String name, String vdc, String environmentName){
-    	try {
+
+    public boolean exists(String name, String vdc, String environmentName) {
+        try {
             tierDao.load(name, vdc, environmentName);
             return true;
         } catch (Exception e) {
             return false;
         }
     }
-
 
     @Override
     public Tier loadTierWithProductReleaseAndMetadata(String tierName, String environmentName, String vdc)
@@ -327,7 +328,8 @@ public class TierManagerImpl implements TierManager {
 
     private void restore(ClaudiaData claudiaData, Tier tier) throws InvalidEntityException, InfrastructureException {
         if (tier.getSecurityGroup() != null) {
-            securityGroupManager.destroy(claudiaData, tier.getSecurityGroup());
+            securityGroupManager.destroy(tier.getRegion(), tier.getVdc(), claudiaData.getUser().getToken(),
+                    tier.getSecurityGroup());
 
         }
     }

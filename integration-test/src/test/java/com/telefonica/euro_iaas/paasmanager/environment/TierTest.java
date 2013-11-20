@@ -91,12 +91,14 @@ public class TierTest {
         tierbk.setPayload("");
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(tomcat7Att);
+        tierbk.setRegion("regionOne");
 
         tierResource.insert(org, vdc, "create_tier_ok", tierbk.toDto());
         TierDto tier = tierResource.load(vdc, "create_tier_ok", "tiercreated_ok");
         assertEquals(tier.getName(), "tiercreated_ok");
         assertEquals(tier.getProductReleaseDtos().size(), 1);
         assertEquals(tier.getProductReleaseDtos().get(0).getProductName(), "tomcat8");
+        assertEquals(tier.getRegion(), "regionOne");
     }
 
     @Test(expected = javax.ws.rs.WebApplicationException.class)

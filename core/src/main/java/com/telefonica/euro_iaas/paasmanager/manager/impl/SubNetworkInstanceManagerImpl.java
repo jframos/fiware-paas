@@ -15,13 +15,10 @@ import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
-import com.telefonica.euro_iaas.paasmanager.dao.SubNetworkDao;
 import com.telefonica.euro_iaas.paasmanager.dao.SubNetworkInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.manager.SubNetworkInstanceManager;
-import com.telefonica.euro_iaas.paasmanager.manager.SubNetworkManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 
 /**
@@ -41,17 +38,16 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
      * @params claudiaData
      * @params network
      */
-    public SubNetworkInstance create(ClaudiaData claudiaData, SubNetworkInstance subNetwork)
-        throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
+    public SubNetworkInstance create(ClaudiaData claudiaData, SubNetworkInstance subNetwork, String region)
+            throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
         log.debug("Create subnetwork instance " + subNetwork.getName());
         if (!subNetworkInstanceDao.exists(subNetwork.getName())) {
-            networkClient.deploySubNetwork(claudiaData, subNetwork);
-            log.debug("SubNetwork " + subNetwork.getName() + " in network "
-                + subNetwork.getIdNetwork()
-                + " deployed with id " + subNetwork.getIdSubNet());
+            networkClient.deploySubNetwork(claudiaData, subNetwork, region);
+            log.debug("SubNetwork " + subNetwork.getName() + " in network " + subNetwork.getIdNetwork()
+                    + " deployed with id " + subNetwork.getIdSubNet());
             subNetwork = subNetworkInstanceDao.create(subNetwork);
         } else {
-        	log.warn ("Subred already created " + subNetwork.getName());
+            log.warn("Subred already created " + subNetwork.getName());
             throw new AlreadyExistsEntityException(subNetwork);
         }
         return subNetwork;
@@ -63,11 +59,11 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
      * @params claudiaData
      * @params subNetwork
      */
-    public void delete(ClaudiaData claudiaData, SubNetworkInstance subNetworkInstance) throws EntityNotFoundException,
-    InvalidEntityException, InfrastructureException {
+    public void delete(ClaudiaData claudiaData, SubNetworkInstance subNetworkInstance, String region)
+            throws EntityNotFoundException, InvalidEntityException, InfrastructureException {
         log.debug("Destroying the subnetwork " + subNetworkInstance.getName());
         try {
-            networkClient.destroySubNetwork(claudiaData, subNetworkInstance);
+            networkClient.destroySubNetwork(claudiaData, subNetworkInstance, region);
             subNetworkInstanceDao.remove(subNetworkInstance);
         } catch (Exception e) {
             log.error("Error to remove the subnetwork in BD " + e.getMessage());
@@ -78,35 +74,31 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
 
     /**
      * To obtain the list of subnetworks.
-     *
+     * 
      * @return the subnetwork list
      */
     public List<SubNetworkInstance> findAll() {
         return subNetworkInstanceDao.findAll();
     }
-    
+
     /**
      * Is the subNetwork deployed.
+     * 
      * @param claudiaData
      * @param subNet
      * @return
      */
-    public boolean isSubNetworkDeployed (ClaudiaData claudiaData, SubNetworkInstance subNet) {
-    	try {
-			networkClient.loadSubNetwork(claudiaData, subNet);
-			return true;
-		} catch (EntityNotFoundException e) {
-			return false;
-		}
+    public boolean isSubNetworkDeployed(ClaudiaData claudiaData, SubNetworkInstance subNet, String region) {
+        try {
+            networkClient.loadSubNetwork(claudiaData, subNet, region);
+            return true;
+        } catch (EntityNotFoundException e) {
+            return false;
+        }
     }
 
     /**
      * To obtain the subnetwork.
-     *
-     * @param name
-     * @param vdc
-     * @param networkName
-     * @return the network
      */
     public SubNetworkInstance load(String name) throws EntityNotFoundException {
         return subNetworkInstanceDao.load(name);
@@ -122,12 +114,9 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
 
     /**
      * To update the subnetwork.
-     * 
-     * @param subNetwork
-     * @return the subNetwork
      */
     public SubNetworkInstance update(SubNetworkInstance subNetworkInstance) throws InvalidEntityException {
-    	return subNetworkInstanceDao.update(subNetworkInstance);
+        return subNetworkInstanceDao.update(subNetworkInstance);
     }
 
 }

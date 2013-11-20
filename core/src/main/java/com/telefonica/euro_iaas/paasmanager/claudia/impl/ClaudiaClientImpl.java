@@ -216,14 +216,8 @@ public class ClaudiaClientImpl implements ClaudiaClient {
         return vmResponse;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#browseVMReplica (java.lang.String,
-     * java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-     */
-    public String browseVMReplica(ClaudiaData claudiaData, String tierName, int replica, VM vm)
-
-    throws ClaudiaResourceNotFoundException {
+    public String browseVMReplica(ClaudiaData claudiaData, String tierName, int replica, VM vm, String region)
+            throws ClaudiaResourceNotFoundException {
 
         int cont = 0;
         String replicaResponse, fqnReplica, actionUri, url = null;
@@ -284,12 +278,17 @@ public class ClaudiaClientImpl implements ClaudiaClient {
         return replicaResponse;
     }
 
-    public List<String> getIP(ClaudiaData claudiaData, String tierName, int replica, VM vm)
+    @Override
+    public List<String> findAllVMs(ClaudiaData claudiaData, String region) throws ClaudiaResourceNotFoundException {
+        return null;  // To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public List<String> getIP(ClaudiaData claudiaData, String tierName, int replica, VM vm, String region)
             throws InfrastructureException {
 
         List<String> ips = new ArrayList<String>();
         try {
-            String vAppReplica = browseVMReplica(claudiaData, tierName, replica, vm);
+            String vAppReplica = browseVMReplica(claudiaData, tierName, replica, vm, region);
             ips.add(vappUtils.getIP(vAppReplica));
             log.debug("IP replica " + ips.get(0));
         } catch (ClaudiaResourceNotFoundException e) {
@@ -470,9 +469,10 @@ public class ClaudiaClientImpl implements ClaudiaClient {
      * @see com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#deployVM(java .lang.String, java.lang.String,
      * java.lang.String, java.lang.String)
      */
-    public void deployVM(ClaudiaData claudiaData, TierInstance tierInstance, int replica, VM vm) throws InfrastructureException {
+    public void deployVM(ClaudiaData claudiaData, TierInstance tierInstance, int replica, VM vm)
+            throws InfrastructureException {
 
-    	Tier tier = tierInstance.getTier();
+        Tier tier = tierInstance.getTier();
         String fqn = claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc() + ".services."
                 + claudiaData.getService() + ".vees." + tier.getName() + ".replicas." + replica;
         String hostname = claudiaData.getService() + "-" + tier.getName() + "-" + replica;
@@ -754,11 +754,6 @@ public class ClaudiaClientImpl implements ClaudiaClient {
         return ipv4;
     }
 
-    /**
-     * @param xmlSource
-     * @return
-     * @throws SONotRetrievedException
-     */
     private String getOSFromDocument(String xmlSource) throws OSNotRetrievedException {
         String so = null;
         Document doc;
@@ -769,8 +764,9 @@ public class ClaudiaClientImpl implements ClaudiaClient {
                 Element soElement = (Element) soList.item(j);
                 so = soElement.getAttribute(ClaudiaUtil.OS_ID_ATTRIBUTENAME);
             }
-            if (so == null)
+            if (so == null) {
                 throw new OSNotRetrievedException("OS is null");
+            }
         } catch (SAXException e) {
             String errorMessage = "SAXException when obtaining OS. Desc: " + e.getMessage();
             log.error(errorMessage);
@@ -974,18 +970,10 @@ public class ClaudiaClientImpl implements ClaudiaClient {
         this.vappUtils = vappUtils;
     }
 
-    /**
-     * @param propertiesProvider
-     *            the propertiesProvider to set
-     */
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
-    /**
-     * @param ClaudiaResponseAnalyser
-     *            the ClaudiaResponseAnalyser to set
-     */
     public void setClaudiaResponseAnalyser(ClaudiaResponseAnalyser claudiaResponseAnalyser) {
         this.claudiaResponseAnalyser = claudiaResponseAnalyser;
     }
@@ -1035,17 +1023,6 @@ public class ClaudiaClientImpl implements ClaudiaClient {
     public void undeployService(ClaudiaData claudiaData) throws InfrastructureException {
         // TODO Auto-generated method stub
 
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#findAllVMs(com.telefonica.euro_iaas.paasmanager.model
-     * .ClaudiaData)
-     */
-    public List<String> findAllVMs(ClaudiaData claudiaData) throws ClaudiaResourceNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

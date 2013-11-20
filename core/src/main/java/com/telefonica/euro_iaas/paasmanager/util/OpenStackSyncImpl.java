@@ -59,6 +59,7 @@ public class OpenStackSyncImpl extends Thread implements OpenStackSync {
     private SystemPropertiesProvider systemPropertiesProvider;
     private boolean onecycle;
     private Connection connection;
+    private OpenStackRegion openStackRegion;
 
     private static Logger log = Logger.getLogger(OpenStackSyncImpl.class);
 
@@ -110,7 +111,8 @@ public class OpenStackSyncImpl extends Thread implements OpenStackSync {
 
                     try {
                         // Synchronizing secGroups
-                        securityGroupsSync(claudiaData);
+
+                        securityGroupsSync(user.getToken(), user.getTenantId());
                         // Synchronizing instances
                         tierInstancesSync(claudiaData);
                     } catch (OpenStackException e) {
@@ -179,7 +181,11 @@ public class OpenStackSyncImpl extends Thread implements OpenStackSync {
         List<String> servers = new ArrayList<String>();
 
         try {
-            servers = claudiaClient.findAllVMs(claudiaData);
+            List<String> regions = openStackRegion.getRegionNames(claudiaData.getUser().getToken());
+            for (String region : regions) {
+
+                servers.addAll(claudiaClient.findAllVMs(claudiaData, region));
+            }
         } catch (ClaudiaResourceNotFoundException e) {
             String message = "No servers in Openstack";
             log.info(message);
@@ -199,12 +205,20 @@ public class OpenStackSyncImpl extends Thread implements OpenStackSync {
         }
     }
 
-    private void securityGroupsSync(ClaudiaData claudiaData) throws OpenStackSynchronizationException,
+    private void securityGroupsSync(String token, String vdc) throws OpenStackSynchronizationException,
             OpenStackException {
         boolean included = false;
         log.debug("Sincronizing security groups ...  ");
-        List<SecurityGroup> securityGroups = findAllSecurityGroupsDB(claudiaData);
-        List<SecurityGroup> securityGroupsOpenStack = firewallingClient.loadAllSecurityGroups(claudiaData);
+        List<SecurityGroup> securityGroups = findAllSecurityGroupsDB(vdc);
+
+        List<String> regions = openStackRegion.getRegionNames(token);
+
+        List<SecurityGroup> securityGroupsOpenStack = new ArrayList<SecurityGroup>(10);
+
+        for (String region : regions) {
+            List<SecurityGroup> securityGroups1 = firewallingClient.loadAllSecurityGroups(region, token, vdc);
+            securityGroupsOpenStack.addAll(securityGroups1);
+        }
 
         for (int i = 0; i < securityGroups.size(); i++) {
             SecurityGroup securityGroup = securityGroups.get(i);
@@ -216,12 +230,20 @@ public class OpenStackSyncImpl extends Thread implements OpenStackSync {
             if (!included) {
                 log.debug("It is not included  " + securityGroup.getName() + " . Deploying ...");
                 try {
-                    String securityGroupId = firewallingClient.deploySecurityGroup(claudiaData, securityGroup);
+
+                    String region = null;
+                    try {
+                        region = tierDao.findRegionBySecurityGroup(securityGroup.getIdSecurityGroup());
+                    } catch (EntityNotFoundException e) {
+                        region = "";
+                    }
+
+                    String securityGroupId = firewallingClient.deploySecurityGroup(region, token, vdc, securityGroup);
                     securityGroup.setIdSecurityGroup(securityGroupId);
                     for (int j = 0; j < securityGroup.getRules().size(); j++) {
                         Rule rule = securityGroup.getRules().get(j);
                         rule.setIdParent(securityGroupId);
-                        String idrule = firewallingClient.deployRule(claudiaData, rule);
+                        String idrule = firewallingClient.deployRule(region, token, vdc, rule);
                         rule.setIdRule(idrule);
 
                         ruleDao.update(rule);
@@ -243,10 +265,10 @@ public class OpenStackSyncImpl extends Thread implements OpenStackSync {
         }
     }
 
-    private List<SecurityGroup> findAllSecurityGroupsDB(ClaudiaData claudiaData) {
+    private List<SecurityGroup> findAllSecurityGroupsDB(String vdc) {
         List<SecurityGroup> securityGroups = new ArrayList<SecurityGroup>();
         TierSearchCriteria criteria = new TierSearchCriteria();
-        criteria.setVdc(claudiaData.getVdc());
+        criteria.setVdc(vdc);
         try {
             List<Tier> tiers = tierDao.findByCriteria(criteria);
             for (int i = 0; i < tiers.size(); i++) {
@@ -254,7 +276,7 @@ public class OpenStackSyncImpl extends Thread implements OpenStackSync {
                     securityGroups.add(tiers.get(i).getSecurityGroup());
             }
         } catch (EntityNotFoundException e) {
-            String message = "No SecurityGroups found in PaasManager Database for vdc " + claudiaData.getVdc();
+            String message = "No SecurityGroups found in PaasManager Database for vdc " + vdc;
             log.info(message);
         }
         return securityGroups;
@@ -310,5 +332,13 @@ public class OpenStackSyncImpl extends Thread implements OpenStackSync {
             }
         }
         tierInstanceDao.remove(tierInstance);
+    }
+
+    public OpenStackRegion getOpenStackRegion() {
+        return openStackRegion;
+    }
+
+    public void setOpenStackRegion(OpenStackRegion openStackRegion) {
+        this.openStackRegion = openStackRegion;
     }
 }

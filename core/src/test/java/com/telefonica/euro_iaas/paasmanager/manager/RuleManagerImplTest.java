@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -19,7 +20,6 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.claudia.FirewallingClient;
 import com.telefonica.euro_iaas.paasmanager.dao.RuleDao;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.RuleManagerImpl;
-import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
 
 /**
@@ -46,14 +46,15 @@ public class RuleManagerImplTest {
     public void testCreteRule() throws Exception {
 
         Rule rule = new Rule("TCP", "8080", "8080", "", "0.0.0.0/0");
-
-        ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
+        String region = "region";
+        String token = "1234567689";
+        String vdc = "6c23123kdn";
 
         Mockito.doThrow(new EntityNotFoundException(Rule.class, "test", rule)).when(ruleDao).load(any(String.class));
 
-        when(firewallingClient.deployRule(any(ClaudiaData.class), any(Rule.class))).thenReturn("Id");
+        when(firewallingClient.deployRule(eq(region), eq(token), eq(vdc), any(Rule.class))).thenReturn("Id");
         when(ruleDao.create(any(Rule.class))).thenReturn(rule);
-        Rule rule2 = ruleManager.create(claudiaData, rule);
+        Rule rule2 = ruleManager.create(region, token, vdc, rule);
 
     }
 
@@ -61,13 +62,14 @@ public class RuleManagerImplTest {
     public void testDeleteRule() throws Exception {
 
         Rule rule = new Rule("TCP", "8080", "8080", "", "0.0.0.0/0");
-
-        ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
+        String region = "region";
+        String token = "1234567689";
+        String vdc = "6c23123kdn";
 
         Mockito.doNothing().doThrow(new RuntimeException()).when(firewallingClient)
-                .destroyRule(any(ClaudiaData.class), any(Rule.class));
+                .destroyRule(eq(region), eq(token), eq(vdc), any(Rule.class));
         when(ruleDao.create(any(Rule.class))).thenReturn(rule);
-        ruleManager.destroy(claudiaData, rule);
+        ruleManager.destroy(region, token, vdc, rule);
 
     }
 

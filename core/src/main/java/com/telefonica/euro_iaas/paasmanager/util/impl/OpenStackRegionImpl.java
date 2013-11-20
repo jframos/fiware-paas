@@ -7,7 +7,9 @@
 
 package com.telefonica.euro_iaas.paasmanager.util.impl;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
@@ -45,19 +47,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     public String getEndPointByNameAndRegionName(String name, String regionName, String token)
             throws OpenStackException {
 
-        String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_URL) + "tokens/" + token
-                + "/endpoints";
-
-        WebResource webResource = client.resource(url);
-
-        WebResource.Builder builder = webResource.accept(MediaType.APPLICATION_JSON);
-        builder.header("X-Auth-Token", token);
-
-        ClientResponse response = builder.get(ClientResponse.class);
-
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP (url:" + url + ") error code : " + response.getStatus());
-        }
+        ClientResponse response = callToKeystone(token);
 
         String result = parseEndpoint(response.getEntity(String.class), name, regionName);
         if (result == null) {
@@ -80,6 +70,31 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     @Override
     public String getQuantumEndPoint(String regionName, String token) throws OpenStackException {
         return getEndPointByNameAndRegionName("quantum", regionName, token);
+    }
+
+    @Override
+    public List<String> getRegionNames(String token) {
+
+        ClientResponse response = callToKeystone(token);
+        return parseRegionName(response.getEntity(String.class), "nova");
+
+    }
+
+    private ClientResponse callToKeystone(String token) {
+        String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_URL) + "tokens/" + token
+                + "/endpoints";
+
+        WebResource webResource = client.resource(url);
+
+        WebResource.Builder builder = webResource.accept(MediaType.APPLICATION_JSON);
+        builder.header("X-Auth-Token", token);
+
+        ClientResponse response = builder.get(ClientResponse.class);
+
+        if (response.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP (url:" + url + ") error code : " + response.getStatus());
+        }
+        return response;
     }
 
     private String parseEndpoint(String response, String name, String regionName) {
@@ -107,6 +122,31 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         }
 
         return null;
+    }
+
+    private List<String> parseRegionName(String response, String name) {
+
+        List<String> names = new ArrayList<String>(2);
+
+        JSONObject jsonObject = JSONObject.fromObject(response);
+
+        JSONArray endpointsArray = jsonObject.getJSONArray("endpoints");
+
+        Iterator it = endpointsArray.iterator();
+        JSONObject endpointJson;
+        while (it.hasNext()) {
+
+            endpointJson = JSONObject.fromObject(it.next());
+            String name1 = endpointJson.get("name").toString();
+            String regionName1 = endpointJson.get("region").toString();
+
+            if (name.equals(name1)) {
+                if (!names.contains(regionName1)) {
+                    names.add(regionName1);
+                }
+            }
+        }
+        return names;
     }
 
     public SystemPropertiesProvider getSystemPropertiesProvider() {

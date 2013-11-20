@@ -7,9 +7,17 @@
 
 package com.telefonica.euro_iaas.paasmanager.util;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
 import com.telefonica.euro_iaas.paasmanager.claudia.FirewallingClient;
@@ -35,13 +43,6 @@ import com.telefonica.euro_iaas.paasmanager.model.keystone.User;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
-import org.junit.Before;
-import org.junit.Test;
-
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla
@@ -49,7 +50,6 @@ import static org.mockito.Mockito.when;
 public class OpenStackSyncImplTest {
 
     private OpenStackSyncImpl openStackImpl;
-    private ClaudiaData claudiaData;
 
     private TierDao tierDao;
     private TierInstanceDao tierInstanceDao;
@@ -147,6 +147,8 @@ public class OpenStackSyncImplTest {
         openStackImpl = new OpenStackSyncImpl(connection, true, tierDao, tierInstanceDao, firewallingClient,
                 claudiaClient, systemPropertiesProvider, environmentInstanceDao, ruleDao, securityGroupDao, userDao,
                 tokenDao);
+        OpenStackRegion openStackRegion = mock(OpenStackRegion.class);
+        openStackImpl.setOpenStackRegion(openStackRegion);
 
     }
 
@@ -154,10 +156,12 @@ public class OpenStackSyncImplTest {
     public void testSyncronizeSecGroupsNOTSynchronizedDeployingSecurityGroup() throws Exception {
         securityGroupsOS.add(differentSecGroup);
         names.add("name");
-        when(firewallingClient.loadAllSecurityGroups(any(ClaudiaData.class))).thenReturn(securityGroupsOS);
-        when(firewallingClient.deploySecurityGroup(any(ClaudiaData.class), any(SecurityGroup.class))).thenReturn("1");
-        when(firewallingClient.deployRule(any(ClaudiaData.class), any(Rule.class))).thenReturn("1");
-        when(claudiaClient.findAllVMs(any(ClaudiaData.class))).thenReturn(names);
+        when(firewallingClient.loadAllSecurityGroups(anyString(), anyString(), anyString())).thenReturn(
+                securityGroupsOS);
+        when(firewallingClient.deploySecurityGroup(anyString(), anyString(), anyString(), any(SecurityGroup.class)))
+                .thenReturn("1");
+        when(firewallingClient.deployRule(anyString(), anyString(), anyString(), any(Rule.class))).thenReturn("1");
+        when(claudiaClient.findAllVMs(any(ClaudiaData.class), anyString())).thenReturn(names);
 
         try {
             openStackImpl.syncronize(connection, true);
@@ -172,8 +176,9 @@ public class OpenStackSyncImplTest {
         securityGroupsOS.add(secGroup);
         names.add("name");
 
-        when(firewallingClient.loadAllSecurityGroups(any(ClaudiaData.class))).thenReturn(securityGroupsOS);
-        when(claudiaClient.findAllVMs(any(ClaudiaData.class))).thenReturn(names);
+        when(firewallingClient.loadAllSecurityGroups(anyString(), anyString(), anyString())).thenReturn(
+                securityGroupsOS);
+        when(claudiaClient.findAllVMs(any(ClaudiaData.class), anyString())).thenReturn(names);
 
         try {
             openStackImpl.syncronize(connection, true);
@@ -185,8 +190,9 @@ public class OpenStackSyncImplTest {
     @Test
     public void testSyncronizeTierInstanceNotFoundDB() throws Exception {
         names.add("NOTname");
-        when(firewallingClient.loadAllSecurityGroups(any(ClaudiaData.class))).thenReturn(securityGroupsOS);
-        when(claudiaClient.findAllVMs(any(ClaudiaData.class))).thenReturn(names);
+        when(firewallingClient.loadAllSecurityGroups(anyString(), anyString(), anyString())).thenReturn(
+                securityGroupsOS);
+        when(claudiaClient.findAllVMs(any(ClaudiaData.class), anyString())).thenReturn(names);
 
         try {
             openStackImpl.syncronize(connection, true);

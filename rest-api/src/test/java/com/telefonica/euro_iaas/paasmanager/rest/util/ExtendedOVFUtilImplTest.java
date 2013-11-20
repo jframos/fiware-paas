@@ -7,6 +7,10 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.util;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,26 +18,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
-import com.telefonica.euro_iaas.paasmanager.util.OVFUtils;
 import junit.framework.TestCase;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
+import com.telefonica.euro_iaas.paasmanager.model.Tier;
+import com.telefonica.euro_iaas.paasmanager.util.OVFUtils;
 
 /**
  * @author jesus.movilla
@@ -65,7 +68,8 @@ public class ExtendedOVFUtilImplTest extends TestCase {
 
         String payload = null;
         try {
-            payload = getFile("src/test/resources/serveraltiersOVF.xml");
+            URI url = this.getClass().getResource("/serveraltiersOVF.xml").toURI();
+            payload = getFile(url);
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -108,7 +112,7 @@ public class ExtendedOVFUtilImplTest extends TestCase {
 
     }
 
-    private String getFile(String file) throws IOException {
+    private String getFile(URI file) throws IOException {
         File f = new File(file);
         InputStream dd = new FileInputStream(f);
 

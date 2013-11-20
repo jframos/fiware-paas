@@ -7,8 +7,22 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
@@ -26,19 +40,6 @@ import com.telefonica.euro_iaas.paasmanager.monitoring.MonitoringClient;
 import com.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser;
 import com.telefonica.euro_iaas.paasmanager.util.OVFUtils;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Matchers;
-import org.mockito.Mockito;
-
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla
@@ -120,8 +121,9 @@ public class InfrastructureManagerImplTest {
         tierInstance.setOvf(ovf);
         tierInstance.setVapp("vapp");
 
-        when(claudiaClient.getIP(any(ClaudiaData.class), any(String.class), Matchers.anyInt(), any(VM.class)))
-                .thenReturn(ips);
+        when(
+                claudiaClient.getIP(any(ClaudiaData.class), any(String.class), Matchers.anyInt(), any(VM.class),
+                        anyString())).thenReturn(ips);
         Mockito.doNothing().when(claudiaClient)
                 .deployVM(any(ClaudiaData.class), any(TierInstance.class), Matchers.anyInt(), any(VM.class));
         when(ovfUtils.changeInitialResources(any(String.class))).thenReturn(null);
@@ -129,8 +131,9 @@ public class InfrastructureManagerImplTest {
         when(claudiaClient.browseVDC(any(ClaudiaData.class))).thenReturn("vdc");
         when(claudiaClient.browseService(any(ClaudiaData.class))).thenReturn("vapp");
         when(environmentInstanceDao.update(any(EnvironmentInstance.class))).thenReturn(envInst);
-        when(claudiaClient.browseVMReplica(any(ClaudiaData.class), any(String.class), anyInt(), any(VM.class)))
-                .thenReturn("vapp");
+        when(
+                claudiaClient.browseVMReplica(any(ClaudiaData.class), any(String.class), anyInt(), any(VM.class),
+                        anyString())).thenReturn("vapp");
 
         Mockito.doThrow(new EntityNotFoundException(TierInstance.class, "test", tierInstance))
                 .when(tierInstanceManager).load(any(String.class));
@@ -158,8 +161,8 @@ public class InfrastructureManagerImplTest {
     public void testDeployVMNoFIWARE() throws Exception {
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
                 "keypair", "floatingip", "payload");
-        TierInstance tierInstance = new TierInstance ();
-        tierInstance.setTier (tier);
+        TierInstance tierInstance = new TierInstance();
+        tierInstance.setTier(tier);
         when(propertiesProvider.getProperty(any(String.class))).thenReturn("1");
         List<String> ips = new ArrayList();
         ips.add("IP");
@@ -173,8 +176,9 @@ public class InfrastructureManagerImplTest {
         vm.setFqn(fqn);
         vm.setHostname(hostname);
 
-        when(claudiaClient.getIP(any(ClaudiaData.class), any(String.class), Matchers.anyInt(), any(VM.class)))
-                .thenReturn(ips);
+        when(
+                claudiaClient.getIP(any(ClaudiaData.class), any(String.class), Matchers.anyInt(), any(VM.class),
+                        anyString())).thenReturn(ips);
         Mockito.doNothing().when(claudiaClient)
                 .deployVM(any(ClaudiaData.class), any(TierInstance.class), Matchers.anyInt(), any(VM.class));
         when(ovfUtils.changeInitialResources(any(String.class))).thenReturn("ovf");

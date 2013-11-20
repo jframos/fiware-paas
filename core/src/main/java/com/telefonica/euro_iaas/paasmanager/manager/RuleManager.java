@@ -13,19 +13,18 @@ import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
 
 public interface RuleManager {
 
     /**
-     * Create an rule
+     * Create an rule.
      * 
      * @param rule
      * @return the securityGroup.
      */
-    Rule create(ClaudiaData claudiaData, Rule rule) throws InvalidEntityException, AlreadyExistsEntityException,
-            InfrastructureException;
+    Rule create(String region, String token, String vdc, Rule rule) throws InvalidEntityException,
+            AlreadyExistsEntityException, InfrastructureException;
 
     /**
      * Destroy a previously creted rule.
@@ -33,7 +32,8 @@ public interface RuleManager {
      * @param rule
      *            the candidate to rule
      */
-    void destroy(ClaudiaData claudiaData, Rule rule) throws InvalidEntityException, InfrastructureException;
+    void destroy(String region, String token, String vdc, Rule rule) throws InvalidEntityException,
+            InfrastructureException;
 
     /**
      * Find the rule using the given name.
