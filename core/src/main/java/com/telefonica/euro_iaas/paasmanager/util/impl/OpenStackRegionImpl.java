@@ -120,8 +120,9 @@ public class OpenStackRegionImpl implements OpenStackRegion {
             String url = endpointJson.get("publicURL").toString();
             return url;
         }
+        // return default regionName
 
-        return null;
+        return systemPropertiesProvider.getProperty(SystemPropertiesProvider.DEFAULT_REGION_NAME);
     }
 
     private List<String> parseRegionName(String response, String name) {

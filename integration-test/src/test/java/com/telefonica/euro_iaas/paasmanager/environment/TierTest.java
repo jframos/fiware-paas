@@ -98,7 +98,7 @@ public class TierTest {
         assertEquals(tier.getName(), "tiercreated_ok");
         assertEquals(tier.getProductReleaseDtos().size(), 1);
         assertEquals(tier.getProductReleaseDtos().get(0).getProductName(), "tomcat8");
-        assertEquals(tier.getRegion(), "regionOne");
+        assertEquals("regionOne", tier.getRegion());
     }
 
     @Test(expected = javax.ws.rs.WebApplicationException.class)
