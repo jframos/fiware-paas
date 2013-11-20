@@ -123,16 +123,13 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
             <property name="environmentManager" ref="environmentManager"/>
             <property name="networkInstanceManager" ref="networkInstanceManager"/>
+          
             
             
         </bean>
         <bean id="environmentManager" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl">
             <property name="environmentDao" ref="environmentDao"/>
-            <!--   <property name="environmentTypeDao" ref="environmentTypeDao"/>-->
-            <!--    <property name="tierDao" ref="tierDao"/>-->
-            <!--  <property name="productReleaseDao" ref="productReleaseDao"/> -->
-            <!--    <property name="productReleaseManager" ref="productReleaseManager"/> -->
             <property name="tierManager" ref="tierManager"/>
         </bean>
 
@@ -279,6 +276,8 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
             <property name="networkInstanceManager" ref="networkInstanceManager"/>   
+            <property name="networkManager" ref="networkManager"/>  
+            <property name="tierManager" ref="tierManager"/>   
 
 
         </bean>
@@ -328,6 +327,8 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="monitoringClient" ref="monitoringClient"/>
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="environmentUtils" ref="environmentUtils"/>
+            <property name="networkManager" ref="networkManager"/>   
+            <property name="tierManager" ref="tierManager"/>  
         </bean>
         <bean id="vappUtils2" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.util.VappUtilsImpl">
@@ -381,6 +382,8 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="environmentUtils" ref="environmentUtils"/>
             <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
             <property name ="networkInstanceManager" ref="networkInstanceManager"/>
+            <property name="networkManager" ref="networkManager"/>   
+            <property name="tierManager" ref="tierManager"/>  
         </bean>
 
     </beans>
@@ -399,6 +402,8 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="monitoringClient" ref="monitoringClient"/>
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="environmentUtils" ref="environmentUtils"/>
+            <property name="networkManager" ref="networkManager"/>   
+            <property name="tierManager" ref="tierManager"/>  
         </bean>
         <bean id="vappUtils2" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.util.VappUtilsNeoClaudiaOpenStackImpl">
@@ -496,6 +501,8 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="environmentUtils" ref="environmentUtils"/>
             <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
             <property name ="networkInstanceManager" ref="networkInstanceManager"/>
+            <property name="networkManager" ref="networkManager"/>   
+            <property name="tierManager" ref="tierManager"/>  
         </bean>
 
     </beans>
@@ -547,6 +554,8 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="environmentUtils" ref="environmentUtils"/>
             <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
             <property name ="networkInstanceManager" ref="networkInstanceManager"/>
+            <property name="networkManager" ref="networkManager"/>   
+            <property name="tierManager" ref="tierManager"/>  
 
         </bean>
 

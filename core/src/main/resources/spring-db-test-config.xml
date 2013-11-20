@@ -15,6 +15,31 @@
     <jdbc:initialize-database data-source="dataSource" ignore-failures="DROPS">
         <jdbc:script location="classpath:productrelease.sql"/>
     </jdbc:initialize-database>
+    
+    <!--<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+        <property name="url" value="jdbc:hsqldb:mem:paasmanager2;DB_CLOSE_DELAY=-1"/>
+    </bean>
+    <jdbc:initialize-database data-source="dataSource" ignore-failures="DROPS">
+        <jdbc:script location="classpath:productrelease.sql"/>
+    </jdbc:initialize-database> -->
+      <!--  <bean id="dataSource"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="org.h2.Drive"/>
+        <property name="url" value="jdbc:h2:mem:paasmanager"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>-->
+    <!--
+        <bean id="jpaAdaptor" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="showSql" value="false"/>
+
+        <property name="generateDdl" value="true"/>
+        <property name="databasePlatform" value="org.hibernate.dialect.HSQLDialect"/>
+    </bean>
+    -->
+    
 
     <bean id="jpaAdaptor" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
         <property name="showSql" value="false"/>
