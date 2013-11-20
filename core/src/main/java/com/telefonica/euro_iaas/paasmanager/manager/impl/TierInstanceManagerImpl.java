@@ -25,7 +25,6 @@ import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager;
 import com.telefonica.euro_iaas.paasmanager.manager.NetworkInstanceManager;
-import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
@@ -34,8 +33,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
-import com.telefonica.euro_iaas.paasmanager.model.Network;
-import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
@@ -60,7 +57,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     public TierInstance create(ClaudiaData data, String envName, TierInstance tierInstance)
             throws InvalidEntityException, InfrastructureException {
-        log.debug("Inserting in database tierInstance" + tierInstance.getName());
+        log.debug("Inserting in database for tier instance " + tierInstance.getName() + " "
+                + tierInstance.getNetworkInstances().size() + " " + tierInstance.getTier().getFloatingip());
 
         TierInstance tierInstanceDB = new TierInstance();
 
@@ -75,14 +73,14 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         Tier tierDB = null;
         try {
             tierDB = tierManager.load(tierInstance.getTier().getName(), data.getVdc(), envName);
+            log.debug("The tier already exists " + tierDB.getName() + " " + tierDB.getFloatingip() + " " + envName
+                    + " " + data.getVdc());
         } catch (EntityNotFoundException e) {
             log.error("Error to load the Tier " + tierInstance.getTier().getName() + " : " + e.getMessage());
             throw new InvalidEntityException("Error to load the Tier " + tierInstance.getTier().getName() + " : "
                     + e.getMessage());
         }
         tierInstanceDB.setTier(tierDB);
-        
-        
 
         if (tierInstance.getProductInstances() != null) {
             for (ProductInstance productInstance : tierInstance.getProductInstances()) {
@@ -121,20 +119,17 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
         tierInstanceDB.setNumberReplica(tierInstance.getNumberReplica());
 
-        
-
         try {
             tierInstanceDB.setStatus(tierInstance.getStatus());
-            tierInstance = tierInstanceDao.create(tierInstanceDB);
+            tierInstanceDB = tierInstanceDao.create(tierInstanceDB);
         } catch (AlreadyExistsEntityException e) {
             // TODO Auto-generated catch block
             throw new InvalidEntityException("Error to create the tier instance " + tierInstanceDB.getName() + " : "
                     + e.getMessage());
         }
 
-        return tierInstance;
+        return tierInstanceDB;
     }
-
 
     public void create(ClaudiaData claudiaData, TierInstance tierInstance, EnvironmentInstance envInstance,
             SystemPropertiesProvider systemPropertiesProvider) throws InfrastructureException, EntityNotFoundException,
@@ -162,15 +157,14 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         envInstance.setStatus(Status.DEPLOYING);
         environmentInstanceManager.update(envInstance);
 
-
         infrastructureManager.deployVM(claudiaData, tierInstance, replicaNumber, tierInstance.getOvf(), vm);
 
         // if (systemPropertiesProvider.getProperty(
         // SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
         for (ProductRelease productRelease : tierInstance.getTier().getProductReleases()) {
 
-          //  infrastructureManager.deployVM(claudiaData, tierInstance, replicaNumber, tierInstance.getOvf(),
-            //        vm);
+            // infrastructureManager.deployVM(claudiaData, tierInstance, replicaNumber, tierInstance.getOvf(),
+            // vm);
 
             ProductInstance productInstance = null;
             try {
@@ -349,6 +343,10 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         return tierInstanceDao.load(name);
     }
 
+    public TierInstance update(TierInstance tierInstance) throws EntityNotFoundException, InvalidEntityException {
+        return tierInstanceDao.update(tierInstance);
+    }
+
     public TierInstance loadByName(String name) throws EntityNotFoundException {
         return tierInstanceDao.findByTierInstanceName(name);
     }
@@ -467,7 +465,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     }
 
     public TierInstance update(ClaudiaData claudiaData, String envName, TierInstance tierInstance)
-            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
+            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException,
+            InfrastructureException {
 
         if (tierInstance.getId() != null)
             tierInstance = tierInstanceDao.update(tierInstance);

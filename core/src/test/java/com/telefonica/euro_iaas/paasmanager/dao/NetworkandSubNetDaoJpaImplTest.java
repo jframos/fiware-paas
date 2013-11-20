@@ -13,6 +13,9 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 
@@ -47,6 +50,24 @@ public class NetworkandSubNetDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(networkOut.getNetworkName(), NETWORK_NAME);
         assertEquals(networkOut.getSubNets().size(), 0);
 
+    }
+    
+    @Test(expected=com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
+    public void testDestroyNetworkNoSubNet() throws Exception {
+
+        Network network = new Network(NETWORK_NAME);
+
+        network = networkDao.create(network);
+        networkDao.load(NETWORK_NAME);
+    }
+    
+    @Test(expected=com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
+    public void testDestroySubNet() throws Exception {
+
+    	SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, "1");
+        subNet = subNetworkDao.create(subNet);
+        subNetworkDao.create(subNet);
+        subNetworkDao.load(SUB_NETWORK_NAME);
     }
 
     @Test
@@ -86,6 +107,29 @@ public class NetworkandSubNetDaoJpaImplTest extends AbstractJpaDaoTest {
         for (SubNetwork subNet2: networkOut.getSubNets()) {
         	assertEquals(subNet2.getName(), SUB_NETWORK_NAME);
         }
+    }
+    
+    @Test(expected=com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
+    public void testDeleteNetworkWithSubNets() throws Exception {
+
+
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, "1");
+        subNet = subNetworkDao.create(subNet);      
+        Set<SubNetwork> subNets = new HashSet<SubNetwork>();
+        subNets.add(subNet);
+        Network network = new Network(NETWORK_NAME);
+        network.setSubNets(subNets);
+ 
+        network = networkDao.create(network);
+        Set<SubNetwork> subNetAux = network.cloneSubNets();
+
+        network.setSubNets(null);
+        for (SubNetwork subNet2: subNetAux) {
+        	subNetworkDao.remove(subNet2);
+        }
+        
+        networkDao.remove(network);
+    //    networkDao.load(NETWORK_NAME);
 
     }
      

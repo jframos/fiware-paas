@@ -10,23 +10,23 @@ package com.telefonica.euro_iaas.paasmanager.claudia.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaRetrieveInfoException;
-import com.telefonica.euro_iaas.paasmanager.exception.IPNotRetrievedException;
-import com.telefonica.euro_iaas.paasmanager.exception.NetworkNotRetrievedException;
-import com.telefonica.euro_iaas.paasmanager.exception.OSNotRetrievedException;
-import com.telefonica.euro_iaas.paasmanager.exception.VMStatusNotRetrievedException;
-import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import net.sf.json.JSONArray;
 
 import org.apache.log4j.Logger;
 
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
 import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaResourceNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaRetrieveInfoException;
+import com.telefonica.euro_iaas.paasmanager.exception.IPNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.NetworkNotRetrievedException;
+import com.telefonica.euro_iaas.paasmanager.exception.OSNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
+import com.telefonica.euro_iaas.paasmanager.exception.VMStatusNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackUtil;
 
@@ -85,6 +85,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
                 claudiaData.getService() + "-" + tierInstance.getTier().getName() + "-" + replica);
         String payload = tierInstance.toJson();
         log.debug("Payload " + payload);
+        log.debug("Floating ip " + tierInstance.getTier().getFloatingip());
 
         return payload;
     }
@@ -140,7 +141,8 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         // openStackUtilImpl = new OpenStackUtilImpl(claudiaData.getUser());
 
         log.debug("Deploy server " + claudiaData.getService() + " tier " + tierInstance.getName() + " replica "
-                + replica);
+                + replica + " with networks " + tierInstance.getNetworkInstances());
+
         String payload = buildCreateServerPayload(claudiaData, tierInstance, replica);
 
         try {
@@ -165,47 +167,53 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 
     @Override
     public void undeployVM(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void undeployService(ClaudiaData claudiaData) throws InfrastructureException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public String obtainIPFromFqn(String org, String vdc, String service, String vmName, PaasManagerUser user) throws IPNotRetrievedException, ClaudiaResourceNotFoundException, NetworkNotRetrievedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public String obtainIPFromFqn(String org, String vdc, String service, String vmName, PaasManagerUser user)
+            throws IPNotRetrievedException, ClaudiaResourceNotFoundException, NetworkNotRetrievedException {
+        return null;  // To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public String obtainOS(String org, String vdc, String service, String vmName, PaasManagerUser user) throws OSNotRetrievedException, ClaudiaResourceNotFoundException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public String obtainOS(String org, String vdc, String service, String vmName, PaasManagerUser user)
+            throws OSNotRetrievedException, ClaudiaResourceNotFoundException {
+        return null;  // To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public String getVApp(String org, String vdc, String service, String vmName, PaasManagerUser user) throws IPNotRetrievedException, ClaudiaResourceNotFoundException, NetworkNotRetrievedException, OSNotRetrievedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public String getVApp(String org, String vdc, String service, String vmName, PaasManagerUser user)
+            throws IPNotRetrievedException, ClaudiaResourceNotFoundException, NetworkNotRetrievedException,
+            OSNotRetrievedException {
+        return null;  // To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public String onOffScalability(ClaudiaData claudiaData, String environmentName, boolean b) throws InfrastructureException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public String onOffScalability(ClaudiaData claudiaData, String environmentName, boolean b)
+            throws InfrastructureException {
+        return null;  // To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public String createImage(ClaudiaData claudiaData, TierInstance tierInstance) throws ClaudiaRetrieveInfoException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  // To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public String switchVMOn(String org, String vdc, String service, String vmName, PaasManagerUser user) throws InfrastructureException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public String switchVMOn(String org, String vdc, String service, String vmName, PaasManagerUser user)
+            throws InfrastructureException {
+        return null;  // To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public String obtainVMStatus(String vapp) throws VMStatusNotRetrievedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  // To change body of implemented methods use File | Settings | File Templates.
     }
 
     public List<String> findAllVMs(ClaudiaData claudiaData, String region) throws ClaudiaResourceNotFoundException {
@@ -265,7 +273,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 
     @Override
     public String deployServiceFull(ClaudiaData claudiaData, String ovf) throws InfrastructureException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  // To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
@@ -283,22 +291,24 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 
     @Override
     public String browseService(ClaudiaData claudiaData) throws ClaudiaResourceNotFoundException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  // To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public String browseVM(String org, String vdc, String service, String vm, PaasManagerUser user) throws ClaudiaResourceNotFoundException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public String browseVM(String org, String vdc, String service, String vm, PaasManagerUser user)
+            throws ClaudiaResourceNotFoundException {
+        return null;  // To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public String deployService(ClaudiaData claudiaData, String ovf) throws InfrastructureException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;  // To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public String deployVM(String org, String vdc, String service, String vmName, PaasManagerUser user, String vmPath) throws InfrastructureException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public String deployVM(String org, String vdc, String service, String vmName, PaasManagerUser user, String vmPath)
+            throws InfrastructureException {
+        return null;  // To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void undeployVMReplica(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
@@ -318,7 +328,8 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     }
 
     @Override
-    public String deployVDC(ClaudiaData claudiaData, String cpu, String mem, String disk) throws InfrastructureException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public String deployVDC(ClaudiaData claudiaData, String cpu, String mem, String disk)
+            throws InfrastructureException {
+        return null;  // To change body of implemented methods use File | Settings | File Templates.
     }
 }

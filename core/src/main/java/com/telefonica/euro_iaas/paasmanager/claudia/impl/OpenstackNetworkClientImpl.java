@@ -343,4 +343,24 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         return response;
     }
 
+    /**
+     * it delete the interface in the public router
+     * 
+     * @throws InfrastructureException
+     */
+    public void deleteNetworkToPublicRouter(ClaudiaData claudiaData, NetworkInstance netInstance, String region)
+            throws InfrastructureException {
+        log.info("Delete Interfact from net " + netInstance.getNetworkName() + " to public router ");
+
+        try {
+            String response = openStackUtil.deleteInterfaceToPublicRouter(claudiaData.getUser(), netInstance, region);
+            log.debug(response);
+        } catch (OpenStackException e) {
+            String msm = "Error to add the network " + netInstance.getNetworkName() + " to the public router :"
+                    + e.getMessage();
+            log.error(msm);
+            throw new InfrastructureException(msm, e);
+        }
+    }
+
 }

@@ -49,5 +49,29 @@ public class TierTest extends TestCase {
         assertEquals(tier3.equals(tier), true);
 
     }
+    
+    @Test
+    public void testTierInstance() throws Exception {
+
+        Integer minimum = new Integer(1);
+        Integer initial = new Integer(2);
+        Integer maximum = new Integer(1);
+
+        NetworkInstance networkInstance = new NetworkInstance ("net");
+        networkInstance.setIdNetwork("ID");
+
+        Tier tier = new Tier("tier", maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes", null);
+        
+        TierInstance tierInst = new TierInstance ();
+        tierInst.setName("tier");
+        tierInst.addNetworkInstance(networkInstance);
+        tierInst.setTier(tier);
+        
+        String payload = "{\"server\": {\"key_name\": \"keypair\", \"networks\": [ {\"uuid\": \"ID\"} ], \"flavorRef\": \"2\", " +
+        "\"imageRef\": \"image\", \"name\": \"tier\"}}";
+
+        assertEquals (tierInst.toJson(), payload);
+
+    }
 
 }

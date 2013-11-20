@@ -218,4 +218,11 @@ public interface OpenStackUtil {
      */
 
     String listNetworks(String region, String token, String vdc) throws OpenStackException;
+
+    /**
+     * It deletes the interface in the public router.
+     */
+    String deleteInterfaceToPublicRouter(PaasManagerUser user, NetworkInstance netInstance, String region)
+            throws OpenStackException;
+
 }

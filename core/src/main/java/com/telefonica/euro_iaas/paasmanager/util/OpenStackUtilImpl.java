@@ -959,13 +959,11 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // 6570eca2-21e2-4942-bede-f556c57af2b4/action"
 
         String response = null;
-        // TaskResult deletion = new TaskResult();
 
         try {
             HttpUriRequest request = createNovaDeleteRequest(RESOURCE_SERVERS + "/" + serverId, region, token, vdc);
 
             response = executeNovaRequest(request);
-            // deletion.setMessage(response);
 
         } catch (OpenStackException e) {
             String errorMessage = "Error deleting server " + serverId + ": " + e;
@@ -1431,6 +1429,41 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
+        return response;
+
+    }
+
+    public String deleteInterfaceToPublicRouter(PaasManagerUser user, NetworkInstance net, String region)
+            throws OpenStackException {
+        log.debug("Delete interface in public router");
+        String idRouter = systemPropertiesProvider.getProperty(SystemPropertiesProvider.PUBLIC_ROUTER_ID);
+        PaasManagerUser user2 = this.getAdminUser(user);
+
+        log.debug("tenantid " + user2.getTenantId());
+        log.debug("token " + user2.getToken());
+        log.debug("user name " + user2.getUserName());
+
+        log.debug("Deleting an interface from network " + net.getNetworkName() + " to router " + idRouter);
+        String response = null;
+
+        try {
+            String payload = net.toAddInterfaceJson();
+            log.debug(payload);
+
+            HttpUriRequest request = createQuantumPutRequest(RESOURCE_ROUTERS + "/" + idRouter + "/"
+                    + RESOURCE_REMOVE_INTERFACE, payload, APPLICATION_JSON, region, user.getToken(), user.getTenantId());
+            response = executeNovaRequest(request);
+
+        } catch (OpenStackException e) {
+            String errorMessage = "Error deleting interface in  public router " + idRouter + ": " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        } catch (Exception e) {
+            String errorMessage = "Error deleting interface in  public router from OpenStack: " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        }
+
         return response;
     }
 

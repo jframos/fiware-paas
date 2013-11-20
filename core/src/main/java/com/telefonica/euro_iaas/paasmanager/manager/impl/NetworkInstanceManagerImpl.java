@@ -23,7 +23,6 @@ import com.telefonica.euro_iaas.paasmanager.manager.RouterManager;
 import com.telefonica.euro_iaas.paasmanager.manager.SubNetworkInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
-import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
@@ -133,12 +132,14 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
     public void delete(ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
             throws EntityNotFoundException, InvalidEntityException, InfrastructureException {
         log.debug("Destroying network " + networkInstance.getNetworkName());
-        log.debug("Deleting the router and their interfaces");
-        for (RouterInstance router : networkInstance.getRouters()) {
-            routerManager.delete(claudiaData, router, networkInstance, region);
-        }
+
+        log.debug("Deleting the public interface interfaces");
+        networkClient.deleteNetworkToPublicRouter(claudiaData, networkInstance, region);
         log.debug("Deleting the subnets");
-        for (SubNetworkInstance subNet : networkInstance.getSubNets()) {
+        Set<SubNetworkInstance> subNetAux = networkInstance.cloneSubNets();
+        networkInstance.getSubNets().clear();
+        networkInstanceDao.update(networkInstance);
+        for (SubNetworkInstance subNet : subNetAux) {
             subNetworkInstanceManager.delete(claudiaData, subNet, region);
         }
         log.debug("Deleting the network");

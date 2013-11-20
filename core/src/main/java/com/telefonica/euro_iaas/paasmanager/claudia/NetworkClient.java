@@ -126,4 +126,14 @@ public interface NetworkClient {
     String loadSubNetwork(ClaudiaData claudiaData, SubNetworkInstance subNet, String region)
             throws EntityNotFoundException;
 
+    /**
+     * It deletes the interface in the public router.
+     * 
+     * @param claudiaData
+     * @param networkInstance
+     * @throws InfrastructureException
+     */
+    void deleteNetworkToPublicRouter(ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
+            throws InfrastructureException;
+
 }

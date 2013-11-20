@@ -210,6 +210,7 @@ class EnvironmentRequest:
 
         print tostring(tier.to_tier_xml())
         payload=tostring(tier.to_tier_xml())
+        print payload
         self.__add_tier_environment(url, payload)
 
     def __add_product_to_tier (self,url,products_information):
