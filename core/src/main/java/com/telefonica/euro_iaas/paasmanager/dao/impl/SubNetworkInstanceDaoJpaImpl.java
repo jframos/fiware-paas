@@ -11,15 +11,14 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.dao.SubNetworkDao;
 import com.telefonica.euro_iaas.paasmanager.dao.SubNetworkInstanceDao;
-import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 
 /**
  * @author Henar Munoz
  */
-public class SubNetworkInstanceDaoJpaImpl extends AbstractBaseDao<SubNetworkInstance, String> implements SubNetworkInstanceDao {
+public class SubNetworkInstanceDaoJpaImpl extends AbstractBaseDao<SubNetworkInstance, String>
+    implements SubNetworkInstanceDao {
 
     /**
      * find all networks.

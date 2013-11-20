@@ -142,6 +142,15 @@ public class TierInstance extends InstallableInstance {
         }
     }
     
+    
+    public Set<NetworkInstance> cloneNetworkInt () {
+    	Set<NetworkInstance>  netInts = new HashSet<NetworkInstance>();
+    	for (NetworkInstance netInst: this.getNetworkInstances()) {
+    		netInts.add(netInst);
+    	}
+    	return netInts;
+    }
+    
     /**
      * @param productInstance
      */
@@ -306,12 +315,20 @@ public class TierInstance extends InstallableInstance {
             payload = payload + "\"security_groups\": [{ \"name\": \""
             + getTier().getSecurityGroup().getName() + "\"}], ";
         }
-        if (this.getNetworkInstances() != null) {
+        if (!this.getNetworkInstances().isEmpty()) {
             payload = payload + "\"networks\": [";
+            int count =0;
             for (NetworkInstance net: this.getNetworkInstances()){
 
-                payload = payload + "{ \"uuid\": \""
-                + net.getIdNetwork() + "\"}";
+                if (count == this.getNetworkInstances().size() -1) {
+            	    payload = payload + " {\"uuid\": \""
+                    + net.getIdNetwork() + "\"} ";
+                } else {
+                	payload = payload + " {\"uuid\": \""
+                    + net.getIdNetwork() + "\"} ,";
+                }
+                count++;
+                
             }
             payload = payload + "], ";
 
@@ -323,5 +340,11 @@ public class TierInstance extends InstallableInstance {
         return payload;
 
     }
+
+	public void update(Tier tier2) {
+		tier = tier2;
+		
+	}
+
 
 }

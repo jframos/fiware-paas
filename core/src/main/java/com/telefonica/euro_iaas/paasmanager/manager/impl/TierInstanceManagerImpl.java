@@ -60,7 +60,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     public TierInstance create(ClaudiaData data, String envName, TierInstance tierInstance)
             throws InvalidEntityException, InfrastructureException {
-        log.debug("Inserting in database tierInstance" + tierInstance.getName());
+    	 log.debug("Inserting in database for tier instance " + tierInstance.getName() + " " + tierInstance.getNetworkInstances().size()
+    		        + " " + tierInstance.getTier().getFloatingip());
 
         TierInstance tierInstanceDB = new TierInstance();
 
@@ -75,6 +76,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         Tier tierDB = null;
         try {
             tierDB = tierManager.load(tierInstance.getTier().getName(), data.getVdc(), envName);
+            log.debug("The tier already exists " + tierDB.getName()+ " " + tierDB.getFloatingip() + " " + envName + " " + data.getVdc());
         } catch (EntityNotFoundException e) {
             log.error("Error to load the Tier " + tierInstance.getTier().getName() + " : " + e.getMessage());
             throw new InvalidEntityException("Error to load the Tier " + tierInstance.getTier().getName() + " : "
@@ -120,19 +122,17 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         }
 
         tierInstanceDB.setNumberReplica(tierInstance.getNumberReplica());
-
-        
-
+     
         try {
             tierInstanceDB.setStatus(tierInstance.getStatus());
-            tierInstance = tierInstanceDao.create(tierInstanceDB);
+            tierInstanceDB = tierInstanceDao.create(tierInstanceDB);
         } catch (AlreadyExistsEntityException e) {
             // TODO Auto-generated catch block
             throw new InvalidEntityException("Error to create the tier instance " + tierInstanceDB.getName() + " : "
                     + e.getMessage());
         }
 
-        return tierInstance;
+        return tierInstanceDB;
     }
 
 
@@ -347,6 +347,10 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     public TierInstance load(String name) throws EntityNotFoundException {
         return tierInstanceDao.load(name);
+    }
+    
+    public TierInstance update(TierInstance tierInstance) throws EntityNotFoundException, InvalidEntityException {
+        return tierInstanceDao.update(tierInstance);
     }
 
     public TierInstance loadByName(String name) throws EntityNotFoundException {

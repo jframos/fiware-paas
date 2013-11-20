@@ -67,7 +67,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
  */
 public class OpenStackUtilImpl implements OpenStackUtil {
 
-    /**
+	/**
      * The log.
      */
 
@@ -958,23 +958,12 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      */
 
     public String deleteServer(String serverId, PaasManagerUser user) throws OpenStackException {
-        // throw new UnsupportedOperationException("Not supported yet.");
-        // I need to know X-Auth-Token, orgID-Tennat, IP and Port
-        // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
-        // -H "Content-Type: application/json" -H "Accept: application/json"
-        // -d "{"reboot" : {"type" : "SOFT" }}"
-        // -X POST
-        // "http://10.95.171.115:8774/v2/30c60771b6d144d2861b21e442f0bef9/servers/
-        // 6570eca2-21e2-4942-bede-f556c57af2b4/action"
 
         String response = null;
-        // TaskResult deletion = new TaskResult();
 
         try {
             HttpUriRequest request = createNovaDeleteRequest(RESOURCE_SERVERS + "/" + serverId, user);
-
             response = executeNovaRequest(request);
-            // deletion.setMessage(response);
 
         } catch (OpenStackException e) {
             String errorMessage = "Error deleting server " + serverId + ": " + e;
@@ -993,7 +982,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         String response = null;
 
         try {
-            HttpUriRequest request = createNovaDeleteRequest(RESOURCE_SERVERS + "/" + idSubNet, user);
+            HttpUriRequest request = createQuantumDeleteRequest(RESOURCE_SUBNETS + "/" + idSubNet, user);
 
             response = executeNovaRequest(request);
 
@@ -1445,6 +1434,41 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
+        return response;
+	}
+
+
+	public String deleteInterfaceToPublicRouter(PaasManagerUser user,
+			NetworkInstance net) throws OpenStackException {
+		log.debug ("Delete interface in public router");
+		String idRouter = systemPropertiesProvider.getProperty(SystemPropertiesProvider.PUBLIC_ROUTER_ID);
+        PaasManagerUser user2 = this.getAdminUser(user);
+        
+        log.debug ("tenantid " + user2.getTenantId());
+        log.debug ("token " + user2.getToken());
+        log.debug ("user name " + user2.getUserName());
+
+        log.debug("Deleting an interface from network " + net.getNetworkName() + " to router " + idRouter);
+        String response = null;
+
+        try {
+        	 String payload = net.toAddInterfaceJson();
+             log.debug(payload);
+
+             HttpUriRequest request = createQuantumPutRequest(RESOURCE_ROUTERS
+                     + "/" + idRouter + "/" + RESOURCE_REMOVE_INTERFACE, payload, APPLICATION_JSON, user2);
+             response = executeNovaRequest(request);
+
+        } catch (OpenStackException e) {
+            String errorMessage = "Error deleting interface in  public router " + idRouter + ": " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        } catch (Exception e) {
+            String errorMessage = "Error deleting interface in  public router from OpenStack: " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        }
+
         return response;
 	}
 

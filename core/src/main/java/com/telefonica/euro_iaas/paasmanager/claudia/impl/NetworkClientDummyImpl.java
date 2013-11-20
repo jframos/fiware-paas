@@ -149,4 +149,12 @@ public class NetworkClientDummyImpl implements NetworkClient {
 		return null;
 	}
 
+
+	@Override
+	public void deleteNetworkToPublicRouter(ClaudiaData claudiaData,
+			NetworkInstance networkInstance) throws InfrastructureException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -314,12 +314,18 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                     log.info("Deleting Virtual Machines for environmetn instance " + envInstance.getBlueprintName());
                     envInstance.setStatus(Status.UNDEPLOYING);
                     envInstance = environmentInstanceDao.update(envInstance);
-                    infrastructureManager.deleteEnvironment(claudiaData, envInstance);
+
+					infrastructureManager.deleteEnvironment(claudiaData, envInstance);
+
                 } catch (InfrastructureException e) {
                     log.error("It is not possible to delete the environment " + envInstance.getName() + " : "
                             + e.getMessage());
                     throw new InvalidEntityException(EnvironmentInstance.class, e);
-                }
+                } catch (EntityNotFoundException e) {
+                	log.error("It is not possible to delete the environment " + envInstance.getName() + " : "
+                            + e.getMessage());
+                    throw new InvalidEntityException(EnvironmentInstance.class, e);
+				}
 
                 envInstance.setStatus(Status.UNDEPLOYED);
             }

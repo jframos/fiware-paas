@@ -81,6 +81,9 @@ public class NetworkManagerImpl implements NetworkManager {
         return network;
     }
 
+    public void createPublicNetwork () {
+    	
+    }
 
 
     /**
@@ -112,7 +115,14 @@ public class NetworkManagerImpl implements NetworkManager {
      */
     private void createDefaultSubNetwork(ClaudiaData claudiaData, Network network)
         throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
-        int cidrCount = networkInstanceManager.getNumberDeployedNetwork(claudiaData) + 1;
+        int cidrOpenstack = networkInstanceManager.getNumberDeployedNetwork(claudiaData) + 1;
+        int cidrdb = this.findAll().size();
+        int cidrCount = 0;
+        if (cidrdb > cidrOpenstack) {
+        	cidrCount = cidrdb;
+        } else {
+        	cidrCount = cidrOpenstack;
+        }
         SubNetwork subNet = new SubNetwork("sub-net-" + network.getNetworkName()
             + "-" + cidrCount, "" + cidrCount);
         subNet = subNetworkManager.create(subNet);

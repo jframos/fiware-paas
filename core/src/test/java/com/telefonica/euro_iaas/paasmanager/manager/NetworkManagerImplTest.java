@@ -24,7 +24,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 
 
-
 /**
  * Network, SubNetwork and Router Manager.
  * 
@@ -167,5 +166,6 @@ public class NetworkManagerImplTest extends TestCase {
 
     }
    
+
 
 }

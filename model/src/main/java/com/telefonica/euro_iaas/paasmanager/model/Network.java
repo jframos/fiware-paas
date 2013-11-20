@@ -88,6 +88,18 @@ public class Network {
     }
     
     /**
+     * It does a copy of the collection.
+     * @return
+     */
+    public Set<SubNetwork> cloneSubNets () {
+    	 Set<SubNetwork> subNetAux = new HashSet<SubNetwork> ();
+         for (SubNetwork subNet2: getSubNets()) {
+         	subNetAux.add(subNet2);
+         }
+         return subNetAux;
+    }
+    
+    /**
      * It deletes a subnet to the network.
      * 
      * @param subNet
