@@ -71,7 +71,12 @@ public class OpenStackRegionImpl implements OpenStackRegion {
 
     @Override
     public String getQuantumEndPoint(String regionName, String token) throws OpenStackException {
-        return getEndPointByNameAndRegionName("quantum", regionName, token);
+        String url = getEndPointByNameAndRegionName("quantum", regionName, token);
+        Integer index = url.lastIndexOf("/v");
+        if (index == -1) {
+            url = url + "v2.0/";
+        }
+        return url;
     }
 
     @Override

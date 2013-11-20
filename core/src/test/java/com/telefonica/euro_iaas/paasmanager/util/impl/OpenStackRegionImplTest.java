@@ -93,7 +93,7 @@ public class OpenStackRegionImplTest {
         String resultURL = openStackRegion.getQuantumEndPoint(regionName, token);
         // then
         assertNotNull(resultURL);
-        assertEquals("http://130.206.80.58:9696/", resultURL);
+        assertEquals("http://130.206.80.58:9696/v2.0/", resultURL);
     }
 
     @Test
