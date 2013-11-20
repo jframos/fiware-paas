@@ -94,11 +94,11 @@ public class TierTest {
         tierbk.setRegion("regionOne");
 
         tierResource.insert(org, vdc, "create_tier_ok", tierbk.toDto());
-        TierDto tier = tierResource.load(vdc, "create_tier_ok", "tiercreated_ok");
-        assertEquals(tier.getName(), "tiercreated_ok");
-        assertEquals(tier.getProductReleaseDtos().size(), 1);
-        assertEquals(tier.getProductReleaseDtos().get(0).getProductName(), "tomcat8");
-        assertEquals("regionOne", tier.getRegion());
+        TierDto tierDto = tierResource.load(vdc, "create_tier_ok", "tiercreated_ok");
+        assertEquals(tierDto.getName(), "tiercreated_ok");
+        assertEquals(tierDto.getProductReleaseDtos().size(), 1);
+        assertEquals(tierDto.getProductReleaseDtos().get(0).getProductName(), "tomcat8");
+        assertEquals("regionOne", tierDto.getRegion());
     }
 
     @Test(expected = javax.ws.rs.WebApplicationException.class)

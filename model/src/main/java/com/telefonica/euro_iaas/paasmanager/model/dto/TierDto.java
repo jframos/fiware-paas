@@ -186,6 +186,7 @@ public class TierDto {
         tier.setImage(getImage());
         tier.setKeypair(getKeypair());
         tier.setFloatingip(getFloatingip());
+        tier.setRegion(getRegion());
 
         for (ProductReleaseDto pReleaseDto : getProductReleaseDtos()) {
             ProductRelease pRelease = new ProductRelease();
