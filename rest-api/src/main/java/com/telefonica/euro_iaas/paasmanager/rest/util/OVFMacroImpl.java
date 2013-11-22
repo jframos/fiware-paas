@@ -160,8 +160,8 @@ public class OVFMacroImpl implements OVFMacro {
         String macroValue = null;
         // Go through all VMs present in EnvironmentInstance looking for an
         // attribute
-        for (int i = 0; i < environment.getTiers().size(); i++) {
-            Tier tier = environment.getTiers().get(i);
+        for (Tier tier:  environment.getTiers()) {
+          
             for (int j = 0; j < tier.getProductReleases().size(); j++) {
                 ProductRelease productRelease = tier.getProductReleases().get(j);
 

@@ -161,8 +161,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
         }
 
         // Validating length of hostname (maximum =64)
-        for (int i = 0; i < environmentInstanceDto.getEnvironmentDto().getTierDtos().size(); i++) {
-            TierDto tierDto = environmentInstanceDto.getEnvironmentDto().getTierDtos().get(i);
+        for (TierDto tierDto: environmentInstanceDto.getEnvironmentDto().getTierDtos()) {
             // String hostname = (claudiaData.getService() + "-"
             // + tier.getName() + "-"
             // + numReplica).toLowerCase();

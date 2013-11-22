@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentDao;
@@ -41,7 +43,7 @@ public class EnvironmentManagerImplTest extends TestCase {
 
     private ProductRelease productRelease;
     private Tier tier;
-    private List<Tier> tiers;
+    private Set<Tier> tiers;
 
     private ProductReleaseManager productReleaseManager;
 
@@ -68,7 +70,7 @@ public class EnvironmentManagerImplTest extends TestCase {
         tier.setName("tierName");
         tier.setProductReleases(productReleases);
 
-        tiers = new ArrayList<Tier>();
+        tiers = new HashSet<Tier>();
         tiers.add(tier);
 
         productReleaseDao = mock(ProductReleaseDao.class);

@@ -97,8 +97,8 @@ public class ExtendedOVFUtilImpl implements ExtendedOVFUtil {
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil#getTiers (java.lang.String)
      */
-    public List<Tier> getTiers(String payload, String vdc) throws InvalidEnvironmentRequestException {
-        List<Tier> tiers = new ArrayList<Tier>();
+    public Set<Tier> getTiers(String payload, String vdc) throws InvalidEnvironmentRequestException {
+        Set<Tier> tiers = new HashSet<Tier>();
         List<String> ovfSingleVM = null;
         try {
             ovfSingleVM = ovfUtils.getOvfsSingleVM(payload);

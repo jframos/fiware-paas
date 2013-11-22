@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
@@ -145,7 +147,7 @@ public class TierInstanceManagerImplTest extends TestCase {
 
         when(productInstanceManager.create(any(ProductInstance.class))).thenReturn(productInstance);
 
-        List<Tier> tiers = new ArrayList<Tier>();
+        Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tierProductConfig);
         tiers.add(tierProductShard);
         tiers.add(tierProductMongos);

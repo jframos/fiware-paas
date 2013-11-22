@@ -12,7 +12,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentDao;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
@@ -108,7 +110,7 @@ public class EnvironmentInstanceManagerImplTest {
         tier.setName("tierName");
         tier.setProductReleases(productReleases);
 
-        List<Tier> tiers = new ArrayList<Tier>();
+        Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tier);
         tiers.add(tier);
 

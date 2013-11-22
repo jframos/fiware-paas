@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -123,7 +124,7 @@ public class TestClaudiaServiceandVAppUtils {
         tier2.setProductReleases(productReleases);
         tier3.setProductReleases(productReleases);
 
-        List<Tier> tiers = new ArrayList<Tier>();
+        Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tier);
         tiers.add(tier2);
         tiers.add(tier3);

@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -48,6 +50,7 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
     }
 
     public Environment load(String envName) throws EntityNotFoundException {
+  
         try {
             // return filterEqualTiers(findByEnvironmentName(envName));
             return findByEnvironmentName(envName);
@@ -72,14 +75,16 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
      */
 
     public Environment load(String envName, String vdc) throws EntityNotFoundException {
-        Environment environment = null;
+    	return findByEnvironmentNameVdc(envName, vdc);
+       /* Environment environment = null;
         try {
             // return filterEqualTiers(findByEnvironmentNameVdc(envName, vdc));
             return findByEnvironmentNameVdc(envName, vdc);
         } catch (Exception e) {
             // return filterEqualTiers(findByEnvironmentNameVdc(envName, vdc));
             return findByEnvironmentNameVdcNoTiers(envName, vdc);
-        }
+        }*/
+    //	return this.loadByField(Environment.class, "name", envName);
     }
 
     /*
@@ -182,7 +187,7 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
      * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang .String)
      */
     private Environment findByEnvironmentName(String envName) throws EntityNotFoundException {
-        Query query = entityManager.createQuery("select p from Environment p join "
+        Query query = entityManager.createQuery("select p from Environment p left join "
                 + "fetch p.tiers where p.name = :name");
         query.setParameter("name", envName);
         Environment environment = null;
@@ -197,7 +202,8 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
     }
 
     private Environment findByEnvironmentNameNoTiers(String envName) throws EntityNotFoundException {
-        Query query = entityManager.createQuery("select p from Environment p where p.name = :name");
+        Query query = entityManager.createQuery("select p from Environment p join "
+                + "fetch p.tiers where p.name = :name");
         query.setParameter("name", envName);
         Environment environment = null;
         try {
@@ -211,14 +217,13 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
     }
 
     private Environment findByEnvironmentNameVdc(String envName, String vdc) throws EntityNotFoundException {
-        Query query = entityManager.createQuery("select p from Environment p join "
+        Query query = entityManager.createQuery("select p from Environment p left join "
                 + "fetch p.tiers where p.name = :name and p.vdc = :vdc");
         query.setParameter("name", envName);
         query.setParameter("vdc", vdc);
         Environment environment = null;
         try {
             environment = (Environment) query.getSingleResult();
-            entityManager.flush();
         } catch (NoResultException e) {
             String message = " No Environment found in the database with name: " + envName + " vdc " + vdc;
             throw new EntityNotFoundException(Environment.class, "name", envName);
@@ -264,19 +269,21 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
     }
 
     private List<Environment> filterEqualTiers(List<Environment> environments) {
-        List<Tier> tierResult = new ArrayList<Tier>();
+        Set<Tier> tierResult = new HashSet<Tier>();
         List<Environment> result = new ArrayList<Environment>();
 
         for (Environment environment : environments) {
-            List<Tier> tiers = environment.getTiers();
-            for (int i = 0; i < tiers.size(); i++) {
-                Tier tier = tiers.get(i);
+            Set<Tier> tiers = environment.getTiers();
+            int i = 0;
+            for (Tier tier: tiers) {
                 List<Tier> tierAux = new ArrayList<Tier>();
                 for (int j = i + 1; j < tiers.size(); j++) {
-                    tierAux.add(tiers.get(j));
+                    tierAux.add(tier);
+                    i++;
                 }
-                if (!tierAux.contains(tier))
+                if (!tierAux.contains(tier)) {
                     tierResult.add(tier);
+                }
             }
             environment.setTiers(tierResult);
             result.add(environment);
@@ -285,13 +292,13 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
     }
 
     private Environment filterEqualTiers(Environment environment) {
-        List<Tier> tierResult = new ArrayList<Tier>();
+        Set<Tier> tierResult = new HashSet<Tier>();
         Environment result = new Environment();
         List<String> tierString = new ArrayList<String>();
-        List<Tier> tiers = environment.getTiers();
+        Set<Tier> tiers = environment.getTiers();
 
-        for (int i = 0; i < tiers.size(); i++) {
-            Tier tier = tiers.get(i);
+        int i=0;
+        for (Tier tier: tiers) {
             if (i == 0) {
                 tierResult.add(tier);
                 tierString.add(tier.getName());
@@ -299,6 +306,7 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
                 if (!tierString.contains(tier.getName()))
                     tierResult.add(tier);
             }
+            i ++;
         }
         result.setTiers(tierResult);
 

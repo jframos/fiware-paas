@@ -20,7 +20,9 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -87,7 +89,7 @@ public class ProductInstallatorRECManagerImplTest {
         productReleases.add(productRelease);
         tier.setProductReleases(productReleases);
 
-        List<Tier> tiers = new ArrayList<Tier>();
+        Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tier);
         envResult.setTiers(tiers);
 

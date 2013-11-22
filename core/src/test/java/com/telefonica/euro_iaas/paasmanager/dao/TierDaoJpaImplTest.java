@@ -75,7 +75,7 @@ public class TierDaoJpaImplTest extends AbstractJpaDaoTest {
 
         tier = tierDao.create(tier);
         
-    /*    tier = tierDao.load(TIER_NAME, "vdc", "environmentName");
+      /*  tier = tierDao.load(TIER_NAME, "vdc", "environmentName");
         assertNotNull(tier);
         assertNotNull(tier.getName(), TIER_NAME);
         assertNotNull(tier.getVdc(), VDC);*/
@@ -105,10 +105,8 @@ public class TierDaoJpaImplTest extends AbstractJpaDaoTest {
         assertNotNull(tier);
         assertNotNull(tier.getName(), TIER_NAME);
         assertNotNull(tier.getFloatingip(), "true");
-        
-        
-        
-    /*    tier = tierDao.load(TIER_NAME, "vdc", "environmentName");
+
+      /*  tier = tierDao.load(TIER_NAME, "vdc", "environmentName");
         assertNotNull(tier);
         assertNotNull(tier.getName(), TIER_NAME);
         assertNotNull(tier.getVdc(), VDC);*/
@@ -134,7 +132,7 @@ public class TierDaoJpaImplTest extends AbstractJpaDaoTest {
         tier = tierDao.create(tier);
         tierDao.remove(tier);
         
-      //  tier = tierDao.load(TIER_NAME, "vdc", "environmentName");
+        //tier = tierDao.load(TIER_NAME, "vdc", "environmentName");
 
     }
     

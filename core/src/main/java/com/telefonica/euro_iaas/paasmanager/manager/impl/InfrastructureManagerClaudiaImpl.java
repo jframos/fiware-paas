@@ -37,6 +37,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaResourceNotFoundExc
 import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaRetrieveInfoException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidVappException;
 import com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager;
 import com.telefonica.euro_iaas.paasmanager.manager.NetworkInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
@@ -164,8 +165,8 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
     }
 
     public EnvironmentInstance createInfrasctuctureEnvironmentInstance(EnvironmentInstance environmentInstance,
-            List<Tier> tiers, ClaudiaData claudiaData) throws InvalidOVFException, InfrastructureException,
-            InvalidEntityException, EntityNotFoundException {
+            Set<Tier> tiers, ClaudiaData claudiaData) throws InfrastructureException, InvalidVappException,
+            InvalidOVFException, InvalidEntityException, EntityNotFoundException {
 
         // Deploy MVs
         log.debug("Creating infrastructure for environemnt instance " + environmentInstance.getBlueprintName());

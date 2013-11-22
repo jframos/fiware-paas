@@ -8,7 +8,10 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,6 +21,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
@@ -53,11 +57,10 @@ public class Environment {
     @Column(length = 90000)
     private String ovf;
 
-    // @JoinTable(name = "environment_has_tiers")
-    @ManyToMany(fetch = FetchType.LAZY)
-    // @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "environment_has_tiers", joinColumns = { @JoinColumn(name = "environment_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) })
-    private List<Tier> tiers;
+    @ManyToMany
+    @JoinTable(name = "environment_has_tiers", joinColumns = { @JoinColumn(name = "environment_ID", nullable = false, updatable = false) }, 
+        inverseJoinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) })
+    private Set<Tier> tiers = new HashSet<Tier> ();
 
     /**
      * Default constructor.
@@ -71,7 +74,7 @@ public class Environment {
      * @param name
      * @param tiers
      */
-    public Environment(String name, List<Tier> tiers) {
+    public Environment(String name, Set<Tier> tiers) {
         this.name = name;
         this.tiers = tiers;
     }
@@ -83,7 +86,7 @@ public class Environment {
      * @param tiers
      * @param description
      */
-    public Environment(String name, List<Tier> tiers, String description) {
+    public Environment(String name, Set<Tier> tiers, String description) {
         this.name = name;
         this.description = description;
         this.tiers = tiers;
@@ -99,7 +102,7 @@ public class Environment {
      * @param org
      * @param vdc
      */
-    public Environment(String name, List<Tier> tiers, String description, String org, String vdc) {
+    public Environment(String name, Set<Tier> tiers, String description, String org, String vdc) {
         this.name = name;
         this.description = description;
         this.org = org;
@@ -118,7 +121,7 @@ public class Environment {
      *            a {@link java.lang.String} object.
      * @param tiers
      */
-    public Environment(String name, String description, List<Tier> tiers) {
+    public Environment(String name, String description, Set<Tier> tiers) {
 
         this.name = name;
         this.description = description;
@@ -133,9 +136,9 @@ public class Environment {
      */
     public void addTier(Tier tier) {
         if (this.tiers == null) {
-            tiers = new ArrayList<Tier>();
+            tiers = new HashSet<Tier>();
         }
-        tiers.add(tier);
+        System.out.println (tier.getName() + " " +tiers.add(tier));
     }
 
     /**
@@ -147,6 +150,16 @@ public class Environment {
         if (tiers.contains(tier)) {
             tiers.remove(tier);
         }
+    }
+    
+    /**
+     * Update tier.
+     * @param tierOld
+     * @param tierNew
+     */
+    public void updateTier (Tier tierOld, Tier tierNew) {
+    	deleteTier (tierOld);
+    	addTier (tierNew);
     }
 
     @Override
@@ -191,7 +204,7 @@ public class Environment {
         return ovf;
     }
 
-    public List<Tier> getTiers() {
+    public Set<Tier> getTiers() {
         return tiers;
     }
 
@@ -227,7 +240,7 @@ public class Environment {
         this.ovf = ovf;
     }
 
-    public void setTiers(List<Tier> tiers) {
+    public void setTiers(Set<Tier> tiers) {
         this.tiers = tiers;
     }
 
@@ -245,7 +258,7 @@ public class Environment {
         envDto.setName(getName());
         envDto.setDescription(getDescription());
 
-        List<TierDto> lTierDto = new ArrayList<TierDto>();
+        Set<TierDto> lTierDto = new HashSet<TierDto>();
         if (getTiers() != null) {
             for (Tier tier : getTiers()) {
                 lTierDto.add(tier.toDto());

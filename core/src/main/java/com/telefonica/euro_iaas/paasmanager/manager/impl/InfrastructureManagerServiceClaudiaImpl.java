@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.core.MediaType;
 
@@ -168,7 +169,7 @@ public class InfrastructureManagerServiceClaudiaImpl implements InfrastructureMa
     }
 
     public EnvironmentInstance createInfrasctuctureEnvironmentInstance(EnvironmentInstance environmentInstance,
-            List<Tier> tiers, ClaudiaData claudiaData) throws InfrastructureException, InvalidVappException,
+            Set<Tier> tiers, ClaudiaData claudiaData) throws InfrastructureException, InvalidVappException,
             InvalidOVFException {
         environmentInstance.setName(claudiaData.getVdc() + "-" + environmentInstance.getEnvironment().getName());
         // claudiaData.setService(environmentInstance.getEnvironment().getName());

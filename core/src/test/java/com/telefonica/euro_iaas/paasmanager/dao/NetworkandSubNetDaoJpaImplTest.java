@@ -11,7 +11,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -53,21 +55,37 @@ public class NetworkandSubNetDaoJpaImplTest extends AbstractJpaDaoTest {
     }
     
     @Test(expected=com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
-    public void testDestroyNetworkNoSubNet() throws Exception {
+    public void testDestroyNetworkNoSubNet() throws InvalidEntityException, AlreadyExistsEntityException  {
 
         Network network = new Network(NETWORK_NAME);
 
         network = networkDao.create(network);
-        networkDao.load(NETWORK_NAME);
+        networkDao.remove(network);
+        try {
+        	networkDao.load(NETWORK_NAME);
+        	fail("Should have thrown an EntityNotFoundException because the network does not exit!");
+        } catch (EntityNotFoundException e) {
+        	assertNotNull(e);
+        }
+        
     }
-    
+
     @Test(expected=com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
-    public void testDestroySubNet() throws Exception {
+    public void testDestroySubNet() throws InvalidEntityException, AlreadyExistsEntityException  {
 
     	SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, "1");
         subNet = subNetworkDao.create(subNet);
-        subNetworkDao.create(subNet);
-        subNetworkDao.load(SUB_NETWORK_NAME);
+        subNetworkDao.remove(subNet);
+
+        try {
+        	subNetworkDao.load(SUB_NETWORK_NAME);
+        	fail("Should have thrown an EntityNotFoundException because the subnet does not exit!");
+        } catch (EntityNotFoundException e) {
+        	assertNotNull(e);
+        }
+
+        	  
+        
     }
 
     @Test
@@ -110,7 +128,7 @@ public class NetworkandSubNetDaoJpaImplTest extends AbstractJpaDaoTest {
     }
     
     @Test(expected=com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
-    public void testDeleteNetworkWithSubNets() throws Exception {
+    public void testDeleteNetworkWithSubNets() throws InvalidEntityException, AlreadyExistsEntityException{
 
 
         SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, "1");
@@ -129,7 +147,14 @@ public class NetworkandSubNetDaoJpaImplTest extends AbstractJpaDaoTest {
         }
         
         networkDao.remove(network);
-    //    networkDao.load(NETWORK_NAME);
+        
+        try {
+        	 networkDao.load(NETWORK_NAME);
+        	fail("Should have thrown an EntityNotFoundException because the network does not exit!");
+        } catch (EntityNotFoundException e) {
+        	assertNotNull(e);
+        }
+       
 
     }
      

@@ -9,7 +9,9 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
 import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
@@ -63,6 +65,7 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
     private TierInstance tierInstanceDB;
     private ClaudiaData claudiaData;
 
+    Tier tier = null;
     @Test
     public void getVMFromVapp() {
 
@@ -124,7 +127,7 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
         envResult.setName("environemntName");
 
         envResult.setOvf("ovf");
-        Tier tier = new Tier();
+        tier = new Tier();
         tier.setInitialNumberInstances(new Integer(1));
         tier.setMaximumNumberInstances(new Integer(5));
         tier.setMinimumNumberInstances(new Integer(1));
@@ -134,7 +137,7 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
         productReleases.add(productRelease);
         tier.setProductReleases(productReleases);
 
-        List<Tier> tiers = new ArrayList<Tier>();
+        Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tier);
         envResult.setTiers(tiers);
 
@@ -345,14 +348,14 @@ public class InfrastructureManagerServiceClaudiaImplTest extends TestCase {
         TierInstance tierInstance = null;
 
         try {
-            tierInstance = manager.createTierInstanceFromVapp(envResult.getTiers().get(0), envResult.getName(),
+            tierInstance = manager.createTierInstanceFromVapp(tier, envResult.getName(),
                     claudiaData, vapp, "ovf");
         } catch (InvalidVappException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        assertEquals(tierInstance.getName(), envResult.getName() + "-" + envResult.getTiers().get(0).getName() + "-1");
+        assertEquals(tierInstance.getName(), envResult.getName() + "-" + tier.getName() + "-1");
         assertEquals(tierInstance.getNumberReplica(), 1);
         assertEquals(tierInstance.getVM().getHostname(), "tierName");
         assertEquals(tierInstance.getVM().getNetworks().get("public"), "10.99.88.33");
