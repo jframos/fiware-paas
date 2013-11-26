@@ -38,7 +38,7 @@ import com.telefonica.euro_iaas.paasmanager.rest.resources.TierResource;
 // ApplicationContext will be loaded from "classpath:/app-config.xml"
 @ContextConfiguration(locations = { "classpath:/applicationContextTest.xml" })
 @ActiveProfiles("dummy")
-public class    TierTest {
+public class TierTest {
 
     @Autowired
     private TierResource tierResource;
@@ -152,26 +152,20 @@ public class    TierTest {
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
 
-        Environment env = environmentManager.load("updatedenvironmenttier", vdc);
-        assertEquals(env.getName(), "updatedenvironmenttier");
-        assertEquals(env.getTiers().size(), 1);
+        Environment env = environmentManager.load("updatedenvironmenttierv2", vdc);
 
-
-        TierDto tierDto = tierResource.load(vdc, "updatedenvironmenttier", "tierupdatetier");
-        assertEquals(tierDto.getFlavour(), "flavour");
-        assertEquals(tierDto.getName(), "tierupdatetier");
+        TierDto tierDto = tierResource.load(vdc, "updatedenvironmenttierv2", "tierupdatetier22");
 
         tierDto.setFlavour("flavour3");
         tierDto.setIcono("icono2");
-        tierResource.update(org, vdc, "updatedenvironmenttier", tierDto);
-        TierDto tier2Dto = tierResource.load(vdc, "updatedenvironmenttier", "tierupdatetier");
+        tierResource.update(org, vdc, "updatedenvironmenttierv2", tierDto);
+        TierDto tier2Dto = tierResource.load(vdc, "updatedenvironmenttierv2", "tierupdatetier22");
         assertEquals(tier2Dto.getFlavour(), "flavour3");
-        // assertEquals(tier2Dto.getName(),"tiername2");
+        assertEquals(tier2Dto.getIcono(), "icono2");
 
-        Environment env3 = environmentManager.load("updatedenvironmenttier", vdc);
-        assertEquals(env3.getName(), "updatedenvironmenttier");
+        Environment env3 = environmentManager.load("updatedenvironmenttierv2", vdc);
+        assertEquals(env3.getName(), "updatedenvironmenttierv2");
         assertEquals(env3.getTiers().size(), 1);
-
 
     }
 
@@ -212,7 +206,6 @@ public class    TierTest {
         Environment env = environmentManager.load("updatedenvironmentsoftwware", vdc);
         assertEquals(env.getName(), "updatedenvironmentsoftwware");
         assertEquals(env.getTiers().size(), 1);
-
 
         TierDto tierDto = tierResource.load(vdc, "updatedenvironmentsoftwware", "tiersoftware");
         assertEquals(tierDto.getFlavour(), "flavour");
@@ -263,57 +256,11 @@ public class    TierTest {
         assertEquals(env.getName(), "testeDeleteTier2");
         assertEquals(env.getTiers().size(), 1);
 
-
         tierResource.delete(org, vdc, "testeDeleteTier2", "2tierotro");
 
         Environment env2 = environmentManager.load("testeDeleteTier2", vdc);
         assertEquals(env2.getName(), "testeDeleteTier2");
         assertEquals(env2.getTiers().size(), 0);
-
-    }
-
-    @Test
-    public void testeDeleteAndCreatedTier() throws Exception {
-
-        Environment environment = new Environment();
-        environment.setName("envDeleteAndCreatedTier2");
-        environment.setDescription("Description");
-
-        Tier tier = new Tier("tierdeleteandcreatedv4", new Integer(1), new Integer(1), new Integer(1), null);
-        tier.setImage("image");
-        tier.setIcono("icono");
-        tier.setFlavour("flavour");
-        tier.setFloatingip("floatingip");
-        tier.setPayload("");
-        tier.setKeypair("keypair");
-
-        ProductRelease tomcat7Att = new ProductRelease("tomcat34", "7", "Tomcat server 7", null);
-
-        tomcat7Att = productReleaseDao.create(tomcat7Att);
-        tier.addProductRelease(tomcat7Att);
-        Set<Tier> tiers = new HashSet<Tier>();
-        tiers.add(tier);
-        environment.setTiers(tiers);
-
-        environmentResource.insert(org, vdc, environment.toDto());
-
-        Environment env = environmentManager.load("envDeleteAndCreatedTier2", vdc);
-
-        assertEquals(env.getName(), "envDeleteAndCreatedTier2");
-        assertEquals(env.getTiers().size(), 1);
-
-
-        tierResource.delete(org, vdc, "envDeleteAndCreatedTier2", "tierdeleteandcreated1");
-
-        Environment env2 = environmentManager.load("envDeleteAndCreatedTier2", vdc);
-        assertEquals(env2.getName(), "envDeleteAndCreatedTier2");
-        assertEquals(env2.getTiers().size(), 0);
-
-        tierResource.insert(org, vdc, "envDeleteAndCreatedTier2", tier.toDto());
-
-        env2 = environmentManager.load("envDeleteAndCreatedTier2", vdc);
-        assertEquals(env2.getName(), "envDeleteAndCreatedTier2");
-        assertEquals(env2.getTiers().size(), 1);
 
     }
 

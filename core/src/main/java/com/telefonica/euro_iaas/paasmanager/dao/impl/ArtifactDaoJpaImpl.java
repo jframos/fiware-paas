@@ -12,6 +12,8 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -26,6 +28,7 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ArtifactSearchC
  * @author Jesus M. Movilla.
  */
 
+@Transactional(propagation = Propagation.REQUIRED)
 public class ArtifactDaoJpaImpl extends AbstractBaseDao<Artifact, String> implements ArtifactDao {
 
     /*

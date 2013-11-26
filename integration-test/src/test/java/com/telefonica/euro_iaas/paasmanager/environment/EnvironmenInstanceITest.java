@@ -156,7 +156,7 @@ public class EnvironmenInstanceITest {
 
     }
 
-    @Test(expected = InvalidEntityException.class)
+    @Test
     public void testCreateEnvironmentInstanceAlreadyDeployed() throws Exception {
 
         ProductRelease product = new ProductRelease("tomcat23", "7", "Tomcat server 21", null);
