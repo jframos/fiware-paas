@@ -9,6 +9,9 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.List;
 
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.SubNetworkDao;
@@ -17,6 +20,7 @@ import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 /**
  * @author Henar Munoz
  */
+@Transactional(propagation = Propagation.REQUIRED)
 public class SubNetworkDaoJpaImpl extends AbstractBaseDao<SubNetwork, String> implements SubNetworkDao {
 
     /**

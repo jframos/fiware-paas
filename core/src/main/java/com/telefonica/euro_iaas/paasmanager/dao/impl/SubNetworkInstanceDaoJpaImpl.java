@@ -9,6 +9,9 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.List;
 
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.SubNetworkInstanceDao;
@@ -17,8 +20,9 @@ import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 /**
  * @author Henar Munoz
  */
-public class SubNetworkInstanceDaoJpaImpl extends AbstractBaseDao<SubNetworkInstance, String>
-    implements SubNetworkInstanceDao {
+@Transactional(propagation = Propagation.REQUIRED)
+public class SubNetworkInstanceDaoJpaImpl extends AbstractBaseDao<SubNetworkInstance, String> implements
+        SubNetworkInstanceDao {
 
     /**
      * find all networks.
@@ -36,14 +40,13 @@ public class SubNetworkInstanceDaoJpaImpl extends AbstractBaseDao<SubNetworkInst
         return super.loadByField(SubNetworkInstance.class, "name", arg0);
     }
 
-
-	public boolean exists(String key) {
-		try {
-			loadByField(SubNetworkInstance.class, "name", key);
-			return true;
-		} catch (EntityNotFoundException e) {
-			return false;
-		}
-	}
+    public boolean exists(String key) {
+        try {
+            loadByField(SubNetworkInstance.class, "name", key);
+            return true;
+        } catch (EntityNotFoundException e) {
+            return false;
+        }
+    }
 
 }

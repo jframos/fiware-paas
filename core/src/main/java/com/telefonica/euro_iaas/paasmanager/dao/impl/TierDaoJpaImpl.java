@@ -10,16 +10,15 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -29,10 +28,8 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
 
+@Transactional(propagation = Propagation.REQUIRED)
 public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements TierDao {
-
-    @PersistenceContext(unitName = "paasmanager", type = PersistenceContextType.EXTENDED)
-    private EntityManager entityManager;
 
     public List<Tier> findAll() {
         return super.findAll(Tier.class);
@@ -81,8 +78,8 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
      */
 
     private Tier findByName(String name) throws EntityNotFoundException {
-        Query query = entityManager.createQuery("select p from Tier p join "
-                + "fetch p.productReleases where p.name = :name");
+        Query query = getEntityManager().createQuery(
+                "select p from Tier p join " + "fetch p.productReleases where p.name = :name");
         query.setParameter("name", name);
         Tier tier = null;
         try {
@@ -95,8 +92,8 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
     }
 
     private Tier findByNameAndVdc(String name, String vdc) throws EntityNotFoundException {
-        Query query = entityManager.createQuery("select p from Tier p join "
-                + "fetch p.productReleases where p.name = :name and p.vdc =:vdc");
+        Query query = getEntityManager().createQuery(
+                "select p from Tier p join " + "fetch p.productReleases where p.name = :name and p.vdc =:vdc");
         query.setParameter("name", name);
         query.setParameter("vdc", vdc);
         Tier tier = null;
@@ -111,7 +108,7 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
     }
 
     private Tier findByNameAndVdcNoProducts(String name, String vdc) throws EntityNotFoundException {
-        Query query = entityManager.createQuery("select p from Tier p where p.name = :name and p.vdc =:vdc");
+        Query query = getEntityManager().createQuery("select p from Tier p where p.name = :name and p.vdc =:vdc");
         query.setParameter("name", name);
         query.setParameter("vdc", vdc);
         Tier tier = null;
@@ -127,9 +124,9 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
 
     private Tier findByNameAndVdcAndEnvironment(String name, String vdc, String environmentname)
             throws EntityNotFoundException {
-        Query query = entityManager.createQuery("select p from Tier p left join "
-                + "fetch p.productReleases where p.name = :name and p.vdc =:vdc "
-                + "and p.environmentname=:environmentname");
+        Query query = getEntityManager().createQuery(
+                "select p from Tier p left join " + "fetch p.productReleases where p.name = :name and p.vdc =:vdc "
+                        + "and p.environmentname=:environmentname");
         query.setParameter("name", name);
         query.setParameter("vdc", vdc);
         query.setParameter("environmentname", environmentname);
@@ -141,14 +138,14 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
                     + " and environmentname " + environmentname;
             throw new EntityNotFoundException(Tier.class, e.getMessage(), message);
         }
-        
+
         return tier;
     }
 
     private Tier findByNameAndVdcAndEnvironmentNoProduct(String name, String vdc, String environmentname)
             throws EntityNotFoundException {
-        Query query = entityManager
-                .createQuery("select p from Tier p where p.name = :name and p.vdc =:vdc and p.environmentname= :environmentname");
+        Query query = getEntityManager().createQuery(
+                "select p from Tier p where p.name = :name and p.vdc =:vdc and p.environmentname= :environmentname");
         query.setParameter("name", name);
         query.setParameter("vdc", vdc);
         query.setParameter("environmentname", environmentname);
@@ -169,7 +166,7 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
     @SuppressWarnings("unchecked")
     public List<Tier> findByCriteria(TierSearchCriteria criteria) throws EntityNotFoundException {
         // Session session = (Session) getEntityManager().getDelegate();
-        Session session = (Session) entityManager.getDelegate();
+        Session session = (Session) getEntityManager().getDelegate();
         Criteria baseCriteria = session.createCriteria(Tier.class);
 
         if (!StringUtils.isEmpty(criteria.getVdc())) {
@@ -216,7 +213,7 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
     @Override
     public String findRegionBySecurityGroup(String idSecurityGroup) throws EntityNotFoundException {
 
-        Query query = entityManager.createQuery("select p from Tier p where p.securityGroup=:securityGroupId");
+        Query query = getEntityManager().createQuery("select p from Tier p where p.securityGroup=:securityGroupId");
         query.setParameter("securityGroupId", idSecurityGroup);
         Tier tier = null;
         try {

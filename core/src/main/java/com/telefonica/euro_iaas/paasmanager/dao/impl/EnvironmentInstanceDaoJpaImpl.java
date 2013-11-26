@@ -9,11 +9,18 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.EntityManager;
+
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
+
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.SimpleExpression;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -23,18 +30,10 @@ import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.SimpleExpression;
 
+@Transactional(propagation = Propagation.REQUIRED)
 public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentInstance, String> implements
         EnvironmentInstanceDao {
-
-    @PersistenceContext(unitName = "paasmanager", type = PersistenceContextType.EXTENDED)
-    private EntityManager entityManager;
 
     public List<EnvironmentInstance> findAll() {
         return super.findAll(EnvironmentInstance.class);
@@ -125,13 +124,14 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
      */
     private EnvironmentInstance findByEnvironmentInstanceName(String envInstanceName) throws EntityNotFoundException {
 
-        Query query = entityManager.createQuery("select p from EnvironmentInstance"
-                + " p join fetch p.tierInstances where p.blueprintName = :blueprintName");
+        Query query = getEntityManager().createQuery(
+                "select p from EnvironmentInstance"
+                        + " p join fetch p.tierInstances where p.blueprintName = :blueprintName");
         query.setParameter("blueprintName", envInstanceName);
         EnvironmentInstance environmentInstance = null;
         try {
             environmentInstance = (EnvironmentInstance) query.getSingleResult();
-            entityManager.flush();
+            getEntityManager().flush();
         } catch (NoResultException e) {
             String message = " No EnvironmentInstance found in the database with tiers" + "with blueprintName: "
                     + envInstanceName;
@@ -143,13 +143,13 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
     private EnvironmentInstance findByEnvironmentInstanceNameNoTierInstances(String envInstanceName)
             throws EntityNotFoundException {
 
-        Query query = entityManager.createQuery("select p from EnvironmentInstance"
-                + " p where p.blueprintName = :blueprintName");
+        Query query = getEntityManager().createQuery(
+                "select p from EnvironmentInstance" + " p where p.blueprintName = :blueprintName");
         query.setParameter("blueprintName", envInstanceName);
         EnvironmentInstance environmentInstance = null;
         try {
             environmentInstance = (EnvironmentInstance) query.getSingleResult();
-            entityManager.flush();
+            getEntityManager().flush();
         } catch (NoResultException e) {
             String message = " No EnvironmentInstance found in the database no tiers " + "with blueprintName: "
                     + envInstanceName;

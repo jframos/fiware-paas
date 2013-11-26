@@ -40,6 +40,9 @@ public class Configuration {
         this.value = value;
     }
 
+    public Configuration() {
+    }
+
     /*
      * (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)

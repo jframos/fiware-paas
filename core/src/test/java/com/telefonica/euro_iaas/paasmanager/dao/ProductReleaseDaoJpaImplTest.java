@@ -6,25 +6,33 @@
  */
 package com.telefonica.euro_iaas.paasmanager.dao;
 
-import java.util.ArrayList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 
 /**
  * @author jesus.movilla
- *
  */
-public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
+public class ProductReleaseDaoJpaImplTest {
 
+    @Autowired
     private ProductReleaseDao productReleaseDao;
+    @Autowired
     private AttributeDao attributeDao;
 
     @Test
@@ -76,38 +84,32 @@ public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(productRelease.getAttributes().size(), 1);
 
     }
-    
-    
-    
+
     @Test
     public void testProductReleasesWithMetadata() throws Exception {
 
-        Metadata metproduct = new Metadata("product", "product", "product");     
+        Metadata metproduct = new Metadata("product", "product", "product");
 
-        ProductRelease productproduct = new ProductRelease("product2", "0.1");
+        ProductRelease productproduct = new ProductRelease("myproduct2", "0.1");
         productproduct.addMetadata(metproduct);
 
-        productproduct = productReleaseDao.create(productproduct);
-        assertNotNull(productproduct);
-        assertEquals(productproduct.getProduct(), "product2");
-        assertEquals(productproduct.getVersion(), "0.1");
-        assertEquals(productproduct.getMetadatas().size(), 1);
+        productReleaseDao.create(productproduct);
 
-        ProductRelease productRelease = productReleaseDao.load("product2-0.1");
+        ProductRelease productRelease = productReleaseDao.load("myproduct2-0.1");
         assertNotNull(productRelease);
-        assertEquals(productRelease.getProduct(), "product2");
+        assertEquals(productRelease.getProduct(), "myproduct2");
         assertEquals(productRelease.getVersion(), "0.1");
         assertEquals(productRelease.getMetadatas().size(), 1);
 
     }
-    
+
     @Test
     public void testProductReleasesWithMetadataAndAttributes() throws Exception {
 
         Metadata metproduct = new Metadata("product", "product", "product");
         Attribute attribute = new Attribute("product", "product", "product");
-        attribute = attributeDao.create(attribute);
-        
+        // attribute = attributeDao.create(attribute);
+
         ProductRelease productproduct = new ProductRelease("product2", "0.1");
         productproduct.addMetadata(metproduct);
         productproduct.addAttribute(attribute);
@@ -118,16 +120,16 @@ public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(productproduct.getVersion(), "0.1");
         assertEquals(productproduct.getMetadatas().size(), 1);
         assertEquals(productproduct.getAttributes().size(), 1);
-        
+
         ProductRelease productRelease = productReleaseDao.load("product2-0.1");
         assertNotNull(productRelease);
         assertEquals(productRelease.getProduct(), "product2");
         assertEquals(productRelease.getVersion(), "0.1");
         assertEquals(productRelease.getAttributes().size(), 1);
         assertEquals(productRelease.getMetadatas().size(), 1);
-        
 
     }
+
     @Test
     public void testProductReleasesWithAttributes2() throws Exception {
 
@@ -143,7 +145,6 @@ public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(productproduct.getAttributes().size(), 1);
         assertEquals(productproduct.getMetadatas().size(), 0);
 
-
         ProductRelease productRelease = productReleaseDao.load("product3-0.3");
         assertNotNull(productRelease);
         assertEquals(productRelease.getProduct(), "product3");
@@ -152,7 +153,7 @@ public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(productRelease.getAttributes().size(), 1);
 
     }
-    
+
     @Test
     public void testProductReleasesWithEmptyAttributes() throws Exception {
 
@@ -173,7 +174,7 @@ public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals(productRelease.getMetadatas().size(), 0);
 
     }
-    
+
     /**
      * @param productReleaseDao
      *            the productReleaseDao to set
@@ -181,7 +182,7 @@ public class ProductReleaseDaoJpaImplTest extends AbstractJpaDaoTest {
     public void setProductReleaseDao(ProductReleaseDao productReleaseDao) {
         this.productReleaseDao = productReleaseDao;
     }
-    
+
     public void setAttributeDao(AttributeDao attributeDao) {
         this.attributeDao = attributeDao;
     }
