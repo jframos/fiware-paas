@@ -52,16 +52,8 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <!-- fla, cambio de versión de la librería, para instalarlo hay 
-                     que bajarse el jar he instalarlo en el repo a mano con la 
-                     siguiente instrucción:
-                
-                     mvn install:install-file -DgroupId=org.jacoco 
-                     -DartifactId=jacoco-maven-plugin -Dversion=0.5.7.201204190339 
-                     -Dpackaging=maven-plugin 
-                     -Dfile=jacoco-maven-plugin-0.5.8.201207111220.jar                
-                -->
-                <version>0.6.3.201306030806</version>
+
+                <version>0.5.10.201208310627</version>
                 <executions>
                     <execution>
                         <goals>
