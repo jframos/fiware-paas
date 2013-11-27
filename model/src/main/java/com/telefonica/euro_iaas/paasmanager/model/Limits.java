@@ -13,6 +13,9 @@ public class Limits {
     private Integer maxTotalFloatingIps;
     private Integer totalFloatingIpsUsed;
 
+    private Integer maxTotalInstances;
+    private Integer totalInstancesUsed;
+
     public void setTotalFloatingIpsUsed(Integer totalFloatingIpsUsed) {
         this.totalFloatingIpsUsed = totalFloatingIpsUsed;
     }
@@ -24,9 +27,6 @@ public class Limits {
     public void setTotalInstancesUsed(Integer totalInstancesUsed) {
         this.totalInstancesUsed = totalInstancesUsed;
     }
-
-    private Integer maxTotalInstances;
-    private Integer totalInstancesUsed;
 
     public Integer getMaxTotalFloatingIps() {
         return maxTotalFloatingIps;
@@ -49,9 +49,22 @@ public class Limits {
     }
 
     public void fromJson(JSONObject jsonAbsolute) {
-        maxTotalFloatingIps = jsonAbsolute.getInt("maxTotalFloatingIps");
-        totalFloatingIpsUsed = jsonAbsolute.getInt("totalFloatingIpsUsed");
-        maxTotalInstances = jsonAbsolute.getInt("maxTotalInstances");
-        totalInstancesUsed = jsonAbsolute.getInt("totalInstancesUsed");
+        if (jsonAbsolute.containsKey("maxTotalFloatingIps")) {
+            maxTotalFloatingIps = jsonAbsolute.getInt("maxTotalFloatingIps");
+            totalFloatingIpsUsed = jsonAbsolute.getInt("totalFloatingIpsUsed");
+        }
+        if (jsonAbsolute.containsKey("maxTotalInstances")) {
+            maxTotalInstances = jsonAbsolute.getInt("maxTotalInstances");
+            totalInstancesUsed = jsonAbsolute.getInt("totalInstancesUsed");
+        }
+    }
+
+    public boolean checkTotalInstancesUsed() {
+        return (maxTotalFloatingIps != null);
+    }
+
+    public boolean checkTotalFloatingsIpsUsed() {
+
+        return (totalFloatingIpsUsed != null);
     }
 }
