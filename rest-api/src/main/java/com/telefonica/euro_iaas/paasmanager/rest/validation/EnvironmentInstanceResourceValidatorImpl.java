@@ -192,7 +192,6 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
     }
 
-
     public void validateQuota(ClaudiaData claudiaData, EnvironmentInstanceDto environmentInstanceDto)
             throws InvalidEnvironmentRequestException, QuotaExceededException {
 
@@ -214,13 +213,18 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
                     floatingIPs++;
                 }
             }
-            if (initialNumberInstances + limits.getTotalInstancesUsed() > limits.getMaxTotalInstances()) {
-                throw new QuotaExceededException("max number of instances exceeded: " + limits.getMaxTotalInstances());
+            if (limits.checkTotalInstancesUsed()) {
+                if (initialNumberInstances + limits.getTotalInstancesUsed() > limits.getMaxTotalInstances()) {
+                    throw new QuotaExceededException("max number of instances exceeded: "
+                            + limits.getMaxTotalInstances());
+                }
             }
 
-            if (floatingIPs + limits.getTotalFloatingIpsUsed() > limits.getMaxTotalFloatingIps()) {
-                throw new QuotaExceededException("max number of floating IPs exceeded: "
-                        + limits.getMaxTotalFloatingIps());
+            if (limits.checkTotalFloatingsIpsUsed()) {
+                if (floatingIPs + limits.getTotalFloatingIpsUsed() > limits.getMaxTotalFloatingIps()) {
+                    throw new QuotaExceededException("max number of floating IPs exceeded: "
+                            + limits.getMaxTotalFloatingIps());
+                }
             }
         }
     }
