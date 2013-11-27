@@ -51,20 +51,24 @@ public class Limits {
     public void fromJson(JSONObject jsonAbsolute) {
         if (jsonAbsolute.containsKey("maxTotalFloatingIps")) {
             maxTotalFloatingIps = jsonAbsolute.getInt("maxTotalFloatingIps");
+        }
+        if (jsonAbsolute.containsKey("totalFloatingIpsUsed")) {
             totalFloatingIpsUsed = jsonAbsolute.getInt("totalFloatingIpsUsed");
         }
         if (jsonAbsolute.containsKey("maxTotalInstances")) {
             maxTotalInstances = jsonAbsolute.getInt("maxTotalInstances");
+        }
+        if (jsonAbsolute.containsKey("totalInstancesUsed")) {
             totalInstancesUsed = jsonAbsolute.getInt("totalInstancesUsed");
         }
     }
 
     public boolean checkTotalInstancesUsed() {
-        return (maxTotalFloatingIps != null);
+        return (maxTotalInstances != null) && (totalInstancesUsed != null);
     }
 
     public boolean checkTotalFloatingsIpsUsed() {
 
-        return (totalFloatingIpsUsed != null);
+        return (maxTotalFloatingIps != null) && (totalFloatingIpsUsed != null);
     }
 }

@@ -135,6 +135,39 @@ public class EnvironmentInstanceResourceValidatorImplTest {
     }
 
     @Test
+    public void shouldReturnValidateOKWhenLimitMaxTotalInstancesValuesDontExistEgEssexInstance()
+            throws InvalidEnvironmentRequestException, InvalidEntityException, AlreadyExistEntityException,
+            InfrastructureException {
+        // given
+        EnvironmentInstanceResourceValidator environmentInstanceResourceValidator = new EnvironmentInstanceResourceValidatorImpl();
+        QuotaClient quotaClient = mock(QuotaClient.class);
+        ((EnvironmentInstanceResourceValidatorImpl) environmentInstanceResourceValidator).setQuotaClient(quotaClient);
+        ClaudiaData claudiaData = mock(ClaudiaData.class);
+
+        EnvironmentInstanceDto environmentInstanceDto = new EnvironmentInstanceDto();
+        List<TierInstanceDto> listTiers = new ArrayList(2);
+        TierInstanceDto tierInstanceDto = new TierInstanceDto();
+        listTiers.add(tierInstanceDto);
+        environmentInstanceDto.setTierInstances(listTiers);
+        TierDto tierDto = new TierDto();
+        tierInstanceDto.setTierDto(tierDto);
+        tierDto.setFloatingip("true");
+        tierDto.setInitialNumberInstances(2);
+        Limits limits = new Limits();
+        limits.setMaxTotalInstances(10);
+
+        // when
+        when(quotaClient.getLimits(claudiaData)).thenReturn(limits);
+
+        try {
+            environmentInstanceResourceValidator.validateQuota(claudiaData, environmentInstanceDto);
+        } catch (QuotaExceededException e) {
+            fail("should not fail because limits are negative");
+        }
+
+    }
+
+    @Test
     public void shouldValidateInstanceNumberOnCreateAndReturnQuotaExceedByInstancesUsed()
             throws InvalidEnvironmentRequestException, InvalidEntityException, AlreadyExistEntityException,
             InfrastructureException {
