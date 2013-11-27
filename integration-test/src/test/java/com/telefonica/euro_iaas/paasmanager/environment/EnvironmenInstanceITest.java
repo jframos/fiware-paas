@@ -113,7 +113,7 @@ public class EnvironmenInstanceITest {
 
         Thread.sleep(5000);
 
-        assertEquals(task.getStatus(), Task.TaskStates.RUNNING);
+        assertEquals(Task.TaskStates.RUNNING, task.getStatus());
 
         EnvironmentInstance envInstResult = environmentInstanceManager.load(vdc, "blueprintname");
         assertNotNull(envInstResult);

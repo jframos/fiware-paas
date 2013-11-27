@@ -63,11 +63,12 @@ public class FileUtilsImpl implements FileUtils {
         BufferedReader reader;
         URL url = null;
         try {
-            url = this.getClass().getResource(fileName);
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(url.toURI().toString()))));
+            url = this.getClass().getResource("/" + fileName);
+
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(url.toURI()))));
         } catch (FileNotFoundException e) {
 
-            throw new FileUtilsException("The file " + fileName + "is not found");
+            throw new FileUtilsException("The file " + fileName + " is not found");
         } catch (URISyntaxException e) {
             throw new FileUtilsException("Invalid " + url + " url");
         }
