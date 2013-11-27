@@ -161,7 +161,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
         }
 
         // Validating length of hostname (maximum =64)
-        for (TierDto tierDto: environmentInstanceDto.getEnvironmentDto().getTierDtos()) {
+        for (TierDto tierDto : environmentInstanceDto.getEnvironmentDto().getTierDtos()) {
             // String hostname = (claudiaData.getService() + "-"
             // + tier.getName() + "-"
             // + numReplica).toLowerCase();
@@ -215,17 +215,25 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
                 if ("true".equals(tierInstanceDto.getTierDto().getFloatingip())) {
                     floatingIPs++;
                 }
-                if (initialNumberInstances + limits.get(region).getTotalInstancesUsed() > limits.get(region)
-                        .getMaxTotalInstances()) {
-                    throw new QuotaExceededException("max number of instances exceeded: "
-                            + limits.get(region).getMaxTotalInstances());
+
+                Limits limitsRegion = limits.get(region);
+
+                if (limitsRegion.checkTotalInstancesUsed()) {
+
+                    if (initialNumberInstances + limitsRegion.getTotalInstancesUsed() > limitsRegion
+                            .getMaxTotalInstances()) {
+                        throw new QuotaExceededException("max number of instances exceeded: "
+                                + limitsRegion.getMaxTotalInstances());
+                    }
                 }
 
-                if (floatingIPs + limits.get(region).getTotalFloatingIpsUsed() > limits.get(region)
-                        .getMaxTotalFloatingIps()) {
-                    throw new QuotaExceededException("max number of floating IPs exceeded: "
-                            + limits.get(region).getMaxTotalFloatingIps());
+                if (limitsRegion.checkTotalFloatingsIpsUsed()) {
+                    if (floatingIPs + limitsRegion.getTotalFloatingIpsUsed() > limitsRegion.getMaxTotalFloatingIps()) {
+                        throw new QuotaExceededException("max number of floating IPs exceeded: "
+                                + limitsRegion.getMaxTotalFloatingIps());
+                    }
                 }
+
             }
         }
     }
