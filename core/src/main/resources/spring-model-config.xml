@@ -533,7 +533,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         </bean>
 
         <bean id="monitoringClient" lazy-init="true"
-              class="com.telefonica.euro_iaas.paasmanager.monitoring.MonitoringClientCollectdImpl">
+              class="com.telefonica.euro_iaas.paasmanager.monitoring.MonitoringDummyClientCollectdImpl">
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
         </bean>
 
