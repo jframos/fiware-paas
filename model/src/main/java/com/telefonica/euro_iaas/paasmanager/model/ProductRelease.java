@@ -228,6 +228,29 @@ public class ProductRelease {
         }
         return JSONObject.fromObject(stringProductJson);
     }
+    
+    /*private JSONObject formatJsonArray(JSONObject productJson, String tag) {
+        String stringProductJson = productJson.toString();
+        if (stringProductJson.contains("\"" + tag + "\":{")) {
+            stringProductJson = stringProductJson.replace("\"}}", "\"}]}");
+            stringProductJson = stringProductJson.replace("\"" + tag + "\":{", "\"" + tag + "\":[{");
+
+        }
+        return JSONObject.fromObject(stringProductJson);
+    }*/
+    
+    private JSONObject formatJsonArray(JSONObject productJson, String tag) {
+        String stringProductJson = productJson.toString();
+        if (stringProductJson.contains("\"" + tag + "\":{")) {
+            String openArray = "\"" + tag + "\":[{";
+            stringProductJson = stringProductJson.replace("\"" + tag + "\":{", openArray);
+            String oldString = stringProductJson.split(tag)[1];
+            String newString = oldString.replaceFirst("\"}", "\"}]");
+            stringProductJson = stringProductJson.replace(oldString, newString);
+
+        }
+        return JSONObject.fromObject(stringProductJson);
+    }
 
     /**
      * the json.
@@ -246,7 +269,7 @@ public class ProductRelease {
         // Attributes
         if (productJson.containsKey("attributes")) {
             Set<Attribute> attributes = new HashSet<Attribute>();
-            productJson = formatJsonArray(productJson);
+            productJson = formatJsonArray(productJson, "attributes");
             JSONArray attributtesJsonArray = productJson.getJSONArray("attributes");
             for (int i = 0; i < attributtesJsonArray.size(); i++) {
                 JSONObject object = attributtesJsonArray.getJSONObject(i);
@@ -255,6 +278,20 @@ public class ProductRelease {
                 attributes.add(attribute);
             }
             setAttributes(attributes);
+        }
+
+     // Attributes
+        if (productJson.containsKey("metadatas")) {
+            Set<Metadata> metadatas = new HashSet<Metadata>();
+            productJson = formatJsonArray(productJson, "metadatas");
+            JSONArray metadatasJsonArray = productJson.getJSONArray("metadatas");
+            for (int i = 0; i < metadatasJsonArray.size(); i++) {
+                JSONObject object = metadatasJsonArray.getJSONObject(i);
+                Metadata metadata = new Metadata();
+                metadata.fromJson(object);
+                metadatas.add(metadata);
+            }
+            setMetadatas(metadatas);
         }
 
         // SSOO
