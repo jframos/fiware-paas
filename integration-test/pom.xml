@@ -61,7 +61,7 @@
                      -Dpackaging=maven-plugin 
                      -Dfile=jacoco-maven-plugin-0.5.8.201207111220.jar                
                 -->
-                <version>0.5.8.201207111220</version>
+                <version>0.6.3.201306030806</version>
                 <executions>
                     <execution>
                         <goals>
