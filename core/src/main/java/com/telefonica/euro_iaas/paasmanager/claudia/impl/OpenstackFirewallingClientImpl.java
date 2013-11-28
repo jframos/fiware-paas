@@ -27,14 +27,13 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.claudia.FirewallingClient;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
-import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
-import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
+import com.telefonica.euro_iaas.paasmanager.util.OpenStackRegion;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
- * @author henar mu�oz
+ * @author henar munoz
  */
 public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
@@ -42,18 +41,20 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
     private static Logger log = Logger.getLogger(OpenstackFirewallingClientImpl.class);
 
+    private OpenStackRegion openStackRegion;
 
     /**
      * Deploy a rule in the security group.
-     * @param claudiaData
-     * @param rule
      * 
+     * @param region
+     * @param token
+     * @param vdc
+     * @param rule
      */
-    public String deployRule(ClaudiaData claudiaData, Rule rule) throws InfrastructureException {
+    public String deployRule(String region, String token, String vdc, Rule rule) throws InfrastructureException {
         log.debug("Creating security rule " + rule.getFromPort());
-        String url = systemPropertiesProvider.getProperty("openstack.nova.url")
-            + systemPropertiesProvider.getProperty("openstack.version")
-            + claudiaData.getVdc() + "/os-security-group-rules";
+        String novaUrl = getNovaEndPoint(region, token);
+        String url = novaUrl + vdc + "/os-security-group-rules";
         log.debug("actionUri: " + url);
 
         String payload = rule.toJSON();
@@ -66,10 +67,9 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
             ClientResponse response = null;
 
             WebResource wr = client.resource(url);
-            Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(
-                    MediaType.APPLICATION_JSON).entity(payload);
+            Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).entity(payload);
 
-            Map<String, String> header = getHeaders(claudiaData.getUser());
+            Map<String, String> header = getHeaders(token, vdc);
             for (String key : header.keySet()) {
                 builder = builder.header(key, header.get(key));
             }
@@ -79,8 +79,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
             String result = response.getEntity(String.class);
 
             log.debug("Status " + response.getStatus());
-            if (response.getStatus() == 200 || response.getStatus() == 201
-                    || response.getStatus() == 204) {
+            if (response.getStatus() == 200 || response.getStatus() == 201 || response.getStatus() == 204) {
 
                 log.debug("Operation ok result " + result);
                 org.json.JSONObject network = new org.json.JSONObject(result);
@@ -92,18 +91,27 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
             } else {
                 log.error("Error to create a security rule " + result);
-                throw new InfrastructureException(
-                        "Error to create a security rule " + result);
+                throw new InfrastructureException("Error to create a security rule " + result);
             }
 
         } catch (Exception e) {
-            String errorMessage = "Error performing post on the resource: "
-                + url + " with payload: " + payload + " " + e.getMessage();
+            String errorMessage = "Error performing post on the resource: " + url + " with payload: " + payload + " "
+                    + e.getMessage();
             log.error(errorMessage);
-            e.printStackTrace();
 
             throw new InfrastructureException(errorMessage);
         }
+    }
+
+    private String getNovaEndPoint(String region, String token) throws InfrastructureException {
+        String novaUrl;
+        try {
+            novaUrl = openStackRegion.getNovaEndPoint(region, token);
+        } catch (OpenStackException e) {
+            log.warn("Can not obtain nova url");
+            throw new InfrastructureException("Can not obtain nova url");
+        }
+        return novaUrl;
     }
 
     /**
@@ -114,13 +122,11 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
      * @return
      * @throws InfrastructureException
      */
-    public String deploySecurityGroup(ClaudiaData claudiaData, SecurityGroup securityGroup)
-        throws InfrastructureException {
+    public String deploySecurityGroup(String region, String token, String vdc, SecurityGroup securityGroup)
+            throws InfrastructureException {
 
         log.debug("Creating security group " + securityGroup.getName());
-        String url = systemPropertiesProvider.getProperty("openstack.nova.url")
-            + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
-            + "/os-security-groups";
+        String url = getNovaEndPoint(region, token) + vdc + "/os-security-groups";
         log.debug("actionUri: " + url);
 
         String payload = securityGroup.toJSON();
@@ -134,7 +140,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
             WebResource wr = client.resource(url);
             Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).entity(payload);
 
-            Map<String, String> header = getHeaders(claudiaData.getUser());
+            Map<String, String> header = getHeaders(token, vdc);
             for (String key : header.keySet()) {
                 builder = builder.header(key, header.get(key));
             }
@@ -162,7 +168,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
         } catch (Exception e) {
 
             String errorMessage = "Error performing post on the resource: " + url + " with payload: " + payload + " "
-                + e.getMessage();
+                    + e.getMessage();
             log.error(errorMessage);
 
             throw new InfrastructureException(errorMessage);
@@ -172,16 +178,11 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
     /**
      * Destroy the rule in the security group.
-     * @param claudiaData
-     * @param rule
      */
-    public void destroyRule(ClaudiaData claudiaData, Rule rule)
-        throws InfrastructureException {
+    public void destroyRule(String region, String token, String vdc, Rule rule) throws InfrastructureException {
 
         log.debug("Destroy security rule " + rule.getFromPort());
-        String url = systemPropertiesProvider.getProperty("openstack.nova.url")
-            + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
-            + "/os-security-group-rules/" + rule.getIdRule();
+        String url = getNovaEndPoint(region, token) + vdc + "/os-security-group-rules/" + rule.getIdRule();
         log.debug("actionUri: " + url);
 
         try {
@@ -193,7 +194,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
             WebResource wr = client.resource(url);
             Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
 
-            Map<String, String> header = getHeaders(claudiaData.getUser());
+            Map<String, String> header = getHeaders(token, vdc);
             for (String key : header.keySet()) {
                 builder = builder.header(key, header.get(key));
             }
@@ -208,8 +209,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
                 log.debug("Operation ok result " + result);
             } else {
                 log.error("Error to delete a security rule " + rule.getIdRule() + ": " + result);
-                throw new InfrastructureException("Error to delete a security rule " + rule.getIdRule()
-                    + ": " + result);
+                throw new InfrastructureException("Error to delete a security rule " + rule.getIdRule() + ": " + result);
             }
 
         } catch (Exception e) {
@@ -224,12 +224,10 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
     /**
      * It destroys a security group.
      */
-    public void destroySecurityGroup(ClaudiaData claudiaData, SecurityGroup securityGroup)
-        throws InfrastructureException {
+    public void destroySecurityGroup(String region, String token, String vdc, SecurityGroup securityGroup)
+            throws InfrastructureException {
         log.debug("Destroy security group " + securityGroup.getName());
-        String url = systemPropertiesProvider.getProperty("openstack.nova.url")
-            + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
-            + "/os-security-groups/" + securityGroup.getIdSecurityGroup();
+        String url = getNovaEndPoint(region, token) + vdc + "/os-security-groups/" + securityGroup.getIdSecurityGroup();
         log.debug("actionUri: " + url);
 
         try {
@@ -241,7 +239,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
             WebResource wr = client.resource(url);
             Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
 
-            Map<String, String> header = getHeaders(claudiaData.getUser());
+            Map<String, String> header = getHeaders(token, vdc);
             for (String key : header.keySet()) {
                 builder = builder.header(key, header.get(key));
             }
@@ -290,12 +288,12 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
         return secGroups;
     }
 
-    private Map<String, String> getHeaders(PaasManagerUser claudiaData) {
+    private Map<String, String> getHeaders(String token, String vdc) {
 
         Map<String, String> headers = new HashMap<String, String>();
 
-        headers.put("X-Auth-Token", claudiaData.getToken());
-        headers.put("X-Auth-Project-Id", claudiaData.getTenantId());
+        headers.put("X-Auth-Token", token);
+        headers.put("X-Auth-Project-Id", vdc);
         return headers;
 
     }
@@ -303,11 +301,14 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
     /**
      * It loads all the security groups.
      */
-    public List<SecurityGroup> loadAllSecurityGroups(ClaudiaData claudiaData) throws OpenStackException {
+    public List<SecurityGroup> loadAllSecurityGroups(String region, String token, String vdc) throws OpenStackException {
 
-        String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)
-            + systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)
-            + claudiaData.getVdc() + "/os-security-groups";
+        String url = null;
+        try {
+            url = getNovaEndPoint(region, token) + vdc + "/os-security-groups";
+        } catch (InfrastructureException e) {
+            throw new OpenStackException(e.getMessage());
+        }
         log.debug("actionUri: " + url);
 
         Client client = new Client();
@@ -316,7 +317,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
         WebResource wr = client.resource(url);
         Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
 
-        Map<String, String> header = getHeaders(claudiaData.getUser());
+        Map<String, String> header = getHeaders(token, vdc);
         for (String key : header.keySet()) {
             builder = builder.header(key, header.get(key));
         }
@@ -340,14 +341,16 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
      * Load a security group.
      */
 
-
-    public SecurityGroup loadSecurityGroup(ClaudiaData claudiaData, String securityGroupId)
-        throws EntityNotFoundException {
+    public SecurityGroup loadSecurityGroup(String region, String token, String vdc, String securityGroupId)
+            throws EntityNotFoundException, OpenStackException {
 
         log.debug("Loading security group " + securityGroupId);
-        String url = systemPropertiesProvider.getProperty("openstack.nova.url")
-            + systemPropertiesProvider.getProperty("openstack.version") + claudiaData.getVdc()
-            + "/os-security-groups/" + securityGroupId;
+        String url = null;
+        try {
+            url = getNovaEndPoint(region, token) + vdc + "/os-security-groups/" + securityGroupId;
+        } catch (InfrastructureException e) {
+            throw new OpenStackException(e.getMessage());
+        }
         log.debug("actionUri: " + url);
 
         try {
@@ -358,7 +361,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
             WebResource wr = client.resource(url);
             Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON);
 
-            Map<String, String> header = getHeaders(claudiaData.getUser());
+            Map<String, String> header = getHeaders(token, vdc);
             for (String key : header.keySet()) {
                 builder = builder.header(key, header.get(key));
             }
@@ -395,4 +398,11 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
+    public OpenStackRegion getOpenStackRegion() {
+        return openStackRegion;
+    }
+
+    public void setOpenStackRegion(OpenStackRegion openStackRegion) {
+        this.openStackRegion = openStackRegion;
+    }
 }

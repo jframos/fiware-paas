@@ -7,15 +7,14 @@
 
 package com.telefonica.euro_iaas.paasmanager.dao;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.telefonica.euro_iaas.paasmanager.dao.impl.OSDaoJpaImpl;
 import com.telefonica.euro_iaas.paasmanager.model.OS;
 
 /**
@@ -23,32 +22,25 @@ import com.telefonica.euro_iaas.paasmanager.model.OS;
  * 
  * @author Jesus M. Movilla
  */
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
 public class OSDaoJpaImplTest {
 
+    @Autowired
     private OSDao osDao;
-    private OS so1;
 
     public final static String SO_NAME = "TestSO";
-    public final static String SO_OSTYPE = "OSTypeSO";
+    public final static String SO_OSTYPE = "li";
     public final static String SO_DESCRIPTION = "TestDescription";
     public final static String SO_VERSION = "TestVersion";
-
-    @Before
-    public void setUp() throws Exception
-
-    {
-        so1 = new OS(SO_OSTYPE, SO_NAME, SO_DESCRIPTION, SO_VERSION);
-        List<OS> oss = new ArrayList<OS>();
-        oss.add(so1);
-
-    }
 
     @Test
     public void testCreate() throws Exception {
 
-        OSDaoJpaImpl osDao = new OSDaoJpaImpl();
-        OS so = new OS(SO_OSTYPE, SO_NAME, SO_DESCRIPTION, SO_VERSION);
-        assertNull(so.getId());
+        OS os = new OS(SO_OSTYPE, SO_NAME, SO_DESCRIPTION, SO_VERSION);
+        OS osCreated = osDao.create(os);
+        assertNotNull(osCreated.getId());
 
     }
 

@@ -7,9 +7,15 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
     <beans profile="4caast,4caastvapp,fiware,fiwarevapp,dummy,fiwaredummy">
         <bean id="restClient" class="com.sun.jersey.api.client.Client" factory-method="create"/>
 
+        <bean id="openStackRegion" class="com.telefonica.euro_iaas.paasmanager.util.impl.OpenStackRegionImpl">
+            <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
+
+        </bean>
+
         <bean id="openStackUtil" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.util.OpenStackUtilImpl">
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
+            <property name="openStackRegion" ref="openStackRegion"/>
         </bean>
         <bean id="sDCClient" lazy-init="true"
               class="com.telefonica.euro_iaas.sdc.client.SDCClient">
@@ -123,16 +129,11 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
             <property name="environmentManager" ref="environmentManager"/>
             <property name="networkInstanceManager" ref="networkInstanceManager"/>
-            
-            
+
         </bean>
         <bean id="environmentManager" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl">
             <property name="environmentDao" ref="environmentDao"/>
-            <!--   <property name="environmentTypeDao" ref="environmentTypeDao"/>-->
-            <!--    <property name="tierDao" ref="tierDao"/>-->
-            <!--  <property name="productReleaseDao" ref="productReleaseDao"/> -->
-            <!--    <property name="productReleaseManager" ref="productReleaseManager"/> -->
             <property name="tierManager" ref="tierManager"/>
         </bean>
 
@@ -150,6 +151,8 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         <bean id="firewallingClient" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.claudia.impl.OpenstackFirewallingClientImpl">
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
+            <property name="openStackRegion" ref="openStackRegion"/>
+
         </bean>
 
 
@@ -162,8 +165,8 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
               class="com.telefonica.euro_iaas.paasmanager.manager.impl.SubNetworkManagerImpl">
             <property name="subNetworkDao" ref="subNetworkDao"/>
         </bean>
-        
-          <bean id="subNetworkInstanceManager" lazy-init="true"
+
+        <bean id="subNetworkInstanceManager" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.manager.impl.SubNetworkInstanceManagerImpl">
             <property name="subNetworkInstanceDao" ref="subNetworkInstanceDao"/>
             <property name="networkClient" ref="networkClient"/>
@@ -180,8 +183,8 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="subNetworkManager" ref="subNetworkManager"/>
             <property name="networkInstanceManager" ref="networkInstanceManager"/>
         </bean>
-        
-         <bean id="networkInstanceManager" lazy-init="true"
+
+        <bean id="networkInstanceManager" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.manager.impl.NetworkInstanceManagerImpl">
             <property name="networkInstanceDao" ref="networkInstanceDao"/>
             <property name="networkClient" ref="networkClient"/>
@@ -278,8 +281,9 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="ovfUtils" ref="ovfUtils"/>
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
-            <property name="networkInstanceManager" ref="networkInstanceManager"/>   
-
+            <property name="networkInstanceManager" ref="networkInstanceManager"/>
+            <property name="networkManager" ref="networkManager"/>
+            <property name="tierManager" ref="tierManager"/>
 
         </bean>
     </beans>
@@ -328,6 +332,8 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="monitoringClient" ref="monitoringClient"/>
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="environmentUtils" ref="environmentUtils"/>
+            <property name="networkManager" ref="networkManager"/>
+            <property name="tierManager" ref="tierManager"/>
         </bean>
         <bean id="vappUtils2" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.util.VappUtilsImpl">
@@ -380,7 +386,9 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="environmentUtils" ref="environmentUtils"/>
             <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
-            <property name ="networkInstanceManager" ref="networkInstanceManager"/>
+            <property name="networkInstanceManager" ref="networkInstanceManager"/>
+            <property name="networkManager" ref="networkManager"/>
+            <property name="tierManager" ref="tierManager"/>
         </bean>
 
     </beans>
@@ -399,6 +407,8 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="monitoringClient" ref="monitoringClient"/>
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="environmentUtils" ref="environmentUtils"/>
+            <property name="networkManager" ref="networkManager"/>
+            <property name="tierManager" ref="tierManager"/>
         </bean>
         <bean id="vappUtils2" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.util.VappUtilsNeoClaudiaOpenStackImpl">
@@ -437,7 +447,10 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="vappUtils" ref="vappUtils"/>
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
         </bean> -->
+        <bean id="openStackRegion" class="com.telefonica.euro_iaas.paasmanager.util.impl.OpenStackRegionImpl">
+            <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
 
+        </bean>
 
         <bean id="quotaClient" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.claudia.impl.OpenStackQuotaClientImpl">
@@ -482,6 +495,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         <bean id="openStackUtil" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.util.OpenStackUtilImpl">
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
+            <property name="openStackRegion" ref="openStackRegion"/>
         </bean>
 
         <bean id="infrastructureManager" lazy-init="true"
@@ -496,7 +510,9 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="environmentUtils" ref="environmentUtils"/>
             <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
-            <property name ="networkInstanceManager" ref="networkInstanceManager"/>
+            <property name="networkInstanceManager" ref="networkInstanceManager"/>
+            <property name="networkManager" ref="networkManager"/>
+            <property name="tierManager" ref="tierManager"/>
         </bean>
 
     </beans>
@@ -547,8 +563,9 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="environmentUtils" ref="environmentUtils"/>
             <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
-            <property name ="networkInstanceManager" ref="networkInstanceManager"/>
-
+            <property name="networkInstanceManager" ref="networkInstanceManager"/>
+            <property name="networkManager" ref="networkManager"/>
+            <property name="tierManager" ref="tierManager"/>
         </bean>
 
     </beans>

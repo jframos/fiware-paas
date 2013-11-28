@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import junit.framework.TestCase;
@@ -39,24 +41,27 @@ public class EnvironmentTest extends TestCase {
         tier.setFloatingip("true");
         tier.setImage("image");
 
-        Tier tier2 = new Tier("tierName2", new Integer(1), new Integer(1), new Integer(1), productReleases, "2",
-                "image", "icone");
+        Tier tier2 = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "4",
+                "image2", "icone2");
 
-        List<Tier> tiers = new ArrayList<Tier>();
-        tiers.add(tier);
-        tiers.add(tier2);
+        Set<Tier> tiers = new HashSet<Tier>();
+        System.out.println (tiers.add(tier));
+        System.out.println (tiers.add(tier2));
 
         Environment envResult = new Environment();
         envResult = new Environment();
         envResult.setName("environemntName");
-        envResult.setTiers(tiers);
+        envResult.addTier(tier2);
+        envResult.addTier(tier);
+       // envResult.setTiers(tiers);
 
         EnvironmentDto envDto = envResult.toDto();
         Environment env2 = envDto.fromDto();
         assertEquals(env2, envResult);
 
         assertEquals(envResult.getTiers().size(), 2);
-        assertEquals(envResult.getTiers().get(0).getName(), "tierName");
+
+        
 
     }
 

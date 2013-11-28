@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
@@ -165,10 +167,10 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
      * 
      * @return
      */
-    private List<Tier> convertToTiers(List<TierDto> tierDtos) {
-        List<Tier> tiers = new ArrayList<Tier>();
-        for (int i = 0; i < tierDtos.size(); i++) {
-            Tier tier = tierDtos.get(i).fromDto();
+    private Set<Tier> convertToTiers(Set<TierDto> tierDtos) {
+        Set<Tier> tiers = new HashSet<Tier>();
+        for (TierDto tierDto: tierDtos) {
+            Tier tier = tierDto.fromDto();
 
             tiers.add(tier);
         }
@@ -180,10 +182,10 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
      * 
      * @return
      */
-    private List<TierDto> convertToTierDtos(List<Tier> tiers) {
-        List<TierDto> tierDtos = new ArrayList<TierDto>();
-        for (int i = 0; i < tiers.size(); i++) {
-            TierDto tierDto = tiers.get(i).toDto();
+    private Set<TierDto> convertToTierDtos(Set<Tier> tiers) {
+    	Set<TierDto> tierDtos = new HashSet<TierDto>();
+        for (Tier tier: tiers) {
+            TierDto tierDto = tier.toDto();
 
             tierDtos.add(tierDto);
         }

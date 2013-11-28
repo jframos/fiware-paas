@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -77,7 +79,7 @@ public class EnvironmentResourceTest extends TestCase {
         tier.setFloatingip("floatingip");
         tier.setKeypair("keypair");
 
-        List<Tier> tiers = new ArrayList<Tier>();
+        Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tier);
         environment.setTiers(tiers);
 
@@ -146,7 +148,7 @@ public class EnvironmentResourceTest extends TestCase {
 
         tierDto.setSecurityGroup("security_group");
 
-        List<TierDto> tiers = new ArrayList<TierDto>();
+        Set<TierDto> tiers = new HashSet<TierDto>();
         tiers.add(tierDto);
 
         environmentDto.setTierDtos(tiers);

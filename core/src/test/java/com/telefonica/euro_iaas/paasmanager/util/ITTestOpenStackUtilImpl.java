@@ -9,19 +9,19 @@ package com.telefonica.euro_iaas.paasmanager.util;
 
 // import org.apache.log4j.Logger;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
-import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.core.GrantedAuthority;
 
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
 /**
  * This is an Integration Test against OpenStack.
@@ -197,19 +197,19 @@ public class ITTestOpenStackUtilImpl {
             String payload = buildCreateServerPayload();
 
             // Create a VM
-            String postResponse = openStackUtil.createServer(payload, user);
+            String postResponse = openStackUtil.createServer(payload, "region", "token", "vdc");
 
             String id = postResponse.split(",")[1];
             serverId = id.substring(8, id.length() - 1);
             // setServerId(id.substring(8, id.length()-1));
 
             // Get the VM
-            String getResponse = openStackUtil.getServer(serverId, user);
+            String getResponse = openStackUtil.getServer(serverId, "region", "token", "vdc");
 
             Thread.sleep(5000);
 
             // Delete the VM
-            String deleteResponse = openStackUtil.deleteServer(serverId, user);
+            String deleteResponse = openStackUtil.deleteServer(serverId, "region", "token", "vdc");
 
         } catch (Exception ex) {
             Logger.getLogger(ITTestOpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -233,18 +233,18 @@ public class ITTestOpenStackUtilImpl {
             String payload = buildCreateServerPayload();
 
             // Create a VM
-            String serverId = openStackUtil.createServer(payload, user);
+            String serverId = openStackUtil.createServer(payload, "region", "token", "vdc");
 
             Thread.sleep(5000);
 
             // Obtaining a freee floatingIP
-            floatingIP = openStackUtil.getFloatingIP(user);
+            floatingIP = openStackUtil.getFloatingIP("region", "token", "vdc");
 
             // Assign the floatingIP to the serverId
-            openStackUtil.assignFloatingIP(serverId, floatingIP, user);
+            openStackUtil.assignFloatingIP(serverId, floatingIP, "region", "token", "vdc");
 
             // Delete the VM
-            String deleteResponse = openStackUtil.deleteServer(serverId, user);
+            String deleteResponse = openStackUtil.deleteServer(serverId, "region", "token", "vdc");
 
         } catch (Exception ex) {
             Logger.getLogger(ITTestOpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);

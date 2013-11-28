@@ -12,7 +12,9 @@ import static com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil.PRO
 import static com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil.VIRTUALSYSTEMCOLLECTION;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -128,7 +130,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
         EnvironmentInstanceSearchCriteria criteria = new EnvironmentInstanceSearchCriteria();
 
-        criteria.setVdc(environmentInstanceDto.getVdc());
+        criteria.setVdc(claudiaData.getVdc());
         criteria.setEnviromentName(environmentInstanceDto.getBlueprintName());
 
         List<EnvironmentInstance> envInstances = environmentInstanceDao.findByCriteria(criteria);
@@ -159,8 +161,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
         }
 
         // Validating length of hostname (maximum =64)
-        for (int i = 0; i < environmentInstanceDto.getEnvironmentDto().getTierDtos().size(); i++) {
-            TierDto tierDto = environmentInstanceDto.getEnvironmentDto().getTierDtos().get(i);
+        for (TierDto tierDto : environmentInstanceDto.getEnvironmentDto().getTierDtos()) {
             // String hostname = (claudiaData.getService() + "-"
             // + tier.getName() + "-"
             // + numReplica).toLowerCase();
@@ -195,36 +196,44 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
     public void validateQuota(ClaudiaData claudiaData, EnvironmentInstanceDto environmentInstanceDto)
             throws InvalidEnvironmentRequestException, QuotaExceededException {
 
-        Limits limits;
-        try {
-            limits = quotaClient.getLimits(claudiaData);
-
-        } catch (InfrastructureException e) {
-            throw new InvalidEnvironmentRequestException("Failed in getLimits " + e.getMessage());
-        }
+        Map<String, Limits> limits = new HashMap<String, Limits>();
 
         Integer initialNumberInstances = 0;
         Integer floatingIPs = 0;
         if (environmentInstanceDto.getTierInstances() != null) {
             for (TierInstanceDto tierInstanceDto : environmentInstanceDto.getTierInstances()) {
+                String region = tierInstanceDto.getTierDto().getRegion();
+                if (!limits.containsKey(region)) {
+                    try {
+                        limits.put(region, quotaClient.getLimits(claudiaData, region));
+                    } catch (InfrastructureException e) {
+                        throw new InvalidEnvironmentRequestException("Failed in getLimits " + e.getMessage());
+                    }
+                }
 
                 initialNumberInstances += tierInstanceDto.getTierDto().getInitialNumberInstances();
                 if ("true".equals(tierInstanceDto.getTierDto().getFloatingip())) {
                     floatingIPs++;
                 }
-            }
-            if (limits.checkTotalInstancesUsed()) {
-                if (initialNumberInstances + limits.getTotalInstancesUsed() > limits.getMaxTotalInstances()) {
-                    throw new QuotaExceededException("max number of instances exceeded: "
-                            + limits.getMaxTotalInstances());
-                }
-            }
 
-            if (limits.checkTotalFloatingsIpsUsed()) {
-                if (floatingIPs + limits.getTotalFloatingIpsUsed() > limits.getMaxTotalFloatingIps()) {
-                    throw new QuotaExceededException("max number of floating IPs exceeded: "
-                            + limits.getMaxTotalFloatingIps());
+                Limits limitsRegion = limits.get(region);
+
+                if (limitsRegion.checkTotalInstancesUsed()) {
+
+                    if (initialNumberInstances + limitsRegion.getTotalInstancesUsed() > limitsRegion
+                            .getMaxTotalInstances()) {
+                        throw new QuotaExceededException("max number of instances exceeded: "
+                                + limitsRegion.getMaxTotalInstances());
+                    }
                 }
+
+                if (limitsRegion.checkTotalFloatingsIpsUsed()) {
+                    if (floatingIPs + limitsRegion.getTotalFloatingIpsUsed() > limitsRegion.getMaxTotalFloatingIps()) {
+                        throw new QuotaExceededException("max number of floating IPs exceeded: "
+                                + limitsRegion.getMaxTotalFloatingIps());
+                    }
+                }
+
             }
         }
     }

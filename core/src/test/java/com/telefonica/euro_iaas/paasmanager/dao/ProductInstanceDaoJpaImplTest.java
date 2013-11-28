@@ -7,24 +7,23 @@
 
 package com.telefonica.euro_iaas.paasmanager.dao;
 
+import static org.mockito.Mockito.mock;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.telefonica.euro_iaas.paasmanager.dao.impl.ProductInstanceDaoJpaImpl;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
-
-
-import static org.mockito.Mockito.mock;
 
 /**
  * Unit test for InstanceDaoJpaImpl
  * 
  * @author Jesus M. Movilla
  */
-public class ProductInstanceDaoJpaImplTest extends TestCase {
+public class ProductInstanceDaoJpaImplTest {
 
     private ProductInstanceDao productInstanceDao;
     private OSDao osDao;
@@ -140,7 +139,6 @@ public class ProductInstanceDaoJpaImplTest extends TestCase {
         this.productTypeDao = productTypeDao;
     }
 
-    @Override
     @Before
     public void setUp() {
         productReleaseDao = mock(ProductReleaseDao.class);

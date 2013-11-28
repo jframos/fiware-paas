@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.paasmanager.claudia.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
@@ -75,7 +77,7 @@ public class ClaudiaClientImplTest {
         productReleases.add(productRelease);
         tier.setProductReleases(productReleases);
 
-        List<Tier> tiers = new ArrayList<Tier>();
+        Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tier);
         envResult.setTiers(tiers);
 

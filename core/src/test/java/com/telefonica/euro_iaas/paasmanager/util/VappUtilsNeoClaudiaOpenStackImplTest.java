@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -29,12 +30,12 @@ import org.junit.Test;
 public class VappUtilsNeoClaudiaOpenStackImplTest extends TestCase {
 
     private String vappReplica;
-    private final String VappNeoclaudiaTwoIps = "src/test/resources/VappNeoclaudiaTwoIps.xml";
+    private final String vappNeoclaudiaTwoIps = "/VappNeoclaudiaTwoIps.xml";
 
     private VappUtilsNeoClaudiaOpenStackImpl vappUtilsNeoClaudiaOpenStackImpl;
     private SystemPropertiesProvider systemPropertiesProvider;
 
-    private String getFile(String file) throws IOException {
+    private String getFile(URI file) throws IOException {
         File f = new File(file);
         InputStream dd = new FileInputStream(f);
 
@@ -51,7 +52,7 @@ public class VappUtilsNeoClaudiaOpenStackImplTest extends TestCase {
     @Override
     @Before
     public void setUp() throws Exception {
-        vappReplica = getFile(VappNeoclaudiaTwoIps);
+        vappReplica = getFile(this.getClass().getResource(vappNeoclaudiaTwoIps).toURI());
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         // when
         // (systemPropertiesProvider.getProperty(any(String.class))).thenReturn("FIWARE");
@@ -69,8 +70,4 @@ public class VappUtilsNeoClaudiaOpenStackImplTest extends TestCase {
         assertEquals(ips.get(1), "130.206.82.72");
     }
 
-    @Test
-    public void testGetVappsSingleVM() throws Exception {
-
-    }
 }

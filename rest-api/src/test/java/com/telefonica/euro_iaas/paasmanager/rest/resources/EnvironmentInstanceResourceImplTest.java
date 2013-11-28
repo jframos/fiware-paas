@@ -14,7 +14,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +59,7 @@ public class EnvironmentInstanceResourceImplTest {
     public String org = "org";
     public String callback = "callback";
     public Environment environment;
-    public List<Tier> tiers;
+    public Set<Tier> tiers;
     public TaskManager taskManager;
     public Task task;
 
@@ -100,7 +102,7 @@ public class EnvironmentInstanceResourceImplTest {
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
                 "image", "icono", "keypair", "floatingip", "payload");
 
-        tiers = new ArrayList<Tier>();
+        tiers = new HashSet<Tier>();
         tiers.add(tier);
         tiers.add(tier);
 

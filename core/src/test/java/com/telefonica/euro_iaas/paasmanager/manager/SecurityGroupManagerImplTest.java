@@ -10,6 +10,7 @@ package com.telefonica.euro_iaas.paasmanager.manager;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -46,7 +47,8 @@ public class SecurityGroupManagerImplTest {
         securityGroupManager.setRuleManager(ruleManager);
         securityGroupManager.setSecurityGroupDao(securityGroupDao);
 
-        when(firewallingClient.deploySecurityGroup(any(ClaudiaData.class), any(SecurityGroup.class))).thenReturn("2");
+        when(firewallingClient.deploySecurityGroup(anyString(), anyString(), anyString(), any(SecurityGroup.class)))
+                .thenReturn("2");
 
     }
 
@@ -63,10 +65,10 @@ public class SecurityGroupManagerImplTest {
 
         Mockito.doThrow(new EntityNotFoundException(SecurityGroup.class, "test", securityGroup)).when(securityGroupDao)
                 .load(any(String.class));
-        when(ruleManager.create(any(ClaudiaData.class), any(Rule.class))).thenReturn(rule);
+        when(ruleManager.create(anyString(), anyString(), anyString(), any(Rule.class))).thenReturn(rule);
         when(securityGroupDao.create(any(SecurityGroup.class))).thenReturn(securityGroup);
 
-        SecurityGroup securityGroup2 = securityGroupManager.create(claudiaData, securityGroup);
+        SecurityGroup securityGroup2 = securityGroupManager.create("region", "token", "vdc", securityGroup);
 
         assertNotNull(securityGroup2);
         assertEquals(securityGroup2.getName(), "name");
@@ -87,16 +89,16 @@ public class SecurityGroupManagerImplTest {
         ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "dd");
 
         Mockito.doNothing().doThrow(new RuntimeException()).when(ruleManager)
-                .destroy(any(ClaudiaData.class), any(Rule.class));
+                .destroy(anyString(), anyString(), anyString(), any(Rule.class));
 
         Mockito.doNothing().doThrow(new RuntimeException()).when(securityGroupDao).remove(any(SecurityGroup.class));
 
         Mockito.doNothing().doThrow(new RuntimeException()).when(firewallingClient)
-                .destroySecurityGroup(any(ClaudiaData.class), any(SecurityGroup.class));
+                .destroySecurityGroup(anyString(), anyString(), anyString(), any(SecurityGroup.class));
 
         when(securityGroupDao.create(any(SecurityGroup.class))).thenReturn(securityGroup);
 
-        securityGroupManager.destroy(claudiaData, securityGroup);
+        securityGroupManager.destroy("region", "token", "vdc", securityGroup);
 
     }
 

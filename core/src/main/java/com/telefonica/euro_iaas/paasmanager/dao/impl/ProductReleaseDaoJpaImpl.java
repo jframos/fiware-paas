@@ -9,11 +9,15 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.EntityManager;
+
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
+
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -21,31 +25,26 @@ import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.model.OS;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductReleaseSearchCriteria;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 
+@Transactional(propagation = Propagation.REQUIRED)
 public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, String> implements ProductReleaseDao {
-
-    @PersistenceContext(unitName = "paasmanager", type = PersistenceContextType.EXTENDED)
-    private EntityManager entityManager;
 
     public List<ProductRelease> findAll() {
         return super.findAll(ProductRelease.class);
     }
 
     public ProductRelease load(String name) throws EntityNotFoundException {
-    	try{
+        try {
             return findByProductReleaseWithMetadataAndAtt(name);
         } catch (Exception e) {
-        	try {
+            try {
                 return findByProductReleaseWithAtt(name);
             } catch (Exception e2) {
-            	
-            	try {
+
+                try {
                     return findByProductReleaseWithMetadata(name);
                 } catch (Exception e3) {
-                	
+
                     return super.loadByField(ProductRelease.class, "name", name);
                 }
             }
@@ -64,7 +63,7 @@ public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, St
 
     public List<ProductRelease> findByCriteria(ProductReleaseSearchCriteria criteria) {
         // Session session = (Session) getEntityManager().getDelegate();
-        Session session = (Session) entityManager.getDelegate();
+        Session session = (Session) getEntityManager().getDelegate();
         Criteria baseCriteria = session.createCriteria(ProductRelease.class);
 
         if (criteria.getProductName() != null) {
@@ -91,7 +90,7 @@ public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, St
      */
 
     public ProductRelease load(String product, String version) throws EntityNotFoundException {
-       return load(product + "-" + version);
+        return load(product + "-" + version);
 
     }
 
@@ -101,8 +100,8 @@ public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, St
      */
 
     private ProductRelease findByProductReleaseWithAtt(String name) throws EntityNotFoundException {
-        Query query = entityManager.createQuery("select p from ProductRelease p left join "
-                + " fetch p.attributes where p.name = :name");
+        Query query = getEntityManager().createQuery(
+                "select p from ProductRelease p left join " + " fetch p.attributes where p.name = :name");
         query.setParameter("name", name);
         ProductRelease productRelease = null;
         try {
@@ -114,11 +113,11 @@ public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, St
         }
         return productRelease;
     }
-    
+
     private ProductRelease findByProductReleaseWithMetadata(String name) throws EntityNotFoundException {
-    	
-        Query query = entityManager.createQuery("select p from ProductRelease p left join "
-                + " fetch p.metadatas where p.name = :name");
+
+        Query query = getEntityManager().createQuery(
+                "select p from ProductRelease p left join " + " fetch p.metadatas where p.name = :name");
         query.setParameter("name", name);
         ProductRelease productRelease = null;
         try {
@@ -130,11 +129,13 @@ public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, St
         }
         return productRelease;
     }
-    
+
     private ProductRelease findByProductReleaseWithMetadataAndAtt(String name) throws EntityNotFoundException {
-    	
-    	Query query = entityManager.createQuery("select p from ProductRelease p left join"
-                + " fetch p.attributes as attributes left join fetch p.metadatas as metadatas where p.name = :name");
+
+        Query query = getEntityManager()
+                .createQuery(
+                        "select p from ProductRelease p left join"
+                                + " fetch p.attributes as attributes left join fetch p.metadatas as metadatas where p.name = :name");
         query.setParameter("name", name);
         ProductRelease productRelease = null;
         try {

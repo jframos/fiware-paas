@@ -13,5 +13,5 @@ import com.telefonica.euro_iaas.paasmanager.model.Limits;
 
 public interface QuotaClient {
 
-    Limits getLimits(ClaudiaData claudiaData) throws InfrastructureException;
+    Limits getLimits(ClaudiaData claudiaData, String region) throws InfrastructureException;
 }

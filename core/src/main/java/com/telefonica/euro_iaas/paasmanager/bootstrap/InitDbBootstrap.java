@@ -9,7 +9,9 @@ package com.telefonica.euro_iaas.paasmanager.bootstrap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -243,7 +245,7 @@ public class InitDbBootstrap implements ServletContextListener {
 
                 tomcat7postgres8Tier = tierDao.create(tomcat7postgres8Tier);
 
-                List<Tier> tiersTesting = new ArrayList<Tier>();
+                Set<Tier> tiersTesting = new HashSet<Tier>();
                 tiersTesting.add(tomcat7postgres8Tier);
 
                 /*
@@ -262,13 +264,13 @@ public class InitDbBootstrap implements ServletContextListener {
 
                 tomcat6Tier = tierDao.create(tomcat6Tier);
 
-                List<Tier> tiersProduction = new ArrayList<Tier>();
+                Set<Tier> tiersProduction = new HashSet<Tier>();
                 // tiersProduction.add(tomcat7Tier);
                 tiersProduction.add(tomcat6Tier);
 
                 Tier postgres8Tier = new Tier("postgres8Tier", 1, 1, 1, productReleasesPostgres8);
                 postgres8Tier = tierDao.create(postgres8Tier);
-                List<Tier> tiersProduction2vms = new ArrayList<Tier>();
+                Set<Tier> tiersProduction2vms = new HashSet<Tier>();
                 // tiersProduction2vms.add(tomcat7Tier);
                 // tiersProduction2vms.add(tomcat7Tier);
                 tiersProduction2vms.add(tomcat6Tier);
@@ -289,7 +291,7 @@ public class InitDbBootstrap implements ServletContextListener {
 
                 haproxy10Tier = tierDao.create(haproxy10Tier);
 
-                List<Tier> tiers4Caast3VMs = new ArrayList<Tier>();
+                Set<Tier> tiers4Caast3VMs = new HashSet<Tier>();
                 tiers4Caast3VMs.add(haproxy10Tier);
                 // tiers4Caast3VMs.add(mysql51Tier);
                 // tiers4Caast3VMs.add(tomcat7Tier);
@@ -319,7 +321,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 abstractTier.setFlavour("2");
 
                 abstractTier = tierDao.create(abstractTier);
-                List<Tier> tiersTesting2 = new ArrayList<Tier>();
+                Set<Tier> tiersTesting2 = new HashSet<Tier>();
                 tiersTesting2.add(abstractTier);
 
                 Environment abstractEnvironment = new Environment("2testing", tiersTesting2,
@@ -345,7 +347,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 mysqlTier.setFlavour("2");
                 mysqlTier = tierDao.create(mysqlTier);
 
-                List<Tier> tiersNodeMysql = new ArrayList<Tier>();
+                Set<Tier> tiersNodeMysql = new HashSet<Tier>();
                 tiersNodeMysql.add(mysqlTier);
                 tiersNodeMysql.add(nodeTier);
                 Environment nodemysql = new Environment("NodejsMysql", tiersNodeMysql, "Environment Nodejs Mysql ");
@@ -379,7 +381,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 tierContextBroker.setFlavour("2");
                 tierContextBroker = tierDao.create(tierContextBroker);
 
-                List<Tier> tiersContextbrokertemplate = new ArrayList<Tier>();
+                Set<Tier> tiersContextbrokertemplate = new HashSet<Tier>();
                 tiersContextbrokertemplate.add(tierConfig);
                 tiersContextbrokertemplate.add(tierShard);
                 tiersContextbrokertemplate.add(tierContextBroker);
@@ -430,7 +432,7 @@ public class InitDbBootstrap implements ServletContextListener {
                 tierApp2.setEnviromentName("smartcity-lights");
                 tierApp2 = tierDao.create(tierApp2);
 
-                List<Tier> tiersSmartcitylights = new ArrayList<Tier>();
+                Set<Tier> tiersSmartcitylights = new HashSet<Tier>();
                 tiersSmartcitylights.add(tierConfig2);
                 tiersSmartcitylights.add(tierShard2);
                 tiersSmartcitylights.add(tierContextBroker2);

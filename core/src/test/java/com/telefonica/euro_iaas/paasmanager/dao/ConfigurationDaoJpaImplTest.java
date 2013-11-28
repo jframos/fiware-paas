@@ -7,17 +7,30 @@
 
 package com.telefonica.euro_iaas.paasmanager.dao;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.util.List;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.telefonica.euro_iaas.paasmanager.model.Configuration;
 
-public class ConfigurationDaoJpaImplTest extends AbstractJpaDaoTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
+public class ConfigurationDaoJpaImplTest {
 
     private final String KEY = "key";
     private final String KEY2 = "key2";
     private final String VALUE = "value";
 
-    private ConfigurationDao configurationDao;
+    @Autowired
+    ConfigurationDao configurationDao;
 
     public void setConfigurationDao(ConfigurationDao configurationDao) {
         this.configurationDao = configurationDao;
@@ -26,6 +39,7 @@ public class ConfigurationDaoJpaImplTest extends AbstractJpaDaoTest {
     /**
      * Test the create and load method
      */
+    @Test
     public void testCreate() throws Exception {
         Configuration configuration = new Configuration(KEY, VALUE);
         assertNull(configuration.getId());

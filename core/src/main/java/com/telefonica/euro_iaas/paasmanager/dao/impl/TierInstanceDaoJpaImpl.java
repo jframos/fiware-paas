@@ -10,16 +10,15 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -31,10 +30,8 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierInstanceSearchCriteria;
 
+@Transactional(propagation = Propagation.REQUIRED)
 public class TierInstanceDaoJpaImpl extends AbstractBaseDao<TierInstance, String> implements TierInstanceDao {
-
-    @PersistenceContext(unitName = "paasmanager", type = PersistenceContextType.EXTENDED)
-    private EntityManager entityManager;
 
     public List<TierInstance> findAll() {
         return super.findAll(TierInstance.class);
@@ -108,11 +105,7 @@ public class TierInstanceDaoJpaImpl extends AbstractBaseDao<TierInstance, String
     }
 
     /**
-     * Filter the result by service
-     * 
-     * @param tierInstances
-     * @param productInstanceInput
-     * @return tierInstances
+     * Filter the result by service.
      */
     private List<TierInstance> filterByService(List<TierInstance> tierInstances, Service serviceInput) {
         List<TierInstance> result = new ArrayList<TierInstance>();
@@ -129,8 +122,8 @@ public class TierInstanceDaoJpaImpl extends AbstractBaseDao<TierInstance, String
      */
 
     public TierInstance findByTierInstanceId(Long tierInstanceId) throws EntityNotFoundException {
-        Query query = entityManager.createQuery("select p from TierInstance p join "
-                + "fetch p.productInstances where p.id = :id");
+        Query query = getEntityManager().createQuery(
+                "select p from TierInstance p join " + "fetch p.productInstances where p.id = :id");
         query.setParameter("id", tierInstanceId);
         TierInstance tierInstance = null;
         try {
@@ -143,8 +136,8 @@ public class TierInstanceDaoJpaImpl extends AbstractBaseDao<TierInstance, String
     }
 
     public TierInstance findByTierInstanceName(String tierInstanceName) throws EntityNotFoundException {
-        Query query = entityManager.createQuery("select p from TierInstance p join "
-                + "fetch p.productInstances where p.name = :name");
+        Query query = getEntityManager().createQuery(
+                "select p from TierInstance p join " + "fetch p.productInstances where p.name = :name");
         query.setParameter("name", tierInstanceName);
         TierInstance tierInstance = null;
         try {

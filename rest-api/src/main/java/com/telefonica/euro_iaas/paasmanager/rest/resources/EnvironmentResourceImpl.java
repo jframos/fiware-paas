@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
@@ -69,10 +71,10 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
      * 
      * @return
      */
-    private List<Tier> convertToTiers(List<TierDto> tierDtos, String environmentName, String vdc) {
-        List<Tier> tiers = new ArrayList<Tier>();
-        for (int i = 0; i < tierDtos.size(); i++) {
-            Tier tier = tierDtos.get(i).fromDto();
+    private Set<Tier> convertToTiers(Set<TierDto> tierDtos, String environmentName, String vdc) {
+        Set<Tier> tiers = new HashSet<Tier>();
+        for (TierDto tierDto: tierDtos) {
+            Tier tier = tierDto.fromDto();
             // tier.setSecurity_group("sg_"
             // +environmentName+"_"+vdc+"_"+tier.getName());
             tiers.add(tier);
@@ -99,27 +101,29 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
 
     }
 
-    private List<Environment> filterEqualTiers(List<Environment> environments) {
+  /*  private List<Environment> filterEqualTiers(List<Environment> environments) {
         // List<Tier> tierResult = new ArrayList<Tier>();
         List<Environment> result = new ArrayList<Environment>();
 
         for (Environment environment : environments) {
-            List<Tier> tierResult = new ArrayList<Tier>();
-            List<Tier> tiers = environment.getTiers();
-            for (int i = 0; i < tiers.size(); i++) {
-                Tier tier = tiers.get(i);
+            Set<Tier> tierResult = new HashSet<Tier>();
+            Set<Tier> tiers = environment.getTiers();
+            for (Tier tier: tiers) {
+                int i=0;
                 List<Tier> tierAux = new ArrayList<Tier>();
                 for (int j = i + 1; j < tiers.size(); j++) {
                     tierAux.add(tiers.get(j));
                 }
-                if (!tierAux.contains(tier))
+                if (!tierAux.contains(tier)) {
                     tierResult.add(tier);
+                }
+                i++;
             }
             environment.setTiers(tierResult);
             result.add(environment);
         }
         return result;
-    }
+    }*/
 
     public List<EnvironmentDto> findAll(String org, String vdc, Integer page, Integer pageSize, String orderBy,
             String orderType) {
@@ -142,11 +146,11 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
         List<Environment> env = environmentManager.findByCriteria(criteria);
 
         // Solve the tier-environment duplicity appeared at database due to hibernate problems
-        List<Environment> envs = filterEqualTiers(env);
+       // List<Environment> envs = filterEqualTiers(env);
 
         List<EnvironmentDto> envsDto = new ArrayList<EnvironmentDto>();
-        for (int i = 0; i < envs.size(); i++) {
-            envsDto.add(envs.get(i).toDto());
+        for (int i = 0; i < env.size(); i++) {
+            envsDto.add(env.get(i).toDto());
 
         }
         return envsDto;
@@ -223,13 +227,13 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
         List<Environment> env = environmentManager.findByCriteria(criteria);
 
         // Solve the tier-environment duplicity appeared at database due to hibernate problems
-        List<Environment> envs = filterEqualTiers(env);
+     //   List<Environment> envs = filterEqualTiers(env);
 
         if (env == null || env.size() == 0) {
             throw new WebApplicationException(new EntityNotFoundException(Environment.class, "Environmetn " + name
                     + " not found", ""), ERROR_NOT_FOUND);
         } else {
-            EnvironmentDto envDto = envs.get(0).toDto();
+            EnvironmentDto envDto = env.get(0).toDto();
             // EnvironmentDto envDto = env.get(0).toDto();
             return envDto;
         }

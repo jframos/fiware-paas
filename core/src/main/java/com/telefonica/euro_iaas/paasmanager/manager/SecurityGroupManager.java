@@ -14,20 +14,20 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
-import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 
 public interface SecurityGroupManager {
 
     /**
-     * Create an securityGroup
+     * Create an securityGroup.
      * 
      * @param securityGroup
      * @return the securityGroup.
      */
-    SecurityGroup create(ClaudiaData claudiaData, SecurityGroup securityGroup) throws InvalidEntityException,
-            InvalidEnvironmentRequestException, AlreadyExistsEntityException, InfrastructureException;
+    SecurityGroup create(String region, String token, String vdc, SecurityGroup securityGroup)
+            throws InvalidEntityException, InvalidEnvironmentRequestException, AlreadyExistsEntityException,
+            InfrastructureException;
 
     /**
      * Destroy a previously creted securityGroup.
@@ -35,7 +35,7 @@ public interface SecurityGroupManager {
      * @param securityGroup
      *            the candidate to securityGroup
      */
-    void destroy(ClaudiaData claudiaData, SecurityGroup securityGroup) throws InvalidEntityException,
+    void destroy(String region, String token, String vdc, SecurityGroup securityGroup) throws InvalidEntityException,
             InfrastructureException;
 
     /**
@@ -49,8 +49,20 @@ public interface SecurityGroupManager {
      */
     SecurityGroup load(String name) throws EntityNotFoundException;
 
-    void addRule(ClaudiaData claudiaData, SecurityGroup securityGroup, Rule rule) throws InvalidEntityException,
-            AlreadyExistsEntityException, InfrastructureException;
+    /**
+     * Add rule to security group.
+     * 
+     * @param region
+     * @param token
+     * @param vdc
+     * @param securityGroup
+     * @param rule
+     * @throws InvalidEntityException
+     * @throws AlreadyExistsEntityException
+     * @throws InfrastructureException
+     */
+    void addRule(String region, String token, String vdc, SecurityGroup securityGroup, Rule rule)
+            throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException;
 
     /**
      * Retrieve all Environment created in the system.
@@ -60,7 +72,7 @@ public interface SecurityGroupManager {
     List<SecurityGroup> findAll();
 
     /**
-     * Updates the securityGroup
+     * Updates the securityGroup.
      * 
      * @param securityGroup
      * @return

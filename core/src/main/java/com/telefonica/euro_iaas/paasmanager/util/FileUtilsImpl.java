@@ -15,6 +15,8 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import com.telefonica.euro_iaas.paasmanager.exception.FileUtilsException;
 
@@ -57,16 +59,21 @@ public class FileUtilsImpl implements FileUtils {
 
     }
 
-    public String readFile(String property) throws FileUtilsException {
-        BufferedReader reader = null;
+    public String readFile(String fileName) throws FileUtilsException {
+        BufferedReader reader;
+        URL url = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(property))));
+            url = this.getClass().getResource("/" + fileName);
+
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(url.toURI()))));
         } catch (FileNotFoundException e) {
 
-            throw new FileUtilsException("The file " + property + "is not found");
+            throw new FileUtilsException("The file " + fileName + " is not found");
+        } catch (URISyntaxException e) {
+            throw new FileUtilsException("Invalid " + url + " url");
         }
         StringBuffer ruleFile = new StringBuffer();
-        String actualString = null;
+        String actualString;
 
         try {
             while ((actualString = reader.readLine()) != null) {
@@ -74,7 +81,7 @@ public class FileUtilsImpl implements FileUtils {
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            throw new FileUtilsException("Error in reading the file " + property);
+            throw new FileUtilsException("Error in reading the file " + fileName);
         }
 
         return ruleFile.toString();

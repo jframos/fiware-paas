@@ -7,11 +7,18 @@
 
 package com.telefonica.euro_iaas.paasmanager.dao;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.util.List;
 
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import com.telefonica.euro_iaas.paasmanager.model.Service;
 
 /**
@@ -19,9 +26,13 @@ import com.telefonica.euro_iaas.paasmanager.model.Service;
  * 
  * @author Jesus M. Movilla
  */
-public class ServiceDaoJpaImplTest extends AbstractJpaDaoTest {
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
+public class ServiceDaoJpaImplTest {
     // implements ServiceDao {
 
+    @Autowired
     private ServiceDao serviceDao;
 
     public final static String SERVICE_NAME = "ServiceName";
@@ -31,37 +42,10 @@ public class ServiceDaoJpaImplTest extends AbstractJpaDaoTest {
     public final static String SERVICE2_NAME = "Service2Name";
     public final static String SERVICE2_DESCRIPTION = "Service2Description";
 
-    public Service create(Service service) throws InvalidEntityException, AlreadyExistsEntityException {
-        service = serviceDao.create(service);
-        assertNotNull(service.getId());
-        return service;
-    }
-
-    public List<Service> findAll() {
-        return serviceDao.findAll();
-    }
-
-    public Service load(String name) throws EntityNotFoundException {
-        Service service = serviceDao.load(name);
-        assertNotNull(service.getId());
-        return service;
-    }
-
-    public void remove(Service service) {
-        serviceDao.remove(service);
-    }
-
-    /**
-     * @param serviceDao
-     *            the serviceDao to set
-     */
-    public void setServiceDao(ServiceDao serviceDao) {
-        this.serviceDao = serviceDao;
-    }
-
     /**
      * Test the create and load method
      */
+    @Test
     public void testCreate() throws Exception {
 
         Service service = new Service();
@@ -88,6 +72,7 @@ public class ServiceDaoJpaImplTest extends AbstractJpaDaoTest {
     /**
      * Test the create and load method
      */
+    @Test
     public void testFindAllAndUpdate() throws Exception {
         assertEquals(0, serviceDao.findAll().size());
         testCreate();
@@ -99,15 +84,6 @@ public class ServiceDaoJpaImplTest extends AbstractJpaDaoTest {
         assertEquals("newDescription", serviceDao.load(service.getName()).getDescription());
         serviceDao.remove(service);
         assertEquals(0, serviceDao.findAll().size());
-    }
-
-    public Service update(Service service) throws InvalidEntityException {
-        service.setDescription("Description2");
-
-        service = serviceDao.update(service);
-        assertEquals(service.getDescription(), "Description2");
-
-        return service;
     }
 
 }

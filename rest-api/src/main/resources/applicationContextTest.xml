@@ -3,7 +3,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <import resource="spring-jersey-config.xml"/>
-    <import resource="classpath:/spring-db-test-config.xml"/>
+    <import resource="classpath:/spring-test-db-config.xml"/>
     <import resource="classpath:/spring-dao-config.xml"/>
     <import resource="classpath:/spring-dao-sdc-config.xml"/>
     <import resource="classpath:/spring-async-model-config.xml"/>

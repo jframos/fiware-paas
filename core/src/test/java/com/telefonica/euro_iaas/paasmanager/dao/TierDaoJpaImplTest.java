@@ -7,13 +7,18 @@
 
 package com.telefonica.euro_iaas.paasmanager.dao;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.dao.impl.TierDaoJpaImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 
@@ -22,11 +27,15 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
  * 
  * @author Jesus M. Movilla
  */
-public class TierDaoJpaImplTest extends AbstractJpaDaoTest {
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
+public class TierDaoJpaImplTest {
+
+    @Autowired
     private ProductReleaseDao productReleaseDao;
+    @Autowired
     private TierDao tierDao;
-   
 
     public final static String TIER_NAME = "TierName";
     public final static String PRODUCT_NAME = "Product";
@@ -38,25 +47,24 @@ public class TierDaoJpaImplTest extends AbstractJpaDaoTest {
     public final static Integer INITIAL_INSTANCES = 1;
 
     /**
-     * Test the create  method
+     * Test the create method
      */
     @Test
     public void testCreate1() throws Exception {
 
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
-        ProductRelease prodRelease = new ProductRelease (PRODUCT_NAME,PRODUCT_VERSION);
+        ProductRelease prodRelease = new ProductRelease(PRODUCT_NAME, PRODUCT_VERSION);
         prodRelease = productReleaseDao.create(prodRelease);
         productReleases.add(prodRelease);
 
-        Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES,
-            INITIAL_INSTANCES, productReleases);
+        Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, productReleases);
 
         tier = tierDao.create(tier);
         assertNotNull(tier);
         assertNotNull(tier.getId());
 
     }
-    
+
     /**
      * Test the create and load method
      */
@@ -64,24 +72,23 @@ public class TierDaoJpaImplTest extends AbstractJpaDaoTest {
     public void testCreateLoad() throws Exception {
 
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
-        ProductRelease prodRelease = new ProductRelease (PRODUCT_NAME,PRODUCT_VERSION);
+        ProductRelease prodRelease = new ProductRelease(PRODUCT_NAME, PRODUCT_VERSION);
         prodRelease = productReleaseDao.create(prodRelease);
         productReleases.add(prodRelease);
 
-        Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES,
-            INITIAL_INSTANCES, productReleases);
+        Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, productReleases);
         tier.setVdc(VDC);
         tier.setEnviromentName(ENV);
 
         tier = tierDao.create(tier);
-        
-    /*    tier = tierDao.load(TIER_NAME, "vdc", "environmentName");
-        assertNotNull(tier);
-        assertNotNull(tier.getName(), TIER_NAME);
-        assertNotNull(tier.getVdc(), VDC);*/
+
+        /*
+         * tier = tierDao.load(TIER_NAME, "vdc", "environmentName"); assertNotNull(tier); assertNotNull(tier.getName(),
+         * TIER_NAME); assertNotNull(tier.getVdc(), VDC);
+         */
 
     }
-    
+
     /**
      * Test the update
      */
@@ -89,12 +96,11 @@ public class TierDaoJpaImplTest extends AbstractJpaDaoTest {
     public void testUpdate() throws Exception {
 
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
-        ProductRelease prodRelease = new ProductRelease (PRODUCT_NAME,PRODUCT_VERSION);
+        ProductRelease prodRelease = new ProductRelease(PRODUCT_NAME, PRODUCT_VERSION);
         prodRelease = productReleaseDao.create(prodRelease);
         productReleases.add(prodRelease);
 
-        Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES,
-            INITIAL_INSTANCES, productReleases);
+        Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, productReleases);
         tier.setVdc(VDC);
         tier.setEnviromentName(ENV);
         tier.setFloatingip("false");
@@ -105,45 +111,42 @@ public class TierDaoJpaImplTest extends AbstractJpaDaoTest {
         assertNotNull(tier);
         assertNotNull(tier.getName(), TIER_NAME);
         assertNotNull(tier.getFloatingip(), "true");
-        
-        
-        
-    /*    tier = tierDao.load(TIER_NAME, "vdc", "environmentName");
-        assertNotNull(tier);
-        assertNotNull(tier.getName(), TIER_NAME);
-        assertNotNull(tier.getVdc(), VDC);*/
+
+        /*
+         * tier = tierDao.load(TIER_NAME, "vdc", "environmentName"); assertNotNull(tier); assertNotNull(tier.getName(),
+         * TIER_NAME); assertNotNull(tier.getVdc(), VDC);
+         */
 
     }
-    
+
     /**
      * Test the create and load method
      */
-    @Test(expected=EntityNotFoundException.class)
+    @Test(expected = EntityNotFoundException.class)
     public void testDeleted() throws Exception {
 
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
-        ProductRelease prodRelease = new ProductRelease (PRODUCT_NAME,PRODUCT_VERSION);
+        ProductRelease prodRelease = new ProductRelease(PRODUCT_NAME, PRODUCT_VERSION);
         prodRelease = productReleaseDao.create(prodRelease);
         productReleases.add(prodRelease);
 
-        Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES,
-            INITIAL_INSTANCES, productReleases);
+        Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, productReleases);
         tier.setVdc(VDC);
         tier.setEnviromentName(ENV);
 
         tier = tierDao.create(tier);
         tierDao.remove(tier);
-        
-      //  tier = tierDao.load(TIER_NAME, "vdc", "environmentName");
+
+        tier = tierDao.load(TIER_NAME, "vdc", "environmentName");
 
     }
-    
+
     public void setProductReleaseDao(ProductReleaseDao productReleaseDao) {
-    	this.productReleaseDao=productReleaseDao;
+        this.productReleaseDao = productReleaseDao;
     }
-    
+
     public void setTierDao(TierDao tierDao) {
-    	this.tierDao=tierDao;
+        this.tierDao = tierDao;
     }
 
 }

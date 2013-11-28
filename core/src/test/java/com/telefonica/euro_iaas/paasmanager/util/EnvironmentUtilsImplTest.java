@@ -103,7 +103,7 @@ public class EnvironmentUtilsImplTest {
         tierTomcat.setName("tomcat");
         tierTomcat.setProductReleases(productReleasesTomcat);
 
-        List<Tier> tiers = new ArrayList<Tier>();
+        Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tierMysql);
         tiers.add(tierTomcat);
 
