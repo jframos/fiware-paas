@@ -8,10 +8,12 @@
 package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.List;
-import javax.persistence.EntityManager;
+
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -22,10 +24,8 @@ import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 /**
  * @author Henar
  */
+@Transactional(propagation = Propagation.REQUIRED)
 public class SecurityGroupDaoJpaImpl extends AbstractBaseDao<SecurityGroup, String> implements SecurityGroupDao {
-
-    @PersistenceContext(unitName = "paasmanager")
-    private EntityManager entityManager;
 
     /*
      * (non-Javadoc)
@@ -46,8 +46,8 @@ public class SecurityGroupDaoJpaImpl extends AbstractBaseDao<SecurityGroup, Stri
 
     public SecurityGroup updateSecurityGroupId(String idSecurityGroup, SecurityGroup securityGroup)
             throws InvalidEntityException {
-        Query query = entityManager.createQuery("UPDATE SecurityGroup sg " + "SET sg.idSecurityGroup= :idSecurityGroup"
-                + "  where sg.name = :name");
+        Query query = getEntityManager().createQuery(
+                "UPDATE SecurityGroup sg " + "SET sg.idSecurityGroup= :idSecurityGroup" + "  where sg.name = :name");
         query.setParameter("idSecurityGroup", idSecurityGroup);
         query.setParameter("name", securityGroup.getName());
         SecurityGroup secGroup = null;
@@ -61,5 +61,4 @@ public class SecurityGroupDaoJpaImpl extends AbstractBaseDao<SecurityGroup, Stri
         }
         return secGroup;
     }
-
 }

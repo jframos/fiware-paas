@@ -17,8 +17,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -39,7 +43,7 @@ import com.telefonica.euro_iaas.paasmanager.util.VappUtilsImpl;
 
 public class ProductInstallatorRECManagerImplTest {
 
-    private String getFile(String file) throws IOException {
+    private String getFile(URI file) throws IOException {
         File f = new File(file);
         InputStream dd = new FileInputStream(f);
 
@@ -59,13 +63,14 @@ public class ProductInstallatorRECManagerImplTest {
         Environment envResult = new Environment();
         envResult.setName("environemntName");
 
-        String ovfname = "src/test/resources/SAP83scal.xml";
         String ovfService = null;
         try {
+            URI ovfname = this.getClass().getResource("/SAP83scal.xml").toURI();
             ovfService = getFile(ovfname);
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
 
         envResult.setOvf(ovfService);
@@ -84,7 +89,7 @@ public class ProductInstallatorRECManagerImplTest {
         productReleases.add(productRelease);
         tier.setProductReleases(productReleases);
 
-        List<Tier> tiers = new ArrayList<Tier>();
+        Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tier);
         envResult.setTiers(tiers);
 
@@ -93,13 +98,15 @@ public class ProductInstallatorRECManagerImplTest {
         ClaudiaData claudiaData = new ClaudiaData("org", "vdc", envResult.getName());
         environmentInstance.setName(claudiaData.getVdc() + "-" + envResult.getName());
 
-        String vappname = "src/test/resources/vappsap83.xml";
         String vappService = null;
         try {
+            URI vappname = this.getClass().getResource("/vappsap83.xml").toURI();
             vappService = getFile(vappname);
         } catch (IOException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
 
         InfrastructureManagerServiceClaudiaImpl manager2 = new InfrastructureManagerServiceClaudiaImpl();

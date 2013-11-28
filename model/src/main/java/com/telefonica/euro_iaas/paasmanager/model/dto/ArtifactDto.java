@@ -12,14 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -35,7 +31,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
  */
 
 @SuppressWarnings("serial")
-@Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ArtifactDto {
@@ -51,10 +46,8 @@ public class ArtifactDto {
     private String path;
 
     // productrelease.id?
-    @ManyToOne
     private ProductReleaseDto productReleaseDto;
 
-    @OneToMany(targetEntity = ArtifactDto.class, cascade = CascadeType.ALL)
     private List<Attribute> attributes;
 
     /**
@@ -67,8 +60,7 @@ public class ArtifactDto {
     /**
      * @param name
      * @param path
-     * @param artifactType
-     * @param productRelease
+     * @param productReleaseDto
      */
     public ArtifactDto(String name, String path, ProductReleaseDto productReleaseDto) {
         this.name = name;
@@ -121,7 +113,7 @@ public class ArtifactDto {
     }
 
     /**
-     * @param productRelease
+     * @param productReleaseDto
      *            the productRelease to set
      */
     public void setProductReleaseDto(ProductReleaseDto productReleaseDto) {

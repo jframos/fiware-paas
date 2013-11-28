@@ -28,7 +28,6 @@ import com.telefonica.euro_iaas.paasmanager.exception.NetworkNotRetrievedExcepti
 import com.telefonica.euro_iaas.paasmanager.exception.OSNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.VMStatusNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
@@ -70,7 +69,7 @@ public class OpenstackDummyImpl implements ClaudiaClient {
         return null;
     }
 
-    public String browseVMReplica(ClaudiaData claudiaData, String tierName, int replica, VM vm)
+    public String browseVMReplica(ClaudiaData claudiaData, String tierName, int replica, VM vm, String region)
             throws ClaudiaResourceNotFoundException {
 
         String payload = null;
@@ -104,7 +103,7 @@ public class OpenstackDummyImpl implements ClaudiaClient {
         return payload;
     }
 
-    public List<String> getIP(ClaudiaData claudiaData, String tierName, int replica, VM vm)
+    public List<String> getIP(ClaudiaData claudiaData, String tierName, int replica, VM vm, String region)
             throws InfrastructureException {
 
         List<String> ips = new ArrayList<String>();
@@ -153,7 +152,8 @@ public class OpenstackDummyImpl implements ClaudiaClient {
         return null;
     }
 
-    public void deployVM(ClaudiaData claudiaData, TierInstance tierInstance, int replica, VM vm) throws InfrastructureException {
+    public void deployVM(ClaudiaData claudiaData, TierInstance tierInstance, int replica, VM vm)
+            throws InfrastructureException {
         // TODO Auto-generated method stub
 
         String fqn = claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc() + ".services."
@@ -311,18 +311,10 @@ public class OpenstackDummyImpl implements ClaudiaClient {
 
     }
 
-    /**
-     * @param propertiesProvider
-     *            the propertiesProvider to set
-     */
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
-    /**
-     * @param propertiesProvider
-     *            the propertiesProvider to set
-     */
     public SystemPropertiesProvider getSystemPropertiesProvider() {
         return this.systemPropertiesProvider;
     }
@@ -331,10 +323,6 @@ public class OpenstackDummyImpl implements ClaudiaClient {
         this.fileUtils = fileUtils;
     }
 
-    /**
-     * @param propertiesProvider
-     *            the propertiesProvider to set
-     */
     public FileUtils getFileUtils() {
         return this.fileUtils;
     }
@@ -370,7 +358,7 @@ public class OpenstackDummyImpl implements ClaudiaClient {
      * com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient#findAllVMs(com.telefonica.euro_iaas.paasmanager.model
      * .ClaudiaData)
      */
-    public List<String> findAllVMs(ClaudiaData claudiaData) throws ClaudiaResourceNotFoundException {
+    public List<String> findAllVMs(ClaudiaData claudiaData, String region) throws ClaudiaResourceNotFoundException {
         // TODO Auto-generated method stub
         return null;
     }

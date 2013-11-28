@@ -9,11 +9,15 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.List;
 
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.ServiceDao;
 import com.telefonica.euro_iaas.paasmanager.model.Service;
 
+@Transactional(propagation = Propagation.REQUIRED)
 public class ServiceDaoJpaImpl extends AbstractBaseDao<Service, String> implements ServiceDao {
 
     public List<Service> findAll() {

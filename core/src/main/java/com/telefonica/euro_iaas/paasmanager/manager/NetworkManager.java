@@ -27,21 +27,21 @@ public interface NetworkManager {
      * @return the tierInstance created
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
-     * @throws EntityNotFoundException 
-     * @throws InfrastructureException 
+     * @throws EntityNotFoundException
+     * @throws InfrastructureException
      */
-    Network create(ClaudiaData claudiaData, Network network) throws InvalidEntityException, 
+    Network create(ClaudiaData claudiaData, Network network, String region) throws InvalidEntityException,
             AlreadyExistsEntityException, EntityNotFoundException, InfrastructureException;
 
     /**
      * Delete a Network.
+     * 
      * @param network
      * @throws EntityNotFoundException
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    void delete(Network network) throws EntityNotFoundException, InvalidEntityException,
-            InfrastructureException;
+    void delete(Network network) throws EntityNotFoundException, InvalidEntityException, InfrastructureException;
 
     /**
      * Retrieve all Network created in the system.
@@ -56,7 +56,7 @@ public interface NetworkManager {
      * @return the network.
      */
     Network load(String networkName) throws EntityNotFoundException;
-    
+
     /**
      * If the network exists in DB.
      * 

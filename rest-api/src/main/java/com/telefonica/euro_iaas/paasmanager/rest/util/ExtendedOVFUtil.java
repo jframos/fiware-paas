@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.rest.util;
 
 import java.util.List;
+import java.util.Set;
 
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
@@ -70,7 +71,7 @@ public interface ExtendedOVFUtil {
      * @return
      * @throws InvalidEnvironmentRequestException
      */
-    List<Tier> getTiers(String payload, String vdc) throws InvalidEnvironmentRequestException;
+    Set<Tier> getTiers(String payload, String vdc) throws InvalidEnvironmentRequestException;
 
     /**
      * Get the name of the virtualService

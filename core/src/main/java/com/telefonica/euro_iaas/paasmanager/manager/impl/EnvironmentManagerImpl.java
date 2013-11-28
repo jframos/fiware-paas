@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -89,7 +90,7 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
     public void destroy(ClaudiaData data, Environment environment) throws InvalidEntityException,
             InfrastructureException {
 
-        List<Tier> tiers = environment.getTiers();
+        Set<Tier> tiers = environment.getTiers();
 
         if (tiers != null && tiers.size() > 0) {
             environment.setTiers(null);
@@ -146,10 +147,8 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
 
     public Environment updateTier(Environment environment, Tier tierold, Tier tiernew) throws EntityNotFoundException,
             InvalidEntityException {
-        int idTierOld = environment.getTiers().indexOf(tierold);
-        environment.deleteTier(tierold);
-        environmentDao.update(environment);
-        environment.getTiers().add(idTierOld, tiernew);
+ 
+        environment.updateTier (tierold, tiernew);
         return environmentDao.update(environment);
     }
 

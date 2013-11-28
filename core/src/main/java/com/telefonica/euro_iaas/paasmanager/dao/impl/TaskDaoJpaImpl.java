@@ -15,6 +15,8 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.SimpleExpression;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -28,6 +30,8 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TaskSearchCrite
  * 
  * @author Jesus M. Movilla
  */
+
+@Transactional(propagation = Propagation.REQUIRED)
 public class TaskDaoJpaImpl extends AbstractBaseDao<Task, Long> implements TaskDao {
 
     /**

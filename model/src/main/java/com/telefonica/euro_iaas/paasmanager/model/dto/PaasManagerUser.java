@@ -49,8 +49,6 @@ public class PaasManagerUser extends User {
         this.token = password;
         this.username = username;
     }
-    
-
 
     // /**
     // * Constructor.

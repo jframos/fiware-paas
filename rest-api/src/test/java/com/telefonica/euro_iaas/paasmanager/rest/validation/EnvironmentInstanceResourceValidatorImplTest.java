@@ -51,6 +51,7 @@ public class EnvironmentInstanceResourceValidatorImplTest {
         tierInstanceDto.setTierDto(tierDto);
         tierDto.setFloatingip("true");
         tierDto.setInitialNumberInstances(2);
+        tierDto.setRegion("region");
         Limits limits = new Limits();
         limits.setMaxTotalFloatingIps(10);
         limits.setMaxTotalInstances(10);
@@ -58,11 +59,11 @@ public class EnvironmentInstanceResourceValidatorImplTest {
         limits.setTotalInstancesUsed(1);
 
         // when
-        when(quotaClient.getLimits(claudiaData)).thenReturn(limits);
+        when(quotaClient.getLimits(claudiaData, "region")).thenReturn(limits);
         environmentInstanceResourceValidator.validateQuota(claudiaData, environmentInstanceDto);
 
         // then
-        verify(quotaClient).getLimits(claudiaData);
+        verify(quotaClient).getLimits(claudiaData, "region");
     }
 
     @Test
@@ -84,6 +85,7 @@ public class EnvironmentInstanceResourceValidatorImplTest {
         tierInstanceDto.setTierDto(tierDto);
         tierDto.setFloatingip("true");
         tierDto.setInitialNumberInstances(2);
+        tierDto.setRegion("region");
         Limits limits = new Limits();
         limits.setMaxTotalFloatingIps(2);
         limits.setMaxTotalInstances(10);
@@ -91,14 +93,14 @@ public class EnvironmentInstanceResourceValidatorImplTest {
         limits.setTotalInstancesUsed(1);
 
         // when
-        when(quotaClient.getLimits(claudiaData)).thenReturn(limits);
+        when(quotaClient.getLimits(claudiaData, "region")).thenReturn(limits);
         try {
             environmentInstanceResourceValidator.validateQuota(claudiaData, environmentInstanceDto);
             fail();
         } catch (QuotaExceededException e) {
             // then
             assertEquals("max number of floating IPs exceeded: 2", e.getMessage());
-            verify(quotaClient).getLimits(claudiaData);
+            verify(quotaClient).getLimits(claudiaData, "region");
         }
 
     }
@@ -120,11 +122,12 @@ public class EnvironmentInstanceResourceValidatorImplTest {
         TierDto tierDto = new TierDto();
         tierInstanceDto.setTierDto(tierDto);
         tierDto.setFloatingip("true");
+        tierDto.setRegion("region");
         tierDto.setInitialNumberInstances(2);
         Limits limits = new Limits();
 
         // when
-        when(quotaClient.getLimits(claudiaData)).thenReturn(limits);
+        when(quotaClient.getLimits(claudiaData, "region")).thenReturn(limits);
 
         try {
             environmentInstanceResourceValidator.validateQuota(claudiaData, environmentInstanceDto);
@@ -153,11 +156,12 @@ public class EnvironmentInstanceResourceValidatorImplTest {
         tierInstanceDto.setTierDto(tierDto);
         tierDto.setFloatingip("true");
         tierDto.setInitialNumberInstances(2);
+        tierDto.setRegion("region");
         Limits limits = new Limits();
         limits.setMaxTotalInstances(10);
 
         // when
-        when(quotaClient.getLimits(claudiaData)).thenReturn(limits);
+        when(quotaClient.getLimits(claudiaData, "region")).thenReturn(limits);
 
         try {
             environmentInstanceResourceValidator.validateQuota(claudiaData, environmentInstanceDto);
@@ -186,6 +190,7 @@ public class EnvironmentInstanceResourceValidatorImplTest {
         tierInstanceDto.setTierDto(tierDto);
         tierDto.setFloatingip("true");
         tierDto.setInitialNumberInstances(2);
+        tierDto.setRegion("region");
         Limits limits = new Limits();
         limits.setMaxTotalFloatingIps(10);
         limits.setMaxTotalInstances(2);
@@ -193,14 +198,14 @@ public class EnvironmentInstanceResourceValidatorImplTest {
         limits.setTotalInstancesUsed(2);
 
         // when
-        when(quotaClient.getLimits(claudiaData)).thenReturn(limits);
+        when(quotaClient.getLimits(claudiaData, "region")).thenReturn(limits);
         try {
             environmentInstanceResourceValidator.validateQuota(claudiaData, environmentInstanceDto);
             fail();
         } catch (QuotaExceededException e) {
             // then
             assertEquals("max number of instances exceeded: 2", e.getMessage());
-            verify(quotaClient).getLimits(claudiaData);
+            verify(quotaClient).getLimits(claudiaData, "region");
         }
 
     }

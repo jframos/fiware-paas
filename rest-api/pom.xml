@@ -62,6 +62,9 @@
             </exclusions>
         </dependency>
 
+        <!-- FOR ENTITY-MANAGER -->
+
+
         <!--/JERSEY DEPENDENCIES -->
         <dependency>
             <groupId>com.sun.jersey</groupId>

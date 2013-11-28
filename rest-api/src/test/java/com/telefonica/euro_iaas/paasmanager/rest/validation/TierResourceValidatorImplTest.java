@@ -192,7 +192,7 @@ public class TierResourceValidatorImplTest {
     public void shouldValidateATierDependencies() throws EntityNotFoundException, InvalidEnvironmentRequestException {
         // given
         TierResourceValidatorImpl tierResourceValidator = new TierResourceValidatorImpl();
-        List<TierDto> tierDTOlist = new ArrayList<TierDto>(2);
+        Set<TierDto> tierDTOlist = new HashSet<TierDto>(2);
         TierDto tierDTO = new TierDto();
         tierDTO.setName("tier1");
         tierDTOlist.add(tierDTO);
@@ -214,7 +214,7 @@ public class TierResourceValidatorImplTest {
             InvalidEnvironmentRequestException {
         // given
         TierResourceValidatorImpl tierResourceValidator = new TierResourceValidatorImpl();
-        List<TierDto> tierDTOlist = new ArrayList<TierDto>(2);
+        Set<TierDto> tierDTOlist = new HashSet<TierDto>(2);
         TierDto tierDTO = new TierDto();
         tierDTO.setName("tier1");
         tierDTOlist.add(tierDTO);

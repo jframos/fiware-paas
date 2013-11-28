@@ -169,6 +169,7 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
 
             user.setTenantId(tenantId);
             user.setTenantName(responseAuth.getToken().getTenant().getName());
+            user.setToken(token);
             return user;
 
         } catch (UniformInterfaceException e) {

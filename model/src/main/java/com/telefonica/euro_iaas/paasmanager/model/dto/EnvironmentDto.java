@@ -8,7 +8,10 @@
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -25,7 +28,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class EnvironmentDto {
 
-    private List<TierDto> tierDtos;
+    private Set<TierDto> tierDtos;
     private String name;
     private String description;
     private String org;
@@ -41,7 +44,7 @@ public class EnvironmentDto {
      * @param tiers
      * @param name
      */
-    public EnvironmentDto(List<TierDto> tierDtos, String name, String description) {
+    public EnvironmentDto(Set<TierDto> tierDtos, String name, String description) {
         this.tierDtos = tierDtos;
         this.name = name;
         this.description = description;
@@ -59,7 +62,7 @@ public class EnvironmentDto {
         environment.setDescription(getDescription());
 
         if (getTierDtos() != null) {
-            List<Tier> lTier = new ArrayList<Tier>();
+            Set<Tier> lTier = new HashSet<Tier>();
             for (TierDto tierDto : getTierDtos()) {
                 lTier.add(tierDto.fromDto());
             }
@@ -94,7 +97,7 @@ public class EnvironmentDto {
     /**
      * @return the tiers
      */
-    public List<TierDto> getTierDtos() {
+    public Set<TierDto> getTierDtos() {
         return tierDtos;
     }
 
@@ -133,7 +136,7 @@ public class EnvironmentDto {
      * @param tierDtos
      *            the tierDtos to set
      */
-    public void setTierDtos(List<TierDto> tierDtos) {
+    public void setTierDtos(Set<TierDto> tierDtos) {
         this.tierDtos = tierDtos;
     }
 

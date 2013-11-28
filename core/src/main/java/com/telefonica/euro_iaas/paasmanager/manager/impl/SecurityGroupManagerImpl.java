@@ -20,7 +20,6 @@ import com.telefonica.euro_iaas.paasmanager.dao.SecurityGroupDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.manager.RuleManager;
 import com.telefonica.euro_iaas.paasmanager.manager.SecurityGroupManager;
-import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 
@@ -32,17 +31,17 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
 
     private static Logger log = Logger.getLogger(SecurityGroupManagerImpl.class);
 
-    public SecurityGroup create(ClaudiaData claudiaData, SecurityGroup securityGroup) throws InvalidEntityException,
-            AlreadyExistsEntityException, InfrastructureException {
+    public SecurityGroup create(String region, String token, String vdc, SecurityGroup securityGroup)
+            throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
 
         SecurityGroup securityGroupDB = new SecurityGroup();
-        String idSecurityGroup = firewallingClient.deploySecurityGroup(claudiaData, securityGroup);
-        log.debug("Create security group " + securityGroup.getName() + " with idSecuritygropu " + idSecurityGroup);
+        String idSecurityGroup = firewallingClient.deploySecurityGroup(region, token, vdc, securityGroup);
+        log.debug("Create security group " + securityGroup.getName() + " with idSecurityGroup " + idSecurityGroup);
 
         if (securityGroup.getRules() != null) {
             for (Rule rule : securityGroup.getRules()) {
                 rule.setIdParent(idSecurityGroup);
-                rule = ruleManager.create(claudiaData, rule);
+                rule = ruleManager.create(region, token, vdc, rule);
                 securityGroupDB.addRule(rule);
             }
         }
@@ -51,11 +50,11 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
         return securityGroupDB;
     }
 
-    public void addRule(ClaudiaData claudiaData, SecurityGroup securityGroup, Rule rule) throws InvalidEntityException,
-            AlreadyExistsEntityException, InfrastructureException {
+    public void addRule(String region, String token, String vdc, SecurityGroup securityGroup, Rule rule)
+            throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
 
         rule.setIdParent(securityGroup.getIdSecurityGroup());
-        rule = ruleManager.create(claudiaData, rule);
+        rule = ruleManager.create(region, token, vdc, rule);
         securityGroup.addRule(rule);
         securityGroupDao.update(securityGroup);
 
@@ -94,8 +93,8 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
         return securityGroupDB;
     }
 
-    public void destroy(ClaudiaData claudiaData, SecurityGroup securityGroup) throws InvalidEntityException,
-            InfrastructureException {
+    public void destroy(String region, String token, String vdc, SecurityGroup securityGroup)
+            throws InvalidEntityException, InfrastructureException {
 
         List<Rule> rules = new ArrayList<Rule>();
         for (Rule rule : securityGroup.getRules()) {
@@ -108,12 +107,12 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
 
             for (Rule rule : rules) {
 
-                ruleManager.destroy(claudiaData, rule);
+                ruleManager.destroy(region, token, vdc, rule);
 
             }
         }
 
-        firewallingClient.destroySecurityGroup(claudiaData, securityGroup);
+        firewallingClient.destroySecurityGroup(region, token, vdc, securityGroup);
         try {
             securityGroupDao.remove(securityGroup);
         } catch (Exception e) {

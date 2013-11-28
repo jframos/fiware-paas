@@ -12,7 +12,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -51,7 +53,7 @@ public class AbstractEnvironmentResourceTest extends TestCase {
         List<ProductRelease> productRelease = new ArrayList<ProductRelease>();
         productRelease.add(new ProductRelease("test", "0.1"));
         Tier tier = new Tier("tiername", new Integer(1), new Integer(1), new Integer(1), productRelease);
-        List<Tier> tiers = new ArrayList<Tier>();
+        Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tier);
         environment.setTiers(tiers);
 
@@ -80,7 +82,7 @@ public class AbstractEnvironmentResourceTest extends TestCase {
         tierDto.setImage("image");
         tierDto.setIcono("icono");
         tierDto.setFlavour("flavour");
-        List<TierDto> tiers = new ArrayList<TierDto>();
+        Set<TierDto> tiers = new HashSet<TierDto>();
         tiers.add(tierDto);
         environmentDto.setTierDtos(tiers);
 

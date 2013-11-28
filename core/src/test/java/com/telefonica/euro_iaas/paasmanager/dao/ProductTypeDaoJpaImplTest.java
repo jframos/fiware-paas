@@ -7,40 +7,24 @@
 
 package com.telefonica.euro_iaas.paasmanager.dao;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.model.ProductType;
 
-public class ProductTypeDaoJpaImplTest extends AbstractJpaDaoTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
+public class ProductTypeDaoJpaImplTest {
 
-    private final String PRODUCTTYPE_NAME = "ProductType_name";
-    private final String PRODUCTTYPE_DESC = "ProductType_desc";
-
+    @Autowired
     private ProductTypeDao productTypeDao;
-
-    public ProductType create(ProductType productType) throws InvalidEntityException, AlreadyExistsEntityException {
-        productType = productTypeDao.create(productType);
-        assertNotNull(productType.getId());
-        return productType;
-    }
-
-    public List<ProductType> findAll() {
-        return productTypeDao.findAll();
-    }
-
-    public ProductType load(Long arg0) throws EntityNotFoundException {
-        ProductType productType = productTypeDao.load(productTypeDao.findAll().get(0).getName());
-        assertNotNull(productType.getId());
-        return productType;
-    }
-
-    public void remove(ProductType arg0) {
-        productTypeDao.remove(productTypeDao.findAll().get(0));
-
-    }
 
     /**
      * @param productTypeDao
@@ -50,14 +34,17 @@ public class ProductTypeDaoJpaImplTest extends AbstractJpaDaoTest {
         this.productTypeDao = productTypeDao;
     }
 
-    public ProductType update(ProductType arg0) throws InvalidEntityException {
-        ProductType productType = productTypeDao.findAll().get(0);
+    @Test
+    public void update() throws InvalidEntityException, AlreadyExistsEntityException {
+        ProductType productType = new ProductType();
+        productType.setName("name");
+        productType.setDescription("desc");
+        productType = productTypeDao.create(productType);
         productType.setDescription("Description2");
 
         productType = productTypeDao.update(productType);
         assertEquals(productType.getDescription(), "Description2");
 
-        return productType;
     }
 
 }
