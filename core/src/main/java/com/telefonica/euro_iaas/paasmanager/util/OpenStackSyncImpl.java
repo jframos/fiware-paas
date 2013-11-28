@@ -188,7 +188,10 @@ public class OpenStackSyncImpl extends Thread implements OpenStackSync {
             }
         } catch (ClaudiaResourceNotFoundException e) {
             String message = "No servers in Openstack";
-            log.info(message);
+            log.warn(message);
+        } catch (OpenStackException e) {
+            String message = "No regions detected in Openstack";
+            log.warn(message);
         }
 
         for (int i = 0; i < tierInstances.size(); i++) {

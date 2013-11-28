@@ -54,5 +54,5 @@ public interface OpenStackRegion {
      * @param token
      * @return
      */
-    List<String> getRegionNames(String token);
+    List<String> getRegionNames(String token) throws OpenStackException;
 }
