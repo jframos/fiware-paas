@@ -145,4 +145,14 @@ public interface NetworkClient {
 	void deleteNetworkToPublicRouter(ClaudiaData claudiaData,
 			NetworkInstance networkInstance) throws InfrastructureException;
 
+	/**
+	 * It obtains the no shared networks.
+	 * @param claudiaData
+	 * @return
+	 * @throws InfrastructureException 
+	 */
+    List<NetworkInstance> loadNotSharedNetworks(ClaudiaData claudiaData) throws InfrastructureException;
+
+    NetworkInstance deployDefaultNetwork(ClaudiaData claudiaData) throws InfrastructureException;
+
 }

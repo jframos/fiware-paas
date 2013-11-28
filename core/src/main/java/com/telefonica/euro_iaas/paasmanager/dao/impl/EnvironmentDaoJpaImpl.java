@@ -57,22 +57,9 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
         }
     }
 
-    /*
-     * public Environment load(String envName) throws EntityNotFoundException { EnvironmentSearchCriteria criteria = new
-     * EnvironmentSearchCriteria(); criteria.setEnvironmentName(envName); List<Environment> environments =
-     * findByCriteria(criteria); if (environments.size() != 1) { throw new EntityNotFoundException(Environment.class,
-     * "name", envName); } return environments.get(0); }
-     */
-
-    /*
-     * public Environment load(String envName, String vdc) throws EntityNotFoundException { Environment environment =
-     * null; List<Environment> environments = new ArrayList<Environment>(); try { environment =
-     * findByEnvironmentNameVdc(envName, vdc); } catch (Exception e) { environment = findByEnvironmentNameVdcNoTiers
-     * (envName, vdc); } environments.add(environment); return filterEqualTiers(environments).get(0); }
-     */
 
     public Environment load(String envName, String vdc) throws EntityNotFoundException {
-        Environment environment = null;
+
         try {
             // return filterEqualTiers(findByEnvironmentNameVdc(envName, vdc));
             return findByEnvironmentNameVdc(envName, vdc);
@@ -81,22 +68,6 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
             return findByEnvironmentNameVdcNoTiers(envName, vdc);
         }
     }
-
-    /*
-     * public Environment load(String envName, String vdc) throws EntityNotFoundException { EnvironmentSearchCriteria
-     * criteria = new EnvironmentSearchCriteria(); criteria.setVdc(vdc); criteria.setEnvironmentName(envName);
-     * List<Environment> environments = findByCriteria(criteria); if (environments.size() != 1) { throw new
-     * EntityNotFoundException(Environment.class, "name", envName); } Environment environment = environments.get(0);
-     * return environment; }
-     */
-
-    /*
-     * public Environment load(String envName, String vdc) throws EntityNotFoundException { // Parameter substitution
-     * String query = MessageFormat.format(QUERY_LOAD_BY_TWO_FIELDS, "Environment", "name", "vdc"); try { Environment
-     * environment = (Environment) getEntityManager().createQuery(query) .setParameter("vdc", vdc) .setParameter("name",
-     * envName) .getSingleResult(); return environment; } catch (NoResultException nre) { throw new
-     * EntityNotFoundException(Environment.class, "name", envName); } }
-     */
 
     public List<Environment> findByCriteria(EnvironmentSearchCriteria criteria) {
         Session session = (Session) getEntityManager().getDelegate();
@@ -130,17 +101,6 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
         return environments;
     }
 
-    /*
-     * public List<Environment> findByCriteria( EnvironmentSearchCriteria criteria) { //Session session = (Session)
-     * getEntityManager().getDelegate(); Session session = (Session) entityManager.getDelegate(); Criteria baseCriteria
-     * = session.createCriteria(Environment.class); if (!StringUtils.isEmpty(criteria.getOrg())) {
-     * baseCriteria.add(Restrictions.eq(Environment.ORG_FIELD, criteria.getOrg())); } if
-     * (!StringUtils.isEmpty(criteria.getVdc())) { baseCriteria.add(Restrictions.eq(Environment.VDC_FIELD,
-     * criteria.getVdc())); } if (!StringUtils.isEmpty(criteria.getEnvironmentName())) {
-     * baseCriteria.add(Restrictions.eq(Environment.ENVIRONMENT_NAME_FIELD, criteria.getEnvironmentName())); }
-     * List<Environment> environments = setOptionalPagination(criteria, baseCriteria).list(); if (criteria.getTier() !=
-     * null) { environments = filterByTier(environments, criteria.getTier()); } return filterEqualTiers(environments); }
-     */
 
     private List<Environment> filterByOrgAndVdc(List<Environment> environments, String org, String vdc) {
         List<Environment> result = new ArrayList<Environment>();
@@ -190,7 +150,6 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
             environment = (Environment) query.getSingleResult();
             entityManager.flush();
         } catch (NoResultException e) {
-            String message = " No Environment found in the database with name: " + envName;
             throw new EntityNotFoundException(Environment.class, "name", envName);
         }
         return environment;
@@ -204,7 +163,6 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
             environment = (Environment) query.getSingleResult();
             entityManager.flush();
         } catch (NoResultException e) {
-            String message = " No Environment found in the database with name: " + envName;
             throw new EntityNotFoundException(Environment.class, "name", envName);
         }
         return environment;
@@ -220,7 +178,6 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
             environment = (Environment) query.getSingleResult();
             entityManager.flush();
         } catch (NoResultException e) {
-            String message = " No Environment found in the database with name: " + envName + " vdc " + vdc;
             throw new EntityNotFoundException(Environment.class, "name", envName);
         }
         // return filterEqualTiers(environment);
@@ -236,7 +193,6 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
             environment = (Environment) query.getSingleResult();
             entityManager.flush();
         } catch (NoResultException e) {
-            String message = " No Environment found in the database with name: " + envName;
             throw new EntityNotFoundException(Environment.class, "name", envName);
         }
         // return filterEqualTiers(environment);
@@ -263,7 +219,7 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
         return result;
     }
 
-    private List<Environment> filterEqualTiers(List<Environment> environments) {
+  /*  private List<Environment> filterEqualTiers(List<Environment> environments) {
         List<Tier> tierResult = new ArrayList<Tier>();
         List<Environment> result = new ArrayList<Environment>();
 
@@ -282,9 +238,9 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
             result.add(environment);
         }
         return result;
-    }
+    }*/
 
-    private Environment filterEqualTiers(Environment environment) {
+  /*  private Environment filterEqualTiers(Environment environment) {
         List<Tier> tierResult = new ArrayList<Tier>();
         Environment result = new Environment();
         List<String> tierString = new ArrayList<String>();
@@ -303,5 +259,5 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
         result.setTiers(tierResult);
 
         return result;
-    }
+    }*/
 }

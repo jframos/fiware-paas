@@ -157,4 +157,18 @@ public class NetworkClientDummyImpl implements NetworkClient {
 		
 	}
 
+
+    @Override
+    public NetworkInstance deployDefaultNetwork(ClaudiaData claudiaData) throws InfrastructureException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    @Override
+    public List<NetworkInstance> loadNotSharedNetworks(ClaudiaData claudiaData) throws InfrastructureException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

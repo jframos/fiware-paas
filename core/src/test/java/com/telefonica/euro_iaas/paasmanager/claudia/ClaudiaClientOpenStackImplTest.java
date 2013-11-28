@@ -7,7 +7,9 @@
 
 package com.telefonica.euro_iaas.paasmanager.claudia;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientOpenStackImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -27,6 +29,7 @@ import org.junit.Test;
 import org.springframework.security.core.GrantedAuthority;
 
 
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -40,6 +43,8 @@ public class ClaudiaClientOpenStackImplTest {
     private Tier tier;
     private ClaudiaData claudiaData;
     private OpenStackUtil openStackUtil;
+    private NetworkClient networkClient;
+    private ClaudiaClientOpenStackImpl claudiaClientOpenStack;
 
     @Before
     public void setUp() throws Exception {
@@ -84,25 +89,91 @@ public class ClaudiaClientOpenStackImplTest {
         tier.setKeypair("jesusmovilla");
 
         openStackUtil = mock(OpenStackUtil.class);
+        networkClient = mock (NetworkClient.class);
 
         when(openStackUtil.createServer(any(String.class), any(PaasManagerUser.class))).thenReturn("response");
-        when(openStackUtil.createNetwork(any(NetworkInstance.class), any(PaasManagerUser.class))).thenReturn(expectedNetwork);
+        when(openStackUtil.createNetwork(any(String.class), any(PaasManagerUser.class))).thenReturn(expectedNetwork);
         when(openStackUtil.createSubNet(any(SubNetworkInstance.class), any(PaasManagerUser.class))).thenReturn(expectedSubnet);
         when(openStackUtil.createRouter(any(RouterInstance.class), any(PaasManagerUser.class))).thenReturn(expectedRouter);
         when(openStackUtil.addRouterInterface(any(String.class), any(String.class), any(PaasManagerUser.class)))
                 .thenReturn("OK");
         when(openStackUtil.getNetworks(any(PaasManagerUser.class))).thenReturn(expectedNetworks);
+        
+        claudiaClientOpenStack = new ClaudiaClientOpenStackImpl();
+        claudiaClientOpenStack.setOpenStackUtil(openStackUtil);
+        claudiaClientOpenStack.setNetworkClient(networkClient);
     }
 
     @Test
-    public void testDeployVM() throws Exception {
+    public void testDeployVMEssex() throws Exception {
 
-        ClaudiaClientOpenStackImpl claudiaClientOpenStack = new ClaudiaClientOpenStackImpl();
-        claudiaClientOpenStack.setOpenStackUtil(openStackUtil);
+        
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
         VM vm = new VM();
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
+        verify(openStackUtil).createServer(any(String.class), any(PaasManagerUser.class));
+
+    }
+    
+    @Test
+    public void testDeployVMEGrizzlyNetwork() throws Exception {
+
+        TierInstance tierInstance = new TierInstance();
+        Network network = new Network("NETWORK");
+        tier.addNetwork(network);
+        tierInstance.setTier(tier);
+        tierInstance.addNetworkInstance(network.toNetworkInstance());
+        
+        VM vm = new VM();
+        claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
+        verify(openStackUtil).createServer(any(String.class), any(PaasManagerUser.class));
+
+    }
+    
+    @Test
+    public void testDeployVMEGrizzlyNotNetwork() throws Exception {
+
+        TierInstance tierInstance = new TierInstance();
+        tierInstance.setTier(tier);
+        
+        Network network = new Network("NETWORK");
+        NetworkInstance netInst = network.toNetworkInstance();
+        netInst.setShared(false);
+        netInst.setTenantId(claudiaData.getVdc());
+        List<NetworkInstance> networkInstances = new ArrayList<NetworkInstance> ();
+        networkInstances.add(netInst);
+
+        VM vm = new VM();
+        when(networkClient.loadAllNetwork(any(ClaudiaData.class))).thenReturn(networkInstances);
+        claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
+        
+        verify(openStackUtil).createServer(any(String.class), any(PaasManagerUser.class));
+
+    }
+    
+    
+    @Test
+    public void testDeployVMEGrizzlyNotNetwork2() throws Exception {
+
+        TierInstance tierInstance = new TierInstance();
+        tierInstance.setTier(tier);
+        
+        Network network = new Network("NETWORK");
+        NetworkInstance netInst = network.toNetworkInstance();
+        netInst.setShared(true);
+        List<NetworkInstance> networkInstances = new ArrayList<NetworkInstance> ();
+        networkInstances.add(netInst);
+
+        VM vm = new VM();
+        NetworkInstance netInst2 = network.toNetworkInstance();
+        netInst2.setShared(false);
+        netInst2.setDefaultNet(true);
+        when(networkClient.loadAllNetwork(any(ClaudiaData.class))).thenReturn(networkInstances);
+        when(networkClient.deployDefaultNetwork(any(ClaudiaData.class))).thenReturn(netInst2);
+        
+        claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
+        assertEquals(tierInstance.getNetworkInstances().size(), 1);
         verify(openStackUtil).createServer(any(String.class), any(PaasManagerUser.class));
 
     }

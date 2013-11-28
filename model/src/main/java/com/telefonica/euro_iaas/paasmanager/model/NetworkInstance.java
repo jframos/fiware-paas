@@ -53,6 +53,13 @@ public class NetworkInstance {
     private String name;
 
     private String idNetwork;
+    
+    private boolean shared;
+    
+    private boolean adminStateUp = false;
+    private boolean netDefault = false;
+    private String tenantId;
+
 
     private int subNetCount;
 
@@ -185,6 +192,45 @@ public class NetworkInstance {
     public String getNetworkName() {
         return name;
     }
+    
+    /**
+     * @return the shared
+     */
+    public boolean getShared() {
+        return shared;
+    }
+    
+
+    /**
+     * 
+     * @param shared
+     */
+    public void setShared(boolean shared) {
+        this.shared = shared;
+    }
+    
+    /**
+     * @return the netDefault
+     */
+    public boolean isDefaultNet() {
+        return this.netDefault;
+    }
+    
+
+    /**
+     * 
+     * @param shared
+     */
+    public void setDefaultNet(boolean netDefault) {
+        this.netDefault = netDefault;
+    }
+    
+    /**
+     * @return the shared
+     */
+    public boolean getAdminStateUp() {
+        return adminStateUp;
+    }
 
     /**
      * It gets the routers.
@@ -246,6 +292,21 @@ public class NetworkInstance {
 		this.subNets = subNets2;
 		
 	}
+
+    public void setAdminStateUp(boolean adminStateUp) {
+        this.adminStateUp = adminStateUp;
+        
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId=tenantId; 
+    }
+    
+    public String getTenantId() {
+        return tenantId;
+    }
+
+
 
 
 }

@@ -106,12 +106,45 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @params claudiaData
      * @params network
      */
+    public NetworkInstance deployDefaultNetwork(ClaudiaData claudiaData) throws InfrastructureException {
+        log.info("Deploy default network  for user " + claudiaData.getUser().getTenantName());
+        String payload =  "{" + " \"network\":{" + "    \"name\": \"net_" + claudiaData.getUser().getTenantName() + "\"," + 
+        "    \"admin_state_up\": true,"
+        + "    \"shared\": false" + "  }" + "}";
+        log.debug("Payload " + payload);
+        NetworkInstance networkInstance = null;
+        String response;
+        try {
+            response = openStackUtil.createNetwork(payload, claudiaData.getUser());
+            log.debug(response);
+            // "network-" + claudiaData.getUser().getTenantName()
+            JSONObject jsonNetworks = new JSONObject(response).getJSONObject("network");
+            networkInstance = fromJsonToNetworkInstance (jsonNetworks);
+            log.debug("Network id " + networkInstance.getIdNetwork() + " for network name " + networkInstance.getNetworkName());
+        } catch (OpenStackException e) {
+            String msm = "Error to deploy the defaul network " + e.getMessage();
+            log.error(msm);
+            throw new InfrastructureException(msm, e);
+        } catch (JSONException e) {
+            String msm = "Error to obtain the id of the network:" + e.getMessage();
+            log.error(msm);
+            throw new InfrastructureException(msm, e);
+        }
+        return networkInstance;
+    }
+    
+    /**
+     * The deploy the network in Openstack.
+     * 
+     * @params claudiaData
+     * @params network
+     */
     public void deployNetwork(ClaudiaData claudiaData, NetworkInstance networkInstance) throws InfrastructureException {
-        log.info("Deploy network " + networkInstance.getNetworkName() + " for user " + claudiaData.getUser().getTenantName());
+        log.info("Deploy network " +  networkInstance.getNetworkName() + " for user " + claudiaData.getUser().getTenantName());
         log.debug("Payload " + networkInstance.toJson());
         String response;
         try {
-            response = openStackUtil.createNetwork(networkInstance, claudiaData.getUser());
+            response = openStackUtil.createNetwork(networkInstance.toJson(), claudiaData.getUser());
             log.debug(response);
             // "network-" + claudiaData.getUser().getTenantName()
             JSONObject networkString = new JSONObject(response);
@@ -250,8 +283,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             for (int i = 0; i< jsonNetworks.length(); i++) {
             	
             	JSONObject jsonNet = jsonNetworks.getJSONObject(i);
-            	String name = (String)jsonNet.get("name");
-            	NetworkInstance netInst = new NetworkInstance(name);
+            	NetworkInstance netInst = fromJsonToNetworkInstance (jsonNet);
             	networks.add(netInst);
             }
 
@@ -265,6 +297,22 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             throw new InfrastructureException(msm, e);
         }
         return networks;
+    }
+    
+    private NetworkInstance fromJsonToNetworkInstance(JSONObject jsonNet) throws JSONException {
+
+        String name = (String) jsonNet.get("name");
+        boolean shared = (Boolean) jsonNet.get("shared");
+        String id = (String) jsonNet.get("id");
+        boolean adminStateUp = (Boolean) jsonNet.get("admin_state_up");
+        String tenantId = (String) jsonNet.get("tenant_id");
+
+        NetworkInstance netInst = new NetworkInstance(name);
+        netInst.setIdNetwork(id);
+        netInst.setShared(shared);
+        netInst.setTenantId(tenantId);
+        netInst.setAdminStateUp(adminStateUp);
+        return netInst;
     }
 
     /**
@@ -329,5 +377,22 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             throw new InfrastructureException(msm, e);
         }
 	}
+
+
+	/**
+	 * It obtains the not shared networks.
+	 * @throws InfrastructureException 
+	 * 
+	 */
+    public List<NetworkInstance> loadNotSharedNetworks(ClaudiaData claudiaData) throws InfrastructureException {
+        List<NetworkInstance> networksNotShared = new ArrayList<NetworkInstance> ();
+        List<NetworkInstance> networks = this.loadAllNetwork(claudiaData);
+        for (NetworkInstance net: networks) {
+            if (!net.getShared()) {
+                networksNotShared.add(net);
+            }
+        }
+        return networksNotShared;
+    }
 
 }

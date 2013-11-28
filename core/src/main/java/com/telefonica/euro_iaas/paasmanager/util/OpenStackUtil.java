@@ -161,14 +161,14 @@ public interface OpenStackUtil {
 
     /**
      * Method to create a new network.
-     * @param net
+     * @param payload
      * @param user
      *            the user
      * @return the result
      * @throws OpenStackException
      *             OpenStackException
      */
-    String createNetwork(NetworkInstance net, PaasManagerUser user)
+    String createNetwork(String payload, PaasManagerUser user)
         throws OpenStackException;
 
     /**

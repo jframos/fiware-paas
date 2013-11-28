@@ -192,6 +192,8 @@ public class TierInstance extends InstallableInstance {
     	}
         return networkInstances;
     }
+    
+   
 
     public String getTaskId() {
         return taskId;

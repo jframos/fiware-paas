@@ -514,7 +514,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
 
 
-    public String createNetwork(NetworkInstance net, PaasManagerUser user) throws OpenStackException {
+    public String createNetwork(String payload, PaasManagerUser user) throws OpenStackException {
 
         // throw new UnsupportedOperationException("Not supported yet.");
         // I need to know X-Auth-Token, orgID-Tennat, IP and Port
@@ -523,22 +523,21 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // -X POST "http://10.95.171.115:9696/v2/networks"
         // -d '{"network" : {"name" : "testNetwork", "admin_state_up": false}}'
 
-    	log.debug("Create network isntance " + net.getNetworkName());
+    
         String response = null;
 
         try {
-            String payload = net.toJson();
             log.debug("Payload " + payload);
 
             HttpUriRequest request = createQuantumPostRequest(RESOURCE_NETWORKS, payload, APPLICATION_JSON, user);
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error creating network " + net.getNetworkName() + ": " + e;
+            String errorMessage = "Error creating network " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error creating network " + net.getNetworkName() + " from OpenStack: " + e;
+            String errorMessage = "Error creating network from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }

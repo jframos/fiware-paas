@@ -495,41 +495,11 @@ public class Tier {
         }
 
         for (Network net : this.getNetworks()) {
-
             tierDto.addNetworkDto(net.toDto());
         }
 
         tierDto.setProductReleaseDtos(productReleasesDto);
         return tierDto;
-
-    }
-
-    /**
-     * to json.
-     * @return
-     */
-    public String toJson() {
-        String payload = "{\"server\": " + "{\"key_name\": \""
-        + getKeypair() + "\", ";
-        if (getSecurityGroup() != null) {
-            payload = payload + "\"security_groups\": [{ \"name\": \""
-            + getSecurityGroup().getName() + "\"}], ";
-        }
-     /*   if (getNetworks() != null) {
-            payload = payload + "\"networks\": [";
-            for (Network net: this.getNetworks()){
-
-                payload = payload + "{ \"uuid\": \""
-                + net.getIdNetwork() + "\"}";
-            }
-            payload = payload + "], ";
-
-        }*/
-
-        payload = payload
-        + "\"flavorRef\": \"" + getFlavour() + "\", " + "\"imageRef\": \""
-        + getImage() + "\", " + "\"name\": \"" + name + "\"}}";
-        return payload;
 
     }
 

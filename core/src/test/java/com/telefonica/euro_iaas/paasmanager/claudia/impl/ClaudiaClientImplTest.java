@@ -110,6 +110,7 @@ public class ClaudiaClientImplTest {
         }
     }
 
+
     /*
      * @Test public void testBrowseVM() { fail("Not yet implemented"); }
      * @Test public void testBrowseVMReplica() { fail("Not yet implemented"); }
