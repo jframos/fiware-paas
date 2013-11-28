@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
  */
 public class ProductReleaseSdcDaoImplTest {
 
-   
+  
     /**
      * Tests the findAllProducts functionality
      * @throws SdcException 
@@ -102,4 +102,79 @@ public class ProductReleaseSdcDaoImplTest {
         assertEquals(1, productReleases.size());
         
     }
+    
+    @Test
+    public void testFromStringToProductReleasesTwoProductReleases() throws Exception {
+        //given
+        ProductReleaseSdcDaoImpl productReleaseSdcDaoImpl = new ProductReleaseSdcDaoImpl();
+        String twoProductReleaseString = "{\"productRelease\":[{" +
+                        "\"version\":\"0.8.1\"," +
+                        "\"product\":{" +
+                            "\"name\":\"orion\"," +
+                            "\"description\":\"\"," +
+                            "\"attributes\":[" +
+                                "{\"key\":\"openports\",\"value\":\"1026 27017 27018 27019 28017\"}," +
+                                "{\"key\":\"dd\",\"value\":\"dd\",\"description\":\"dd\"}" +
+                            "]," +
+                            "\"metadatas\":[" +
+                                "{\"key\":\"image\",\"value\":\"df44f62d-9d66-4dc5-b084-2d6c7bc4cfe4\"}," +
+                                "{\"key\":\"cookbook_url\",\"value\":\"\"}," +
+                                "{\"key\":\"cloud\",\"value\":\"yes\"}," +
+                                "{\"key\":\"installator\",\"value\":\"chef\"}," +
+                                "{\"key\":\"open_ports\",\"value\":\"80 22\"}" +
+                            "]" +
+                        "}}," +
+                        "{\"version\":\"0.6.0\"," +
+                        "\"product\":{" +
+                            "\"name\":\"orion\"," +
+                            "\"description\":\"\"," +
+                            "\"attributes\":[" +
+                                "{\"key\":\"openports\",\"value\":\"1026 27017 27018 27019 28017\"}," +
+                                "{\"key\":\"dd\",\"value\":\"dd\",\"description\":\"dd\"}" +
+                            "]," +
+                            "\"metadatas\":[" +
+                                "{\"key\":\"image\",\"value\":\"df44f62d-9d66-4dc5-b084-2d6c7bc4cfe4\"}," +
+                                "{\"key\":\"cookbook_url\",\"value\":\"\"}," +
+                                "{\"key\":\"cloud\",\"value\":\"yes\"}," +
+                                "{\"key\":\"installator\",\"value\":\"chef\"}," +
+                                "{\"key\":\"open_ports\",\"value\":\"80 22\"}" +
+                            "]" +
+                         "}}]}";
+        //when
+        List<ProductRelease> productReleases   
+            = productReleaseSdcDaoImpl.fromStringToProductReleases(twoProductReleaseString);
+        //then
+        assertEquals(productReleases.size(), 2);        
+    }
+    
+    @Test
+    public void testFromStringToProductReleasesOneProductRelease() throws Exception {
+        //given
+        ProductReleaseSdcDaoImpl productReleaseSdcDaoImpl = new ProductReleaseSdcDaoImpl();
+        String twoProductReleaseString = "{\"productRelease\":{" +
+                        "\"version\":\"0.6.0\"," +
+                        "\"product\":{" +
+                            "\"name\":\"orion\"," +
+                            "\"description\":\"\"," +
+                            "\"attributes\":[" +
+                                "{\"key\":\"openports\",\"value\":\"1026 27017 27018 27019 28017\"}," +
+                                "{\"key\":\"dd\",\"value\":\"dd\",\"description\":\"dd\"}" +
+                            "]," +
+                            "\"metadatas\":[" +
+                                "{\"key\":\"image\",\"value\":\"df44f62d-9d66-4dc5-b084-2d6c7bc4cfe4\"}," +
+                                "{\"key\":\"cookbook_url\",\"value\":\"\"}," +
+                                "{\"key\":\"cloud\",\"value\":\"yes\"}," +
+                                "{\"key\":\"installator\",\"value\":\"chef\"}," +
+                                "{\"key\":\"open_ports\",\"value\":\"80 22\"}" +
+                            "]" +
+                         "}}}";
+        //when
+        List<ProductRelease> productReleases   
+            = productReleaseSdcDaoImpl.fromStringToProductReleases(twoProductReleaseString);
+            
+        //then
+        assertEquals(productReleases.size(), 1);
+        
+    }
+
 }
