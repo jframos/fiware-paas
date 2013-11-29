@@ -250,9 +250,7 @@ public class OpenStackUtilImplTest {
         String region = "RegionOne";
 
         // when
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)).thenReturn(
-                "http://localhost/");
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).thenReturn("v2/");
+
         when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.PUBLIC_ROUTER_ID)).thenReturn("ID");
 
         when(entity.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes()));

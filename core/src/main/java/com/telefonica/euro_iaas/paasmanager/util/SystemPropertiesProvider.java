@@ -98,14 +98,9 @@ public interface SystemPropertiesProvider {
 
     /*** OPENSTACK CONSTANTS */
     String URL_PROPERTY = "management.provisioning.openstack.url";
-    String VERSION_PROPERTY = "openstack.version";
     String URL_KEYSTONE_PROPERTY = "management.provisioning.openstack.keystone.url";
     String USER_PROPERTY = "management.provisioning.openstack.user";
     String PASSWORD_PROPERTY = "management.provisioning.openstack.password";
-    String URL_NOVA_PROPERTY = "openstack.nova.url";
-
-    String URL_QUANTUM_PROPERTY = "openstack.quantum.url";
-    String URL_QUANTUM_VERSION = "openstack.quantum.version";
 
     String URL_OPENSTACK_DISTRIBUTION = "openstack.distribution";
 
