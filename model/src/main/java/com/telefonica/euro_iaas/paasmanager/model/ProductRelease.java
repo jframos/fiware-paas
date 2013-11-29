@@ -229,16 +229,6 @@ public class ProductRelease {
         return JSONObject.fromObject(stringProductJson);
     }
     
-    /*private JSONObject formatJsonArray(JSONObject productJson, String tag) {
-        String stringProductJson = productJson.toString();
-        if (stringProductJson.contains("\"" + tag + "\":{")) {
-            stringProductJson = stringProductJson.replace("\"}}", "\"}]}");
-            stringProductJson = stringProductJson.replace("\"" + tag + "\":{", "\"" + tag + "\":[{");
-
-        }
-        return JSONObject.fromObject(stringProductJson);
-    }*/
-    
     private JSONObject formatJsonArray(JSONObject productJson, String tag) {
         String stringProductJson = productJson.toString();
         if (stringProductJson.contains("\"" + tag + "\":{")) {
