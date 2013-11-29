@@ -176,6 +176,11 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         }
 
     }
+    
+    public List<NetworkInstance> listNetworks (ClaudiaData claudiaData, String region) throws InfrastructureException {
+        List<NetworkInstance> networkInstances = networkClient.loadAllNetwork(claudiaData, region);
+        return networkInstances;
+    }
 
     /**
      * To obtain the network.

@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientOpenStackImpl;
+import com.telefonica.euro_iaas.paasmanager.manager.NetworkInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
@@ -46,7 +47,7 @@ public class ClaudiaClientOpenStackImplTest {
     private Tier tier;
     private ClaudiaData claudiaData;
     private OpenStackUtil openStackUtil;
-    private NetworkClient networkClient;
+    private NetworkInstanceManager networkInstanceManager;
     private ClaudiaClientOpenStackImpl claudiaClientOpenStack;
 
     @Before
@@ -94,8 +95,8 @@ public class ClaudiaClientOpenStackImplTest {
         claudiaClientOpenStack  = new ClaudiaClientOpenStackImpl ();
 
         openStackUtil = mock(OpenStackUtil.class);
-        networkClient = mock (NetworkClient.class);
-        claudiaClientOpenStack.setNetworkClient(networkClient);
+        networkInstanceManager = mock (NetworkInstanceManager.class);
+        claudiaClientOpenStack.setNetworkInstanceManager(networkInstanceManager);
         claudiaClientOpenStack.setOpenStackUtil(openStackUtil);
 
 
@@ -154,7 +155,7 @@ public class ClaudiaClientOpenStackImplTest {
         networkInstances.add(netInst);
 
         VM vm = new VM();
-        when(networkClient.loadAllNetwork(any(ClaudiaData.class), any(String.class))).thenReturn(networkInstances);
+        when(networkInstanceManager.listNetworks(any(ClaudiaData.class), any(String.class))).thenReturn(networkInstances);
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         
         verify(openStackUtil).createServer(any(String.class), any(String.class), any(String.class), any(String.class));
@@ -178,8 +179,8 @@ public class ClaudiaClientOpenStackImplTest {
         NetworkInstance netInst2 = network.toNetworkInstance();
         netInst2.setShared(false);
         netInst2.setDefaultNet(true);
-        when(networkClient.loadAllNetwork(any(ClaudiaData.class), any(String.class))).thenReturn(networkInstances);
-        when(networkClient.deployDefaultNetwork(any(ClaudiaData.class), any(String.class))).thenReturn(netInst2);
+        when(networkInstanceManager.listNetworks(any(ClaudiaData.class), any(String.class))).thenReturn(networkInstances);
+        when(networkInstanceManager.create(any(ClaudiaData.class), any(NetworkInstance.class),any(String.class))).thenReturn(netInst2);
         
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         assertEquals(tierInstance.getNetworkInstances().size(), 1);

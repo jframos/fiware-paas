@@ -19,9 +19,9 @@ g=EnvironmentRequest(config['keystone_url'], config['paasmanager_url'], config['
 instance_request = EnvironmentInstanceRequest (config['keystone_url'], config['paasmanager_url'], config['tenant'], config['user'], config['password'],
                                                config['vdc'],config['sdc_url'])
 
-environment_name = 'dia222'
-blueprintname ="dia222"
-network ="dia222;Internet"
+environment_name = 'dia223'
+blueprintname ="dia223"
+network ="dia223;Internet"
 
 print('Delete an environment Instance' + blueprintname )
 #instance_request.delete_blueprint_instance (blueprintname)

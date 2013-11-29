@@ -15,6 +15,9 @@ import net.sf.json.JSONArray;
 
 import org.apache.log4j.Logger;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
 import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
 import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaResourceNotFoundException;
@@ -25,9 +28,13 @@ import com.telefonica.euro_iaas.paasmanager.exception.NetworkNotRetrievedExcepti
 import com.telefonica.euro_iaas.paasmanager.exception.OSNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.exception.VMStatusNotRetrievedException;
+import com.telefonica.euro_iaas.paasmanager.manager.NetworkInstanceManager;
+import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
@@ -46,7 +53,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     private static Logger log = Logger.getLogger(ClaudiaClientOpenStackImpl.class);
 
     private OpenStackUtil openStackUtil = null;
-    private NetworkClient networkClient = null;
+    private NetworkInstanceManager networkInstanceManager = null;
     private final int POLLING_INTERVAL = 10000;
 
     public String browseVMReplica(ClaudiaData claudiaData, String tier, int replica, VM vm, String region)
@@ -76,18 +83,6 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     private String buildCreateServerPayload(ClaudiaData claudiaData, TierInstance tierInstance, int replica)
     throws InfrastructureException {
         
-        if (tierInstance.getNetworkInstances().isEmpty()) {
-            try {
-                addNetworkToTierInstance (claudiaData, tierInstance);
-            }
-            catch (InfrastructureException e){
-                String errorMsg ="Error to obtain a default network for associating to the VM "+ e.getMessage();
-                log.error(errorMsg);
-                throw new InfrastructureException(errorMsg);
-            }
-          
-        }
-
 
         if ((tierInstance.getTier().getImage() == null) || (tierInstance.getTier().getFlavour() == null)
                 || (tierInstance.getTier().getKeypair() == null)) {
@@ -108,9 +103,10 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         return payload;
     }
     
-    private void addNetworkToTierInstance (ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
+    private void addNetworkToTierInstance (ClaudiaData claudiaData, TierInstance tierInstance)
+        throws InfrastructureException, InvalidEntityException, AlreadyExistsEntityException, EntityNotFoundException {
         String region = tierInstance.getTier().getRegion();
-        List<NetworkInstance> networkInstances = this.networkClient.loadAllNetwork(claudiaData, region);
+        List<NetworkInstance> networkInstances = networkInstanceManager.listNetworks(claudiaData, region);
         if (networkInstances.isEmpty()) {
             log.debug("It is essex.");
             return;
@@ -119,9 +115,13 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         List<NetworkInstance> networkNoSharedInstances = loadNotSharedNetworksUser(networkInstances, claudiaData.getVdc());
         if (networkNoSharedInstances.isEmpty()) {
             log.debug("There is not any network associated to the user");
-            NetworkInstance net = networkClient.deployDefaultNetwork(claudiaData, tierInstance.getTier().getRegion());
-            net.setDefaultNet(true);
-            tierInstance.addNetworkInstance(net);
+            Network net = new Network (claudiaData.getUser().getTenantName() );
+            SubNetwork subNet = new SubNetwork ("test");
+            net.addSubNet(subNet);
+            NetworkInstance netinstance = net.toNetworkInstance();
+            NetworkInstance networkInstance = networkInstanceManager.create(claudiaData, netinstance, region);
+            networkInstance.setDefaultNet(true);
+            tierInstance.addNetworkInstance(networkInstance);
         }
         else {
             log.debug ("Getting the default network ");
@@ -206,6 +206,18 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 
         log.debug("Deploy server " + claudiaData.getService() + " tier " + tierInstance.getName() + " replica "
                 + replica + " with networks " + tierInstance.getNetworkInstances());
+        
+        if (tierInstance.getNetworkInstances().isEmpty()) {
+            try {
+                addNetworkToTierInstance(claudiaData, tierInstance);
+            }
+            catch (Exception e){
+                String errorMsg ="Error to obtain a default network for associating to the VM "+ e.getMessage();
+                log.error(errorMsg);
+              //  throw new InfrastructureException(errorMsg);
+            }
+          
+        }
 
         String payload = buildCreateServerPayload(claudiaData, tierInstance, replica);
 
@@ -352,8 +364,8 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
      * @param openStackUtil
      *            the openStackUtil to set
      */
-    public void setNetworkClient(NetworkClient networkClient) {
-        this.networkClient = networkClient;
+    public void setNetworkInstanceManager(NetworkInstanceManager networkInstanceManager) {
+        this.networkInstanceManager = networkInstanceManager;
     }
     
     

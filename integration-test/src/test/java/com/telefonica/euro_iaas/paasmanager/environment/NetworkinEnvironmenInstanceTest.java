@@ -160,7 +160,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network_deletion");
+        Network net = new Network("network_deletion2");
         tierbk.addNetwork(net);
 
         environmentBk.addTier(tierbk);

@@ -18,7 +18,7 @@ class Tier:
 
 
     def __init__(self, tier_name, tier_num_min='1', tier_num_max='1', tier_num_initial='1',
-                 tier_image='ce1b094d-b13e-4225-92b0-61b38433fe78',
+                 tier_image='067d3e2a-9e79-404a-a1b4-135132e496ea',
                  tier_flavour='2',tier_keypair='',tier_floatingip='true' ):
         self.name=tier_name
         self.tier_num_min=tier_num_min

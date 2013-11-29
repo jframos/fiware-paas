@@ -202,10 +202,12 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                         + ".services." + claudiaData.getService() + ".vees." + tier.getName() + ".replicas."
                         + numReplica;
                 String hostname = (claudiaData.getService() + "-" + tier.getName() + "-" + numReplica).toLowerCase();
+                log.debug("fqn " + fqn + " hostname " + hostname);
                 vm.setFqn(fqn);
                 vm.setHostname(hostname);
                 tierInstance.setVM(vm);
 
+                log.debug("Deploy networks if required");
                 this.deployNetworks(claudiaData, tierInstance);
                 log.debug("Number of networks " + tierInstance.getNetworkInstances().size() + " floatin ip "
                         + tierInstance.getTier().getFloatingip());
