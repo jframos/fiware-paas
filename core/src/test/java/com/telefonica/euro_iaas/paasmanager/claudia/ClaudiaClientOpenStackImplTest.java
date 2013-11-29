@@ -7,16 +7,17 @@
 
 package com.telefonica.euro_iaas.paasmanager.claudia;
 
-<<<<<<< HEAD
+
 import java.util.ArrayList;
-=======
+
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
->>>>>>> 288294e1710516d24b8015ce0e9bea5f57958f10
+
 import java.util.HashSet;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientOpenStackImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
@@ -34,19 +36,7 @@ import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackUtil;
-<<<<<<< HEAD
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.security.core.GrantedAuthority;
 
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-=======
->>>>>>> 288294e1710516d24b8015ce0e9bea5f57958f10
 
 /**
  * @author jesus.movilla
@@ -100,26 +90,18 @@ public class ClaudiaClientOpenStackImplTest {
 
         tier.setName("prueba");
         tier.setKeypair("jesusmovilla");
+        
+        claudiaClientOpenStack  = new ClaudiaClientOpenStackImpl ();
 
         openStackUtil = mock(OpenStackUtil.class);
         networkClient = mock (NetworkClient.class);
-
-<<<<<<< HEAD
-        when(openStackUtil.createServer(any(String.class), any(PaasManagerUser.class))).thenReturn("response");
-        when(openStackUtil.createNetwork(any(String.class), any(PaasManagerUser.class))).thenReturn(expectedNetwork);
-        when(openStackUtil.createSubNet(any(SubNetworkInstance.class), any(PaasManagerUser.class))).thenReturn(expectedSubnet);
-        when(openStackUtil.createRouter(any(RouterInstance.class), any(PaasManagerUser.class))).thenReturn(expectedRouter);
-        when(openStackUtil.addRouterInterface(any(String.class), any(String.class), any(PaasManagerUser.class)))
-                .thenReturn("OK");
-        when(openStackUtil.getNetworks(any(PaasManagerUser.class))).thenReturn(expectedNetworks);
-        
-        claudiaClientOpenStack = new ClaudiaClientOpenStackImpl();
-        claudiaClientOpenStack.setOpenStackUtil(openStackUtil);
         claudiaClientOpenStack.setNetworkClient(networkClient);
-=======
+        claudiaClientOpenStack.setOpenStackUtil(openStackUtil);
+
+
         when(openStackUtil.createServer(any(String.class), anyString(), anyString(), anyString())).thenReturn(
                 "response");
-        when(openStackUtil.createNetwork(any(NetworkInstance.class), anyString(), anyString(), anyString()))
+        when(openStackUtil.createNetwork(any(String.class), anyString(), anyString(), anyString()))
                 .thenReturn(expectedNetwork);
         when(openStackUtil.createSubNet(any(SubNetworkInstance.class), anyString(), anyString(), anyString()))
                 .thenReturn(expectedSubnet);
@@ -129,7 +111,6 @@ public class ClaudiaClientOpenStackImplTest {
                 openStackUtil.addRouterInterface(any(String.class), any(String.class), anyString(), anyString(),
                         anyString())).thenReturn("OK");
         when(openStackUtil.getNetworks(anyString(), anyString(), anyString())).thenReturn(expectedNetworks);
->>>>>>> 288294e1710516d24b8015ce0e9bea5f57958f10
     }
 
     @Test
@@ -155,7 +136,7 @@ public class ClaudiaClientOpenStackImplTest {
         
         VM vm = new VM();
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
-        verify(openStackUtil).createServer(any(String.class), any(PaasManagerUser.class));
+        verify(openStackUtil).createServer(any(String.class), any(String.class), any(String.class), any(String.class));
 
     }
     
@@ -173,10 +154,10 @@ public class ClaudiaClientOpenStackImplTest {
         networkInstances.add(netInst);
 
         VM vm = new VM();
-        when(networkClient.loadAllNetwork(any(ClaudiaData.class))).thenReturn(networkInstances);
+        when(networkClient.loadAllNetwork(any(ClaudiaData.class), any(String.class))).thenReturn(networkInstances);
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         
-        verify(openStackUtil).createServer(any(String.class), any(PaasManagerUser.class));
+        verify(openStackUtil).createServer(any(String.class), any(String.class), any(String.class), any(String.class));
 
     }
     
@@ -197,12 +178,12 @@ public class ClaudiaClientOpenStackImplTest {
         NetworkInstance netInst2 = network.toNetworkInstance();
         netInst2.setShared(false);
         netInst2.setDefaultNet(true);
-        when(networkClient.loadAllNetwork(any(ClaudiaData.class))).thenReturn(networkInstances);
-        when(networkClient.deployDefaultNetwork(any(ClaudiaData.class))).thenReturn(netInst2);
+        when(networkClient.loadAllNetwork(any(ClaudiaData.class), any(String.class))).thenReturn(networkInstances);
+        when(networkClient.deployDefaultNetwork(any(ClaudiaData.class), any(String.class))).thenReturn(netInst2);
         
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         assertEquals(tierInstance.getNetworkInstances().size(), 1);
-        verify(openStackUtil).createServer(any(String.class), any(PaasManagerUser.class));
+        verify(openStackUtil).createServer(any(String.class), any(String.class), any(String.class), any(String.class));
 
     }
 

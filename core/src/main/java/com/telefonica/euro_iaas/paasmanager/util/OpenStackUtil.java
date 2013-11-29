@@ -140,7 +140,7 @@ public interface OpenStackUtil {
      * @throws OpenStackException
      *             OpenStackException
      */
-    String createNetwork(NetworkInstance net, String region, String token, String vdc)
+    String createNetwork(String payload, String region, String token, String vdc)
         throws OpenStackException;
 
     /**

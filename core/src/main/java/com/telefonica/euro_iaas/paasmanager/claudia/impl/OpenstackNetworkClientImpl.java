@@ -112,7 +112,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @params network
      */
 
-    public NetworkInstance deployDefaultNetwork(ClaudiaData claudiaData) throws InfrastructureException {
+    public NetworkInstance deployDefaultNetwork(ClaudiaData claudiaData,String region) throws InfrastructureException {
         log.info("Deploy default network  for user " + claudiaData.getUser().getTenantName());
         String payload =  "{" + " \"network\":{" + "    \"name\": \"net_" + claudiaData.getUser().getTenantName() + "\"," + 
         "    \"admin_state_up\": true,"
@@ -120,8 +120,11 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         log.debug("Payload " + payload);
         NetworkInstance networkInstance = null;
         String response;
+        String token = claudiaData.getUser().getToken();
+        String vdc = claudiaData.getVdc();
+
         try {
-            response = openStackUtil.createNetwork(payload, claudiaData.getUser());
+            response = openStackUtil.createNetwork(payload, region, token, vdc);
             log.debug(response);
             // "network-" + claudiaData.getUser().getTenantName()
             JSONObject jsonNetworks = new JSONObject(response).getJSONObject("network");
@@ -155,7 +158,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         try {
             String token = claudiaData.getUser().getToken();
             String vdc = claudiaData.getVdc();
-            response = openStackUtil.createNetwork(networkInstance, region, token, vdc);
+            response = openStackUtil.createNetwork(networkInstance.toJson(), region, token, vdc);
 
             log.debug(response);
             // "network-" + claudiaData.getUser().getTenantName()
@@ -421,9 +424,9 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
 	 * @throws InfrastructureException 
 	 * 
 	 */
-    public List<NetworkInstance> loadNotSharedNetworks(ClaudiaData claudiaData) throws InfrastructureException {
+    public List<NetworkInstance> loadNotSharedNetworks(ClaudiaData claudiaData, String region) throws InfrastructureException {
         List<NetworkInstance> networksNotShared = new ArrayList<NetworkInstance> ();
-        List<NetworkInstance> networks = this.loadAllNetwork(claudiaData);
+        List<NetworkInstance> networks = this.loadAllNetwork(claudiaData, region);
         for (NetworkInstance net: networks) {
             if (!net.getShared()) {
                 networksNotShared.add(net);
@@ -431,5 +434,6 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         }
         return networksNotShared;
     }
+
 
 }

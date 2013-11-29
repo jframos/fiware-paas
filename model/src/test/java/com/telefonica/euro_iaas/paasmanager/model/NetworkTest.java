@@ -7,6 +7,9 @@
 
 package com.telefonica.euro_iaas.paasmanager.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import junit.framework.TestCase;
 
 import org.junit.Before;
@@ -31,6 +34,8 @@ public class NetworkTest extends TestCase {
     public static String ID_PUBLIC_NET ="IDPUBLIC";
     public static String CIDR ="10.100.1.0/24";
     public static String CIDR_ID ="1";
+    public static String CIDR2 ="10.100.2.0/24";
+    public static String CIDR2_ID ="2";
     public static String ID ="id";
 
 
@@ -102,6 +107,121 @@ public class NetworkTest extends TestCase {
             assertEquals(subNet.getName(), SUBNETWORK_NAME);
             assertEquals(subNet.getCidr(), CIDR);
         }
+    }
+    
+    /**
+     * Create network and subnet test.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testCloneSubNets() throws Exception {
+
+        Network network = new Network();
+        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, CIDR_ID);
+        network.addSubNet(subnet);
+        
+        Set<SubNetwork> subNets = network.cloneSubNets();
+        assertEquals(subNets.size(), 1);
+        for (SubNetwork subNet: subNets) {
+            assertEquals(subNet.getName(), SUBNETWORK_NAME);
+            assertEquals(subNet.getCidr(), CIDR);
+        }
+    }
+    
+    /**
+     * Update subNet.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testUpdateSubNet() throws Exception {
+
+        Network network = new Network();
+        network.setNetworkName(NETWORK_NAME);
+        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, CIDR_ID);
+        network.addSubNet(subnet);
+        
+        SubNetwork subnet2 = new SubNetwork(SUBNETWORK_NAME, CIDR2_ID);
+        network.updateSubNet(subnet2);
+        
+        assertEquals(network.getSubNets().size(), 1);
+        for (SubNetwork subNet: network.getSubNets()) {
+            assertEquals(subNet.getName(), SUBNETWORK_NAME);
+            assertEquals(subNet.getCidr(), CIDR2);
+        }
+    }
+    
+    /**
+     * Update subNet.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testContainSubNet() throws Exception {
+
+        Network network = new Network();
+        network.setNetworkName(NETWORK_NAME);
+        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, CIDR_ID);
+        network.addSubNet(subnet);
+        
+        SubNetwork subnet2 = new SubNetwork(SUBNETWORK_NAME+2, CIDR2_ID);
+        
+        assertEquals(network.contains(subnet), true);
+        assertEquals(network.contains(subnet2), false);
+
+    }
+    
+    /**
+     * Delete subNet.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testDeleteSubNet() throws Exception {
+
+        Network network = new Network();
+        network.setNetworkName(NETWORK_NAME);
+        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, CIDR_ID);
+        Set<SubNetwork> subNets = new HashSet<SubNetwork>();
+        subNets.add(subnet);
+        network.setSubNets(subNets);
+  
+        network.deleteSubNet(subnet);
+        assertEquals(network.getSubNets().size(), 0);
+    }
+    
+    /**
+     * to Dto.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testToDto() throws Exception {
+
+        Network network = new Network();
+        network.setNetworkName(NETWORK_NAME);
+        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, CIDR_ID);
+        network.addSubNet(subnet);
+        NetworkDto netDto = network.toDto();
+        assertEquals(netDto.getNetworkName(), NETWORK_NAME);
+        assertEquals(netDto.getSubNetworkDto().size(), 1);
+    }
+    
+    /**
+     * Equals.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testEquals() throws Exception {
+
+        Network network = new Network();
+        network.setNetworkName(NETWORK_NAME);
+        Network network2 = new Network(NETWORK_NAME+2);   
+        Network network3 = new Network(NETWORK_NAME);    
+        assertEquals(network.equals(network2), false);
+        assertEquals(network.equals(network3), true);
     }
 
     /**
@@ -187,8 +307,6 @@ public class NetworkTest extends TestCase {
      */
     @Test
     public void testFromDto() throws Exception {
-
-
         NetworkDto networkDto = new NetworkDto(NETWORK_NAME);
         SubNetworkDto subNetworkDto = new SubNetworkDto(SUBNETWORK_NAME, CIDR);
         networkDto.addSubNetworkDto(subNetworkDto);
@@ -200,6 +318,121 @@ public class NetworkTest extends TestCase {
             assertEquals(subNet.getName(), SUBNETWORK_NAME);
             assertEquals(subNet.getCidr(), CIDR);
         }
+    }
+    
+    /**
+     * Clone subnet instances.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testCloneSubNetInstances() throws Exception {
+        
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME);
+        network.setIdNetwork(ID);
+        SubNetworkInstance subNetwork = new SubNetworkInstance(SUBNETWORK_NAME, CIDR_ID);
+        subNetwork.setIdSubNet(ID);
+        network.addSubNet(subNetwork);
+                
+        Set<SubNetworkInstance> subNets = network.cloneSubNets();
+        assertEquals(subNets.size(), 1);
+        for (SubNetworkInstance subNet: subNets) {
+            assertEquals(subNet.getName(), SUBNETWORK_NAME);
+            assertEquals(subNet.getCidr(), CIDR);
+        }
+    }
+    
+    /**
+     * Test add the same subneto.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testAddtheSameSubNet() throws Exception {
+
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME);
+        network.setIdNetwork(ID);
+        SubNetworkInstance subNetwork = new SubNetworkInstance(SUBNETWORK_NAME, CIDR_ID);
+        subNetwork.setIdSubNet(ID);
+        network.addSubNet(subNetwork);
+        network.addSubNet(subNetwork);
+
+        assertEquals(network.getSubNets().size(), 1);
+
+    }
+    
+    /**
+     * Update subNet instance.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testUpdateSubNetInstance() throws Exception {
+
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME);
+        SubNetworkInstance subnet = new SubNetworkInstance(SUBNETWORK_NAME, CIDR_ID);
+        network.addSubNet(subnet);
+        
+        SubNetworkInstance subnet2 = new SubNetworkInstance(SUBNETWORK_NAME, CIDR2_ID);
+        network.updateSubNet(subnet2);
+        
+        assertEquals(network.getSubNets().size(), 1);
+        for (SubNetworkInstance subNet: network.getSubNets()) {
+            assertEquals(subNet.getName(), SUBNETWORK_NAME);
+            assertEquals(subNet.getCidr(), CIDR2);
+        }
+    }
+    
+    /**
+     * Contains test.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testContainSubNetIntance() throws Exception {
+
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME);
+        SubNetworkInstance subnet = new SubNetworkInstance(SUBNETWORK_NAME, CIDR_ID);
+        network.addSubNet(subnet);
+        
+        SubNetworkInstance subnet2 = new SubNetworkInstance(SUBNETWORK_NAME+2, CIDR2_ID);
+        
+        assertEquals(network.contains(subnet), true);
+        assertEquals(network.contains(subnet2), false);
+
+    }
+    
+    /**
+     * Delete subNet.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testDeleteSubNetInstance() throws Exception {
+
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME);
+        SubNetworkInstance subnet = new SubNetworkInstance(SUBNETWORK_NAME, CIDR_ID);
+        Set<SubNetworkInstance> subNets = new HashSet<SubNetworkInstance>();
+        subNets.add(subnet);
+        network.setSubNets(subNets);
+  
+        network.removes(subnet);
+        assertEquals(network.getSubNets().size(), 0);
+    }
+    
+    /**
+     * Equals.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testEqualsInstance() throws Exception {
+
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME);
+        NetworkInstance network2 = new NetworkInstance(NETWORK_NAME+2);   
+        NetworkInstance network3 = new NetworkInstance(NETWORK_NAME);    
+        assertEquals(network.equals(network2), false);
+        assertEquals(network.equals(network3), true);
     }
 
 }

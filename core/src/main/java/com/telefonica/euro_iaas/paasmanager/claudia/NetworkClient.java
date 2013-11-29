@@ -142,8 +142,15 @@ public interface NetworkClient {
 	 * @return
 	 * @throws InfrastructureException 
 	 */
-    List<NetworkInstance> loadNotSharedNetworks(ClaudiaData claudiaData) throws InfrastructureException;
+    List<NetworkInstance> loadNotSharedNetworks(ClaudiaData claudiaData, String region) throws InfrastructureException;
 
-    NetworkInstance deployDefaultNetwork(ClaudiaData claudiaData) throws InfrastructureException;
+    /**
+     * 
+     * @param claudiaData
+     * @param region
+     * @return
+     * @throws InfrastructureException
+     */
+    NetworkInstance deployDefaultNetwork(ClaudiaData claudiaData, String region) throws InfrastructureException;
 
 }

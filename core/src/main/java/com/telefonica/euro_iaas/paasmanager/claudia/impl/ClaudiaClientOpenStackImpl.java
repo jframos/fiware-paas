@@ -119,7 +119,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         List<NetworkInstance> networkNoSharedInstances = loadNotSharedNetworksUser(networkInstances, claudiaData.getVdc());
         if (networkNoSharedInstances.isEmpty()) {
             log.debug("There is not any network associated to the user");
-            NetworkInstance net = networkClient.deployDefaultNetwork(claudiaData);
+            NetworkInstance net = networkClient.deployDefaultNetwork(claudiaData, tierInstance.getTier().getRegion());
             net.setDefaultNet(true);
             tierInstance.addNetworkInstance(net);
         }

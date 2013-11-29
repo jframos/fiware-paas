@@ -136,27 +136,16 @@ public class NetworkInstance {
      * @return
      */
     public void updateSubNet(SubNetworkInstance subNet) {
-        if (contains(subNet.getName())) {
+        if (subNets.contains(subNet)) {
             removes(subNet); 
         }
         subNets.add(subNet);
     }
-    
-    public boolean contains(String subNetName) {
-        for (SubNetworkInstance subNet: subNets) {
-        	return subNet.getName().equals(subNetName);
-        }
-        return false;
-    }
-    
+
     public void removes(SubNetworkInstance subNetwork) {
-    	SubNetworkInstance subNetw =null;
-        for (SubNetworkInstance subNet: subNets) {
-        	if (subNet.getName().equals(subNetwork.getName())) {
-        		subNetw = subNet;
-        	}
+        if (subNets.contains(subNetwork)){
+            subNets.remove(subNetwork);
         }
-        subNets.remove(subNetw);
     }
     
     /**
@@ -304,6 +293,39 @@ public class NetworkInstance {
     
     public String getTenantId() {
         return tenantId;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        NetworkInstance other = (NetworkInstance) obj;
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
+            return false;
+        }
+        if (!name.equals(other.name)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
     }
 
 

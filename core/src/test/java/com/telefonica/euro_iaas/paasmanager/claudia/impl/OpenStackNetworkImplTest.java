@@ -13,13 +13,13 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
 
-<<<<<<< HEAD
+
 import java.util.Collection;
 import java.util.HashSet;
-=======
 import java.util.ArrayList;
->>>>>>> 288294e1710516d24b8015ce0e9bea5f57958f10
+
 import java.util.List;
 
 import org.json.JSONException;
@@ -40,6 +40,7 @@ public class OpenStackNetworkImplTest {
     OpenstackNetworkClientImpl openStackNetworkImpl = new OpenstackNetworkClientImpl();
     ClaudiaData claudiaData ;
     private OpenStackUtil openStackUtil;
+    private String REGION ="region";
     @Before
     public void setUp () {
         GrantedAuthority grantedAuthority = mock(GrantedAuthority.class);
@@ -55,21 +56,6 @@ public class OpenStackNetworkImplTest {
     @Test
     public void shouldListNetworks() throws OpenStackException, InfrastructureException {
 
-<<<<<<< HEAD
-
-
-=======
-        // given
-        OpenstackNetworkClientImpl openStackNetworkImpl = new OpenstackNetworkClientImpl();
-
-        ClaudiaData claudiaData = new ClaudiaData("org", "tenantId", "service");
-        List authorities = new ArrayList();
-        PaasManagerUser user = new PaasManagerUser("user", "pass", authorities);
-        claudiaData.setUser(user);
-        user.setToken("token");
-        OpenStackUtil openStackUtil = mock(OpenStackUtil.class);
-        openStackNetworkImpl.setOpenStackUtil(openStackUtil);
->>>>>>> 288294e1710516d24b8015ce0e9bea5f57958f10
         // when
         String response = "{\"networks\": [{\"status\": \"ACTIVE\", \"subnets\": [\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
                 + " \"dia146\", \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
@@ -100,13 +86,14 @@ public class OpenStackNetworkImplTest {
         " \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\", \"provider:network_type\": "+
         " \"gre\", \"router:external\": true, \"shared\": false, \"id\": \"080b5f2a-668f-45e0-be23-361c3a7d11d0\", \"provider:segmentation_id\": 1}" +
          "]}";
-        when(openStackUtil.listNetworks(any(PaasManagerUser.class))).thenReturn(response);
+        when(openStackUtil.listNetworks(anyString(), anyString(),anyString())).thenReturn(response);
 
-        List<NetworkInstance> networks = openStackNetworkImpl.loadNotSharedNetworks(claudiaData);
+        List<NetworkInstance> networks = openStackNetworkImpl.loadNotSharedNetworks(claudiaData, REGION);
 
         // then
         assertNotNull(networks);
-        verify(openStackUtil).listNetworks(any(PaasManagerUser.class));
+
+        verify(openStackUtil).listNetworks(anyString(), anyString(),anyString());
         assertEquals(1, networks.size());
     }
   
@@ -122,13 +109,13 @@ public class OpenStackNetworkImplTest {
         " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": false, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "+
         " \"provider:segmentation_id\": 8}" +
          "]}";
-        when(openStackUtil.listNetworks(any(PaasManagerUser.class))).thenReturn(response);
+        when(openStackUtil.listNetworks(anyString(),anyString(),anyString())).thenReturn(response);
 
-        List<NetworkInstance> networks = openStackNetworkImpl.loadAllNetwork(claudiaData);
+        List<NetworkInstance> networks = openStackNetworkImpl.loadAllNetwork(claudiaData, REGION);
 
         // then
         assertNotNull(networks);
-        verify(openStackUtil).listNetworks(any(PaasManagerUser.class));
+        verify(openStackUtil).listNetworks(anyString(),anyString(),anyString());
         assertEquals(1, networks.size());
         assertEquals(networks.get(0).getAdminStateUp(), true);
         assertEquals(networks.get(0).getNetworkName(), "dia146");
@@ -145,11 +132,11 @@ public class OpenStackNetworkImplTest {
         // when
         String response = "response";
         NetworkInstance net = new NetworkInstance ();
-        when(openStackUtil.addInterfaceToPublicRouter(any(PaasManagerUser.class), any(NetworkInstance.class))).thenReturn(response);
+        when(openStackUtil.addInterfaceToPublicRouter(any(PaasManagerUser.class), any(NetworkInstance.class),anyString())).thenReturn(response);
 
-        openStackNetworkImpl.addNetworkToPublicRouter(claudiaData, net);
+        openStackNetworkImpl.addNetworkToPublicRouter(claudiaData, net,REGION);
 
-        verify(openStackUtil).addInterfaceToPublicRouter(any(PaasManagerUser.class),any(NetworkInstance.class));
+        verify(openStackUtil).addInterfaceToPublicRouter(any(PaasManagerUser.class),any(NetworkInstance.class),anyString());
 
     }
     
@@ -162,11 +149,11 @@ public class OpenStackNetworkImplTest {
         " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": false, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "+
         " \"provider:segmentation_id\": 8}}" ;
         NetworkInstance net = new NetworkInstance ("network");
-        when(openStackUtil.createNetwork(any(String.class),any(PaasManagerUser.class))).thenReturn(response);
+        when(openStackUtil.createNetwork(any(String.class),anyString(),anyString(),anyString())).thenReturn(response);
 
-        NetworkInstance net2 = openStackNetworkImpl.deployDefaultNetwork(claudiaData);
+        NetworkInstance net2 = openStackNetworkImpl.deployDefaultNetwork(claudiaData, REGION);
 
-        verify(openStackUtil).createNetwork(any(String.class),any(PaasManagerUser.class));
+        verify(openStackUtil).createNetwork(any(String.class),anyString(),anyString(),anyString());
         assertNotNull(net2);
         assertEquals(net2.getNetworkName(), "network");
 
@@ -182,11 +169,11 @@ public class OpenStackNetworkImplTest {
         " \"provider:segmentation_id\": 8}}" ;
          
         NetworkInstance net = new NetworkInstance ("network");
-        when(openStackUtil.createNetwork(any(String.class),any(PaasManagerUser.class))).thenReturn(response);
+        when(openStackUtil.createNetwork(any(String.class),anyString(),anyString(),anyString())).thenReturn(response);
 
-        openStackNetworkImpl.deployNetwork(claudiaData, net);
+        openStackNetworkImpl.deployNetwork(claudiaData, net, REGION);
 
-        verify(openStackUtil).createNetwork(any(String.class),any(PaasManagerUser.class));
+        verify(openStackUtil).createNetwork(any(String.class),anyString(),anyString(),anyString());
         assertNotNull(net.getIdNetwork());
 
 
@@ -198,11 +185,11 @@ public class OpenStackNetworkImplTest {
         // when
         String response = "ok";
         NetworkInstance net = new NetworkInstance ("network");
-        when(openStackUtil.deleteNetwork(any(String.class),any(PaasManagerUser.class))).thenReturn(response);
+        when(openStackUtil.deleteNetwork(any(String.class),anyString(),anyString(),anyString())).thenReturn(response);
 
-        openStackNetworkImpl.destroyNetwork(claudiaData, net);
+        openStackNetworkImpl.destroyNetwork(claudiaData, net, REGION);
 
-        verify(openStackUtil).deleteNetwork(any(String.class),any(PaasManagerUser.class));
+        verify(openStackUtil).deleteNetwork(any(String.class),anyString(),anyString(),anyString());
 
     }
     
@@ -212,10 +199,10 @@ public class OpenStackNetworkImplTest {
         // when
         String response = "ok";
         RouterInstance net = new RouterInstance ("router");
-        when(openStackUtil.deleteRouter(any(String.class),any(PaasManagerUser.class))).thenReturn(response);
-        openStackNetworkImpl.destroyRouter(claudiaData, net);
+        when(openStackUtil.deleteRouter(any(String.class),anyString(),anyString(),anyString())).thenReturn(response);
+        openStackNetworkImpl.destroyRouter(claudiaData, net, REGION);
 
-        verify(openStackUtil).deleteRouter(any(String.class),any(PaasManagerUser.class));
+        verify(openStackUtil).deleteRouter(any(String.class),anyString(),anyString(),anyString());
     }
     
     @Test
@@ -224,10 +211,10 @@ public class OpenStackNetworkImplTest {
         // when
         String response = "ok";
         NetworkInstance net = new NetworkInstance ("router");
-        when(openStackUtil.deleteInterfaceToPublicRouter(any(PaasManagerUser.class),any(NetworkInstance.class))).thenReturn(response);
-        openStackNetworkImpl.deleteNetworkToPublicRouter(claudiaData, net);
+        when(openStackUtil.deleteInterfaceToPublicRouter(any(PaasManagerUser.class),any(NetworkInstance.class),anyString())).thenReturn(response);
+        openStackNetworkImpl.deleteNetworkToPublicRouter(claudiaData, net, REGION);
 
-        verify(openStackUtil).deleteInterfaceToPublicRouter(any(PaasManagerUser.class), any(NetworkInstance.class));
+        verify(openStackUtil).deleteInterfaceToPublicRouter(any(PaasManagerUser.class), any(NetworkInstance.class),anyString());
     }   
 
 }
