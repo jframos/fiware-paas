@@ -10,7 +10,6 @@ package com.telefonica.euro_iaas.paasmanager.util;
 // import org.apache.log4j.Logger;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 import java.util.logging.Level;
@@ -180,10 +179,9 @@ public class ITTestOpenStackUtilImpl {
         user.setTenantId(tenant);
         user.setUsername(username);
 
+        // http://130.206.80.63:8774/
+
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.URL_NOVA_PROPERTY)).thenReturn(
-                "http://130.206.80.63:8774/");
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.VERSION_PROPERTY)).thenReturn("v2/");
     }
 
     // @Ignore
