@@ -108,8 +108,8 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
         try {
             novaUrl = openStackRegion.getNovaEndPoint(region, token);
         } catch (OpenStackException e) {
-            log.warn("Can not obtain nova url");
-            throw new InfrastructureException("Can not obtain nova url");
+            log.warn("Can not obtain nova url " + e);
+            throw new InfrastructureException("Can not obtain nova url " + e);
         }
         return novaUrl;
     }

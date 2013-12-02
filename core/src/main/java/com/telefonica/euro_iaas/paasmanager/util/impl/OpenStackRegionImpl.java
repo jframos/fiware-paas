@@ -111,7 +111,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         int code = response.getStatus();
 
         if (code != 200) {
-            String message = "Failed : HTTP (url:" + url + ") error code : " + code + "body: "
+            String message = "Failed : HTTP (url:" + url + ") error code : " + code + " body: "
                     + response.getEntity(String.class);
 
             if (code == 501) {
@@ -266,25 +266,29 @@ public class OpenStackRegionImpl implements OpenStackRegion {
 
     public ClientResponse getEndPointsThroughTokenRequest() throws OpenStackException {
         String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_URL) + "tokens";
-        String tenantId = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_TENANT);
         log.debug("actionUri: " + url);
 
         ClientResponse response;
 
         WebResource wr = client.resource(url);
 
-        String payload = "{\"auth\":{\"passwordCredentials\":{\"username\": \"admin\", \"password\": \"openstack\"}, \"tenantName\": "
-                + "\"" + tenantId + "\"}}";
+        String adminUser = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_USER);
+        String adminPass = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_PASS);
+        String adminTenant = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_TENANT);
+
+        String payload = "{\"auth\": {\"tenantName\": \"" + adminTenant + "\", \""
+                + "passwordCredentials\":{\"username\": \"" + adminUser + "\"," + " \"password\": \"" + adminPass
+                + "\"}}}";
 
         WebResource.Builder builder = wr.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON)
                 .entity(payload);
-        builder = builder.header("Content-type", MediaType.APPLICATION_JSON);
 
         response = builder.post(ClientResponse.class);
 
         int httpCode = response.getStatus();
         if (httpCode != 200) {
-            String message = "Error calling OpenStack to an valid token. " + "Status " + httpCode;
+            String message = "Error calling OpenStack for valid token. " + "Status " + httpCode + ": "
+                    + response.getEntity(String.class);
             log.warn(message);
             throw new OpenStackException(message);
         }
