@@ -17,12 +17,14 @@ import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
+import com.telefonica.euro_iaas.paasmanager.util.RegionCache;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 public class OpenStackRegionImplTest {
@@ -216,6 +218,13 @@ public class OpenStackRegionImplTest {
             + "         \"roles_links\":[\n" + "\n" + "         ],\n"
             + "         \"id\":\"080416ca0dea4d5b8c007d3b53ec91a1\",\n" + "         \"roles\":[\n" + "\n"
             + "         ],\n" + "         \"name\":\"henar\"\n" + "      }\n" + "   }\n" + "}";
+
+    @Before
+    public void setUp() {
+
+        RegionCache regionCache = new RegionCache();
+        regionCache.clear();
+    }
 
     @Test
     public void shouldGetEndPointsForNovaAndARegionName() throws OpenStackException {
@@ -422,5 +431,29 @@ public class OpenStackRegionImplTest {
         assertNotNull(resultURL);
         assertEquals("http://130.206.80.63:8774/v2/", resultURL);
 
+    }
+
+    @Test
+    public void shouldGetEndPointsForNovaAndARegionNameUsingCache() throws OpenStackException {
+        // given
+
+        OpenStackRegionImpl openStackRegion = new OpenStackRegionImpl();
+        Client client = mock(Client.class);
+        openStackRegion.setClient(client);
+        SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+        openStackRegion.setSystemPropertiesProvider(systemPropertiesProvider);
+
+        String regionName = "RegionOne";
+        String token = "123123232";
+
+        RegionCache regionCache = new RegionCache();
+        regionCache.putUrl("RegionOne", "nova", "http://130.206.80.58:8774/v2/12321312312312321");
+
+        // when
+
+        String resultURL = openStackRegion.getNovaEndPoint(regionName, token);
+        // then
+        assertNotNull(resultURL);
+        assertEquals("http://130.206.80.58:8774/v2/", resultURL);
     }
 }

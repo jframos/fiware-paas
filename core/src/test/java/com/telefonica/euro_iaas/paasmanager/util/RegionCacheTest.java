@@ -42,4 +42,19 @@ public class RegionCacheTest {
         assertNull(url);
     }
 
+    @Test
+    public void shouldReturnNullAfterClearCache() {
+        // given
+
+        RegionCache regionCache = new RegionCache();
+        regionCache.putUrl("region", "service", "http://localhost:8080");
+        // when
+        regionCache.clear();
+
+        // then
+        String url = regionCache.getUrl("region", "service");
+        assertNull(url);
+
+    }
+
 }

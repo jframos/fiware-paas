@@ -46,4 +46,7 @@ public class RegionCache {
         return region + "_" + service;
     }
 
+    public void clear() {
+        cache.removeAll();
+    }
 }

@@ -25,6 +25,7 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackRegion;
+import com.telefonica.euro_iaas.paasmanager.util.RegionCache;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
@@ -53,13 +54,21 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     public String getEndPointByNameAndRegionName(String name, String regionName, String token)
             throws OpenStackException {
 
-        String responseJSON = callToKeystone(token);
+        RegionCache regionCache = new RegionCache();
+        String url = regionCache.getUrl(regionName, name);
+        if (url != null) {
+            return url;
+        } else {
+            String responseJSON = callToKeystone(token);
 
-        String result = parseEndpoint(responseJSON, name, regionName);
-        if (result == null) {
-            throw new OpenStackException("region not found");
+            String result = parseEndpoint(responseJSON, name, regionName);
+            if (result == null) {
+                throw new OpenStackException("region not found");
+            }
+            regionCache.putUrl(regionName, name, result);
+
+            return result;
         }
-        return result;
     }
 
     @Override
