@@ -43,11 +43,11 @@ public class NetworkInstanceDaoJpaImpl extends AbstractBaseDao<NetworkInstance, 
      */
     public NetworkInstance load(String name) throws EntityNotFoundException {
 
-        try {
+       // try {
             return findByNetworkInstanceName(name);
-        } catch (Exception e) {
-            return super.loadByField(NetworkInstance.class, "name", name);
-        }
+        //} catch (Exception e) {
+          //  return super.loadByField(NetworkInstance.class, "name", name);
+        //}
 
     }
 
@@ -57,7 +57,7 @@ public class NetworkInstanceDaoJpaImpl extends AbstractBaseDao<NetworkInstance, 
      */
     private NetworkInstance findByNetworkInstanceName(String name) throws EntityNotFoundException {
         Query query = getEntityManager().createQuery(
-                "select p from NetworkInstance p join " + "fetch p.subNets where p.name = :name");
+                "select p from NetworkInstance p left join " + "fetch p.subNets where p.name = :name");
         query.setParameter("name", name);
         NetworkInstance networkInstance = null;
         try {

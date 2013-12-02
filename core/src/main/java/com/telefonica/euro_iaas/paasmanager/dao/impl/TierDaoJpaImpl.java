@@ -209,6 +209,25 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
 
         return tier;
     }
+    
+    @Override
+    public Tier loadTierWithNetworks(String name, String vdc, String environmentname)
+            throws EntityNotFoundException {
+        Query query = getEntityManager().createQuery(
+            "select p from Tier p left join fetch p.networks where p.name = :name and p.vdc =:vdc and p.environmentname= :environmentname");
+        query.setParameter("name", name);
+        query.setParameter("vdc", vdc);
+        query.setParameter("environmentname", environmentname);
+        Tier tier = null;
+        try {
+            tier = (Tier) query.getSingleResult();
+        } catch (NoResultException e) {
+            String message = " No Tier found in the database with name: " + name + " vdc " + vdc
+            + " no products and environmentname " + environmentname;
+            throw new EntityNotFoundException(Tier.class, e.getMessage(), message);
+        }
+        return tier;
+    }
 
     @Override
     public String findRegionBySecurityGroup(String idSecurityGroup) throws EntityNotFoundException {

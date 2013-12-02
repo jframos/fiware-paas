@@ -121,6 +121,7 @@ public class ClaudiaClientOpenStackImplTest {
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
         VM vm = new VM();
+
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         verify(openStackUtil).createServer(any(String.class), anyString(), anyString(), anyString());
 

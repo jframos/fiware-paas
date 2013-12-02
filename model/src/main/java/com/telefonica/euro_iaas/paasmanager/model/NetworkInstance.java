@@ -136,9 +136,7 @@ public class NetworkInstance {
      * @return
      */
     public void updateSubNet(SubNetworkInstance subNet) {
-        if (subNets.contains(subNet)) {
-            removes(subNet); 
-        }
+        removes(subNet);
         subNets.add(subNet);
     }
 
@@ -148,13 +146,18 @@ public class NetworkInstance {
         }
     }
     
-    /**
-     *
-     * @param subNet
-     * @return
-     */
-    public boolean contains(SubNetworkInstance subNet) {
-        return subNets.contains(subNet);
+
+    
+    public boolean contains (SubNetworkInstance subNet) {
+        System.out.println (subNet.hashCode());
+        for (SubNetworkInstance subNetInst: subNets) {
+            System.out.println (subNetInst.hashCode());
+            if (subNetInst.equals(subNet)) {
+                return true;
+            }
+        }
+        return false;
+        
     }
 
     /**
@@ -321,6 +324,7 @@ public class NetworkInstance {
         return true;
     }
 
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;

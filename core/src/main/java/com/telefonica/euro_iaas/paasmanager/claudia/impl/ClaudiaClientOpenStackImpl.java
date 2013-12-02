@@ -116,7 +116,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         if (networkNoSharedInstances.isEmpty()) {
             log.debug("There is not any network associated to the user");
             Network net = new Network (claudiaData.getUser().getTenantName() );
-            SubNetwork subNet = new SubNetwork ("test");
+            SubNetwork subNet = new SubNetwork("test",""+networkInstances.size());
             net.addSubNet(subNet);
             NetworkInstance netinstance = net.toNetworkInstance();
             NetworkInstance networkInstance = networkInstanceManager.create(claudiaData, netinstance, region);
@@ -128,16 +128,16 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             NetworkInstance defaulNet = getDefaulNetwork (networkNoSharedInstances);
             if (defaulNet == null) {
                 log.debug ("There is not a default network. Getting the first one");
-                tierInstance.addNetworkInstance(networkNoSharedInstances.get(0));
+                tierInstance.addNetworkInstance(networkInstanceManager.load(networkNoSharedInstances.get(0).getNetworkName()));
             }
             
         }
     }
     
-    private NetworkInstance getDefaulNetwork (List<NetworkInstance> networkInstances) {
+    private NetworkInstance getDefaulNetwork (List<NetworkInstance> networkInstances) throws EntityNotFoundException {
         for (NetworkInstance net: networkInstances) {
             if(net.isDefaultNet()){
-                return net;
+                return networkInstanceManager.load(net.getNetworkName());
             }
         }
         return null;
@@ -178,9 +178,11 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
                 String errorMessage = "Error obtaining info from Server " + tierInstance.getVM().getVmid();
                 log.error(errorMessage);
 
-                if (e.getMessage().contains("itemNotFound")) {
+                if (e.getMessage().contains("itemNotFound") || e.getMessage().contains("badRequest")) {
                     break;
                 }
+                
+                
                 // throw new InfrastructureException(errorMessage);
             }
         }

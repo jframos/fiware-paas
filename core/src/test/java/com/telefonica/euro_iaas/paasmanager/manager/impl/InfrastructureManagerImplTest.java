@@ -169,6 +169,8 @@ public class InfrastructureManagerImplTest {
                 .when(tierInstanceManager).load(any(String.class));
         when(tierInstanceManager.create(any(ClaudiaData.class), any(String.class), any(TierInstance.class)))
                 .thenReturn(tierInstance);
+        when(tierManager.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
+
 
         Mockito.doNothing().when(monitoringClient).startMonitoring(any(String.class), any(String.class));
 
@@ -282,6 +284,7 @@ public class InfrastructureManagerImplTest {
         when(networkInstanceManager.create(any(ClaudiaData.class), any(NetworkInstance.class), anyString()))
                 .thenReturn(net.toNetworkInstance());
         when(networkManager.load(any(String.class))).thenReturn(net);
+        when(tierManager.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
 
         Mockito.doThrow(EntityNotFoundException.class).when(networkInstanceManager).load(any(String.class));
 
@@ -301,7 +304,7 @@ public class InfrastructureManagerImplTest {
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
 
-        when(tierManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
+        when(tierManager.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
         when(tierManager.update(any(Tier.class))).thenReturn(tier);
         when(networkInstanceManager.create(any(ClaudiaData.class), any(NetworkInstance.class), anyString()))
                 .thenReturn(net.toNetworkInstance());

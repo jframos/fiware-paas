@@ -468,8 +468,9 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException,
             InfrastructureException {
 
-        if (tierInstance.getId() != null)
+        if (tierInstance.getId() != null) {
             tierInstance = tierInstanceDao.update(tierInstance);
+        }
 
         else {
             tierInstance = create(claudiaData, envName, tierInstance);

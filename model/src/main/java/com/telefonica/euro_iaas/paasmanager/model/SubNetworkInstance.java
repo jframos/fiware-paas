@@ -72,6 +72,10 @@ public class SubNetworkInstance {
         this.name = name;
         this.cidr = "10.100." + id + ".0/24";
     }
+    
+    public void setId (Long id) {
+        this.id = id;
+    }
 
     /**
      * @return the cidr
@@ -123,7 +127,7 @@ public class SubNetworkInstance {
     public void setIdSubNet(String id) {
         this.idSubNet = id;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -150,6 +154,7 @@ public class SubNetworkInstance {
         return true;
     }
 
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;

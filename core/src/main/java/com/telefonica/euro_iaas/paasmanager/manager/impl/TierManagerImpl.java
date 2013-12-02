@@ -325,6 +325,18 @@ public class TierManagerImpl implements TierManager {
             throw new EntityNotFoundException(Tier.class, message, e.getMessage());
         }
     }
+    
+    public Tier loadTierWithNetworks(String tierName, String vdc, String environmentName)
+        throws EntityNotFoundException {
+        try {
+            return tierDao.loadTierWithNetworks(tierName, vdc, environmentName);
+      
+        } catch (Exception e) {
+           String message = "Tier " + tierName + " not found";
+           throw new EntityNotFoundException(Tier.class, message, e.getMessage());
+        }
+    }
+
 
     private void restore(ClaudiaData claudiaData, Tier tier) throws InvalidEntityException, InfrastructureException {
         if (tier.getSecurityGroup() != null) {

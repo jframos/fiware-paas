@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -66,7 +68,7 @@ public class Tier {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tier_has_networks", joinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "network_ID", nullable = false, updatable = false) })
-    private List<Network> networks;
+    private Set<Network> networks;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private SecurityGroup securityGroup;
@@ -77,7 +79,7 @@ public class Tier {
      * Default Constructor.
      */
     public Tier() {
-        networks = new ArrayList<Network>();
+        networks = new HashSet<Network>();
     }
 
     /**
@@ -85,7 +87,7 @@ public class Tier {
      */
     public Tier(String name) {
         this.name = name;
-        networks = new ArrayList<Network>();
+        networks = new HashSet<Network>();
     }
 
     public Tier(String name, Integer maximumNumberInstances, Integer minimumNumberInstances,
@@ -95,7 +97,7 @@ public class Tier {
         this.minimumNumberInstances = minimumNumberInstances;
         this.initialNumberInstances = initialNumberInstances;
         this.productReleases = productReleases;
-        networks = new ArrayList<Network>();
+        networks = new HashSet<Network>();
     }
 
     /**
@@ -117,7 +119,7 @@ public class Tier {
         this.flavour = flavour;
         this.image = image;
         this.icono = icono;
-        networks = new ArrayList<Network>();
+        networks = new HashSet<Network>();
     }
 
     /**
@@ -151,7 +153,7 @@ public class Tier {
         this.keypair = keypair;
         this.floatingip = floatingip;
         this.payload = payload;
-        networks = new ArrayList<Network>();
+        networks = new HashSet<Network>();
     }
 
     /**
@@ -160,7 +162,7 @@ public class Tier {
      */
     public void addNetwork(Network network) {
         if (this.networks == null) {
-            this.networks = new ArrayList<Network>();
+            this.networks = new HashSet<Network>();
         }
         int count = 0;
         if ((count = containsNetwork(network)) != -1) {
@@ -301,10 +303,7 @@ public class Tier {
     /**
      * @return networks the network list
      */
-    public List<Network> getNetworks() {
-        if (networks == null) {
-            networks = new ArrayList<Network>();
-        }
+    public Set<Network> getNetworks() {
         return this.networks;
     }
 
@@ -378,6 +377,10 @@ public class Tier {
     public void setEnviromentName(String environmentname) {
         this.environmentname = environmentname;
     }
+    
+    public String getEnviromentName() {
+        return this.environmentname;
+    }
 
     /**
      * @param flavour
@@ -439,7 +442,7 @@ public class Tier {
      * @param networks
      *            the network list
      */
-    public void setNetworks(List<Network> networks) {
+    public void setNetworks(Set<Network> networks) {
         this.networks = networks;
     }
 
@@ -540,9 +543,6 @@ public class Tier {
      *            the network list
      */
     public void updateNetwork(Network network) {
-        if (this.networks == null) {
-            this.networks = new ArrayList<Network>();
-        }
         for (Network net : this.networks) {
             if (net.getNetworkName().equals(network.getNetworkName())) {
                 networks.remove(net);

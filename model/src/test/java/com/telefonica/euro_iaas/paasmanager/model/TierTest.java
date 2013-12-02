@@ -62,7 +62,9 @@ public class TierTest extends TestCase {
         Network net = new Network("net");
         tier.addNetwork(net);
 
-        assertEquals(tier.getNetworks().get(0).getNetworkName(), "net");
+        for (Network netOut: tier.getNetworks()) {
+            assertEquals(netOut.getNetworkName(), "net");
+        }
 
     }
     

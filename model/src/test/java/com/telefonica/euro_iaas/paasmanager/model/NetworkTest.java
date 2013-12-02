@@ -36,7 +36,7 @@ public class NetworkTest extends TestCase {
     public static String CIDR_ID ="1";
     public static String CIDR2 ="10.100.2.0/24";
     public static String CIDR2_ID ="2";
-    public static String ID ="id";
+    public static String ID ="8";
 
 
 
@@ -371,15 +371,19 @@ public class NetworkTest extends TestCase {
 
         NetworkInstance network = new NetworkInstance(NETWORK_NAME);
         SubNetworkInstance subnet = new SubNetworkInstance(SUBNETWORK_NAME, CIDR_ID);
+        subnet.setId(new Long(ID));
         network.addSubNet(subnet);
+        SubNetworkInstance subnet2 = new SubNetworkInstance(SUBNETWORK_NAME, CIDR_ID);
+        subnet2.setId(new Long(ID));
+        subnet2.setIdNetwork(ID);
         
-        SubNetworkInstance subnet2 = new SubNetworkInstance(SUBNETWORK_NAME, CIDR2_ID);
         network.updateSubNet(subnet2);
         
         assertEquals(network.getSubNets().size(), 1);
         for (SubNetworkInstance subNet: network.getSubNets()) {
             assertEquals(subNet.getName(), SUBNETWORK_NAME);
-            assertEquals(subNet.getCidr(), CIDR2);
+            assertEquals(subNet.getCidr(), CIDR);
+            assertEquals(subNet.getIdNetwork(), ID);
         }
     }
     

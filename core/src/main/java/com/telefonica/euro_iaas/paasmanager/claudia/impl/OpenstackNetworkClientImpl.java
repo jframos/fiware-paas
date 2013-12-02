@@ -113,6 +113,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      */
 
     public NetworkInstance deployDefaultNetwork(ClaudiaData claudiaData,String region) throws InfrastructureException {
+       
         log.info("Deploy default network  for user " + claudiaData.getUser().getTenantName());
         String payload =  "{" + " \"network\":{" + "    \"name\": \"net_" + claudiaData.getUser().getTenantName() + "\"," + 
         "    \"admin_state_up\": true,"
@@ -151,13 +152,14 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
 
     public void deployNetwork(ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
             throws InfrastructureException {
+        String token = claudiaData.getUser().getToken();
+        String vdc = claudiaData.getVdc();
         log.info("Deploy network " + networkInstance.getNetworkName() + " for user "
-                + claudiaData.getUser().getTenantName());
+                + claudiaData.getUser().getTenantName() + " with token " +  token + " and vdc " + vdc);
         log.debug("Payload " + networkInstance.toJson());
         String response;
         try {
-            String token = claudiaData.getUser().getToken();
-            String vdc = claudiaData.getVdc();
+            
             response = openStackUtil.createNetwork(networkInstance.toJson(), region, token, vdc);
 
             log.debug(response);
@@ -305,10 +307,13 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @params claudiaData
      */
     public List<NetworkInstance> loadAllNetwork(ClaudiaData claudiaData, String region) throws InfrastructureException {
+        String token = claudiaData.getUser().getToken();
+        String vdc = claudiaData.getVdc();
+        log.info("GEt network  for user "
+                + claudiaData.getUser().getTenantName() + " with token " +  token + " and vdc " + vdc);
         List<NetworkInstance> networks = new ArrayList<NetworkInstance>();
         try {
-            String token = claudiaData.getUser().getToken();
-            String vdc = claudiaData.getVdc();
+           
             String response = openStackUtil.listNetworks(region, token, vdc);
             JSONObject lNetworkString = new JSONObject(response);
             JSONArray jsonNetworks = lNetworkString.getJSONArray("networks");
