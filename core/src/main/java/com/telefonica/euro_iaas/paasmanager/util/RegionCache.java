@@ -7,9 +7,12 @@
 
 package com.telefonica.euro_iaas.paasmanager.util;
 
+import java.io.InputStream;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.config.CacheConfiguration;
 
 public class RegionCache {
 
@@ -19,8 +22,21 @@ public class RegionCache {
 
     public RegionCache() {
 
-        CacheManager singletonManager = CacheManager.create();
-        singletonManager.addCacheIfAbsent(CACHE_NAME);
+        CacheManager singletonManager;
+        try {
+            InputStream inputStream = this.getClass().getResourceAsStream("/ehcache.xml");
+            singletonManager = CacheManager.newInstance(inputStream);
+        } catch (Exception e) {
+            singletonManager = CacheManager.create();
+            singletonManager.addCache(CACHE_NAME);
+            cache.getCacheConfiguration();
+            cache = singletonManager.getCache(CACHE_NAME);
+            CacheConfiguration cacheConfiguration = cache.getCacheConfiguration();
+            cacheConfiguration.setTimeToIdleSeconds(300);
+            cacheConfiguration.setTimeToLiveSeconds(300);
+            e.printStackTrace();
+
+        }
         cache = singletonManager.getCache(CACHE_NAME);
 
     }
