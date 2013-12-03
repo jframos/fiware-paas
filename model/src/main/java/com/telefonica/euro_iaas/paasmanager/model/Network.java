@@ -45,18 +45,10 @@ public class Network {
     @XmlTransient
     private Long id;
 
-    // the network name //
     private String name;
-
- //   private String idNetwork;
-
-//    private int subNetCount;
 
     @OneToMany
     private Set<SubNetwork> subNets;
-
-  //  @OneToMany
-   // private List<Router> routers;
 
     /**
      * Constructor.
@@ -70,7 +62,7 @@ public class Network {
      */
     public Network(String name) {
         this.name = name;
-        subNets = new HashSet<SubNetwork>();       
+        subNets = new HashSet<SubNetwork>();
     }
 
 
@@ -91,13 +83,13 @@ public class Network {
      * It does a copy of the collection.
      * @return
      */
-    public Set<SubNetwork> cloneSubNets () {
-    	 Set<SubNetwork> subNetAux = new HashSet<SubNetwork> ();
-         for (SubNetwork subNet2: getSubNets()) {
+    public Set<SubNetwork> cloneSubNets(){
+        Set<SubNetwork> subNetAux = new HashSet<SubNetwork> ();
+        for (SubNetwork subNet2: getSubNets()) {
          	subNetAux.add(subNet2);
-         }
-         return subNetAux;
-    }
+        }
+        return subNetAux;
+   }
     
     /**
      * It deletes a subnet to the network.
@@ -140,6 +132,11 @@ public class Network {
     public String getNetworkName() {
         return name;
     }
+    
+
+    public void setNetworkName(String name) {
+        this.name=name;
+    }
 
 
     /**
@@ -179,14 +176,46 @@ public class Network {
     * 
     * @return
     */
-   public NetworkInstance toNetworkInstance() {
-       NetworkInstance networkInstance = new NetworkInstance(this.name);
-       for (SubNetwork subnet: this.getSubNets()) {
-           SubNetworkInstance subNetInstance = subnet.toInstance();
-           networkInstance.addSubNet(subNetInstance);
-       }
-       return networkInstance;
-   }
+    public NetworkInstance toNetworkInstance() {
+        NetworkInstance networkInstance = new NetworkInstance(this.name);
+        for (SubNetwork subnet: this.getSubNets()) {
+            SubNetworkInstance subNetInstance = subnet.toInstance();
+            networkInstance.addSubNet(subNetInstance);
+        }
+        return networkInstance;
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Network other = (Network) obj;
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
+            return false;
+        }
+        if (!name.equals(other.name)) {
+            return false;
+        }
+
+        return true;
+    }
+    @Override
+   public int hashCode() {
+       final int prime = 31;
+       int result = 1;
+       result = prime * result + ((id == null) ? 0 : id.hashCode());
+       return result;
+   }
 
 }

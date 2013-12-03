@@ -111,16 +111,57 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @params claudiaData
      * @params network
      */
+
+    public NetworkInstance deployDefaultNetwork(ClaudiaData claudiaData,String region) throws InfrastructureException {
+       
+        log.info("Deploy default network  for user " + claudiaData.getUser().getTenantName());
+        String payload =  "{" + " \"network\":{" + "    \"name\": \"net_" + claudiaData.getUser().getTenantName() + "\"," + 
+        "    \"admin_state_up\": true,"
+        + "    \"shared\": false" + "  }" + "}";
+        log.debug("Payload " + payload);
+        NetworkInstance networkInstance = null;
+        String response;
+        String token = claudiaData.getUser().getToken();
+        String vdc = claudiaData.getVdc();
+
+        try {
+            response = openStackUtil.createNetwork(payload, region, token, vdc);
+            log.debug(response);
+            // "network-" + claudiaData.getUser().getTenantName()
+            JSONObject jsonNetworks = new JSONObject(response).getJSONObject("network");
+            networkInstance = fromJsonToNetworkInstance (jsonNetworks);
+            log.debug("Network id " + networkInstance.getIdNetwork() + " for network name " + networkInstance.getNetworkName());
+        } catch (OpenStackException e) {
+            String msm = "Error to deploy the defaul network " + e.getMessage();
+            log.error(msm);
+            throw new InfrastructureException(msm, e);
+        } catch (JSONException e) {
+            String msm = "Error to obtain the id of the network:" + e.getMessage();
+            log.error(msm);
+            throw new InfrastructureException(msm, e);
+        }
+        return networkInstance;
+    }
+    
+    /**
+     * The deploy the network in Openstack.
+     * 
+     * @params claudiaData
+     * @params network
+     */
+
     public void deployNetwork(ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
             throws InfrastructureException {
+        String token = claudiaData.getUser().getToken();
+        String vdc = claudiaData.getVdc();
         log.info("Deploy network " + networkInstance.getNetworkName() + " for user "
-                + claudiaData.getUser().getTenantName());
+                + claudiaData.getUser().getTenantName() + " with token " +  token + " and vdc " + vdc);
         log.debug("Payload " + networkInstance.toJson());
         String response;
         try {
-            String token = claudiaData.getUser().getToken();
-            String vdc = claudiaData.getVdc();
-            response = openStackUtil.createNetwork(networkInstance, region, token, vdc);
+            
+            response = openStackUtil.createNetwork(networkInstance.toJson(), region, token, vdc);
+
             log.debug(response);
             // "network-" + claudiaData.getUser().getTenantName()
             JSONObject networkString = new JSONObject(response);
@@ -266,20 +307,23 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @params claudiaData
      */
     public List<NetworkInstance> loadAllNetwork(ClaudiaData claudiaData, String region) throws InfrastructureException {
+        String token = claudiaData.getUser().getToken();
+        String vdc = claudiaData.getVdc();
+        log.info("GEt network  for user "
+                + claudiaData.getUser().getTenantName() + " with token " +  token + " and vdc " + vdc);
         List<NetworkInstance> networks = new ArrayList<NetworkInstance>();
         try {
-            String token = claudiaData.getUser().getToken();
-            String vdc = claudiaData.getVdc();
+           
             String response = openStackUtil.listNetworks(region, token, vdc);
             JSONObject lNetworkString = new JSONObject(response);
             JSONArray jsonNetworks = lNetworkString.getJSONArray("networks");
+            
+            for (int i = 0; i< jsonNetworks.length(); i++) {
+            	
+            	JSONObject jsonNet = jsonNetworks.getJSONObject(i);
+            	NetworkInstance netInst = fromJsonToNetworkInstance (jsonNet);
+            	networks.add(netInst);
 
-            for (int i = 0; i < jsonNetworks.length(); i++) {
-
-                JSONObject jsonNet = jsonNetworks.getJSONObject(i);
-                String name = (String) jsonNet.get("name");
-                NetworkInstance netInst = new NetworkInstance(name);
-                networks.add(netInst);
             }
 
         } catch (OpenStackException e) {
@@ -292,6 +336,22 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             throw new InfrastructureException(msm, e);
         }
         return networks;
+    }
+    
+    private NetworkInstance fromJsonToNetworkInstance(JSONObject jsonNet) throws JSONException {
+
+        String name = (String) jsonNet.get("name");
+        boolean shared = (Boolean) jsonNet.get("shared");
+        String id = (String) jsonNet.get("id");
+        boolean adminStateUp = (Boolean) jsonNet.get("admin_state_up");
+        String tenantId = (String) jsonNet.get("tenant_id");
+
+        NetworkInstance netInst = new NetworkInstance(name);
+        netInst.setIdNetwork(id);
+        netInst.setShared(shared);
+        netInst.setTenantId(tenantId);
+        netInst.setAdminStateUp(adminStateUp);
+        return netInst;
     }
 
     /**
@@ -362,5 +422,23 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             throw new InfrastructureException(msm, e);
         }
     }
+
+
+	/**
+	 * It obtains the not shared networks.
+	 * @throws InfrastructureException 
+	 * 
+	 */
+    public List<NetworkInstance> loadNotSharedNetworks(ClaudiaData claudiaData, String region) throws InfrastructureException {
+        List<NetworkInstance> networksNotShared = new ArrayList<NetworkInstance> ();
+        List<NetworkInstance> networks = this.loadAllNetwork(claudiaData, region);
+        for (NetworkInstance net: networks) {
+            if (!net.getShared()) {
+                networksNotShared.add(net);
+            }
+        }
+        return networksNotShared;
+    }
+
 
 }

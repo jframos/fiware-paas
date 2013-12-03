@@ -12,7 +12,7 @@ import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider
 
 import java.text.MessageFormat;
 import java.util.Date;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.scheduling.annotation.Async;
@@ -183,7 +183,7 @@ public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceA
         task.setStatus(TaskStates.ERROR);
         task.setError(error);
         taskManager.updateTask(task);
-        LOGGER.info("An error occurs while executing an environment action. See task " + task.getHref()
+        LOGGER.error("An error occurs while executing an environment action. See task " + task.getHref()
                 + " for more information " + t.getMessage());
     }
 

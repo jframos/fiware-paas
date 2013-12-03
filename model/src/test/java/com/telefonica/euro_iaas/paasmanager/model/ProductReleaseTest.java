@@ -20,7 +20,8 @@ import static org.junit.Assert.assertEquals;
 public class ProductReleaseTest {
 
     private ProductRelease productRelease;
-    private JSONObject productReleaseJson, productReleaseJsonNoAttributes, productReleaseJsonOneAttribute;
+    private JSONObject productReleaseJson, productReleaseJsonNoAttributes, productReleaseJsonOneAttributeAndMetadatas, 
+        productReleaseJsonOneAttribute;
     private JSONObject productReleaseJsonNoReleaseNotesNoSSOO;
 
     @Before
@@ -69,12 +70,40 @@ public class ProductReleaseTest {
                 + "\"description\":\"Centos 2.9\"," + "\"name\":\"Centos\"," + "\"osType\":\"76\",\"version\":\"2.9\""
                 + "}" + "]" + "}";
 
+        String productReleaseStringOneAttributeAndMetadatas = "{"
+                        + "\"releaseNotes\":\"mysql 1.2.4\","
+                        + "\"version\":\"1.2.4\","
+                        + "\"product\":"
+                        + "{"
+                        + "\"name\":\"mysql\","
+                        + "\"description\":\"mysql\","
+                        + "\"attributes\":"
+                        +
+                        // "[" +
+                        "{\"key\":\"port\",\"value\":\"8080\",\"description\":\"The listen port\"}"
+                        +
+                        // "]" +
+                        "," 
+                        + "\"metadatas\":" + "["
+                        + "{\"key\":\"port\",\"value\":\"8080\",\"description\":\"The listen port\"},"
+                        + "{\"key\":\"ssl_port\",\"value\":\"8443\",\"description\":\"The ssl listen port\"},"
+                        + "{\"key\":\"ssl_port\",\"value\":\"8443\",\"description\":\"The ssl listen port\"},"
+                        + "{\"key\":\"id_web_server\",\"value\":\"default\",\"description\":\"The id web server\"},"
+                        + "{\"key\":\"sdcgroupid\",\"value\":\"id_web_server\",\"description\":\"sdcgroupid\"}" + "]" + "},"
+                        
+                        + "\"supportedOOSS\":" + "[" + "{" + "\"description\":\"Ubuntu 10.04\"," + "\"name\":\"Ubuntu\","
+                        + "\"osType\":\"94\"," + "\"version\":\"10.04\"" + "}," + "{" + "\"description\":\"Debian 5\","
+                        + "\"name\":\"Debian\"," + "\"osType\":\"95\"," + "\"version\":\"5\"" + "}," + "{"
+                        + "\"description\":\"Centos 2.9\"," + "\"name\":\"Centos\"," + "\"osType\":\"76\",\"version\":\"2.9\""
+                        + "}" + "]" + "}";
+                        
         String productReleaseNoReleaseNotesNoSSOO = "{" + "\"version\":\"1.0\"," + "\"product\":" + "{"
                 + "\"name\":\"henar10\"," + "\"attributes\":{\"key\":\"ssl_port5\",\"value\":\"8443\"}" + "}" + "}";
 
         productReleaseJson = JSONObject.fromObject(productReleaseString);
         productReleaseJsonNoAttributes = JSONObject.fromObject(productReleaseStringNoAttributes);
         productReleaseJsonOneAttribute = JSONObject.fromObject(productReleaseStringOneAttribute);
+        productReleaseJsonOneAttributeAndMetadatas = JSONObject.fromObject(productReleaseStringOneAttributeAndMetadatas);
         productReleaseJsonNoReleaseNotesNoSSOO = JSONObject.fromObject(productReleaseNoReleaseNotesNoSSOO);
     }
 
@@ -105,6 +134,15 @@ public class ProductReleaseTest {
         assertEquals(productRelease.getName(), "mysql-1.2.4");
     }
 
+    @Test
+    public void testOneAttributeAndMetadatasFromJson() throws Exception {
+        productRelease.fromSdcJson(productReleaseJsonOneAttributeAndMetadatas);
+        assertEquals(productRelease.getDescription(), "mysql 1.2.4");
+        assertEquals(productRelease.getVersion(), "1.2.4");
+        assertEquals(productRelease.getProduct(), "mysql");
+        assertEquals(productRelease.getName(), "mysql-1.2.4");
+    }
+    
     @Test
     public void testFromJsonNoReleaseNotesNoSSOO() throws Exception {
         productRelease.fromSdcJson(productReleaseJsonNoReleaseNotesNoSSOO);

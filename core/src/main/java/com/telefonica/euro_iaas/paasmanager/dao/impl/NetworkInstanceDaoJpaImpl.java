@@ -42,22 +42,17 @@ public class NetworkInstanceDaoJpaImpl extends AbstractBaseDao<NetworkInstance, 
      *            of the network instance
      */
     public NetworkInstance load(String name) throws EntityNotFoundException {
-
-        try {
-            return findByNetworkInstanceName(name);
-        } catch (Exception e) {
-            return super.loadByField(NetworkInstance.class, "name", name);
-        }
+       return findByNetworkInstanceName(name);
 
     }
 
-    /*
+    /**
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang .String)
      */
     private NetworkInstance findByNetworkInstanceName(String name) throws EntityNotFoundException {
         Query query = getEntityManager().createQuery(
-                "select p from NetworkInstance p join " + "fetch p.subNets where p.name = :name");
+                "select p from NetworkInstance p left join " + "fetch p.subNets where p.name = :name");
         query.setParameter("name", name);
         NetworkInstance networkInstance = null;
         try {

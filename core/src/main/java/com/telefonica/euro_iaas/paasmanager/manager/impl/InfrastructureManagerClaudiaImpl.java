@@ -202,10 +202,12 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                         + ".services." + claudiaData.getService() + ".vees." + tier.getName() + ".replicas."
                         + numReplica;
                 String hostname = (claudiaData.getService() + "-" + tier.getName() + "-" + numReplica).toLowerCase();
+                log.debug("fqn " + fqn + " hostname " + hostname);
                 vm.setFqn(fqn);
                 vm.setHostname(hostname);
                 tierInstance.setVM(vm);
 
+                log.debug("Deploy networks if required");
                 this.deployNetworks(claudiaData, tierInstance);
                 log.debug("Number of networks " + tierInstance.getNetworkInstances().size() + " floatin ip "
                         + tierInstance.getTier().getFloatingip());
@@ -236,11 +238,14 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                     } else {
                         deployVM(claudiaData, tierInstance, numReplica, ovfSingleVM.get(numberTier), vm);
                     }
-                } catch (InfrastructureException e) {
+                    tierInstanceManager.update(claudiaData, environmentInstance.getEnvironment().getName(),
+                            tierInstance);
+                } catch (Exception e) {
                     log.error("Error deploying a VM: " + e.getMessage());
                     environmentInstance.setStatus(Status.ERROR);
                     throw new InfrastructureException(e);
                 }
+                
                 if (!systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                     try {
                         vAppReplica = claudiaClient.browseVMReplica(claudiaData, tier.getName(), numReplica, vm,
@@ -275,6 +280,8 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 } catch (InvalidEntityException e) {
                     throw new InfrastructureException(e);
                 } catch (AlreadyExistsEntityException e) {
+                    throw new InfrastructureException(e);
+                } catch (Exception e) {
                     throw new InfrastructureException(e);
                 }
 
@@ -583,15 +590,16 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
     public void deployNetworks(ClaudiaData data, TierInstance tierInstance) throws InvalidEntityException,
             InfrastructureException, EntityNotFoundException {
+        Tier tier = tierInstance.getTier();
+        tier = tierManager.loadTierWithNetworks(tier.getName(), data.getVdc(), tier.getEnviromentName());
         // Creating networks...
         log.debug("Deploying network for tier instance " + tierInstance.getName() + " "
-                + tierInstance.getTier().getNetworks());
+                + tier.getNetworks());
         List<Network> networkToBeDeployed = new ArrayList<Network>();
-        for (Network network : tierInstance.getTier().getNetworks()) {
+        for (Network network : tier.getNetworks()) {
             log.debug("Network to be added " + network.getNetworkName());
             if (network.getNetworkName().equals("Internet")) {
-                Tier tier = tierInstance.getTier();
-                tier = tierManager.load(tier.getName(), data.getVdc(), data.getService());
+              
                 tier.setFloatingip("true");
                 tier = tierManager.update(tier);
                 tierInstance.update(tier);

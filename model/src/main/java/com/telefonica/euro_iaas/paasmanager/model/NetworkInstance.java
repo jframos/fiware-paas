@@ -53,6 +53,13 @@ public class NetworkInstance {
     private String name;
 
     private String idNetwork;
+    
+    private boolean shared;
+    
+    private boolean adminStateUp = false;
+    private boolean netDefault = false;
+    private String tenantId;
+
 
     private int subNetCount;
 
@@ -129,36 +136,28 @@ public class NetworkInstance {
      * @return
      */
     public void updateSubNet(SubNetworkInstance subNet) {
-        if (contains(subNet.getName())) {
-            removes(subNet); 
-        }
+        removes(subNet);
         subNets.add(subNet);
     }
+
+    public void removes(SubNetworkInstance subNetwork) {
+        if (subNets.contains(subNetwork)){
+            subNets.remove(subNetwork);
+        }
+    }
     
-    public boolean contains(String subNetName) {
-        for (SubNetworkInstance subNet: subNets) {
-        	return subNet.getName().equals(subNetName);
+
+    
+    public boolean contains (SubNetworkInstance subNet) {
+        System.out.println (subNet.hashCode());
+        for (SubNetworkInstance subNetInst: subNets) {
+            System.out.println (subNetInst.hashCode());
+            if (subNetInst.equals(subNet)) {
+                return true;
+            }
         }
         return false;
-    }
-    
-    public void removes(SubNetworkInstance subNetwork) {
-    	SubNetworkInstance subNetw =null;
-        for (SubNetworkInstance subNet: subNets) {
-        	if (subNet.getName().equals(subNetwork.getName())) {
-        		subNetw = subNet;
-        	}
-        }
-        subNets.remove(subNetw);
-    }
-    
-    /**
-     *
-     * @param subNet
-     * @return
-     */
-    public boolean contains(SubNetworkInstance subNet) {
-        return subNets.contains(subNet);
+        
     }
 
     /**
@@ -184,6 +183,45 @@ public class NetworkInstance {
      */
     public String getNetworkName() {
         return name;
+    }
+    
+    /**
+     * @return the shared
+     */
+    public boolean getShared() {
+        return shared;
+    }
+    
+
+    /**
+     * 
+     * @param shared
+     */
+    public void setShared(boolean shared) {
+        this.shared = shared;
+    }
+    
+    /**
+     * @return the netDefault
+     */
+    public boolean isDefaultNet() {
+        return this.netDefault;
+    }
+    
+
+    /**
+     * 
+     * @param shared
+     */
+    public void setDefaultNet(boolean netDefault) {
+        this.netDefault = netDefault;
+    }
+    
+    /**
+     * @return the shared
+     */
+    public boolean getAdminStateUp() {
+        return adminStateUp;
     }
 
     /**
@@ -246,6 +284,55 @@ public class NetworkInstance {
 		this.subNets = subNets2;
 		
 	}
+
+    public void setAdminStateUp(boolean adminStateUp) {
+        this.adminStateUp = adminStateUp;
+        
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId=tenantId; 
+    }
+    
+    public String getTenantId() {
+        return tenantId;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        NetworkInstance other = (NetworkInstance) obj;
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
+            return false;
+        }
+        if (!name.equals(other.name)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+
 
 
 }

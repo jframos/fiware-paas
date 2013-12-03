@@ -7,10 +7,14 @@
 
 package com.telefonica.euro_iaas.paasmanager.dao;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +23,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 
@@ -35,10 +40,13 @@ public class TierDaoJpaImplTest {
     @Autowired
     private ProductReleaseDao productReleaseDao;
     @Autowired
+    private NetworkDao networkDao;
+    @Autowired
     private TierDao tierDao;
 
     public final static String TIER_NAME = "TierName";
     public final static String PRODUCT_NAME = "Product";
+    public final static String NETWORK_NAME = "NETWORK";
     public final static String VDC = "vdc";
     public final static String ENV = "env";
     public final static String PRODUCT_VERSION = "version";
@@ -76,16 +84,17 @@ public class TierDaoJpaImplTest {
         prodRelease = productReleaseDao.create(prodRelease);
         productReleases.add(prodRelease);
 
-        Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, productReleases);
+        Tier tier = new Tier(TIER_NAME+2, MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, productReleases);
         tier.setVdc(VDC);
         tier.setEnviromentName(ENV);
 
         tier = tierDao.create(tier);
 
-        /*
-         * tier = tierDao.load(TIER_NAME, "vdc", "environmentName"); assertNotNull(tier); assertNotNull(tier.getName(),
-         * TIER_NAME); assertNotNull(tier.getVdc(), VDC);
-         */
+        tier = tierDao.load(TIER_NAME+2, VDC, ENV); 
+        assertNotNull(tier); 
+        assertNotNull(tier.getName(), TIER_NAME+2); 
+        assertNotNull(tier.getVdc(), VDC);
+        
 
     }
 
@@ -112,11 +121,6 @@ public class TierDaoJpaImplTest {
         assertNotNull(tier.getName(), TIER_NAME);
         assertNotNull(tier.getFloatingip(), "true");
 
-        /*
-         * tier = tierDao.load(TIER_NAME, "vdc", "environmentName"); assertNotNull(tier); assertNotNull(tier.getName(),
-         * TIER_NAME); assertNotNull(tier.getVdc(), VDC);
-         */
-
     }
 
     /**
@@ -139,6 +143,34 @@ public class TierDaoJpaImplTest {
 
         tier = tierDao.load(TIER_NAME, "vdc", "environmentName");
 
+    }
+    
+    /**
+     * Test the loas tier with networks
+     */
+    @Test
+    public void testLoadTierWithNetworks() throws Exception {
+
+        List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
+        ProductRelease prodRelease = new ProductRelease(PRODUCT_NAME, PRODUCT_VERSION);
+        prodRelease = productReleaseDao.create(prodRelease);
+        productReleases.add(prodRelease);
+        
+        Set<Network> networks = new HashSet<Network>();
+        Network network = new Network(NETWORK_NAME);
+        network = networkDao.create(network);
+        networks.add(network);
+
+        Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, productReleases);
+        tier.setVdc(VDC);
+        tier.setNetworks(networks);
+        tier.setEnviromentName(ENV);
+
+        tier = tierDao.create(tier);
+        Tier tier2 = tierDao.loadTierWithNetworks(TIER_NAME, VDC, ENV);
+        assertNotNull(tier2);
+        assertEquals(tier2.getName(), TIER_NAME);
+        assertEquals(tier2.getNetworks().size(), 1);
     }
 
     public void setProductReleaseDao(ProductReleaseDao productReleaseDao) {

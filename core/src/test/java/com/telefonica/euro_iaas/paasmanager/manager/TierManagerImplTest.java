@@ -27,6 +27,7 @@ import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.TierManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
@@ -44,12 +45,18 @@ public class TierManagerImplTest extends TestCase {
     private ProductReleaseManager productReleaseManager;
     private SecurityGroupManager securityGroupManager;
     private ProductRelease productRelease;
+    private NetworkManager networkManager;
     private SystemPropertiesProvider systemPropertiesProvider;
     private Tier tier;
 
     private List<ProductRelease> productReleases;
 
     private ClaudiaData data;
+    
+    public static String NETWORK_NAME="NETWORK_NAME";
+    public static String TIER_NAME="TIER_NAME";
+    public static String VDC="VDC";
+    public static String ENV="ENV";
 
     @Override
     @Before
@@ -59,11 +66,13 @@ public class TierManagerImplTest extends TestCase {
         tierDao = mock(TierDao.class);
         productReleaseManager = mock(ProductReleaseManager.class);
         securityGroupManager = mock(SecurityGroupManager.class);
+        networkManager = mock (NetworkManager.class);
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         tierManager.setProductReleaseManager(productReleaseManager);
         tierManager.setSecurityGroupManager(securityGroupManager);
         tierManager.setSystemPropertiesProvider(systemPropertiesProvider);
         tierManager.setTierDao(tierDao);
+        tierManager.setNetworkManager(networkManager);
 
         productRelease = new ProductRelease("product", "2.0");
 
@@ -268,6 +277,67 @@ public class TierManagerImplTest extends TestCase {
         Tier tier2 = tierManager.create(data, "env", tier3);
         assertEquals(tier2.getName(), tier.getName());
         assertEquals(tier2.getKeypair(), tier.getKeypair());
+
+    }
+    
+    @Test
+    public void testTierNetwork() throws Exception {
+
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
+                "keypair", "floatingip", "payload");
+        Network net = new Network("NETWORK_NAME");
+        tier.addNetwork(net);
+        tier.setVdc(VDC);
+        tier.setEnviromentName(ENV);
+
+        when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("FIWARE");
+
+        when(tierDao.create(any(Tier.class))).thenReturn(tier);
+        when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
+        when(networkManager.exists(any(String.class))).thenReturn(false);
+        when(networkManager.create(any(ClaudiaData.class),any(Network.class),any(String.class))).thenReturn(net);
+        when(networkManager.load(any(String.class))).thenReturn(net);
+
+
+        Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
+                .load(any(String.class), any(String.class), any(String.class));
+
+        tierManager.create(data, "env", tier);
+
+        Tier tier2 = tierManager.loadTierWithNetworks("name", VDC, ENV);
+        assertEquals(tier2.getName(), tier.getName());
+        assertEquals(tier2.getNetworks().size(), 1);
+        
+
+    }
+    
+    @Test
+    public void testTierAlreadyNetwork() throws Exception {
+
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
+                "keypair", "floatingip", "payload");
+        Network net = new Network("NETWORK_NAME");
+        tier.addNetwork(net);
+        tier.setVdc(VDC);
+        tier.setEnviromentName(ENV);
+
+        when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("FIWARE");
+
+        when(tierDao.create(any(Tier.class))).thenReturn(tier);
+        when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
+        when(networkManager.exists(any(String.class))).thenReturn(true);
+        when(networkManager.load(any(String.class))).thenReturn(net);
+
+
+        Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
+                .load(any(String.class), any(String.class), any(String.class));
+
+        tierManager.create(data, "env", tier);
+
+        Tier tier2 = tierManager.loadTierWithNetworks("name", VDC, ENV);
+        assertEquals(tier2.getName(), tier.getName());
+        assertEquals(tier2.getNetworks().size(), 1);
+        
 
     }
 

@@ -38,15 +38,14 @@ public interface ProductInstanceManager {
      * @param org
      * @param vdc
      * @param product
-     * @param set
+     * @param set 
      * @return
      * @throws ProductInstallatorException
      * @throws InvalidEntityException
      * @throws NotUniqueResultException
      * @throws InvalidEntityException
      */
-    ProductInstance install(TierInstance tierInstance, ClaudiaData claudiaData, String envName, ProductRelease product,
-            Set<Attribute> set) throws ProductInstallatorException, InvalidProductInstanceRequestException,
+    ProductInstance install(TierInstance tierInstance, ClaudiaData claudiaData, String envName, ProductRelease product, Set<Attribute> set) throws ProductInstallatorException, InvalidProductInstanceRequestException,
             NotUniqueResultException, InvalidEntityException;
 
     /**

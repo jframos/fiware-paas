@@ -26,7 +26,7 @@ public class TierTest extends TestCase {
      * @throws Exception
      */
     @Test
-    public void testCreateEnvironment() throws Exception {
+    public void testTier() throws Exception {
 
         Integer minimum = new Integer(1);
         Integer initial = new Integer(2);
@@ -49,6 +49,26 @@ public class TierTest extends TestCase {
         assertEquals(tier3.equals(tier), true);
 
     }
+    
+    @Test
+    public void testTierWithNetwork() throws Exception {
+
+        Integer minimum = new Integer(1);
+        Integer initial = new Integer(2);
+        Integer maximum = new Integer(1);
+
+        Tier tier = new Tier("tier", maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes", null);
+
+        Network net = new Network("net");
+        tier.addNetwork(net);
+
+        for (Network netOut: tier.getNetworks()) {
+            assertEquals(netOut.getNetworkName(), "net");
+        }
+
+    }
+    
+    
     
     @Test
     public void testTierInstance() throws Exception {

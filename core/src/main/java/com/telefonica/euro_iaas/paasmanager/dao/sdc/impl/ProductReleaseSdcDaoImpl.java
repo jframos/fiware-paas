@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -150,11 +151,8 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
     }
     
     private List<ProductRelease> fromSDCToPaasManager(String sdcproductReleases) {
-
-        JSONObject jsonNode = JSONObject.fromObject(sdcproductReleases);
-        List<ProductRelease> paasManagerProductReleases = fromStringToProductReleases(jsonNode);
-
-        return paasManagerProductReleases;
+       List<ProductRelease> paasManagerProductReleases = fromStringToProductReleases(sdcproductReleases);
+       return paasManagerProductReleases;
     }
 
     /**
@@ -163,17 +161,18 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
      * @param jsonProductReleases
      * @return List of ProductReleases
      */
-    private List<ProductRelease> fromStringToProductReleases(JSONObject jsonProductReleases) {
+    public List<ProductRelease> fromStringToProductReleases(String  sdcproductReleases) {
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
-        
-        if (!(jsonProductReleases.isArray())){
-            JSONObject jsonProductRelease = jsonProductReleases.getJSONObject("productRelease");
+        JSONObject json = (JSONObject)JSONSerializer.toJSON( sdcproductReleases ); 
+        Object obj = json.get("productRelease");
+        if (obj instanceof JSONObject) {
+            JSONObject jsonProductRelease = (JSONObject) obj;
             ProductRelease productRelease = new ProductRelease();
             productRelease.fromSdcJson(jsonProductRelease);
             productReleases.add(productRelease);
         } else {
-            JSONArray jsonproductReleasesList = jsonProductReleases.getJSONArray("productRelease");
-
+            JSONArray ja = (JSONArray) obj;
+            JSONArray jsonproductReleasesList = ja;
             for (Object o : jsonproductReleasesList) {
                 ProductRelease productRelease = new ProductRelease();
                 JSONObject jsonProductRelease = (JSONObject) o;
@@ -181,6 +180,7 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
                 productReleases.add(productRelease);
             }
         }
+
         return productReleases;
     }
 

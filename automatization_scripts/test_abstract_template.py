@@ -11,7 +11,7 @@ config = {}
 execfile("sdc.conf", config)
 
 g=EnvironmentRequest(config['keystone_url'], config['paasmanager_url'], config['tenant'], config['user'], config['password'],
-                     config['vdc'],config['sdc_url'])
+                     config['vdc'],config['image'],config['sdc_url'])
 
 
 environment_name = 'enviornmentname6'

@@ -503,7 +503,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         return user2;
     }
 
-    public String createNetwork(NetworkInstance net, String region, String vdc, String token) throws OpenStackException {
+    public String createNetwork(String payload, String region, String token, String vdc) throws OpenStackException {
 
         // throw new UnsupportedOperationException("Not supported yet.");
         // I need to know X-Auth-Token, orgID-Tennat, IP and Port
@@ -511,24 +511,22 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // -H "Content-Type: application/json" -H "Accept: application/xml"
         // -X POST "http://10.95.171.115:9696/v2/networks"
         // -d '{"network" : {"name" : "testNetwork", "admin_state_up": false}}'
-
-        log.debug("Create network isntance " + net.getNetworkName());
         String response = null;
 
         try {
-            String payload = net.toJson();
+
             log.debug("Payload " + payload);
 
             HttpUriRequest request = createQuantumPostRequest(RESOURCE_NETWORKS, payload, APPLICATION_JSON, region,
-                    vdc, token);
+                    token, vdc);
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error creating network " + net.getNetworkName() + ": " + e;
+            String errorMessage = "Error creating network " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error creating network " + net.getNetworkName() + " from OpenStack: " + e;
+            String errorMessage = "Error creating network from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
@@ -543,7 +541,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      *            the target resource
      * @return HttpUriRequest the request
      */
-    private HttpUriRequest createNovaDeleteRequest(String resource, String region, String vdc, String token)
+    private HttpUriRequest createNovaDeleteRequest(String resource, String region, String token, String vdc)
             throws OpenStackException {
         HttpUriRequest request;
 
@@ -692,7 +690,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * @return HttpUriRequest the request
      */
     private HttpPost createQuantumPostRequest(String resource, String payload, String content, String region,
-            String vdc, String token) throws OpenStackException {
+            String token, String vdc) throws OpenStackException {
         log.debug("createQuantumPostRequest " + resource);
         HttpPost request;
 
