@@ -65,6 +65,9 @@
         <!-- hibernate -->
         <hibernate.version>4.1.7.Final</hibernate.version>
 
+        <!-- ehcache -->
+        <ehcache.version>2.7.4</ehcache.version>
+
         <seleniumserver.version>2.19.0</seleniumserver.version>
         <jacoco.agent.version>0.5.4.201111111111</jacoco.agent.version>
         <copyright.year>2012</copyright.year>
