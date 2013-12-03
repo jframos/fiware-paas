@@ -42,16 +42,11 @@ public class NetworkInstanceDaoJpaImpl extends AbstractBaseDao<NetworkInstance, 
      *            of the network instance
      */
     public NetworkInstance load(String name) throws EntityNotFoundException {
-
-       // try {
-            return findByNetworkInstanceName(name);
-        //} catch (Exception e) {
-          //  return super.loadByField(NetworkInstance.class, "name", name);
-        //}
+       return findByNetworkInstanceName(name);
 
     }
 
-    /*
+    /**
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang .String)
      */

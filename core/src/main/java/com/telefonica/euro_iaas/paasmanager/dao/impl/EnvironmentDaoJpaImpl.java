@@ -166,21 +166,6 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
         return environment;
     }
 
-    private Environment findByEnvironmentNameVdcNoTiers(String envName, String vdc) throws EntityNotFoundException {
-        Query query = getEntityManager().createQuery(
-                "select p from Environment p where p.name = :name and p.vdc = :vdc");
-        query.setParameter("name", envName);
-        query.setParameter("vdc", vdc);
-        Environment environment = null;
-        try {
-            environment = (Environment) query.getSingleResult();
-            getEntityManager().flush();
-        } catch (NoResultException e) {
-            throw new EntityNotFoundException(Environment.class, "name", envName);
-        }
-        // return filterEqualTiers(environment);
-        return environment;
-    }
 
     /**
      * Filter the result by tier
@@ -200,30 +185,4 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
         }
         return result;
     }
-
-  /*  private Environment filterEqualTiers(Environment environment) {
-        List<Tier> tierResult = new ArrayList<Tier>();
-=======
-    private Environment filterEqualTiers(Environment environment) {
-        Set<Tier> tierResult = new HashSet<Tier>();
->>>>>>> 288294e1710516d24b8015ce0e9bea5f57958f10
-        Environment result = new Environment();
-        List<String> tierString = new ArrayList<String>();
-        Set<Tier> tiers = environment.getTiers();
-
-        int i = 0;
-        for (Tier tier : tiers) {
-            if (i == 0) {
-                tierResult.add(tier);
-                tierString.add(tier.getName());
-            } else {
-                if (!tierString.contains(tier.getName()))
-                    tierResult.add(tier);
-            }
-            i++;
-        }
-        result.setTiers(tierResult);
-
-        return result;
-    }*/
 }

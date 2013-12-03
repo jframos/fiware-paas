@@ -125,7 +125,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         }
         else {
             log.debug ("Getting the default network ");
-            NetworkInstance defaulNet = getDefaulNetwork (networkNoSharedInstances);
+            NetworkInstance defaulNet = getDefaultNetwork (networkNoSharedInstances);
             if (defaulNet == null) {
                 log.debug ("There is not a default network. Getting the first one");
                 tierInstance.addNetworkInstance(networkInstanceManager.load(networkNoSharedInstances.get(0).getNetworkName()));
@@ -134,7 +134,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         }
     }
     
-    private NetworkInstance getDefaulNetwork (List<NetworkInstance> networkInstances) throws EntityNotFoundException {
+    private NetworkInstance getDefaultNetwork (List<NetworkInstance> networkInstances) throws EntityNotFoundException {
         for (NetworkInstance net: networkInstances) {
             if(net.isDefaultNet()){
                 return networkInstanceManager.load(net.getNetworkName());

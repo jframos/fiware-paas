@@ -29,6 +29,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
+import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
@@ -52,6 +53,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
     private EnvironmentManager environmentManager;
     private InfrastructureManager infrastructureManager;
     private TierInstanceManager tierInstanceManager;
+    private TierManager tierManager;
     private EnvironmentUtils environmentUtils;
     private ProductInstallator productInstallator;
 
@@ -160,7 +162,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
     public boolean installSoftwareInEnvironmentInstance(ClaudiaData claudiaData, EnvironmentInstance environmentInstance)
             throws ProductInstallatorException, InvalidProductInstanceRequestException, NotUniqueResultException,
-            InfrastructureException, InvalidEntityException {
+            InfrastructureException, InvalidEntityException, EntityNotFoundException {
         // TierInstance by TierInstance let's check if we have to install
         // software
         boolean bScalableEnvironment = false;
@@ -176,10 +178,12 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             tierInstance.setStatus(Status.INSTALLING);
             tierInstanceDao.update(tierInstance);
             String newOVF = " ";
-            if ((tierInstance.getTier().getProductReleases() != null)
-                    && (tierInstance.getTier().getProductReleases().size() != 0)) {
+            Tier tier = tierManager.loadTierWithProductReleaseAndMetadata
+                (tierInstance.getTier().getName(), tierInstance.getTier().getEnviromentName(), tierInstance.getTier().getVdc());
+            if ((tier.getProductReleases() != null)
+                    && !(tier.getProductReleases().isEmpty() )) {
 
-                for (ProductRelease productRelease : tierInstance.getTier().getProductReleases()) {
+                for (ProductRelease productRelease : tier.getProductReleases()) {
                     
                     log.info("Install software " + productRelease.getProduct() + " " + productRelease.getVersion());
 
@@ -498,4 +502,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
+    public void setTierManager(TierManager tierManager) {
+        this.tierManager = tierManager;
+    }
 }
