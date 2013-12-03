@@ -180,6 +180,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                     && (tierInstance.getTier().getProductReleases().size() != 0)) {
 
                 for (ProductRelease productRelease : tierInstance.getTier().getProductReleases()) {
+                    
                     log.info("Install software " + productRelease.getProduct() + " " + productRelease.getVersion());
 
                     try {

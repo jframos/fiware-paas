@@ -152,11 +152,14 @@ public class ClaudiaClientOpenStackImplTest {
         NetworkInstance netInst = network.toNetworkInstance();
         netInst.setShared(false);
         netInst.setTenantId(claudiaData.getVdc());
+        netInst.setIdNetwork("ID");
         List<NetworkInstance> networkInstances = new ArrayList<NetworkInstance> ();
         networkInstances.add(netInst);
 
         VM vm = new VM();
+
         when(networkInstanceManager.listNetworks(any(ClaudiaData.class), any(String.class))).thenReturn(networkInstances);
+        when(networkInstanceManager.load(any(String.class))).thenReturn(netInst);
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         
         verify(openStackUtil).createServer(any(String.class), any(String.class), any(String.class), any(String.class));

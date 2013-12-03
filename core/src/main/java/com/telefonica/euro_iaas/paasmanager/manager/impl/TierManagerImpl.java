@@ -425,7 +425,7 @@ public class TierManagerImpl implements TierManager {
                         log.debug("Adding product release " + prod.getProduct() + "-" + prod.getVersion() + " to tier "
                                 + tier.getName());
                         tier.addProductRelease(prod);
-                        update(tier);
+                        tier = update(tier);
                     } catch (Exception e2) {
                         String errorMessage = "The ProductRelease Object " + prod.getProduct() + "-"
                                 + prod.getVersion() + " is " + "NOT present in Database";
