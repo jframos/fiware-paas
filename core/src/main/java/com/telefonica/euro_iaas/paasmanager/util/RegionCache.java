@@ -50,7 +50,7 @@ public class RegionCache {
 
         String key = getKey(region, service);
 
-        if (cache.isElementInMemory(key)) {
+        if (cache.isKeyInCache(key)) {
 
             return (String) cache.get(key).getObjectValue();
         } else {
