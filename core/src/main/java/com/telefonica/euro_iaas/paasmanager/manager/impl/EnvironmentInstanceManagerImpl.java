@@ -28,6 +28,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
+import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -54,6 +55,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
     private InfrastructureManager infrastructureManager;
     private TierInstanceManager tierInstanceManager;
     private TierManager tierManager;
+    private ProductReleaseManager productReleaseManager;
     private EnvironmentUtils environmentUtils;
     private ProductInstallator productInstallator;
 
@@ -184,6 +186,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                     && !(tier.getProductReleases().isEmpty() )) {
 
                 for (ProductRelease productRelease : tier.getProductReleases()) {
+                    productRelease = productReleaseManager.load(productRelease.getName());
                     
                     log.info("Install software " + productRelease.getProduct() + " " + productRelease.getVersion());
 
@@ -504,5 +507,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
     public void setTierManager(TierManager tierManager) {
         this.tierManager = tierManager;
+    }
+    public void setProductReleaseManager (ProductReleaseManager productReleaseManager) {
+        this.productReleaseManager=productReleaseManager;
     }
 }
