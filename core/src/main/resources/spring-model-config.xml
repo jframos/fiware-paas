@@ -106,6 +106,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
               class="com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentInstanceManagerImpl">
             <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
             <property name="tierInstanceDao" ref="tierInstanceDao"/>
+            <property name="tierManager" ref="tierManager"/>
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="productInstanceManager" ref="productInstanceManager"/>
             <property name="environmentManager" ref="environmentManager"/>
@@ -464,7 +465,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         <bean id="claudiaClient" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientOpenStackImpl">
             <property name="openStackUtil" ref="openStackUtil"/>
-            <property name="networkClient" ref="networkClient"/>
+            <property name="networkInstanceManager" ref="networkInstanceManager"/>
         </bean>
 
         <bean id="monitoringClient" lazy-init="true"
