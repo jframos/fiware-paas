@@ -39,6 +39,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
+import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
@@ -59,6 +60,7 @@ public class TestClaudiaServiceandVAppUtils {
     ProductInstance productInstance = null;
     InfrastructureManagerServiceClaudiaImpl manager = null;
     TierManager tierManager;
+    ProductReleaseManager productReleaseManager;
 
     private String getFile(URI file) throws IOException {
         File f = new File(file);
@@ -78,6 +80,7 @@ public class TestClaudiaServiceandVAppUtils {
     public void setUp() {
         manager = new InfrastructureManagerServiceClaudiaImpl();
         tierManager = mock (TierManager.class);
+        productReleaseManager = mock (ProductReleaseManager.class);
 
         VappUtilsImpl vappUtils = new VappUtilsImpl();
         SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
@@ -218,8 +221,10 @@ public class TestClaudiaServiceandVAppUtils {
         TierInstanceDao tierInstanceDao = mock(TierInstanceDao.class);
         environmentInstanceManager.setTierInstanceDao(tierInstanceDao);
         environmentInstanceManager.setTierManager(tierManager);
+        environmentInstanceManager.setProductReleaseManager(productReleaseManager);
         when (tierManager.loadTierWithProductReleaseAndMetadata
                 (any(String.class), any(String.class), any(String.class))).thenReturn(tierInstances.get(0).getTier());
+        when (productReleaseManager.load(any(String.class))).thenReturn(tierInstances.get(0).getTier().getProductReleases().get(0));
 
         boolean bScalableEnvironment = environmentInstanceManager.installSoftwareInEnvironmentInstance(claudiaData,
                     environmentInstance);
@@ -303,7 +308,9 @@ public class TestClaudiaServiceandVAppUtils {
         TierInstanceDao tierInstanceDao = mock(TierInstanceDao.class);
         environmentInstanceManager.setTierInstanceDao(tierInstanceDao);
         environmentInstanceManager.setTierManager(tierManager);
+        environmentInstanceManager.setProductReleaseManager(productReleaseManager);
 
+        when (productReleaseManager.load(any(String.class))).thenReturn(tierInstances.get(0).getTier().getProductReleases().get(0));
         when (tierManager.loadTierWithProductReleaseAndMetadata
                 (any(String.class), any(String.class), any(String.class))).thenReturn(tierInstances.get(0).getTier());
         boolean bScalableEnvironment = environmentInstanceManager.installSoftwareInEnvironmentInstance(claudiaData,

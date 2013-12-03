@@ -93,9 +93,6 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             throw new InfrastructureException(errorMsg);
         }
 
-        String name = claudiaData.getService() + "-" + tierInstance.getTier().getName() + "-" + replica;
-        tierInstance.getTier().setName(
-                claudiaData.getService() + "-" + tierInstance.getTier().getName() + "-" + replica);
         String payload = tierInstance.toJson();
         log.debug("Payload " + payload);
         log.debug("Floating ip " + tierInstance.getTier().getFloatingip());
@@ -206,7 +203,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 
         // openStackUtilImpl = new OpenStackUtilImpl(claudiaData.getUser());
 
-        log.debug("Deploy server " + claudiaData.getService() + " tier " + tierInstance.getName() + " replica "
+        log.debug("Deploy server " + claudiaData.getService() + " tier instance " + tierInstance.getName() + " replica "
                 + replica + " with networks " + tierInstance.getNetworkInstances());
         
         if (tierInstance.getNetworkInstances().isEmpty()) {

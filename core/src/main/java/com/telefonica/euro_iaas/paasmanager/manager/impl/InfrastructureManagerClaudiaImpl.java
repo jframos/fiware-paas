@@ -637,7 +637,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
             InfrastructureException {
 
         log.debug("Inserting in database for tier instance " + tierInstance.getName() + " "
-                + tierInstance.getNetworkInstances().size() + " " + tierInstance.getTier().getFloatingip());
+                + tierInstance.getNetworkInstances().size() + " " + tierInstance.getTier()+ " " + tierInstance.getTier().getFloatingip());
         TierInstance tierInstanceDB = null;
 
         if (tierInstance.getOvf() != null && tierInstance.getOvf().length() > tam_max) {
