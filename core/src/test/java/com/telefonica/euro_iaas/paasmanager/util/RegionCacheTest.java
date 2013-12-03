@@ -33,7 +33,7 @@ public class RegionCacheTest {
     public void shouldReturnNullWithNotExistRegion() {
         // given
         RegionCache regionCache = new RegionCache();
-        regionCache.putUrl("region", "servicee", "http://localhost:8080");
+        regionCache.putUrl("region", "service", "http://localhost:8080");
 
         // when
         String url = regionCache.getUrl("region2", "service2");
@@ -55,6 +55,31 @@ public class RegionCacheTest {
         String url = regionCache.getUrl("region", "service");
         assertNull(url);
 
+    }
+
+    @Test
+    public void shouldReturnValueWithNullServiceAndNullRegion() {
+        // given
+
+        RegionCache regionCache = new RegionCache();
+        regionCache.putUrl(null, null, "value");
+        // when
+        String value = regionCache.getUrl(null, null);
+
+        // then
+        assertEquals("value", value);
+    }
+
+    @Test
+    public void shouldReturnNullUrlAfterPutWithNullValue() {
+        // given
+        RegionCache regionCache = new RegionCache();
+        regionCache.putUrl("region", "service", null);
+        // when
+        String value = regionCache.getUrl("region", "service");
+
+        // then
+        assertNull(value);
     }
 
 }
