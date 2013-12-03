@@ -14,7 +14,7 @@ from productrequest import ProductRequest
 
 class EnvironmentRequest:
 
-    def __init__(self, keystone_url, paas_manager_url,tenant,user,password, vdc, sdc_url=''):
+    def __init__(self, keystone_url, paas_manager_url,tenant,user,password, vdc, image, sdc_url='' ):
 
         self.paasmanager_url=paas_manager_url
         self.sdc_url = sdc_url
@@ -25,6 +25,7 @@ class EnvironmentRequest:
         self.user=user
         self.password=password
         self.tenant = tenant
+        self.image = image
 
         self.token = self.__get__token()
         self.environments = []
@@ -186,7 +187,7 @@ class EnvironmentRequest:
 
     def add_tier_environment(self, environment_name, tier_name, products_information=None):
         url="%s/%s/%s/%s/%s/%s/%s" %(self.paasmanager_url,"catalog/org/FIWARE", "vdc", self.vdc, "environment",environment_name,"tier")
-        tier = Tier (tier_name)
+        tier = Tier (tier_name, self.image)
         if products_information:
             products = self.__process_product (products_information)
             for product in products:
@@ -272,7 +273,7 @@ class EnvironmentRequest:
 
         if isinstance(tiers_string, list):
             for tier_string in tiers_string:
-                tier = Tier (tier_string['name'])
+                tier = Tier (tier_string['name'], self.image)
                 try:
                     products_string = tier_string['productReleaseDtos']
 
@@ -289,7 +290,7 @@ class EnvironmentRequest:
                     pass
                 environment.add_tier(tier)
         else:
-            tier = Tier (tiers_string['name'])
+            tier = Tier (tiers_string['name'], self.image)
 
             try:
                 products_string = tiers_string['productReleaseDtos']
