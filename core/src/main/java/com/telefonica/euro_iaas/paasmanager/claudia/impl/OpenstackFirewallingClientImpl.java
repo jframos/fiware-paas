@@ -226,6 +226,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
      */
     public void destroySecurityGroup(String region, String token, String vdc, SecurityGroup securityGroup)
             throws InfrastructureException {
+        
         log.debug("Destroy security group " + securityGroup.getName());
         String url = getNovaEndPoint(region, token) + vdc + "/os-security-groups/" + securityGroup.getIdSecurityGroup();
         log.debug("actionUri: " + url);

@@ -106,7 +106,6 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
             securityGroupDao.update(securityGroup);
 
             for (Rule rule : rules) {
-
                 ruleManager.destroy(region, token, vdc, rule);
 
             }

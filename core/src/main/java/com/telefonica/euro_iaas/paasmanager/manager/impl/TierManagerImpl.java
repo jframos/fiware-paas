@@ -205,7 +205,7 @@ public class TierManagerImpl implements TierManager {
             log.debug("Deleting security group " + sec.getName() + " in tier " + tier.getName());
             tier.setSecurityGroup(null);
             tierDao.update(tier);
-            securityGroupManager.destroy(tier.getRegion(), tier.getVdc(), claudiaData.getUser().getToken(), sec);
+            securityGroupManager.destroy(tier.getRegion(), claudiaData.getUser().getToken(), tier.getVdc(), sec);
 
         }
 
