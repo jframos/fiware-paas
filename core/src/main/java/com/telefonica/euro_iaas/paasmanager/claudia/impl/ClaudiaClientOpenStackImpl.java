@@ -7,6 +7,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.claudia.impl;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,11 @@ import net.sf.json.JSONArray;
 
 import org.apache.log4j.Logger;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
+import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
 import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaResourceNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaRetrieveInfoException;
 import com.telefonica.euro_iaas.paasmanager.exception.IPNotRetrievedException;
@@ -23,8 +28,14 @@ import com.telefonica.euro_iaas.paasmanager.exception.NetworkNotRetrievedExcepti
 import com.telefonica.euro_iaas.paasmanager.exception.OSNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.exception.VMStatusNotRetrievedException;
+import com.telefonica.euro_iaas.paasmanager.manager.NetworkInstanceManager;
+import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
+import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
@@ -42,6 +53,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     private static Logger log = Logger.getLogger(ClaudiaClientOpenStackImpl.class);
 
     private OpenStackUtil openStackUtil = null;
+    private NetworkInstanceManager networkInstanceManager = null;
     private final int POLLING_INTERVAL = 10000;
 
     public String browseVMReplica(ClaudiaData claudiaData, String tier, int replica, VM vm, String region)
@@ -69,7 +81,8 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
      *      java.lang.String)
      */
     private String buildCreateServerPayload(ClaudiaData claudiaData, TierInstance tierInstance, int replica)
-            throws InfrastructureException {
+    throws InfrastructureException {
+        
 
         if ((tierInstance.getTier().getImage() == null) || (tierInstance.getTier().getFlavour() == null)
                 || (tierInstance.getTier().getKeypair() == null)) {
@@ -88,6 +101,57 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         log.debug("Floating ip " + tierInstance.getTier().getFloatingip());
 
         return payload;
+    }
+    
+    private void addNetworkToTierInstance (ClaudiaData claudiaData, TierInstance tierInstance)
+        throws InfrastructureException, InvalidEntityException, AlreadyExistsEntityException, EntityNotFoundException {
+        String region = tierInstance.getTier().getRegion();
+        List<NetworkInstance> networkInstances = networkInstanceManager.listNetworks(claudiaData, region);
+        if (networkInstances.isEmpty()) {
+            log.debug("It is essex.");
+            return;
+
+        }
+        List<NetworkInstance> networkNoSharedInstances = loadNotSharedNetworksUser(networkInstances, claudiaData.getVdc());
+        if (networkNoSharedInstances.isEmpty()) {
+            log.debug("There is not any network associated to the user");
+            Network net = new Network (claudiaData.getUser().getTenantName() );
+            SubNetwork subNet = new SubNetwork("test",""+networkInstances.size());
+            net.addSubNet(subNet);
+            NetworkInstance netinstance = net.toNetworkInstance();
+            NetworkInstance networkInstance = networkInstanceManager.create(claudiaData, netinstance, region);
+            networkInstance.setDefaultNet(true);
+            tierInstance.addNetworkInstance(networkInstance);
+        }
+        else {
+            log.debug ("Getting the default network ");
+            NetworkInstance defaulNet = getDefaultNetwork (networkNoSharedInstances);
+            if (defaulNet == null) {
+                log.debug ("There is not a default network. Getting the first one");
+                tierInstance.addNetworkInstance(networkInstanceManager.load(networkNoSharedInstances.get(0).getNetworkName()));
+            }
+            
+        }
+    }
+    
+    private NetworkInstance getDefaultNetwork (List<NetworkInstance> networkInstances) throws EntityNotFoundException {
+        for (NetworkInstance net: networkInstances) {
+            if(net.isDefaultNet()){
+                return networkInstanceManager.load(net.getNetworkName());
+            }
+        }
+        return null;
+    }
+    
+    private List<NetworkInstance> loadNotSharedNetworksUser(
+            List<NetworkInstance> networks, String tenantId) throws InfrastructureException {
+        List<NetworkInstance> networksNotShared = new ArrayList<NetworkInstance>();
+        for (NetworkInstance net: networks) {
+            if (!net.getShared() && net.getTenantId().equals(tenantId)) {
+                networksNotShared.add(net);
+            }
+        }
+        return networksNotShared;
     }
 
     /**
@@ -114,9 +178,11 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
                 String errorMessage = "Error obtaining info from Server " + tierInstance.getVM().getVmid();
                 log.error(errorMessage);
 
-                if (e.getMessage().contains("itemNotFound")) {
+                if (e.getMessage().contains("itemNotFound") || e.getMessage().contains("badRequest")) {
                     break;
                 }
+                
+                
                 // throw new InfrastructureException(errorMessage);
             }
         }
@@ -142,6 +208,18 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 
         log.debug("Deploy server " + claudiaData.getService() + " tier " + tierInstance.getName() + " replica "
                 + replica + " with networks " + tierInstance.getNetworkInstances());
+        
+        if (tierInstance.getNetworkInstances().isEmpty()) {
+            try {
+                addNetworkToTierInstance(claudiaData, tierInstance);
+            }
+            catch (Exception e){
+                String errorMsg ="Error to obtain a default network for associating to the VM "+ e.getMessage();
+                log.error(errorMsg);
+              //  throw new InfrastructureException(errorMsg);
+            }
+          
+        }
 
         String payload = buildCreateServerPayload(claudiaData, tierInstance, replica);
 
@@ -157,7 +235,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             }
             vm.setVmid(serverId);
         } catch (OpenStackException e) {
-            String errorMessage = "Error interacting with OpenStack ";
+            String errorMessage = "Error interacting with OpenStack " +e.getMessage();
             log.error(errorMessage);
             throw new InfrastructureException(errorMessage);
 
@@ -283,6 +361,16 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     public void setOpenStackUtil(OpenStackUtil openStackUtil) {
         this.openStackUtil = openStackUtil;
     }
+    
+    /**
+     * @param openStackUtil
+     *            the openStackUtil to set
+     */
+    public void setNetworkInstanceManager(NetworkInstanceManager networkInstanceManager) {
+        this.networkInstanceManager = networkInstanceManager;
+    }
+    
+    
 
     @Override
     public String browseVDC(ClaudiaData claudiaData) throws ClaudiaResourceNotFoundException {

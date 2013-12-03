@@ -133,8 +133,15 @@ public interface OpenStackUtil {
 
     /**
      * Method to create a new network.
+     * @param payload
+     * @param user
+     *            the user
+     * @return the result
+     * @throws OpenStackException
+     *             OpenStackException
      */
-    String createNetwork(NetworkInstance net, String region, String token, String vdc) throws OpenStackException;
+    String createNetwork(String payload, String region, String token, String vdc)
+        throws OpenStackException;
 
     /**
      * Method to create a new router.

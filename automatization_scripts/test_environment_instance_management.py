@@ -21,16 +21,16 @@ if __name__ == "__main__":
 
     cmd_args = []
     cmd_args.append('hola')
-    cmd_args.append('environment87')
-    cmd_args.append('blueprint8')
-    cmd_args.append('tier14')
+    cmd_args.append('environment1416')
+    cmd_args.append('blueprint1416')
+    cmd_args.append('tier16')
     cmd_args.append('nodejs=0.6.15')
 
     config = {}
     execfile("sdc.conf", config)
 
     env_request=EnvironmentRequest(config['keystone_url'], config['paasmanager_url'], config['tenant'], config['user'], config['password'],
-                     config['vdc'],config['sdc_url'])
+                     config['vdc'],config['image'], config['sdc_url'] )
 
 
     instance_request = EnvironmentInstanceRequest (config['keystone_url'], config['paasmanager_url'], config['tenant'], config['user'], config['password'],

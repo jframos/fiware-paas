@@ -42,8 +42,18 @@ public interface TierManager {
      * @throws EntityNotFoundException
      *             if the product instance does not exists
      */
-    // Tier load(String name) throws EntityNotFoundException;
+
     Tier load(String name, String vdc, String environmentNamae) throws EntityNotFoundException;
+    
+    /**
+     * 
+     * @param name
+     * @param vdc
+     * @param environmentNamae
+     * @return
+     * @throws EntityNotFoundException
+     */
+    Tier loadTierWithNetworks(String name, String vdc, String environmentNamae) throws EntityNotFoundException;
 
     /**
      * Find de Tier with ProductRelease and metadata info.

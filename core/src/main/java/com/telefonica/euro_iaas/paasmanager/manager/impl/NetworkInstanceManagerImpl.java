@@ -116,8 +116,9 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
 
             log.debug("SubNetwork " + subNet.getName() + " id net " + subNet.getIdNetwork());
             subNet.setIdNetwork(networkInstance.getIdNetwork());
-            subNet = subNetworkInstanceManager.create(claudiaData, subNet, region);
             networkInstance.updateSubNet(subNet);
+            subNet = subNetworkInstanceManager.create(claudiaData, subNet, region);
+            
             log.debug("SubNetwork " + subNet.getName() + " id net " + subNet.getIdNetwork() + " in network  "
                     + networkInstance.getNetworkName() + " deployed");
         }
@@ -175,6 +176,11 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
             return false;
         }
 
+    }
+    
+    public List<NetworkInstance> listNetworks (ClaudiaData claudiaData, String region) throws InfrastructureException {
+        List<NetworkInstance> networkInstances = networkClient.loadAllNetwork(claudiaData, region);
+        return networkInstances;
     }
 
     /**

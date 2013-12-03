@@ -28,6 +28,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
@@ -38,6 +39,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
+import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
@@ -56,6 +58,7 @@ public class TestClaudiaServiceandVAppUtils {
     Environment envResult = null;
     ProductInstance productInstance = null;
     InfrastructureManagerServiceClaudiaImpl manager = null;
+    TierManager tierManager;
 
     private String getFile(URI file) throws IOException {
         File f = new File(file);
@@ -74,6 +77,8 @@ public class TestClaudiaServiceandVAppUtils {
     @Before
     public void setUp() {
         manager = new InfrastructureManagerServiceClaudiaImpl();
+        tierManager = mock (TierManager.class);
+
         VappUtilsImpl vappUtils = new VappUtilsImpl();
         SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM)).thenReturn("ddFIWARE");
@@ -132,22 +137,17 @@ public class TestClaudiaServiceandVAppUtils {
     }
 
     @Test
-    public void testClaudiaServiceandVAppUtils() {
+    public void testClaudiaServiceandVAppUtils() throws Exception  {
 
         EnvironmentInstance environmentInstance = new EnvironmentInstance();
         environmentInstance.setEnvironment(envResult);
-
         environmentInstance.setName(claudiaData.getVdc() + "-" + envResult.getName());
 
         String vappService = null;
-        try {
-            URI vappname = this.getClass().getResource("/vappsap83.xml").toURI();
-            vappService = getFile(vappname);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+
+        URI vappname = this.getClass().getResource("/vappsap83.xml").toURI();
+        vappService = getFile(vappname);
+
 
         InfrastructureManagerServiceClaudiaImpl manager = new InfrastructureManagerServiceClaudiaImpl();
         VappUtilsImpl vappUtils = new VappUtilsImpl();
@@ -161,15 +161,8 @@ public class TestClaudiaServiceandVAppUtils {
 
         List<TierInstance> tierInstances = null;
 
-        try {
-            tierInstances = manager.fromVappToListTierInstance(vappService, envResult, claudiaData);
-        } catch (InvalidVappException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidOVFException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        tierInstances = manager.fromVappToListTierInstance(vappService, envResult, claudiaData);
+
 
         for (TierInstance tierInstance : tierInstances) {
             if (tierInstance.getTier().equals("haproxy")) {
@@ -224,31 +217,18 @@ public class TestClaudiaServiceandVAppUtils {
 
         TierInstanceDao tierInstanceDao = mock(TierInstanceDao.class);
         environmentInstanceManager.setTierInstanceDao(tierInstanceDao);
+        environmentInstanceManager.setTierManager(tierManager);
+        when (tierManager.loadTierWithProductReleaseAndMetadata
+                (any(String.class), any(String.class), any(String.class))).thenReturn(tierInstances.get(0).getTier());
 
-        try {
-            boolean bScalableEnvironment = environmentInstanceManager.installSoftwareInEnvironmentInstance(claudiaData,
+        boolean bScalableEnvironment = environmentInstanceManager.installSoftwareInEnvironmentInstance(claudiaData,
                     environmentInstance);
-        } catch (ProductInstallatorException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidProductInstanceRequestException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (NotUniqueResultException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InfrastructureException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidEntityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        
 
     }
 
     @Test
-    public void testSeveralNetworksClaudiaServiceandVAppUtils() {
+    public void testSeveralNetworksClaudiaServiceandVAppUtils() throws Exception{
 
         EnvironmentInstance environmentInstance = new EnvironmentInstance();
         environmentInstance.setEnvironment(envResult);
@@ -302,23 +282,9 @@ public class TestClaudiaServiceandVAppUtils {
         EnvironmentInstanceManagerImpl environmentInstanceManager = new EnvironmentInstanceManagerImpl();
 
         ProductInstanceManager productInstanceManager = mock(ProductInstanceManager.class);
-        try {
-            when(
-                    productInstanceManager.install(any(TierInstance.class), any(ClaudiaData.class), any(String.class),
+        when(productInstanceManager.install(any(TierInstance.class), any(ClaudiaData.class), any(String.class),
                             any(ProductRelease.class), any(Set.class))).thenReturn(productInstance);
-        } catch (ProductInstallatorException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidProductInstanceRequestException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (NotUniqueResultException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidEntityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+
         environmentInstanceManager.setProductInstanceManager(productInstanceManager);
         InfrastructureManager infrastructureManager = mock(InfrastructureManager.class);
         try {
@@ -336,26 +302,13 @@ public class TestClaudiaServiceandVAppUtils {
 
         TierInstanceDao tierInstanceDao = mock(TierInstanceDao.class);
         environmentInstanceManager.setTierInstanceDao(tierInstanceDao);
+        environmentInstanceManager.setTierManager(tierManager);
 
-        try {
-            boolean bScalableEnvironment = environmentInstanceManager.installSoftwareInEnvironmentInstance(claudiaData,
+        when (tierManager.loadTierWithProductReleaseAndMetadata
+                (any(String.class), any(String.class), any(String.class))).thenReturn(tierInstances.get(0).getTier());
+        boolean bScalableEnvironment = environmentInstanceManager.installSoftwareInEnvironmentInstance(claudiaData,
                     environmentInstance);
-        } catch (ProductInstallatorException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidProductInstanceRequestException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (NotUniqueResultException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InfrastructureException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidEntityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+       
 
     }
 

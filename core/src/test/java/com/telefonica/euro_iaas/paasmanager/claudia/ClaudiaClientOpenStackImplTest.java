@@ -7,20 +7,28 @@
 
 package com.telefonica.euro_iaas.paasmanager.claudia;
 
+
+import java.util.ArrayList;
+
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+
 import java.util.HashSet;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientOpenStackImpl;
+import com.telefonica.euro_iaas.paasmanager.manager.NetworkInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
@@ -30,6 +38,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackUtil;
 
+
 /**
  * @author jesus.movilla
  */
@@ -38,6 +47,8 @@ public class ClaudiaClientOpenStackImplTest {
     private Tier tier;
     private ClaudiaData claudiaData;
     private OpenStackUtil openStackUtil;
+    private NetworkInstanceManager networkInstanceManager;
+    private ClaudiaClientOpenStackImpl claudiaClientOpenStack;
 
     @Before
     public void setUp() throws Exception {
@@ -80,12 +91,18 @@ public class ClaudiaClientOpenStackImplTest {
 
         tier.setName("prueba");
         tier.setKeypair("jesusmovilla");
+        
+        claudiaClientOpenStack  = new ClaudiaClientOpenStackImpl ();
 
         openStackUtil = mock(OpenStackUtil.class);
+        networkInstanceManager = mock (NetworkInstanceManager.class);
+        claudiaClientOpenStack.setNetworkInstanceManager(networkInstanceManager);
+        claudiaClientOpenStack.setOpenStackUtil(openStackUtil);
+
 
         when(openStackUtil.createServer(any(String.class), anyString(), anyString(), anyString())).thenReturn(
                 "response");
-        when(openStackUtil.createNetwork(any(NetworkInstance.class), anyString(), anyString(), anyString()))
+        when(openStackUtil.createNetwork(any(String.class), anyString(), anyString(), anyString()))
                 .thenReturn(expectedNetwork);
         when(openStackUtil.createSubNet(any(SubNetworkInstance.class), anyString(), anyString(), anyString()))
                 .thenReturn(expectedSubnet);
@@ -98,15 +115,80 @@ public class ClaudiaClientOpenStackImplTest {
     }
 
     @Test
-    public void testDeployVM() throws Exception {
+    public void testDeployVMEssex() throws Exception {
 
-        ClaudiaClientOpenStackImpl claudiaClientOpenStack = new ClaudiaClientOpenStackImpl();
-        claudiaClientOpenStack.setOpenStackUtil(openStackUtil);
+        
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
         VM vm = new VM();
+
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         verify(openStackUtil).createServer(any(String.class), anyString(), anyString(), anyString());
+
+    }
+    
+    @Test
+    public void testDeployVMEGrizzlyNetwork() throws Exception {
+
+        TierInstance tierInstance = new TierInstance();
+        Network network = new Network("NETWORK");
+        tier.addNetwork(network);
+        tierInstance.setTier(tier);
+        tierInstance.addNetworkInstance(network.toNetworkInstance());
+        
+        VM vm = new VM();
+        claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
+        verify(openStackUtil).createServer(any(String.class), any(String.class), any(String.class), any(String.class));
+
+    }
+    
+    @Test
+    public void testDeployVMEGrizzlyNotNetwork() throws Exception {
+
+        TierInstance tierInstance = new TierInstance();
+        tierInstance.setTier(tier);
+        
+        Network network = new Network("NETWORK");
+        NetworkInstance netInst = network.toNetworkInstance();
+        netInst.setShared(false);
+        netInst.setTenantId(claudiaData.getVdc());
+        netInst.setIdNetwork("ID");
+        List<NetworkInstance> networkInstances = new ArrayList<NetworkInstance> ();
+        networkInstances.add(netInst);
+
+        VM vm = new VM();
+
+        when(networkInstanceManager.listNetworks(any(ClaudiaData.class), any(String.class))).thenReturn(networkInstances);
+        when(networkInstanceManager.load(any(String.class))).thenReturn(netInst);
+        claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
+        
+        verify(openStackUtil).createServer(any(String.class), any(String.class), any(String.class), any(String.class));
+
+    }
+    
+    
+    @Test
+    public void testDeployVMEGrizzlyNotNetwork2() throws Exception {
+
+        TierInstance tierInstance = new TierInstance();
+        tierInstance.setTier(tier);
+        
+        Network network = new Network("NETWORK");
+        NetworkInstance netInst = network.toNetworkInstance();
+        netInst.setShared(true);
+        List<NetworkInstance> networkInstances = new ArrayList<NetworkInstance> ();
+        networkInstances.add(netInst);
+
+        VM vm = new VM();
+        NetworkInstance netInst2 = network.toNetworkInstance();
+        netInst2.setShared(false);
+        netInst2.setDefaultNet(true);
+        when(networkInstanceManager.listNetworks(any(ClaudiaData.class), any(String.class))).thenReturn(networkInstances);
+        when(networkInstanceManager.create(any(ClaudiaData.class), any(NetworkInstance.class),any(String.class))).thenReturn(netInst2);
+        
+        claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
+        assertEquals(tierInstance.getNetworkInstances().size(), 1);
+        verify(openStackUtil).createServer(any(String.class), any(String.class), any(String.class), any(String.class));
 
     }
 

@@ -73,6 +73,8 @@ public class NetworkandSubNetDaoJpaImplTest {
             fail("Should have thrown an EntityNotFoundException because the network does not exit!");
         } catch (EntityNotFoundException e) {
             assertNotNull(e);
+        } catch (Exception e) {
+            System.out.println (e.getMessage());
         }
 
     }

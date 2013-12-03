@@ -17,8 +17,7 @@ class Network:
 class Tier:
 
 
-    def __init__(self, tier_name, tier_num_min='1', tier_num_max='1', tier_num_initial='1',
-                 tier_image='e6c5b19e-f655-4da8-86ea-6dd05be673ef',
+    def __init__(self, tier_name, tier_image, tier_num_min='1', tier_num_max='1', tier_num_initial='1',
                  tier_flavour='2',tier_keypair='',tier_floatingip='false' ):
         self.name=tier_name
         self.tier_num_min=tier_num_min

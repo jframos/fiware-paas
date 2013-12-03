@@ -45,6 +45,7 @@ class EnvironmentInstanceRequest:
         url="%s/%s/%s/%s" %(self.paasmanager_url,"envInst/org/FIWARE/vdc", self.vdc,"environmentInstance")
         headers={'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Content-Type': "application/xml",
                  'Accept': "application/json"}
+        print headers
         payload = tostring(environment_instance.to_xml())
         response= http.post(url, headers,payload)
 
