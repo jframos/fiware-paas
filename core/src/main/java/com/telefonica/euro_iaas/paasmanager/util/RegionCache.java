@@ -50,7 +50,7 @@ public class RegionCache {
 
         String key = getKey(region, service);
 
-        if (cache.isKeyInCache(key)) {
+        if (cache.isKeyInCache(key) && (cache.get(key) != null)) {
 
             return (String) cache.get(key).getObjectValue();
         } else {
@@ -64,5 +64,10 @@ public class RegionCache {
 
     public void clear() {
         cache.removeAll();
+    }
+
+    public CacheConfiguration getConfiguration() {
+        CacheConfiguration cacheConfiguration = cache.getCacheConfiguration();
+        return cacheConfiguration;
     }
 }

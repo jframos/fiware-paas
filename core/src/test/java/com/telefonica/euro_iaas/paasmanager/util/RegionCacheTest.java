@@ -82,4 +82,22 @@ public class RegionCacheTest {
         assertNull(value);
     }
 
+    @Test
+    public void shouldReturnNullWhenElementIsExpired() throws InterruptedException {
+        // given
+        RegionCache regionCache = new RegionCache();
+        regionCache.putUrl("region", "service", "http://localhost");
+
+        // regionCache.getConfiguration().setTimeToIdleSeconds(1);
+        regionCache.getConfiguration().setTimeToLiveSeconds(1);
+
+        Thread.sleep(3000);
+        // when
+        String nullValue = regionCache.getUrl("region", "service");
+
+        // then
+
+        assertNull(nullValue);
+    }
+
 }
