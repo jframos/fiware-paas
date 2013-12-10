@@ -13,6 +13,13 @@
 
     <properties>
 
+        <!-- TDigital PROPERTIES -->
+        <!-- This properties will be added to sonar as manual measures -->
+        <product.area.name>Industrial IoT</product.area.name>
+        <product.name>FIWARE</product.name>
+        <product.release>3.2.3</product.release>
+
+
         <repoName>fiware-paas</repoName>
 
         <scmURI>git@pdihub.hi.inet:fiware</scmURI>
