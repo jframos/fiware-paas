@@ -135,6 +135,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         log.debug("Destroying network " + networkInstance.getNetworkName());
 
         log.debug("Deleting the public interface interfaces");
+        networkInstance = networkInstanceDao.load(networkInstance.getNetworkName());
         networkClient.deleteNetworkToPublicRouter(claudiaData, networkInstance, region);
         log.debug("Deleting the subnets");
         Set<SubNetworkInstance> subNetAux = networkInstance.cloneSubNets();

@@ -188,11 +188,11 @@ public class NetworkInstanceManagerImplTest {
         ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
 
         // When
-        when(networkInstanceDao.load(any(String.class))).thenThrow(
-                new EntityNotFoundException(Network.class, "test", net));
+       
         when(systemPropertiesProvider.getProperty("key")).thenReturn("VALUE");
         Mockito.doNothing().when(networkClient)
                 .deployNetwork(any(ClaudiaData.class), any(NetworkInstance.class), anyString());
+        when(networkInstanceDao.load(any(String.class))).thenReturn(net);
         Mockito.doNothing().when(subNetworkInstanceManager)
                 .delete(any(ClaudiaData.class), any(SubNetworkInstance.class), anyString());
         Mockito.doNothing().when(networkInstanceDao).remove(any(NetworkInstance.class));
