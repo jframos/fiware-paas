@@ -256,6 +256,8 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         try {
             String token = claudiaData.getUser().getToken();
             String vdc = claudiaData.getVdc();
+            log.info("Destroy network " + networkInstance.getNetworkName() + " for user "
+                    + claudiaData.getUser().getTenantName() + " with token " +  token + " and vdc " + vdc);
             openStackUtil.deleteNetwork(networkInstance.getIdNetwork(), region, token, vdc);
         } catch (OpenStackException e) {
             String msm = "Error to delete the network " + networkInstance.getNetworkName() + ":" + e.getMessage();
@@ -293,6 +295,8 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         try {
             String token = claudiaData.getUser().getToken();
             String vdc = claudiaData.getVdc();
+            log.info("Destroy subnetwork " + subnet.getName() + " for user "
+                    + claudiaData.getUser().getTenantName() + " with token " +  token + " and vdc " + vdc);
             openStackUtil.deleteSubNetwork(subnet.getIdSubNet(), region, token, vdc);
         } catch (OpenStackException e) {
             String msm = "Error to delete the network " + subnet.getName() + ":" + e.getMessage();

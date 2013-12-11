@@ -151,7 +151,7 @@ public class OpenStackUtilImplTest {
 
         openStackUtil.deleteSubNetwork(subNet.getIdSubNet(), "region", "token", "vdc");
 
-        verify(openStackRegion).getNovaEndPoint(anyString(), anyString());
+        verify(openStackRegion).getQuantumEndPoint(anyString(), anyString());
         verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
         verify(httpResponse, times(3)).getStatusLine();
         verify(statusLine, times(2)).getStatusCode();
@@ -173,7 +173,7 @@ public class OpenStackUtilImplTest {
 
         openStackUtil.deleteSubNetwork(net.getIdNetwork(), "region", "token", "vdc");
 
-        verify(openStackRegion).getNovaEndPoint(anyString(), anyString());
+        verify(openStackRegion).getQuantumEndPoint(anyString(), anyString());
         verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
         verify(httpResponse, times(3)).getStatusLine();
         verify(statusLine, times(2)).getStatusCode();

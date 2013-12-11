@@ -962,16 +962,16 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         String response = null;
 
         try {
-            HttpUriRequest request = createNovaDeleteRequest(RESOURCE_SERVERS + "/" + idSubNet, region, token, vdc);
+            HttpUriRequest request = createQuantumDeleteRequest(RESOURCE_SUBNETS + "/" + idSubNet, region, token, vdc);
 
             response = executeNovaRequest(request);
 
         } catch (OpenStackException e) {
-            String errorMessage = "Error deleting server " + idSubNet + ": " + e;
+            String errorMessage = "Error deleting subNet " + idSubNet + ": " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         } catch (Exception e) {
-            String errorMessage = "Error deleting server " + idSubNet + " from OpenStack: " + e;
+            String errorMessage = "Error deleting subNet " + idSubNet + " from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }
