@@ -59,7 +59,7 @@ public class TierInstance extends InstallableInstance {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tierinstance_has_productinstances", joinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "productinstance_ID", nullable = false, updatable = false) })
     private List<ProductInstance> productInstances;
-    
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tierinstance_has_networkinstance", joinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "networkinstance_ID", nullable = false, updatable = false) })
     private Set<NetworkInstance> networkInstances;
@@ -74,9 +74,9 @@ public class TierInstance extends InstallableInstance {
     /**
      * @param tier
      * @param productInstances
-     * @param currentNumberInstances
+     * @param name
+     * @param vm
      * @param ovf
-     * @param fqn
      */
 
     public TierInstance(Tier tier, List<ProductInstance> productInstances, String name, VM vm, String ovf) {
@@ -122,13 +122,13 @@ public class TierInstance extends InstallableInstance {
         }
         this.productInstances.add(productInstance);
     }
-    
+
     /**
-     * @param productInstance
+     * @param networkInstance
      */
     public void addNetworkInstance(NetworkInstance networkInstance) {
         if (networkInstances == null) {
-        	networkInstances = new HashSet<NetworkInstance>();
+            networkInstances = new HashSet<NetworkInstance>();
         }
         this.networkInstances.add(networkInstance);
     }
@@ -141,18 +141,17 @@ public class TierInstance extends InstallableInstance {
             this.productInstances.remove(productInstance);
         }
     }
-    
-    
-    public Set<NetworkInstance> cloneNetworkInt () {
-    	Set<NetworkInstance>  netInts = new HashSet<NetworkInstance>();
-    	for (NetworkInstance netInst: this.getNetworkInstances()) {
-    		netInts.add(netInst);
-    	}
-    	return netInts;
+
+    public Set<NetworkInstance> cloneNetworkInt() {
+        Set<NetworkInstance> netInts = new HashSet<NetworkInstance>();
+        for (NetworkInstance netInst : this.getNetworkInstances()) {
+            netInts.add(netInst);
+        }
+        return netInts;
     }
-    
+
     /**
-     * @param productInstance
+     * @param networkInstance
      */
     public void deleteNetworkInstance(NetworkInstance networkInstance) {
         if (networkInstances.contains(networkInstance)) {
@@ -182,18 +181,16 @@ public class TierInstance extends InstallableInstance {
     public List<ProductInstance> getProductInstances() {
         return productInstances;
     }
-    
+
     /**
      * @return the productInstances
      */
     public Set<NetworkInstance> getNetworkInstances() {
-    	if (networkInstances == null) {
-    		networkInstances = new HashSet<NetworkInstance> ();
-    	}
+        if (networkInstances == null) {
+            networkInstances = new HashSet<NetworkInstance>();
+        }
         return networkInstances;
     }
-    
-   
 
     public String getTaskId() {
         return taskId;
@@ -243,14 +240,15 @@ public class TierInstance extends InstallableInstance {
     public void setProductInstances(List<ProductInstance> productInstances) {
         this.productInstances = productInstances;
     }
+
     /**
-    * @param productInstances
-    *            the productInstances to set
-    */
-   public void setNetworkInstance(Set<NetworkInstance> networkInstances) {
-       this.networkInstances = networkInstances;
-   }
-    
+     * @param networkInstances
+     *            the networkInstances to set
+     */
+    public void setNetworkInstance(Set<NetworkInstance> networkInstances) {
+        this.networkInstances = networkInstances;
+    }
+
     public void setTaskId(String id) {
         taskId = id;
 
@@ -305,48 +303,49 @@ public class TierInstance extends InstallableInstance {
 
         return tierInstanceDto;
     }
-    
+
     /**
      * to json.
+     * 
      * @return
      */
     public String toJson() {
-        String payload = "{\"server\": " + "{\"key_name\": \""
-        + getTier().getKeypair() + "\", ";
+        String payload = "{\"server\": " + "{\"key_name\": \"" + getTier().getKeypair() + "\", ";
         if (getTier().getSecurityGroup() != null) {
-            payload = payload + "\"security_groups\": [{ \"name\": \""
-            + getTier().getSecurityGroup().getName() + "\"}], ";
+            payload = payload + "\"security_groups\": [{ \"name\": \"" + getTier().getSecurityGroup().getName()
+                    + "\"}], ";
         }
         if (!this.getNetworkInstances().isEmpty()) {
             payload = payload + "\"networks\": [";
-            int count =0;
-            for (NetworkInstance net: this.getNetworkInstances()){
+            int count = 0;
+            for (NetworkInstance net : this.getNetworkInstances()) {
 
-                if (count == this.getNetworkInstances().size() -1) {
-            	    payload = payload + " {\"uuid\": \""
-                    + net.getIdNetwork() + "\"} ";
+                if (count == this.getNetworkInstances().size() - 1) {
+                    payload = payload + " {\"uuid\": \"" + net.getIdNetwork() + "\"} ";
                 } else {
-                	payload = payload + " {\"uuid\": \""
-                    + net.getIdNetwork() + "\"} ,";
+                    payload = payload + " {\"uuid\": \"" + net.getIdNetwork() + "\"} ,";
                 }
                 count++;
-                
+
             }
             payload = payload + "], ";
 
         }
 
-        payload = payload
-        + "\"flavorRef\": \"" + getTier().getFlavour() + "\", " + "\"imageRef\": \""
-        + getTier().getImage() + "\", " + "\"name\": \"" + name + "\"}}";
+        if (this.getTier().getRegion() != null) {
+
+            payload += "\"metadata\": {\"region\": \"" + this.getTier().getRegion() + "\"},";
+        }
+        payload += "\"flavorRef\": \"" + getTier().getFlavour() + "\", " + "\"imageRef\": \"" + getTier().getImage()
+                + "\", " + "\"name\": \"" + name + "\"}}";
+
         return payload;
 
     }
 
-	public void update(Tier tier2) {
-		tier = tier2;
-		
-	}
+    public void update(Tier tier2) {
+        tier = tier2;
 
+    }
 
 }

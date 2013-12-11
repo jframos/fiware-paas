@@ -286,25 +286,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     }
 
     /**
-     * Deploys a VM in Openstack
-     */
-    /*
-     * public String deleteServer(String serverId, PaasManagerUser user) throws OpenStackException { // throw new
-     * UnsupportedOperationException("Not supported yet."); // I need to know X-Auth-Token, orgID-Tennat, IP and Port //
-     * curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757' // -H "Content-Type: application/json" -H
-     * "Accept: application/json" // -d "{"reboot" : {"type" : "SOFT" }}" // -X POST
-     * "http://10.95.171.115:8774/v2/30c60771b6d144d2861b21e442f0bef9/servers/6570eca2-21e2-4942-bede-f556c57af2b4/action"
-     * String response = null; //TaskResult deletion = new TaskResult(); try { HttpUriRequest request =
-     * createNovaDeleteRequest(OpenStackConstants.RESOURCE_SERVERS + "/" + serverId, user); response =
-     * executeNovaRequest(request); // deletion.setMessage(response); } catch (InfrastructureException e) { String
-     * errorMessage = "Error deleting server " + serverId + ": " + e; log.error(errorMessage); throw new
-     * OpenStackException(errorMessage); //deletion.setMessage(e.getMessage()); //deletion.setSuccess(false); } catch
-     * (Exception e) { String errorMessage = "Error deleting server " + serverId + " from OpenStack: " + e;
-     * log.error(errorMessage); throw new OpenStackException(errorMessage); //deletion.setMessage(e.getMessage());
-     * //deletion.setSuccess(false); } return response; }
-     */
-    /**
-     * Assign certain floatingIP to a serverId
+     * Assign certain floatingIP to a serverId.
      * 
      * @param serverId
      * @param floatingIP

@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import junit.framework.TestCase;
+import net.sf.json.JSONObject;
 
 import org.junit.Test;
 
@@ -49,7 +50,7 @@ public class TierTest extends TestCase {
         assertEquals(tier3.equals(tier), true);
 
     }
-    
+
     @Test
     public void testTierWithNetwork() throws Exception {
 
@@ -62,35 +63,44 @@ public class TierTest extends TestCase {
         Network net = new Network("net");
         tier.addNetwork(net);
 
-        for (Network netOut: tier.getNetworks()) {
+        for (Network netOut : tier.getNetworks()) {
             assertEquals(netOut.getNetworkName(), "net");
         }
 
     }
-    
-    
-    
+
     @Test
     public void testTierInstance() throws Exception {
 
+        // Given
         Integer minimum = new Integer(1);
         Integer initial = new Integer(2);
         Integer maximum = new Integer(1);
 
-        NetworkInstance networkInstance = new NetworkInstance ("net");
+        NetworkInstance networkInstance = new NetworkInstance("net");
         networkInstance.setIdNetwork("ID");
 
         Tier tier = new Tier("tier", maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes", null);
-        
-        TierInstance tierInst = new TierInstance ();
+
+        TierInstance tierInst = new TierInstance();
         tierInst.setName("tier");
         tierInst.addNetworkInstance(networkInstance);
         tierInst.setTier(tier);
-        
-        String payload = "{\"server\": {\"key_name\": \"keypair\", \"networks\": [ {\"uuid\": \"ID\"} ], \"flavorRef\": \"2\", " +
-        "\"imageRef\": \"image\", \"name\": \"tier\"}}";
+        tier.setRegion("RegionOne");
 
-        assertEquals (tierInst.toJson(), payload);
+        // When
+        JSONObject jsonObject = JSONObject.fromObject(tierInst.toJson());
+
+        // Then
+        assertEquals("keypair", JSONObject.fromObject(jsonObject.get("server")).get("key_name"));
+        assertEquals("2", JSONObject.fromObject(jsonObject.get("server")).get("flavorRef"));
+        assertEquals("image", JSONObject.fromObject(jsonObject.get("server")).get("imageRef"));
+        assertEquals("tier", JSONObject.fromObject(jsonObject.get("server")).get("name"));
+        assertEquals("RegionOne", JSONObject
+                .fromObject(JSONObject.fromObject(jsonObject.get("server")).get("metadata")).get("region"));
+        assertEquals("ID",
+                JSONObject.fromObject(JSONObject.fromObject(jsonObject.get("server")).getJSONArray("networks").get(0))
+                        .get("uuid"));
 
     }
 
