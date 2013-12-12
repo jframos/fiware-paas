@@ -188,7 +188,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
 
         // try
         // {
-        environmentResourceValidator.validateCreate(environmentDto, vdc, systemPropertiesProvider);
+        environmentResourceValidator.validateCreate(claudiaData, environmentDto, vdc, systemPropertiesProvider);
         /*
          * } catch (InvalidEnvironmentRequestException e) { throw new WebApplicationException(e, ERROR_REQUEST); } catch
          * (AlreadyExistEntityException e) { throw new WebApplicationException(e, ERROR_REQUEST); } catch

@@ -226,4 +226,44 @@ public class EnvironmentInstanceResourceValidatorImplTest {
         assertTrue(true);
     }
 
+    @Test
+    public void shouldThrowExceptionWithMaxSecurityGroupsAreExceeded() throws InfrastructureException,
+            InvalidEnvironmentRequestException {
+        // given
+        EnvironmentInstanceResourceValidator environmentInstanceResourceValidator = new EnvironmentInstanceResourceValidatorImpl();
+        QuotaClient quotaClient = mock(QuotaClient.class);
+        ((EnvironmentInstanceResourceValidatorImpl) environmentInstanceResourceValidator).setQuotaClient(quotaClient);
+        ClaudiaData claudiaData = mock(ClaudiaData.class);
+
+        EnvironmentInstanceDto environmentInstanceDto = new EnvironmentInstanceDto();
+        List<TierInstanceDto> listTiers = new ArrayList(2);
+        TierInstanceDto tierInstanceDto = new TierInstanceDto();
+        listTiers.add(tierInstanceDto);
+        environmentInstanceDto.setTierInstances(listTiers);
+        TierDto tierDto = new TierDto();
+        tierInstanceDto.setTierDto(tierDto);
+        tierDto.setFloatingip("true");
+        tierDto.setInitialNumberInstances(2);
+        tierDto.setRegion("region");
+        tierDto.setSecurityGroup("kk");
+        Limits limits = new Limits();
+        limits.setMaxSecurityGroups(10);
+        limits.setTotalSecurityGroups(10);
+        limits.setMaxTotalFloatingIps(10);
+        limits.setMaxTotalInstances(10);
+        limits.setTotalFloatingIpsUsed(2);
+        limits.setTotalInstancesUsed(2);
+
+        // when
+        when(quotaClient.getLimits(claudiaData, "region")).thenReturn(limits);
+        try {
+            environmentInstanceResourceValidator.validateQuota(claudiaData, environmentInstanceDto);
+            fail();
+        } catch (QuotaExceededException e) {
+            // then
+            assertEquals("max number of security groups exceeded: 10", e.getMessage());
+            verify(quotaClient).getLimits(claudiaData, "region");
+        }
+    }
+
 }

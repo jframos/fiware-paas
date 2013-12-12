@@ -126,6 +126,7 @@
         <property name="tierManager" ref="tierManager"/>
         <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
         <property name="environmentManager" ref="environmentManager"/>
+        <property name="quotaClient" ref="quotaClient"/>
 
 
     </bean>

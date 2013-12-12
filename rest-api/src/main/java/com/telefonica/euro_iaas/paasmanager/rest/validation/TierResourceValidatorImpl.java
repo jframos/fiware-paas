@@ -18,13 +18,18 @@ import org.apache.log4j.Logger;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
+import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.Limits;
 import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
@@ -41,15 +46,16 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
     private static Logger log = Logger.getLogger(TierResourceValidatorImpl.class);
     private EnvironmentInstanceManager environmentInstanceManager;
     private EnvironmentManager environmentManager;
+    private QuotaClient quotaClient;
 
     /*
      * (non-Javadoc)
      * @seecom.telefonica.euro_iaas.paasmanager.rest.validation. EnvironmentInstanceResourceValidator
      * #validateCreate(com.telefonica.euro_iaas .paasmanager.model.dto.EnvironmentDto)
      */
-    public void validateCreate(TierDto tierDto, String vdc, String environmentName,
+    public void validateCreate(ClaudiaData claudiaData, TierDto tierDto, String vdc, String environmentName,
             SystemPropertiesProvider systemPropertiesProvider) throws InvalidEntityException,
-            AlreadyExistEntityException {
+            AlreadyExistEntityException, InfrastructureException, QuotaExceededException {
 
         if (tierDto == null) {
             log.error("Tier Name  is null");
@@ -64,13 +70,14 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
         } catch (EntityNotFoundException e) {
             log.debug("Entity not found. It is possible to create it ");
-            validateCreateTier(tierDto, systemPropertiesProvider);
+            validateCreateTier(claudiaData, tierDto, systemPropertiesProvider);
         }
 
     }
 
-    private void validateCreateTier(TierDto tierDto, SystemPropertiesProvider systemPropertiesProvider)
-            throws InvalidEntityException {
+    private void validateCreateTier(ClaudiaData claudiaData, TierDto tierDto,
+            SystemPropertiesProvider systemPropertiesProvider) throws InvalidEntityException, InfrastructureException,
+            QuotaExceededException {
         String system = systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
         if (tierDto.getName() == null) {
             log.error("Tier name is Null");
@@ -100,6 +107,34 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
             }
 
         }
+
+        validateSecurityGroups(claudiaData, tierDto);
+
+    }
+
+    public void validateSecurityGroups(ClaudiaData claudiaData, TierDto tierDto) throws InfrastructureException,
+            QuotaExceededException {
+
+        Map<String, Limits> limits = new HashMap<String, Limits>();
+
+        String region = tierDto.getRegion();
+        if (!limits.containsKey(region)) {
+            try {
+                limits.put(region, quotaClient.getLimits(claudiaData, region));
+            } catch (InfrastructureException e) {
+                throw new InfrastructureException("Failed in getLimits " + e.getMessage());
+            }
+        }
+
+        Limits limitsRegion = limits.get(region);
+
+        if (limitsRegion.checkTotalSecurityGroupsUsed()) {
+            if (1 + limitsRegion.getTotalSecurityGroups() > limitsRegion.getMaxSecurityGroups()) {
+                throw new QuotaExceededException("max number of security groups exceeded: "
+                        + limitsRegion.getMaxSecurityGroups());
+            }
+        }
+
     }
 
     public void validateUpdate(TierDto tierDto, String vdc, String environmentName,
@@ -275,6 +310,14 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
     public void setEnvironmentManager(EnvironmentManager environmentManager) {
         this.environmentManager = environmentManager;
+    }
+
+    public QuotaClient getQuotaClient() {
+        return quotaClient;
+    }
+
+    public void setQuotaClient(QuotaClient quotaClient) {
+        this.quotaClient = quotaClient;
     }
 
 }
