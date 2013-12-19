@@ -14,9 +14,12 @@ import org.apache.log4j.Logger;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
+import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
@@ -39,7 +42,7 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
      * @seecom.telefonica.euro_iaas.paasmanager.rest.validation. EnvironmentInstanceResourceValidator
      * #validateCreate(com.telefonica.euro_iaas .paasmanager.model.dto.EnvironmentDto)
      */
-    public void validateCreate(EnvironmentDto environmentDto, String vdc,
+    public void validateCreate(ClaudiaData claudiaData, EnvironmentDto environmentDto, String vdc,
             SystemPropertiesProvider systemPropertiesProvider) throws InvalidEnvironmentRequestException,
             AlreadyExistEntityException, InvalidEntityException {
 
@@ -67,13 +70,18 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
                 log.info("Validating " + tierDto.getName());
 
                 try {
-                    tierResourceValidator.validateCreate(tierDto, vdc, environmentDto.getName(),
+                    tierResourceValidator.validateCreate(claudiaData, tierDto, vdc, environmentDto.getName(),
                             systemPropertiesProvider);
                 } catch (InvalidEntityException e) {
                     throw new InvalidEnvironmentRequestException("Tier is invalid", e);
                 } catch (AlreadyExistEntityException e) {
                     throw new InvalidEnvironmentRequestException("The tier " + tierDto.getName()
                             + " already exist in the vdc " + vdc, e);
+                } catch (QuotaExceededException e) {
+                    throw new InvalidEnvironmentRequestException("Tier is invalid, quota for security groups exceeded",
+                            e);
+                } catch (InfrastructureException e) {
+                    throw new InvalidEnvironmentRequestException("Tier is invalid", e);
                 }
 
                 if (tierDto.getName() == null) {

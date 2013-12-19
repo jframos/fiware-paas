@@ -7,13 +7,15 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
-import java.util.List;
 import java.util.Set;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
+import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
@@ -28,9 +30,9 @@ public interface TierResourceValidator {
      * @param EnvironmentDto
      * @throws InvalidEnvironmentRequestException
      */
-    void validateCreate(TierDto EnvironmentDto, String vdc, String environmentName,
+    void validateCreate(ClaudiaData claudiaData, TierDto EnvironmentDto, String vdc, String environmentName,
             SystemPropertiesProvider systemPropertiesProvider) throws InvalidEntityException,
-            AlreadyExistEntityException;
+            AlreadyExistEntityException, InfrastructureException, QuotaExceededException;
 
     void validateUpdate(TierDto EnvironmentDto, String vdc, String environmentName,
             SystemPropertiesProvider systemPropertiesProvider) throws InvalidEntityException, EntityNotFoundException;

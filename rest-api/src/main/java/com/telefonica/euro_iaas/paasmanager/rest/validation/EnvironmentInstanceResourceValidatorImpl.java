@@ -12,6 +12,7 @@ import static com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil.PRO
 import static com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil.VIRTUALSYSTEMCOLLECTION;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -200,6 +201,9 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
         Integer initialNumberInstances = 0;
         Integer floatingIPs = 0;
+        Integer securityGroups = 0;
+        List securityGroupList = new ArrayList<String>(2);
+
         if (environmentInstanceDto.getTierInstances() != null) {
             for (TierInstanceDto tierInstanceDto : environmentInstanceDto.getTierInstances()) {
                 String region = tierInstanceDto.getTierDto().getRegion();
@@ -214,6 +218,12 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
                 initialNumberInstances += tierInstanceDto.getTierDto().getInitialNumberInstances();
                 if ("true".equals(tierInstanceDto.getTierDto().getFloatingip())) {
                     floatingIPs++;
+                }
+                String securityGroup = tierInstanceDto.getTierDto().getSecurityGroup();
+                if (tierInstanceDto.getTierDto().getSecurityGroup() != null) {
+                    if (!securityGroupList.contains(securityGroup)) {
+                        securityGroupList.add(securityGroup);
+                    }
                 }
 
                 Limits limitsRegion = limits.get(region);
@@ -231,6 +241,14 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
                     if (floatingIPs + limitsRegion.getTotalFloatingIpsUsed() > limitsRegion.getMaxTotalFloatingIps()) {
                         throw new QuotaExceededException("max number of floating IPs exceeded: "
                                 + limitsRegion.getMaxTotalFloatingIps());
+                    }
+                }
+
+                if (limitsRegion.checkTotalSecurityGroupsUsed()) {
+                    if (securityGroupList.size() + limitsRegion.getTotalSecurityGroups() > limitsRegion
+                            .getMaxSecurityGroups()) {
+                        throw new QuotaExceededException("max number of security groups exceeded: "
+                                + limitsRegion.getMaxSecurityGroups());
                     }
                 }
 

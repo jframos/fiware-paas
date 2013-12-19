@@ -7,10 +7,20 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import junit.framework.TestCase;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -27,15 +37,6 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class EnvironmentResourceTest extends TestCase {
 
@@ -61,8 +62,11 @@ public class EnvironmentResourceTest extends TestCase {
 
         when(ovfGeneration.createOvf(any(EnvironmentDto.class))).thenReturn("ovf");
 
-        Mockito.doNothing().doThrow(new RuntimeException()).when(validator)
-                .validateCreate(any(EnvironmentDto.class), any(String.class), any(SystemPropertiesProvider.class));
+        Mockito.doNothing()
+                .doThrow(new RuntimeException())
+                .when(validator)
+                .validateCreate(any(ClaudiaData.class), any(EnvironmentDto.class), any(String.class),
+                        any(SystemPropertiesProvider.class));
 
         Environment environment = new Environment();
         environment.setName("Name");

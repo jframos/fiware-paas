@@ -16,6 +16,9 @@ public class Limits {
     private Integer maxTotalInstances;
     private Integer totalInstancesUsed;
 
+    private Integer maxSecurityGroups;
+    private Integer totalSecurityGroups;
+
     public void setTotalFloatingIpsUsed(Integer totalFloatingIpsUsed) {
         this.totalFloatingIpsUsed = totalFloatingIpsUsed;
     }
@@ -61,6 +64,13 @@ public class Limits {
         if (jsonAbsolute.containsKey("totalInstancesUsed")) {
             totalInstancesUsed = jsonAbsolute.getInt("totalInstancesUsed");
         }
+        if (jsonAbsolute.containsKey("maxSecurityGroups")) {
+            maxSecurityGroups = jsonAbsolute.getInt("maxSecurityGroups");
+        }
+        if (jsonAbsolute.containsKey("totalSecurityGroupsUsed")) {
+            totalSecurityGroups = jsonAbsolute.getInt("totalSecurityGroupsUsed");
+        }
+
     }
 
     public boolean checkTotalInstancesUsed() {
@@ -70,5 +80,26 @@ public class Limits {
     public boolean checkTotalFloatingsIpsUsed() {
 
         return (maxTotalFloatingIps != null) && (totalFloatingIpsUsed != null);
+    }
+
+    public boolean checkTotalSecurityGroupsUsed() {
+
+        return (maxSecurityGroups != null) && (totalSecurityGroups != null);
+    }
+
+    public Integer getMaxSecurityGroups() {
+        return maxSecurityGroups;
+    }
+
+    public void setMaxSecurityGroups(Integer maxSecurityGroups) {
+        this.maxSecurityGroups = maxSecurityGroups;
+    }
+
+    public Integer getTotalSecurityGroups() {
+        return totalSecurityGroups;
+    }
+
+    public void setTotalSecurityGroups(Integer totalSecurityGroups) {
+        this.totalSecurityGroups = totalSecurityGroups;
     }
 }

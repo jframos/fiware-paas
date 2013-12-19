@@ -27,6 +27,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityExceptio
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidSecurityGroupRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -128,25 +129,23 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
     }
 
-    public void insert(String org, String environmentName, TierDto tierDto)
-        throws EntityNotFoundException, InvalidEntityException,
-        InvalidSecurityGroupRequestException, InfrastructureException,
-        AlreadyExistsEntityException {
+    public void insert(String org, String environmentName, TierDto tierDto) throws EntityNotFoundException,
+            InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException,
+            AlreadyExistsEntityException {
 
         log.debug("Insert tier " + tierDto.getName() + " from env " + environmentName + " with product release "
                 + tierDto.getProductReleaseDtos());
         ClaudiaData claudiaData = new ClaudiaData(org, "", environmentName);
 
         try {
-            tierResourceValidator.validateCreate(tierDto, "", environmentName, systemPropertiesProvider);
-        } catch (InvalidEntityException e1) {
-            throw new WebApplicationException(e1, 500);
-        } catch (AlreadyExistEntityException e1) {
-            throw new WebApplicationException(e1, 500);
+            tierResourceValidator.validateCreate(claudiaData, tierDto, "", environmentName, systemPropertiesProvider);
+        } catch (AlreadyExistEntityException e) {
+            throw new WebApplicationException(e, 500);
+        } catch (QuotaExceededException e) {
+            throw new WebApplicationException(e, 500);
         }
 
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).
-            equals("FIWARE")) {
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
             claudiaData.setUser(getCredentials());
         }
         Tier tier = tierDto.fromDto();
