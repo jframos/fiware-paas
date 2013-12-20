@@ -128,6 +128,11 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
 
         return productReleaseDao.load(productName + "-" + productVersion);
     }
+    
+    public ProductRelease loadWithMetadata(String name) throws EntityNotFoundException {
+
+        return productReleaseDao.loadProductReleaseWithMetadata(name);
+    }
 
     /**
      * @param productReleaseDao
