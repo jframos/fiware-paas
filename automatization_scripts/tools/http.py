@@ -84,7 +84,6 @@ def get_token(keystone_url, tenant, user, password):
     payload='{"auth":{"tenantName":"'+tenant+'","passwordCredentials":{"username":"'+user+'","password":"'+password+'"}}}'
     print payload
     response=post(keystone_url, headers, payload)
-
     data = response.read()
 
     ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
