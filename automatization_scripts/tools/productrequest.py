@@ -1,5 +1,3 @@
-
-
 __author__ = 'henar'
 
 from productrelease import ProductRelease, Product
@@ -21,9 +19,9 @@ class ProductRequest:
         self.user=user
         self.password=password
         self.tenant = tenant
-        self.token = self.__get__token()
+        #self.token = self.__get__token()
         self.products = []
-
+        print "init"
     def __get__token (self):
         self.token = http.get_token(self.keystone_url+'/tokens',self.tenant, self.user, self.password)
 
@@ -86,8 +84,9 @@ class ProductRequest:
         return attributes
 
     def get_product_release (self,product_name):
-        headers={'X-Auth-Token': self.token,
-                 'Accept': "application/json"}
+        #headers={'X-Auth-Token': self.token,
+        #         'Accept': "application/json"}
+        headers={'Accept': "application/json"}
         #get product release
         url="%s/%s/%s/%s" %(self.sdc_url,"catalog/product", product_name,"release" )
 
@@ -104,8 +103,9 @@ class ProductRequest:
             return data['productRelease']['version']
 
     def get_product_release_info (self, product_name, product_version):
-        headers={'X-Auth-Token': self.token,
-                 'Accept': "application/json"}
+        #headers={'X-Auth-Token': self.token,
+        #         'Accept': "application/json"}
+        headers={'Accept': "application/json"}
         #get product release
         url="%s/%s/%s/%s/%s" %(self.sdc_url,"catalog/product", product_name,"release",product_version )
 
@@ -129,8 +129,9 @@ class ProductRequest:
             return product
 
     def get_product_info (self, product_name):
-        headers={'X-Auth-Token': self.token,
-                 'Accept': "application/json"}
+        #headers={'X-Auth-Token': self.token,
+        #         'Accept': "application/json"}
+        headers={'Accept': "application/json"}
         #get product release
         url="%s/%s/%s" %(self.sdc_url,"catalog/product", product_name )
 
@@ -155,8 +156,9 @@ class ProductRequest:
             return product
 
     def delete_product_release (self,product_name, version):
-        headers={'X-Auth-Token': self.token,
-                 'Accept': "application/json"}
+        #headers={'X-Auth-Token': self.token,
+        #         'Accept': "application/json"}
+        headers={'Accept': "application/json"}
         #get product release
         url="%s/%s/%s/%s/%s" %(self.sdc_url,"catalog/product", product_name, "release",version)
 
@@ -174,8 +176,9 @@ class ProductRequest:
 
         if version != None:
             self.delete_product_release (product_name,version);
-        headers={'X-Auth-Token': self.token,
-                 'Accept': "application/json"}
+        #headers={'X-Auth-Token': self.token,
+        #         'Accept': "application/json"}
+        headers={'Accept': "application/json"}
         #get product release
         url="%s/%s" %(self.sdc_url,"catalog/product/"+product_name)
         response= http.delete(url, headers)
@@ -186,8 +189,9 @@ class ProductRequest:
 
     def get_products(self):
         url="%s/%s" %(self.sdc_url,"catalog/product")
-        headers={'X-Auth-Token': self.token,
-                 'Accept': "application/json"}
+        headers={'Accept': "application/json"}
+        #headers={'X-Auth-Token': self.token,
+        #         'Accept': "application/json"}
         response= http.get(url, headers)
 
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
@@ -235,9 +239,11 @@ class ProductRequest:
     ##
     def get_products(self):
         url="%s/%s" %(self.sdc_url,"catalog/product")
-        headers={'X-Auth-Token': self.token,
-             'Accept': "application/json"}
-        response= http.get(url, headers)
+        #headers={'X-Auth-Token': self.token,
+        #     'Accept': "application/json"}
+        headers={'Accept': "application/json"}
+        print url
+	response= http.get(url, headers)
 
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
         if response.status!=200:
@@ -269,15 +275,6 @@ class ProductRequest:
                 except:
                     pass
                 print var
-
-         #   dom = parseString(res_data)
-          #  xml_products = (dom.getElementsByTagName('product'))
-
-
-            #   product_name =
-            #   product = Product ()
-            #   add_product
-
 
 
    # print g.products
