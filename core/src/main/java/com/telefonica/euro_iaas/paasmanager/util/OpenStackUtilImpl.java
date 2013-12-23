@@ -814,7 +814,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
         try {
             response = executeNovaRequest(request);
-
             // String id = response.split(",")[1];
             server = JAXBUtils.unmarshall(response, false, Server.class);
 
@@ -1009,6 +1008,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
                 InputStream is = response.getEntity().getContent();
                 String result = convertStreamToString(is);
                 log.debug("Result " + result);
+                                
                 is.close();
 
                 if ((response.getStatusLine().getStatusCode() == http_code_ok)
@@ -1018,6 +1018,12 @@ public class OpenStackUtilImpl implements OpenStackUtil {
                     newHeaders = result.split("\n");
                 } else {
                     log.debug(" HttpResponse " + response.getStatusLine().getStatusCode());
+                    if (result.indexOf("badRequest")!= -1) {
+                        String error = result.substring(result.indexOf("<message>")+9, result.indexOf("</message>"));
+                        log.debug("Error in the request " + error);
+                        throw new OpenStackException(error);
+                    }
+                    
                     throw new OpenStackException(result);
                 }
 
