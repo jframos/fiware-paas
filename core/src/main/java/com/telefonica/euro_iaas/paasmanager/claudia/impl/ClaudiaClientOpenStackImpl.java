@@ -232,7 +232,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             }
             vm.setVmid(serverId);
         } catch (OpenStackException e) {
-            String errorMessage = "Error interacting with OpenStack " +e.getMessage();
+            String errorMessage = "Error interacting with OpenStack " + e.getMessage();
             log.error(errorMessage);
             throw new InfrastructureException(errorMessage);
 

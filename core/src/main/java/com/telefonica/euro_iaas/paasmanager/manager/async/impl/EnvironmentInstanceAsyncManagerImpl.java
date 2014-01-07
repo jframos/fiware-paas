@@ -78,13 +78,13 @@ public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceA
                 String errorMsg = "There is a Product Instance already INSTALLED" + "in the system";
                 updateErrorTaskOnInstall(environmentInstance, claudiaData.getVdc(), task, errorMsg, nue);
             } catch (InfrastructureException ie) {
-                String errorMsg = " An error has ocurred in the process of creating VMs ";
+                String errorMsg = "Infrastructure error " + ie.getLocalizedMessage();
                 updateErrorTaskOnInstall(environmentInstance, claudiaData.getVdc(), task, errorMsg, ie);
             } catch (IPNotRetrievedException ipe) {
                 String errorMsg = " The ip of a VM could not be retrieved ";
                 updateErrorTaskOnInstall(environmentInstance, claudiaData.getVdc(), task, errorMsg, ipe);
             } catch (ProductInstallatorException pie) {
-                String errorMsg = "Error installing a product. Description:" + e.getMessage();
+                String errorMsg = "Error installing a product. Description:" + pie.getMessage();
                 updateErrorTaskOnInstall(environmentInstance, claudiaData.getVdc(), task, errorMsg, pie);
             } catch (TaskNotFoundException tne) {
                 String errorMsg = "Unable to update task: " + tne.getTask().getHref() + ". Description: "

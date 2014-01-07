@@ -93,6 +93,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         // SDCClient client = new SDCClient();
         com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService pIService = sDCClient
                 .getProductInstanceService(sdcServerUrl, sdcMediaType);
+        log.debug("sdc url " + sdcServerUrl);
 
         com.telefonica.euro_iaas.sdc.model.Task task = null;
 

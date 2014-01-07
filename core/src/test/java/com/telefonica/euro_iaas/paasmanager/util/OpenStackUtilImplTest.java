@@ -24,6 +24,7 @@ import java.util.HashSet;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.HttpClientConnectionManager;
@@ -338,6 +339,36 @@ public class OpenStackUtilImplTest {
         when(entity.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes()));
 
         String response = openStackUtil.listNetworks("region", "token", "vdc");
+
+        // then
+        assertNotNull(response);
+
+        verify(openStackRegion).getQuantumEndPoint(anyString(), anyString());
+        verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
+        verify(httpResponse, times(3)).getStatusLine();
+        verify(statusLine, times(3)).getStatusCode();
+
+    }
+    
+    @Test (expected=OpenStackException.class)
+    public void shouldDeployVMError() throws OpenStackException, ClientProtocolException, IOException {
+        // given
+        String payload ="";
+        String content = "<badRequest code=\"400\" xmlns=\"http://docs.openstack.org/compute/api/v1.1\">"+
+        "<message>Invalid key_name provided.</message></badRequest>";
+        HttpEntity entity = mock(HttpEntity.class);
+
+        // when
+        when(openStackRegion.getQuantumEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0/");
+
+        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
+        when(httpResponse.getStatusLine()).thenReturn(statusLine);
+        when(statusLine.getStatusCode()).thenReturn(400);
+        when(statusLine.getReasonPhrase()).thenReturn("ok");
+        when(httpResponse.getEntity()).thenReturn(entity);
+        when(entity.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes()));
+      
+        String response = openStackUtil.createServer(payload, "region", "token", "vdc");
 
         // then
         assertNotNull(response);

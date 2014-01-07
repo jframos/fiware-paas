@@ -198,7 +198,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                         tierInstance.setStatus(Status.INSTALLED);
                         tierInstance.addProductInstance(productInstance);
                     } catch (ProductInstallatorException pie) {
-                        String message = " Error installing product " + productRelease.getName();
+                        String message = " Error installing product " + productRelease.getName() + " " + pie.getMessage();
                         tierInstance.setStatus(Status.ERROR);
                         tierInstanceDao.update(tierInstance);
                         log.error(message);
