@@ -44,4 +44,15 @@ public class SecurityGroupTest extends TestCase {
         assertEquals(securityGroup.getRules().get(0).getFromPort(), "22");
         assertEquals(securityGroup.getRules().get(1).getToPort(), "8080");
     }
+    
+    @Test
+    public void equalRules() throws Exception {
+        Rule rule = new Rule("TCP", "80", "80", "", "0.0.0.0/0");
+        Rule rule2 = new Rule("TCP", "80", "80", "", "0.0.0.0/0");
+        assertEquals(rule.equals(rule2), true);
+        
+        rule.setIdParent("1");
+        rule.setIdParent("2");
+        assertEquals(rule.equals(rule2), false);
+    }
 }

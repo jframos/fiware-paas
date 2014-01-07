@@ -27,6 +27,7 @@ import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.TierManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
@@ -97,14 +98,15 @@ public class TierManagerImplTest extends TestCase {
     }
 
     @Test
-    public void testcreateSecurityGroup() {
+    public void testcreateSecurityGroup() throws EntityNotFoundException{
         productRelease = new ProductRelease("product", "2.0");
-        productRelease.addAttribute(new Attribute("openports", "8080"));
+        productRelease.addMetadata(new Metadata("open_ports", "8080"));
 
         productReleases = new ArrayList<ProductRelease>();
         productReleases.add(productRelease);
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
                 "image", "icono", "keypair", "floatingip", "payload");
+        when (productReleaseManager.loadWithMetadata(any(String.class))).thenReturn(productRelease);
 
         SecurityGroup securityGroup = tierManager.generateSecurityGroup(data, tier);
         assertEquals(securityGroup.getName(), "sg_dd_dd_" + tier.getName());
@@ -112,7 +114,7 @@ public class TierManagerImplTest extends TestCase {
     }
 
     @Test
-    public void testcreateSecurityGroupNoAttributes() {
+    public void testcreateSecurityGroupNoAttributes() throws EntityNotFoundException {
         productRelease = new ProductRelease("product", "2.0");
         // productRelease.addAttributeport(new Attribute("puerto", "8080"));
 
@@ -120,36 +122,18 @@ public class TierManagerImplTest extends TestCase {
         productReleases.add(productRelease);
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
                 "image", "icono", "keypair", "floatingip", "payload");
-
+        when (productReleaseManager.loadWithMetadata(any(String.class))).thenReturn(productRelease);
         SecurityGroup securityGroup = tierManager.generateSecurityGroup(data, tier);
         assertEquals(securityGroup.getName(), "sg_dd_dd_" + tier.getName());
         assertEquals(securityGroup.getRules().size(), 2);
     }
 
-    @Test
-    public void testcreateSecurityGroupNoAttributes2ProductReleases() {
-        productRelease = new ProductRelease("product", "2.0");
-        productRelease.addAttribute(new Attribute("openports", "8080"));
-
-        ProductRelease productRelease2 = new ProductRelease("product2", "2.0");
-        productRelease2.addAttribute(new Attribute("openports", "8083"));
-
-        productReleases = new ArrayList<ProductRelease>();
-        productReleases.add(productRelease);
-        productReleases.add(productRelease2);
-        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
-                "image", "icono", "keypair", "floatingip", "payload");
-
-        SecurityGroup securityGroup = tierManager.generateSecurityGroup(data, tier);
-        assertEquals(securityGroup.getName(), "sg_dd_dd_" + tier.getName());
-        assertEquals(securityGroup.getRules().size(), 4);
-    }
 
     @Test
     public void testTierAddProduct() throws Exception {
 
         productRelease = new ProductRelease("product", "2.0");
-        productRelease.addAttribute(new Attribute("openports", "8080 2323"));
+        productRelease.addAttribute(new Attribute("open_ports", "8080 2323"));
 
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
                 "keypair", "floatingip", "payload");
@@ -177,7 +161,7 @@ public class TierManagerImplTest extends TestCase {
     public void testTierAddSecurityGroupToProductRelease() throws Exception {
 
         productRelease = new ProductRelease("product", "2.0");
-        productRelease.addAttribute(new Attribute("openports", "8080 2323"));
+        productRelease.addAttribute(new Attribute("open_ports", "8080 2323"));
 
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
                 "keypair", "floatingip", "payload");
@@ -201,7 +185,7 @@ public class TierManagerImplTest extends TestCase {
     public void testTierAllData() throws Exception {
 
         productRelease = new ProductRelease("product", "2.0");
-        productRelease.addAttribute(new Attribute("openports", "8080"));
+        productRelease.addAttribute(new Attribute("open_ports", "8080"));
 
         productReleases = new ArrayList<ProductRelease>();
         productReleases.add(productRelease);

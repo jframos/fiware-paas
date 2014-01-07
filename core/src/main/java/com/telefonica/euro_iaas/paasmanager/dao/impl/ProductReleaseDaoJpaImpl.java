@@ -42,7 +42,7 @@ public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, St
             } catch (Exception e2) {
 
                 try {
-                    return findByProductReleaseWithMetadata(name);
+                    return loadProductReleaseWithMetadata(name);
                 } catch (Exception e3) {
 
                     return super.loadByField(ProductRelease.class, "name", name);
@@ -50,16 +50,9 @@ public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, St
             }
 
         }
-        // return super.loadByField(ProductRelease.class, "name", name);
+
     }
 
-    /*
-     * public ProductRelease load(String name) throws EntityNotFoundException { ProductReleaseSearchCriteria criteria =
-     * new ProductReleaseSearchCriteria(); criteria.setProductName(name); List<ProductRelease> productReleases =
-     * findByCriteria(criteria); if (productReleases.size() != 1) { throw new
-     * EntityNotFoundException(ProductRelease.class, "name", name); } ProductRelease pRelease = productReleases.get(0);
-     * return pRelease; //return super.loadByField(ProductRelease.class, "name", name); }
-     */
 
     public List<ProductRelease> findByCriteria(ProductReleaseSearchCriteria criteria) {
         // Session session = (Session) getEntityManager().getDelegate();
@@ -114,7 +107,7 @@ public class ProductReleaseDaoJpaImpl extends AbstractBaseDao<ProductRelease, St
         return productRelease;
     }
 
-    private ProductRelease findByProductReleaseWithMetadata(String name) throws EntityNotFoundException {
+    public ProductRelease loadProductReleaseWithMetadata(String name) throws EntityNotFoundException {
 
         Query query = getEntityManager().createQuery(
                 "select p from ProductRelease p left join " + " fetch p.metadatas where p.name = :name");

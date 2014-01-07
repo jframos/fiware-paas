@@ -27,6 +27,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
+import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
@@ -118,9 +119,10 @@ public class TierManagerImpl implements TierManager {
      * @param tier
      * @return
      * @throws InvalidSecurityGroupRequestException
+     * @throws EntityNotFoundException 
      */
 
-    private void createSecurityGroups(ClaudiaData claudiaData, Tier tier) throws InvalidSecurityGroupRequestException {
+    private void createSecurityGroups(ClaudiaData claudiaData, Tier tier) throws InvalidSecurityGroupRequestException, EntityNotFoundException {
         if ((systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")
                 && claudiaData.getVdc() != null && claudiaData.getVdc().length() > 0)) {
 
@@ -246,7 +248,7 @@ public class TierManagerImpl implements TierManager {
         return null;
     }
 
-    public SecurityGroup generateSecurityGroup(ClaudiaData claudiaData, Tier tier) {
+    public SecurityGroup generateSecurityGroup(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException {
 
         SecurityGroup securityGroup = new SecurityGroup();
         securityGroup.setName("sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() + "_" + tier.getName());
@@ -259,26 +261,9 @@ public class TierManagerImpl implements TierManager {
         if (tier.getProductReleases() != null) {
 
             for (ProductRelease productRelease : tier.getProductReleases()) {
-                if (productRelease.getAttributes() == null) {
-                    try {
-
-                        productRelease = productReleaseManager.load(productRelease.getProduct() + "-"
-                                + productRelease.getVersion());
-                    } catch (Exception e) {
-                        log.warn("The product does not exists " + productRelease.getProduct() + "-"
-                                + productRelease.getVersion());
-                    }
-                }
-                Attribute openPortsAttribute = productRelease.getAttribute("openports");
-                if (openPortsAttribute != null) {
-                    StringTokenizer st = new StringTokenizer(openPortsAttribute.getValue());
-
-                    while (st.hasMoreTokens()) {
-                        Rule rule = createRulePort(st.nextToken());
-                        rules.add(rule);
-                    }
-                }
+                getRulesFromProduct (productRelease, rules);
             }
+
         }
         securityGroup.setRules(rules);
         return securityGroup;
@@ -296,6 +281,24 @@ public class TierManagerImpl implements TierManager {
         rules.add(rule2);
         return rules;
 
+    }
+    
+    private void getRulesFromProduct(ProductRelease productRelease, List<Rule> rules) throws EntityNotFoundException {
+       
+        productRelease = productReleaseManager.loadWithMetadata(productRelease.getProduct() + "-"
+            + productRelease.getVersion());
+            Metadata openPortsAttribute = productRelease.getMetadata("open_ports");
+        if (openPortsAttribute != null) {
+            log.debug ("Adding product rule " + openPortsAttribute.getValue());
+            StringTokenizer st = new StringTokenizer(openPortsAttribute.getValue());
+            while (st.hasMoreTokens()) {
+                Rule rule = createRulePort(st.nextToken());
+                if (!rules.contains(rule)) {
+                    log.debug ("New rule " );
+                    rules.add(rule);
+                }
+           }
+        }
     }
 
     public Tier load(String name, String vdc, String environmentName) throws EntityNotFoundException {
