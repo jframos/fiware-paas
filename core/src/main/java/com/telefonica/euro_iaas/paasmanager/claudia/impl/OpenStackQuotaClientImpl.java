@@ -41,9 +41,7 @@ public class OpenStackQuotaClientImpl implements QuotaClient {
     public Limits getLimits(ClaudiaData claudiaData, String region) throws InfrastructureException {
 
         try {
-            String token = claudiaData.getUser().getToken();
-            String vdc = claudiaData.getVdc();
-            String result = openStackUtil.getAbsoluteLimits(region, token, vdc);
+            String result = openStackUtil.getAbsoluteLimits(claudiaData.getUser(), region);
 
             JSONObject jsonObject = JSONObject.fromObject(result);
 

@@ -355,7 +355,10 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         log.debug("Delete the networks in env if there are not being used");
         List<NetworkInstance> netInsts = getNetworkInstInEnv(envInstance);
         for (NetworkInstance network : netInsts) {
+            log.debug("Is network default? " + network.isDefaultNet());
+            if (!network.isDefaultNet()) {
             networkInstanceManager.delete(claudiaData, network, region);
+            }
         }
     }
 

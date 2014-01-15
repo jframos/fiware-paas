@@ -174,8 +174,8 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             } catch (OpenStackException e) {
                 String errorMessage = "Error obtaining info from Server " + tierInstance.getVM().getVmid();
                 log.error(errorMessage);
-
-                if (e.getMessage().contains("itemNotFound") || e.getMessage().contains("badRequest")) {
+                
+                if (e.getMessage().contains("Malformed request url") || e.getMessage().contains("itemNotFound") || e.getMessage().contains("badRequest")) {
                     break;
                 }
                 

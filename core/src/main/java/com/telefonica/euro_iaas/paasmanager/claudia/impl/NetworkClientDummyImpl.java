@@ -15,6 +15,7 @@ import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
+import com.telefonica.euro_iaas.paasmanager.model.Port;
 import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 
@@ -172,6 +173,13 @@ public class NetworkClientDummyImpl implements NetworkClient {
 
     @Override
     public List<NetworkInstance> loadNotSharedNetworks(ClaudiaData claudiaData, String region) throws InfrastructureException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Port> listPortsFromNetwork(ClaudiaData claudiaData, String region, String networkId)
+            throws InfrastructureException {
         // TODO Auto-generated method stub
         return null;
     }
