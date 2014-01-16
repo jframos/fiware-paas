@@ -40,11 +40,12 @@ public class NetworkandSubNetDaoJpaImplTest {
     private SubNetworkDao subNetworkDao;
     public static String NETWORK_NAME = "network_name";
     public static String SUB_NETWORK_NAME = "subnetwork_name";
+    public static String VDC = "vdc";
 
     @Test
     public void testNetworkNoSubNet() throws Exception {
 
-        Network network = new Network(NETWORK_NAME);
+        Network network = new Network(NETWORK_NAME, VDC);
 
         network = networkDao.create(network);
         assertNotNull(network);
@@ -64,7 +65,7 @@ public class NetworkandSubNetDaoJpaImplTest {
     @Test
     public void testDestroyNetworkNoSubNet() throws InvalidEntityException, AlreadyExistsEntityException {
 
-        Network network = new Network(NETWORK_NAME);
+        Network network = new Network(NETWORK_NAME, VDC);
 
         network = networkDao.create(network);
         networkDao.remove(network);
@@ -107,7 +108,7 @@ public class NetworkandSubNetDaoJpaImplTest {
 
         Set<SubNetwork> subNets = new HashSet<SubNetwork>();
         subNets.add(subNet);
-        Network network = new Network(NETWORK_NAME + "aa");
+        Network network = new Network(NETWORK_NAME + "aa", VDC);
         network.setSubNets(subNets);
 
         networkDao.create(network);
@@ -134,7 +135,7 @@ public class NetworkandSubNetDaoJpaImplTest {
         subNet = subNetworkDao.create(subNet);
         Set<SubNetwork> subNets = new HashSet<SubNetwork>();
         subNets.add(subNet);
-        Network network = new Network(NETWORK_NAME);
+        Network network = new Network(NETWORK_NAME, VDC);
         network.setSubNets(subNets);
 
         network = networkDao.create(network);

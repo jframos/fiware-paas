@@ -112,7 +112,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         List<NetworkInstance> networkNoSharedInstances = loadNotSharedNetworksUser(networkInstances, claudiaData.getVdc());
         if (networkNoSharedInstances.isEmpty()) {
             log.debug("There is not any network associated to the user");
-            Network net = new Network (claudiaData.getUser().getTenantName() );
+            Network net = new Network (claudiaData.getUser().getTenantName(), claudiaData.getVdc() );
             SubNetwork subNet = new SubNetwork("default"+claudiaData.getVdc(),""+networkInstances.size());
             net.addSubNet(subNet); 
             NetworkInstance netinstance = net.toNetworkInstance();
@@ -122,19 +122,19 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         }
         else {
             log.debug ("Getting the default network ");
-            NetworkInstance defaulNet = getDefaultNetwork (networkNoSharedInstances);
+            NetworkInstance defaulNet = getDefaultNetwork (networkNoSharedInstances, claudiaData.getVdc());
             if (defaulNet == null) {
                 log.debug ("There is not a default network. Getting the first one");
-                tierInstance.addNetworkInstance(networkInstanceManager.load(networkNoSharedInstances.get(0).getNetworkName()));
+                tierInstance.addNetworkInstance(networkInstanceManager.load(networkNoSharedInstances.get(0).getNetworkName(), claudiaData.getVdc()));
             }
             
         }
     }
     
-    private NetworkInstance getDefaultNetwork (List<NetworkInstance> networkInstances) throws EntityNotFoundException {
+    private NetworkInstance getDefaultNetwork (List<NetworkInstance> networkInstances, String vdc) throws EntityNotFoundException {
         for (NetworkInstance net: networkInstances) {
             if(net.isDefaultNet()){
-                return networkInstanceManager.load(net.getNetworkName());
+                return networkInstanceManager.load(net.getNetworkName(), vdc);
             }
         }
         return null;

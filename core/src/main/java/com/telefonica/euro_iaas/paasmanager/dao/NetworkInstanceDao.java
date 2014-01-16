@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.dao;
 
 import com.telefonica.euro_iaas.commons.dao.BaseDAO;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 
 
@@ -17,5 +18,7 @@ import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
  * @author Henar Munoz
  */
 public interface NetworkInstanceDao extends BaseDAO<NetworkInstance, String> {
+    
+    NetworkInstance load(String name, String vdc) throws EntityNotFoundException ;
 
 }

@@ -48,9 +48,9 @@ public class NetworkManagerImpl implements NetworkManager {
             AlreadyExistsEntityException, EntityNotFoundException, InfrastructureException {
         log.debug("Create network " + network.getNetworkName());
 
-        if (exists(network.getNetworkName())) {
+        if (exists(network.getNetworkName(), claudiaData.getVdc())) {
             log.debug("The network " + network.getNetworkName() + " already exists");
-            Network networkDB = networkDao.load(network.getNetworkName());
+            Network networkDB = networkDao.load(network.getNetworkName(), claudiaData.getVdc());
             for (SubNetwork subnet : network.getSubNets()) {
                 if (!networkDB.contains(subnet)) {
                     createSubNetwork(network, subnet);
@@ -169,8 +169,8 @@ public class NetworkManagerImpl implements NetworkManager {
      * @param networkName
      * @return the network
      */
-    public Network load(String networkName) throws EntityNotFoundException {
-        return networkDao.load(networkName);
+    public Network load(String networkName, String vdc) throws EntityNotFoundException {
+        return networkDao.load(networkName, vdc);
     }
 
     public void setNetworkDao(NetworkDao networkDao) {
@@ -198,9 +198,9 @@ public class NetworkManagerImpl implements NetworkManager {
     /**
      * It checks if the network already exists.
      */
-    public boolean exists(String networkName) {
+    public boolean exists(String networkName, String vdc) {
         try {
-            networkDao.load(networkName);
+            networkDao.load(networkName, vdc);
             return true;
         } catch (EntityNotFoundException e) {
             return false;

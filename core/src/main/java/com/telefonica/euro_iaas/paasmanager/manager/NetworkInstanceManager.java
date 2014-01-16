@@ -58,7 +58,7 @@ public interface NetworkInstanceManager {
      * 
      * @return the network.
      */
-    NetworkInstance load(String networkName) throws EntityNotFoundException;
+    NetworkInstance load(String networkName, String vdc) throws EntityNotFoundException;
 
     /**
      * Update a network.

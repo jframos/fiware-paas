@@ -41,7 +41,7 @@ public class TierTest extends TestCase {
         tier.setSecurityGroup(securityGroup);
 
         TierDto tierDto = tier.toDto();
-        Tier tier3 = tierDto.fromDto();
+        Tier tier3 = tierDto.fromDto("vdc");
 
         assertEquals(tier.getSecurityGroup().getRules().size(), 1);
         assertEquals(tier.getInitialNumberInstances(), initial);
@@ -60,7 +60,7 @@ public class TierTest extends TestCase {
 
         Tier tier = new Tier("tier", maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes", null);
 
-        Network net = new Network("net");
+        Network net = new Network("net", "vdc");
         tier.addNetwork(net);
 
         for (Network netOut : tier.getNetworks()) {
@@ -77,7 +77,7 @@ public class TierTest extends TestCase {
         Integer initial = new Integer(2);
         Integer maximum = new Integer(1);
 
-        NetworkInstance networkInstance = new NetworkInstance("net");
+        NetworkInstance networkInstance = new NetworkInstance("net", "vdc");
         networkInstance.setIdNetwork("ID");
 
         Tier tier = new Tier("tier", maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes", null);

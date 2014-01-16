@@ -130,7 +130,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             log.debug(response);
             // "network-" + claudiaData.getUser().getTenantName()
             JSONObject jsonNetworks = new JSONObject(response).getJSONObject("network");
-            networkInstance = fromJsonToNetworkInstance (jsonNetworks);
+            networkInstance = fromJsonToNetworkInstance (jsonNetworks, vdc);
             log.debug("Network id " + networkInstance.getIdNetwork() + " for network name " + networkInstance.getNetworkName());
         } catch (OpenStackException e) {
             String msm = "Error to deploy the defaul network " + e.getMessage();
@@ -326,7 +326,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             for (int i = 0; i< jsonNetworks.length(); i++) {
             	
             	JSONObject jsonNet = jsonNetworks.getJSONObject(i);
-            	NetworkInstance netInst = fromJsonToNetworkInstance (jsonNet);
+            	NetworkInstance netInst = fromJsonToNetworkInstance (jsonNet, vdc);
             	networks.add(netInst);
 
             }
@@ -383,7 +383,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         return ports;
     }
     
-    private NetworkInstance fromJsonToNetworkInstance(JSONObject jsonNet) throws JSONException {
+    private NetworkInstance fromJsonToNetworkInstance(JSONObject jsonNet, String vdc) throws JSONException {
 
         String name = (String) jsonNet.get("name");
         boolean shared = (Boolean) jsonNet.get("shared");
@@ -391,7 +391,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         boolean adminStateUp = (Boolean) jsonNet.get("admin_state_up");
         String tenantId = (String) jsonNet.get("tenant_id");
 
-        NetworkInstance netInst = new NetworkInstance(name);
+        NetworkInstance netInst = new NetworkInstance(name, vdc);
         netInst.setIdNetwork(id);
         netInst.setShared(shared);
         netInst.setTenantId(tenantId);

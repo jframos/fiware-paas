@@ -212,7 +212,7 @@ public class OpenStackUtilImplTest {
     @Test
     public void shouldDeleteNetwork() throws OpenStackException, IOException {
 
-        NetworkInstance net = new NetworkInstance("NETWORK");
+        NetworkInstance net = new NetworkInstance("NETWORK", "vdc");
         net.setIdNetwork("ID");
 
         // when
@@ -257,7 +257,7 @@ public class OpenStackUtilImplTest {
     @Test
     public void shouldAddNetworkInterfacetoPublicRouter() throws OpenStackException, IOException {
         // given
-        NetworkInstance net = new NetworkInstance("NETWORK");
+        NetworkInstance net = new NetworkInstance("NETWORK", "vdc");
         SubNetworkInstance subNet = new SubNetworkInstance("SUBNET", "CIDR");
         net.addSubNet(subNet);
 
@@ -303,7 +303,7 @@ public class OpenStackUtilImplTest {
     @Test
     public void shouldDeleteNetworkInterfacetoPublicRouter() throws OpenStackException, IOException {
         // given
-        NetworkInstance net = new NetworkInstance("NETWORK");
+        NetworkInstance net = new NetworkInstance("NETWORK", "vdc");
         SubNetworkInstance subNet = new SubNetworkInstance("SUBNET", "CIDR");
         net.addSubNet(subNet);
 
