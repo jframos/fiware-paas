@@ -55,14 +55,14 @@ public interface NetworkManager {
      * 
      * @return the network.
      */
-    Network load(String networkName) throws EntityNotFoundException;
+    Network load(String networkName, String vdc) throws EntityNotFoundException;
 
     /**
      * If the network exists in DB.
      * 
      * @return .
      */
-    boolean exists(String networkName);
+    boolean exists(String networkName, String vdc);
 
     /**
      * Update a network.

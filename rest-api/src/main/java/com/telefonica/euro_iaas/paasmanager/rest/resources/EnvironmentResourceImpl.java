@@ -74,7 +74,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
     private Set<Tier> convertToTiers(Set<TierDto> tierDtos, String environmentName, String vdc) {
         Set<Tier> tiers = new HashSet<Tier>();
         for (TierDto tierDto: tierDtos) {
-            Tier tier = tierDto.fromDto();
+            Tier tier = tierDto.fromDto(vdc);
             // tier.setSecurity_group("sg_"
             // +environmentName+"_"+vdc+"_"+tier.getName());
             tiers.add(tier);

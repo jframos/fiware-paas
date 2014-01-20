@@ -98,7 +98,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network_creation1");
+        Network net = new Network("network_creation1", vdc);
         tierbk.addNetwork(net);
 
         environmentBk.addTier(tierbk);
@@ -160,7 +160,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network_deletion2");
+        Network net = new Network("network_deletion2", vdc);
         tierbk.addNetwork(net);
 
         environmentBk.addTier(tierbk);
@@ -211,7 +211,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network2");
+        Network net = new Network("network2", vdc);
         tierbk.addNetwork(net);
 
         environmentBk.addTier(tierbk);
@@ -262,7 +262,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network3");
+        Network net = new Network("network3", vdc);
 
         tierbk.addNetwork(net);
 
@@ -316,8 +316,8 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network5");
-        Network net2 = new Network("Internet");
+        Network net = new Network("network5", vdc);
+        Network net2 = new Network("Internet", vdc);
         tierbk.addNetwork(net);
         tierbk.addNetwork(net2);
 
@@ -357,7 +357,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network4");
+        Network net = new Network("network4", vdc);
 
         tierbk.addNetwork(net);
 

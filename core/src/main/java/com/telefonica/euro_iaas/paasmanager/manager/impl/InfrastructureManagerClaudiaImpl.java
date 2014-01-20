@@ -355,7 +355,10 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         log.debug("Delete the networks in env if there are not being used");
         List<NetworkInstance> netInsts = getNetworkInstInEnv(envInstance);
         for (NetworkInstance network : netInsts) {
+            log.debug("Is network default? " + network.isDefaultNet());
+            if (!network.isDefaultNet()) {
             networkInstanceManager.delete(claudiaData, network, region);
+            }
         }
     }
 
@@ -610,12 +613,13 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         }
 
         for (Network network : networkToBeDeployed) {
-            log.debug("Network instance to be deployed: " + network.getNetworkName());
-            network = networkManager.load(network.getNetworkName());
+            log.debug("Network instance to be deployed: " + network.getNetworkName() + " vdc " + data.getVdc());
+            network = networkManager.load(network.getNetworkName(), data.getVdc());
             NetworkInstance networkInst = network.toNetworkInstance();
+            log.debug("Network instance to be deployed: " + network.getNetworkName() + " vdc " + data.getVdc());
 
             try {
-                networkInst = networkInstanceManager.load(networkInst.getNetworkName());
+                networkInst = networkInstanceManager.load(networkInst.getNetworkName(), data.getVdc());
                 log.debug("the network inst" + networkInst.getNetworkName() + " already exists");
             } catch (EntityNotFoundException e1) {
                 try {

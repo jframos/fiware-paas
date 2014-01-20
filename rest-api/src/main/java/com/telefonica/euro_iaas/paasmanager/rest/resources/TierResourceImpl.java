@@ -162,7 +162,7 @@ public class TierResourceImpl implements TierResource {
         }
         log.debug("From tier dto " + tierDto + "  product " + tierDto.getProductReleaseDtos() + " nets "
                 + tierDto.getNetworksDto());
-        Tier tier = tierDto.fromDto();
+        Tier tier = tierDto.fromDto(vdc);
         log.debug("to tier " + tier + "  product " + tier.getProductReleases() + " nets " + tier.getNetworks());
 
         Environment environment = environmentManager.load(environmentName);
@@ -218,7 +218,7 @@ public class TierResourceImpl implements TierResource {
             claudiaData.setUser(getCredentials());
         }
 
-        Tier newtier = tierDto.fromDto();
+        Tier newtier = tierDto.fromDto(vdc);
 
         try {
             Environment environment = environmentManager.load(environmentName);

@@ -269,7 +269,7 @@ public class TierManagerImplTest extends TestCase {
 
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
                 "keypair", "floatingip", "payload");
-        Network net = new Network("NETWORK_NAME");
+        Network net = new Network("NETWORK_NAME", "vd");
         tier.addNetwork(net);
         tier.setVdc(VDC);
         tier.setEnviromentName(ENV);
@@ -278,9 +278,9 @@ public class TierManagerImplTest extends TestCase {
 
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
         when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
-        when(networkManager.exists(any(String.class))).thenReturn(false);
+        when(networkManager.exists(any(String.class),any(String.class))).thenReturn(false);
         when(networkManager.create(any(ClaudiaData.class),any(Network.class),any(String.class))).thenReturn(net);
-        when(networkManager.load(any(String.class))).thenReturn(net);
+        when(networkManager.load(any(String.class),any(String.class))).thenReturn(net);
 
 
         Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
@@ -300,7 +300,7 @@ public class TierManagerImplTest extends TestCase {
 
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
                 "keypair", "floatingip", "payload");
-        Network net = new Network("NETWORK_NAME");
+        Network net = new Network("NETWORK_NAME","vdc");
         tier.addNetwork(net);
         tier.setVdc(VDC);
         tier.setEnviromentName(ENV);
@@ -309,8 +309,8 @@ public class TierManagerImplTest extends TestCase {
 
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
         when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
-        when(networkManager.exists(any(String.class))).thenReturn(true);
-        when(networkManager.load(any(String.class))).thenReturn(net);
+        when(networkManager.exists(any(String.class),any(String.class))).thenReturn(true);
+        when(networkManager.load(any(String.class),any(String.class))).thenReturn(net);
 
 
         Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
