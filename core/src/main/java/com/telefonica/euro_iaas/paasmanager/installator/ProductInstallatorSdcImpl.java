@@ -55,12 +55,14 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         log.debug("Install software " + productRelease.getProduct() + "-" + productRelease.getVersion());
         // From Paasmanager ProductRelease To SDC ProductInstanceDto
         com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto productInstanceDto = new com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto();
+        List<com.telefonica.euro_iaas.sdc.model.Attribute> attrs = new ArrayList<com.telefonica.euro_iaas.sdc.model.Attribute>();
+
         // sDCUtil.checkIfSdcNodeIsReady(tierInstance.getVM().getIp());
         try {
             productRelease = productReleaseManager
                     .load(productRelease.getProduct() + "-" + productRelease.getVersion());
             if (productRelease.getAttributes().isEmpty()) {
-                List<com.telefonica.euro_iaas.sdc.model.Attribute> attrs = new ArrayList<com.telefonica.euro_iaas.sdc.model.Attribute>();
+                //List<com.telefonica.euro_iaas.sdc.model.Attribute> attrs = new ArrayList<com.telefonica.euro_iaas.sdc.model.Attribute>();
 
                 for (Attribute attribute : productRelease.getAttributes()) {
                     com.telefonica.euro_iaas.sdc.model.Attribute attr = new com.telefonica.euro_iaas.sdc.model.Attribute(
@@ -107,7 +109,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         if (tierInstance.getVdc() != null)
             productInstanceDto.setVdc(tierInstance.getVdc());
 
-        productInstanceDto.setAttributes(new ArrayList<com.telefonica.euro_iaas.sdc.model.Attribute>());
+        productInstanceDto.setAttributes(attrs);
 
         Attribute attSdcGroup = getAttribute(productRelease.getAttributes(), "sdcgroupid");
         if (attSdcGroup != null) {
