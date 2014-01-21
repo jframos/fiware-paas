@@ -54,9 +54,7 @@
         </profile>
         <profile>
             <id>update</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+
             <build>
                 <plugins>
                     <plugin>
