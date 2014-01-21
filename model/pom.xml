@@ -38,7 +38,6 @@
             <version>${spring.version}</version>
         </dependency>
 
-        <!-- TEST DEPENDENCIES -->
         <dependency>
             <groupId>javax.persistence</groupId>
             <artifactId>persistence-api</artifactId>

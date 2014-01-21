@@ -32,7 +32,7 @@ public class Others {
         
         PaasManagerUser user = new PaasManagerUser("username", "myToken", new HashSet<GrantedAuthority>());
         user.setTenantName("FIWARE");
-        ClaudiaData claudiaData = new ClaudiaData(VDC, ORG, SERVICE);
+        ClaudiaData claudiaData = new ClaudiaData(ORG, VDC, SERVICE);
         claudiaData.setUser(user);
         
         assertEquals(claudiaData.getOrg(), ORG);
