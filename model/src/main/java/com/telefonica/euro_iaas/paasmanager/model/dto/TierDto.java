@@ -174,7 +174,7 @@ public class TierDto {
      * 
      * @tier
      */
-    public Tier fromDto() {
+    public Tier fromDto(String vdc) {
 
         Tier tier = new Tier();
         tier.setName(getName());
@@ -200,7 +200,7 @@ public class TierDto {
         }
 
         for (NetworkDto networkDto : this.getNetworksDto()) {
-            Network network = networkDto.fromDto();
+            Network network = networkDto.fromDto(vdc);
             tier.addNetwork(network);
         }
         return tier;

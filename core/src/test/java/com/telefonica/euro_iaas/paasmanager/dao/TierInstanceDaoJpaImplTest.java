@@ -69,7 +69,7 @@ public class TierInstanceDaoJpaImplTest {
         Integer initial = new Integer(2);
         Integer maximum = new Integer(1);
 
-        NetworkInstance networkInstance = new NetworkInstance ("net");
+        NetworkInstance networkInstance = new NetworkInstance ("net", "vdc");
         networkInstance.setIdNetwork("ID");
         networkInstance = networkInstanceDao.create(networkInstance);
 
@@ -96,7 +96,7 @@ public class TierInstanceDaoJpaImplTest {
         Integer initial = new Integer(2);
         Integer maximum = new Integer(1);
 
-        NetworkInstance networkInstance = new NetworkInstance ("net");
+        NetworkInstance networkInstance = new NetworkInstance ("net","vdc");
         networkInstance.setIdNetwork("ID");
         networkInstance = networkInstanceDao.create(networkInstance);
 
@@ -126,7 +126,7 @@ public class TierInstanceDaoJpaImplTest {
         Integer initial = new Integer(2);
         Integer maximum = new Integer(1);
 
-        NetworkInstance networkInstance = new NetworkInstance ("net");
+        NetworkInstance networkInstance = new NetworkInstance ("net","vdc");
         networkInstance.setIdNetwork("ID");
         networkInstance = networkInstanceDao.create(networkInstance);
 

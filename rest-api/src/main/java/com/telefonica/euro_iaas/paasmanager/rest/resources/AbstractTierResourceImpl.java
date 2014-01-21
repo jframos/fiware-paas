@@ -148,7 +148,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
             claudiaData.setUser(getCredentials());
         }
-        Tier tier = tierDto.fromDto();
+        Tier tier = tierDto.fromDto("");
         log.debug("vdc " + claudiaData.getVdc());
 
         Environment environment = environmentManager.load(environmentName);
@@ -180,7 +180,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
             claudiaData.setUser(getCredentials());
         }
 
-        Tier newtier = tierDto.fromDto();
+        Tier newtier = tierDto.fromDto("");
 
         try {
             Environment environment = environmentManager.load(environmentName);

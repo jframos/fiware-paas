@@ -56,6 +56,11 @@ public interface OpenStackUtil {
      * name of the resource Networks.
      */
     String RESOURCE_NETWORKS = "networks";
+    
+    /**
+     * name of the resource Networks.
+     */
+    String RESOURCE_PORTS = "ports";
     /**
      * name of the resource Subnets.
      */
@@ -176,7 +181,7 @@ public interface OpenStackUtil {
     /**
      * It deletes the subnetwork.
      */
-    void deleteSubNetwork(String idSubNet, String region, String token, String vdc) throws OpenStackException;
+    void deleteSubNetwork(String idSubNet, String region, String vdc, String token) throws OpenStackException;
 
     /**
      * Obtain the floating IP's of a certain tenantID.
@@ -203,6 +208,11 @@ public interface OpenStackUtil {
      * List all servers in OpenStack.
      */
     String listServers(String region, String token, String vdc) throws OpenStackException;
+    
+    /**
+     * List all ports in OpenStack.
+     */
+    String listPorts(PaasManagerUser user, String region) throws OpenStackException;
 
     /**
      * It removes the interface of the network in the router.
@@ -213,7 +223,7 @@ public interface OpenStackUtil {
     /**
      * It return all absolute limit values by tenantId.
      */
-    String getAbsoluteLimits(String region, String token, String vdc) throws OpenStackException;
+    String getAbsoluteLimits(PaasManagerUser user, String region) throws OpenStackException;
 
     /**
      * It gets the subnetwork details.
@@ -224,7 +234,7 @@ public interface OpenStackUtil {
      * It gets the network from the user.
      */
 
-    String listNetworks(String region, String token, String vdc) throws OpenStackException;
+    String listNetworks(PaasManagerUser user, String region) throws OpenStackException;
 
     /**
      * It deletes the interface in the public router.

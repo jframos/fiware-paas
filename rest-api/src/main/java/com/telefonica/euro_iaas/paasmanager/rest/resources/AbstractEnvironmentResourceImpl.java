@@ -170,7 +170,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
     private Set<Tier> convertToTiers(Set<TierDto> tierDtos) {
         Set<Tier> tiers = new HashSet<Tier>();
         for (TierDto tierDto: tierDtos) {
-            Tier tier = tierDto.fromDto();
+            Tier tier = tierDto.fromDto("");
 
             tiers.add(tier);
         }

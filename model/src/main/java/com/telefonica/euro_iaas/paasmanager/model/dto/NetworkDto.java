@@ -56,9 +56,9 @@ public class NetworkDto {
      * 
      * @return the network
      */
-    public Network fromDto() {
+    public Network fromDto(String vdc) {
 
-        Network net = new Network(this.getNetworkName());
+        Network net = new Network(this.getNetworkName(), vdc);
 
         for (SubNetworkDto subNetworkDto: this.getSubNetworkDto()) {
             SubNetwork subnet = new SubNetwork(subNetworkDto.getSubNetName());
