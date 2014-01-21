@@ -4,10 +4,10 @@
 
 
     <changeSet author="initial" id="1">
-        <createSequence sequenceName="hibernate_sequence"/>
+        <createSequence  sequenceName="hibernate_sequence"/>
     </changeSet>
     <changeSet author="initial" id="2">
-        <createTable tableName="applicationinstance">
+        <createTable  tableName="applicationinstance">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -16,7 +16,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="3">
-        <createTable tableName="applicationrelease">
+        <createTable  tableName="applicationrelease">
             <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -31,7 +31,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="4">
-        <createTable tableName="applicationrelease_applicationrelease">
+        <createTable  tableName="applicationrelease_applicationrelease">
             <column name="applicationrelease_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -41,7 +41,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="5">
-        <createTable tableName="applicationrelease_artifact">
+        <createTable  tableName="applicationrelease_artifact">
             <column name="applicationrelease_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -51,7 +51,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="6">
-        <createTable tableName="applicationtype">
+        <createTable  tableName="applicationtype">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -62,7 +62,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="7">
-        <createTable tableName="applicationtype_environmenttype">
+        <createTable  tableName="applicationtype_environmenttype">
             <column name="applicationtype_id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -72,7 +72,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="8">
-        <createTable tableName="artifact">
+        <createTable  tableName="artifact">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -85,7 +85,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="9">
-        <createTable tableName="artifact_artifact">
+        <createTable  tableName="artifact_artifact">
             <column name="artifact_id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -95,7 +95,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="10">
-        <createTable tableName="artifacttype">
+        <createTable  tableName="artifacttype">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -107,7 +107,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="11">
-        <createTable tableName="attribute">
+        <createTable  tableName="attribute">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -122,7 +122,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="12">
-        <createTable tableName="configuration">
+        <createTable  tableName="configuration">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -135,7 +135,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="13">
-        <createTable tableName="configuration_properties">
+        <createTable  tableName="configuration_properties">
             <column name="key" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -146,7 +146,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="14">
-        <createTable tableName="environment">
+        <createTable  tableName="environment">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -160,11 +160,10 @@
             <column name="ovf" type="VARCHAR(90000)"/>
             <column name="vdc" type="VARCHAR(256)"/>
             <column name="environmenttype_id" type="INT8"/>
-            <column name="version" type="INT4"/>
         </createTable>
     </changeSet>
     <changeSet author="initial" id="15">
-        <createTable tableName="environment_has_tiers">
+        <createTable  tableName="environment_has_tiers">
             <column name="environment_id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -174,7 +173,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="16">
-        <createTable tableName="environmentinstance">
+        <createTable  tableName="environmentinstance">
             <column name="blueprintname" type="VARCHAR(255)"/>
             <column name="description" type="VARCHAR(255)"/>
             <column name="vapp" type="VARCHAR(90000)"/>
@@ -186,7 +185,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="17">
-        <createTable tableName="environmentinstance_has_tierinstances">
+        <createTable  tableName="environmentinstance_has_tierinstances">
             <column name="environmentinstance_id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -196,7 +195,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="18">
-        <createTable tableName="environmenttype">
+        <createTable  tableName="environmenttype">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -207,7 +206,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="19">
-        <createTable tableName="installableinstance">
+        <createTable  tableName="installableinstance">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -220,7 +219,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="20">
-        <createTable tableName="installableinstance_attribute">
+        <createTable  tableName="installableinstance_attribute">
             <column name="installableinstance_id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -230,22 +229,7 @@
         </createTable>
     </changeSet>
     <changeSet author="initial" id="21">
-        <createTable tableName="metadata">
-            <column name="id" type="INT8">
-                <constraints nullable="false"/>
-            </column>
-            <column name="description" type="VARCHAR(2048)"/>
-            <column name="key" type="VARCHAR(256)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="v" type="INT8"/>
-            <column name="value" type="VARCHAR(2048)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet author="initial" id="22">
-        <createTable tableName="os">
+        <createTable  tableName="os">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -258,8 +242,8 @@
             <column name="version" type="VARCHAR(128)"/>
         </createTable>
     </changeSet>
-    <changeSet author="initial" id="23">
-        <createTable tableName="productinstance">
+    <changeSet author="initial" id="22">
+        <createTable  tableName="productinstance">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -267,8 +251,8 @@
             <column name="taskid" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="initial" id="24">
-        <createTable tableName="productrelease">
+    <changeSet author="initial" id="23">
+        <createTable  tableName="productrelease">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -286,8 +270,8 @@
             <column name="producttype_id" type="INT8"/>
         </createTable>
     </changeSet>
-    <changeSet author="initial" id="25">
-        <createTable tableName="productrelease_attribute">
+    <changeSet author="initial" id="24">
+        <createTable  tableName="productrelease_attribute">
             <column name="productrelease_id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -296,8 +280,8 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="initial" id="26">
-        <createTable tableName="productrelease_has_ooss">
+    <changeSet author="initial" id="25">
+        <createTable  tableName="productrelease_has_ooss">
             <column name="productrelease_id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -306,18 +290,8 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="initial" id="27">
-        <createTable tableName="productrelease_metadata">
-            <column name="productrelease_id" type="INT8">
-                <constraints nullable="false"/>
-            </column>
-            <column name="metadatas_id" type="INT8">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet author="initial" id="28">
-        <createTable tableName="productrelease_productrelease">
+    <changeSet author="initial" id="26">
+        <createTable  tableName="productrelease_productrelease">
             <column name="productrelease_id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -326,8 +300,8 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="initial" id="29">
-        <createTable tableName="producttype">
+    <changeSet author="initial" id="27">
+        <createTable  tableName="producttype">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -337,8 +311,8 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="initial" id="30">
-        <createTable tableName="rule">
+    <changeSet author="initial" id="28">
+        <createTable  tableName="rule">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -351,8 +325,8 @@
             <column name="toport" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="initial" id="31">
-        <createTable tableName="securitygroup">
+    <changeSet author="initial" id="29">
+        <createTable  tableName="securitygroup">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -363,8 +337,8 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="initial" id="32">
-        <createTable tableName="securitygroup_rule">
+    <changeSet author="initial" id="30">
+        <createTable  tableName="securitygroup_rule">
             <column name="securitygroup_id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -373,8 +347,8 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="initial" id="33">
-        <createTable tableName="service">
+    <changeSet author="initial" id="31">
+        <createTable  tableName="service">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -384,8 +358,8 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="initial" id="34">
-        <createTable tableName="service_attribute">
+    <changeSet author="initial" id="32">
+        <createTable  tableName="service_attribute">
             <column name="service_id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -394,8 +368,8 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="initial" id="35">
-        <createTable tableName="task">
+    <changeSet author="initial" id="33">
+        <createTable  tableName="task">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -419,8 +393,8 @@
             <column name="vdc" type="VARCHAR(1024)"/>
         </createTable>
     </changeSet>
-    <changeSet author="initial" id="36">
-        <createTable tableName="template">
+    <changeSet author="initial" id="34">
+        <createTable  tableName="template">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -430,8 +404,8 @@
             <column name="tierinstance_id" type="INT8"/>
         </createTable>
     </changeSet>
-    <changeSet author="initial" id="37">
-        <createTable tableName="tier">
+    <changeSet author="initial" id="35">
+        <createTable  tableName="tier">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -452,8 +426,8 @@
             <column name="securitygroup_id" type="INT8"/>
         </createTable>
     </changeSet>
-    <changeSet author="initial" id="38">
-        <createTable tableName="tier_has_productreleases">
+    <changeSet author="initial" id="36">
+        <createTable  tableName="tier_has_productreleases">
             <column name="tier_id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -462,8 +436,8 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="initial" id="39">
-        <createTable tableName="tierinstance">
+    <changeSet author="initial" id="37">
+        <createTable  tableName="tierinstance">
             <column name="numberreplica" type="INT4">
                 <constraints nullable="false"/>
             </column>
@@ -483,8 +457,8 @@
             <column name="taskid" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="initial" id="40">
-        <createTable tableName="tierinstance_has_productinstances">
+    <changeSet author="initial" id="38">
+        <createTable  tableName="tierinstance_has_productinstances">
             <column name="tierinstance_id" type="INT8">
                 <constraints nullable="false"/>
             </column>
@@ -493,563 +467,256 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet author="initial" id="39">
+        <addPrimaryKey  columnNames="id" constraintName="applicationinstance_pkey" tableName="applicationinstance"/>
+    </changeSet>
+    <changeSet author="initial" id="40">
+        <addPrimaryKey  columnNames="id" constraintName="applicationrelease_pkey" tableName="applicationrelease"/>
+    </changeSet>
     <changeSet author="initial" id="41">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="applicationinstance_pkey"
-                       schemaName="public" tableName="applicationinstance"/>
+        <addPrimaryKey  columnNames="id" constraintName="applicationtype_pkey" tableName="applicationtype"/>
     </changeSet>
     <changeSet author="initial" id="42">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="applicationrelease_pkey"
-                       schemaName="public" tableName="applicationrelease"/>
+        <addPrimaryKey  columnNames="id" constraintName="artifact_pkey" tableName="artifact"/>
     </changeSet>
     <changeSet author="initial" id="43">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="applicationtype_pkey"
-                       schemaName="public" tableName="applicationtype"/>
+        <addPrimaryKey  columnNames="id" constraintName="artifacttype_pkey" tableName="artifacttype"/>
     </changeSet>
     <changeSet author="initial" id="44">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="artifact_pkey" schemaName="public"
-                       tableName="artifact"/>
+        <addPrimaryKey  columnNames="id" constraintName="attribute_pkey" tableName="attribute"/>
     </changeSet>
     <changeSet author="initial" id="45">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="artifacttype_pkey" schemaName="public"
-                       tableName="artifacttype"/>
+        <addPrimaryKey  columnNames="id" constraintName="configuration_pkey" tableName="configuration"/>
     </changeSet>
     <changeSet author="initial" id="46">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="attribute_pkey" schemaName="public"
-                       tableName="attribute"/>
+        <addPrimaryKey  columnNames="key, namespace" constraintName="configuration_properties_pkey" tableName="configuration_properties"/>
     </changeSet>
     <changeSet author="initial" id="47">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="configuration_pkey"
-                       schemaName="public" tableName="configuration"/>
+        <addPrimaryKey  columnNames="id" constraintName="environment_pkey" tableName="environment"/>
     </changeSet>
     <changeSet author="initial" id="48">
-        <addPrimaryKey catalogName="paasmanager" columnNames="key, namespace"
-                       constraintName="configuration_properties_pkey" schemaName="public"
-                       tableName="configuration_properties"/>
+        <addPrimaryKey  columnNames="id" constraintName="environmentinstance_pkey" tableName="environmentinstance"/>
     </changeSet>
     <changeSet author="initial" id="49">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="environment_pkey" schemaName="public"
-                       tableName="environment"/>
+        <addPrimaryKey  columnNames="id" constraintName="environmenttype_pkey" tableName="environmenttype"/>
     </changeSet>
     <changeSet author="initial" id="50">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="environmentinstance_pkey"
-                       schemaName="public" tableName="environmentinstance"/>
+        <addPrimaryKey  columnNames="id" constraintName="installableinstance_pkey" tableName="installableinstance"/>
     </changeSet>
     <changeSet author="initial" id="51">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="environmenttype_pkey"
-                       schemaName="public" tableName="environmenttype"/>
+        <addPrimaryKey  columnNames="id" constraintName="os_pkey" tableName="os"/>
     </changeSet>
     <changeSet author="initial" id="52">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="installableinstance_pkey"
-                       schemaName="public" tableName="installableinstance"/>
+        <addPrimaryKey  columnNames="id" constraintName="productinstance_pkey" tableName="productinstance"/>
     </changeSet>
     <changeSet author="initial" id="53">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="metadata_pkey" schemaName="public"
-                       tableName="metadata"/>
+        <addPrimaryKey  columnNames="id" constraintName="productrelease_pkey" tableName="productrelease"/>
     </changeSet>
     <changeSet author="initial" id="54">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="os_pkey" schemaName="public"
-                       tableName="os"/>
+        <addPrimaryKey  columnNames="id" constraintName="producttype_pkey" tableName="producttype"/>
     </changeSet>
     <changeSet author="initial" id="55">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="productinstance_pkey"
-                       schemaName="public" tableName="productinstance"/>
+        <addPrimaryKey  columnNames="id" constraintName="rule_pkey" tableName="rule"/>
     </changeSet>
     <changeSet author="initial" id="56">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="productrelease_pkey"
-                       schemaName="public" tableName="productrelease"/>
+        <addPrimaryKey  columnNames="id" constraintName="securitygroup_pkey" tableName="securitygroup"/>
     </changeSet>
     <changeSet author="initial" id="57">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="producttype_pkey" schemaName="public"
-                       tableName="producttype"/>
+        <addPrimaryKey  columnNames="id" constraintName="service_pkey" tableName="service"/>
     </changeSet>
     <changeSet author="initial" id="58">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="rule_pkey" schemaName="public"
-                       tableName="rule"/>
+        <addPrimaryKey  columnNames="id" constraintName="task_pkey" tableName="task"/>
     </changeSet>
     <changeSet author="initial" id="59">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="securitygroup_pkey"
-                       schemaName="public" tableName="securitygroup"/>
+        <addPrimaryKey  columnNames="id" constraintName="template_pkey" tableName="template"/>
     </changeSet>
     <changeSet author="initial" id="60">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="service_pkey" schemaName="public"
-                       tableName="service"/>
+        <addPrimaryKey  columnNames="id" constraintName="tier_pkey" tableName="tier"/>
     </changeSet>
     <changeSet author="initial" id="61">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="task_pkey" schemaName="public"
-                       tableName="task"/>
+        <addPrimaryKey  columnNames="id" constraintName="tierinstance_pkey" tableName="tierinstance"/>
     </changeSet>
     <changeSet author="initial" id="62">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="template_pkey" schemaName="public"
-                       tableName="template"/>
+        <addForeignKeyConstraint baseColumnNames="tierinstance_id" baseTableName="tierinstance_has_productinstances" constraintName="fk1cd1dc3c19388c0a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tierinstance" />
     </changeSet>
     <changeSet author="initial" id="63">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="tier_pkey" schemaName="public"
-                       tableName="tier"/>
+        <addForeignKeyConstraint baseColumnNames="productinstance_id" baseTableName="tierinstance_has_productinstances" constraintName="fk1cd1dc3c77afcfca" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="productinstance" />
     </changeSet>
     <changeSet author="initial" id="64">
-        <addPrimaryKey catalogName="paasmanager" columnNames="id" constraintName="tierinstance_pkey" schemaName="public"
-                       tableName="tierinstance"/>
+        <addForeignKeyConstraint baseColumnNames="tier_id" baseTableName="tierinstance" constraintName="fk247b9cb7349a3c0a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tier" />
     </changeSet>
     <changeSet author="initial" id="65">
-        <addForeignKeyConstraint baseColumnNames="tierinstance_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="tierinstance_has_productinstances" baseTableSchemaName="public"
-                                 constraintName="fk1cd1dc3c19388c0a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="tierinstance"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="tierinstance" constraintName="fk247b9cb745b9b6b5" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="installableinstance" />
     </changeSet>
     <changeSet author="initial" id="66">
-        <addForeignKeyConstraint baseColumnNames="productinstance_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="tierinstance_has_productinstances" baseTableSchemaName="public"
-                                 constraintName="fk1cd1dc3c77afcfca" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="productinstance"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="tierinstance_id" baseTableName="environmentinstance_has_tierinstances" constraintName="fk24a6892019388c0a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tierinstance" />
     </changeSet>
     <changeSet author="initial" id="67">
-        <addForeignKeyConstraint baseColumnNames="tier_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="tierinstance" baseTableSchemaName="public"
-                                 constraintName="fk247b9cb7349a3c0a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="tier"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="environmentinstance_id" baseTableName="environmentinstance_has_tierinstances" constraintName="fk24a689206342d54a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="environmentinstance" />
     </changeSet>
     <changeSet author="initial" id="68">
-        <addForeignKeyConstraint baseColumnNames="id" baseTableCatalogName="paasmanager" baseTableName="tierinstance"
-                                 baseTableSchemaName="public" constraintName="fk247b9cb745b9b6b5" deferrable="false"
-                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="id" referencedTableCatalogName="paasmanager"
-                                 referencedTableName="installableinstance" referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="tier_id" baseTableName="tier_has_productreleases" constraintName="fk24cd39d9349a3c0a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tier" />
     </changeSet>
     <changeSet author="initial" id="69">
-        <addForeignKeyConstraint baseColumnNames="tierinstance_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="environmentinstance_has_tierinstances" baseTableSchemaName="public"
-                                 constraintName="fk24a6892019388c0a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="tierinstance"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="productrelease_id" baseTableName="tier_has_productreleases" constraintName="fk24cd39d9f5ab782a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="productrelease" />
     </changeSet>
     <changeSet author="initial" id="70">
-        <addForeignKeyConstraint baseColumnNames="environmentinstance_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="environmentinstance_has_tierinstances" baseTableSchemaName="public"
-                                 constraintName="fk24a689206342d54a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="environmentinstance"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="securitygroup_id" baseTableName="tier" constraintName="fk27c602f4ac59aa" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="securitygroup" />
     </changeSet>
     <changeSet author="initial" id="71">
-        <addForeignKeyConstraint baseColumnNames="tier_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="tier_has_productreleases" baseTableSchemaName="public"
-                                 constraintName="fk24cd39d9349a3c0a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="tier"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="transitablereleases_id" baseTableName="productrelease_productrelease" constraintName="fk2dc8771f748f8ec9" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="productrelease" />
     </changeSet>
     <changeSet author="initial" id="72">
-        <addForeignKeyConstraint baseColumnNames="productrelease_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="tier_has_productreleases" baseTableSchemaName="public"
-                                 constraintName="fk24cd39d9f5ab782a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="productrelease"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="productrelease_id" baseTableName="productrelease_productrelease" constraintName="fk2dc8771ff5ab782a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="productrelease" />
     </changeSet>
     <changeSet author="initial" id="73">
-        <addForeignKeyConstraint baseColumnNames="securitygroup_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="tier" baseTableSchemaName="public" constraintName="fk27c602f4ac59aa"
-                                 deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="id" referencedTableCatalogName="paasmanager"
-                                 referencedTableName="securitygroup" referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="supportedooss_id" baseTableName="productrelease_has_ooss" constraintName="fk32664f0ccb59f060" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="os" />
     </changeSet>
     <changeSet author="initial" id="74">
-        <addForeignKeyConstraint baseColumnNames="transitablereleases_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="productrelease_productrelease" baseTableSchemaName="public"
-                                 constraintName="fk2dc8771f748f8ec9" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="productrelease"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="productrelease_id" baseTableName="productrelease_has_ooss" constraintName="fk32664f0cf5ab782a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="productrelease" />
     </changeSet>
     <changeSet author="initial" id="75">
-        <addForeignKeyConstraint baseColumnNames="productrelease_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="productrelease_productrelease" baseTableSchemaName="public"
-                                 constraintName="fk2dc8771ff5ab782a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="productrelease"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="attributes_id" baseTableName="artifact_artifact" constraintName="fk41b8419fc9df2065" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="artifact" />
     </changeSet>
     <changeSet author="initial" id="76">
-        <addForeignKeyConstraint baseColumnNames="supportedooss_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="productrelease_has_ooss" baseTableSchemaName="public"
-                                 constraintName="fk32664f0ccb59f060" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="os"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="artifact_id" baseTableName="artifact_artifact" constraintName="fk41b8419fdcd52e0a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="artifact" />
     </changeSet>
     <changeSet author="initial" id="77">
-        <addForeignKeyConstraint baseColumnNames="productrelease_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="productrelease_has_ooss" baseTableSchemaName="public"
-                                 constraintName="fk32664f0cf5ab782a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="productrelease"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="environment_id" baseTableName="environmentinstance" constraintName="fk58482fa84521c54a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="environment" />
     </changeSet>
     <changeSet author="initial" id="78">
-        <addForeignKeyConstraint baseColumnNames="attributes_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="artifact_artifact" baseTableSchemaName="public"
-                                 constraintName="fk41b8419fc9df2065" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="artifact"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="environmentinstance" constraintName="fk58482fa845b9b6b5" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="installableinstance" />
     </changeSet>
     <changeSet author="initial" id="79">
-        <addForeignKeyConstraint baseColumnNames="artifact_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="artifact_artifact" baseTableSchemaName="public"
-                                 constraintName="fk41b8419fdcd52e0a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="artifact"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="environmenttype_id" baseTableName="environment" constraintName="fk5e4ad9f31bfaef2a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="environmenttype" />
     </changeSet>
     <changeSet author="initial" id="80">
-        <addForeignKeyConstraint baseColumnNames="environment_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="environmentinstance" baseTableSchemaName="public"
-                                 constraintName="fk58482fa84521c54a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="environment"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="applicationinstance" constraintName="fk93d675e545b9b6b5" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="installableinstance" />
     </changeSet>
     <changeSet author="initial" id="81">
-        <addForeignKeyConstraint baseColumnNames="id" baseTableCatalogName="paasmanager"
-                                 baseTableName="environmentinstance" baseTableSchemaName="public"
-                                 constraintName="fk58482fa845b9b6b5" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="installableinstance"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="environmentinstance_id" baseTableName="applicationinstance" constraintName="fk93d675e56342d54a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="environmentinstance" />
     </changeSet>
     <changeSet author="initial" id="82">
-        <addForeignKeyConstraint baseColumnNames="environmenttype_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="environment" baseTableSchemaName="public"
-                                 constraintName="fk5e4ad9f31bfaef2a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="environmenttype"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="applicationrelease_id" baseTableName="applicationinstance" constraintName="fk93d675e5da98ebca" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="applicationrelease" />
     </changeSet>
     <changeSet author="initial" id="83">
-        <addForeignKeyConstraint baseColumnNames="id" baseTableCatalogName="paasmanager"
-                                 baseTableName="applicationinstance" baseTableSchemaName="public"
-                                 constraintName="fk93d675e545b9b6b5" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="installableinstance"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="applicationrelease_id" baseTableName="applicationrelease_applicationrelease" constraintName="fk9dc5053fda98ebca" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="applicationrelease" />
     </changeSet>
     <changeSet author="initial" id="84">
-        <addForeignKeyConstraint baseColumnNames="environmentinstance_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="applicationinstance" baseTableSchemaName="public"
-                                 constraintName="fk93d675e56342d54a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="environmentinstance"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="transitablereleases_id" baseTableName="applicationrelease_applicationrelease" constraintName="fk9dc5053fdc250f48" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="applicationrelease" />
     </changeSet>
     <changeSet author="initial" id="85">
-        <addForeignKeyConstraint baseColumnNames="applicationrelease_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="applicationinstance" baseTableSchemaName="public"
-                                 constraintName="fk93d675e5da98ebca" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="applicationrelease"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="tierinstance_id" baseTableName="template" constraintName="fkb515309a19388c0a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tierinstance" />
     </changeSet>
     <changeSet author="initial" id="86">
-        <addForeignKeyConstraint baseColumnNames="applicationrelease_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="applicationrelease_applicationrelease" baseTableSchemaName="public"
-                                 constraintName="fk9dc5053fda98ebca" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="applicationrelease"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="artifacttype_id" baseTableName="artifact" constraintName="fkba9c69f2664bf7ea" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="artifacttype" />
     </changeSet>
     <changeSet author="initial" id="87">
-        <addForeignKeyConstraint baseColumnNames="transitablereleases_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="applicationrelease_applicationrelease" baseTableSchemaName="public"
-                                 constraintName="fk9dc5053fdc250f48" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="applicationrelease"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="productrelease_id" baseTableName="artifact" constraintName="fkba9c69f2f5ab782a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="productrelease" />
     </changeSet>
     <changeSet author="initial" id="88">
-        <addForeignKeyConstraint baseColumnNames="tierinstance_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="template" baseTableSchemaName="public"
-                                 constraintName="fkb515309a19388c0a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="tierinstance"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="applicationtype_id" baseTableName="applicationrelease" constraintName="fkd117dcb746195a0a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="applicationtype" />
     </changeSet>
     <changeSet author="initial" id="89">
-        <addForeignKeyConstraint baseColumnNames="artifacttype_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="artifact" baseTableSchemaName="public"
-                                 constraintName="fkba9c69f2664bf7ea" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="artifacttype"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="environmenttypes_id" baseTableName="applicationtype_environmenttype" constraintName="fkd97d461828bcb611" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="environmenttype" />
     </changeSet>
     <changeSet author="initial" id="90">
-        <addForeignKeyConstraint baseColumnNames="productrelease_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="artifact" baseTableSchemaName="public"
-                                 constraintName="fkba9c69f2f5ab782a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="productrelease"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="applicationtype_id" baseTableName="applicationtype_environmenttype" constraintName="fkd97d461846195a0a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="applicationtype" />
     </changeSet>
     <changeSet author="initial" id="91">
-        <addForeignKeyConstraint baseColumnNames="metadatas_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="productrelease_metadata" baseTableSchemaName="public"
-                                 constraintName="fkccd82b769d5fe4d5" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="metadata"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="installableinstance_id" baseTableName="installableinstance_attribute" constraintName="fkde60718775cbc20a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="installableinstance" />
     </changeSet>
     <changeSet author="initial" id="92">
-        <addForeignKeyConstraint baseColumnNames="productrelease_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="productrelease_metadata" baseTableSchemaName="public"
-                                 constraintName="fkccd82b76f5ab782a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="productrelease"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="privateattributes_id" baseTableName="installableinstance_attribute" constraintName="fkde60718775d5d36c" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="initial" id="93">
-        <addForeignKeyConstraint baseColumnNames="applicationtype_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="applicationrelease" baseTableSchemaName="public"
-                                 constraintName="fkd117dcb746195a0a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="applicationtype"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="producttype_id" baseTableName="artifacttype" constraintName="fke1ba244c2f0929aa" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="producttype" />
     </changeSet>
     <changeSet author="initial" id="94">
-        <addForeignKeyConstraint baseColumnNames="environmenttypes_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="applicationtype_environmenttype" baseTableSchemaName="public"
-                                 constraintName="fkd97d461828bcb611" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="environmenttype"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="rules_id" baseTableName="securitygroup_rule" constraintName="fke34e045cb0e4b5ef" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="rule" />
     </changeSet>
     <changeSet author="initial" id="95">
-        <addForeignKeyConstraint baseColumnNames="applicationtype_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="applicationtype_environmenttype" baseTableSchemaName="public"
-                                 constraintName="fkd97d461846195a0a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="applicationtype"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="securitygroup_id" baseTableName="securitygroup_rule" constraintName="fke34e045cf4ac59aa" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="securitygroup" />
     </changeSet>
     <changeSet author="initial" id="96">
-        <addForeignKeyConstraint baseColumnNames="installableinstance_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="installableinstance_attribute" baseTableSchemaName="public"
-                                 constraintName="fkde60718775cbc20a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="installableinstance"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="attributes_id" baseTableName="productrelease_attribute" constraintName="fke7303356ed4ac0f" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="initial" id="97">
-        <addForeignKeyConstraint baseColumnNames="privateattributes_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="installableinstance_attribute" baseTableSchemaName="public"
-                                 constraintName="fkde60718775d5d36c" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="attribute"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="productrelease_id" baseTableName="productrelease_attribute" constraintName="fke730335f5ab782a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="productrelease" />
     </changeSet>
     <changeSet author="initial" id="98">
-        <addForeignKeyConstraint baseColumnNames="producttype_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="artifacttype" baseTableSchemaName="public"
-                                 constraintName="fke1ba244c2f0929aa" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="producttype"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="productinstance" constraintName="fkee691e8445b9b6b5" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="installableinstance" />
     </changeSet>
     <changeSet author="initial" id="99">
-        <addForeignKeyConstraint baseColumnNames="rules_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="securitygroup_rule" baseTableSchemaName="public"
-                                 constraintName="fke34e045cb0e4b5ef" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="rule"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="productrelease_id" baseTableName="productinstance" constraintName="fkee691e84f5ab782a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="productrelease" />
     </changeSet>
     <changeSet author="initial" id="100">
-        <addForeignKeyConstraint baseColumnNames="securitygroup_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="securitygroup_rule" baseTableSchemaName="public"
-                                 constraintName="fke34e045cf4ac59aa" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="securitygroup"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="service_id" baseTableName="service_attribute" constraintName="fkf0b5ad5212dca20a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="service" />
     </changeSet>
     <changeSet author="initial" id="101">
-        <addForeignKeyConstraint baseColumnNames="attributes_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="productrelease_attribute" baseTableSchemaName="public"
-                                 constraintName="fke7303356ed4ac0f" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="attribute"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="attributes_id" baseTableName="service_attribute" constraintName="fkf0b5ad526ed4ac0f" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="attribute" />
     </changeSet>
     <changeSet author="initial" id="102">
-        <addForeignKeyConstraint baseColumnNames="productrelease_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="productrelease_attribute" baseTableSchemaName="public"
-                                 constraintName="fke730335f5ab782a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="productrelease"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="applicationrelease_id" baseTableName="applicationrelease_artifact" constraintName="fkf6811c7ada98ebca" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="applicationrelease" />
     </changeSet>
     <changeSet author="initial" id="103">
-        <addForeignKeyConstraint baseColumnNames="id" baseTableCatalogName="paasmanager" baseTableName="productinstance"
-                                 baseTableSchemaName="public" constraintName="fkee691e8445b9b6b5" deferrable="false"
-                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="id" referencedTableCatalogName="paasmanager"
-                                 referencedTableName="installableinstance" referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="artifacts_id" baseTableName="applicationrelease_artifact" constraintName="fkf6811c7af82cf09b" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="artifact" />
     </changeSet>
     <changeSet author="initial" id="104">
-        <addForeignKeyConstraint baseColumnNames="productrelease_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="productinstance" baseTableSchemaName="public"
-                                 constraintName="fkee691e84f5ab782a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="productrelease"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="tier_id" baseTableName="environment_has_tiers" constraintName="fkf900f5c0349a3c0a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tier" />
     </changeSet>
     <changeSet author="initial" id="105">
-        <addForeignKeyConstraint baseColumnNames="service_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="service_attribute" baseTableSchemaName="public"
-                                 constraintName="fkf0b5ad5212dca20a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="service"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="environment_id" baseTableName="environment_has_tiers" constraintName="fkf900f5c04521c54a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="environment" />
     </changeSet>
     <changeSet author="initial" id="106">
-        <addForeignKeyConstraint baseColumnNames="attributes_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="service_attribute" baseTableSchemaName="public"
-                                 constraintName="fkf0b5ad526ed4ac0f" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="attribute"
-                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="producttype_id" baseTableName="productrelease" constraintName="fkfd4e24382f0929aa" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="producttype" />
     </changeSet>
     <changeSet author="initial" id="107">
-        <addForeignKeyConstraint baseColumnNames="applicationrelease_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="applicationrelease_artifact" baseTableSchemaName="public"
-                                 constraintName="fkf6811c7ada98ebca" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="applicationrelease"
-                                 referencedTableSchemaName="public"/>
+        <addUniqueConstraint  columnNames="environmenttypes_id" constraintName="applicationtype_environmenttype_environmenttypes_id_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="applicationtype_environmenttype"/>
     </changeSet>
     <changeSet author="initial" id="108">
-        <addForeignKeyConstraint baseColumnNames="artifacts_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="applicationrelease_artifact" baseTableSchemaName="public"
-                                 constraintName="fkf6811c7af82cf09b" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="artifact"
-                                 referencedTableSchemaName="public"/>
+        <addUniqueConstraint  columnNames="name" constraintName="applicationtype_name_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="applicationtype"/>
     </changeSet>
     <changeSet author="initial" id="109">
-        <addForeignKeyConstraint baseColumnNames="tier_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="environment_has_tiers" baseTableSchemaName="public"
-                                 constraintName="fkf900f5c0349a3c0a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="tier"
-                                 referencedTableSchemaName="public"/>
+        <addUniqueConstraint  columnNames="attributes_id" constraintName="artifact_artifact_attributes_id_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="artifact_artifact"/>
     </changeSet>
     <changeSet author="initial" id="110">
-        <addForeignKeyConstraint baseColumnNames="environment_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="environment_has_tiers" baseTableSchemaName="public"
-                                 constraintName="fkf900f5c04521c54a" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="environment"
-                                 referencedTableSchemaName="public"/>
+        <addUniqueConstraint  columnNames="name" constraintName="artifact_name_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="artifact"/>
     </changeSet>
     <changeSet author="initial" id="111">
-        <addForeignKeyConstraint baseColumnNames="producttype_id" baseTableCatalogName="paasmanager"
-                                 baseTableName="productrelease" baseTableSchemaName="public"
-                                 constraintName="fkfd4e24382f0929aa" deferrable="false" initiallyDeferred="false"
-                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
-                                 referencedTableCatalogName="paasmanager" referencedTableName="producttype"
-                                 referencedTableSchemaName="public"/>
+        <addUniqueConstraint  columnNames="name" constraintName="artifacttype_name_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="artifacttype"/>
     </changeSet>
     <changeSet author="initial" id="112">
-        <addUniqueConstraint catalogName="paasmanager" columnNames="environmenttypes_id"
-                             constraintName="applicationtype_environmenttype_environmenttypes_id_key" deferrable="false"
-                             disabled="false" initiallyDeferred="false" schemaName="public"
-                             tableName="applicationtype_environmenttype"/>
+        <addUniqueConstraint  columnNames="key" constraintName="configuration_key_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="configuration"/>
     </changeSet>
     <changeSet author="initial" id="113">
-        <addUniqueConstraint catalogName="paasmanager" columnNames="name" constraintName="applicationtype_name_key"
-                             deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public"
-                             tableName="applicationtype"/>
+        <addUniqueConstraint  columnNames="value" constraintName="configuration_value_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="configuration"/>
     </changeSet>
     <changeSet author="initial" id="114">
-        <addUniqueConstraint catalogName="paasmanager" columnNames="attributes_id"
-                             constraintName="artifact_artifact_attributes_id_key" deferrable="false" disabled="false"
-                             initiallyDeferred="false" schemaName="public" tableName="artifact_artifact"/>
+        <addUniqueConstraint  columnNames="name" constraintName="environmenttype_name_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="environmenttype"/>
     </changeSet>
     <changeSet author="initial" id="115">
-        <addUniqueConstraint catalogName="paasmanager" columnNames="name" constraintName="artifact_name_key"
-                             deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public"
-                             tableName="artifact"/>
+        <addUniqueConstraint  columnNames="privateattributes_id" constraintName="installableinstance_attribute_privateattributes_id_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="installableinstance_attribute"/>
     </changeSet>
     <changeSet author="initial" id="116">
-        <addUniqueConstraint catalogName="paasmanager" columnNames="name" constraintName="artifacttype_name_key"
-                             deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public"
-                             tableName="artifacttype"/>
+        <addUniqueConstraint  columnNames="ostype" constraintName="os_ostype_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="os"/>
     </changeSet>
     <changeSet author="initial" id="117">
-        <addUniqueConstraint catalogName="paasmanager" columnNames="key" constraintName="configuration_key_key"
-                             deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public"
-                             tableName="configuration"/>
+        <addUniqueConstraint  columnNames="attributes_id" constraintName="productrelease_attribute_attributes_id_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="productrelease_attribute"/>
     </changeSet>
     <changeSet author="initial" id="118">
-        <addUniqueConstraint catalogName="paasmanager" columnNames="value" constraintName="configuration_value_key"
-                             deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public"
-                             tableName="configuration"/>
+        <addUniqueConstraint  columnNames="name" constraintName="producttype_name_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="producttype"/>
     </changeSet>
     <changeSet author="initial" id="119">
-        <addUniqueConstraint catalogName="paasmanager" columnNames="name" constraintName="environmenttype_name_key"
-                             deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public"
-                             tableName="environmenttype"/>
+        <addUniqueConstraint  columnNames="rules_id" constraintName="securitygroup_rule_rules_id_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="securitygroup_rule"/>
     </changeSet>
     <changeSet author="initial" id="120">
-        <addUniqueConstraint catalogName="paasmanager" columnNames="privateattributes_id"
-                             constraintName="installableinstance_attribute_privateattributes_id_key" deferrable="false"
-                             disabled="false" initiallyDeferred="false" schemaName="public"
-                             tableName="installableinstance_attribute"/>
+        <addUniqueConstraint  columnNames="attributes_id" constraintName="service_attribute_attributes_id_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="service_attribute"/>
     </changeSet>
     <changeSet author="initial" id="121">
-        <addUniqueConstraint catalogName="paasmanager" columnNames="ostype" constraintName="os_ostype_key"
-                             deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public"
-                             tableName="os"/>
+        <addUniqueConstraint  columnNames="name" constraintName="service_name_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="service"/>
     </changeSet>
     <changeSet author="initial" id="122">
-        <addUniqueConstraint catalogName="paasmanager" columnNames="attributes_id"
-                             constraintName="productrelease_attribute_attributes_id_key" deferrable="false"
-                             disabled="false" initiallyDeferred="false" schemaName="public"
-                             tableName="productrelease_attribute"/>
-    </changeSet>
-    <changeSet author="initial" id="123">
-        <addUniqueConstraint catalogName="paasmanager" columnNames="metadatas_id"
-                             constraintName="productrelease_metadata_metadatas_id_key" deferrable="false"
-                             disabled="false" initiallyDeferred="false" schemaName="public"
-                             tableName="productrelease_metadata"/>
-    </changeSet>
-    <changeSet author="initial" id="124">
-        <addUniqueConstraint catalogName="paasmanager" columnNames="name" constraintName="producttype_name_key"
-                             deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public"
-                             tableName="producttype"/>
-    </changeSet>
-    <changeSet author="initial" id="125">
-        <addUniqueConstraint catalogName="paasmanager" columnNames="rules_id"
-                             constraintName="securitygroup_rule_rules_id_key" deferrable="false" disabled="false"
-                             initiallyDeferred="false" schemaName="public" tableName="securitygroup_rule"/>
-    </changeSet>
-    <changeSet author="initial" id="126">
-        <addUniqueConstraint catalogName="paasmanager" columnNames="attributes_id"
-                             constraintName="service_attribute_attributes_id_key" deferrable="false" disabled="false"
-                             initiallyDeferred="false" schemaName="public" tableName="service_attribute"/>
-    </changeSet>
-    <changeSet author="initial" id="127">
-        <addUniqueConstraint catalogName="paasmanager" columnNames="name" constraintName="service_name_key"
-                             deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public"
-                             tableName="service"/>
-    </changeSet>
-    <changeSet author="initial" id="128">
-        <addUniqueConstraint catalogName="paasmanager" columnNames="name" constraintName="template_name_key"
-                             deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public"
-                             tableName="template"/>
+        <addUniqueConstraint  columnNames="name" constraintName="template_name_key" deferrable="false" disabled="false" initiallyDeferred="false" tableName="template"/>
     </changeSet>
 </databaseChangeLog>
