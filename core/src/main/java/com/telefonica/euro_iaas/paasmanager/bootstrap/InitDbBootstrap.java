@@ -92,16 +92,14 @@ public class InitDbBootstrap implements ServletContextListener {
 
         ProductReleaseSdcDao productReleaseSdcDao = (ProductReleaseSdcDao) ctx.getBean("productReleaseSdcDao");
 
-        /*try {
-            Thread.sleep(10000);
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }*/
+        /*
+         * try { Thread.sleep(10000); } catch (InterruptedException ex) { Thread.currentThread().interrupt(); }
+         */
 
         // Taking the ProductRelease from SDC *******************
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
         try {
-           productReleases = productReleaseSdcDao.findAll();
+            productReleases = productReleaseSdcDao.findAll();
 
             for (int i = 0; i < productReleases.size(); i++) {
                 ProductRelease pRelease = productReleases.get(i);
@@ -134,13 +132,14 @@ public class InitDbBootstrap implements ServletContextListener {
             // Taking the ProductRelease from SDC *******************
         } catch (SdcException ex1) {
             String msg = " Impossible to recover ProductReleases from SDC. "
-                    + "Either connection problem or Product Release Resource problem";
-            log.error(msg);
-            throw new RuntimeException(ex1);
-       }  catch (AlreadyExistsEntityException ex2) {
-            throw new RuntimeException(ex2);
+                    + "Either connection problem or Product Release Resource problem ";
+            log.error(msg + ex1);
+        } catch (AlreadyExistsEntityException ex2) {
+            log.error("alread exists " + ex2);
         } catch (InvalidEntityException ex3) {
-            throw new RuntimeException(ex3);
+            log.error("invalid entity " + ex3);
+        } catch (Exception ex4) {
+            log.error("generic exception " + ex4);
         }
 
         try {
@@ -483,9 +482,11 @@ public class InitDbBootstrap implements ServletContextListener {
                 // Provisoning an environmentInstance
 
             } catch (AlreadyExistsEntityException e1) {
-                throw new RuntimeException(e1);
+                log.error("alread exists " + e1);
             } catch (InvalidEntityException e1) {
-                throw new RuntimeException(e1);
+                log.error("invalid entity " + e1);
+            } catch (Exception ex) {
+                log.error("generic exception " + ex);
             }
         }
 
