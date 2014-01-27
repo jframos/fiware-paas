@@ -203,11 +203,6 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="fileUtils" ref="fileUtils"/>
         </bean>
 
-        <bean id="monitoringClient" lazy-init="true"
-              class="com.telefonica.euro_iaas.paasmanager.monitoring.MonitoringClientCollectdImpl">
-            <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
-        </bean>
-
         <bean id="productInstallator" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.installator.ProductInstallatorSdcImpl">
             <property name="sDCClient" ref="sDCClient"/>
@@ -229,7 +224,6 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="claudiaUtil" ref="claudiaUtil"/>
             <property name="claudiaResponseAnalyser" ref="claudiaResponseAnalyser"/>
             <property name="ovfUtils" ref="ovfUtils"/>
-            <property name="monitoringClient" ref="monitoringClient"/>
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="environmentUtils" ref="environmentUtils"/>
             <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
@@ -268,10 +262,6 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="networkInstanceManager" ref="networkInstanceManager"/>
         </bean>
 
-        <bean id="monitoringClient" lazy-init="true"
-              class="com.telefonica.euro_iaas.paasmanager.monitoring.MonitoringClientCollectdImpl">
-            <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
-        </bean>
         <bean id="productInstallator" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.installator.ProductInstallatorSdcImpl">
             <property name="sDCClient" ref="sDCClient"/>
@@ -306,8 +296,6 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="claudiaUtil" ref="claudiaUtil"/>
             <property name="claudiaResponseAnalyser" ref="claudiaResponseAnalyser"/>
             <property name="ovfUtils" ref="ovfUtils"/>
-            <property name="vappUtils" ref="vappUtils2"/>
-            <property name="monitoringClient" ref="monitoringClient"/>
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="environmentUtils" ref="environmentUtils"/>
             <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
@@ -334,11 +322,6 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
               class="com.telefonica.euro_iaas.paasmanager.claudia.impl.NetworkClientDummyImpl">
         </bean>
 
-        <bean id="monitoringClient" lazy-init="true"
-              class="com.telefonica.euro_iaas.paasmanager.monitoring.MonitoringDummyClientCollectdImpl">
-            <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
-        </bean>
-
         <bean id="productInstallator" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.installator.ProductInstallatorDummySdcImpl">
             <property name="sDCClient" ref="sDCClient"/>
@@ -359,7 +342,6 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="claudiaUtil" ref="claudiaUtil"/>
             <property name="claudiaResponseAnalyser" ref="claudiaResponseAnalyser"/>
             <property name="ovfUtils" ref="ovfUtils"/>
-            <property name="monitoringClient" ref="monitoringClient"/>
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="environmentUtils" ref="environmentUtils"/>
             <property name="environmentInstanceDao" ref="environmentInstanceDao"/>

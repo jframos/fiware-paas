@@ -52,7 +52,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Template;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
-import com.telefonica.euro_iaas.paasmanager.monitoring.MonitoringClient;
 import com.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser;
 import com.telefonica.euro_iaas.paasmanager.util.EnvironmentUtils;
 import com.telefonica.euro_iaas.paasmanager.util.OVFUtils;
@@ -64,7 +63,6 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
     private SystemPropertiesProvider systemPropertiesProvider;
     private ClaudiaClient claudiaClient;
-    private MonitoringClient monitoringClient;
     private ClaudiaResponseAnalyser claudiaResponseAnalyser;
     private ClaudiaUtil claudiaUtil;
     private OVFUtils ovfUtils;
@@ -319,7 +317,6 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 break;
             }
             claudiaClient.undeployVMReplica(claudiaData, tierInstance);
-            monitoringClient.stopMonitoring(tierInstance.getVM().getFqn());
             deleteNetworksInEnv(claudiaData, envInstance, tierInstance.getTier().getRegion());
         }
 
@@ -357,7 +354,6 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         // claudiaData.setReplica("");
 
         claudiaClient.undeployVMReplica(claudiaData, tierInstance);
-        monitoringClient.stopMonitoring(fqn);
 
     }
 
@@ -450,13 +446,6 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
         log.info("Set up monitoring ");
         List<String> products = getProductsName(vmOVF);
-        monitoringClient.startMonitoring(fqn, null);
-
-        if (products != null) {
-            for (String product : products) {
-                monitoringClient.startMonitoring(fqn, product);
-            }
-        }
         /*
          * vm = new VM(fqn, ip, "" + replicaNumber, null, null, vmOVF, vAppReplica);
          */
@@ -690,10 +679,6 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
     public void setEnvironmentUtils(EnvironmentUtils environmentUtils) {
         this.environmentUtils = environmentUtils;
-    }
-
-    public void setMonitoringClient(MonitoringClient monitoringClient) {
-        this.monitoringClient = monitoringClient;
     }
 
     public void setOvfUtils(OVFUtils ovfUtils) {
