@@ -18,12 +18,14 @@ import javax.ws.rs.core.MediaType;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.http.client.methods.HttpPost;
 import org.apache.log4j.Logger;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackRegion;
 import com.telefonica.euro_iaas.paasmanager.util.RegionCache;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
@@ -56,10 +58,12 @@ public class OpenStackRegionImpl implements OpenStackRegion {
 
         RegionCache regionCache = new RegionCache();
         String url = regionCache.getUrl(regionName, name);
+        
+        String tokenadmin = this.getTokenAdmin();
         if (url != null) {
             return url;
         } else {
-            String responseJSON = callToKeystone(token);
+            String responseJSON = callToKeystone(token, tokenadmin);
 
             String result = parseEndpoint(responseJSON, name, regionName);
             if (result == null) {
@@ -71,9 +75,18 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         }
     }
 
+    public String getTokenAdmin() throws OpenStackException {
+        
+        ClientResponse response = getEndPointsThroughTokenRequest();
+        return parseToken(response.getEntity(String.class));
+      
+    }
+
     @Override
     public String getNovaEndPoint(String regionName, String token) throws OpenStackException {
+       
         String url = getEndPointByNameAndRegionName("nova", regionName, token);
+        log.debug("getNovaEndPoint " + regionName + " " + token + " " + url);
 
         Integer index = url.lastIndexOf("/");
         url = url.substring(0, index + 1);
@@ -95,29 +108,31 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     @Override
     public List<String> getRegionNames(String token) throws OpenStackException {
 
-        String responseJSON = callToKeystone(token);
+        String tokenAdmin = this.getTokenAdmin();
+        String responseJSON = callToKeystone(token, tokenAdmin);
         return parseRegionName(responseJSON, "nova");
 
     }
 
-    private String callToKeystone(String token) throws OpenStackException {
-        ClientResponse response = getJSONWithEndpoints(token);
+    private String callToKeystone(String token, String tokenAdmin) throws OpenStackException {
+        ClientResponse response = getJSONWithEndpoints(token, tokenAdmin);
         return response.getEntity(String.class);
 
     }
 
-    private ClientResponse getJSONWithEndpoints(String token) throws OpenStackException {
+    private ClientResponse getJSONWithEndpoints(String token, String tokenadmin) throws OpenStackException {
         String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_URL) + "tokens/" + token
                 + "/endpoints";
 
         WebResource webResource = client.resource(url);
-
+        log.debug("url " + url);
         WebResource.Builder builder = webResource.accept(MediaType.APPLICATION_JSON);
-        builder.header("X-Auth-Token", token);
+        builder.header("X-Auth-Token", tokenadmin);
 
         ClientResponse response = builder.get(ClientResponse.class);
 
         int code = response.getStatus();
+        log.debug ("code " + code);
 
         if (code != 200) {
             String message = "Failed : HTTP (url:" + url + ") error code : " + code + " body: "
@@ -271,6 +286,29 @@ public class OpenStackRegionImpl implements OpenStackRegion {
             }
         }
         return names;
+    }
+    
+    /**
+     * Parse region name, with compatibility with essex,grizzly.
+     * 
+     * @param response
+     * @param name
+     * @return
+     */
+    private String parseToken(String response) {
+
+        String token = null;
+
+        JSONObject jsonObject = JSONObject.fromObject(response);
+        jsonObject = (JSONObject)jsonObject.get("access");
+
+        if (jsonObject.containsKey("token")) {
+
+            JSONObject tokenObject = (JSONObject) jsonObject.get("token");
+            token = (String) tokenObject.get("id");
+
+        }
+        return token;
     }
 
     public ClientResponse getEndPointsThroughTokenRequest() throws OpenStackException {

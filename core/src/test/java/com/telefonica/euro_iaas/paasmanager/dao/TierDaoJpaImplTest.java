@@ -157,7 +157,7 @@ public class TierDaoJpaImplTest {
         productReleases.add(prodRelease);
         
         Set<Network> networks = new HashSet<Network>();
-        Network network = new Network(NETWORK_NAME);
+        Network network = new Network(NETWORK_NAME, "VDC");
         network = networkDao.create(network);
         networks.add(network);
 

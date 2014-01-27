@@ -39,26 +39,33 @@ public class NetworkDaoJpaImpl extends AbstractBaseDao<Network, String> implemen
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.commons.dao.BaseDAO#load(java.io.Serializable)
      */
-    public Network load(String networkName) throws EntityNotFoundException {
-        try {
-            return findNetworkWithSubNet(networkName);
-        } catch (Exception e) {
-            return this.loadByField(Network.class, "name", networkName);
-        }
-    }
+    public Network load(String networkName, String vdc) throws EntityNotFoundException {
 
-    private Network findNetworkWithSubNet(String name) throws EntityNotFoundException {
+            return findNetworkWithSubNet(networkName, vdc);
+        
+    }
+    
+    
+
+    private Network findNetworkWithSubNet(String name, String vdc) throws EntityNotFoundException {
         Query query = getEntityManager().createQuery(
-                "select p from Network p left join " + " fetch p.subNets where p.name = :name");
+                "select p from Network p left join " + " fetch p.subNets where p.name = :name and p.vdc = :vdc");
         query.setParameter("name", name);
+        query.setParameter("vdc", vdc);
         Network network = null;
         try {
             network = (Network) query.getSingleResult();
         } catch (NoResultException e) {
             String message = " No network found in the database with id: " + name + " Exception: " + e.getMessage();
+    
             throw new EntityNotFoundException(ProductRelease.class, "name", name);
         }
         return network;
+    }
+
+    @Override
+    public Network load(String networkName) throws EntityNotFoundException {
+        return this.loadByField(Network.class, "name", networkName);
     }
 
 }

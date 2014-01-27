@@ -46,6 +46,8 @@ public class Network {
     private Long id;
 
     private String name;
+    
+    private String vdc;
 
     @OneToMany
     private Set<SubNetwork> subNets;
@@ -60,8 +62,9 @@ public class Network {
     /**
      * @param networkName
      */
-    public Network(String name) {
+    public Network(String name, String vdc) {
         this.name = name;
+        this.vdc = vdc;
         subNets = new HashSet<SubNetwork>();
     }
 
@@ -177,7 +180,7 @@ public class Network {
     * @return
     */
     public NetworkInstance toNetworkInstance() {
-        NetworkInstance networkInstance = new NetworkInstance(this.name);
+        NetworkInstance networkInstance = new NetworkInstance(this.name, vdc);
         for (SubNetwork subnet: this.getSubNets()) {
             SubNetworkInstance subNetInstance = subnet.toInstance();
             networkInstance.addSubNet(subNetInstance);

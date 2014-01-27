@@ -48,7 +48,7 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
     @Test
     public void testNetworkNoSubNet() throws Exception {
 
-        NetworkInstance network = new NetworkInstance(NETWORK_NAME+1);
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME+1, "vdc");
 
         network = networkInstanceDao.create(network);
         assertNotNull(network);
@@ -79,7 +79,7 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
 
         Set<SubNetworkInstance> subNets = new HashSet<SubNetworkInstance>();
         subNets.add(subNet);
-        NetworkInstance network = new NetworkInstance(NETWORK_NAME+2);
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME+2, "vdc");
         network.setSubNets(subNets);
 
         network = networkInstanceDao.create(network);
@@ -105,7 +105,7 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
     @Test
     public void testDestroyNetworkInstNoSubNetInst() throws Exception {
 
-        NetworkInstance network = new NetworkInstance(NETWORK_NAME+3);
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME+3, "vdc");
         network = networkInstanceDao.create(network);
         networkInstanceDao.remove(network);
         try {
@@ -125,7 +125,7 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
         subNet = subNetworkInstanceDao.create(subNet);
         Set<SubNetworkInstance> subNets = new HashSet<SubNetworkInstance>();
         subNets.add(subNet);
-        NetworkInstance network = new NetworkInstance(NETWORK_NAME+4);
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME+4, "vdc");
         network.setSubNets(subNets);
         network = networkInstanceDao.create(network);
         assertNotNull(network);
@@ -159,7 +159,7 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
     @Test
     public void testUpdateSubNetInstance() throws Exception {
 
-        NetworkInstance network = new NetworkInstance(NETWORK_NAME+5);
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME+5, "vdc");
         SubNetworkInstance subnet = new SubNetworkInstance(SUB_NETWORK_NAME+4, CIDR_ID);
         subnet = subNetworkInstanceDao.create(subnet);
         network.addSubNet(subnet);

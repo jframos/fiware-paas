@@ -22,6 +22,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
+import com.telefonica.euro_iaas.paasmanager.model.Port;
 import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackUtil;
@@ -129,7 +130,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             log.debug(response);
             // "network-" + claudiaData.getUser().getTenantName()
             JSONObject jsonNetworks = new JSONObject(response).getJSONObject("network");
-            networkInstance = fromJsonToNetworkInstance (jsonNetworks);
+            networkInstance = fromJsonToNetworkInstance (jsonNetworks, vdc);
             log.debug("Network id " + networkInstance.getIdNetwork() + " for network name " + networkInstance.getNetworkName());
         } catch (OpenStackException e) {
             String msm = "Error to deploy the defaul network " + e.getMessage();
@@ -297,7 +298,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             String vdc = claudiaData.getVdc();
             log.info("Destroy subnetwork " + subnet.getName() + " for user "
                     + claudiaData.getUser().getTenantName() + " with token " +  token + " and vdc " + vdc);
-            openStackUtil.deleteSubNetwork(subnet.getIdSubNet(), region, token, vdc);
+            openStackUtil.deleteSubNetwork(subnet.getIdSubNet(), region, vdc, token);
         } catch (OpenStackException e) {
             String msm = "Error to delete the network " + subnet.getName() + ":" + e.getMessage();
             log.error(msm);
@@ -318,14 +319,14 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         List<NetworkInstance> networks = new ArrayList<NetworkInstance>();
         try {
            
-            String response = openStackUtil.listNetworks(region, token, vdc);
+            String response = openStackUtil.listNetworks(claudiaData.getUser(), region);
             JSONObject lNetworkString = new JSONObject(response);
             JSONArray jsonNetworks = lNetworkString.getJSONArray("networks");
             
             for (int i = 0; i< jsonNetworks.length(); i++) {
             	
             	JSONObject jsonNet = jsonNetworks.getJSONObject(i);
-            	NetworkInstance netInst = fromJsonToNetworkInstance (jsonNet);
+            	NetworkInstance netInst = fromJsonToNetworkInstance (jsonNet, vdc);
             	networks.add(netInst);
 
             }
@@ -342,7 +343,47 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         return networks;
     }
     
-    private NetworkInstance fromJsonToNetworkInstance(JSONObject jsonNet) throws JSONException {
+    /**
+     * It loads all networks.
+     * 
+     * @params claudiaData
+     */
+    public List<Port> listPortsFromNetwork(ClaudiaData claudiaData, String region, String networkId) throws InfrastructureException {
+        String token = claudiaData.getUser().getToken();
+        String vdc = claudiaData.getVdc();
+        log.info("GEt ports  for user with token " +  token + " and vdc " + vdc);
+        List<Port> ports = new ArrayList<Port>();
+        try {
+           
+            String response = openStackUtil.listPorts(claudiaData.getUser(), region);
+            JSONObject lPortsString = new JSONObject(response);
+            JSONArray jsonPorts = lPortsString.getJSONArray("ports");
+            
+            for (int i = 0; i< jsonPorts.length(); i++) {
+                String network_id = (String) jsonPorts.getJSONObject(i).get("network_id");
+                String tenant_id = (String) jsonPorts.getJSONObject(i).get("tenant_id");
+                String device_owner = (String) jsonPorts.getJSONObject(i).get("device_owner");
+                
+                if (network_id.equals(networkId) && tenant_id.equals(vdc)&& device_owner.equals("compute:None")) {
+                    Port port = new  Port((String) jsonPorts.getJSONObject(i).get("name"), network_id, tenant_id, device_owner, 
+                            (String) jsonPorts.getJSONObject(i).get("id")) ;
+                    ports.add(port);
+                }
+            }
+
+        } catch (OpenStackException e) {
+            String msm = "Error to get the ports :" + e.getMessage();
+            log.error(msm);
+            throw new InfrastructureException(msm, e);
+        } catch (JSONException e) {
+            String msm = "Error to get the ports :" + e.getMessage();
+            log.error(msm);
+            throw new InfrastructureException(msm, e);
+        }
+        return ports;
+    }
+    
+    private NetworkInstance fromJsonToNetworkInstance(JSONObject jsonNet, String vdc) throws JSONException {
 
         String name = (String) jsonNet.get("name");
         boolean shared = (Boolean) jsonNet.get("shared");
@@ -350,13 +391,14 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         boolean adminStateUp = (Boolean) jsonNet.get("admin_state_up");
         String tenantId = (String) jsonNet.get("tenant_id");
 
-        NetworkInstance netInst = new NetworkInstance(name);
+        NetworkInstance netInst = new NetworkInstance(name, vdc);
         netInst.setIdNetwork(id);
         netInst.setShared(shared);
         netInst.setTenantId(tenantId);
         netInst.setAdminStateUp(adminStateUp);
         return netInst;
     }
+    
 
     /**
      * It obtains information about the network.
@@ -420,7 +462,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             String response = openStackUtil.deleteInterfaceToPublicRouter(claudiaData.getUser(), netInstance, region);
             log.debug(response);
         } catch (OpenStackException e) {
-            String msm = "Error to add the network " + netInstance.getNetworkName() + " to the public router :"
+            String msm = "Error to delete the network " + netInstance.getNetworkName() + " to the public router :"
                     + e.getMessage();
             log.error(msm);
             throw new InfrastructureException(msm, e);

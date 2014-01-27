@@ -13,6 +13,7 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
+import com.telefonica.euro_iaas.paasmanager.model.Port;
 import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 
@@ -124,7 +125,18 @@ public interface NetworkClient {
      * @throws EntityNotFoundException
      */
     String loadSubNetwork(ClaudiaData claudiaData, SubNetworkInstance subNet, String region)
-            throws EntityNotFoundException;
+        throws EntityNotFoundException;
+    
+    /**
+     * 
+     * @param claudiaData
+     * @param region
+     * @param networkId
+     * @return
+     * @throws InfrastructureException
+     */
+    List<Port> listPortsFromNetwork(ClaudiaData claudiaData, String region, String networkId)
+        throws InfrastructureException;
 
     /**
      * It deletes the interface in the public router.

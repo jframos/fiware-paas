@@ -166,9 +166,9 @@ public class TierManagerImpl implements TierManager {
         }
 
         for (Network network : networkToBeDeployed) {
-            if (networkManager.exists(network.getNetworkName())) {
+            if (networkManager.exists(network.getNetworkName(), claudiaData.getVdc())) {
                 log.debug("the network " + network.getNetworkName() + " already exists");
-                network = networkManager.load(network.getNetworkName());
+                network = networkManager.load(network.getNetworkName(), claudiaData.getVdc());
 
             } else {
                 network = networkManager.create(claudiaData, network, tier.getRegion());
@@ -442,7 +442,7 @@ public class TierManagerImpl implements TierManager {
         for (Network net : networskout) {
 
             try {
-                net = networkManager.load(net.getNetworkName());
+                net = networkManager.load(net.getNetworkName(), data.getVdc());
                 log.debug("Adding network " + net.getNetworkName() + "-" + " to tier " + tier.getName());
                 tier.addNetwork(net);
                 update(tier);

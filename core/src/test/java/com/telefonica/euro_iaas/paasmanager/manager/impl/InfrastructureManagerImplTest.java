@@ -186,7 +186,7 @@ public class InfrastructureManagerImplTest {
     @Test
     public void testDeleteInfrasctuctureEnvironmentInstance() throws Exception {
 
-        Network net = new Network("NET");
+        Network net = new Network("NET", "vdc");
         tier.addNetwork(net);
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
@@ -267,7 +267,7 @@ public class InfrastructureManagerImplTest {
     @Test
     public void testDeployNetwrok() throws Exception {
 
-        Network net = new Network("NET");
+        Network net = new Network("NET", "vdc");
         tier.addNetwork(net);
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
@@ -275,11 +275,12 @@ public class InfrastructureManagerImplTest {
         when(tierInstanceManager.update(any(TierInstance.class))).thenReturn(tierInstance);
         when(networkInstanceManager.create(any(ClaudiaData.class), any(NetworkInstance.class), anyString()))
                 .thenReturn(net.toNetworkInstance());
-        when(networkManager.load(any(String.class))).thenReturn(net);
+        when(networkManager.load(any(String.class), any(String.class))).thenReturn(net);
         when(tierManager.loadTierWithNetworks(any(String.class), any(String.class), any(String.class)))
                 .thenReturn(tier);
 
-        Mockito.doThrow(EntityNotFoundException.class).when(networkInstanceManager).load(any(String.class));
+        Mockito.doThrow(EntityNotFoundException.class).when(networkInstanceManager)
+                .load(any(String.class), any(String.class));
 
         manager.deployNetworks(claudiaData, tierInstance);
 
@@ -290,8 +291,8 @@ public class InfrastructureManagerImplTest {
     @Test
     public void testDeployNetwrokInternet() throws Exception {
 
-        Network net = new Network("NET");
-        Network net2 = new Network("Internet");
+        Network net = new Network("NET", "vdc");
+        Network net2 = new Network("Internet", "vdc");
         tier.addNetwork(net);
         tier.addNetwork(net2);
         TierInstance tierInstance = new TierInstance();
@@ -302,8 +303,9 @@ public class InfrastructureManagerImplTest {
         when(tierManager.update(any(Tier.class))).thenReturn(tier);
         when(networkInstanceManager.create(any(ClaudiaData.class), any(NetworkInstance.class), anyString()))
                 .thenReturn(net.toNetworkInstance());
-        when(networkManager.load(any(String.class))).thenReturn(net);
-        Mockito.doThrow(EntityNotFoundException.class).when(networkInstanceManager).load(any(String.class));
+        when(networkManager.load(any(String.class), any(String.class))).thenReturn(net);
+        Mockito.doThrow(EntityNotFoundException.class).when(networkInstanceManager)
+                .load(any(String.class), any(String.class));
 
         manager.deployNetworks(claudiaData, tierInstance);
 
@@ -315,8 +317,8 @@ public class InfrastructureManagerImplTest {
     @Test
     public void testDeleteNetwroksinEnv() throws Exception {
 
-        Network net = new Network("NET");
-        Network net2 = new Network("Internet");
+        Network net = new Network("NET", "vdc");
+        Network net2 = new Network("Internet", "vdc");
         tier.addNetwork(net);
         tier.addNetwork(net2);
         TierInstance tierInstance = new TierInstance();
@@ -331,7 +333,8 @@ public class InfrastructureManagerImplTest {
         when(networkInstanceManager.create(any(ClaudiaData.class), any(NetworkInstance.class), anyString()))
                 .thenReturn(net.toNetworkInstance());
 
-        Mockito.doThrow(EntityNotFoundException.class).when(networkInstanceManager).load(any(String.class));
+        Mockito.doThrow(EntityNotFoundException.class).when(networkInstanceManager)
+                .load(any(String.class), any(String.class));
 
         manager.deleteNetworksInEnv(claudiaData, envInst, region);
 

@@ -51,6 +51,7 @@ public class NetworkInstance {
 
     /** the network name */
     private String name;
+    private String vdc;
 
     private String idNetwork;
     
@@ -82,8 +83,9 @@ public class NetworkInstance {
     /**
      * @param networkName
      */
-    public NetworkInstance(String name) {
+    public NetworkInstance(String name, String vdc) {
         this.name = name;
+        this.vdc = vdc;
         subNets = new HashSet<SubNetworkInstance>();
         routers = new HashSet<RouterInstance>();
         subNetCount = 1;
