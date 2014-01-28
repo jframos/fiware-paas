@@ -131,9 +131,9 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
                 + environmentInstance.getVdc() + "  description " + environmentInstance.getDescription() + "  status "
                 + environmentInstance.getStatus() + " environment  " + environmentInstance.getEnvironment().getName());
 
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+        /*if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
             claudiaData.setUser(extendedOVFUtil.getCredentials());
-        }
+        }*/
 
         task = createTask(MessageFormat.format("Create environment {0}", environmentInstance.getBlueprintName()), vdc,
                 environmentInstance.getBlueprintName());
