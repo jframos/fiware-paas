@@ -188,14 +188,13 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
 
         // try
         // {
+        addCredentialsToClaudiaData(claudiaData);
         environmentResourceValidator.validateCreate(claudiaData, environmentDto, vdc, systemPropertiesProvider);
         /*
          * } catch (InvalidEnvironmentRequestException e) { throw new WebApplicationException(e, ERROR_REQUEST); } catch
          * (AlreadyExistEntityException e) { throw new WebApplicationException(e, ERROR_REQUEST); } catch
          * (InvalidEntityException e) { throw new WebApplicationException(e, ERROR_REQUEST); }
          */
-
-        addCredentialsToClaudiaData(claudiaData);
 
         Environment environment = new Environment();
         environment.setName(environmentDto.getName());
