@@ -77,15 +77,16 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
     public Task install(String org, String vdc, String environmentInstance,
             ApplicationReleaseDto applicationReleaseDto, String callback) throws InvalidApplicationReleaseException,
             ProductReleaseNotFoundException, ApplicationInstanceNotFoundException {
-
+        log.debug("Install application " + applicationReleaseDto.getApplicationName() + " in environment " + environmentInstance);
         Task task = null;
 
         validator.validateInstall(vdc, environmentInstance, applicationReleaseDto);
 
         ApplicationRelease applicationRelease = new ApplicationRelease();
 
-        if (applicationReleaseDto.getApplicationName() != null)
+        if (applicationReleaseDto.getApplicationName() != null) {
             applicationRelease.setName(applicationReleaseDto.getApplicationName());
+        }
 
         if (applicationReleaseDto.getArtifactsDto() != null)
             applicationRelease.setArtifacts(this.convertToArtifact(applicationReleaseDto.getArtifactsDto()));

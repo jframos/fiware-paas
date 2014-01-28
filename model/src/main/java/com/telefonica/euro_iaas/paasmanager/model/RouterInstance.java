@@ -40,8 +40,11 @@ public class RouterInstance {
 
     private String idRouter;
 
-    private final String idPublicNetwork;
+    private String idPublicNetwork;
 
+    public RouterInstance() {
+
+    }
 
     /**
      * Constructor.
