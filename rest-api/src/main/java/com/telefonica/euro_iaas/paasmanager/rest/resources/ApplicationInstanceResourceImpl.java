@@ -74,30 +74,21 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
     private ApplicationInstanceResourceValidator validator;
     private ExtendedOVFUtil extendedOVFUtil;
 
+    /**
+     * 
+     */
     public Task install(String org, String vdc, String environmentInstance,
             ApplicationReleaseDto applicationReleaseDto, String callback) throws InvalidApplicationReleaseException,
             ProductReleaseNotFoundException, ApplicationInstanceNotFoundException {
+        log.debug("Install aplication " + applicationReleaseDto.getApplicationName() + " " +
+                applicationReleaseDto.getVersion() + " on "
+                + " enviornment " + environmentInstance + " with artificats " + applicationReleaseDto.getArtifactsDto().size());
 
         Task task = null;
-
         validator.validateInstall(vdc, environmentInstance, applicationReleaseDto);
+        log.debug("Application validated");
 
-        ApplicationRelease applicationRelease = new ApplicationRelease();
-
-        if (applicationReleaseDto.getApplicationName() != null)
-            applicationRelease.setName(applicationReleaseDto.getApplicationName());
-
-        if (applicationReleaseDto.getArtifactsDto() != null)
-            applicationRelease.setArtifacts(this.convertToArtifact(applicationReleaseDto.getArtifactsDto()));
-
-        if (applicationReleaseDto.getVersion() != null)
-            applicationRelease.setVersion(applicationReleaseDto.getVersion());
-
-        if (applicationReleaseDto.getApplicationType() != null) {
-            ApplicationType appType = new ApplicationType();
-            appType.setName(applicationReleaseDto.getApplicationType());
-            applicationRelease.setApplicationType(appType);
-        }
+        ApplicationRelease applicationRelease = applicationReleaseDto.fromDto();
 
         task = createTask(
                 MessageFormat.format("Deploying application {0} in environment instance {1}",
@@ -196,27 +187,6 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
         this.extendedOVFUtil = extendedOVFUtil;
     }
 
-    public List<Artifact> convertToArtifact(List<ArtifactDto> artifactsDto) {
-        List<Artifact> artifacts = new ArrayList();
-
-        for (ArtifactDto artifactDto : artifactsDto) {
-            Artifact artifact = new Artifact();
-            artifact.setName(artifactDto.getName());
-            if (artifactDto.getPath() != null)
-                artifact.setPath(artifactDto.getPath());
-            if (artifactDto.getProductReleaseDto() != null) {
-                artifact.setProductRelease(convertProductRelease(artifactDto.getProductReleaseDto()));
-            }
-
-        }
-        return artifacts;
-    }
-
-    public ProductRelease convertProductRelease(ProductReleaseDto productReleaseDto) {
-        ProductRelease productRelease = new ProductRelease();
-        productRelease.setProduct(productReleaseDto.getProductName());
-        productRelease.setVersion(productReleaseDto.getVersion());
-        return productRelease;
-    }
+   
 
 }
