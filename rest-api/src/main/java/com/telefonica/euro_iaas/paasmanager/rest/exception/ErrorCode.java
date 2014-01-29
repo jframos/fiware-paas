@@ -15,7 +15,9 @@ public enum ErrorCode {
     ENVIRONMENT_IN_USE(40,
             "The environment is being used by an instance",
             "(.*)InvalidEnvironmentRequestException: (.*)is being used(.*)",
-            403), DEFAULT(500, "Internal PaasManager Server Error", "(.*)",
+            403),
+    INFRASTRUCTURE(50, "Openstack infrastructure failure", "(.*)InfrastructureException(.*)", 500),
+    DEFAULT(500, "Internal PaasManager Server Error", "(.*)",
 
     500);
 

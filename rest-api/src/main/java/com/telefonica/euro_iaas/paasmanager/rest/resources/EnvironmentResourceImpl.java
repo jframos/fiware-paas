@@ -82,9 +82,9 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
         return tiers;
     }
 
-    public void delete(String org, String vdc, String envName) throws EnvironmentInstanceNotFoundException,
-            InvalidEntityException, InvalidEnvironmentRequestException, AlreadyExistEntityException,
-            EntityNotFoundException, InfrastructureException {
+    public void delete(String org, String vdc, String envName) throws AlreadyExistEntityException,
+            InvalidEntityException, InvalidEnvironmentRequestException, EntityNotFoundException,
+            InfrastructureException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
         environmentResourceValidator.validateDelete(envName, vdc, systemPropertiesProvider);
 

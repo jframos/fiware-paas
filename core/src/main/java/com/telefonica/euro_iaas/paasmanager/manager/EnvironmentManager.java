@@ -49,7 +49,7 @@ public interface EnvironmentManager {
      * @param environment
      *            the candidate to environment
      */
-    void destroy(ClaudiaData data, Environment environment) throws InvalidEntityException, InfrastructureException;
+    void destroy(ClaudiaData data, Environment environment) throws InvalidEntityException, InfrastructureException, EntityNotFoundException;
 
     /**
      * Find the Environment using the given name.

@@ -190,6 +190,8 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
 
             response.addHeader("Www-Authenticate", "Keystone uri='" + keystoneURL + "'");
         }
+
+        // TODO jesuspg: question:add APIException
         chain.doFilter(request, response);
 
     }
