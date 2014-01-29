@@ -19,9 +19,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.EnvironmentInstanceNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 
@@ -115,7 +117,7 @@ public interface EnvironmentResource {
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void delete(@PathParam("org") String org, @PathParam("vdc") String vdc, @PathParam("envName") String envName)
             throws EnvironmentInstanceNotFoundException, InvalidEntityException, InvalidEnvironmentRequestException,
-            AlreadyExistEntityException;
+            AlreadyExistEntityException, EntityNotFoundException, InfrastructureException;
 
     /**
      * Update the Environment in BBDD,

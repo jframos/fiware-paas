@@ -12,6 +12,7 @@ public class APIException extends RuntimeException {
     private String message;
     private String publicMessage;
     private Integer code;
+    private Integer httpCode;
 
     public APIException(Throwable cause) {
 
@@ -33,10 +34,15 @@ public class APIException extends RuntimeException {
         this.code = errorCode.getCode();
         this.publicMessage = errorCode.getPublicMessage();
         this.message = errorCode.toString() + "#" + message;
+        this.httpCode = errorCode.getHttpCode();
 
     }
 
     public String getPublicMessage() {
         return publicMessage;
+    }
+
+    public Integer getHttpCode() {
+        return httpCode;
     }
 }
