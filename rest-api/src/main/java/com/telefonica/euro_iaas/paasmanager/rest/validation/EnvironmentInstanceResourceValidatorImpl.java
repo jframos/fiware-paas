@@ -183,6 +183,18 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
     public void validateTier(TierDto tierDto) throws InvalidEnvironmentRequestException {
 
+        if (tierDto.getMaximumNumberInstances() == null){
+            throw new InvalidEnvironmentRequestException("Maximun Number Instances " 
+                            + "from tierDto is null");
+        }
+        if (tierDto.getMinimumNumberInstances() == null){
+            throw new InvalidEnvironmentRequestException("Minimum Number Instances " 
+                            + "from tierDto is null");
+        }
+        if (tierDto.getInitialNumberInstances() == null){
+            throw new InvalidEnvironmentRequestException("Initial Number Instances " 
+                            + "from tierDto is null");
+        }
         if (tierDto.getName() == null) {
             throw new InvalidEnvironmentRequestException("Tier Name " + "from tierDto is null");
         }
