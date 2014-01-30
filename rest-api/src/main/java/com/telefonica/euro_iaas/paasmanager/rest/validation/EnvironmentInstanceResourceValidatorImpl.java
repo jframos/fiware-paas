@@ -115,9 +115,6 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
             SystemPropertiesProvider systemPropertiesProvider, ClaudiaData claudiaData)
             throws InvalidEnvironmentRequestException, QuotaExceededException {
 
-        log.debug("Validate enviornment instance blueprint " + environmentInstanceDto.getBlueprintName()
-                + " description " + environmentInstanceDto.getDescription() + " environment "
-                + environmentInstanceDto.getEnvironmentDto());
         if (environmentInstanceDto.getBlueprintName() == null) {
             log.error("EnvironamentBlueprintName " + "from EnviromentDto BlueprintName is null");
             throw new InvalidEnvironmentRequestException("EnvironamentBlueprintName "
@@ -128,7 +125,11 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
             log.error("The environment to be deployed is null ");
             throw new InvalidEnvironmentRequestException("The environment to be deployed is null ");
         }
-
+        
+        log.debug("Validate enviornment instance blueprint " + environmentInstanceDto.getBlueprintName()
+                        + " description " + environmentInstanceDto.getDescription() + " environment "
+                        + environmentInstanceDto.getEnvironmentDto());
+                
         EnvironmentInstanceSearchCriteria criteria = new EnvironmentInstanceSearchCriteria();
 
         criteria.setVdc(claudiaData.getVdc());
