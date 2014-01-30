@@ -48,18 +48,18 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
 
         try {
             environmentManager.load(environmentDto.getName(), vdc);
-            log.error("The enviornment " + environmentDto.getName() + " already exists");
-            throw new AlreadyExistEntityException("The enviornment " + environmentDto.getName() + " already exists");
+            log.error("The environment " + environmentDto.getName() + " already exists");
+            throw new AlreadyExistEntityException("The environment " + environmentDto.getName() + " already exists");
 
         } catch (EntityNotFoundException e1) {
 
             if (environmentDto.getName() == null) {
-                log.error("EnvironamentName " + "from EnviromentDto is null");
-                throw new InvalidEnvironmentRequestException("EnvironamentName " + "from EnviromentDto is null");
+                log.error("EnvironmentName " + "from EnvironmentDto is null");
+                throw new InvalidEnvironmentRequestException("EnvironmentName " + "from EnvironmentDto is null");
             }
             if (environmentDto.getDescription() == null) {
-                log.error("EnvironamentDescription " + "from EnviromentDto is null");
-                throw new InvalidEnvironmentRequestException("EnvironamentDescription " + "from EnviromentDto is null");
+                log.error("EnvironmentDescription " + "from EnvironmentDto is null");
+                throw new InvalidEnvironmentRequestException("EnvironmentDescription " + "from EnvironmentDto is null");
             }
 
         }
@@ -99,41 +99,31 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
     }
 
     public void validateDelete(String environmentName, String vdc, SystemPropertiesProvider systemPropertiesProvider)
-            throws InvalidEnvironmentRequestException, AlreadyExistEntityException, InvalidEntityException {
+            throws EntityNotFoundException, InvalidEnvironmentRequestException {
         Environment environment = null;
 
-        try {
-            environment = environmentManager.load(environmentName, vdc);
-        } catch (EntityNotFoundException e) {
-            log.error("The enviornment " + environmentName + " does not exist");
-            throw new InvalidEnvironmentRequestException("The enviornment " + environmentName + " does not exist");
-        }
+        environment = environmentManager.load(environmentName, vdc);
 
-        if (validateEnviornmentInstance(environment, vdc)) {
-            throw new InvalidEnvironmentRequestException("The enviornmetn is being used by an env instance");
+        if (validateEnvironmentInstance(environment, vdc)) {
+            throw new InvalidEnvironmentRequestException("The environment is being used by an environment instance");
         }
 
     }
 
     public void validateUpdate(String environmentName, String vdc, SystemPropertiesProvider systemPropertiesProvider)
-            throws InvalidEnvironmentRequestException, AlreadyExistEntityException, InvalidEntityException {
+            throws InvalidEnvironmentRequestException, EntityNotFoundException {
 
         Environment environment = null;
 
-        try {
-            environment = environmentManager.load(environmentName, vdc);
-        } catch (EntityNotFoundException e) {
-            log.error("The enviornment " + environmentName + " does not exist");
-            throw new InvalidEnvironmentRequestException("The enviornment " + environmentName + " does not exist");
-        }
+        environment = environmentManager.load(environmentName, vdc);
 
-        if (validateEnviornmentInstance(environment, vdc)) {
-            throw new InvalidEnvironmentRequestException("The enviornmetn is being used by an env instance");
+        if (validateEnvironmentInstance(environment, vdc)) {
+            throw new InvalidEnvironmentRequestException("The environment is being used by an env instance");
         }
 
     }
 
-    private boolean validateEnviornmentInstance(Environment env, String vdc) {
+    private boolean validateEnvironmentInstance(Environment env, String vdc) {
         EnvironmentInstanceSearchCriteria criteria = new EnvironmentInstanceSearchCriteria();
 
         criteria.setVdc(vdc);

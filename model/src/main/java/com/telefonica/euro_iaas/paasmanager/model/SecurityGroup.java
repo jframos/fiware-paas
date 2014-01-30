@@ -35,7 +35,7 @@ public class SecurityGroup {
 
     @Column(nullable = false, length = 256)
     private String name;
-    private String description = "";
+    private String description = "descripcion";
 
     @OneToMany
     private List<Rule> rules;

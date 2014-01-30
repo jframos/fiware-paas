@@ -64,11 +64,11 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
     private ApplicationInstanceManager applicationInstanceManager;
     @InjectParam("applicationReleaseManager")
     private ApplicationReleaseManager applicationReleaseManager;
-    @InjectParam("environmentInstanceAsyncManager")
+
     private EnvironmentInstanceAsyncManager environmentInstanceAsyncManager;
-    @InjectParam("taskManager")
+
     private TaskManager taskManager;
-    @InjectParam("environmentInstanceManager")
+
     private EnvironmentInstanceManager environmentInstanceManager;
 
     private ApplicationInstanceResourceValidator validator;
@@ -84,9 +84,11 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
                 applicationReleaseDto.getVersion() + " on "
                 + " enviornment " + environmentInstance + " with artificats " + applicationReleaseDto.getArtifactsDto().size());
 
+
         Task task = null;
         validator.validateInstall(vdc, environmentInstance, applicationReleaseDto);
         log.debug("Application validated");
+
 
         ApplicationRelease applicationRelease = applicationReleaseDto.fromDto();
 
@@ -185,6 +187,18 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
      */
     public void setExtendedOVFUtil(ExtendedOVFUtil extendedOVFUtil) {
         this.extendedOVFUtil = extendedOVFUtil;
+    }
+    
+    public void setEnvironmentInstanceAsyncManager(EnvironmentInstanceAsyncManager environmentInstanceAsyncManager) {
+        this.environmentInstanceAsyncManager = environmentInstanceAsyncManager;
+    }
+
+    public void setEnvironmentInstanceManager(EnvironmentInstanceManager environmentInstanceManager) {
+        this.environmentInstanceManager = environmentInstanceManager;
+    }
+
+    public void setTaskManager(TaskManager taskManager) {
+        this.taskManager = taskManager;
     }
 
    

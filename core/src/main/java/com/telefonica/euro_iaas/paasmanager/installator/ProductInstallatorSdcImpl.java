@@ -220,8 +220,10 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
         // Installing product with SDC
         productInstance.setStatus(Status.DEPLOYING_ARTEFACT);
+        
         com.telefonica.euro_iaas.sdc.model.Task task = service.installArtifact(productInstance.getVdc(),
                 productInstance.getName(), sdcArtifact, null);
+        log.debug("Deploying artefact " + artifact.getName() + "with href task " + task.getHref());
 
 
         StringTokenizer tokens = new StringTokenizer(task.getHref(), "/");

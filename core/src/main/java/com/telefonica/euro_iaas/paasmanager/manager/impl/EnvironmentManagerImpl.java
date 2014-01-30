@@ -18,7 +18,6 @@ import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidSecurityGroupRequestException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -56,19 +55,18 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
                 Tier tierDB = null;
 
                 try {
-				    tierDB = tierManager.load(tier.getName(), claudiaData.getVdc(), environment.getName());
-				} catch (EntityNotFoundException e) {
-				    try {
-						tierDB = tierManager.create(claudiaData, environment.getName(), tier);
-					} catch (Exception e2) {
-						 throw new InvalidEnvironmentRequestException(e2.getMessage(), e2);
-					}
-				}
+                    tierDB = tierManager.load(tier.getName(), claudiaData.getVdc(), environment.getName());
+                } catch (EntityNotFoundException e) {
+                    try {
+                        tierDB = tierManager.create(claudiaData, environment.getName(), tier);
+                    } catch (Exception e2) {
+                        throw new InvalidEnvironmentRequestException(e2.getMessage(), e2);
+                    }
+                }
 
-				environmentDB.addTier(tierDB);
+                environmentDB.addTier(tierDB);
             }
         }
-
 
         try {
             environmentDB = environmentDao.create(environmentDB);
@@ -88,24 +86,18 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
     }
 
     public void destroy(ClaudiaData data, Environment environment) throws InvalidEntityException,
-            InfrastructureException {
+            InfrastructureException, EntityNotFoundException {
 
         Set<Tier> tiers = environment.getTiers();
 
         if (tiers != null && tiers.size() > 0) {
             environment.setTiers(null);
 
-            try {
-                environmentDao.update(environment);
-            } catch (InvalidEntityException e) {
-                throw new InvalidEntityException(EnvironmentDao.class, e);
-            }
+            environmentDao.update(environment);
+
             for (Tier tier : tiers) {
-                try {
-                    tierManager.delete(data, tier);
-                } catch (EntityNotFoundException e) {
-                    throw new InvalidEntityException(TierManager.class, e);
-                }
+
+                tierManager.delete(data, tier);
 
             }
         }
@@ -147,8 +139,8 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
 
     public Environment updateTier(Environment environment, Tier tierold, Tier tiernew) throws EntityNotFoundException,
             InvalidEntityException {
- 
-        environment.updateTier (tierold, tiernew);
+
+        environment.updateTier(tierold, tiernew);
         return environmentDao.update(environment);
     }
 
