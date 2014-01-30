@@ -7,7 +7,6 @@
 
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
-import java.util.HashMap;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -35,8 +34,6 @@ public class VM {
     /** the fqn. ***/
     @Column(length = 512)
     private String fqn = "";
-
-    private HashMap<String, String> networks = null;
 
     /** the OSType. ***/
     @Column(length = 8)
@@ -110,31 +107,6 @@ public class VM {
     }
 
     // // ACCESSORS ////
-
-    /**
-     * Add a network to the VM.
-     * 
-     * @param network
-     * @param ip
-     */
-    public void addNetwork(String network, String ip) {
-        if (networks == null) {
-            networks = new HashMap<String, String>();
-        }
-
-        this.networks.put(network, ip);
-    }
-
-    /**
-     * The network to be deleted.
-     * 
-     * @param network
-     */
-    public void deleteNetwork(String network) {
-        if (this.networks.get(network) != null) {
-            this.networks.remove(network);
-        }
-    }
 
     /*
      * (non-Javadoc)
@@ -214,14 +186,6 @@ public class VM {
     }
 
     /**
-     * @return the network
-     */
-    public HashMap<String, String> getNetworks() {
-
-        return networks;
-    }
-
-    /**
      * @return the osType
      */
     public String getOsType() {
@@ -234,36 +198,6 @@ public class VM {
     public String getVmid() {
         return vmid;
     }
-
-    /**
-     * @return the vmOVF
-     */
-    /*
-     * public String getVmOVF() { return vmOVF; }
-     */
-
-    /**
-     * @param vmOVF
-     *            the vmOVF to set
-     */
-    /*
-     * public void setVmOVF(String vmOVF) { this.vmOVF = vmOVF; }
-     */
-
-    /**
-     * @return the vapp
-     */
-    /*
-     * public String getVapp() { return vapp; }
-     */
-
-    /**
-     * @param vapp
-     *            the vapp to set
-     */
-    /*
-     * public void setVapp(String vapp) { this.vapp = vapp; }
-     */
 
     /*
      * (non-Javadoc)
@@ -310,14 +244,6 @@ public class VM {
      */
     public void setIp(String ip) {
         this.ip = ip;
-    }
-
-    /**
-     * @param networks
-     *            the networks to set
-     */
-    public void setNetworks(HashMap<String, String> networks) {
-        this.networks = networks;
     }
 
     /**

@@ -52,12 +52,10 @@ import com.telefonica.euro_iaas.paasmanager.model.Template;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
-import com.telefonica.euro_iaas.paasmanager.monitoring.MonitoringClient;
 import com.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser;
 import com.telefonica.euro_iaas.paasmanager.util.EnvironmentUtils;
 import com.telefonica.euro_iaas.paasmanager.util.OVFUtils;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import com.telefonica.euro_iaas.paasmanager.util.VappUtils;
 
 public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
@@ -65,11 +63,9 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
     private SystemPropertiesProvider systemPropertiesProvider;
     private ClaudiaClient claudiaClient;
-    private MonitoringClient monitoringClient;
     private ClaudiaResponseAnalyser claudiaResponseAnalyser;
     private ClaudiaUtil claudiaUtil;
     private OVFUtils ovfUtils;
-    private VappUtils vappUtils;
     private TierInstanceManager tierInstanceManager;
     private TierManager tierManager;
     private EnvironmentUtils environmentUtils;
@@ -245,7 +241,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                     environmentInstance.setStatus(Status.ERROR);
                     throw new InfrastructureException(e);
                 }
-                
+
                 if (!systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                     try {
                         vAppReplica = claudiaClient.browseVMReplica(claudiaData, tier.getName(), numReplica, vm,
@@ -289,13 +285,6 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
             numberTier++;
         }
 
-        for (TierInstance tierInstance : environmentInstance.getTierInstances()) {
-            if (tierInstance.getOvf() != null && tierInstance.getOvf().length() > 0) {
-                String newOvf = vappUtils.getMacroVapp(tierInstance.getOvf(), environmentInstance, tierInstance);
-                tierInstance.setOvf(newOvf);
-            }
-        }
-
         environmentInstance.setVapp(browseService(claudiaData));
 
         return environmentInstance;
@@ -328,7 +317,6 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 break;
             }
             claudiaClient.undeployVMReplica(claudiaData, tierInstance);
-            monitoringClient.stopMonitoring(tierInstance.getVM().getFqn());
             deleteNetworksInEnv(claudiaData, envInstance, tierInstance.getTier().getRegion());
         }
 
@@ -369,7 +357,6 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         // claudiaData.setReplica("");
 
         claudiaClient.undeployVMReplica(claudiaData, tierInstance);
-        monitoringClient.stopMonitoring(fqn);
 
     }
 
@@ -462,13 +449,6 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
         log.info("Set up monitoring ");
         List<String> products = getProductsName(vmOVF);
-        monitoringClient.startMonitoring(fqn, null);
-
-        if (products != null) {
-            for (String product : products) {
-                monitoringClient.startMonitoring(fqn, product);
-            }
-        }
         /*
          * vm = new VM(fqn, ip, "" + replicaNumber, null, null, vmOVF, vAppReplica);
          */
@@ -596,13 +576,12 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         Tier tier = tierInstance.getTier();
         tier = tierManager.loadTierWithNetworks(tier.getName(), data.getVdc(), tier.getEnviromentName());
         // Creating networks...
-        log.debug("Deploying network for tier instance " + tierInstance.getName() + " "
-                + tier.getNetworks());
+        log.debug("Deploying network for tier instance " + tierInstance.getName() + " " + tier.getNetworks());
         List<Network> networkToBeDeployed = new ArrayList<Network>();
         for (Network network : tier.getNetworks()) {
             log.debug("Network to be added " + network.getNetworkName());
             if (network.getNetworkName().equals("Internet")) {
-              
+
                 tier.setFloatingip("true");
                 tier = tierManager.update(tier);
                 tierInstance.update(tier);
@@ -641,7 +620,8 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
             InfrastructureException {
 
         log.debug("Inserting in database for tier instance " + tierInstance.getName() + " "
-                + tierInstance.getNetworkInstances().size() + " " + tierInstance.getTier()+ " " + tierInstance.getTier().getFloatingip());
+                + tierInstance.getNetworkInstances().size() + " " + tierInstance.getTier() + " "
+                + tierInstance.getTier().getFloatingip());
         TierInstance tierInstanceDB = null;
 
         if (tierInstance.getOvf() != null && tierInstance.getOvf().length() > tam_max) {
@@ -705,10 +685,6 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         this.environmentUtils = environmentUtils;
     }
 
-    public void setMonitoringClient(MonitoringClient monitoringClient) {
-        this.monitoringClient = monitoringClient;
-    }
-
     public void setOvfUtils(OVFUtils ovfUtils) {
         this.ovfUtils = ovfUtils;
     }
@@ -719,14 +695,6 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
     public void setTierInstanceManager(TierInstanceManager tierInstanceManager) {
         this.tierInstanceManager = tierInstanceManager;
-    }
-
-    /**
-     * @param vappUtils
-     *            the Vapputils to set
-     */
-    public void setVappUtils(VappUtils vappUtils) {
-        this.vappUtils = vappUtils;
     }
 
     public String StartStopScalability(ClaudiaData claudiaData, boolean b) throws InfrastructureException {

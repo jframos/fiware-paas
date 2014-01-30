@@ -7,10 +7,17 @@
 
 package com.telefonica.euro_iaas.paasmanager.claudia.impl;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
@@ -22,26 +29,15 @@ import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
-import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
-import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
-import com.telefonica.euro_iaas.paasmanager.monitoring.MonitoringClient;
 import com.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import org.junit.Before;
-import org.junit.Test;
-
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ClaudiaClientImplTest {
 
     private ClaudiaClientImpl claudiaClient;
     private ClaudiaResponseAnalyser claudiaResponseAnalyser;
     private ClaudiaUtil claudiaUtil;
-    private MonitoringClient monitoringClient;
     private SystemPropertiesProvider systemPropertiesProvider;
     private VappUtils vappUtils;
 
@@ -113,9 +109,6 @@ public class ClaudiaClientImplTest {
             e.printStackTrace();
         }
     }
-    
-  
-
 
     /*
      * @Test public void testBrowseVM() { fail("Not yet implemented"); }

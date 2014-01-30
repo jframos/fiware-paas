@@ -1,0 +1,1 @@
+/Users/jesuspg/Devel/liquibase-3/liquibase --driver=org.postgresql.Driver --url=jdbc:postgresql://130.206.80.112:5432/paasmanager --username=postgres --password=postgres diffChangeLog --referenceUrl=jdbc:postgresql://localhost:5432/paasmanager --referenceUsername=paasmanager --referencePassword=paasmanager
