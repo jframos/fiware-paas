@@ -115,12 +115,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
     }
 
     /**
-     * Creating the security group in Openstack.
-     * 
-     * @param claudiaData
-     * @param securityGroup
-     * @return
-     * @throws InfrastructureException
+     * Creating the security group in OpenStack.
      */
     public String deploySecurityGroup(String region, String token, String vdc, SecurityGroup securityGroup)
             throws InfrastructureException {
@@ -162,7 +157,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
                 return id;
             } else {
                 log.error("Error to create a security group " + result);
-                throw new InfrastructureException("Error to create a security group " + result);
+                throw new InfrastructureException(result);
             }
 
         } catch (Exception e) {
@@ -209,12 +204,11 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
                 log.debug("Operation ok result " + result);
             } else {
                 log.error("Error to delete a security rule " + rule.getIdRule() + ": " + result);
-                throw new InfrastructureException("Error to delete a security rule " + rule.getIdRule() + ": " + result);
+                throw new InfrastructureException(result);
             }
 
         } catch (Exception e) {
-            String errorMessage = "Error performing delete on the resource: " + url;
-            e.printStackTrace();
+            String errorMessage = "Error performing delete on the resource: " + url + " " + e.getMessage();
 
             throw new InfrastructureException(errorMessage);
         }
@@ -226,7 +220,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
      */
     public void destroySecurityGroup(String region, String token, String vdc, SecurityGroup securityGroup)
             throws InfrastructureException {
-        
+
         log.debug("Destroy security group " + securityGroup.getName());
         String url = getNovaEndPoint(region, token) + vdc + "/os-security-groups/" + securityGroup.getIdSecurityGroup();
         log.debug("actionUri: " + url);
@@ -258,11 +252,11 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
             } else {
                 log.error("Error to delete a security group " + securityGroup + " : " + result);
-                throw new InfrastructureException("Error to delete a security group " + securityGroup + " : " + result);
+                throw new InfrastructureException(result);
             }
 
         } catch (Exception e) {
-            String errorMessage = "Error performing delete on the resource: " + url;
+            String errorMessage = "Error performing delete on the resource: " + url + " " + e;
             e.printStackTrace();
 
             throw new InfrastructureException(errorMessage);
@@ -302,14 +296,11 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
     /**
      * It loads all the security groups.
      */
-    public List<SecurityGroup> loadAllSecurityGroups(String region, String token, String vdc) throws OpenStackException {
+    public List<SecurityGroup> loadAllSecurityGroups(String region, String token, String vdc)
+            throws InfrastructureException {
 
         String url = null;
-        try {
-            url = getNovaEndPoint(region, token) + vdc + "/os-security-groups";
-        } catch (InfrastructureException e) {
-            throw new OpenStackException(e.getMessage());
-        }
+        url = getNovaEndPoint(region, token) + vdc + "/os-security-groups";
         log.debug("actionUri: " + url);
 
         Client client = new Client();
@@ -323,15 +314,16 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
             builder = builder.header(key, header.get(key));
         }
         response = builder.get(ClientResponse.class);
+        String responseEntity = response.getEntity(String.class);
 
         if (response.getStatus() != 200) {
-            String message = "Error calling OpenStack to recover all secGroups. " + "Status " + response.getStatus();
-            throw new OpenStackException(message);
+            String message = "Error calling OpenStack to recover all secGroups. " + "Status " + response.getStatus()
+                    + " " + responseEntity;
+            throw new InfrastructureException(responseEntity);
         }
-        String stringAllSecurityGroup = response.getEntity(String.class);
         log.debug("Status " + response.getStatus());
 
-        JSONObject jsonNode = JSONObject.fromObject(stringAllSecurityGroup);
+        JSONObject jsonNode = JSONObject.fromObject(responseEntity);
         List<SecurityGroup> securityGroups = fromStringToSecGroups(jsonNode);
 
         return securityGroups;
@@ -343,15 +335,12 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
      */
 
     public SecurityGroup loadSecurityGroup(String region, String token, String vdc, String securityGroupId)
-            throws EntityNotFoundException, OpenStackException {
+            throws EntityNotFoundException, InfrastructureException {
 
         log.debug("Loading security group " + securityGroupId);
         String url = null;
-        try {
-            url = getNovaEndPoint(region, token) + vdc + "/os-security-groups/" + securityGroupId;
-        } catch (InfrastructureException e) {
-            throw new OpenStackException(e.getMessage());
-        }
+        url = getNovaEndPoint(region, token) + vdc + "/os-security-groups/" + securityGroupId;
+
         log.debug("actionUri: " + url);
 
         try {

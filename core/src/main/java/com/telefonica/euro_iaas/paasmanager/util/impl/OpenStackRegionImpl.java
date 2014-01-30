@@ -18,14 +18,12 @@ import javax.ws.rs.core.MediaType;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.http.client.methods.HttpPost;
 import org.apache.log4j.Logger;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
-import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackRegion;
 import com.telefonica.euro_iaas.paasmanager.util.RegionCache;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
@@ -58,7 +56,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
 
         RegionCache regionCache = new RegionCache();
         String url = regionCache.getUrl(regionName, name);
-        
+
         String tokenadmin = this.getTokenAdmin();
         if (url != null) {
             return url;
@@ -76,15 +74,15 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     }
 
     public String getTokenAdmin() throws OpenStackException {
-        
+
         ClientResponse response = getEndPointsThroughTokenRequest();
         return parseToken(response.getEntity(String.class));
-      
+
     }
 
     @Override
     public String getNovaEndPoint(String regionName, String token) throws OpenStackException {
-       
+
         String url = getEndPointByNameAndRegionName("nova", regionName, token);
         log.debug("getNovaEndPoint " + regionName + " " + token + " " + url);
 
@@ -132,7 +130,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         ClientResponse response = builder.get(ClientResponse.class);
 
         int code = response.getStatus();
-        log.debug ("code " + code);
+        log.debug("code " + code);
 
         if (code != 200) {
             String message = "Failed : HTTP (url:" + url + ") error code : " + code + " body: "
@@ -172,7 +170,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
                 if (name.equals(name1)) {
                     url = endpointJson.get("publicURL").toString();
                     urlMap.put(regionName1, url);
-                    if (regionName.equals(regionName1)) {
+                    if ((regionName != null) && (regionName.equals(regionName1))) {
                         notFound = false;
                     }
                 }
@@ -287,7 +285,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         }
         return names;
     }
-    
+
     /**
      * Parse region name, with compatibility with essex,grizzly.
      * 
@@ -300,7 +298,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         String token = null;
 
         JSONObject jsonObject = JSONObject.fromObject(response);
-        jsonObject = (JSONObject)jsonObject.get("access");
+        jsonObject = (JSONObject) jsonObject.get("access");
 
         if (jsonObject.containsKey("token")) {
 

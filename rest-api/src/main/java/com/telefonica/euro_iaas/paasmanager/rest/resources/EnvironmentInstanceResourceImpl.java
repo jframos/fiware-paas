@@ -205,23 +205,19 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
          */
     }
 
-    public Task destroy(String org, String vdc, String name, String callback) {
-        try {
+    public Task destroy(String org, String vdc, String name, String callback) throws EntityNotFoundException {
 
-            EnvironmentInstance environmentInstance = environmentInstanceManager.loadForDelete(vdc, name);
+        EnvironmentInstance environmentInstance = environmentInstanceManager.loadForDelete(vdc, name);
 
-            ClaudiaData claudiaData = new ClaudiaData(org, vdc, name);
+        ClaudiaData claudiaData = new ClaudiaData(org, vdc, name);
 
-            if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-                claudiaData.setUser(extendedOVFUtil.getCredentials());
-            }
-
-            Task task = createTask(MessageFormat.format("Destroying EnvironmentInstance {0} ", name), vdc, name);
-            environmentInstanceAsyncManager.destroy(claudiaData, environmentInstance, task, callback);
-            return task;
-        } catch (EntityNotFoundException e) {
-            throw new WebApplicationException(e.getCause(), 404);
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+            claudiaData.setUser(extendedOVFUtil.getCredentials());
         }
+
+        Task task = createTask(MessageFormat.format("Destroying EnvironmentInstance {0} ", name), vdc, name);
+        environmentInstanceAsyncManager.destroy(claudiaData, environmentInstance, task, callback);
+        return task;
     }
 
     /**
@@ -292,8 +288,8 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
 
             Environment environment = envInstance.getEnvironment();
             Set<Tier> tiers = environment.getTiers();
-            for (Tier tier: tiers) {
-                int i=0;
+            for (Tier tier : tiers) {
+                int i = 0;
                 List<Tier> tierAux = new ArrayList<Tier>();
                 for (int j = i + 1; j < tiers.size(); j++) {
                     tierAux.add(tier);

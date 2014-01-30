@@ -89,12 +89,13 @@ public class OpenStackSyncImpl extends Thread implements OpenStackSync {
     public void run() {
         try {
             syncronize(connection, onecycle);
-        } catch (OpenStackSynchronizationException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void syncronize(Connection connection, boolean onecycle) throws OpenStackSynchronizationException {
+    public void syncronize(Connection connection, boolean onecycle) throws OpenStackSynchronizationException,
+            InfrastructureException {
         boolean run = true;
         while (run) {
             try {
@@ -209,7 +210,7 @@ public class OpenStackSyncImpl extends Thread implements OpenStackSync {
     }
 
     private void securityGroupsSync(String token, String vdc) throws OpenStackSynchronizationException,
-            OpenStackException {
+            InfrastructureException, OpenStackException {
         boolean included = false;
         log.debug("Sincronizing security groups ...  ");
         List<SecurityGroup> securityGroups = findAllSecurityGroupsDB(vdc);

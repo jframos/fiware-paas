@@ -182,5 +182,5 @@ public interface EnvironmentInstanceResource {
     @Path("/{name}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     Task destroy(@PathParam("org") String org, @PathParam("vdc") String vdc, @PathParam("name") String name,
-            @HeaderParam("callback") String callback);
+            @HeaderParam("callback") String callback) throws EntityNotFoundException;
 }

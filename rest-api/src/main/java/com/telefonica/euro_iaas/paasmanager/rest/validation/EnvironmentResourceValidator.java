@@ -7,6 +7,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
@@ -30,8 +31,8 @@ public interface EnvironmentResourceValidator {
             AlreadyExistEntityException, InvalidEntityException;
 
     void validateDelete(String envName, String vdc, SystemPropertiesProvider systemPropertiesProvider)
-            throws InvalidEnvironmentRequestException, AlreadyExistEntityException, InvalidEntityException;
+            throws InvalidEnvironmentRequestException, AlreadyExistEntityException, InvalidEntityException, EntityNotFoundException;
 
     void validateUpdate(String envName, String vdc, SystemPropertiesProvider systemPropertiesProvider)
-            throws InvalidEnvironmentRequestException, AlreadyExistEntityException, InvalidEntityException;
+            throws InvalidEnvironmentRequestException, AlreadyExistEntityException, InvalidEntityException, EntityNotFoundException;
 }
