@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.paasmanager.util;
 
 import java.sql.Connection;
 
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackSynchronizationException;
 
 /**
@@ -24,6 +25,6 @@ public interface OpenStackSync {
      *            (true if the thrad is just executed one cycle)
      * @throws OpenStackSynchronizationException
      */
-    void syncronize(Connection connection, boolean onecycle) throws OpenStackSynchronizationException;
+    void syncronize(Connection connection, boolean onecycle) throws OpenStackSynchronizationException, InfrastructureException;
 
 }

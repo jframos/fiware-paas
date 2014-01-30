@@ -73,7 +73,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
      */
     private Set<Tier> convertToTiers(Set<TierDto> tierDtos, String environmentName, String vdc) {
         Set<Tier> tiers = new HashSet<Tier>();
-        for (TierDto tierDto: tierDtos) {
+        for (TierDto tierDto : tierDtos) {
             Tier tier = tierDto.fromDto(vdc);
             // tier.setSecurity_group("sg_"
             // +environmentName+"_"+vdc+"_"+tier.getName());
@@ -82,48 +82,27 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
         return tiers;
     }
 
-    public void delete(String org, String vdc, String envName) throws EnvironmentInstanceNotFoundException,
-            InvalidEntityException, InvalidEnvironmentRequestException, AlreadyExistEntityException {
+    public void delete(String org, String vdc, String envName) throws AlreadyExistEntityException,
+            InvalidEntityException, InvalidEnvironmentRequestException, EntityNotFoundException,
+            InfrastructureException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
         environmentResourceValidator.validateDelete(envName, vdc, systemPropertiesProvider);
 
         addCredentialsToClaudiaData(claudiaData);
 
-        try {
-            Environment env = environmentManager.load(envName, vdc);
-            environmentManager.destroy(claudiaData, env);
-
-        } catch (EntityNotFoundException e) {
-            throw new WebApplicationException(e, ERROR_NOT_FOUND);
-        } catch (InfrastructureException e) {
-            throw new WebApplicationException(e, ERROR_REQUEST);
-        }
+        Environment env = environmentManager.load(envName, vdc);
+        environmentManager.destroy(claudiaData, env);
 
     }
 
-  /*  private List<Environment> filterEqualTiers(List<Environment> environments) {
-        // List<Tier> tierResult = new ArrayList<Tier>();
-        List<Environment> result = new ArrayList<Environment>();
-
-        for (Environment environment : environments) {
-            Set<Tier> tierResult = new HashSet<Tier>();
-            Set<Tier> tiers = environment.getTiers();
-            for (Tier tier: tiers) {
-                int i=0;
-                List<Tier> tierAux = new ArrayList<Tier>();
-                for (int j = i + 1; j < tiers.size(); j++) {
-                    tierAux.add(tiers.get(j));
-                }
-                if (!tierAux.contains(tier)) {
-                    tierResult.add(tier);
-                }
-                i++;
-            }
-            environment.setTiers(tierResult);
-            result.add(environment);
-        }
-        return result;
-    }*/
+    /*
+     * private List<Environment> filterEqualTiers(List<Environment> environments) { // List<Tier> tierResult = new
+     * ArrayList<Tier>(); List<Environment> result = new ArrayList<Environment>(); for (Environment environment :
+     * environments) { Set<Tier> tierResult = new HashSet<Tier>(); Set<Tier> tiers = environment.getTiers(); for (Tier
+     * tier: tiers) { int i=0; List<Tier> tierAux = new ArrayList<Tier>(); for (int j = i + 1; j < tiers.size(); j++) {
+     * tierAux.add(tiers.get(j)); } if (!tierAux.contains(tier)) { tierResult.add(tier); } i++; }
+     * environment.setTiers(tierResult); result.add(environment); } return result; }
+     */
 
     public List<EnvironmentDto> findAll(String org, String vdc, Integer page, Integer pageSize, String orderBy,
             String orderType) {
@@ -146,7 +125,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
         List<Environment> env = environmentManager.findByCriteria(criteria);
 
         // Solve the tier-environment duplicity appeared at database due to hibernate problems
-       // List<Environment> envs = filterEqualTiers(env);
+        // List<Environment> envs = filterEqualTiers(env);
 
         List<EnvironmentDto> envsDto = new ArrayList<EnvironmentDto>();
         for (int i = 0; i < env.size(); i++) {
@@ -227,7 +206,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
         List<Environment> env = environmentManager.findByCriteria(criteria);
 
         // Solve the tier-environment duplicity appeared at database due to hibernate problems
-     //   List<Environment> envs = filterEqualTiers(env);
+        // List<Environment> envs = filterEqualTiers(env);
 
         if (env == null || env.size() == 0) {
             throw new WebApplicationException(new EntityNotFoundException(Environment.class, "Environmetn " + name

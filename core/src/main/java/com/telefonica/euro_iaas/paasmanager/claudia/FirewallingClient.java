@@ -11,7 +11,6 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 
@@ -31,10 +30,10 @@ public interface FirewallingClient {
      * Load a SecurityGroup from OpenStack.
      */
     SecurityGroup loadSecurityGroup(String region, String token, String vdc, String securityGroupId)
-            throws EntityNotFoundException, OpenStackException;
+            throws EntityNotFoundException, InfrastructureException;
 
     /**
      * Loads all securityGroups associated to a certain vdc.
      */
-    List<SecurityGroup> loadAllSecurityGroups(String region, String token, String vdc) throws OpenStackException;
+    List<SecurityGroup> loadAllSecurityGroups(String region, String token, String vdc) throws InfrastructureException;
 }
