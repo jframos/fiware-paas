@@ -60,5 +60,15 @@ public interface ProductReleaseManager {
     ProductRelease loadWithMetadata(String name) throws EntityNotFoundException;
 
     ProductRelease create(ProductRelease tomcat6) throws InvalidEntityException, AlreadyExistsEntityException;
-
+    
+    /**
+     * Retrieve a Product release for a given product and version.
+     * 
+     * @param productRelease
+     *            the productRelease to be updated
+     * @return the product release updated
+     * @throws InvalidEntityException
+     *             if the product release object is not valid
+     */
+    ProductRelease update(ProductRelease productRelease) throws InvalidEntityException;
 }
