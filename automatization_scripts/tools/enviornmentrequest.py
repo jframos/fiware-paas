@@ -93,6 +93,7 @@ class EnvironmentRequest:
 
         headers={'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
                  'Content-Type': "application/xml"}
+        print headers
 
         response= http.post(url, headers, environment_payload)
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
@@ -129,6 +130,21 @@ class EnvironmentRequest:
             products.append(product)
         return products
 
+    def __process_artifact (self, artifact_information):
+
+        artifacts = []
+        artifact_list = artifact_information.split(';')
+
+        for arti in artifact_list:
+
+            a = arti.split ('=')
+
+            product = self.__check_product_exist(a[0],a[1])
+
+
+            artifacts.append(art)
+        return artifacts
+
     def __process_metwork (self, network_information):
 
         nets = []
@@ -151,6 +167,16 @@ class EnvironmentRequest:
         product = ProductRelease (product_name, product_version)
         return product
 
+    def __get_artifact (self, artifact_name, artifact_path):
+
+    #request=ProductRequest(self.keystone_url, self.sdc_url, self.tenant, self.user, self.password)
+    #product = request.get_product_info(product_name,product_version)
+
+    #  if product is None:
+    #     print 'Error: the product ' +  product_name + ' ' + product_version + ' does not exit'
+        product = ProductRelease (product_name, product_version)
+        return product
+
 
     def get_abstract_environments(self):
         url="%s/%s" %(self.paasmanager_url,"catalog/org/FIWARE/environment")
@@ -167,10 +193,11 @@ class EnvironmentRequest:
 
     def add_environment(self, environment_name, environment_description):
         url="%s/%s/%s/%s/%s" %(self.paasmanager_url,"catalog/org/FIWARE", "vdc", self.vdc, "environment")
-
+        print url
         env = Environment(environment_name,environment_description )
 
         payload=tostring(env.to_env_xml())
+        print payload
         self.__add_environment(url,payload)
 
 
@@ -198,7 +225,7 @@ class EnvironmentRequest:
 
     def add_tier_environment_network(self, environment_name, tier_name, products_information=None, networks=None):
         url="%s/%s/%s/%s/%s/%s/%s" %(self.paasmanager_url,"catalog/org/FIWARE", "vdc", self.vdc, "environment",environment_name,"tier")
-        tier = Tier (tier_name)
+        tier = Tier (tier_name, self.image)
         if products_information:
             products = self.__process_product (products_information)
             for product in products:

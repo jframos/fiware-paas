@@ -5,6 +5,12 @@ Created on 16/04/2013
 '''
 from xml.etree.ElementTree import tostring
 from tools import utils
+from tools.enviornmentrequest import EnvironmentRequest
+from tools.environment_instance import EnvironmentInstance
+from tools.application_instance import ApplicationInstance
+from tools.application_instance import Artifact
+from tools.enviornment_instance_request import EnvironmentInstanceRequest
+from xml.etree.ElementTree import tostring
 
 
 domine = "130.206.80.112"
@@ -20,55 +26,50 @@ application_name = 'application_name6'
 application_version ='1.0'
 artifact_name='dd'
 
+config = {}
+execfile("sdc.conf", config)
+
+g=EnvironmentRequest(config['keystone_url'], config['paasmanager_url'], config['tenant'], config['user'], config['password'],
+                     config['vdc'],config['image'],config['sdc_url'])
+
+
+instance_request = EnvironmentInstanceRequest (config['keystone_url'], config['paasmanager_url'], config['tenant'], config['user'], config['password'],
+                                               config['vdc'],config['sdc_url'])
+
+environment_name = 'git32'
+blueprintname = 's62'
+application = 'app36'
+
+print('Create a blueprint Template tomcat/mysql: ')
+#g.add_environment(environment_name,'description')
+
+tier_name = 'tomcat'
+#g.add_tier_environment(environment_name,tier_name, "tomcat=6")
+tier_name = 'mysql'
+#g.add_tier_environment(environment_name,tier_name, "mysql=1.2.4")
+#print("  OK")
+
+
+env = g.get_environment(environment_name)
+
+print('Deploy an environment Instance' + blueprintname )
+blueprint_instance = EnvironmentInstance (blueprintname, 'description',  env, 'INIT')
+#instance_request.add_blueprint_instance(blueprint_instance)
+print ('OK')
+
+print('Deploy an application Instance' + application )
+
+application_instance = ApplicationInstance (application, "2.0")
+artifact = Artifact ("mywar", "path", "tomcat=6")
+application_instance.add_artifact(artifact)
+
+print tostring(application_instance.to_xml())
+instance_request.add_application_instance(blueprintname,application_instance )
+print ('OK')
+
 #resource_environment_instance = "/paasmanager/rest/envInst/org/"+org+"/vdc/"+vdc+"/environmentInstance"
 #environmentDto =  utils.createEnvironmentDto (environment_name,product_name, product_version)
 #print('Deploy an environment ' + environment_name )  
 #task = utils.doRequestHttpOperation(domine,resource_environment_instance, 'POST',tostring(environmentDto))
 #status = utils.processTask (domine,task)
 #print ("  " + status)
-
-resource_application_instance = "/paasmanager/rest/envInst/org/"+org+"/vdc/"+vdc+"/environmentInstance/"+vdc+"-"+environment_name+"/applicationInstance"
-
-applicationDto =  utils.createApplicationDto(application_name, application_version, product_name, product_version, artifact_name)
-print (tostring(applicationDto))
-print('Deploy an application ' + application_name )  
-task = utils.doRequestHttpOperation(domine,resource_application_instance, 'POST',tostring(applicationDto))
-status = utils.processTask (domine,task)
-print ("  " + status)
-
-
-resource_info_application_instance = "/paasmanager/rest/envInst/org/"+org+"/vdc/"+vdc+"/environmentInstance/"+vdc+"-"+environment_name+"/applicationInstance/"+application_name+"-"+vdc+"-"+environment_name
-print('Get Application Instance Info. Environment ' + application_name  + ' ' + resource_info_application_instance)  
-data = utils.doRequestHttpOperation(domine,resource_info_application_instance, 'GET',None)
-print("  OK")
-#status = utils.processProductInstanceStatus(data)
-#if  status != 'INSTALLED':
- # print("Status not correct" + status)
-
-resource_delete_application_instance ="/paasmanager/rest/envInst/org/"+org+"/vdc/"+vdc+"/environmentInstance/"+vdc+"-"+environment_name+"/applicationInstance/"+application_name+"-"+vdc+"-"+environment_name
-print('Delete Application Instance ' + application_name+ ' ' + resource_delete_application_instance)  
-task = utils.doRequestHttpOperation(domine,resource_delete_application_instance, 'DELETE',None)
-status = utils.processTask (domine,task)
-print ("  " + status)
-data = utils.doRequestHttpOperation(domine,resource_info_application_instance, 'GET',None)
-
-#if  status != 'UNINSTALLED':
- # print("Status not correct" + statusProduct)
-
-
-
-
-
-
-    
-
-    
-    
-
-    
-
-    
-    
- 
-
-
