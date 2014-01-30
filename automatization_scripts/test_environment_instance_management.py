@@ -10,7 +10,7 @@ from tools import utils
 from tools.enviornmentrequest import EnvironmentRequest
 from tools.environment_instance import EnvironmentInstance
 from tools.enviornment_instance_request import EnvironmentInstanceRequest
-from tier import Network
+
 
 if __name__ == "__main__":
 
@@ -22,8 +22,8 @@ if __name__ == "__main__":
 
     cmd_args = []
     cmd_args.append('hola')
-    cmd_args.append('env_j54')
-    cmd_args.append('bp_j54')
+    cmd_args.append('env_jesus04')
+    cmd_args.append('bluep_jesus04')
     cmd_args.append('tier16')
     cmd_args.append('mysql=1.2.4')
 
@@ -57,12 +57,12 @@ if __name__ == "__main__":
     env.to_string()
     print("  OK")
 
-    print('Deploy an environment Instance' + blueprint_name )
+    print('Deploy an environment Instance: ' + blueprint_name )
     blueprint_instance = EnvironmentInstance(blueprint_name, 'description', env, 'INIT')
     instance_request.add_blueprint_instance(blueprint_instance)
     print ('OK')
 
-    print('Delete an environment Instance' + blueprint_name )
+    print('Delete an environment Instance: ' + blueprint_name )
     instance_request.delete_blueprint_instance(blueprint_name)
 
     print('borrado del blueprint Template: ' + environment_name)

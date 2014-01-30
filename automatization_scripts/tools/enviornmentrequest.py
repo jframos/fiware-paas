@@ -84,7 +84,8 @@ class EnvironmentRequest:
 
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
         if response.status != 200 and response.status != 204:
-            print 'error to delete the environment ' + str(response.status)
+            data = response.read()
+            print 'error to delete the environment ' + str(response.status) + " " + data
             sys.exit(1)
 
     def __add_environment(self, url, environment_payload):
@@ -94,7 +95,8 @@ class EnvironmentRequest:
         response = http.post(url, headers, environment_payload)
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
         if response.status != 200 and response.status != 204:
-            print 'error to add an environment ' + str(response.status)
+            data = response.read()
+            print 'error to add an environment ' + str(response.status) + " " + data
             sys.exit(1)
 
 
@@ -107,7 +109,8 @@ class EnvironmentRequest:
 
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
         if response.status != 200 and response.status != 204:
-            print 'error to add a tier in an environment ' + str(response.status)
+            data = response.read()
+            print 'error to add a tier in an environment ' + str(response.status) + " " + data
             sys.exit(1)
 
     def __process_product(self, product_information):
@@ -191,7 +194,7 @@ class EnvironmentRequest:
     def add_tier_environment_network(self, environment_name, tier_name, products_information=None, networks=None):
         url = "%s/%s/%s/%s/%s/%s/%s" % (
             self.paasmanager_url, "catalog/org/FIWARE", "vdc", self.vdc, "environment", environment_name, "tier")
-        tier = Tier(tier_name, self.image)
+        tier = Tier(tier_name)
         if products_information:
             products = self.__process_product(products_information)
             for product in products:
