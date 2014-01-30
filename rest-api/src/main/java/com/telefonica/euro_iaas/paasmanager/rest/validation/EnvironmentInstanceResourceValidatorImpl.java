@@ -121,6 +121,12 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
                     + "from EnviromentDto BlueprintName is null");
         }
 
+        if (environmentInstanceDto.getDescription() == null) {
+            log.error("EnvironamentDescription " + "from EnviromentDto Description is null");
+            throw new InvalidEnvironmentRequestException("EnvironamentDescription "
+                    + "from EnviromentDto Description is null");
+        }
+        
         if (environmentInstanceDto.getEnvironmentDto() == null) {
             log.error("The environment to be deployed is null ");
             throw new InvalidEnvironmentRequestException("The environment to be deployed is null ");
@@ -140,12 +146,6 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
         if (envInstances.size() != 0) {
             throw new InvalidEnvironmentRequestException(new AlreadyExistsEntityException(EnvironmentInstance.class,
                     new Exception("The enviornment instance " + environmentInstanceDto.getBlueprintName())));
-        }
-
-        if (environmentInstanceDto.getDescription() == null) {
-            log.error("EnvironamentDescription " + "from EnviromentDto Description is null");
-            throw new InvalidEnvironmentRequestException("EnvironamentDescription "
-                    + "from EnviromentDto Description is null");
         }
 
         if (environmentInstanceDto.getEnvironmentDto().getTierDtos() == null) {
