@@ -176,7 +176,7 @@ class EnvironmentRequest:
         payload = tostring(tier.to_tier_xml())
         self.__add_tier_environment(url, payload)
 
-    def add_tier_environment(self, environment_name, tier_name, products_information=None, network=None):
+    def add_tier_environment(self, environment_name, tier_name, products_information=None):
         url = "%s/%s/%s/%s/%s/%s/%s" % (
             self.paasmanager_url, "catalog/org/FIWARE", "vdc", self.vdc, "environment", environment_name, "tier")
         tier = Tier(tier_name, self.image)
@@ -184,9 +184,6 @@ class EnvironmentRequest:
             products = self.__process_product(products_information)
             for product in products:
                 tier.add_product(product)
-
-        if network:
-            tier.add_network(network)
 
         payload = tostring(tier.to_tier_xml())
         self.__add_tier_environment(url, payload)

@@ -22,11 +22,10 @@ if __name__ == "__main__":
 
     cmd_args = []
     cmd_args.append('hola')
-    cmd_args.append('env_j53')
-    cmd_args.append('bp_j53')
+    cmd_args.append('env_j54')
+    cmd_args.append('bp_j54')
     cmd_args.append('tier16')
     cmd_args.append('mysql=1.2.4')
-    cmd_args.append('jesuspg-net')
 
     config = {}
     execfile("sdc.conf", config)
@@ -45,14 +44,12 @@ if __name__ == "__main__":
     tier_name = cmd_args[3]
     product_name = cmd_args[4]
 
-    object_net = Network(cmd_args[5])
-
     print('Create a blueprint Template : ' + environment_name )
     env_request.add_environment(environment_name, 'description')
     print("  OK")
 
     print('Create tier: ' + tier_name + " with products " + product_name)
-    env_request.add_tier_environment(environment_name, tier_name, product_name, object_net)
+    env_request.add_tier_environment(environment_name, tier_name, product_name)
     print("  OK")
 
     print('Get Information about the template: ' + environment_name )
