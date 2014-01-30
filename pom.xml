@@ -452,6 +452,7 @@
         <module>core</module>
         <module>rest-api</module>
         <module>integration-test</module>
+        <module>migrations</module>
     </modules>
 
 
