@@ -167,7 +167,7 @@ public class ProductInstallatorSdcImplTest {
 
         ClaudiaData data = new ClaudiaData("org", "vdc", "");
         ProductInstance installedProduct = installator.install(data, "env", tierInstance,
-                expectedProductInstance.getProductRelease(), null);
+                expectedProductInstance.getProductRelease(), new HashSet<Attribute>());
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);
 
@@ -199,7 +199,7 @@ public class ProductInstallatorSdcImplTest {
         
         ClaudiaData data = new ClaudiaData("org", "vdc", "");
         ProductInstance installedProduct = installator.install(data, "env", tierInstance,
-                        productReleaseWithoutAttrs, null);
+                        productReleaseWithoutAttrs, new HashSet<Attribute>());
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);
 
@@ -214,10 +214,10 @@ public class ProductInstallatorSdcImplTest {
         installator.setProductReleaseManager(productReleaseManager);
         installator.setSDCUtil(sDCUtil);
         installator.setTierInstanceManager(tierInstanceManager);
-
+        
         ClaudiaData data = new ClaudiaData("org", "vdc", "");
         ProductInstance installedProduct = installator.install(data, "env", tierInstance,
-                expectedProductInstance.getProductRelease(), null);
+                expectedProductInstance.getProductRelease(), new HashSet<Attribute>());
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);
 

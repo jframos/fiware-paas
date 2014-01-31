@@ -57,41 +57,15 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto productInstanceDto = new com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto();
         List<com.telefonica.euro_iaas.sdc.model.Attribute> attrs = new ArrayList<com.telefonica.euro_iaas.sdc.model.Attribute>();
 
-        // sDCUtil.checkIfSdcNodeIsReady(tierInstance.getVM().getIp());
-        try {
-            productRelease = productReleaseManager
-                    .load(productRelease.getProduct() + "-" + productRelease.getVersion());
-            if (productRelease.getAttributes().isEmpty()) {
-                //List<com.telefonica.euro_iaas.sdc.model.Attribute> attrs = new ArrayList<com.telefonica.euro_iaas.sdc.model.Attribute>();
-
-                for (Attribute attribute : productRelease.getAttributes()) {
-                    com.telefonica.euro_iaas.sdc.model.Attribute attr = new com.telefonica.euro_iaas.sdc.model.Attribute(
-                            attribute.getKey(), attribute.getValue());
-
-                    attrs.add(attr);
-                    // productInstanceDto.getAttributes().add(
-                    // new com.telefonica.euro_iaas.sdc.model.Attribute(
-                    // attribute.getKey(), attribute.getValue()));
-                }
-
-                if (!(attributes.isEmpty())) {
-                    // Attributes from the external request
-                    for (Attribute attrib : attributes) {
-                        com.telefonica.euro_iaas.sdc.model.Attribute sdcAttr = new com.telefonica.euro_iaas.sdc.model.Attribute(
-                            attrib.getKey(), attrib.getValue());
-                        attrs.add(sdcAttr);
-                    }
-                    productInstanceDto.setAttributes(attrs);
-                }
+        if (!(attributes.isEmpty())) {
+            for (Attribute attrib : attributes) {
+                com.telefonica.euro_iaas.sdc.model.Attribute sdcAttr = new com.telefonica.euro_iaas.sdc.model.Attribute(
+                                attrib.getKey(), attrib.getValue());
+                     attrs.add(sdcAttr);
             }
-
-        } catch (com.telefonica.euro_iaas.commons.dao.EntityNotFoundException e1) {
-            // TODO Auto-generated catch block
-            log.warn("No product release. NO attributes");
-            throw new ProductInstallatorException("No product release. " + productRelease.getProduct() + "-"
-                    + productRelease.getVersion() + " NO attributes");
+            productInstanceDto.setAttributes(attrs);
         }
-
+        
         // SDCClient client = new SDCClient();
         com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService pIService = sDCClient
                 .getProductInstanceService(sdcServerUrl, sdcMediaType);
