@@ -11,7 +11,9 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.BaseDAO;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
+import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductReleaseSearchCriteria;
 
 /**
@@ -20,6 +22,17 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductReleaseS
  * @author Jesus M. Movilla
  */
 public interface ProductReleaseDao extends BaseDAO<ProductRelease, String> {
+    
+    /**
+     * @param product
+     * @param version
+     * @param tierName
+     * @return
+     * @throws EntityNotFoundException
+     * @throws InvalidEntityException
+     */
+    ProductRelease load(String product, String version, String tierName) throws EntityNotFoundException;
+
     /**
      * Find the product releases that match with the given criteria.
      * 
