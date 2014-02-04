@@ -176,7 +176,7 @@ public class ProductReleaseDaoJpaImplTest {
     }
 
     @Test
-    public void testProductReleaseTierNameWithMetadataAndAttributes() throws Exception {
+    public void testCreateProductReleaseTierNameWithMetadataAndAttributes() throws Exception {
 
         Metadata metproduct = new Metadata("product", "product", "product");
         Attribute attribute = new Attribute("product", "product", "product");
