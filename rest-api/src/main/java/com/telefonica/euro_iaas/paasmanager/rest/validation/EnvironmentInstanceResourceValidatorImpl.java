@@ -115,20 +115,27 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
             SystemPropertiesProvider systemPropertiesProvider, ClaudiaData claudiaData)
             throws InvalidEnvironmentRequestException, QuotaExceededException {
 
-        log.debug("Validate enviornment instance blueprint " + environmentInstanceDto.getBlueprintName()
-                + " description " + environmentInstanceDto.getDescription() + " environment "
-                + environmentInstanceDto.getEnvironmentDto());
         if (environmentInstanceDto.getBlueprintName() == null) {
             log.error("EnvironamentBlueprintName " + "from EnviromentDto BlueprintName is null");
             throw new InvalidEnvironmentRequestException("EnvironamentBlueprintName "
                     + "from EnviromentDto BlueprintName is null");
         }
 
+        if (environmentInstanceDto.getDescription() == null) {
+            log.error("EnvironamentDescription " + "from EnviromentDto Description is null");
+            throw new InvalidEnvironmentRequestException("EnvironamentDescription "
+                    + "from EnviromentDto Description is null");
+        }
+        
         if (environmentInstanceDto.getEnvironmentDto() == null) {
             log.error("The environment to be deployed is null ");
             throw new InvalidEnvironmentRequestException("The environment to be deployed is null ");
         }
-
+        
+        log.debug("Validate enviornment instance blueprint " + environmentInstanceDto.getBlueprintName()
+                        + " description " + environmentInstanceDto.getDescription() + " environment "
+                        + environmentInstanceDto.getEnvironmentDto());
+                
         EnvironmentInstanceSearchCriteria criteria = new EnvironmentInstanceSearchCriteria();
 
         criteria.setVdc(claudiaData.getVdc());
@@ -139,12 +146,6 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
         if (envInstances.size() != 0) {
             throw new InvalidEnvironmentRequestException(new AlreadyExistsEntityException(EnvironmentInstance.class,
                     new Exception("The enviornment instance " + environmentInstanceDto.getBlueprintName())));
-        }
-
-        if (environmentInstanceDto.getDescription() == null) {
-            log.error("EnvironamentDescription " + "from EnviromentDto Description is null");
-            throw new InvalidEnvironmentRequestException("EnvironamentDescription "
-                    + "from EnviromentDto Description is null");
         }
 
         if (environmentInstanceDto.getEnvironmentDto().getTierDtos() == null) {
@@ -182,6 +183,18 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
     public void validateTier(TierDto tierDto) throws InvalidEnvironmentRequestException {
 
+        if (tierDto.getMaximumNumberInstances() == null){
+            throw new InvalidEnvironmentRequestException("Maximun Number Instances " 
+                            + "from tierDto is null");
+        }
+        if (tierDto.getMinimumNumberInstances() == null){
+            throw new InvalidEnvironmentRequestException("Minimum Number Instances " 
+                            + "from tierDto is null");
+        }
+        if (tierDto.getInitialNumberInstances() == null){
+            throw new InvalidEnvironmentRequestException("Initial Number Instances " 
+                            + "from tierDto is null");
+        }
         if (tierDto.getName() == null) {
             throw new InvalidEnvironmentRequestException("Tier Name " + "from tierDto is null");
         }

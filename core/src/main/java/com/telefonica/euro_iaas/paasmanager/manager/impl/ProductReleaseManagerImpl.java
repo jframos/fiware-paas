@@ -133,6 +133,11 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
 
         return productReleaseDao.loadProductReleaseWithMetadata(name);
     }
+    
+    public ProductRelease update(ProductRelease productRelease) throws InvalidEntityException {
+
+        return productReleaseDao.update(productRelease);
+    }
 
     /**
      * @param productReleaseDao

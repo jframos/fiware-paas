@@ -364,5 +364,10 @@
     <changeSet author="jesuspg (generated)" id="1-62">
         <modifyDataType columnName="endtime" newDataType="timestamp(29,6)" tableName="task"/>
     </changeSet>
-
+    <!-- Change that corrresponds to bug/CLAUDIA-3652 Managing user attributes -->
+    <changeSet author="jmms392 (generated)" id="2-1">
+        <addColumn tableName="productrelease">
+            <column name="tiername" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
