@@ -11,6 +11,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
@@ -19,7 +21,6 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import org.apache.log4j.Logger;
 
 /**
  * @author jesus.movilla
@@ -114,7 +115,7 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
      * Set the File and DiskFile Section in ovf based on OVFFILE_SECTION and OVFDISKFILE_SECTION.
      * 
      * @param ovf
-     * @param number
+     * @param environment
      * @return
      */
     private String setFilesDisksinOvf(String ovf, EnvironmentDto environment) throws IOException {
@@ -162,8 +163,8 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
     /**
      * Set the productAttributes section inf the ovf.
      * 
-     * @param ovf
-     * @param productInstance
+     * @param productSectionTemplate
+     * @param productInstanceDto
      * @return
      */
     private String setProductAttributes(String productSectionTemplate, ProductInstanceDto productInstanceDto) {
@@ -173,7 +174,7 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
         String productAttributeAux = "";
 
         if (productInstanceDto.getAttributes() != null) {
-            for (Attribute attribute: productInstanceDto.getAttributes() ) {
+            for (Attribute attribute : productInstanceDto.getAttributes()) {
 
                 productAttributeAux = replace(productAttributeTemplate, "\\$\\{attributeKey\\}", attribute.getKey());
                 productAttributeAux = replace(productAttributeAux, "\\$\\{attributeValue\\}", attribute.getValue());
@@ -196,7 +197,7 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
         String productAttributeAux = "";
 
         if (productReleaseDto.getPrivateAttributes() != null) {
-            for (Attribute attribute: productReleaseDto.getPrivateAttributes() ) {
+            for (Attribute attribute : productReleaseDto.getPrivateAttributes()) {
 
                 productAttributeAux = replace(productAttributeTemplate, "\\$\\{attributeKey\\}", attribute.getKey());
                 productAttributeAux = replace(productAttributeAux, "\\$\\{attributeValue\\}", attribute.getValue());
@@ -245,7 +246,7 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
     /**
      * Set the productSection in the OVF.
      * 
-     * @param ovf
+     * @param virtualSystemOvf
      * @param tierInstanceDto
      * @return
      */
@@ -293,7 +294,7 @@ public class OVFGenerationFiwareImpl implements OVFGeneration {
         virtualSystemSectionTemplate = loadOvfTemplate(systemPropertiesProvider
                 .getProperty(SystemPropertiesProvider.OVF_TEMPLATE_LOCATION) + "virtualSystemTemplate.ovf");
 
-        for (TierDto tierDto: envDto.getTierDtos()) {
+        for (TierDto tierDto : envDto.getTierDtos()) {
 
             virtualSystemSectionAux = replace(virtualSystemSectionTemplate, "\\$\\{tierName\\}", tierDto.getName());
             virtualSystemSectionAux = replace(virtualSystemSectionAux, "\\$\\{num_min\\}",

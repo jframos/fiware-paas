@@ -7,7 +7,10 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -31,6 +34,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
+import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
@@ -95,6 +99,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         // environmentInstance.setVdc(claudiaData.getVdc());
         environmentInstance.setName(environmentInstance.getVdc() + "-" + environment.getName());
 
+        //with this set we loose the productRelease Attributes
         environmentInstance.setEnvironment(environment);
         environmentInstance.setStatus(Status.INIT);
 
@@ -369,7 +374,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
     private Environment insertEnvironemntInDatabase(ClaudiaData claudiaData, Environment env)
             throws InvalidEntityException, EntityNotFoundException {
-        log.info("Insert in database");
+        log.info("Insert Environment from User into the database");
         Environment environment = null;
         if (env.getVdc() == null) {
             env.setVdc(claudiaData.getVdc());
@@ -385,6 +390,29 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                     environment.setOvf(env.getOvf());
                     environment = environmentManager.update(environment);
                 }
+                
+                Set<Tier> tiers = new HashSet();
+                for (Tier tier : env.getTiers()) {
+                    Tier tierDB = tierManager.load(tier.getName(), env.getVdc(), env.getName());
+                    tierDB = updateTierDB(tierDB, tier);
+                    tierDB = tierManager.update(tierDB);
+                    
+                    List<ProductRelease> pReleases = new ArrayList<ProductRelease> ();
+                    List<ProductRelease> productReleases = tier.getProductReleases();
+                    for (ProductRelease pRelease : productReleases){
+                        ProductRelease pReleaseDB = productReleaseManager.load(pRelease.getProduct() + "-" + pRelease.getVersion());
+                        pReleaseDB = updateProductReleaseDB(pReleaseDB, pRelease);
+                        pReleaseDB = productReleaseManager.update(pReleaseDB);
+                        
+                        pReleases.add(pReleaseDB);
+                    }
+                    tierDB.setProductReleases(null);
+                    tierDB.setProductReleases(pReleases);
+                    tiers.add(tierDB);
+                }
+                environment.setTiers(null);
+                environment.setTiers(tiers);
+                
                 return environment;
             } catch (EntityNotFoundException e1) {
                 throw new EntityNotFoundException(Environment.class,
@@ -437,6 +465,48 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         return environmentInstance;
     }
 
+    private Tier updateTierDB(Tier tierDB, Tier tier){
+        
+        if (tier.getName() != null)
+            tierDB.setName(tier.getName());
+        if (tier.getRegion() != null)
+            tierDB.setRegion(tier.getRegion());
+        if (tier.getFlavour() != null)
+            tierDB.setFlavour(tier.getFlavour());
+        if (tier.getImage() != null)
+            tierDB.setImage(tier.getImage());
+        if (tier.getIcono() != null)
+            tierDB.setIcono(tier.getIcono());
+        if (tier.getKeypair() != null)
+            tierDB.setKeypair(tier.getKeypair());
+        
+        if (tier.getNetworks() != null || (!tier.getNetworks().isEmpty())) {
+            tierDB.setNetworks(null);
+            tierDB.setNetworks(tier.getNetworks());
+        }
+        
+        return tierDB;
+    }
+    
+    private ProductRelease updateProductReleaseDB(ProductRelease productReleaseDB,
+                    ProductRelease productRelease) {
+        
+        if (productRelease.getDescription() != null){
+            productReleaseDB.setName(productRelease.getDescription());
+        }
+        if (productRelease.getTierName() != null){
+            productReleaseDB.setTierName(productRelease.getTierName());
+        }
+        if (productRelease.getAttributes() != null){
+            List<ProductRelease> productReleases = new ArrayList<ProductRelease> ();
+            productReleaseDB.setAttributes(null);
+            for (Attribute attr : productRelease.getAttributes()) {
+                productReleaseDB.addAttribute(attr);
+            }                   
+            productReleases.add(productReleaseDB);
+        }
+        return productReleaseDB;
+    }
     /**
      * @param tierInstanceDao
      *            the tierInstanceDao to set

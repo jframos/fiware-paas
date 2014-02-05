@@ -58,11 +58,11 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
 
     private static Logger log = Logger.getLogger(ApplicationInstanceResourceImpl.class.getName());
 
-    @InjectParam("applicationInstanceAsyncManager")
+    
     private ApplicationInstanceAsyncManager applicationInstanceAsyncManager;
-    @InjectParam("applicationInstanceManager")
+    
     private ApplicationInstanceManager applicationInstanceManager;
-    @InjectParam("applicationReleaseManager")
+    
     private ApplicationReleaseManager applicationReleaseManager;
 
     private EnvironmentInstanceAsyncManager environmentInstanceAsyncManager;
@@ -200,6 +200,19 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
     public void setTaskManager(TaskManager taskManager) {
         this.taskManager = taskManager;
     }
+    
+    public void setApplicationInstanceAsyncManager(ApplicationInstanceAsyncManager applicationInstanceAsyncManager) {
+        this.applicationInstanceAsyncManager = applicationInstanceAsyncManager;
+    }
+    
+    public void setApplicationInstanceManager(ApplicationInstanceManager applicationInstanceManager) {
+        this.applicationInstanceManager = applicationInstanceManager;
+    }
+    
+    public void setApplicationReleaseManager(ApplicationReleaseManager applicationReleaseManager) {
+        this.applicationReleaseManager = applicationReleaseManager;
+    }
+
 
    
 

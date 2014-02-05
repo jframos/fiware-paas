@@ -15,10 +15,8 @@ import org.apache.log4j.Logger;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
-import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
-import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 
 /**
  * @author jesus.movilla
@@ -109,64 +107,19 @@ public class OVFMacroImpl implements OVFMacro {
      * (parts[i].startsWith("@")) macroList.add(parts[i]); } return macroList; }
      */
 
-    /**
-     * Getting the ip of a VM present in the EnvironmentInstance named vmnae
-     * 
-     * @param envInstance
-     * @param vmname
-     *            the name of the VM we want the ip from
-     * @return
-     */
-    private String getIPFromEnvironmentInstance(EnvironmentInstance envInstance, String vmname, String network)
-            throws InvalidEnvironmentRequestException {
-        // So far network is not taken into account
-        String ip = null;
-        // Go through all VMs present in EnvironmentInstance looking for ip
-        for (int i = 0; i < envInstance.getTierInstances().size(); i++) {
-            TierInstance tierInstance = envInstance.getTierInstances().get(i);
-            // for (int j=0; j < tierInstance.getProductInstances().size();
-            // j++){
-            // ProductInstance productInstance
-            // = tierInstance.getProductInstances().get(j);
-
-            if ((tierInstance.getVM().getFqn().contains(vmname))
-                    && (tierInstance.getVM().getNetworks().get(network)) != null) {
-
-                if (tierInstance.getVM().getNetworks().get(network) != null) {
-                    ip = tierInstance.getVM().getNetworks().get(network);
-                } else {
-                    String errorMessage = "The VM does not have an ip associated";
-                    log.error(errorMessage);
-                    throw new InvalidEnvironmentRequestException(errorMessage);
-                }
-
-            }
-            // }
-        }
-
-        if (ip == null) {
-            String errorMessage = "The VM " + vmname + " is not present in " + " the environmentInstace: "
-                    + envInstance.getName();
-            log.error(errorMessage);
-            throw new InvalidEnvironmentRequestException(errorMessage);
-        }
-
-        return ip;
-    }
-
     private String getProductAttributeFromEnvironment(Environment environment, String macroAttribute,
             String macroProductName) throws InvalidEnvironmentRequestException {
 
         String macroValue = null;
         // Go through all VMs present in EnvironmentInstance looking for an
         // attribute
-        for (Tier tier:  environment.getTiers()) {
-          
+        for (Tier tier : environment.getTiers()) {
+
             for (int j = 0; j < tier.getProductReleases().size(); j++) {
                 ProductRelease productRelease = tier.getProductReleases().get(j);
 
                 if ((productRelease.getName().contains(macroProductName)) && (productRelease.getAttributes() != null)) {
-                    for (Attribute att: productRelease.getAttributes()) {
+                    for (Attribute att : productRelease.getAttributes()) {
                         if (att.getKey().equals(macroAttribute)) {
                             macroValue = att.getValue();
                         }

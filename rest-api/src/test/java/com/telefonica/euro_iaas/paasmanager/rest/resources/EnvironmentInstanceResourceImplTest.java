@@ -181,7 +181,7 @@ public class EnvironmentInstanceResourceImplTest {
         // Then
         verify(environmentInstanceAsyncManager, times(1)).create(any(ClaudiaData.class),
                 any(EnvironmentInstance.class), any(Task.class), any(String.class));
-        verify(systemPropertiesProvider, times(2)).getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
-        verify(extendedOVFUtil, times(2)).getCredentials();
+        verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
+        verify(extendedOVFUtil, times(1)).getCredentials();
     }
 }

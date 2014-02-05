@@ -57,7 +57,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
-import com.telefonica.euro_iaas.paasmanager.monitoring.MonitoringClient;
 import com.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
@@ -73,7 +72,6 @@ public class ClaudiaClientImpl implements ClaudiaClient {
     private VappUtils vappUtils;
     private ClaudiaResponseAnalyser claudiaResponseAnalyser;
     private SystemPropertiesProvider systemPropertiesProvider;
-    private MonitoringClient monitoringClient;
 
     private static final String type = MediaType.WILDCARD;
 
@@ -531,7 +529,6 @@ public class ClaudiaClientImpl implements ClaudiaClient {
 
         try {
             claudiaUtil.deleteClaudiaResource(claudiaData.getUser(), url);
-            monitoringClient.stopMonitoring(tierInstance.getVM().getFqn());
         } catch (ClaudiaRetrieveInfoException e) {
             String errorUndeployVM = "An error ocurred undeploying VM " + tierInstance.getVM().getFqn();
             log.error(errorUndeployVM);

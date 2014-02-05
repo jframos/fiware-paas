@@ -175,6 +175,80 @@ public class ProductReleaseDaoJpaImplTest {
 
     }
 
+    @Test
+    public void testCreateProductReleaseTierNameWithMetadataAndAttributes() throws Exception {
+
+        Metadata metproduct = new Metadata("product", "product", "product");
+        Attribute attribute = new Attribute("product", "product", "product");
+        // attribute = attributeDao.create(attribute);
+
+        ProductRelease productproduct = new ProductRelease("product2", "0.1");
+        productproduct.setTierName("tierName");
+        productproduct.addMetadata(metproduct);
+        productproduct.addAttribute(attribute);
+
+        productproduct = productReleaseDao.create(productproduct);
+        assertNotNull(productproduct);
+        assertEquals(productproduct.getProduct(), "product2");
+        assertEquals(productproduct.getVersion(), "0.1");
+        assertEquals(productproduct.getTierName(), "tierName");
+        assertEquals(productproduct.getMetadatas().size(), 1);
+        assertEquals(productproduct.getAttributes().size(), 1);
+
+        ProductRelease productRelease = productReleaseDao.load("product2","0.1", "tierName");
+        assertNotNull(productRelease);
+        assertEquals(productRelease.getProduct(), "product2");
+        assertEquals(productRelease.getVersion(), "0.1");
+        assertEquals(productRelease.getTierName(), "tierName");
+        assertEquals(productRelease.getAttributes().size(), 1);
+        assertEquals(productRelease.getMetadatas().size(), 1);
+
+    }
+    
+    /*@Test
+    public void testProductReleasesTierWithEmptyAttributes() throws Exception {
+
+        ProductRelease productproduct = new ProductRelease("product4", "0.1");
+        productproduct.setTierName("tierName4");
+        
+        productproduct = productReleaseDao.create(productproduct);
+        assertNotNull(productproduct);
+        assertEquals(productproduct.getProduct(), "product4");
+        assertEquals(productproduct.getVersion(), "0.1");
+        assertEquals(productproduct.getTierName(), "tierName4");
+        assertEquals(productproduct.getMetadatas().size(), 0);
+        assertEquals(productproduct.getAttributes().size(), 0);
+
+        ProductRelease productRelease = productReleaseDao.load("product4", "0.1", "tierName4");
+        assertNotNull(productRelease);
+        assertEquals(productRelease.getProduct(), "product4");
+        assertEquals(productRelease.getVersion(), "0.1");
+        assertEquals(productRelease.getTierName(), "tierName4");
+        assertEquals(productRelease.getAttributes().size(), 0);
+        assertEquals(productRelease.getMetadatas().size(), 0);
+
+    }*/
+    
+    /*@Test
+    public void testProductReleasesTierWithMetadata() throws Exception {
+
+        Metadata metproduct = new Metadata("product", "product", "product");
+
+        ProductRelease productproduct = new ProductRelease("myproduct2", "0.1");
+        productproduct.setTierName("tierName2");
+        productproduct.addMetadata(metproduct);
+
+        productReleaseDao.create(productproduct);
+
+        ProductRelease productRelease = productReleaseDao.load("myproduct2", "0.1", "tierName2");
+        assertNotNull(productRelease);
+        assertEquals(productRelease.getProduct(), "myproduct2");
+        assertEquals(productRelease.getVersion(), "0.1");
+        assertEquals(productproduct.getTierName(), "tierName2");
+        assertEquals(productRelease.getMetadatas().size(), 1);
+
+    }*/
+    
     /**
      * @param productReleaseDao
      *            the productReleaseDao to set
