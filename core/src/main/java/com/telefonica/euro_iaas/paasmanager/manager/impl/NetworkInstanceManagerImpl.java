@@ -79,6 +79,11 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         }
         return networkInstance;
     }
+    
+    public NetworkInstance createInDB (NetworkInstance networkInstance) throws InvalidEntityException, AlreadyExistsEntityException {
+        return networkInstanceDao.create(networkInstance);
+        
+    }
 
     /**
      * It restore the situation if there is a failure.
