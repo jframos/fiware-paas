@@ -20,8 +20,8 @@ g=EnvironmentRequest(config['keystone_url'], config['paasmanager_url'], config['
 instance_request = EnvironmentInstanceRequest (config['keystone_url'], config['paasmanager_url'], config['tenant'], config['user'], config['password'],
                                                config['vdc'],config['sdc_url'])
 
-environment_name = 'git7'
-blueprintname = 's36'
+environment_name = 'git13'
+blueprintname = 's41'
 
 
 print('Create a blueprint Template No tiers for nodemysql: ')
@@ -49,7 +49,7 @@ print('Delete an environment Instance' + blueprintname )
 instance_request.delete_blueprint_instance (blueprintname)
 
 print('borrado del blueprint Template No tiers for contextbroker: ')
-#g.delete_environment(environment_name)
+g.delete_environment(environment_name)
 
 print("  OK")
 

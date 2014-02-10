@@ -20,10 +20,10 @@ instance_request = EnvironmentInstanceRequest(config['keystone_url'], config['pa
     config['user'], config['password'],
     config['vdc'], config['sdc_url'])
 
-environment_name = 'env_j24'
-blueprintname = 'bp_j24'
-tier_name = 'tier_j24'
-network = "jesuspg-net"
+environment_name = 'env_j26'
+blueprintname = 'bp_j26'
+tier_name = 'tier_j25'
+network = "net"
 
 print('Delete an environment Instance ' + blueprintname )
 #instance_request.delete_blueprint_instance(blueprintname)
@@ -36,7 +36,7 @@ g.add_environment(environment_name, 'description')
 print("  OK")
 
 print('Create template: node')
-g.add_tier_environment_network(environment_name, tier_name, "nodejs=0.9.0", network)
+g.add_tier_environment_network(environment_name, tier_name, "git=1.7", network)
 print("  OK")
 
 print('Get Information about the Blueprint: ' + environment_name )

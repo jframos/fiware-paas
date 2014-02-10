@@ -55,7 +55,7 @@ class EnvironmentRequest:
         response = http.get(url, headers)
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
         if response.status != 200:
-            print 'error to obtain the environment'
+            print 'error to obtain the environment ' + str(response.status)
             sys.exit(1)
         else:
             data = json.loads(response.read())
@@ -87,17 +87,13 @@ class EnvironmentRequest:
             print 'error to delete the environment ' + str(response.status)
             sys.exit(1)
 
-<<<<<<< HEAD
+
     def __add_environment(self, url,environment_payload):
 
         headers={'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
                  'Content-Type': "application/xml"}
         print headers
-=======
-    def __add_environment(self, url, environment_payload):
-        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
-                   'Content-Type': "application/xml"}
->>>>>>> dba8bf4a047d9ca46223cf44fecfa2f7a3edef9d
+
 
         response = http.post(url, headers, environment_payload)
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
@@ -130,27 +126,8 @@ class EnvironmentRequest:
             products.append(product)
         return products
 
-<<<<<<< HEAD
-    def __process_artifact (self, artifact_information):
-
-        artifacts = []
-        artifact_list = artifact_information.split(';')
-
-        for arti in artifact_list:
-
-            a = arti.split ('=')
-
-            product = self.__check_product_exist(a[0],a[1])
-
-
-            artifacts.append(art)
-        return artifacts
-
-    def __process_metwork (self, network_information):
-
-=======
     def __process_metwork(self, network_information):
->>>>>>> dba8bf4a047d9ca46223cf44fecfa2f7a3edef9d
+
         nets = []
         networks = network_information.split(';')
 
@@ -170,15 +147,6 @@ class EnvironmentRequest:
         product = ProductRelease(product_name, product_version)
         return product
 
-    def __get_artifact (self, artifact_name, artifact_path):
-
-    #request=ProductRequest(self.keystone_url, self.sdc_url, self.tenant, self.user, self.password)
-    #product = request.get_product_info(product_name,product_version)
-
-    #  if product is None:
-    #     print 'Error: the product ' +  product_name + ' ' + product_version + ' does not exit'
-        product = ProductRelease (product_name, product_version)
-        return product
 
 
     def get_abstract_environments(self):
@@ -195,7 +163,7 @@ class EnvironmentRequest:
         self.__add_environment(url, payload)
 
     def add_environment(self, environment_name, environment_description):
-<<<<<<< HEAD
+
         url="%s/%s/%s/%s/%s" %(self.paasmanager_url,"catalog/org/FIWARE", "vdc", self.vdc, "environment")
         print url
         env = Environment(environment_name,environment_description )
@@ -203,14 +171,7 @@ class EnvironmentRequest:
         payload=tostring(env.to_env_xml())
         print payload
         self.__add_environment(url,payload)
-=======
-        url = "%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE", "vdc", self.vdc, "environment")
 
-        env = Environment(environment_name, environment_description)
-
-        payload = tostring(env.to_env_xml())
-        self.__add_environment(url, payload)
->>>>>>> dba8bf4a047d9ca46223cf44fecfa2f7a3edef9d
 
 
     def add_abstract_tier_environment(self, environment_name, tier_name, products_information):
@@ -237,14 +198,10 @@ class EnvironmentRequest:
         self.__add_tier_environment(url, payload)
 
     def add_tier_environment_network(self, environment_name, tier_name, products_information=None, networks=None):
-<<<<<<< HEAD
+
         url="%s/%s/%s/%s/%s/%s/%s" %(self.paasmanager_url,"catalog/org/FIWARE", "vdc", self.vdc, "environment",environment_name,"tier")
         tier = Tier (tier_name, self.image)
-=======
-        url = "%s/%s/%s/%s/%s/%s/%s" % (
-            self.paasmanager_url, "catalog/org/FIWARE", "vdc", self.vdc, "environment", environment_name, "tier")
-        tier = Tier(tier_name, self.image)
->>>>>>> dba8bf4a047d9ca46223cf44fecfa2f7a3edef9d
+
         if products_information:
             products = self.__process_product(products_information)
             for product in products:
