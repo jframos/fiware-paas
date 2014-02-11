@@ -20,15 +20,11 @@ instance_request = EnvironmentInstanceRequest (config['keystone_url'], config['p
                                                config['vdc'],config['sdc_url'])
 
 
-environment_name = 'diasss3'
-blueprintname ="diass3"
-network ="diass3"
+environment_name = 'diasss4'
+blueprintname ="diass4"
+network ="diass4"
 
-print('Delete an environment Instance' + blueprintname )
-#instance_request.delete_blueprint_instance (blueprintname)
 
-print('Delete an environment ' + environment_name )
-#g.delete_environment(environment_name);
 
 print('Create a template for network: ')
 g.add_environment(environment_name,'description')
@@ -36,7 +32,7 @@ print("  OK")
 
 print('Create template: node')
 tier_name = 'tiername45'
-g.add_tier_environment_network(environment_name,tier_name, "nodejs=0.6.15",network)
+g.add_tier_environment_network(environment_name,tier_name, "tomcat=6",network)
 print("  OK")
 
 print('Get Information about the Blueprint: ' + environment_name )

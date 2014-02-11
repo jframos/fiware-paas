@@ -176,7 +176,7 @@ class EnvironmentRequest:
 
     def add_abstract_tier_environment(self, environment_name, tier_name, products_information):
         url = "%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE/environment", environment_name, "tier")
-        tier = Tier(tier_name)
+        tier = Tier(tier_name, self.image)
         if products_information:
             products = self.__process_product(products_information)
             for product in products:
