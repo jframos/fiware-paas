@@ -231,7 +231,9 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
                 tiers.add(tier);
             }
         } catch (EntityNotFoundException e) {
-            log.error("Some tier in vdc " + vdc + " with environment " + environmentName + " does not exist");
+            String message = "Some tier in vdc " + vdc + " with environment " + environmentName + " does not exist";
+            log.error(message);
+            throw new InvalidEnvironmentRequestException(message);
         }
 
         List<String> allDependencies = createDependenciesForTiers(tiers);

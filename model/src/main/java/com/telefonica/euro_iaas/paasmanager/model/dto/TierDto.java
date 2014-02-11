@@ -8,12 +8,15 @@
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
@@ -195,6 +198,14 @@ public class TierDto {
 
             if (pReleaseDto.getProductDescription() != null) {
                 pRelease.setDescription(pReleaseDto.getProductDescription());
+            }
+            
+            if (pReleaseDto.getPrivateAttributes() != null) {
+                Set<Attribute> attrs = new HashSet<Attribute>();
+                for (Attribute attr: pReleaseDto.getPrivateAttributes()){
+                    attrs.add(attr);
+                }
+                pRelease.setAttributes(attrs);
             }
             tier.addProductRelease(pRelease);
         }

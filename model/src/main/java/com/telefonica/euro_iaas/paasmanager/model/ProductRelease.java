@@ -65,10 +65,12 @@ public class ProductRelease {
     private String product;
     @Column(nullable = false, length = 256)
     private String version;
-
+    
     @Column(length = 2048)
     private String description;
-
+    @Column(length = 256)
+    private String tierName = "";
+    
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Attribute> attributes = null;
 
@@ -413,7 +415,16 @@ public class ProductRelease {
     public Boolean getWithArtifact() {
         return withArtifact;
     }
-
+    
+    /**
+     * @return the tierName
+     */
+    
+    public String getTierName() {
+        return this.tierName;
+    }
+    
+    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -509,7 +520,15 @@ public class ProductRelease {
     public void setWithArtifact(Boolean withArtifact) {
         this.withArtifact = withArtifact;
     }
-
+    
+    /**
+     * @param tierName
+     *            the tierName to set
+     */
+    public void setTierName(String tierName) {
+        this.tierName = tierName;
+    }
+    
     /**
      * the dto representation.
      * 

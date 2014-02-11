@@ -218,7 +218,9 @@ public class EnvironmentInstanceResourceValidatorImplTest {
         tierDto.setName("name");
         tierDto.setFlavour("flavour");
         tierDto.setImage("image");
-
+        tierDto.setInitialNumberInstances(new Integer(1));
+        tierDto.setMaximumNumberInstances(new Integer(4));
+        tierDto.setMinimumNumberInstances(new Integer(1));
         // when
         environmentInstanceResourceValidatorImpl.validateTier(tierDto);
 
