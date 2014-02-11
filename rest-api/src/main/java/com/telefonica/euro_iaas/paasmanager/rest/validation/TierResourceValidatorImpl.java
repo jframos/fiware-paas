@@ -86,7 +86,7 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
         if (tierDto.getMaximumNumberInstances() == null || tierDto.getMinimumNumberInstances() == null
                 || tierDto.getInitialNumberInstances() == null) {
             log.error("Number initial, maximun o minimul from tierDto " + tierDto.getName() + " is null");
-            throw new InvalidEntityException(tierDto, new Exception("Number initial, maximun o minimul  "
+            throw new InvalidEntityException(tierDto, new Exception("Number initial, maximum or minimum  "
                     + "from tierDto is null"));
         }
 

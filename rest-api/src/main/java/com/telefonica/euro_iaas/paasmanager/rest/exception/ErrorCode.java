@@ -12,6 +12,7 @@ public enum ErrorCode {
     DB_CONNECTION(20, "Could not open connection to database", "(.*)JDBCConnectionException(.*)", 500),
     HIBERNATE(10, "Problem in database backend", "(.*)org.hibernate(.*)", 500),
     ENTITY_NOT_FOUND(30, "Entity not found", "(.*)EntityNotFoundException(.*)", 404),
+    ALREADY_EXIST(31, "Entity already exist", "(.*)AlreadyExistEntityException(.*)", 409),
     ENVIRONMENT_IN_USE(40,
             "The environment is being used by an instance",
             "(.*)InvalidEnvironmentRequestException: (.*)is being used(.*)",

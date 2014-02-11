@@ -98,7 +98,7 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
             throws InvalidEnvironmentRequestException, EntityNotFoundException, InvalidEntityException,
             AlreadyExistsEntityException, InfrastructureException, InvalidOVFException, QuotaExceededException {
 
-        log.warn("Desploy an environment instance " + environmentInstanceDto.getBlueprintName() + " from environmetn "
+        log.warn("Deploy an environment instance " + environmentInstanceDto.getBlueprintName() + " from environment "
                 + environmentInstanceDto.getEnvironmentDto());
 
         Task task = null;
