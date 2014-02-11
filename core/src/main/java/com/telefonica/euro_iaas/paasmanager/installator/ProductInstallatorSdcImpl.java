@@ -34,6 +34,7 @@ import com.telefonica.euro_iaas.sdc.client.SDCClient;
 import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
 import com.telefonica.euro_iaas.sdc.client.services.ChefClientService;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
+import com.telefonica.euro_iaas.sdc.model.dto.VM;
 
 public class ProductInstallatorSdcImpl implements ProductInstallator {
 
@@ -159,7 +160,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
             throw new ProductInstallatorException(errorMessage);
         }
 
-        productInstance.setName(tierInstance.getName() + "_" + productRelease.getProduct() + "_"
+        productInstance.setName(tierInstance.getVM().getVmid() + "_" + productRelease.getProduct() + "_"
                 + productRelease.getVersion());
         productInstance.setProductRelease(productRelease);
         productInstance.setVdc(tierInstance.getVdc());
@@ -173,6 +174,8 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
     }
 
     public void installArtifact(ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException {
+        log.debug ("Install artifact " + artifact.getName() + " in product " + artifact.getProductRelease().getProduct() + " for productinstance " 
+                + productInstance.getName());
         String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
         String sdcMediaType = systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
 
@@ -193,8 +196,26 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
         // Installing product with SDC
         productInstance.setStatus(Status.DEPLOYING_ARTEFACT);
+        
         com.telefonica.euro_iaas.sdc.model.Task task = service.installArtifact(productInstance.getVdc(),
                 productInstance.getName(), sdcArtifact, null);
+        log.debug("Deploying artefact " + artifact.getName() + "with href task " + task.getHref());
+
+
+        StringTokenizer tokens = new StringTokenizer(task.getHref(), "/");
+        String id = "";
+
+        while (tokens.hasMoreTokens()) {
+            id = tokens.nextToken();
+        }
+        log.debug("Install artifact in productInstance " + productInstance.getProductRelease().getProduct() + " task id "
+                + id + " " + task.getHref());
+
+        productInstance.setTaskId(id);
+
+
+        sDCUtil.checkTaskStatus(task, productInstance.getVdc());
+
         /* How to catch an productInstallation error */
         if (task.getStatus() == com.telefonica.euro_iaas.sdc.model.Task.TaskStates.ERROR)
             throw new ProductInstallatorException("Error installing artefact " + artifact.getName()

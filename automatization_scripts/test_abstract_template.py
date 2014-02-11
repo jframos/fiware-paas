@@ -14,10 +14,9 @@ g=EnvironmentRequest(config['keystone_url'], config['paasmanager_url'], config['
                      config['vdc'],config['image'],config['sdc_url'])
 
 
-environment_name = 'enviornmentname6'
+environment_name = 'env3'
 tier_name ='tiername2'
 
-g.delete_abstract_environments(environment_name)
 print('Create a blueprint Template: ')
 g.add_abstract_environment(environment_name,'description')
 

@@ -45,6 +45,16 @@ public interface NetworkInstanceManager {
      */
     void delete(ClaudiaData claudiaData, NetworkInstance network, String region) throws EntityNotFoundException,
             InvalidEntityException, InfrastructureException;
+    
+    /**
+     * 
+     * @param networkInstance
+     * @return
+     * @throws InvalidEntityException
+     * @throws AlreadyExistsEntityException
+     */
+    NetworkInstance createInDB (NetworkInstance networkInstance) 
+        throws InvalidEntityException, AlreadyExistsEntityException ;
 
     /**
      * Retrieve all Network created in the system.
