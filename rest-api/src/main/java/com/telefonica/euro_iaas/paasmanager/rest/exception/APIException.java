@@ -7,7 +7,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.exception;
 
-public class APIException extends RuntimeException {
+public class APIException extends Exception {
 
     private String message;
     private String publicMessage;
@@ -17,6 +17,13 @@ public class APIException extends RuntimeException {
     public APIException(Throwable cause) {
 
         parseMessage(cause.toString());
+
+    }
+
+    public APIException(Throwable cause, int error) {
+
+        parseMessage(cause.toString());
+        this.httpCode = error;
 
     }
 

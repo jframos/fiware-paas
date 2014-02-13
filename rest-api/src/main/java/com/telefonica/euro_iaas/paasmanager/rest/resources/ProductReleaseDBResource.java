@@ -14,8 +14,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
 /*
  * Provides a rest api to works with ProductRelease.
@@ -40,6 +40,6 @@ public interface ProductReleaseDBResource {
     @DELETE
     @Path("/{productReleaseName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    void delete(@PathParam("productReleaseName") String productReleaseName) throws EntityNotFoundException;
+    void delete(@PathParam("productReleaseName") String productReleaseName) throws APIException;
 
 }

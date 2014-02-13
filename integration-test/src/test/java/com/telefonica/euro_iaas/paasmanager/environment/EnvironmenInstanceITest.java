@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.paasmanager.environment;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,19 +21,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
-import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
-import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
@@ -42,6 +34,7 @@ import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.EnvironmentInstanceResource;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.EnvironmentResource;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.TierInstanceResource;
@@ -134,98 +127,57 @@ public class EnvironmenInstanceITest {
 
     }
 
-    @Test(expected = InvalidEntityException.class)
+    @Test
     public void testCreateEnvironmentInstanceNoEnvironment() throws Exception {
 
         EnvironmentInstanceDto envInst = new EnvironmentInstanceDto();
         envInst.setBlueprintName("blueprintname");
         envInst.setDescription("description");
 
-        environmentInstanceResource.create(org, vdc, envInst, "");
+        try {
+            environmentInstanceResource.create(org, vdc, envInst, "");
+
+        } catch (APIException e) {
+            String message = e.getMessage();
+            int result = message.indexOf("The environment to be deployed is null");
+
+            assertTrue(result != -1);
+        }
 
     }
 
-    @Test(expected = InvalidEntityException.class)
+    @Test
     public void testCreateEnvironmentInstanceNoDescription() throws Exception {
 
         EnvironmentInstanceDto envInst = new EnvironmentInstanceDto();
         envInst.setBlueprintName("blueprintname2");
-        environmentInstanceResource.create(org, vdc, envInst, "");
+        try {
+            environmentInstanceResource.create(org, vdc, envInst, "");
 
+        } catch (APIException e) {
+            String message = e.getMessage();
+            int result = message.indexOf("Description is null");
+
+            assertTrue(result != -1);
+        }
     }
 
-    @Test(expected = InvalidEntityException.class)
+    @Test
     public void testCreateEnvironmentInstanceNoBlueprintName() throws Exception {
 
         EnvironmentInstanceDto envInst = new EnvironmentInstanceDto();
         envInst.setDescription("description");
-        environmentInstanceResource.create(org, vdc, envInst, "");
+        try {
+            environmentInstanceResource.create(org, vdc, envInst, "");
+
+        } catch (APIException e) {
+            String message = e.getMessage();
+            int result = message.indexOf("BlueprintName is null");
+
+            assertTrue(result != -1);
+        }
 
     }
-
-  /*  @Test (expected= com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException.class)
-    public void testCreateEnvironmentInstanceAlreadyDeployed() throws InvalidEntityException, AlreadyExistsEntityException, InvalidEnvironmentRequestException, AlreadyExistEntityException, EntityNotFoundException, InfrastructureException, InvalidOVFException, QuotaExceededException, InterruptedException  {
-
-        ProductRelease product = new ProductRelease("tomcat23", "7", "Tomcat server 21", null);
-        product.addAttribute(new Attribute("key", "value"));
-
-        product = productReleaseDao.create(product);
-        assertNotNull(product);
-        assertNotNull(product.getId());
-        assertEquals(product.getProduct(), "tomcat23");
-        assertEquals(product.getVersion(), "7");
-
-        Environment environmentBk = new Environment();
-        environmentBk.setName("testCreatedEnvirionmentInstanceAlreadyDeployed");
-        environmentBk.setDescription("Description First environment");
-        Tier tierbk = new Tier("tierdtotest1", new Integer(1), new Integer(1), new Integer(1), null);
-        tierbk.setImage("image");
-        tierbk.setIcono("icono");
-        tierbk.setFlavour("flavour");
-        tierbk.setFloatingip("floatingip");
-        tierbk.setPayload("");
-        tierbk.setKeypair("keypair");
-        tierbk.addProductRelease(product);
-        environmentBk.addTier(tierbk);
-
-        environmentResource.insert(org, vdc, environmentBk.toDto());
-
-        EnvironmentInstanceDto envInst = new EnvironmentInstanceDto();
-        envInst.setBlueprintName("blueprintnameAlready");
-        envInst.setDescription("description");
-        envInst.setEnvironmentDto(environmentBk.toDto());
-        List<TierInstanceDto> tierInstanceDtos = new ArrayList(2);
-        TierInstanceDto tierInstanceDto = new TierInstanceDto();
-        TierDto tierDto = new TierDto();
-        tierDto.setInitialNumberInstances(1);
-        tierDto.setFloatingip("true");
-        tierInstanceDto.setTierDto(tierDto);
-        tierInstanceDtos.add(tierInstanceDto);
-        envInst.setTierInstances(tierInstanceDtos);
-
-        Task task = environmentInstanceResource.create(org, vdc, envInst, "");
-
-        Thread.sleep(5000);
-
-        assertEquals(task.getStatus(), Task.TaskStates.RUNNING);
-
-        try {
-			task = environmentInstanceResource.create(org, vdc, envInst, "");
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InfrastructureException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidOVFException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (QuotaExceededException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-    }*/
 
     @Test
     public void testCreateEnvironmentInstanceCreateTierInstance() throws Exception {

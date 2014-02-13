@@ -14,6 +14,8 @@ public class AlreadyExistEntityException extends Exception {
 
     public AlreadyExistEntityException(String msg) {
         super(msg);
+
+
     }
 
     public AlreadyExistEntityException(Throwable e) {

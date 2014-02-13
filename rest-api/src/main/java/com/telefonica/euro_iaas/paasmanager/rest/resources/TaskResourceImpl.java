@@ -17,11 +17,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TaskSearchCriteria;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
 /**
  * Default TaskResource implementation.
@@ -36,10 +36,12 @@ public class TaskResourceImpl implements TaskResource {
     @InjectParam("taskManager")
     private TaskManager taskManager;
 
-    // Errores con el Override
-
-    public Task load(Long id) throws EntityNotFoundException {
-        return taskManager.load(id);
+    public Task load(Long id) throws APIException {
+        try {
+            return taskManager.load(id);
+        } catch (Exception ex) {
+            throw new APIException(ex);
+        }
     }
 
     public List<Task> findAll(Integer page, Integer pageSize, String orderBy, String orderType,

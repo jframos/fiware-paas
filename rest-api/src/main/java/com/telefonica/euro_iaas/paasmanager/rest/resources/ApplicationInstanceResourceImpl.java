@@ -21,9 +21,6 @@ import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.exception.ApplicationInstanceNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidApplicationReleaseException;
-import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ApplicationReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
@@ -43,6 +40,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ArtifactDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationInstanceSearchCriteria;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.ApplicationInstanceResourceValidator;
 
@@ -75,13 +73,17 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
     private ExtendedOVFUtil extendedOVFUtil;
 
     public Task install(String org, String vdc, String environmentInstance,
-            ApplicationReleaseDto applicationReleaseDto, String callback) throws InvalidApplicationReleaseException,
-            ProductReleaseNotFoundException, ApplicationInstanceNotFoundException {
-        log.debug("Install application " + applicationReleaseDto.getApplicationName() + " in environment " + environmentInstance);
+            ApplicationReleaseDto applicationReleaseDto, String callback) throws APIException {
+        log.debug("Install application " + applicationReleaseDto.getApplicationName() + " in environment "
+                + environmentInstance);
         Task task = null;
 
-        validator.validateInstall(vdc, environmentInstance, applicationReleaseDto);
+        try {
+            validator.validateInstall(vdc, environmentInstance, applicationReleaseDto);
 
+        } catch (Exception ex) {
+            throw new APIException(ex);
+        }
         ApplicationRelease applicationRelease = new ApplicationRelease();
 
         if (applicationReleaseDto.getApplicationName() != null) {
