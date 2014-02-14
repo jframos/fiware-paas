@@ -291,7 +291,7 @@ public class EnvironmenTest {
             fail();
         } catch (APIException e) {
             String message = e.getMessage();
-            assertTrue(message.matches(".* The environment .* already exists"));
+            assertTrue(message.matches(".*The environment .* already exists"));
         }
 
     }
@@ -389,7 +389,7 @@ public class EnvironmenTest {
 
         } catch (APIException e) {
             String message = e.getMessage();
-            assertTrue(message.matches(".* EnvironmentDescription from EnvironmentDto is null"));
+            assertTrue(message.matches(".*EnvironmentDescription from EnvironmentDto is null"));
         }
 
     }

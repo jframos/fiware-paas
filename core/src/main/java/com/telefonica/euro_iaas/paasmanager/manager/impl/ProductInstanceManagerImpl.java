@@ -85,12 +85,13 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         return productInstanceDao.findByCriteria(criteria);
     }
 
-    public ProductInstance create(ProductInstance productInstance, String tierInstance) throws InvalidEntityException,
+    public ProductInstance create2(ProductInstance productInstance, TierInstance tierInstance) throws InvalidEntityException,
             AlreadyExistsEntityException {
         ProductRelease productRelease = productInstance.getProductRelease();
-        if (productInstance.getName() == null)
+        if (productInstance.getName() == null) {
             productInstance.setName(tierInstance + "_" + productRelease.getProduct() + "_"
                     + productRelease.getVersion());
+        }
 
         if (productRelease.getId() == null)
             try {

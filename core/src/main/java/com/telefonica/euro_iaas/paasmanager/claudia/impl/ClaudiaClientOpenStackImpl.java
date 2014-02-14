@@ -134,7 +134,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     private NetworkInstance getDefaultNetwork (List<NetworkInstance> networkInstances, String vdc) throws EntityNotFoundException {
         for (NetworkInstance net: networkInstances) {
             if(net.isDefaultNet()){
-                return networkInstanceManager.load(net.getNetworkName(), vdc);
+                return net;
             }
         }
         return null;
@@ -145,10 +145,27 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         List<NetworkInstance> networksNotShared = new ArrayList<NetworkInstance>();
         for (NetworkInstance net: networks) {
             if (!net.getShared() && net.getTenantId().equals(tenantId)) {
-                networksNotShared.add(net);
+                try {
+                    networksNotShared.add(loadNetworkInstance (net, tenantId));
+                }  catch (Exception e) {
+                    log.error("The network " + net.getNetworkName() + " cannot be added");
+                  
+                }
+                
             }
         }
         return networksNotShared;
+    }
+    
+    private NetworkInstance loadNetworkInstance (NetworkInstance networkInstance, String tenantId) 
+        throws InvalidEntityException, AlreadyExistsEntityException {
+        try {
+            networkInstance = networkInstanceManager.load(networkInstance.getNetworkName(), tenantId);
+        } catch (Exception e) {
+            log.warn("The network " + networkInstance.getNetworkName() + " is in Openstack but not in DB");
+            networkInstanceManager.createInDB(networkInstance);
+        }
+        return networkInstance;
     }
 
     /**

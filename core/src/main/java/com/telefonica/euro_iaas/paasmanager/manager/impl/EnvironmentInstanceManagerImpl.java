@@ -393,7 +393,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                 
                 Set<Tier> tiers = new HashSet();
                 for (Tier tier : env.getTiers()) {
-                    Tier tierDB = tierManager.load(tier.getName(), env.getVdc(), env.getName());
+                    Tier tierDB = tierManager.loadTierWithNetworks(tier.getName(), env.getVdc(), env.getName());
                     tierDB = updateTierDB(tierDB, tier);
                     tierDB = tierManager.update(tierDB);
                     
@@ -479,11 +479,6 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             tierDB.setIcono(tier.getIcono());
         if (tier.getKeypair() != null)
             tierDB.setKeypair(tier.getKeypair());
-        
-        if (tier.getNetworks() != null || (!tier.getNetworks().isEmpty())) {
-            tierDB.setNetworks(null);
-            tierDB.setNetworks(tier.getNetworks());
-        }
         
         return tierDB;
     }

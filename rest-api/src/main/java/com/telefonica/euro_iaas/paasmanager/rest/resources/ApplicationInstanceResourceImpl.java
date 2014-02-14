@@ -8,7 +8,6 @@
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Path;
@@ -19,7 +18,6 @@ import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ApplicationReleaseManager;
@@ -29,16 +27,11 @@ import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsy
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
-import com.telefonica.euro_iaas.paasmanager.model.ApplicationType;
-import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
-import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
-import com.telefonica.euro_iaas.paasmanager.model.dto.ArtifactDto;
-import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
@@ -56,51 +49,40 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
 
     private static Logger log = Logger.getLogger(ApplicationInstanceResourceImpl.class.getName());
 
-    @InjectParam("applicationInstanceAsyncManager")
     private ApplicationInstanceAsyncManager applicationInstanceAsyncManager;
-    @InjectParam("applicationInstanceManager")
+
     private ApplicationInstanceManager applicationInstanceManager;
-    @InjectParam("applicationReleaseManager")
+
     private ApplicationReleaseManager applicationReleaseManager;
-    @InjectParam("environmentInstanceAsyncManager")
+
     private EnvironmentInstanceAsyncManager environmentInstanceAsyncManager;
-    @InjectParam("taskManager")
+
     private TaskManager taskManager;
-    @InjectParam("environmentInstanceManager")
+
     private EnvironmentInstanceManager environmentInstanceManager;
 
     private ApplicationInstanceResourceValidator validator;
     private ExtendedOVFUtil extendedOVFUtil;
 
+    /**
+     * 
+     */
     public Task install(String org, String vdc, String environmentInstance,
-            ApplicationReleaseDto applicationReleaseDto, String callback) throws APIException {
-        log.debug("Install application " + applicationReleaseDto.getApplicationName() + " in environment "
-                + environmentInstance);
-        Task task = null;
 
+    ApplicationReleaseDto applicationReleaseDto, String callback) throws APIException {
+        log.debug("Install aplication " + applicationReleaseDto.getApplicationName() + " "
+                + applicationReleaseDto.getVersion() + " on " + " enviornment " + environmentInstance
+                + " with artificats " + applicationReleaseDto.getArtifactsDto().size());
+
+        Task task = null;
         try {
             validator.validateInstall(vdc, environmentInstance, applicationReleaseDto);
-
+            log.debug("Application validated");
         } catch (Exception ex) {
             throw new APIException(ex);
         }
-        ApplicationRelease applicationRelease = new ApplicationRelease();
 
-        if (applicationReleaseDto.getApplicationName() != null) {
-            applicationRelease.setName(applicationReleaseDto.getApplicationName());
-        }
-
-        if (applicationReleaseDto.getArtifactsDto() != null)
-            applicationRelease.setArtifacts(this.convertToArtifact(applicationReleaseDto.getArtifactsDto()));
-
-        if (applicationReleaseDto.getVersion() != null)
-            applicationRelease.setVersion(applicationReleaseDto.getVersion());
-
-        if (applicationReleaseDto.getApplicationType() != null) {
-            ApplicationType appType = new ApplicationType();
-            appType.setName(applicationReleaseDto.getApplicationType());
-            applicationRelease.setApplicationType(appType);
-        }
+        ApplicationRelease applicationRelease = applicationReleaseDto.fromDto();
 
         task = createTask(
                 MessageFormat.format("Deploying application {0} in environment instance {1}",
@@ -199,27 +181,28 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
         this.extendedOVFUtil = extendedOVFUtil;
     }
 
-    public List<Artifact> convertToArtifact(List<ArtifactDto> artifactsDto) {
-        List<Artifact> artifacts = new ArrayList();
-
-        for (ArtifactDto artifactDto : artifactsDto) {
-            Artifact artifact = new Artifact();
-            artifact.setName(artifactDto.getName());
-            if (artifactDto.getPath() != null)
-                artifact.setPath(artifactDto.getPath());
-            if (artifactDto.getProductReleaseDto() != null) {
-                artifact.setProductRelease(convertProductRelease(artifactDto.getProductReleaseDto()));
-            }
-
-        }
-        return artifacts;
+    public void setEnvironmentInstanceAsyncManager(EnvironmentInstanceAsyncManager environmentInstanceAsyncManager) {
+        this.environmentInstanceAsyncManager = environmentInstanceAsyncManager;
     }
 
-    public ProductRelease convertProductRelease(ProductReleaseDto productReleaseDto) {
-        ProductRelease productRelease = new ProductRelease();
-        productRelease.setProduct(productReleaseDto.getProductName());
-        productRelease.setVersion(productReleaseDto.getVersion());
-        return productRelease;
+    public void setEnvironmentInstanceManager(EnvironmentInstanceManager environmentInstanceManager) {
+        this.environmentInstanceManager = environmentInstanceManager;
+    }
+
+    public void setTaskManager(TaskManager taskManager) {
+        this.taskManager = taskManager;
+    }
+
+    public void setApplicationInstanceAsyncManager(ApplicationInstanceAsyncManager applicationInstanceAsyncManager) {
+        this.applicationInstanceAsyncManager = applicationInstanceAsyncManager;
+    }
+
+    public void setApplicationInstanceManager(ApplicationInstanceManager applicationInstanceManager) {
+        this.applicationInstanceManager = applicationInstanceManager;
+    }
+
+    public void setApplicationReleaseManager(ApplicationReleaseManager applicationReleaseManager) {
+        this.applicationReleaseManager = applicationReleaseManager;
     }
 
 }

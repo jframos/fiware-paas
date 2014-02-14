@@ -26,6 +26,7 @@ class EnvironmentInstanceRequest:
         self.tenant = tenant
 
         self.token = self.__get__token()
+        print self.token
         self.environments = []
 
     def __get__token(self):
@@ -40,6 +41,7 @@ class EnvironmentInstanceRequest:
         url = "%s/%s/%s/%s" % (self.paasmanager_url, "envInst/org/FIWARE/vdc", self.vdc, "environmentInstance")
         headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Content-Type': "application/xml",
                    'Accept': "application/json"}
+        print url
         print headers
         payload = tostring(environment_instance.to_xml())
         response = http.post(url, headers, payload)
@@ -82,11 +84,27 @@ class EnvironmentInstanceRequest:
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
         if response.status != 200 and response.status != 204:
             data = response.read()
-            print 'error to deploy the environment ' + str(response.status)      +" "+data
+            print 'error to deploy the environment ' + str(response.status) + " " + data
             sys.exit(1)
         else:
             envInstance = self.__process_env_inst(json.loads(response.read()))
             envInstance.to_string()
 
+    def add_application_instance(self, environment_instance_name, application_instance):
+        url = "%s/%s/%s/%s/%s/%s" % (
+        self.paasmanager_url, "envInst/org/FIWARE/vdc", self.vdc, "environmentInstance", environment_instance_name,
+        "applicationInstance")
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Content-Type': "application/xml",
+                   'Accept': "application/json"}
+        print url
+        print headers
+        payload = tostring(application_instance.to_xml())
+        response = http.post(url, headers, payload)
 
+        ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
+        if response.status != 200 and response.status != 204:
+            print 'error to deploy the application instance ' + str(response.status)
+            sys.exit(1)
+        else:
+            http.processTask(headers, json.loads(response.read()))
 

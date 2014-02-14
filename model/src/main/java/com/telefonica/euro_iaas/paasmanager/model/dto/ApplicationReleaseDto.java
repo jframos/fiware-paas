@@ -7,11 +7,16 @@
 
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
+import com.telefonica.euro_iaas.paasmanager.model.ApplicationType;
+import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 
 /**
  * DTO for application Instance to receive rest request
@@ -112,6 +117,37 @@ public class ApplicationReleaseDto {
      */
     public void setApplicationType(String applicationType) {
         this.applicationType = applicationType;
+    }
+    
+    public ApplicationRelease fromDto () {
+        ApplicationRelease applicationRelease = new ApplicationRelease ();
+        if (this.getApplicationName() != null) {
+            applicationRelease.setName(this.getApplicationName());
+        }
+
+        if (this.getArtifactsDto() != null) {
+            applicationRelease.setArtifacts(this.convertToArtifact(this.getArtifactsDto()));
+        }
+
+        if (this.getVersion() != null)
+            applicationRelease.setVersion(this.getVersion());
+
+        if (this.getApplicationType() != null) {
+            ApplicationType appType = new ApplicationType();
+            appType.setName(this.getApplicationType());
+            applicationRelease.setApplicationType(appType);
+        }
+        return applicationRelease;
+    }
+    
+    private List<Artifact> convertToArtifact(List<ArtifactDto> artifactsDto) {
+        List<Artifact> artifacts = new ArrayList<Artifact>();
+
+        for (ArtifactDto artifactDto : artifactsDto) {
+            artifacts.add(artifactDto.fromDto());
+
+        }
+        return artifacts;
     }
 
 }

@@ -70,6 +70,9 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
      */
     public void install(String org, String vdc, String environmentInstanceName, ApplicationRelease applicationRelease,
             Task task, String callback) {
+        LOGGER.info("Install aplication " + applicationRelease.getName() + " " +
+                applicationRelease.getVersion() + " on "
+                + " enviornment environmentInstance");
 
         try {
             EnvironmentInstance environmentInstance = environmentInstanceDao.load(environmentInstanceName);
