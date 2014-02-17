@@ -46,14 +46,19 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
      */
     public List<ProductRelease> findAll() throws SdcException {
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
-        
+
         List<String> pNames = findAllProducts();
-        
-        for (int i=0; i < pNames.size(); i++) {
-           List<ProductRelease> productReleasesProduct = findAllProductReleasesOfProduct(pNames.get(i));
-            
-            for (int j=0; j < productReleasesProduct.size(); j++) {
-                productReleases.add(productReleasesProduct.get(j));
+
+        for (int i = 0; i < pNames.size(); i++) {
+            final String pName = pNames.get(i);
+            try {
+                List<ProductRelease> productReleasesProduct = findAllProductReleasesOfProduct(pName);
+
+                for (int j = 0; j < productReleasesProduct.size(); j++) {
+                    productReleases.add(productReleasesProduct.get(j));
+                }
+            } catch (Exception ex) {
+                log.warn("Error loading product from sdc:" + pName);
             }
         }
         return productReleases;
@@ -68,15 +73,14 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
     }
 
     public List<String> findAllProducts() throws SdcException {
-        String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.SDC_SERVER_URL)
-            + "/catalog/product";
-     
+        String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.SDC_SERVER_URL) + "/catalog/product";
+
         log.debug("url: " + url);
 
         WebResource wr = client.resource(url);
         Builder builder = wr.accept(MediaType.APPLICATION_JSON);
         builder = builder.type(MediaType.APPLICATION_JSON);
-        
+
         InputStream inputStream = builder.get(InputStream.class);
         String response;
         try {
@@ -86,10 +90,10 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
             log.error(message);
             throw new SdcException(message);
         }
-        
-       return fromSDCToProductNames(response);            
+
+        return fromSDCToProductNames(response);
     }
-    
+
     public List<ProductRelease> findAllProductReleasesOfProduct(String pName) throws SdcException {
         String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.SDC_SERVER_URL)
                 + "/catalog/product/" + pName + "/release";
@@ -139,7 +143,7 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
 
         JSONObject jsonNodeProducts = JSONObject.fromObject(sdcproducts);
         List<String> productNames = new ArrayList<String>();
-        
+
         JSONArray jsonproductList = jsonNodeProducts.getJSONArray("product");
 
         for (Object o : jsonproductList) {
@@ -149,10 +153,10 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
         }
         return productNames;
     }
-    
+
     private List<ProductRelease> fromSDCToPaasManager(String sdcproductReleases) {
-       List<ProductRelease> paasManagerProductReleases = fromStringToProductReleases(sdcproductReleases);
-       return paasManagerProductReleases;
+        List<ProductRelease> paasManagerProductReleases = fromStringToProductReleases(sdcproductReleases);
+        return paasManagerProductReleases;
     }
 
     /**
@@ -161,9 +165,9 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
      * @param jsonProductReleases
      * @return List of ProductReleases
      */
-    public List<ProductRelease> fromStringToProductReleases(String  sdcproductReleases) {
+    public List<ProductRelease> fromStringToProductReleases(String sdcproductReleases) {
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
-        JSONObject json = (JSONObject)JSONSerializer.toJSON( sdcproductReleases ); 
+        JSONObject json = (JSONObject) JSONSerializer.toJSON(sdcproductReleases);
         Object obj = json.get("productRelease");
         if (obj instanceof JSONObject) {
             JSONObject jsonProductRelease = (JSONObject) obj;
@@ -187,7 +191,7 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
-    
+
     /**
      * @param client
      *            the client to set

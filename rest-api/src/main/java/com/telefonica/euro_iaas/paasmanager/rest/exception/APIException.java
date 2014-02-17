@@ -7,22 +7,26 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.exception;
 
-public class APIException extends Exception {
+import javax.servlet.ServletException;
+
+public class APIException extends ServletException {
 
     private String message;
     private String publicMessage;
     private Integer code;
     private Integer httpCode;
+    private Throwable cause;
 
     public APIException(Throwable cause) {
 
-        parseMessage(cause.toString());
+        super(cause);
+        this.cause = cause;
 
     }
 
     public APIException(Throwable cause, int error) {
 
-        parseMessage(cause.toString());
+        this.cause = cause;
         this.httpCode = error;
 
     }
@@ -32,15 +36,19 @@ public class APIException extends Exception {
     }
 
     public String getMessage() {
+        if (message == null) {
+            parseCause();
+        }
+
         return this.message;
     }
 
-    private void parseMessage(String message) {
+    public void parseCause() {
 
-        ErrorCode errorCode = ErrorCode.find(message);
+        ErrorCode errorCode = ErrorCode.find(cause.toString());
         this.code = errorCode.getCode();
         this.publicMessage = errorCode.getPublicMessage();
-        this.message = errorCode.toString() + "#" + message;
+        this.message = errorCode.toString() + "#" + cause.getMessage();
         this.httpCode = errorCode.getHttpCode();
 
     }

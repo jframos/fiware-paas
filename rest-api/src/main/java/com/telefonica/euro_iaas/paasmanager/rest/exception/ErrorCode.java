@@ -17,10 +17,8 @@ public enum ErrorCode {
             "The environment is being used by an instance",
             "(.*)InvalidEnvironmentRequestException: (.*)is being used(.*)",
             403),
-    INFRASTRUCTURE(50, "Openstack infrastructure failure", "(.*)InfrastructureException(.*)", 500),
-    DEFAULT(500, "Internal PaasManager Server Error", "(.*)",
-
-    500);
+    INFRASTRUCTURE(50, "OpenStack infrastructure failure", "(.*)InfrastructureException(.*)", 500),
+    DEFAULT(500, "Internal PaasManager Server error", "(?s).*", 500);
 
     private final int code;
     private final String publicMessage;
