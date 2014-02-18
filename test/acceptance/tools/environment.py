@@ -24,7 +24,7 @@ class Environment:
 
         if self.tiers:
             for tier in self.tiers:
-                tier_dto = tier.to_tier_xml()
+                tier_dto = tier.to_xml()
                 environment_dto.append(tier_dto)
 
         return environment_dto

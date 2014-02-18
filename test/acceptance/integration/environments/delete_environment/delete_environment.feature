@@ -35,6 +35,6 @@ Feature: Delete an environment in a tenant
 
     Scenario: Delete non existent environment
         Given the paas manager is up and properly configured
-        And there is no environment with name "name" already created
-        When I request the deletion of the environment with name "name"
+        And there is no environment with name "nameqa" already created
+        When I request the deletion of the environment with name "nameqa"
         Then I receive a "Not Found" response

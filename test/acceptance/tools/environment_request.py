@@ -66,12 +66,7 @@ class EnvironmentRequest:
         headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
                    'Content-Type': "application/xml"}
 
-        response = http.post(url, headers, tier_payload)
-
-        ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
-        if response.status != 200 and response.status != 204:
-            print 'error to add a tier in an environment ' + str(response.status)
-            sys.exit(1)
+        return http.post(url, headers, tier_payload)
 
     def __update_environment(self, url, environment_payload):
         headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
@@ -79,16 +74,11 @@ class EnvironmentRequest:
 
         return http.put(url, headers, environment_payload)
 
-    def __update_tier_environment(self, url, tier_payload):
+    def __update_tier(self, url, tier_payload):
         headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
                    'Content-Type': "application/xml"}
 
-        response = http.put(url, headers, tier_payload)
-
-        ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
-        if response.status != 200 and response.status != 204:
-            print 'error to add a tier in an environment ' + str(response.status)
-            sys.exit(1)
+        return http.put(url, headers, tier_payload)
 
     def get_abstract_environments(self):
         url = "%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE/environment")
@@ -133,23 +123,26 @@ class EnvironmentRequest:
         url = "%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE/environment", environment_name, "tier")
 
         payload = tostring(tier.to_tier_xml())
-        self.__add_tier_environment(url, payload)
+        world.response = self.__add_tier_environment(url, payload)
+
+        """Store it in the world to track it later"""
+        try:
+            world.tiers.append(tier)
+        except AttributeError:
+            world.tiers = [tier]
 
     def add_tier_environment(self, environment_name, tier):
         url = "%s/%s/%s/%s/%s/%s/%s" % (
             self.paasmanager_url, "catalog/org/FIWARE", "vdc", self.vdc, "environment", environment_name, "tier")
 
         payload = tostring(tier.to_tier_xml())
-        self.__add_tier_environment(url, payload)
+        world.response = self.__add_tier_environment(url, payload)
 
-    def add_tier_environment_network(self, environment_name, tier):
-        url = "%s/%s/%s/%s/%s/%s/%s" % (
-            self.paasmanager_url, "catalog/org/FIWARE", "vdc", self.vdc, "environment", environment_name, "tier")
-
-        print tostring(tier.to_tier_xml())
-        payload = tostring(tier.to_tier_xml())
-        print payload
-        self.__add_tier_environment(url, payload)
+        """Store it in the world to track it later"""
+        try:
+            world.tiers.append(tier)
+        except AttributeError:
+            world.tiers = [tier]
 
     def __add_product_to_tier(self, url, products_information):
         product = self.process_products(products_information)
@@ -167,7 +160,7 @@ class EnvironmentRequest:
         url = "%s/%s/%s/%s/%s/%s/%s" % (
             self.paasmanager_url, "catalog/org/FIWARE", "environment", environment_name, "tier", tier_name,
             "productRelease")
-        print url
+
         self.__add_product_to_tier(url, products_information)
 
     def delete_abstract_environments(self, environment_name):
@@ -208,28 +201,43 @@ class EnvironmentRequest:
         #   product = Product ()
         #   add_product
 
-    def update_abstract_environment(self, environment_name, environment_description, tiers=None):
+    def update_abstract_environment(self, environment_name, new_name, new_description, new_tiers=None):
         url = "%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE/environment", environment_name)
 
-        env = Environment(environment_name, environment_description, tiers)
+        env = Environment(new_name, new_description, new_tiers)
 
         payload = tostring(env.to_env_xml())
         world.response = self.__update_environment(url, payload)
 
-    def update_environment(self, environment_name, environment_description, tiers=None):
+    def update_environment(self, environment_name, new_name, new_description, new_tiers=None):
         """
         Updates the environment with the name provided setting the data provided.
         :param environment_name: Name of the environment.
-        :param environment_description: New description of the environment.
-        :param tiers: New list of tiers of the environment.
+        :param new_name: New name of the environment.
+        :param new_description: New description of the environment.
+        :param new_tiers: New list of tiers of the environment.
         """
         url = "%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
                                   "vdc", self.vdc, "environment", environment_name)
 
-        env = Environment(environment_name, environment_description, tiers)
+        env = Environment(new_name, new_description, new_tiers)
 
         payload = tostring(env.to_env_xml())
         world.response = self.__update_environment(url, payload)
+
+    def update_tier(self, environment_name, tier_name, tier):
+        """
+        Updates the environment with the name provided setting the data provided.
+        :param environment_name: Name of the environment.
+        :param new_name: New name of the environment.
+        :param new_description: New description of the environment.
+        :param new_tiers: New list of tiers of the environment.
+        """
+        url = "%s/%s/%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE", "vdc", self.vdc,
+                                           "environment", environment_name, "tier", tier_name)
+
+        payload = tostring(tier.to_tier_xml())
+        world.response = self.__update_tier(url, payload)
 
     ##
     ## get_environment - Obtiene la lista de environments ---
@@ -361,9 +369,7 @@ def check_environment_in_list(environments_list, environment_name,
 
             return
 
-    assert False, \
-    "No environment found in the list with name %s" \
-    % (environment_name, environment_description)
+    assert False, "No environment found in the list with name %s" % (environment_name)
 
 
 def check_get_environment_response(response, expected_status_code,
@@ -375,7 +381,9 @@ def check_get_environment_response(response, expected_status_code,
     expected one.
     :param response: Response to be checked.
     :param expected_status_code: Expected status code of the response.
-    :param expected_environments_number: Expected number of environments.
+    :param expected_environments_name: Expected name of the environment.
+    :param expected_environments_description: Expected description of the environment.
+    :param expected_environments_tiers: Expected tiers of the environment.
     """
     assert response.status == expected_status_code, \
     "Wrong status code received: %d. Expected: %d. Body content: %s" \
@@ -412,4 +420,4 @@ def check_get_environment_response(response, expected_status_code,
 
             assert received_tier == expected_tier, \
             "The data for tier %s does not match the expected one. Received: %s. Expected: %s." \
-            % (received_tier.name, tostring(received_tier.to_tier_xml()), tostring(expected_tier.to_tier_xml()))
+            % (received_tier.name, tostring(received_tier.to_xml()), tostring(expected_tier.to_xml()))

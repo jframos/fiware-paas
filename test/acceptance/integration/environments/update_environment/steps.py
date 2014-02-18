@@ -50,13 +50,13 @@ def there_is_no_environment_with_name_already_created(step, name):
 @step(u'I request the update of the environment with name "([^"]*)" using data:')
 def i_request_the_update_of_an_environment_with_name_using_data(step, name):
     data = dataset_utils.prepare_data(step.hashes[0])
-    world.env_requests.update_environment(data.get(NAME), data.get(DESCRIPTION))
+    world.env_requests.update_environment(name, data.get(NAME), data.get(DESCRIPTION))
 
 
 @step(u'I request the update of the environment with name "([^"]*)" using the previous tiers and data:')
 def i_request_the_update_of_an_environment_with_name_using_the_previous_tiers_and_data(step, name):
     data = dataset_utils.prepare_data(step.hashes[0])
-    world.env_requests.update_environment(data.get(NAME), data.get(DESCRIPTION), world.tiers)
+    world.env_requests.update_environment(name, data.get(NAME), data.get(DESCRIPTION), world.tiers)
 
 
 @step(u'I receive an? "([^"]*)" response')

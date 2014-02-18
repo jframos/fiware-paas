@@ -5,7 +5,6 @@ Feature: Create an environment with tiers in a tenant
     I want to be able to create environments with tiers in a tenant
     so that I can instantiate them later
 
-    @happy_path
     Scenario: Create environment with one tier
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -110,14 +109,20 @@ Feature: Create an environment with tiers in a tenant
             | nameqa | descqa      |
         Then I receive a "No Content" response
 
-    Scenario: Create environment with one tier with product and network
+    @happy_path
+    Scenario Outline: Create environment with one tier with products and networks
         And a list of tiers has been defined with data:
-            | name        | products   | networks |
-            | tiernameqa1 | git=1.7    | netqa1   |
+            | name       | products   | networks   |
+            | <tiername> | <products> | <networks> |
         When I request the creation of an environment with the previous tiers and data:
             | name   | description |
-            | nameqa | descqa      |
+            | <name> | descqa      |
         Then I receive a "No Content" response
+
+        Examples:
+            | name    | tiername    | products                 | networks      |
+            | nameqa1 | tiernameqa1 | git=1.7                  | netqa1        |
+            | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
 
     Scenario: Create environment with several tiers with products and networks
         Given the paas manager is up and properly configured

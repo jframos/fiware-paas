@@ -39,6 +39,6 @@ Feature: Get the details of an environment in a tenant
 
     Scenario: Get the details of a non existent environment
         Given the paas manager is up and properly configured
-        And there is no environment with name "name" already created
-        When I request the details of the environment with name "name"
+        And there is no environment with name "nameqa" already created
+        When I request the details of the environment with name "nameqa"
         Then I receive a "Not Found" response

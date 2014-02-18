@@ -1,9 +1,0 @@
-<?xml version="1.0" ?><testsuite errors="0" failures="1" hostname="localhost" name="lettuce" tests="3" time="0" timestamp="2014-02-18T08:56:03"><testcase classname="Create an environment in a tenant : Create environment with different invalid data" name="| nameqa 1 | descqa |" time="8.5e-05"><failure message="Wrong status code received: 204. Expected: 400. Body content: "><![CDATA[Traceback (most recent call last):
-  File "/home/vagrant/fiware-stuff/venv/lib/python2.6/site-packages/lettuce/core.py", line 144, in __call__
-    ret = self.function(self.step, *args, **kw)
-  File "/home/vagrant/workspace/fiware-paas/test/acceptance/integration/environments/create_environment/steps.py", line 48, in i_receive_a_response_of_type
-    environment_request.check_add_environment_response(world.response, status_code)
-  File "/home/vagrant/workspace/fiware-paas/test/acceptance/tools/environment_request.py", line 289, in check_add_environment_response
-    % (response.status, expected_status_code, response.read())
-AssertionError: Wrong status code received: 204. Expected: 400. Body content: 
-]]></failure></testcase></testsuite>

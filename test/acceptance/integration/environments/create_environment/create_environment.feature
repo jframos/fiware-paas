@@ -48,4 +48,13 @@ Feature: Create an environment in a tenant
             | nameqa1                 | [STRING_WITH_LENGTH_257] |
             | nameqa2                 |                          |
             | nameqa2                 | [MISSING_PARAM]          |
-            
+
+    Scenario: Create environment with the same name of an already existing one
+        Given the paas manager is up and properly configured
+        And an environment has already been created with data:
+            | name   | description |
+            | nameqa | descqa      |
+        When I request the creation of an environment with data:
+            | name   | description |
+            | nameqa | descqa      |
+        Then I receive a "Bad Request" response
