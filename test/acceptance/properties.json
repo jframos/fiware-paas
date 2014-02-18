@@ -1,0 +1,17 @@
+{
+    "environment": {
+        "name": "int-grizzly",
+        "logs_path": "logs"
+    },
+    "paas": {
+        "keystone_url": "http://130.206.80.58:35357/v2.0",
+        "sdc_url": "http://130.206.80.119:8081/sdc2/rest",
+        "paasmanager_url": "http://130.206.80.112:8082/paasmanager/rest",
+        "tenant": "QA",
+        "user": "pge354",
+        "password": "pge354",
+        "keypair": "pge354_keypair",
+        "vdc": "a68737887e5c453c8754ddb18315f961",
+        "image": "e6c5b19e-f655-4da8-86ea-6dd05be673ef"
+    }
+}

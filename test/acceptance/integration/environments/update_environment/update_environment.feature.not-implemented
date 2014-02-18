@@ -1,0 +1,70 @@
+# -*- coding: utf-8 -*-
+Feature: Update an environment in a tenant
+
+    As a fi-ware user
+    I want to be able to update the data of an environment in a tenant
+    so that I do not need to delete it and create it again when some change is needed
+
+    @happy_path
+    Scenario: Update environment
+        Given the paas manager is up and properly configured
+        And an environment has already been created with data:
+            | name   | description |
+            | nameqa | descqa      |
+        When I request the update of the environment with name "nameqa" using data:
+            | description |
+            | newdesc     |
+        Then I receive a "No Content" response
+        
+    Scenario Outline: Update environment with different valid data
+        Given the paas manager is up and properly configured
+        And an environment has already been created with data:
+            | name   | description |
+            | <name> | descqa      |
+        When I request the update of the environment with name "nameqa" using data:
+            | name   | description   |
+            | <name> | <description> |
+        Then I receive a "No Content" response
+        
+        Examples:
+            | name    | description              |
+            | nameqa1 | a                        |
+            | nameqa2 | descqa-1                 |
+            | nameqa3 | Symbols: +*=._,;"@#%)/?! |
+            | nameqa4 | Non-ASCII: á.é.í.ñ       |
+            | nameqa5 | [STRING_WITH_LENGTH_150] |
+
+    Scenario Outline: Update environment with different invalid data
+        Given the paas manager is up and properly configured
+        And an environment has already been created with data:
+            | name   | description |
+            | <name> | descqa      |
+        When I request the update of the environment with name "nameqa" using data:
+            | name   | description   |
+            | <name> | <description> |
+        Then I receive a "Bad Request" response
+        
+        Examples:
+            | name    | description              |
+            | nameqa1 | [STRING_WITH_LENGTH_257] |
+            | nameqa2 |                          |
+            | nameqa3 | [MISSING_PARAM]          |
+
+    Scenario: Update environment with a new name
+        Given the paas manager is up and properly configured
+        And an environment has already been created with data:
+            | name   | description |
+            | nameqa | descqa      |
+        When I request the update of the environment with name "nameqa" using data:
+            | name    | description |
+            | newname | descqa      |
+        Then I receive a "Bad Request" response
+
+    Scenario: Update non existent environment
+        Given the paas manager is up and properly configured
+        And there is no environment with name "name" already created
+        When I request the update of the environment with name "nameqa" using data:
+            | description |
+            | descqa      |
+        Then I receive a "Not Found" response
+

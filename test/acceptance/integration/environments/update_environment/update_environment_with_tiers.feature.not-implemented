@@ -1,0 +1,105 @@
+# -*- coding: utf-8 -*-
+Feature: Update an environment with tiers in a tenant
+
+    As a fi-ware user
+    I want to be able to update the data of an environment with tiers in a tenant
+    so that I do not need to delete it and create it again when some change is needed
+
+    @happy_path
+    Scenario: Update environment without tiers to add one
+        Given the paas manager is up and properly configured
+        And an environment has already been created with data:
+            | name   | description |
+            | nameqa | descqa      |
+        And a list of tiers has been defined with data:
+            | name        |
+            | newtiername |
+        When I request the update of the environment with name "nameqa" using the previous tiers and data:
+            | description |
+            | newdesc     |
+        Then I receive a "No Content" response
+        
+    Scenario: Update environment with one tier to remove it
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name       |
+            | tiernameqa |
+        And an environment has already been created with the previous tiers and data:
+            | name   | description |
+            | nameqa | descqa      |
+        When I request the update of the environment with name "nameqa" using data:
+            | description |
+            | newdesc     |
+        Then I receive a "No Content" response
+        
+    Scenario: Update environment with one tier to set a new one
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name       |
+            | tiernameqa |
+        And an environment has already been created with the previous tiers and data:
+            | name   | description |
+            | nameqa | descqa      |
+        And a list of tiers has been defined with data:
+            | name        |
+            | newtiername |
+        When I request the update of the environment with name "nameqa" using the previous tiers and data:
+            | description |
+            | newdesc     |
+        Then I receive a "No Content" response
+        
+    Scenario: Update environment with several tiers to set new ones with different valid data
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name        |
+            | tiernameqa1 |
+            | tiernameqa2 |
+            | tiernameqa3 |
+        And an environment has already been created with the previous tiers and data:
+            | name   | description |
+            | nameqa | descqa      |
+        And a list of tiers has been defined with data:
+            | name                    |
+            | a                       |
+            | tiernameqa-1            |
+            | [STRING_WITH_LENGTH_30] |
+        When I request the update of the environment with name "nameqa" using the previous tiers and data:
+            | description |
+            | newdesc     |
+        Then I receive a "No Content" response
+        
+    Scenario Outline: Update environment without tiers to add one with invalid data
+        Given the paas manager is up and properly configured
+        And an environment has already been created with data:
+            | name   | description |
+            | <name> | descqa      |
+        And a list of tiers has been defined with data:
+            | name       |
+            | <tiername> |
+        When I request the update of the environment with name "nameqa" using the previous tiers and data:
+            | name   | description |
+            | <name> | newdesc     |
+        Then I receive a "Bad Request" response
+        
+        Examples:
+            | name    | tiername                |
+            | nameqa1 | tiernameqa_1            |
+            | nameqa2 | tiernameqa 1            |
+            | nameqa3 | [STRING_WITH_LENGTH_31] |
+            | nameqa4 |                         |
+            | nameqa5 | [MISSING_PARAM]         |
+        
+    Scenario: Update environment without tiers to add new ones with products and networks
+        Given the paas manager is up and properly configured
+        And an environment has already been created with data:
+            | name   | description |
+            | nameqa | descqa      |
+        And a list of tiers has been defined with data:
+            | name        | products | networks |
+            | tiernameqa1 | git=1.7  |          |
+            | tiernameqa2 |          | netqa1   |
+            | tiernameqa3 | git=1.7  | netqa1   |
+        When I request the update of the environment with name "nameqa" using the previous tiers and data:
+            | name   | description |
+            | nameqa | descqa      |
+        Then I receive a "Bad Request" response
