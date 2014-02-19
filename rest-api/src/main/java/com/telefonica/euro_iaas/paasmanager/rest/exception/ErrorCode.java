@@ -13,6 +13,7 @@ public enum ErrorCode {
     HIBERNATE(10, "Problem in database backend", "(.*)org.hibernate(.*)", 500),
     ENTITY_NOT_FOUND(30, "Entity not found", "(.*)EntityNotFoundException(.*)", 404),
     ALREADY_EXIST(31, "Entity already exist", "(.*)AlreadyExistEntityException(.*)", 409),
+    ALREADY_EXIST2(32, "Invalid environment", "(.*)already exists(.*)", 409),
     ENVIRONMENT_IN_USE(40,
             "The environment is being used by an instance",
             "(.*)InvalidEnvironmentRequestException: (.*)is being used(.*)",

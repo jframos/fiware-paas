@@ -12,9 +12,9 @@ import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider
 
 import java.text.MessageFormat;
 import java.util.Date;
-import org.apache.log4j.Logger;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.scheduling.annotation.Async;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;

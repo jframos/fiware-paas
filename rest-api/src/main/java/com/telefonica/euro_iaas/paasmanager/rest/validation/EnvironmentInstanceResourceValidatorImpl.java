@@ -25,7 +25,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
 import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
@@ -116,26 +115,26 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
             throws InvalidEnvironmentRequestException, QuotaExceededException {
 
         if (environmentInstanceDto.getBlueprintName() == null) {
-            log.error("EnvironamentBlueprintName " + "from EnviromentDto BlueprintName is null");
-            throw new InvalidEnvironmentRequestException("EnvironamentBlueprintName "
+            log.error("EnvironmentBlueprintName " + "from EnvironmentDto BlueprintName is null");
+            throw new InvalidEnvironmentRequestException("EnvironmentBlueprintName "
                     + "from EnviromentDto BlueprintName is null");
         }
 
         if (environmentInstanceDto.getDescription() == null) {
-            log.error("EnvironamentDescription " + "from EnviromentDto Description is null");
-            throw new InvalidEnvironmentRequestException("EnvironamentDescription "
+            log.error("EnvironmentDescription " + "from EnvironmentDto Description is null");
+            throw new InvalidEnvironmentRequestException("EnvironmentDescription "
                     + "from EnviromentDto Description is null");
         }
-        
+
         if (environmentInstanceDto.getEnvironmentDto() == null) {
             log.error("The environment to be deployed is null ");
             throw new InvalidEnvironmentRequestException("The environment to be deployed is null ");
         }
-        
+
         log.debug("Validate enviornment instance blueprint " + environmentInstanceDto.getBlueprintName()
-                        + " description " + environmentInstanceDto.getDescription() + " environment "
-                        + environmentInstanceDto.getEnvironmentDto());
-                
+                + " description " + environmentInstanceDto.getDescription() + " environment "
+                + environmentInstanceDto.getEnvironmentDto());
+
         EnvironmentInstanceSearchCriteria criteria = new EnvironmentInstanceSearchCriteria();
 
         criteria.setVdc(claudiaData.getVdc());
@@ -144,13 +143,13 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
         List<EnvironmentInstance> envInstances = environmentInstanceDao.findByCriteria(criteria);
 
         if (envInstances.size() != 0) {
-            throw new InvalidEnvironmentRequestException(new AlreadyExistsEntityException(EnvironmentInstance.class,
-                    new Exception("The enviornment instance " + environmentInstanceDto.getBlueprintName())));
+            throw new InvalidEnvironmentRequestException("The environment instance "
+                    + environmentInstanceDto.getBlueprintName() + " already exists");
         }
 
         if (environmentInstanceDto.getEnvironmentDto().getTierDtos() == null) {
-            log.error("There are no tiers " + "defined in EnviromentDto object");
-            throw new InvalidEnvironmentRequestException("There are no tiers " + "defined in EnviromentDto object");
+            log.error("There are no tiers " + "defined in EnvironmentDto object");
+            throw new InvalidEnvironmentRequestException("There are no tiers " + "defined in EnvironmentDto object");
         }
 
         String system = systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
@@ -170,7 +169,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
             int hostnameLength = environmentInstanceDto.getBlueprintName().length() + tierDto.getName().length() + 5;
             if (hostnameLength > 64) {
                 int exceed = hostnameLength - 64;
-                String message = "Hostname is too long (over 64) Exceded by " + exceed + " characters . "
+                String message = "Hostname is too long (over 64) exceeded by " + exceed + " characters . "
                         + "Please revise the length of " + "BluePrint Instance Name "
                         + environmentInstanceDto.getBlueprintName() + " and tierName " + tierDto.getName();
                 log.error(message);
@@ -183,17 +182,14 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
     public void validateTier(TierDto tierDto) throws InvalidEnvironmentRequestException {
 
-        if (tierDto.getMaximumNumberInstances() == null){
-            throw new InvalidEnvironmentRequestException("Maximun Number Instances " 
-                            + "from tierDto is null");
+        if (tierDto.getMaximumNumberInstances() == null) {
+            throw new InvalidEnvironmentRequestException("Maximum Number Instances " + "from tierDto is null");
         }
-        if (tierDto.getMinimumNumberInstances() == null){
-            throw new InvalidEnvironmentRequestException("Minimum Number Instances " 
-                            + "from tierDto is null");
+        if (tierDto.getMinimumNumberInstances() == null) {
+            throw new InvalidEnvironmentRequestException("Minimum Number Instances " + "from tierDto is null");
         }
-        if (tierDto.getInitialNumberInstances() == null){
-            throw new InvalidEnvironmentRequestException("Initial Number Instances " 
-                            + "from tierDto is null");
+        if (tierDto.getInitialNumberInstances() == null) {
+            throw new InvalidEnvironmentRequestException("Initial Number Instances " + "from tierDto is null");
         }
         if (tierDto.getName() == null) {
             throw new InvalidEnvironmentRequestException("Tier Name " + "from tierDto is null");
@@ -214,7 +210,6 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
         Integer initialNumberInstances = 0;
         Integer floatingIPs = 0;
-        Integer securityGroups = 0;
         List securityGroupList = new ArrayList<String>(2);
 
         if (environmentInstanceDto.getTierInstances() != null) {
