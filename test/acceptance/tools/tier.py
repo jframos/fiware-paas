@@ -14,6 +14,9 @@ class Network:
     def __eq__(self, other):
         return self.network_name == other.network_name
 
+    def __gt__(self, other):
+        return self.network_name > other.network_name
+
     def to_xml(self):
         networkDto = Element("networkDto")
         network = SubElement(networkDto, "networkName")
@@ -46,8 +49,8 @@ class Tier:
             and self.tier_keypair == other.tier_keypair \
             and self.tier_floatingip == other.tier_floatingip \
             and self.region == other.region \
-            and self.products == other.products \
-            and self.networks == other.networks
+            and sorted(self.products) == sorted(other.products) \
+            and sorted(self.networks) == sorted(other.networks)
 
     def add_product(self, product):
         self.products.append(product)

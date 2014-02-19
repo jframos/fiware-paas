@@ -83,8 +83,12 @@ class ProductRelease:
         self.product=product
 
     def __eq__(self, other):
-        return self.version == other.version \
-            and self.product == other.product
+        return self.product == other.product \
+            and self.version == other.version
+
+    def __gt__(self, other):
+        return self.product > other.product \
+            or self.product == other.product and self.version > other.version
 
     def to_product_xml (self):
         product_release = Element('productReleaseDtos')
