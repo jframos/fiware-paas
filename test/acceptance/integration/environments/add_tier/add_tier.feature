@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-Feature: Add a tier to an environment
+Feature: Add a tier to an environment in a tenant
 
     As a fi-ware user
     I want to be able to add tiers to the environments in a tenant

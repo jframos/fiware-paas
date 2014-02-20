@@ -34,27 +34,23 @@ def a_tier_has_already_been_added_to_environment_with_data(step, env_name):
     world.env_requests.add_tier_environment(env_name, tier)
 
 
-@step(u'I request the update of the tier "([^"]*)" of the environment "([^"]*)" with data:')
-def i_request_the_update_of_a_tier_of_a_environment_with_data(step, tier_name, env_name):
+@step(u'I request the details of the tier "([^"]*)" of the environment "([^"]*)"')
+def i_request_the_details_of_a_tier_of_a_environment(step, tier_name, env_name):
+    tier_name = dataset_utils.generate_fixed_length_param(tier_name)
+    world.env_requests.get_tier_environment(env_name, tier_name)
+
+
+@step(u'I receive an? "([^"]*)" response with data:')
+def i_receive_a_response_of_type_with_data(step, response_type):
+    status_code = http.status_codes[response_type]
     data = dataset_utils.prepare_data(step.hashes[0])
-    tier = Tier(data.get(NAME), world.config['paas']['image'])
-    tier.parse_and_add_products(data.get(PRODUCTS))
-    tier.parse_and_add_networks(data.get(NETWORKS))
-    world.env_requests.update_tier_environment(env_name, tier_name, tier)
+    products = tier.parse_products(data.get(PRODUCTS))
+    networks = tier.parse_networks(data.get(NETWORKS))
+    tier.check_get_tier_response(world.response, status_code,
+                                 data.get(NAME), products, networks)
 
 
 @step(u'I receive an? "([^"]*)" response')
 def i_receive_a_response_of_type(step, response_type):
     status_code = http.status_codes[response_type]
-    tier.check_add_tier_response(world.response, status_code)
-
-
-@step(u'the data of the tier "([^"]*)" of the environment "([^"]*)" becomes:')
-def the_data_of_a_tier_of_a_environment_becomes(step, tier_name, env_name):
-    tier_name = dataset_utils.generate_fixed_length_param(tier_name)
-    world.env_requests.get_tier_environment(env_name, tier_name)
-    data = dataset_utils.prepare_data(step.hashes[0])
-    products = tier.parse_products(data.get(PRODUCTS))
-    networks = tier.parse_networks(data.get(NETWORKS))
-    tier.check_get_tier_response(world.response, 200,
-                                 data.get(NAME), products, networks)
+    tier.check_get_tier_response(world.response, status_code)

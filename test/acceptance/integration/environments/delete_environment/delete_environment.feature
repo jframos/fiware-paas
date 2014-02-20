@@ -13,6 +13,7 @@ Feature: Delete an environment in a tenant
             | nameqa | descqa      |
         When I request the deletion of the environment with name "nameqa"
         Then I receive a "No Content" response
+        And the environment with name "nameqa" is no longer available
         
     Scenario Outline: Delete environment with different data
         Given the paas manager is up and properly configured
@@ -21,6 +22,7 @@ Feature: Delete an environment in a tenant
             | <name> | <description> |
         When I request the deletion of the environment with name "<name>"
         Then I receive a "No Content" response
+        And the environment with name "<name>" is no longer available
         
         Examples:
             | name                    | description              |
@@ -33,7 +35,7 @@ Feature: Delete an environment in a tenant
             | accountsqa4             | Non-ASCII: á.é.í.ñ       |
             | accountsqa5             | [STRING_WITH_LENGTH_150] |
 
-    Scenario: Delete non existent environment
+    Scenario: Delete nonexistent environment
         Given the paas manager is up and properly configured
         And there is no environment with name "nameqa" already created
         When I request the deletion of the environment with name "nameqa"

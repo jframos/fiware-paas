@@ -2,7 +2,6 @@ import json
 __author__ = 'henar'
 
 from xml.etree.ElementTree import Element, SubElement
-from xml.etree.ElementTree import tostring
 from productrelease import ProductRelease
 from lettuce import world
 
@@ -268,13 +267,13 @@ def check_tier_in_list(tiers_list, tier_name, products=None, networks=None):
     """
     for tier in tiers_list:
         if tier.name == tier_name:  # Expected tier found
-            assert tier.products == products, \
-            "Wrong products received for tier %s: %s. Expected: %s." \
-            % (tier.name, tier.products, products)
+            assert sorted(tier.products) == sorted(products), \
+            "Wrong products list received for tier %s: %s. Expected: %s." \
+            % (tier.name, sorted(tier.products), sorted(products))
 
-            assert tier.networks == networks, \
-            "Wrong networks received for tier %s: %s. Expected: %s." \
-            % (tier.name, tier.networks, networks)
+            assert sorted(tier.networks) == sorted(networks), \
+            "Wrong networks list received for tier %s: %s. Expected: %s." \
+            % (tier.name, sorted(tier.networks), sorted(networks))
 
             return
 
@@ -315,13 +314,13 @@ def check_get_tier_response(response, expected_status_code,
             # Find the product that matches each of the expected ones
             product_found = False
             for product in tier.products:
-                if product.name == expected_product.name \
+                if product.product == expected_product.product \
                 and product.version == expected_product.version:
                     product_found = True
                     break
 
             assert product_found, \
-            "Product not found in response: %s-%s" % (expected_product.name, expected_product.version)
+            "Product not found in response: %s-%s" % (expected_product.product, expected_product.version)
 
     if expected_networks is not None:
         assert len(tier.networks) == len(expected_networks), \
@@ -332,9 +331,9 @@ def check_get_tier_response(response, expected_status_code,
             # Find the network that matches each of the expected ones
             network_found = False
             for network in tier.networks:
-                if network.name == expected_network.name:
+                if network.network_name == expected_network.network_name:
                     network_found = True
                     break
 
             assert network_found, \
-            "Network not found in response: %s" % (expected_network.name)
+            "Network not found in response: %s" % (expected_network.network_name)

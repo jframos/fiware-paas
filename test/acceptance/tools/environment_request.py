@@ -2,12 +2,10 @@ from tools import tier
 __author__ = 'henar'
 
 import http
-import sys
 import json
 from xml.etree.ElementTree import tostring
 
 from environment import Environment
-from tier import Tier, Network
 from lettuce import world
 
 
@@ -27,66 +25,59 @@ class EnvironmentRequest:
     def __get__token(self):
         return http.get_token(self.keystone_url + '/tokens', self.tenant, self.user, self.password)
 
+    def __add_environment(self, url, environment_payload):
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+                   'Content-Type': "application/xml"}
+        return http.post(url, headers, environment_payload)
+
+    def __update_environment(self, url, environment_payload):
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+                   'Content-Type': "application/xml"}
+        return http.put(url, headers, environment_payload)
+
+    def __delete_environment(self, url):
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+                   'Accept': "application/json"}
+        return http.delete(url, headers)
+
     def __get_environments(self, url):
-        #url="%s/%s" %(self.paasmanager_url,"catalog/org/FIWARE/environment")
         headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
                    'Accept': "application/json"}
         return http.get(url, headers)
 
     def __get_environment(self, url):
-        #url="%s/%s" %(self.paasmanager_url,"catalog/org/FIWARE/environment")
         headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
                    'Accept': "application/json"}
         return http.get(url, headers)
 
-    def __delete_environments(self, url):
-        #url="%s/%s" %(self.paasmanager_url,"catalog/org/FIWARE/environment")
-        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
-                   'Accept': "application/json"}
-        return http.delete(url, headers)
-
-    def __delete(self, url):
-        #url="%s/%s" %(self.paasmanager_url,"catalog/org/FIWARE/environment")
-        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
-                   'Accept': "application/json"}
-        response = http.delete(url, headers)
-
-        ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
-        if response.status != 200 and response.status != 204:
-            print 'error to delete the environment ' + str(response.status)
-            sys.exit(1)
-
-    def __add_environment(self, url, environment_payload):
+    def __add_tier(self, url, tier_payload):
         headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
                    'Content-Type': "application/xml"}
-
-        return http.post(url, headers, environment_payload)
-
-    def __add_tier_environment(self, url, tier_payload):
-        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
-                   'Content-Type': "application/xml"}
-
         return http.post(url, headers, tier_payload)
-
-    def __update_environment(self, url, environment_payload):
-        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
-                   'Content-Type': "application/xml"}
-
-        return http.put(url, headers, environment_payload)
 
     def __update_tier(self, url, tier_payload):
         headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
                    'Content-Type': "application/xml"}
-
         return http.put(url, headers, tier_payload)
 
-    def get_abstract_environments(self):
-        url = "%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE/environment")
+    def __delete_tier_environment(self, url):
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+                   'Accept': "application/json"}
+        return http.delete(url, headers)
 
-        self.__get_environments(url)
+    def __get_tiers_environment(self, url):
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+                   'Accept': "application/json"}
+        return http.get(url, headers)
+
+    def __get_tier_environment(self, url):
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+                   'Accept': "application/json"}
+        return http.get(url, headers)
 
     def add_abstract_environment(self, environment_name, environment_description, tiers=None):
-        url = "%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE/environment")
+        url = "%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                            "environment")
 
         env = Environment(environment_name, environment_description, tiers)
 
@@ -106,7 +97,8 @@ class EnvironmentRequest:
         :param environment_description: Description of the environment.
         :param tiers: List of tiers of the environment.
         """
-        url = "%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE", "vdc", self.vdc, "environment")
+        url = "%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                                  "vdc", self.vdc, "environment")
 
         env = Environment(environment_name, environment_description, tiers)
 
@@ -119,53 +111,10 @@ class EnvironmentRequest:
         except AttributeError:
             world.environments = [environment_name]
 
-    def add_abstract_tier_environment(self, environment_name, tier):
-        url = "%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE/environment", environment_name, "tier")
-
-        payload = tostring(tier.to_tier_xml())
-        world.response = self.__add_tier_environment(url, payload)
-
-        """Store it in the world to track it later"""
-        try:
-            world.tiers.append(tier)
-        except AttributeError:
-            world.tiers = [tier]
-
-    def add_tier_environment(self, environment_name, tier):
-        url = "%s/%s/%s/%s/%s/%s/%s" % (
-            self.paasmanager_url, "catalog/org/FIWARE", "vdc", self.vdc, "environment", environment_name, "tier")
-
-        payload = tostring(tier.to_tier_xml())
-        world.response = self.__add_tier_environment(url, payload)
-
-        """Store it in the world to track it later"""
-        try:
-            world.tiers.append(tier)
-        except AttributeError:
-            world.tiers = [tier]
-
-    def __add_product_to_tier(self, url, products_information):
-        product = self.process_products(products_information)
-        payload = tostring(product[0].to_product_xml())
-
-        self.__add_tier_environment(url, payload)
-
-    def add_product_to_tier(self, environment_name, tier_name, products_information):
-        url = "%s/%s/%s/%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE", "vdc",
-                                              self.vdc, "environment", environment_name, "tier", tier_name,
-                                              "productRelease")
-        self.__add_product_to_tier(url, products_information)
-
-    def add_abstract_product_to_tier(self, environment_name, tier_name, products_information):
-        url = "%s/%s/%s/%s/%s/%s/%s" % (
-            self.paasmanager_url, "catalog/org/FIWARE", "environment", environment_name, "tier", tier_name,
-            "productRelease")
-
-        self.__add_product_to_tier(url, products_information)
-
-    def delete_abstract_environments(self, environment_name):
-        url = "%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE/environment", environment_name)
-        world.response = self.__delete_environments(url)
+    def delete_abstract_environment(self, environment_name):
+        url = "%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                            "environment", environment_name)
+        world.response = self.__delete_environment(url)
 
         """Remove it from the world too"""
         try:
@@ -174,9 +123,9 @@ class EnvironmentRequest:
             pass
 
     def delete_environment(self, environment_name):
-        url = "%s/%s/%s/%s/%s/%s" % (
-            self.paasmanager_url, "catalog/org/FIWARE", "vdc", self.vdc, "environment", environment_name)
-        world.response = self.__delete_environments(url)
+        url = "%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                                     "vdc", self.vdc, "environment", environment_name)
+        world.response = self.__delete_environment(url)
 
         """Remove it from the world too"""
         try:
@@ -184,25 +133,9 @@ class EnvironmentRequest:
         except:
             pass
 
-    def delete_tier(self, environment_name, tier_name):
-        url = "%s/%s/%s/%s/%s/%s/%s/%s" % (
-            self.paasmanager_url, "catalog/org/FIWARE", "vdc", self.vdc, "environment", environment_name, "tier",
-            tier_name)
-
-        self.__delete(url)
-
-    def delete_abstract_tier(self, environment_name, tier_name):
-        url = "%s/%s/%s/%s/%s/%s" % (
-            self.paasmanager_url, "catalog/org/FIWARE", "environment", environment_name, "tier", tier_name)
-
-        self.__delete(url)
-
-        #   product_name =
-        #   product = Product ()
-        #   add_product
-
     def update_abstract_environment(self, environment_name, new_name, new_description, new_tiers=None):
-        url = "%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE/environment", environment_name)
+        url = "%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                            "environment", environment_name)
 
         env = Environment(new_name, new_description, new_tiers)
 
@@ -225,33 +158,123 @@ class EnvironmentRequest:
         payload = tostring(env.to_env_xml())
         world.response = self.__update_environment(url, payload)
 
-    def update_tier(self, environment_name, tier_name, tier):
-        """
-        Updates the environment with the name provided setting the data provided.
-        :param environment_name: Name of the environment.
-        :param new_name: New name of the environment.
-        :param new_description: New description of the environment.
-        :param new_tiers: New list of tiers of the environment.
-        """
-        url = "%s/%s/%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE", "vdc", self.vdc,
-                                           "environment", environment_name, "tier", tier_name)
+    def get_abstract_environments(self):
+        url = "%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                            "environment")
 
-        payload = tostring(tier.to_tier_xml())
-        world.response = self.__update_tier(url, payload)
+        self.__get_environments(url)
 
-    ##
-    ## get_environment - Obtiene la lista de environments ---
-    ##
     def get_environments(self):
-        url = "%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE/vdc/" + self.vdc + "/environment")
+        """
+        Gets the list of environments.
+        """
+        url = "%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                                  "vdc", self.vdc, "environment")
 
         world.response = self.__get_environments(url)
 
     def get_environment(self, environment_name):
-        url = "%s/%s/%s" % (
-            self.paasmanager_url, "catalog/org/FIWARE/vdc/" + self.vdc + "/environment", environment_name)
+        """
+        Gets the data of the environment with the name provided.
+        :param environment_name: Name of the environment.
+        """
+        url = "%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                                     "vdc", self.vdc, "environment", environment_name)
 
         world.response = self.__get_environment(url)
+
+    def add_tier_abstract_environment(self, environment_name, tier):
+        url = "%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                               "environment", environment_name, "tier")
+
+        payload = tostring(tier.to_tier_xml())
+        world.response = self.__add_tier(url, payload)
+
+        """Store it in the world to track it later"""
+        try:
+            world.tiers.append(tier)
+        except AttributeError:
+            world.tiers = [tier]
+
+    def add_tier_environment(self, environment_name, tier):
+        url = "%s/%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                                        "vdc", self.vdc, "environment", environment_name, "tier")
+
+        payload = tostring(tier.to_tier_xml())
+        world.response = self.__add_tier(url, payload)
+
+        """Store it in the world to track it later"""
+        try:
+            world.tiers.append(tier)
+        except AttributeError:
+            world.tiers = [tier]
+
+    def delete_tier_environment(self, environment_name, tier_name):
+        url = "%s/%s/%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                                           "vdc", self.vdc, "environment", environment_name, "tier", tier_name)
+
+        self.__delete_tier_environment(url)
+
+    def delete_tier_abstract_environment(self, environment_name, tier_name):
+        url = "%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                                     "environment", environment_name, "tier", tier_name)
+
+        self.__delete_tier_environment(url)
+
+    def update_tier_environment(self, environment_name, tier_name, tier):
+        """
+        Updates the tier with the name provided in the environment provided
+        setting a new one.
+        :param environment_name: Name of the environment.
+        :param tier_name: Name of the tier.
+        :param tier: New tier.
+        """
+        url = "%s/%s/%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                                           "vdc", self.vdc, "environment", environment_name, "tier", tier_name)
+
+        payload = tostring(tier.to_tier_xml())
+        world.response = self.__update_tier(url, payload)
+
+    def get_tiers_environment(self, environment_name):
+        """
+        Gets the tiers of the environment provided.
+        :param environment_name: Name of the environment.
+        """
+        url = "%s/%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                                        "vdc", self.vdc, "environment", environment_name, "tier")
+
+        world.response = self.__get_tiers_environment(url)
+
+    def get_tier_environment(self, environment_name, tier_name):
+        """
+        Gets the tier with the name provided of the environment provided.
+        :param environment_name: Name of the environment.
+        :param tier_name: Name of the tier.
+        """
+        url = "%s/%s/%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                                           "vdc", self.vdc, "environment", environment_name, "tier", tier_name)
+
+        world.response = self.__get_tier_environment(url)
+
+    def __add_product_to_tier(self, url, products_information):
+        product = self.process_products(products_information)
+        payload = tostring(product[0].to_product_xml())
+
+        self.__add_tier(url, payload)
+
+    def add_product_to_tier(self, environment_name, tier_name, products_information):
+        url = "%s/%s/%s/%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                                              "vdc", self.vdc, "environment", environment_name, "tier", tier_name,
+                                              "productRelease")
+
+        self.__add_product_to_tier(url, products_information)
+
+    def add_abstract_product_to_tier(self, environment_name, tier_name, products_information):
+        url = "%s/%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                                        "environment", environment_name, "tier", tier_name,
+                                        "productRelease")
+
+        self.__add_product_to_tier(url, products_information)
 
 
 def process_environments(environments):

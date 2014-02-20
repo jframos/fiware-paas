@@ -16,6 +16,7 @@ Feature: Delete an environment with tiers in a tenant
             | nameqa | descqa      |
         When I request the deletion of the environment with name "nameqa"
         Then I receive a "No Content" response
+        And the environment with name "nameqa" is no longer available
         
     Scenario: Delete environment with several tiers
         Given the paas manager is up and properly configured
@@ -29,6 +30,7 @@ Feature: Delete an environment with tiers in a tenant
             | nameqa | descqa      |
         When I request the deletion of the environment with name "nameqa"
         Then I receive a "No Content" response
+        And the environment with name "nameqa" is no longer available
         
     Scenario: Delete environment with several tiers with different valid data
         Given the paas manager is up and properly configured
@@ -42,6 +44,7 @@ Feature: Delete an environment with tiers in a tenant
             | nameqa | descqa      |
         When I request the deletion of the environment with name "nameqa"
         Then I receive a "No Content" response
+        And the environment with name "nameqa" is no longer available
         
     Scenario Outline: Delete environment with one tier with products
         Given the paas manager is up and properly configured
@@ -53,6 +56,7 @@ Feature: Delete an environment with tiers in a tenant
             | <name> | descqa      |
         When I request the deletion of the environment with name "<name>"
         Then I receive a "No Content" response
+        And the environment with name "<name>" is no longer available
         
         Examples:
             | name    | tiername    | products                 |
@@ -70,6 +74,7 @@ Feature: Delete an environment with tiers in a tenant
             | nameqa | descqa      |
         When I request the deletion of the environment with name "nameqa"
         Then I receive a "No Content" response
+        And the environment with name "nameqa" is no longer available
         
     Scenario Outline: Delete environment with one tier with networks
         Given the paas manager is up and properly configured
@@ -81,6 +86,7 @@ Feature: Delete an environment with tiers in a tenant
             | <name> | descqa      |
         When I request the deletion of the environment with name "<name>"
         Then I receive a "No Content" response
+        And the environment with name "<name>" is no longer available
         
         Examples:
             | name    | tiername    | networks      |
@@ -100,6 +106,7 @@ Feature: Delete an environment with tiers in a tenant
             | nameqa | descqa      |
         When I request the deletion of the environment with name "nameqa"
         Then I receive a "No Content" response
+        And the environment with name "nameqa" is no longer available
         
     Scenario Outline: Delete environment with one tier with products and networks
         Given the paas manager is up and properly configured
@@ -111,6 +118,7 @@ Feature: Delete an environment with tiers in a tenant
             | <name> | descqa      |
         When I request the deletion of the environment with name "<name>"
         Then I receive a "No Content" response
+        And the environment with name "<name>" is no longer available
 
         Examples:
             | name    | tiername    | products                 | networks      |
@@ -130,3 +138,4 @@ Feature: Delete an environment with tiers in a tenant
             | nameqa | descqa      |
         When I request the deletion of the environment with name "nameqa"
         Then I receive a "No Content" response
+        And the environment with name "nameqa" is no longer available

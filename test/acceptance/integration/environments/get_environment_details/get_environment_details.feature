@@ -37,7 +37,7 @@ Feature: Get the details of an environment in a tenant
             | accountsqa4             | Non-ASCII: á.é.í.ñ       |
             | accountsqa5             | [STRING_WITH_LENGTH_150] |
 
-    Scenario: Get the details of a non existent environment
+    Scenario: Get the details of a nonexistent environment
         Given the paas manager is up and properly configured
         And there is no environment with name "nameqa" already created
         When I request the details of the environment with name "nameqa"

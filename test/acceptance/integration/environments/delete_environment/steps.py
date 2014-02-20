@@ -56,4 +56,11 @@ def i_request_the_deletion_of_an_environment_with_data(step, name):
 @step(u'I receive an? "([^"]*)" response')
 def i_receive_a_response_of_type(step, response_type):
     status_code = http.status_codes[response_type]
-    environment_request.check_add_environment_response(world.response, status_code)
+    environment_request.check_delete_environment_response(world.response, status_code)
+
+
+@step(u'the environment with name "([^"]*)" is no longer available')
+def the_environment_with_name_is_no_longer_available(step, name):
+    name = dataset_utils.generate_fixed_length_param(name)
+    world.env_requests.get_environment(name)
+    environment_request.check_get_environment_response(world.response, 404)
