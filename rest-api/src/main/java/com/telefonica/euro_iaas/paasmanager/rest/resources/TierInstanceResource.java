@@ -21,34 +21,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidTierInstanceRequestException;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
-/**
- * Default EnvironmentInstanceResource interfaz.
- * 
- * @author bmmanso
- */
 public interface TierInstanceResource {
 
     /**
-     * Create a new TierInstance
-     * 
-     * @param org
-     * @param vdc
-     * @param environment
-     * @param tierInstanceDto
-     * @param callback
-     * @return
-     * @throws InvalidTierInstanceRequestException
-     * @throws InvalidEnvironmentRequestException
-     * @throws InvalidEntityException
+     * Creates a new TierInstance.
      */
 
     @POST
@@ -57,8 +39,7 @@ public interface TierInstanceResource {
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     Task insert(@PathParam("org") String org, @PathParam("vdc") String vdc,
             @PathParam("environmentInstance") String environment, TierDto tierDto,
-            @HeaderParam("callback") String callback) throws InvalidTierInstanceRequestException,
-            InvalidEnvironmentRequestException, InvalidEntityException, EntityNotFoundException;
+            @HeaderParam("callback") String callback) throws APIException;
 
     @PUT
     @Path("/")
@@ -67,18 +48,6 @@ public interface TierInstanceResource {
     public Task update(@PathParam("org") String org, @PathParam("vdc") String vdc,
             @PathParam("environmentInstance") String environment, TierInstanceDto tierInstanceDto,
             @HeaderParam("callback") String callback);
-
-    /**
-     * @param page
-     * @param pageSize
-     * @param orderBy
-     * @param orderType
-     * @param status
-     * @param vdc
-     * @param environmentInstance
-     * @return
-     * @throws EntityNotFoundException
-     */
 
     @GET
     @Path("/")
@@ -89,11 +58,7 @@ public interface TierInstanceResource {
             @PathParam("environmentInstance") String environmentInstance);
 
     /**
-     * Retrieve the selected tierInstance
-     * 
-     * @param name
-     * @return
-     * @throws EntityNotFoundException
+     * Retrieve the selected tierInstance.
      */
 
     @GET
@@ -103,18 +68,7 @@ public interface TierInstanceResource {
             @PathParam("name") String name);
 
     /**
-     * Create an environment Instance from a payload
-     * 
-     * @param org
-     * @param vdc
-     * @param environmentInstance
-     * @param tierInstances
-     * @param payload
-     * @param callback
-     * @return
-     * @throws EntityNotFoundException
-     * @throws InvalidTierInstanceRequestException
-     * @throws InvalidEnvironmentRequestException
+     * Create an environment Instance from a payload.
      */
 
     @DELETE
@@ -123,6 +77,6 @@ public interface TierInstanceResource {
     Task removeTierInstance(@PathParam("org") String org, @PathParam("vdc") String vdc,
             @PathParam("environmentInstance") String environmentInstance,
             @PathParam("tierInstance") String tierInstances, @HeaderParam("callback") String callback)
-            throws EntityNotFoundException, InvalidTierInstanceRequestException, InvalidEnvironmentRequestException;
+            throws APIException;
 
 }

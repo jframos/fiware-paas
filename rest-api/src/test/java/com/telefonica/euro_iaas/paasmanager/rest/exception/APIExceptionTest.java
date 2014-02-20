@@ -19,10 +19,12 @@ public class APIExceptionTest {
     public void shouldReturnErrorCode10AfterHibernateException() {
         // given
 
-        // when
         APIException apiException = new APIException(
                 new Exception(
                         "org.hibernate.PropertyAccessException: Null value was assigned to a property of primitive type setter of com.telefonica.euro_iaas.paasmanager.model.NetworkInstance.adminStateUp"));
+        // when
+
+        apiException.parseCause();
 
         // then
         assertEquals(ErrorCode.HIBERNATE.getCode(), apiException.getCode());
@@ -32,9 +34,10 @@ public class APIExceptionTest {
     public void shouldReturnError20AfterConnectionException() {
         // given
 
-        // when
         APIException apiException = new APIException(new Exception(
                 "org.hibernate.exception.JDBCConnectionException: An I/O error occured while sending to the backend."));
+        // when
+        apiException.parseCause();
 
         // then
         assertEquals(ErrorCode.DB_CONNECTION.getCode(), apiException.getCode());
@@ -44,23 +47,23 @@ public class APIExceptionTest {
     public void shouldReturnDefaultErrorAfterGenericException() {
         // given
 
-        // when
         APIException apiException = new APIException(new Exception("generic message"));
+        // when
+        apiException.parseCause();
 
         // then
         assertEquals(ErrorCode.DEFAULT.getCode(), apiException.getCode());
 
-        // then
     }
 
     @Test
-    public void should() {
+    public void shouldParseEntityNotFound() {
         // given
-
-        // when
 
         EntityNotFoundException entityNotFoundException = new EntityNotFoundException("error");
         APIException apiException = new APIException(entityNotFoundException);
+        // when
+        apiException.parseCause();
 
         // then
         assertEquals(ErrorCode.ENTITY_NOT_FOUND.getCode(), apiException.getCode());

@@ -12,14 +12,14 @@ public enum ErrorCode {
     DB_CONNECTION(20, "Could not open connection to database", "(.*)JDBCConnectionException(.*)", 500),
     HIBERNATE(10, "Problem in database backend", "(.*)org.hibernate(.*)", 500),
     ENTITY_NOT_FOUND(30, "Entity not found", "(.*)EntityNotFoundException(.*)", 404),
+    ALREADY_EXIST(31, "Entity already exist", "(.*)AlreadyExistEntityException(.*)", 409),
+    ALREADY_EXIST2(32, "Invalid environment", "(.*)already exists(.*)", 409),
     ENVIRONMENT_IN_USE(40,
             "The environment is being used by an instance",
             "(.*)InvalidEnvironmentRequestException: (.*)is being used(.*)",
             403),
-    INFRASTRUCTURE(50, "Openstack infrastructure failure", "(.*)InfrastructureException(.*)", 500),
-    DEFAULT(500, "Internal PaasManager Server Error", "(.*)",
-
-    500);
+    INFRASTRUCTURE(50, "OpenStack infrastructure failure", "(.*)InfrastructureException(.*)", 500),
+    DEFAULT(500, "Internal PaasManager Server error", "(?s).*", 500);
 
     private final int code;
     private final String publicMessage;

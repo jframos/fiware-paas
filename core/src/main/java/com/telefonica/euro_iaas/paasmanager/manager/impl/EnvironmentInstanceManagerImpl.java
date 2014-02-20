@@ -99,7 +99,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         // environmentInstance.setVdc(claudiaData.getVdc());
         environmentInstance.setName(environmentInstance.getVdc() + "-" + environment.getName());
 
-        //with this set we loose the productRelease Attributes
+        // with this set we loose the productRelease Attributes
         environmentInstance.setEnvironment(environment);
         environmentInstance.setStatus(Status.INIT);
 
@@ -124,7 +124,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         } catch (InfrastructureException e) {
             environmentInstance.setStatus(Status.ERROR);
             environmentInstanceDao.update(environmentInstance);
-            throw new InfrastructureException(e);
+            throw new InfrastructureException(e.getMessage());
         }
 
         // environment = environmentUtils.resolveMacros(environmentInstance);
@@ -185,14 +185,13 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             tierInstance.setStatus(Status.INSTALLING);
             tierInstanceDao.update(tierInstance);
             String newOVF = " ";
-            Tier tier = tierManager.loadTierWithProductReleaseAndMetadata
-                (tierInstance.getTier().getName(), tierInstance.getTier().getEnviromentName(), tierInstance.getTier().getVdc());
-            if ((tier.getProductReleases() != null)
-                    && !(tier.getProductReleases().isEmpty() )) {
+            Tier tier = tierManager.loadTierWithProductReleaseAndMetadata(tierInstance.getTier().getName(),
+                    tierInstance.getTier().getEnviromentName(), tierInstance.getTier().getVdc());
+            if ((tier.getProductReleases() != null) && !(tier.getProductReleases().isEmpty())) {
 
                 for (ProductRelease productRelease : tier.getProductReleases()) {
                     productRelease = productReleaseManager.load(productRelease.getName());
-                    
+
                     log.info("Install software " + productRelease.getProduct() + " " + productRelease.getVersion());
 
                     try {
@@ -203,7 +202,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                         tierInstance.setStatus(Status.INSTALLED);
                         tierInstance.addProductInstance(productInstance);
                     } catch (ProductInstallatorException pie) {
-                        String message = " Error installing product " + productRelease.getName() + " " + pie.getMessage();
+                        String message = " Error installing product " + productRelease.getName() + " "
+                                + pie.getMessage();
                         tierInstance.setStatus(Status.ERROR);
                         tierInstanceDao.update(tierInstance);
                         log.error(message);
@@ -328,17 +328,17 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                     envInstance.setStatus(Status.UNDEPLOYING);
                     envInstance = environmentInstanceDao.update(envInstance);
 
-					infrastructureManager.deleteEnvironment(claudiaData, envInstance);
+                    infrastructureManager.deleteEnvironment(claudiaData, envInstance);
 
                 } catch (InfrastructureException e) {
                     log.error("It is not possible to delete the environment " + envInstance.getName() + " : "
                             + e.getMessage());
                     throw new InvalidEntityException(EnvironmentInstance.class, e);
                 } catch (EntityNotFoundException e) {
-                	log.error("It is not possible to delete the environment " + envInstance.getName() + " : "
+                    log.error("It is not possible to delete the environment " + envInstance.getName() + " : "
                             + e.getMessage());
                     throw new InvalidEntityException(EnvironmentInstance.class, e);
-				}
+                }
 
                 envInstance.setStatus(Status.UNDEPLOYED);
             }
@@ -390,20 +390,21 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                     environment.setOvf(env.getOvf());
                     environment = environmentManager.update(environment);
                 }
-                
+
                 Set<Tier> tiers = new HashSet();
                 for (Tier tier : env.getTiers()) {
                     Tier tierDB = tierManager.loadTierWithNetworks(tier.getName(), env.getVdc(), env.getName());
                     tierDB = updateTierDB(tierDB, tier);
                     tierDB = tierManager.update(tierDB);
-                    
-                    List<ProductRelease> pReleases = new ArrayList<ProductRelease> ();
+
+                    List<ProductRelease> pReleases = new ArrayList<ProductRelease>();
                     List<ProductRelease> productReleases = tier.getProductReleases();
-                    for (ProductRelease pRelease : productReleases){
-                        ProductRelease pReleaseDB = productReleaseManager.load(pRelease.getProduct() + "-" + pRelease.getVersion());
+                    for (ProductRelease pRelease : productReleases) {
+                        ProductRelease pReleaseDB = productReleaseManager.load(pRelease.getProduct() + "-"
+                                + pRelease.getVersion());
                         pReleaseDB = updateProductReleaseDB(pReleaseDB, pRelease);
                         pReleaseDB = productReleaseManager.update(pReleaseDB);
-                        
+
                         pReleases.add(pReleaseDB);
                     }
                     tierDB.setProductReleases(null);
@@ -412,7 +413,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                 }
                 environment.setTiers(null);
                 environment.setTiers(tiers);
-                
+
                 return environment;
             } catch (EntityNotFoundException e1) {
                 throw new EntityNotFoundException(Environment.class,
@@ -465,8 +466,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         return environmentInstance;
     }
 
-    private Tier updateTierDB(Tier tierDB, Tier tier){
-        
+    private Tier updateTierDB(Tier tierDB, Tier tier) {
+
         if (tier.getName() != null)
             tierDB.setName(tier.getName());
         if (tier.getRegion() != null)
@@ -479,29 +480,29 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             tierDB.setIcono(tier.getIcono());
         if (tier.getKeypair() != null)
             tierDB.setKeypair(tier.getKeypair());
-        
+
         return tierDB;
     }
-    
-    private ProductRelease updateProductReleaseDB(ProductRelease productReleaseDB,
-                    ProductRelease productRelease) {
-        
-        if (productRelease.getDescription() != null){
+
+    private ProductRelease updateProductReleaseDB(ProductRelease productReleaseDB, ProductRelease productRelease) {
+
+        if (productRelease.getDescription() != null) {
             productReleaseDB.setName(productRelease.getDescription());
         }
-        if (productRelease.getTierName() != null){
+        if (productRelease.getTierName() != null) {
             productReleaseDB.setTierName(productRelease.getTierName());
         }
-        if (productRelease.getAttributes() != null){
-            List<ProductRelease> productReleases = new ArrayList<ProductRelease> ();
+        if (productRelease.getAttributes() != null) {
+            List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
             productReleaseDB.setAttributes(null);
             for (Attribute attr : productRelease.getAttributes()) {
                 productReleaseDB.addAttribute(attr);
-            }                   
+            }
             productReleases.add(productReleaseDB);
         }
         return productReleaseDB;
     }
+
     /**
      * @param tierInstanceDao
      *            the tierInstanceDao to set
@@ -573,7 +574,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
     public void setTierManager(TierManager tierManager) {
         this.tierManager = tierManager;
     }
-    public void setProductReleaseManager (ProductReleaseManager productReleaseManager) {
-        this.productReleaseManager=productReleaseManager;
+
+    public void setProductReleaseManager(ProductReleaseManager productReleaseManager) {
+        this.productReleaseManager = productReleaseManager;
     }
 }

@@ -19,8 +19,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
 /*
  * Provides a rest api to works with ProductRelease.
@@ -53,12 +53,6 @@ public interface ProductReleaseResource {
 
     /**
      * Retrieve the selected Tier.
-     * 
-     * @param name
-     *            the Tier name
-     * @return the Tier.
-     * @throws TierNotFoundException
-     *             if the Tier does not exist
      */
 
     @GET
@@ -66,17 +60,10 @@ public interface ProductReleaseResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     ProductReleaseDto load(@PathParam("org") String org, @PathParam("vdc") String vdc,
             @PathParam("environment") String environment, @PathParam("tier") String tier,
-            @PathParam("productReleaseName") String productReleaseName) throws EntityNotFoundException;
+            @PathParam("productReleaseName") String productReleaseName) throws APIException;
 
     /**
-     * Delete the Tier in BBDD,
-     * 
-     * @param name
-     *            the env name
-     * @throws TierNotFoundException
-     *             if the Tier does not exists
-     * @throws ProductReleaseStillInstalledException
-     * @thorws ProductReleaseInApplicationReleaseException
+     * Delete the Tier in database.
      */
 
     @DELETE
@@ -84,6 +71,6 @@ public interface ProductReleaseResource {
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void delete(@PathParam("org") String org, @PathParam("vdc") String vdc,
             @PathParam("environment") String environment, @PathParam("tier") String tier,
-            @PathParam("productReleaseName") String productReleaseName) throws EntityNotFoundException;
+            @PathParam("productReleaseName") String productReleaseName) throws APIException;
 
 }

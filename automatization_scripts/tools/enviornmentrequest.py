@@ -84,21 +84,21 @@ class EnvironmentRequest:
 
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
         if response.status != 200 and response.status != 204:
-            print 'error to delete the environment ' + str(response.status)
+            data = response.read()
+            print 'error to delete the environment ' + str(response.status) + " " + data
             sys.exit(1)
 
 
-    def __add_environment(self, url,environment_payload):
-
-        headers={'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
-                 'Content-Type': "application/xml"}
+    def __add_environment(self, url, environment_payload):
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+                   'Content-Type': "application/xml"}
         print headers
-
 
         response = http.post(url, headers, environment_payload)
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
         if response.status != 200 and response.status != 204:
-            print 'error to add an environment ' + str(response.status)
+            data = response.read()
+            print 'error to add an environment ' + str(response.status) + " " + data
             sys.exit(1)
 
 
@@ -111,7 +111,8 @@ class EnvironmentRequest:
 
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
         if response.status != 200 and response.status != 204:
-            print 'error to add a tier in an environment ' + str(response.status)
+            data = response.read()
+            print 'error to add a tier in an environment ' + str(response.status) + " " + data
             sys.exit(1)
 
     def __process_product(self, product_information):
@@ -127,7 +128,6 @@ class EnvironmentRequest:
         return products
 
     def __process_metwork(self, network_information):
-
         nets = []
         networks = network_information.split(';')
 
@@ -148,7 +148,6 @@ class EnvironmentRequest:
         return product
 
 
-
     def get_abstract_environments(self):
         url = "%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE/environment")
 
@@ -163,15 +162,13 @@ class EnvironmentRequest:
         self.__add_environment(url, payload)
 
     def add_environment(self, environment_name, environment_description):
-
-        url="%s/%s/%s/%s/%s" %(self.paasmanager_url,"catalog/org/FIWARE", "vdc", self.vdc, "environment")
+        url = "%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE", "vdc", self.vdc, "environment")
         print url
-        env = Environment(environment_name,environment_description )
+        env = Environment(environment_name, environment_description)
 
-        payload=tostring(env.to_env_xml())
+        payload = tostring(env.to_env_xml())
         print payload
-        self.__add_environment(url,payload)
-
+        self.__add_environment(url, payload)
 
 
     def add_abstract_tier_environment(self, environment_name, tier_name, products_information):
@@ -198,9 +195,9 @@ class EnvironmentRequest:
         self.__add_tier_environment(url, payload)
 
     def add_tier_environment_network(self, environment_name, tier_name, products_information=None, networks=None):
-
-        url="%s/%s/%s/%s/%s/%s/%s" %(self.paasmanager_url,"catalog/org/FIWARE", "vdc", self.vdc, "environment",environment_name,"tier")
-        tier = Tier (tier_name, self.image)
+        url = "%s/%s/%s/%s/%s/%s/%s" % (
+        self.paasmanager_url, "catalog/org/FIWARE", "vdc", self.vdc, "environment", environment_name, "tier")
+        tier = Tier(tier_name, self.image)
 
         if products_information:
             products = self.__process_product(products_information)

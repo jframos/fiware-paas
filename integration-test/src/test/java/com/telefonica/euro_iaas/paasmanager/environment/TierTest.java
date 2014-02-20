@@ -31,6 +31,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.EnvironmentResource;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.TierResource;
 
@@ -103,7 +104,7 @@ public class TierTest {
         assertEquals("regionOne", tierDto.getRegion());
     }
 
-    @Test(expected = javax.ws.rs.WebApplicationException.class)
+    @Test(expected = APIException.class)
     public void testCreateTierAlreadyExist() throws Exception {
         Environment environmentBk = new Environment();
         environmentBk.setName("create_tier_already");

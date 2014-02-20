@@ -20,14 +20,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidSecurityGroupRequestException;
-import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
 /*
  * Provides a rest api to works with Abstract Tier.
@@ -46,21 +40,13 @@ public interface AbstractTierResource {
      *            The organization where the abstract template belongs
      * @param environment
      *            The environment where this tier belongs to
-     * @return the Tier.
-     * @throws AlreadyExistEntityException
-     * @throws InvalidEntityException
-     * @throws EntityNotFoundException
-     * @throws InvalidSecurityGroupRequestException
-     * @throws InfrastructureException
-     * @throws AlreadyExistsEntityException 
      */
 
     @POST
     @Path("/")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void insert(@PathParam("org") String org, @PathParam("environment") String environment, TierDto TierDto)
-            throws InvalidEntityException, AlreadyExistEntityException, EntityNotFoundException,
-            InvalidSecurityGroupRequestException, InfrastructureException, AlreadyExistsEntityException;
+            throws APIException;
 
     /**
      * Retrieve all Tiers available created in the system.
@@ -85,53 +71,35 @@ public interface AbstractTierResource {
 
     /**
      * Retrieve the selected Tier.
-     * 
-     * @param name
-     *            the abstract Tier name
-     * @return the Tier.
-     * @throws EntityNotFoundException
-     *             if the Tier does not exist
      */
 
     @GET
     @Path("/{tierName}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     TierDto load(@PathParam("org") String org, @PathParam("environment") String environment,
-            @PathParam("tierName") String tierName) throws EntityNotFoundException;
+            @PathParam("tierName") String tierName) throws APIException;
 
     /**
-     * Delete the Tier in BBDD,
-     * 
-     * @param name
-     *            the env name
-     * @throws InvalidEntityException
-     * @throws TierNotFoundException
-     *             if the Tier does not exists
+     * Delete the Tier in DB.
      */
 
     @DELETE
     @Path("/{tierName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void delete(@PathParam("org") String org, @PathParam("environment") String environment,
-            @PathParam("tierName") String tierName) throws EntityNotFoundException, InvalidEntityException;
+            @PathParam("tierName") String tierName) throws APIException;
 
     /**
-     * Update the Tier in BBDD,
+     * Update the Tier in DB
      * 
      * @param TierDto
      *            the product name
-     * @throws TierNotFoundException
-     *             if the Tier does not exists
-     * @throws InvalidTierException
-     *             if the Tier is not valid
-     * @throws ProductReleaseNotFoundException
-     *             if the ProductRelease does not exists
      */
 
     @PUT
     @Path("/{tierName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void update(@PathParam("org") String org, @PathParam("environment") String environment, TierDto TierDto)
-            throws EntityNotFoundException, InvalidEntityException, ProductReleaseNotFoundException;
+            throws APIException;
 
 }

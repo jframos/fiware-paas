@@ -8,7 +8,6 @@
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Path;
@@ -19,11 +18,7 @@ import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.exception.ApplicationInstanceNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidApplicationReleaseException;
-import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ApplicationReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
@@ -32,17 +27,13 @@ import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsy
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
-import com.telefonica.euro_iaas.paasmanager.model.ApplicationType;
-import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
-import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
-import com.telefonica.euro_iaas.paasmanager.model.dto.ArtifactDto;
-import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationInstanceSearchCriteria;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.ApplicationInstanceResourceValidator;
 
@@ -58,11 +49,10 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
 
     private static Logger log = Logger.getLogger(ApplicationInstanceResourceImpl.class.getName());
 
-    
     private ApplicationInstanceAsyncManager applicationInstanceAsyncManager;
-    
+
     private ApplicationInstanceManager applicationInstanceManager;
-    
+
     private ApplicationReleaseManager applicationReleaseManager;
 
     private EnvironmentInstanceAsyncManager environmentInstanceAsyncManager;
@@ -78,17 +68,19 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
      * 
      */
     public Task install(String org, String vdc, String environmentInstance,
-            ApplicationReleaseDto applicationReleaseDto, String callback) throws InvalidApplicationReleaseException,
-            ProductReleaseNotFoundException, ApplicationInstanceNotFoundException {
-        log.debug("Install aplication " + applicationReleaseDto.getApplicationName() + " " +
-                applicationReleaseDto.getVersion() + " on "
-                + " enviornment " + environmentInstance + " with artificats " + applicationReleaseDto.getArtifactsDto().size());
 
+    ApplicationReleaseDto applicationReleaseDto, String callback) throws APIException {
+        log.debug("Install aplication " + applicationReleaseDto.getApplicationName() + " "
+                + applicationReleaseDto.getVersion() + " on " + " enviornment " + environmentInstance
+                + " with artificats " + applicationReleaseDto.getArtifactsDto().size());
 
         Task task = null;
-        validator.validateInstall(vdc, environmentInstance, applicationReleaseDto);
-        log.debug("Application validated");
-
+        try {
+            validator.validateInstall(vdc, environmentInstance, applicationReleaseDto);
+            log.debug("Application validated");
+        } catch (Exception ex) {
+            throw new APIException(ex);
+        }
 
         ApplicationRelease applicationRelease = applicationReleaseDto.fromDto();
 
@@ -188,7 +180,7 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
     public void setExtendedOVFUtil(ExtendedOVFUtil extendedOVFUtil) {
         this.extendedOVFUtil = extendedOVFUtil;
     }
-    
+
     public void setEnvironmentInstanceAsyncManager(EnvironmentInstanceAsyncManager environmentInstanceAsyncManager) {
         this.environmentInstanceAsyncManager = environmentInstanceAsyncManager;
     }
@@ -200,20 +192,17 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
     public void setTaskManager(TaskManager taskManager) {
         this.taskManager = taskManager;
     }
-    
+
     public void setApplicationInstanceAsyncManager(ApplicationInstanceAsyncManager applicationInstanceAsyncManager) {
         this.applicationInstanceAsyncManager = applicationInstanceAsyncManager;
     }
-    
+
     public void setApplicationInstanceManager(ApplicationInstanceManager applicationInstanceManager) {
         this.applicationInstanceManager = applicationInstanceManager;
     }
-    
+
     public void setApplicationReleaseManager(ApplicationReleaseManager applicationReleaseManager) {
         this.applicationReleaseManager = applicationReleaseManager;
     }
-
-
-   
 
 }

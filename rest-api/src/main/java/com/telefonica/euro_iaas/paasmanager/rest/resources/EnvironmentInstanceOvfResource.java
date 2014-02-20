@@ -20,15 +20,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceOvfDto;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
 /**
  * @author jesus.movilla
@@ -36,26 +31,14 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceOvfDto;
 public interface EnvironmentInstanceOvfResource {
 
     /**
-     * Create an Environment Instance from a payload
-     * 
-     * @param vdc
-     * @param org
-     * @param payload
-     * @param callback
-     * @return the task that informs how the environment creation process evolves
-     * @throws InvalidEnvironmentRequestException
-     * @throws EntityNotFoundException
-     * @throws InvalidEntityException
-     * @throws AlreadyExistsEntityException
+     * Create an Environment Instance from a payload.
      */
     @POST
     @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     Task create(@PathParam("org") String org, @PathParam("vdc") String vdc, String payload,
-            @HeaderParam("callback") String callback) throws InvalidEnvironmentRequestException,
-            EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException, InfrastructureException,
-            InvalidOVFException;
+            @HeaderParam("callback") String callback) throws APIException;
 
     /**
      * Retrieve all EnvironmentInstanceOvfs that match with a given criteria.
@@ -105,8 +88,6 @@ public interface EnvironmentInstanceOvfResource {
     /**
      * Destroy an Instance of an Environment.
      * 
-     * @param id
-     *            the installable instance id
      * @param callback
      *            if not empty, contains the url where the result of the async operation will be sent
      * @return the task.

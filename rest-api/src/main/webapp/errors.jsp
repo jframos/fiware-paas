@@ -14,6 +14,15 @@
             message = ((APIException) throwable).getPublicMessage();
             code = ((APIException) throwable).getCode();
             response.setStatus(((APIException) throwable).getHttpCode());
+        } else if (throwable instanceof ServletException) {
+
+            String cause = ((ServletException) throwable).getRootCause().getCause().toString();
+            ErrorCode errorCode = ErrorCode.find(cause);
+            code = errorCode.getCode();
+            String finalMessage = ((ServletException) throwable).getRootCause().getCause().getMessage();
+            message = errorCode.getPublicMessage() + "# " + finalMessage;
+            response.setStatus(errorCode.getHttpCode());
+
         } else {
             ErrorCode errorCode = ErrorCode.find(throwable.getMessage());
             code = errorCode.getCode();
@@ -21,9 +30,7 @@
 
             if (errorCode == ErrorCode.INFRASTRUCTURE) {
 
-
                 String message2 = throwable.getMessage().replace("\"", "\\\"");
-
                 out.println("{\"message\":\"" + message2 + "\",\"code\":1000},");
             }
             response.setStatus(errorCode.getHttpCode());

@@ -20,14 +20,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidSecurityGroupRequestException;
-import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
 /*
  * Provides a rest api to works with Environment.
@@ -38,25 +32,6 @@ public interface TierResource {
     /**
      * Add the selected Environment in to the SDC's catalog. If the Environment already exists, then add the new
      * Release.
-     * 
-     * @param TierDto
-     *            <ol>
-     *            <li>The TierDto: contains the information about the product</li>
-     *            </ol>
-     * @return the Tier.
-     * @throws AlreadyExistEntityException
-     * @throws InvalidEntityException
-     * @throws EntityNotFoundException
-     * @throws InvalidSecurityGroupRequestException
-     * @throws InfrastructureException
-     * @throws AlreadyExistsEntityException 
-     * @throws AlreadyExistsProductReleaseException
-     *             if the Product Release exists
-     * @throws InvalidProductReleaseException
-     *             if the Product Release is invalid due to either OS, Product or Product Release
-     * @throws InvalidMultiPartRequestException
-     *             when the MUltipart object in the request is null, or its size is different to three or the type sof
-     *             the different parts are not ProductReleaseDto, File and File
      */
 
     @POST
@@ -64,9 +39,7 @@ public interface TierResource {
     // @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void insert(@PathParam("org") String org, @PathParam("vdc") String vdc,
-            @PathParam("environment") String environment, TierDto TierDto) throws InvalidEntityException,
-            AlreadyExistEntityException, EntityNotFoundException, InvalidSecurityGroupRequestException,
-            InfrastructureException, AlreadyExistsEntityException;
+            @PathParam("environment") String environment, TierDto TierDto) throws APIException;
 
     /**
      * Retrieve all Tiers available created in the system.
@@ -91,59 +64,32 @@ public interface TierResource {
 
     /**
      * Retrieve the selected Tier.
-     * 
-     * @param name
-     *            the Tier name
-     * @return the Tier.
-     * @throws TierNotFoundException
-     *             if the Tier does not exist
      */
 
     @GET
     @Path("/{tierName}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     TierDto load(@PathParam("vdc") String vdc, @PathParam("environment") String environment,
-            @PathParam("tierName") String tierName) throws EntityNotFoundException;
+            @PathParam("tierName") String tierName) throws APIException;
 
     /**
-     * Delete the Tier in BBDD,
-     * 
-     * @param name
-     *            the env name
-     * @throws InvalidEntityException
-     * @throws TierNotFoundException
-     *             if the Tier does not exists
-     * @throws ProductReleaseStillInstalledException
-     * @thorws ProductReleaseInApplicationReleaseException
+     * Delete the Tier in DB.
      */
 
     @DELETE
     @Path("/{tierName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void delete(@PathParam("org") String org, @PathParam("vdc") String vdc,
-            @PathParam("environment") String environment, @PathParam("tierName") String tierName)
-            throws EntityNotFoundException, InvalidEntityException;
+            @PathParam("environment") String environment, @PathParam("tierName") String tierName) throws APIException;
 
     /**
-     * Update the Tier in BBDD,
-     * 
-     * @param TierDto
-     *            the product name
-     * @throws TierNotFoundException
-     *             if the Tier does not exists
-     * @throws InvalidTierException
-     *             if the Tier is not valid
-     * @throws ProductReleaseNotFoundException
-     *             if the ProductRelease does not exists
-     * @throws ProductReleaseNotFoundException
-     *             if the ProductRelease does not exists
+     * Update the Tier in DB.
      */
 
     @PUT
     @Path("/{tierName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void update(@PathParam("org") String org, @PathParam("vdc") String vdc,
-            @PathParam("environment") String environment, TierDto TierDto) throws EntityNotFoundException,
-            InvalidEntityException, ProductReleaseNotFoundException;
+            @PathParam("environment") String environment, TierDto TierDto) throws APIException;
 
 }

@@ -24,9 +24,7 @@ import org.springframework.stereotype.Component;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsyncManager;
@@ -41,6 +39,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstancePDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentInstanceResourceValidator;
@@ -95,10 +94,9 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
      * @throws EntityNotFoundException
      */
     public Task create(String org, String vdc, EnvironmentInstanceDto environmentInstanceDto, String callback)
-            throws InvalidEnvironmentRequestException, EntityNotFoundException, InvalidEntityException,
-            AlreadyExistsEntityException, InfrastructureException, InvalidOVFException, QuotaExceededException {
+            throws APIException {
 
-        log.warn("Desploy an environment instance " + environmentInstanceDto.getBlueprintName() + " from environmetn "
+        log.warn("Deploy an environment instance " + environmentInstanceDto.getBlueprintName() + " from environment "
                 + environmentInstanceDto.getEnvironmentDto());
 
         Task task = null;
@@ -109,7 +107,9 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
             validator.validateCreate(environmentInstanceDto, systemPropertiesProvider, claudiaData);
         } catch (InvalidEnvironmentRequestException e) {
             log.error("The environment instance is not valid " + e.getMessage());
-            throw new InvalidEntityException(e);
+            throw new APIException(e);
+        } catch (QuotaExceededException e) {
+            throw new APIException(e);
         }
 
         EnvironmentInstance environmentInstance = environmentInstanceDto.fromDto();
@@ -201,9 +201,14 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
          */
     }
 
-    public Task destroy(String org, String vdc, String name, String callback) throws EntityNotFoundException {
+    public Task destroy(String org, String vdc, String name, String callback) throws APIException {
 
-        EnvironmentInstance environmentInstance = environmentInstanceManager.loadForDelete(vdc, name);
+        EnvironmentInstance environmentInstance = null;
+        try {
+            environmentInstance = environmentInstanceManager.loadForDelete(vdc, name);
+        } catch (EntityNotFoundException e) {
+            throw new APIException(e);
+        }
 
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, name);
 

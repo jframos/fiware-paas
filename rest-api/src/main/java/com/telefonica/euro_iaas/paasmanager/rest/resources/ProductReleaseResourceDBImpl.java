@@ -7,9 +7,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.Path;
@@ -27,6 +25,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
@@ -76,7 +75,7 @@ public class ProductReleaseResourceDBImpl implements ProductReleaseDBResource {
 
     }
 
-    public void delete(String productReleaseName) throws EntityNotFoundException {
+    public void delete(String productReleaseName) throws APIException {
         // TODO Auto-generated method stub
 
     }

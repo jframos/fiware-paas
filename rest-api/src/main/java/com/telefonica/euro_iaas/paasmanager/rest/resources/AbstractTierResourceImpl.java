@@ -19,15 +19,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidSecurityGroupRequestException;
-import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -37,6 +31,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.TierResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
@@ -62,30 +57,26 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
     private static Logger log = Logger.getLogger(AbstractTierResourceImpl.class);
 
-    public void delete(String org, String envName, String tierName) throws EntityNotFoundException,
-            InvalidEntityException {
+    public void delete(String org, String envName, String tierName) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, "", envName);
         log.debug("Deleting tier " + tierName + " from env " + envName);
 
-        tierResourceValidator.validateDelete("", envName, systemPropertiesProvider);
-
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            claudiaData.setUser(getCredentials());
-        }
-
         try {
+            tierResourceValidator.validateDelete("", envName, systemPropertiesProvider);
+
+            if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+                claudiaData.setUser(getCredentials());
+            }
+
             Tier tier = tierManager.load(tierName, "", envName);
 
             Environment environment = environmentManager.load(envName);
             environment.deleteTier(tier);
             environmentManager.update(environment);
             tierManager.delete(claudiaData, tier);
-        } catch (InvalidEntityException e) {
+        } catch (Exception e) {
             log.error("Error deleting the tier " + e.getMessage());
-            throw new WebApplicationException(e, 500);
-        } catch (InfrastructureException e) {
-            log.error("Error deleting the tier " + e.getMessage());
-            throw new WebApplicationException(e, 500);
+            throw new APIException(e, 500);
         }
 
     }
@@ -129,9 +120,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
     }
 
-    public void insert(String org, String environmentName, TierDto tierDto) throws EntityNotFoundException,
-            InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException,
-            AlreadyExistsEntityException {
+    public void insert(String org, String environmentName, TierDto tierDto) throws APIException {
 
         log.debug("Insert tier " + tierDto.getName() + " from env " + environmentName + " with product release "
                 + tierDto.getProductReleaseDtos());
@@ -139,50 +128,47 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
         try {
             tierResourceValidator.validateCreate(claudiaData, tierDto, "", environmentName, systemPropertiesProvider);
-        } catch (AlreadyExistEntityException e) {
-            throw new WebApplicationException(e, 500);
-        } catch (QuotaExceededException e) {
-            throw new WebApplicationException(e, 500);
-        }
 
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            claudiaData.setUser(getCredentials());
-        }
-        Tier tier = tierDto.fromDto("");
-        log.debug("vdc " + claudiaData.getVdc());
+            if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+                claudiaData.setUser(getCredentials());
+            }
+            Tier tier = tierDto.fromDto("");
+            log.debug("vdc " + claudiaData.getVdc());
 
-        Environment environment = environmentManager.load(environmentName);
-        Tier newTier = tierManager.create(claudiaData, environmentName, tier);
-        environment.addTier(newTier);
-        environmentManager.update(environment);
+            Environment environment = environmentManager.load(environmentName);
+            Tier newTier = tierManager.create(claudiaData, environmentName, tier);
+            environment.addTier(newTier);
+            environmentManager.update(environment);
+        } catch (Exception e) {
+            throw new APIException(e);
+        }
     }
 
-    public TierDto load(String org, String envName, String name) throws EntityNotFoundException {
+    public TierDto load(String org, String envName, String name) throws APIException {
         try {
             Tier tier = tierManager.load(name, "", envName);
 
             return tier.toDto();
 
         } catch (EntityNotFoundException e) {
-            throw new WebApplicationException(e, 404);
+            throw new APIException(e, 404);
         }
     }
 
-    public void update(String org, String environmentName, TierDto tierDto) throws EntityNotFoundException,
-            InvalidEntityException, ProductReleaseNotFoundException {
+    public void update(String org, String environmentName, TierDto tierDto) throws APIException {
         log.debug("Update tier " + tierDto.getName() + " from env " + environmentName);
         ClaudiaData claudiaData = new ClaudiaData(org, "", environmentName);
 
-        tierResourceValidator.validateUpdate(tierDto, "", environmentName, systemPropertiesProvider);
-        log.debug("Validated tier " + tierDto.getName() + " from env " + environmentName);
-
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            claudiaData.setUser(getCredentials());
-        }
-
-        Tier newtier = tierDto.fromDto("");
-
         try {
+            tierResourceValidator.validateUpdate(tierDto, "", environmentName, systemPropertiesProvider);
+            log.debug("Validated tier " + tierDto.getName() + " from env " + environmentName);
+
+            if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+                claudiaData.setUser(getCredentials());
+            }
+
+            Tier newtier = tierDto.fromDto("");
+
             Environment environment = environmentManager.load(environmentName);
             List<Tier> tiers = new ArrayList();
             for (Tier tier : environment.getTiers()) {
@@ -203,8 +189,8 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
             log.debug("update tier " + tierDto.getName());
 
-        } catch (EntityNotFoundException e) {
-            throw new WebApplicationException(e, 404);
+        } catch (Exception e) {
+            throw new APIException(e);
         }
     }
 
