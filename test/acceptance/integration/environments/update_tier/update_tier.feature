@@ -2,7 +2,7 @@
 Feature: Update a tier of an environment in a tenant
 
     As a fi-ware user
-    I want to be able to update a tier of an environments in a tenant
+    I want to be able to update a tier of an environment in a tenant
     so that I do not need to delete it and create it again when some change is needed
 
     @happy_path

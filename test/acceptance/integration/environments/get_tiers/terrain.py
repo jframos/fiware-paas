@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from lettuce import world, after, before
-from tools import environment
+from tools import environment_request
 from tools.environment_request import EnvironmentRequest
 
 
@@ -18,4 +18,4 @@ def before_each_scenario(scenario):
 @after.each_scenario
 def after_each_scenario(scenario):
     # Delete the environments created in the scenario.
-    environment.delete_created_environments()
+    environment_request.delete_created_environments()

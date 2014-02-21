@@ -74,6 +74,50 @@ Feature: Get the list of tiers of an environment in a tenant
             | name        |
             | tiernameqa3 |
                 
+    Scenario: Get a list with several tiers with products
+        Given the paas manager is up and properly configured
+        And an environment has already been created with data:
+            | name   | description |
+            | nameqa | descqa      |
+        And a tier has already been added to the environment "nameqa" with data:
+            | name        | products |
+            | tiernameqa1 | git=1.7  |
+        And a tier has already been added to the environment "nameqa" with data:
+            | name        | products                 |
+            | tiernameqa2 | git=1.7,mediawiki=1.17.0 |
+        When I request the list of tiers of the environment "nameqa"
+        Then I receive an "OK" response with "2" items in the list
+        And there is a tier in the list with data:
+            | name        | products |
+            | tiernameqa1 | git=1.7  |
+        And there is a tier in the list with data:
+            | name        | products                 |
+            | tiernameqa2 | git=1.7,mediawiki=1.17.0 |
+
+    Scenario: Get a list with several tiers with networks
+        Given the paas manager is up and properly configured
+        And an environment has already been created with data:
+            | name   | description |
+            | nameqa | descqa      |
+        And a tier has already been added to the environment "nameqa" with data:
+            | name        | networks |
+            | tiernameqa1 | netqa1   |
+        And a tier has already been added to the environment "nameqa" with data:
+            | name        | networks      |
+            # skip, CLAUDIA-3673 (workaround below)
+            # | tiernameqa2 | netqa1,netqa2 |
+            | tiernameqa2 | netqa2,netqa3 |
+        When I request the list of tiers of the environment "nameqa"
+        Then I receive an "OK" response with "2" items in the list
+        And there is a tier in the list with data:
+            | name        | networks |
+            | tiernameqa1 | netqa1   |
+        And there is a tier in the list with data:
+            | name        | networks      |
+            # skip, CLAUDIA-3673 (workaround below)
+            # | tiernameqa2 | netqa1,netqa2 |
+            | tiernameqa2 | netqa2,netqa3 |
+
     Scenario: Get a list with many tiers with products and networks
         Given the paas manager is up and properly configured
         And an environment has already been created with data:

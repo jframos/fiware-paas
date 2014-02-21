@@ -70,7 +70,7 @@ def i_receive_a_response_of_type_with_the_previous_tiers_and_data(step, response
                                                        world.tiers)
 
 
-@step(u'I receive an? "([^"]*)" response')
+@step(u'I receive an? "([^"]*)" response$')
 def i_receive_a_response_of_type(step, response_type):
     status_code = http.status_codes[response_type]
     environment_request.check_get_environment_response(world.response, status_code)

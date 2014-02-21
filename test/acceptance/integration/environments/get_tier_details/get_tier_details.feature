@@ -2,7 +2,7 @@
 Feature: Get the details of a tier of an environment in a tenant
 
     As a fi-ware user
-    I want to be able to the details of a tier of an environments in a tenant
+    I want to be able to the details of a tier of an environment in a tenant
     so that I have access to its data
 
     @happy_path

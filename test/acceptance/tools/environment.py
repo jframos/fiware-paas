@@ -1,7 +1,6 @@
 __author__ = 'henar'
 
 from xml.etree.ElementTree import Element, SubElement
-from lettuce import world
 
 
 class Environment:
@@ -63,15 +62,3 @@ class Environment:
 
     def add_tiers(self, tiers):
         self.tiers.extend(tiers)
-
-
-def delete_created_environments():
-    """
-    Delete the environment created so far in the tests.
-    """
-    try:
-        while len(world.environments) > 0:
-            world.env_requests.delete_environment(world.environments[0])
-        del world.environments
-    except AttributeError:
-        pass

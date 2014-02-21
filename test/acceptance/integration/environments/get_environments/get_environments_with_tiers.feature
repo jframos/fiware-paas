@@ -137,7 +137,7 @@ Feature: Get the environments with tiers in a tenant
             | name    | description |
             | nameqa3 | descqa3     |
             
-    Scenario: Get a list with several environments with tiers with products and networks
+    Scenario: Get a list with several environments with tiers with products
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
             | name        | products |
@@ -146,26 +146,65 @@ Feature: Get the environments with tiers in a tenant
             | name    | description |
             | nameqa1 | descqa1     |
         And a list of tiers has been defined with data:
-            | name        | networks |
-            | tiernameqa2 | netqa1   |
+            | name        | products                 |
+            | tiernameqa2 | git=1.7,mediawiki=1.17.0 |
         And an environment has already been created with the previous tiers and data:
             | name    | description |
             | nameqa2 | descqa2     |
-        And a list of tiers has been defined with data:
-            | name        | products | networks |
-            | tiernameqa3 | git=1.7  | netqa2   |
-        And an environment has already been created with the previous tiers and data:
-            | name    | description |
-            | nameqa3 | descqa3     |
         When I request the list of existing environments
-        Then I receive an "OK" response with "3" items in the list
+        Then I receive an "OK" response with "2" items in the list
         And there is an environment in the list with "1" tier and data:
             | name    | description |
             | nameqa1 | descqa1     |
         And there is an environment in the list with "1" tier and data:
             | name    | description |
             | nameqa2 | descqa2     |
+            
+    Scenario: Get a list with several environments with tiers with networks
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name        | networks |
+            | tiernameqa1 | netqa1   |
+        And an environment has already been created with the previous tiers and data:
+            | name    | description |
+            | nameqa1 | descqa1     |
+        And a list of tiers has been defined with data:
+            | name        | networks |
+            # skip, CLAUDIA-3673 (workaround below)
+            # | tiernameqa2 | netqa1,netqa2 |
+            | tiernameqa2 | netqa2,netqa3 |
+        And an environment has already been created with the previous tiers and data:
+            | name    | description |
+            | nameqa2 | descqa2     |
+        When I request the list of existing environments
+        Then I receive an "OK" response with "2" items in the list
         And there is an environment in the list with "1" tier and data:
             | name    | description |
-            | nameqa3 | descqa3     |
+            | nameqa1 | descqa1     |
+        And there is an environment in the list with "1" tier and data:
+            | name    | description |
+            | nameqa2 | descqa2     |
+            
+    Scenario: Get a list with several environments with tiers with products and networks
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name        | products | networks |
+            | tiernameqa1 | git=1.7  | netqa1   |
+        And an environment has already been created with the previous tiers and data:
+            | name    | description |
+            | nameqa1 | descqa1     |
+        And a list of tiers has been defined with data:
+            | name        | products         | networks |
+            | tiernameqa2 | mediawiki=1.17.0 | netqa2   |
+        And an environment has already been created with the previous tiers and data:
+            | name    | description |
+            | nameqa2 | descqa2     |
+        When I request the list of existing environments
+        Then I receive an "OK" response with "2" items in the list
+        And there is an environment in the list with "1" tier and data:
+            | name    | description |
+            | nameqa1 | descqa1     |
+        And there is an environment in the list with "1" tier and data:
+            | name    | description |
+            | nameqa2 | descqa2     |
             

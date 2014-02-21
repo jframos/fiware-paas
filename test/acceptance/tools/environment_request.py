@@ -88,7 +88,7 @@ class EnvironmentRequest:
         try:
             world.abstract_environments.append(environment_name)
         except AttributeError:
-            world.instances = [environment_name]
+            world.abstract_environments = [environment_name]
 
     def add_environment(self, environment_name, environment_description, tiers=None):
         """
@@ -162,7 +162,7 @@ class EnvironmentRequest:
         url = "%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
                             "environment")
 
-        self.__get_environments(url)
+        world.response = self.__get_environments(url)
 
     def get_environments(self):
         """
@@ -172,6 +172,12 @@ class EnvironmentRequest:
                                   "vdc", self.vdc, "environment")
 
         world.response = self.__get_environments(url)
+
+    def get_abstract_environment(self, environment_name):
+        url = "%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                                     "environment", environment_name)
+
+        world.response = self.__get_environment(url)
 
     def get_environment(self, environment_name):
         """
@@ -209,17 +215,31 @@ class EnvironmentRequest:
         except AttributeError:
             world.tiers = [tier]
 
+    def delete_tier_abstract_environment(self, environment_name, tier_name):
+        url = "%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                                     "environment", environment_name, "tier", tier_name)
+
+        self.__delete_tier_environment(url)
+
     def delete_tier_environment(self, environment_name, tier_name):
         url = "%s/%s/%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
                                            "vdc", self.vdc, "environment", environment_name, "tier", tier_name)
 
         self.__delete_tier_environment(url)
 
-    def delete_tier_abstract_environment(self, environment_name, tier_name):
+    def update_tier_abstract_environment(self, environment_name, tier_name, tier):
+        """
+        Updates the tier with the name provided in the abstract environment
+        provided setting a new one.
+        :param environment_name: Name of the abstract environment.
+        :param tier_name: Name of the tier.
+        :param tier: New tier.
+        """
         url = "%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
                                      "environment", environment_name, "tier", tier_name)
 
-        self.__delete_tier_environment(url)
+        payload = tostring(tier.to_tier_xml())
+        world.response = self.__update_tier(url, payload)
 
     def update_tier_environment(self, environment_name, tier_name, tier):
         """
@@ -235,6 +255,16 @@ class EnvironmentRequest:
         payload = tostring(tier.to_tier_xml())
         world.response = self.__update_tier(url, payload)
 
+    def get_tiers_abstract_environment(self, environment_name):
+        """
+        Gets the tiers of the abstract environment provided.
+        :param environment_name: Name of the abstract environment.
+        """
+        url = "%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                                  "environment", environment_name, "tier")
+
+        world.response = self.__get_tiers_environment(url)
+
     def get_tiers_environment(self, environment_name):
         """
         Gets the tiers of the environment provided.
@@ -244,6 +274,17 @@ class EnvironmentRequest:
                                         "vdc", self.vdc, "environment", environment_name, "tier")
 
         world.response = self.__get_tiers_environment(url)
+
+    def get_tier_abstract_environment(self, environment_name, tier_name):
+        """
+        Gets the tier with the name provided of the abstract environment provided.
+        :param environment_name: Name of the abstract environment.
+        :param tier_name: Name of the tier.
+        """
+        url = "%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
+                                     "environment", environment_name, "tier", tier_name)
+
+        world.response = self.__get_tier_environment(url)
 
     def get_tier_environment(self, environment_name, tier_name):
         """
@@ -275,6 +316,30 @@ class EnvironmentRequest:
                                         "productRelease")
 
         self.__add_product_to_tier(url, products_information)
+
+
+def delete_created_environments():
+    """
+    Delete the environment created so far in the tests.
+    """
+    try:
+        while len(world.environments) > 0:
+            world.env_requests.delete_environment(world.environments[0])
+        del world.environments
+    except AttributeError:
+        pass
+
+
+def delete_created_abstract_environments():
+    """
+    Delete the abstract environment created so far in the tests.
+    """
+    try:
+        while len(world.abstract_environments) > 0:
+            world.env_requests.delete_abstract_environment(world.abstract_environments[0])
+        del world.abstract_environments
+    except AttributeError:
+        pass
 
 
 def process_environments(environments):
@@ -316,8 +381,8 @@ def check_add_environment_response(response, expected_status_code):
     :param expected_status_code: Expected status code of the response.
     """
     assert response.status == expected_status_code, \
-    "Wrong status code received: %d. Expected: %d. Body content: %s" \
-    % (response.status, expected_status_code, response.read())
+    "Wrong status code received: %d. Expected: %d" \
+    % (response.status, expected_status_code)
 
 
 def check_update_environment_response(response, expected_status_code):
@@ -367,9 +432,14 @@ def check_get_environments_response(response, expected_status_code,
             environments = data["environmentDto"]
             world.response.environments = process_environments(environments)
 
-            assert len(world.response.environments) == expected_environments_number, \
-            "Wrong number of envs received: %d. Expected: %d." \
-            % (len(world.response.environments), expected_environments_number)
+            if expected_environments_number == "+":  # The "+" wildcard is allowed
+                assert len(world.response.environments) > 0, \
+                "Wrong number of envs received: %d. Expected more than 0." \
+                % (len(world.response.environments))
+            else:
+                assert len(world.response.environments) == expected_environments_number, \
+                "Wrong number of envs received: %d. Expected: %d." \
+                % (len(world.response.environments), expected_environments_number)
 
 
 def check_environment_in_list(environments_list, environment_name,

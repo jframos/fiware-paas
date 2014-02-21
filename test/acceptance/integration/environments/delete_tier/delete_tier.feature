@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-Feature: Update a tier of an environment in a tenant
+Feature: Delete a tier from an environment in a tenant
 
     As a fi-ware user
-    I want to be able to update a tier of an environments in a tenant
-    so that I do not need to delete it and create it again when some change is needed
+    I want to be able to delete a tier from an environment in a tenant
+    so that I can keep the environment free of outdated tiers
 
     @happy_path
     Scenario: Delete tier from an environment

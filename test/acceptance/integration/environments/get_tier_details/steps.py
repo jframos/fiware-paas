@@ -50,7 +50,7 @@ def i_receive_a_response_of_type_with_data(step, response_type):
                                  data.get(NAME), products, networks)
 
 
-@step(u'I receive an? "([^"]*)" response')
+@step(u'I receive an? "([^"]*)" response$')
 def i_receive_a_response_of_type(step, response_type):
     status_code = http.status_codes[response_type]
     tier.check_get_tier_response(world.response, status_code)
