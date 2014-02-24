@@ -16,10 +16,12 @@
             response.setStatus(((APIException) throwable).getHttpCode());
         } else if (throwable instanceof ServletException) {
 
-            String cause = ((ServletException) throwable).getRootCause().getCause().toString();
+            Throwable throwable1 = ((ServletException) throwable).getRootCause();
+
+            String cause = throwable1 != null ? throwable1.getCause().toString() : throwable.toString();
             ErrorCode errorCode = ErrorCode.find(cause);
             code = errorCode.getCode();
-            String finalMessage = ((ServletException) throwable).getRootCause().getCause().getMessage();
+            String finalMessage = throwable1 != null ? throwable1.getCause().getMessage() : throwable.toString();
             message = errorCode.getPublicMessage() + "# " + finalMessage;
             response.setStatus(errorCode.getHttpCode());
 
