@@ -39,7 +39,7 @@ public class TierDto {
     private Integer minimumNumberInstances;
     private Integer initialNumberInstances;
 
-    private List<ProductReleaseDto> productReleaseDtos;
+    private List<ProductReleaseDto> productReleaseDto;
 
     private List<NetworkDto> networkDto;
 
@@ -55,7 +55,7 @@ public class TierDto {
      */
     public TierDto() {
         this.networkDto = new ArrayList<NetworkDto>();
-        this.productReleaseDtos = new ArrayList<ProductReleaseDto>();
+        this.productReleaseDto = new ArrayList<ProductReleaseDto>();
     }
 
     /**
@@ -75,7 +75,7 @@ public class TierDto {
         this.maximumNumberInstances = maximumNumberInstances;
         this.minimumNumberInstances = minimumNumberInstances;
         this.initialNumberInstances = initialNumberInstances;
-        this.productReleaseDtos = productReleaseDtos;
+        this.productReleaseDto = productReleaseDtos;
 
         this.networkDto = new ArrayList<NetworkDto>();
     }
@@ -103,7 +103,7 @@ public class TierDto {
         this.maximumNumberInstances = maximumNumberInstances;
         this.minimumNumberInstances = minimumNumberInstances;
         this.initialNumberInstances = initialNumberInstances;
-        this.productReleaseDtos = productReleaseDtos;
+        this.productReleaseDto = productReleaseDtos;
         this.flavour = flavour;
         this.image = image;
         this.icono = icono;
@@ -136,7 +136,7 @@ public class TierDto {
         this.maximumNumberInstances = maximumNumberInstances;
         this.minimumNumberInstances = minimumNumberInstances;
         this.initialNumberInstances = initialNumberInstances;
-        this.productReleaseDtos = productReleaseDtos;
+        this.productReleaseDto = productReleaseDtos;
         this.flavour = flavour;
         this.image = image;
         this.icono = icono;
@@ -166,10 +166,10 @@ public class TierDto {
      *            the product release to be added.
      */
     public void addProductRelease(ProductReleaseDto productReleaseDto) {
-        if (this.productReleaseDtos == null) {
-            productReleaseDtos = new ArrayList<ProductReleaseDto>();
+        if (this.productReleaseDto == null) {
+            productReleaseDto = new ArrayList<ProductReleaseDto>();
         }
-        productReleaseDtos.add(productReleaseDto);
+        productReleaseDto.add(productReleaseDto);
     }
 
     /**

@@ -28,7 +28,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class EnvironmentDto {
 
-    private Set<TierDto> tierDtos;
+    private Set<TierDto> tierDto;
     private String name;
     private String description;
     private String org;
@@ -44,8 +44,8 @@ public class EnvironmentDto {
      * @param tiers
      * @param name
      */
-    public EnvironmentDto(Set<TierDto> tierDtos, String name, String description) {
-        this.tierDtos = tierDtos;
+    public EnvironmentDto(Set<TierDto> tierDto, String name, String description) {
+        this.tierDto = tierDto;
         this.name = name;
         this.description = description;
     }
@@ -98,7 +98,7 @@ public class EnvironmentDto {
      * @return the tiers
      */
     public Set<TierDto> getTierDtos() {
-        return tierDtos;
+        return tierDto;
     }
 
     /**
@@ -136,8 +136,8 @@ public class EnvironmentDto {
      * @param tierDtos
      *            the tierDtos to set
      */
-    public void setTierDtos(Set<TierDto> tierDtos) {
-        this.tierDtos = tierDtos;
+    public void setTierDtos(Set<TierDto> tierDto) {
+        this.tierDto = tierDto;
     }
 
     /**
