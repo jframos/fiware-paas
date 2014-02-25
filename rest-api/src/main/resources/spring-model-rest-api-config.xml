@@ -111,6 +111,7 @@
         <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
         <property name="quotaClient" ref="quotaClient"/>
         <property name="tierResourceValidator" ref="tierResourceValidator"/>
+        <property name="resourceValidator" ref="resourceValidator"/>
 
     </bean>
 
@@ -119,6 +120,7 @@
         <property name="tierResourceValidator" ref="tierResourceValidator"/>
         <property name="environmentManager" ref="environmentManager"/>
         <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
+        <property name="resourceValidator" ref="resourceValidator"/>
 
     </bean>
 
@@ -133,9 +135,17 @@
         <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
         <property name="environmentManager" ref="environmentManager"/>
         <property name="quotaClient" ref="quotaClient"/>
+        <property name="resourceValidator" ref="resourceValidator"/>
+        
 
 
     </bean>
+    
+    <bean id="resourceValidator" lazy-init="true"
+          class="com.telefonica.euro_iaas.paasmanager.rest.validation.ResourceValidatorImpl">
+
+    </bean>
+    
 
     <!-- ===========
     == UTIL ==
