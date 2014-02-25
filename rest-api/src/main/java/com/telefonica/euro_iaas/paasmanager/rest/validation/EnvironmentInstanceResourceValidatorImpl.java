@@ -25,6 +25,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
 import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
@@ -54,6 +55,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
     private QuotaClient quotaClient;
     private ProductReleaseManager productReleaseManager;
+    private ResourceValidator resourceValidator;
 
     /** The log. */
     private static Logger log = Logger.getLogger(EnvironmentInstanceResourceValidatorImpl.class);
@@ -121,8 +123,13 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
             throw new InvalidEnvironmentRequestException("The environment to be deployed is null ");
         }
 
-        validateName (environmentInstanceDto.getBlueprintName());
-        validateDescription (environmentInstanceDto.getDescription());
+        try {
+			resourceValidator.validateName (environmentInstanceDto.getBlueprintName());
+			resourceValidator.validateDescription (environmentInstanceDto.getDescription());
+		} catch (InvalidEntityException e) {
+			throw new InvalidEnvironmentRequestException(e.getCause());
+		}
+        
         log.debug("Validate enviornment instance blueprint " + environmentInstanceDto.getBlueprintName()
                 + " description " + environmentInstanceDto.getDescription() + " environment "
                 + environmentInstanceDto.getEnvironmentDto());
@@ -254,53 +261,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
             }
         }
-    }
-    
-    private void validateName (String name)  throws InvalidEnvironmentRequestException{
-    	
-    	if (name == null) {
-    		throw new InvalidEnvironmentRequestException("The environment name is not valid. It is null");
-        }
-    	  
-    	/*Names with characters other than [a-z], [0-9] or "-" (hyphen)*/
-    	if (name.indexOf(".")!=-1 || name.indexOf("_") !=-1) {
-    		throw new InvalidEnvironmentRequestException("The environment name is not valid. There is a strange name");
-    	}
-    	/* Empty names ("")*/
-    	if (name.length()==0) {
-    		throw new InvalidEnvironmentRequestException("The environment name is not valid. It is empty");
-    	}
-    	
-    	/*Missing names (the name is not even present in the XML/JSON)*/
-    	
-    	/*Names with more than 30 characters (i.e. 31 or more)*/
-    	if (name.length()>=30) {
-    		throw new InvalidEnvironmentRequestException("The environment name is not valid. The name has mor than 30 characteres");
-    	}
-  
-    	
-    }
-    
-    private void validateDescription (String name)  throws InvalidEnvironmentRequestException{
-    	
-    	if (name == null) {
-    		throw new InvalidEnvironmentRequestException("The description is not valid. It is null");
-        }
-    	
-    	/* Empty descriptions ("")*/
-    	if (name.length()==0) {
-    		throw new InvalidEnvironmentRequestException("The environment description is not valid. It is empty");
-    	}
-    	
-    	/*Missing descriptions (the name is not even present in the XML/JSON)*/
-    	
-    	/*Descriptions with more than 256 characters (i.e. 257 or more))*/
-    	if (name.length()>=256) {
-    		throw new InvalidEnvironmentRequestException("The environment description  is not valid. The name has mor than 256 characteres");
-    	}
-  
-    	
-    }
+    }    
 
     /**
      * @param claudiaUtil
@@ -324,6 +285,10 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
     public void setQuotaClient(QuotaClient quotaClient) {
         this.quotaClient = quotaClient;
+    }
+    
+    public void setResourceValidator (ResourceValidator resourceValidator) {
+    	this.resourceValidator = resourceValidator;
     }
 
 }

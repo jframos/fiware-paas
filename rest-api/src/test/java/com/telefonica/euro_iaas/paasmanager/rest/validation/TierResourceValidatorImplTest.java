@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -47,13 +48,20 @@ public class TierResourceValidatorImplTest {
 	
 	TierResourceValidatorImpl tierResourceValidator ;
 	SystemPropertiesProvider systemPropertiesProvider;
+	ResourceValidator resourceValidator;
 	
 	@Before
-	public void setUp () throws EntityNotFoundException {
+	public void setUp () throws EntityNotFoundException, InvalidEntityException {
 		tierResourceValidator = new TierResourceValidatorImpl();
 		TierManager tierManager=mock(TierManager.class);
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         tierResourceValidator.setTierManager(tierManager);
+        
+		resourceValidator = mock(ResourceValidator.class);
+		tierResourceValidator.setResourceValidator(resourceValidator);
+  
+		Mockito.doNothing().when(resourceValidator).validateName(anyString());
+		Mockito.doNothing().when(resourceValidator).validateDescription(anyString());
 		
 	}
 

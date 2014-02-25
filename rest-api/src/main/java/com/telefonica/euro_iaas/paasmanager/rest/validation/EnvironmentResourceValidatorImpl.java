@@ -36,6 +36,7 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
     private TierResourceValidator tierResourceValidator;
     private EnvironmentManager environmentManager;
     private EnvironmentInstanceManager environmentInstanceManager;
+    private ResourceValidator resourceValidator;
 
     /*
      * (non-Javadoc)
@@ -53,8 +54,8 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
 
         } catch (EntityNotFoundException e1) {
 
-        	validateEnvironmentNames (environmentDto.getName());
-        	validateDescription (environmentDto.getDescription());
+        	resourceValidator.validateName(environmentDto.getName());
+        	resourceValidator.validateDescription(environmentDto.getDescription());
         }
 
 
@@ -92,52 +93,6 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
 
     }
     
-    private void validateEnvironmentNames (String name)  throws InvalidEnvironmentRequestException{
-    	if (name == null) {
-            throw new InvalidEnvironmentRequestException("The environment name is not valid. The environment name is null");
-        }
-    	
-    	/*Names with characters other than [a-z], [0-9] or "-" (hyphen)*/
-    	if (name.indexOf(".")!=-1 || name.indexOf("_") !=-1 || name.indexOf("-")!=-1) {
-    		throw new InvalidEnvironmentRequestException("The environment name is not valid. There is a strange name");
-    	}
-    	/* Empty names ("")*/
-    	if (name.length()==0) {
-    		throw new InvalidEnvironmentRequestException("The environment name is not valid. It is empty");
-    	}
-    	
-    	/*Missing names (the name is not even present in the XML/JSON)*/
-    	
-    	/*Names with more than 30 characters (i.e. 31 or more)*/
-    	if (name.length()>=30) {
-    		throw new InvalidEnvironmentRequestException("The environment name is not valid. The name has mor than 30 characteres");
-    	}
-  
-    	
-    }
-    
-    private void validateDescription (String name)  throws InvalidEnvironmentRequestException{
-    	
-    	if (name == null) {
-        
-            throw new InvalidEnvironmentRequestException("The environment description is not valid. The description is null");
-        }
-    	
-    	/* Empty descriptions ("")*/
-    	if (name.length()==0) {
-    		throw new InvalidEnvironmentRequestException("The environment description is not valid. It is empty");
-    	}
-    	
-    	/*Missing descriptions (the name is not even present in the XML/JSON)*/
-    	
-    	/*Descriptions with more than 256 characters (i.e. 257 or more))*/
-    	if (name.length()>=256) {
-    		throw new InvalidEnvironmentRequestException("The environment description  is not valid. The name has mor than 256 characteres");
-    	}
-  
-    	
-    }
-
     public void validateDelete(String environmentName, String vdc, SystemPropertiesProvider systemPropertiesProvider)
             throws EntityNotFoundException, InvalidEnvironmentRequestException {
         Environment environment = null;
@@ -187,6 +142,9 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
 
     public void setEnvironmentInstanceManager(EnvironmentInstanceManager environmentInstanceManager) {
         this.environmentInstanceManager = environmentInstanceManager;
+    }
+    public void setResourceValidator (ResourceValidator resourceValidator) {
+    	this.resourceValidator = resourceValidator;
     }
 
 }

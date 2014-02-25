@@ -7,57 +7,52 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
-import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
-import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
-import com.telefonica.euro_iaas.paasmanager.model.Metadata;
-import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
-import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
+
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
+/**
+ * Test class for validation of enviornment
+ * @author henar
+ *
+ */
 public class EnviornmentResourceValidatorImplTest {
 	EnvironmentResourceValidatorImpl environmentResourceValidator ;
 	EnvironmentManager environmentManager;
+	ResourceValidator resourceValidator;
 	SystemPropertiesProvider systemPropertiesProvider;
 	
 	@Before
-	public void setUp () throws EntityNotFoundException {
+	public void setUp () throws EntityNotFoundException, InvalidEntityException {
 		environmentResourceValidator = new EnvironmentResourceValidatorImpl();
+		resourceValidator = mock(ResourceValidator.class);
         EnvironmentManager environmentManager=mock(EnvironmentManager.class);
+        environmentResourceValidator.setResourceValidator(resourceValidator);
         EnvironmentDto envDto = new EnvironmentDto ();
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         when(environmentManager.load(anyString(),anyString())).thenThrow(new com.telefonica.euro_iaas.commons.dao.EntityNotFoundException(Environment.class, "dd", envDto.fromDto()));
         environmentResourceValidator.setEnvironmentManager(environmentManager);
-		
+		Mockito.doNothing().when(resourceValidator).validateName(anyString());
+		Mockito.doNothing().when(resourceValidator).validateDescription(anyString());
 	}
 
     @Test
@@ -74,110 +69,12 @@ public class EnviornmentResourceValidatorImplTest {
        
     }
     
-    public void shouldValidateNullNameEnvironment() throws AlreadyExistEntityException, InvalidEntityException {
-        // given
-         
-        EnvironmentDto envDto = new EnvironmentDto();
-        envDto.setDescription("description");
-        
-        ClaudiaData claudiaData = mock(ClaudiaData.class);
 
-        try {
-       	 environmentResourceValidator.validateCreate(claudiaData, envDto, "vdc", systemPropertiesProvider);
-       } catch (InvalidEnvironmentRequestException e) {
-           fail("should not fail because the name is null ");
-       }
-
-    }
     
 
-    public void shouldValidateNullDescriptionEnvironment() throws AlreadyExistEntityException, InvalidEntityException  {
-        // given
-         
-        EnvironmentDto envDto = new EnvironmentDto();
-        envDto.setName("name");
-        
-        ClaudiaData claudiaData = mock(ClaudiaData.class);
 
-        try {
-        	 environmentResourceValidator.validateCreate(claudiaData, envDto, "vdc", systemPropertiesProvider);
-        } catch (InvalidEnvironmentRequestException e) {
-            fail("should not fail because the descrption is null ");
-        }
-      
-    }
-    
-    public void shouldValidateEmptyDescriptionEnvironment() throws AlreadyExistEntityException, InvalidEntityException  {
-        // given
-         
-        EnvironmentDto envDto = new EnvironmentDto();
-        envDto.setName("name");
-        envDto.setDescription("");
-        
-        ClaudiaData claudiaData = mock(ClaudiaData.class);
-
-        try {
-        	 environmentResourceValidator.validateCreate(claudiaData, envDto, "vdc", systemPropertiesProvider);
-        } catch (InvalidEnvironmentRequestException e) {
-            fail("should not fail because the description is empty ");
-        }
-     
-    }
     
 
-    public void shouldValidateEmptyNameEnvironment() throws AlreadyExistEntityException, InvalidEntityException  {
-        // given
-         
-        EnvironmentDto envDto = new EnvironmentDto();
-        envDto.setName("");
-        envDto.setDescription("descrption");
-        
-        ClaudiaData claudiaData = mock(ClaudiaData.class);
-        try {
-        	 environmentResourceValidator.validateCreate(claudiaData, envDto, "vdc", systemPropertiesProvider);
-        } catch (InvalidEnvironmentRequestException e) {
-            fail("should not fail because the name is empty ");
-        }
-
-    }
-    
-
-    public void shouldValidateStrangeCharacteresEnvironment() throws AlreadyExistEntityException, 
-    InvalidEntityException  {
-        // given
-         
-        EnvironmentDto envDto = new EnvironmentDto();
-        envDto.setName("name.name");
-        envDto.setDescription("descrption");
-        
-        ClaudiaData claudiaData = mock(ClaudiaData.class);
-        try {
-        	 environmentResourceValidator.validateCreate(claudiaData, envDto, "vdc", systemPropertiesProvider);
-        } catch (InvalidEnvironmentRequestException e) {
-            fail("should not fail because there is a '.' in the name ");
-        }
-       
-     
-    }
-    
-    public void shouldValidateNameTooLong() throws AlreadyExistEntityException, 
-    InvalidEntityException  {
-        // given
-         
-        EnvironmentDto envDto = new EnvironmentDto();
-        envDto.setName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
-        		"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        envDto.setDescription("descrption");
-        
-        ClaudiaData claudiaData = mock(ClaudiaData.class);
-        try {
-        	 environmentResourceValidator.validateCreate(claudiaData, envDto, "vdc", systemPropertiesProvider);
-        } catch (InvalidEnvironmentRequestException e) {
-            fail("should not fail because the name is too long");
-        }
-       
-     
-    }
 
  
 }

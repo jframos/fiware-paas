@@ -47,6 +47,7 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
     private EnvironmentInstanceManager environmentInstanceManager;
     private EnvironmentManager environmentManager;
     private QuotaClient quotaClient;
+    private ResourceValidator resourceValidator;
 
     /*
      * (non-Javadoc)
@@ -57,11 +58,7 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
             SystemPropertiesProvider systemPropertiesProvider) throws InvalidEntityException,
             AlreadyExistEntityException, InfrastructureException, QuotaExceededException {
 
-        if (tierDto == null) {
-            log.error("Tier Name  is null");
-            throw new InvalidEntityException(tierDto, new Exception("Tier Name " + " is null"));
-        }
-
+       
         try {
             tierManager.load(tierDto.getName(), vdc, environmentName);
             log.error("The tier " + tierDto.getName() + " already exists in ");
@@ -85,7 +82,7 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
             log.error("Tier name is Null");
             throw new InvalidEntityException(tierDto, new Exception("Tier Name " + "from tierDto is null"));
         }
-        validateName (tierDto.getName());
+        resourceValidator.validateName (tierDto.getName());
 
         if (tierDto.getMaximumNumberInstances() == null || tierDto.getMinimumNumberInstances() == null
                 || tierDto.getInitialNumberInstances() == null) {
@@ -249,27 +246,7 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
         }
 
     }
-    
-    private void validateName (String name)  throws InvalidEntityException{
-    	/*Names with characters other than [a-z], [0-9] or "-" (hyphen)*/
-    	if (name.indexOf(".")!=-1 || name.indexOf("_") !=-1 || name.indexOf("-")!=-1) {
-    		throw new InvalidEntityException("The tier name is not valid. There is a strange name");
-    	}
-    	/* Empty names ("")*/
-    	if (name.length()==0) {
-    		throw new InvalidEntityException("The tier name is not valid. It is empty");
-    	}
-    	
-    	/*Missing names (the name is not even present in the XML/JSON)*/
-    	
-    	/*Names with more than 30 characters (i.e. 31 or more)*/
-    	if (name.length()>=30) {
-    		throw new InvalidEntityException("The tier name is not valid. The name has mor than 30 characteres");
-    	}
-  
-    	
-    }
-    
+        
     /**
      * Check all the dependencies for a product in a map of dependencies.
      * 
@@ -344,6 +321,9 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
     public void setQuotaClient(QuotaClient quotaClient) {
         this.quotaClient = quotaClient;
+    }
+    public void setResourceValidator (ResourceValidator resourceValidator) {
+    	this.resourceValidator = resourceValidator;
     }
 
 }
