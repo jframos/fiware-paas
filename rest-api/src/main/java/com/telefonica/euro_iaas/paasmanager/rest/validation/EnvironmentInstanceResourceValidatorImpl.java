@@ -114,23 +114,15 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
             SystemPropertiesProvider systemPropertiesProvider, ClaudiaData claudiaData)
             throws InvalidEnvironmentRequestException, QuotaExceededException {
 
-        if (environmentInstanceDto.getBlueprintName() == null) {
-            log.error("EnvironmentBlueprintName " + "from EnvironmentDto BlueprintName is null");
-            throw new InvalidEnvironmentRequestException("EnvironmentBlueprintName "
-                    + "from EnviromentDto BlueprintName is null");
-        }
-
-        if (environmentInstanceDto.getDescription() == null) {
-            log.error("EnvironmentDescription " + "from EnvironmentDto Description is null");
-            throw new InvalidEnvironmentRequestException("EnvironmentDescription "
-                    + "from EnviromentDto Description is null");
-        }
+    	
 
         if (environmentInstanceDto.getEnvironmentDto() == null) {
             log.error("The environment to be deployed is null ");
             throw new InvalidEnvironmentRequestException("The environment to be deployed is null ");
         }
 
+        validateName (environmentInstanceDto.getBlueprintName());
+        validateDescription (environmentInstanceDto.getDescription());
         log.debug("Validate enviornment instance blueprint " + environmentInstanceDto.getBlueprintName()
                 + " description " + environmentInstanceDto.getDescription() + " environment "
                 + environmentInstanceDto.getEnvironmentDto());
@@ -262,6 +254,52 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
             }
         }
+    }
+    
+    private void validateName (String name)  throws InvalidEnvironmentRequestException{
+    	
+    	if (name == null) {
+    		throw new InvalidEnvironmentRequestException("The environment name is not valid. It is null");
+        }
+    	  
+    	/*Names with characters other than [a-z], [0-9] or "-" (hyphen)*/
+    	if (name.indexOf(".")!=-1 || name.indexOf("_") !=-1) {
+    		throw new InvalidEnvironmentRequestException("The environment name is not valid. There is a strange name");
+    	}
+    	/* Empty names ("")*/
+    	if (name.length()==0) {
+    		throw new InvalidEnvironmentRequestException("The environment name is not valid. It is empty");
+    	}
+    	
+    	/*Missing names (the name is not even present in the XML/JSON)*/
+    	
+    	/*Names with more than 30 characters (i.e. 31 or more)*/
+    	if (name.length()>=30) {
+    		throw new InvalidEnvironmentRequestException("The environment name is not valid. The name has mor than 30 characteres");
+    	}
+  
+    	
+    }
+    
+    private void validateDescription (String name)  throws InvalidEnvironmentRequestException{
+    	
+    	if (name == null) {
+    		throw new InvalidEnvironmentRequestException("The description is not valid. It is null");
+        }
+    	
+    	/* Empty descriptions ("")*/
+    	if (name.length()==0) {
+    		throw new InvalidEnvironmentRequestException("The environment description is not valid. It is empty");
+    	}
+    	
+    	/*Missing descriptions (the name is not even present in the XML/JSON)*/
+    	
+    	/*Descriptions with more than 256 characters (i.e. 257 or more))*/
+    	if (name.length()>=256) {
+    		throw new InvalidEnvironmentRequestException("The environment description  is not valid. The name has mor than 256 characteres");
+    	}
+  
+    	
     }
 
     /**

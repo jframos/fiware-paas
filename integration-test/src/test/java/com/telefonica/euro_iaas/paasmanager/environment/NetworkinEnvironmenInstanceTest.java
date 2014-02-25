@@ -87,7 +87,7 @@ public class NetworkinEnvironmenInstanceTest {
         assertEquals(product.getVersion(), "7");
 
         Environment environmentBk = new Environment();
-        environmentBk.setName("testCreatedEnvirionmentInstance2");
+        environmentBk.setName("tCEI2");
         environmentBk.setDescription("Description First environment");
         Tier tierbk = new Tier("tierdtotest", new Integer(1), new Integer(1), new Integer(1), null);
         tierbk.setImage("image");
@@ -105,7 +105,7 @@ public class NetworkinEnvironmenInstanceTest {
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
 
-        Environment env2 = environmentManager.load("testCreatedEnvirionmentInstance2");
+        Environment env2 = environmentManager.load("tCEI2");
 
         EnvironmentInstanceDto envInst = new EnvironmentInstanceDto();
         envInst.setBlueprintName("blueprintname2");
@@ -121,7 +121,7 @@ public class NetworkinEnvironmenInstanceTest {
         EnvironmentInstance envInstResult = environmentInstanceManager.load(vdc, "blueprintname2");
         assertNotNull(envInstResult);
         assertEquals(envInstResult.getBlueprintName(), "blueprintname2");
-        assertEquals(envInstResult.getEnvironment().getName(), "testCreatedEnvirionmentInstance2");
+        assertEquals(envInstResult.getEnvironment().getName(), "tCEI2");
         assertEquals(envInstResult.getTierInstances().size(), 1);
 
         TierInstance tierInstance = tierInstanceManager.load("blueprintname2-tierdtotest-1");
@@ -149,7 +149,7 @@ public class NetworkinEnvironmenInstanceTest {
         assertEquals(product.getVersion(), "7");
 
         Environment environmentBk = new Environment();
-        environmentBk.setName("testDeleteEnvirionmentInstance2");
+        environmentBk.setName("tDeleteEnvInst2");
         environmentBk.setDescription("Description First environment");
         Tier tierbk = new Tier("tierdtotest", new Integer(1), new Integer(1), new Integer(1), null);
         tierbk.setImage("image");
@@ -181,7 +181,7 @@ public class NetworkinEnvironmenInstanceTest {
         EnvironmentInstance envInstResult = environmentInstanceManager.load(vdc, "blueprintnamedelete");
         assertNotNull(envInstResult);
         assertEquals(envInstResult.getBlueprintName(), "blueprintnamedelete");
-        assertEquals(envInstResult.getEnvironment().getName(), "testDeleteEnvirionmentInstance2");
+        assertEquals(envInstResult.getEnvironment().getName(), "tDeleteEnvInst2");
         assertEquals(envInstResult.getTierInstances().size(), 1);
 
         environmentInstanceResource.destroy(org, vdc, "blueprintnamedelete", "");
@@ -251,7 +251,7 @@ public class NetworkinEnvironmenInstanceTest {
         assertEquals(product.getVersion(), "7");
 
         Environment environmentBk = new Environment();
-        environmentBk.setName("testNetworkAlreadyExistDifferentSubnet");
+        environmentBk.setName("tNAEDS");
         environmentBk.setDescription("Description First environment");
         Tier tierbk = new Tier("tierdtotest", new Integer(1), new Integer(1), new Integer(1), null);
         tierbk.setImage("image");
@@ -271,7 +271,7 @@ public class NetworkinEnvironmenInstanceTest {
         environmentResource.insert(org, vdc, environmentBk.toDto());
 
         Environment environmentAlreadyNetwork = new Environment();
-        environmentAlreadyNetwork.setName("testNetworkAlreadyExistDifferentSubnet2");
+        environmentAlreadyNetwork.setName("tNAEDS2");
         environmentAlreadyNetwork.setDescription("Description First environment");
 
         SubNetwork subNet = new SubNetwork("subnet");
@@ -285,7 +285,7 @@ public class NetworkinEnvironmenInstanceTest {
 
         environmentResource.insert(org, vdc, environmentAlreadyNetwork.toDto());
 
-        Environment env2 = environmentManager.load("testNetworkAlreadyExistDifferentSubnet2");
+        Environment env2 = environmentManager.load("tNAEDS2");
         assertNotNull(env2);
         for (Tier tier : env2.getTiers()) {
             assertNotNull(tier.getNetworks());

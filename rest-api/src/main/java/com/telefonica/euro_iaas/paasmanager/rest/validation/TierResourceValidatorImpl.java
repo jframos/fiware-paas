@@ -78,11 +78,15 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
     private void validateCreateTier(ClaudiaData claudiaData, TierDto tierDto,
             SystemPropertiesProvider systemPropertiesProvider) throws InvalidEntityException, InfrastructureException,
             QuotaExceededException {
+    	
+    	
         String system = systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
         if (tierDto.getName() == null) {
             log.error("Tier name is Null");
             throw new InvalidEntityException(tierDto, new Exception("Tier Name " + "from tierDto is null"));
         }
+        validateName (tierDto.getName());
+
         if (tierDto.getMaximumNumberInstances() == null || tierDto.getMinimumNumberInstances() == null
                 || tierDto.getInitialNumberInstances() == null) {
             log.error("Number initial, maximun o minimul from tierDto " + tierDto.getName() + " is null");
@@ -245,7 +249,27 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
         }
 
     }
-
+    
+    private void validateName (String name)  throws InvalidEntityException{
+    	/*Names with characters other than [a-z], [0-9] or "-" (hyphen)*/
+    	if (name.indexOf(".")!=-1 || name.indexOf("_") !=-1 || name.indexOf("-")!=-1) {
+    		throw new InvalidEntityException("The tier name is not valid. There is a strange name");
+    	}
+    	/* Empty names ("")*/
+    	if (name.length()==0) {
+    		throw new InvalidEntityException("The tier name is not valid. It is empty");
+    	}
+    	
+    	/*Missing names (the name is not even present in the XML/JSON)*/
+    	
+    	/*Names with more than 30 characters (i.e. 31 or more)*/
+    	if (name.length()>=30) {
+    		throw new InvalidEntityException("The tier name is not valid. The name has mor than 30 characteres");
+    	}
+  
+    	
+    }
+    
     /**
      * Check all the dependencies for a product in a map of dependencies.
      * 
