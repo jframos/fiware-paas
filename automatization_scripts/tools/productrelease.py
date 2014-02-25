@@ -91,7 +91,7 @@ class ProductRelease:
 
     def to_product_xml_env (self):
 
-        product = Element('productReleaseDtos')
+        product = Element('productReleaseDto')
         name = SubElement(product, 'productName')
         name.text = self.product
         version = SubElement(product, 'version')

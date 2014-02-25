@@ -36,7 +36,7 @@ public class EnvironmentInstanceDto {
 
     private EnvironmentDto environmentDto;
 
-    private List<TierInstanceDto> tierInstanceDtos;
+    private List<TierInstanceDto> tierInstanceDto;
 
     private Set<Attribute> attributes;
 
@@ -53,10 +53,10 @@ public class EnvironmentInstanceDto {
      * @param tierInstances
      */
     public EnvironmentInstanceDto(String environmentInstanceName, EnvironmentDto environmentDto,
-            List<TierInstanceDto> tierInstanceDtos, String vdc) {
+            List<TierInstanceDto> tierInstanceDto, String vdc) {
         this.environmentInstanceName = environmentInstanceName;
         this.environmentDto = environmentDto;
-        this.tierInstanceDtos = tierInstanceDtos;
+        this.tierInstanceDto = tierInstanceDto;
         this.vdc = vdc;
     }
 
@@ -118,7 +118,7 @@ public class EnvironmentInstanceDto {
      * @return the tierInstances
      */
     public List<TierInstanceDto> getTierInstances() {
-        return tierInstanceDtos;
+        return tierInstanceDto;
     }
 
     /**
@@ -169,8 +169,8 @@ public class EnvironmentInstanceDto {
      * @param tierInstanceDtos
      *            the tierInstances to set
      */
-    public void setTierInstances(List<TierInstanceDto> tierInstanceDtos) {
-        this.tierInstanceDtos = tierInstanceDtos;
+    public void setTierInstances(List<TierInstanceDto> tierInstanceDto) {
+        this.tierInstanceDto = tierInstanceDto;
     }
 
     /**

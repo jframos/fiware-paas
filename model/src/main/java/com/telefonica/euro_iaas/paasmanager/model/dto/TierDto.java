@@ -165,11 +165,11 @@ public class TierDto {
      * @param productReleaseDto
      *            the product release to be added.
      */
-    public void addProductRelease(ProductReleaseDto productReleaseDto) {
+    public void addProductRelease(ProductReleaseDto productReleasedto) {
         if (this.productReleaseDto == null) {
-            productReleaseDto = new ArrayList<ProductReleaseDto>();
+            this.productReleaseDto = new ArrayList<ProductReleaseDto>();
         }
-        productReleaseDto.add(productReleaseDto);
+        this.productReleaseDto.add(productReleasedto);
     }
 
     /**
@@ -276,10 +276,10 @@ public class TierDto {
      * @return the productReleases
      */
     public List<ProductReleaseDto> getProductReleaseDtos() {
-        if (productReleaseDtos == null) {
-            this.productReleaseDtos = new ArrayList<ProductReleaseDto>();
+        if (this.productReleaseDto == null) {
+            this.productReleaseDto = new ArrayList<ProductReleaseDto>();
         }
-        return productReleaseDtos;
+        return productReleaseDto;
     }
 
     /**
@@ -298,7 +298,7 @@ public class TierDto {
      */
     public void removeProductRelease(ProductReleaseDto productReleaseDto) {
 
-        productReleaseDtos.remove(productReleaseDto);
+        this.productReleaseDto.remove(productReleaseDto);
     }
 
     /**
@@ -369,8 +369,8 @@ public class TierDto {
      * @param productReleaseDtos
      *            the productReleases to set
      */
-    public void setProductReleaseDtos(List<ProductReleaseDto> productReleaseDtos) {
-        this.productReleaseDtos = productReleaseDtos;
+    public void setProductReleaseDtos(List<ProductReleaseDto> productReleaseDto) {
+        this.productReleaseDto = productReleaseDto;
     }
 
     /**

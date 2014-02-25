@@ -27,7 +27,7 @@ public class TierInstancePDto {
     private Status status;
     private String taskId;
 
-    private List<ProductInstanceDto> productInstanceDtos;
+    private List<ProductInstanceDto> productInstanceDto;
     private VMDto vm;
 
     /**
@@ -45,18 +45,18 @@ public class TierInstancePDto {
      * @param status
      * @param taskId
      */
-    public TierInstancePDto(String tierInstanceName, List<ProductInstanceDto> productInstanceDtos, VMDto vm,
+    public TierInstancePDto(String tierInstanceName, List<ProductInstanceDto> productInstanceDto, VMDto vm,
             Status status, String taskId) {
 
         this.tierInstanceName = tierInstanceName;
-        this.productInstanceDtos = productInstanceDtos;
+        this.productInstanceDto = productInstanceDto;
         this.vm = vm;
         this.status = status;
         this.taskId = taskId;
     }
 
     public List<ProductInstanceDto> getProductInstanceDtos() {
-        return productInstanceDtos;
+        return productInstanceDto;
     }
 
     public Status getStatus() {
@@ -71,8 +71,8 @@ public class TierInstancePDto {
         return this.vm;
     }
 
-    public void setProductInstanceDtos(List<ProductInstanceDto> productInstanceDtos) {
-        this.productInstanceDtos = productInstanceDtos;
+    public void setProductInstanceDtos(List<ProductInstanceDto> productInstanceDto) {
+        this.productInstanceDto = productInstanceDto;
     }
 
     public void setStatus(Status status) {

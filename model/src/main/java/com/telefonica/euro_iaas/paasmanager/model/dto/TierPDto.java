@@ -32,7 +32,7 @@ public class TierPDto {
     private Integer minimumNumberInstances;
     private Integer initialNumberInstances;
 
-    private List<ProductReleaseDto> productReleaseDtos;
+    private List<ProductReleaseDto> productReleaseDto;
 
     private String icono;
     private String security_group;
@@ -58,7 +58,7 @@ public class TierPDto {
         this.maximumNumberInstances = maximumNumberInstances;
         this.minimumNumberInstances = minimumNumberInstances;
         this.initialNumberInstances = initialNumberInstances;
-        this.productReleaseDtos = productReleaseDtos;
+        this.productReleaseDto = productReleaseDtos;
         this.flavour = flavour;
         this.image = image;
         this.icono = icono;
@@ -99,7 +99,7 @@ public class TierPDto {
      * @return the productReleases
      */
     public List<ProductReleaseDto> getProductReleaseDtos() {
-        return productReleaseDtos;
+        return productReleaseDto;
     }
 
     /**
@@ -159,19 +159,19 @@ public class TierPDto {
      *            the productReleases to set
      */
     public void setProductReleaseDtos(List<ProductReleaseDto> productReleaseDtos) {
-        this.productReleaseDtos = productReleaseDtos;
+        this.productReleaseDto = productReleaseDtos;
     }
 
     public void addProductRelease(ProductReleaseDto productReleaseDto) {
-        if (this.productReleaseDtos == null)
-            productReleaseDtos = new ArrayList();
+        if (this.productReleaseDto == null)
+            this.productReleaseDto = new ArrayList<ProductReleaseDto>();
 
-        productReleaseDtos.add(productReleaseDto);
+        this.productReleaseDto.add(productReleaseDto);
     }
 
     public void removeProductRelease(ProductReleaseDto productReleaseDto) {
 
-        productReleaseDtos.remove(productReleaseDto);
+        this.productReleaseDto.remove(productReleaseDto);
     }
 
     public void setTierInstances(List<TierInstancePDto> tierInstancePDto) {

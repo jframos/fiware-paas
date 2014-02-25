@@ -77,7 +77,7 @@ class Tier:
         return tier_dtos
 
     def to_xml(self):
-        tier_dtos = Element("tierDtos")
+        tier_dtos = Element("tierDto")
         min_num_inst = SubElement(tier_dtos, "minimumNumberInstances")
         min_num_inst.text = self.tier_num_min
         ini_num_inst = SubElement(tier_dtos, "initialNumberInstances")
