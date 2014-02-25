@@ -38,7 +38,7 @@ def there_is_no_environment_with_name_already_created(step, name):
 @step(u'I request the addition of a tier to the environment "([^"]*)" with data:')
 def i_request_the_addition_of_a_tier_to_environment_with_data(step, env_name):
     data = dataset_utils.prepare_data(step.hashes[0])
-    tier = Tier(data.get(NAME), world.config['paas']['image'])
+    tier = Tier(data.get(NAME), world.config['paas']['tier_image'])
     tier.parse_and_add_products(data.get(PRODUCTS))
     tier.parse_and_add_networks(data.get(NETWORKS))
     world.env_requests.add_tier_environment(env_name, tier)

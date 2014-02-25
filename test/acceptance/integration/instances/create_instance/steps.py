@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from lettuce import step, world
 from tdaf_lettuce_tools.dataset_utils.dataset_utils import DatasetUtils
-from tools import http
-from tools import environment_request
+from tools import http, environment_request, environment_instance_request
 from tools.tier import Tier
+from tools.environment_instance import EnvironmentInstance
+import json
+import time
 
 dataset_utils = DatasetUtils()
 
@@ -40,6 +42,9 @@ def an_environment_has_already_been_created_with_data(step):
 def an_environment_has_already_been_created_with_the_previous_tiers_and_data(step):
     data = dataset_utils.prepare_data(step.hashes[0])
     world.env_requests.add_environment(data.get(NAME), data.get(DESCRIPTION), world.tiers)
+    assert world.response.status == 204, \
+    "Wrong status code received creating environment: %d. Expected: %d. Body content: %s" \
+    % (world.response.status, 204, world.response.read())
 
 
 @step(u'there is no environment with name "([^"]*)" already created')
@@ -47,30 +52,32 @@ def there_is_no_environment_with_name_already_created(step, name):
     world.env_requests.delete_environment(name)  # Just in case it exists
 
 
-@step(u'I request the details of the environment with name "([^"]*)"')
-def i_request_the_list_of_existing_environments(step, name):
-    name = dataset_utils.generate_fixed_length_param(name)
-    world.env_requests.get_environment(name)
+@step(u'an instance of the environment "([^"]*)" has already been created using data:')
+def an_instance_of_the_environment_has_already_been_created_using_data(step, env_name):
+    i_request_the_creation_of_an_instance_of_an_environment_using_data(step, env_name)
 
 
-@step(u'I receive an? "([^"]*)" response with data:')
-def i_receive_a_response_of_type_with_data(step, response_type):
-    status_code = http.status_codes[response_type]
+@step(u'I request the creation of an instance of the environment "([^"]*)" using data:')
+def i_request_the_creation_of_an_instance_of_an_environment_using_data(step, env_name):
+    # First, send the request to get the environment on which the instance will be based
+    env_name = dataset_utils.generate_fixed_length_param(env_name)
+    world.env_requests.get_environment(env_name)
+    assert world.response.status == 200, \
+    "Wrong status code received getting environment: %d. Expected: %d. Body content: %s" \
+    % (world.response.status, 200, world.response.read())
+    environment = environment_request.process_environment(json.loads(world.response.read()))
+    # Then, create the instance
     data = dataset_utils.prepare_data(step.hashes[0])
-    environment_request.check_get_environment_response(world.response, status_code,
-                                                       data.get(NAME), data.get(DESCRIPTION))
+    instance = EnvironmentInstance(data.get(NAME), data.get(DESCRIPTION), environment)
+    world.inst_requests.add_instance(instance)
 
 
-@step(u'I receive an? "([^"]*)" response with the previous tiers and data:')
-def i_receive_a_response_of_type_with_the_previous_tiers_and_data(step, response_type):
-    status_code = http.status_codes[response_type]
-    data = dataset_utils.prepare_data(step.hashes[0])
-    environment_request.check_get_environment_response(world.response, status_code,
-                                                       data.get(NAME), data.get(DESCRIPTION),
-                                                       world.tiers)
-
-
-@step(u'I receive an? "([^"]*)" response$')
+@step(u'I receive an? "([^"]*)" response(?: with a task)?')
 def i_receive_a_response_of_type(step, response_type):
     status_code = http.status_codes[response_type]
-    environment_request.check_get_environment_response(world.response, status_code)
+    environment_instance_request.check_add_instance_response(world.response, status_code)
+
+
+@step(u'the task ends with "([^"]*)" status')
+def the_task_ends_with_status(step, status):
+    environment_instance_request.check_task_status(world.task_data, status)

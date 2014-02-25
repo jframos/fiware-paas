@@ -24,7 +24,7 @@ def a_list_of_tiers_has_been_defined_with_data(step):
     world.tiers = []
     for row in step.hashes:
         data = dataset_utils.prepare_data(row)
-        tier = Tier(data.get(NAME), world.config['paas']['image'])
+        tier = Tier(data.get(NAME), world.config['paas']['tier_image'])
         tier.parse_and_add_products(data.get(PRODUCTS))
         tier.parse_and_add_networks(data.get(NETWORKS))
         world.tiers.append(tier)

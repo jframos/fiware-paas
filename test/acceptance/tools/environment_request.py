@@ -375,19 +375,19 @@ def process_environment(environment):
 
 def check_add_environment_response(response, expected_status_code):
     """
-    Checks that the response for an add environment request is the
+    Check that the response for an add environment request is the
     expected one.
     :param response: Response to be checked.
     :param expected_status_code: Expected status code of the response.
     """
     assert response.status == expected_status_code, \
-    "Wrong status code received: %d. Expected: %d" \
-    % (response.status, expected_status_code)
+    "Wrong status code received: %d. Expected: %d. Body content: %s" \
+    % (response.status, expected_status_code, response.read())
 
 
 def check_update_environment_response(response, expected_status_code):
     """
-    Checks that the response for an update environment request is the
+    Check that the response for an update environment request is the
     expected one.
     :param response: Response to be checked.
     :param expected_status_code: Expected status code of the response.
@@ -399,7 +399,7 @@ def check_update_environment_response(response, expected_status_code):
 
 def check_delete_environment_response(response, expected_status_code):
     """
-    Checks that the response for a delete environment request is the
+    Check that the response for a delete environment request is the
     expected one.
     :param response: Response to be checked.
     :param expected_status_code: Expected status code of the response.
@@ -412,7 +412,7 @@ def check_delete_environment_response(response, expected_status_code):
 def check_get_environments_response(response, expected_status_code,
                                    expected_environments_number=None):
     """
-    Checks that the response for a get environments request is the
+    Check that the response for a get environments request is the
     expected one.
     :param response: Response to be checked.
     :param expected_status_code: Expected status code of the response.
@@ -445,10 +445,11 @@ def check_get_environments_response(response, expected_status_code,
 def check_environment_in_list(environments_list, environment_name,
                               environment_description, tiers_number=0):
     """
-    Checks that a certain environment is in the list of environments provided.
+    Check that a certain environment is in the list of environments provided.
     :param environments_list: List of environments to be checked.
     :param environment_name: Name of the environment to be found.
     :param environment_description: Description of the environment to be found.
+    :param tiers_number: Number of tiers of the environment to be found.
     """
     for env in environments_list:
         if env.name == environment_name:  # Expected environment found
@@ -466,41 +467,40 @@ def check_environment_in_list(environments_list, environment_name,
 
 
 def check_get_environment_response(response, expected_status_code,
-                                   expected_environments_name=None,
-                                   expected_environments_description=None,
-                                   expected_environments_tiers=None):
+                                   expected_environment_name=None,
+                                   expected_environment_description=None,
+                                   expected_environment_tiers=None):
     """
-    Checks that the response for a get environments request is the
+    Check that the response for a get environment request is the
     expected one.
     :param response: Response to be checked.
     :param expected_status_code: Expected status code of the response.
-    :param expected_environments_name: Expected name of the environment.
-    :param expected_environments_description: Expected description of the environment.
-    :param expected_environments_tiers: Expected tiers of the environment.
+    :param expected_environment_name: Expected name of the environment.
+    :param expected_environment_description: Expected description of the environment.
+    :param expected_environment_tiers: Expected tiers of the environment.
     """
     assert response.status == expected_status_code, \
     "Wrong status code received: %d. Expected: %d. Body content: %s" \
     % (response.status, expected_status_code, response.read())
 
-    if expected_environments_name is not None:
-        data = json.loads(response.read())
-        environment = process_environment(data)
+    if expected_environment_name is not None:
+        environment = process_environment(json.loads(response.read()))
 
-        assert environment.name == expected_environments_name, \
+        assert environment.name == expected_environment_name, \
         "Wrong name received: %s. Expected: %s." \
-        % (environment.name, expected_environments_name)
+        % (environment.name, expected_environment_name)
 
-    if expected_environments_description is not None:
-        assert environment.description == expected_environments_description, \
+    if expected_environment_description is not None:
+        assert environment.description == expected_environment_description, \
         "Wrong description received: %s. Expected: %s." \
-        % (environment.description, expected_environments_description)
+        % (environment.description, expected_environment_description)
 
-    if expected_environments_tiers is not None:
-        assert len(environment.tiers) == len(expected_environments_tiers), \
+    if expected_environment_tiers is not None:
+        assert len(environment.tiers) == len(expected_environment_tiers), \
         "Wrong number of tiers received: %d. Expected: %d." \
-        % (len(environment.tiers), len(expected_environments_tiers))
+        % (len(environment.tiers), len(expected_environment_tiers))
 
-        for expected_tier in expected_environments_tiers:
+        for expected_tier in expected_environment_tiers:
             # Find the tier that matches each of the expected ones and compare
             received_tier = None
             for tier in environment.tiers:

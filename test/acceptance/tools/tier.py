@@ -24,8 +24,13 @@ class Network:
 
 
 class Tier:
-    def __init__(self, tier_name, tier_image, tier_num_min='1', tier_num_max='1', tier_num_initial='1',
-                 tier_flavour='2', tier_keypair='pge354_keypair', tier_floatingip='false'):
+    def __init__(self, tier_name, tier_image,
+                 tier_num_min=world.config['paas']['tier_num_min'],
+                 tier_num_max=world.config['paas']['tier_num_max'],
+                 tier_num_initial=world.config['paas']['tier_num_initial'],
+                 tier_flavour=world.config['paas']['tier_flavour'],
+                 tier_keypair=world.config['paas']['tier_keypair'],
+                 tier_floatingip=world.config['paas']['tier_floatingip']):
         self.name = tier_name
         self.tier_num_min = tier_num_min
         self.tier_num_max = tier_num_max
@@ -164,7 +169,7 @@ def process_tier(tier):
     :param tiers: tier to be processed.
     :return: a Tier object.
     """
-    processed_tier = Tier(tier['name'], world.config['paas']['image'])
+    processed_tier = Tier(tier['name'], world.config['paas']['tier_image'])
 
     try:
         product_dtos = tier['productReleaseDtos']

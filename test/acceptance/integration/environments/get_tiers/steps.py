@@ -28,7 +28,7 @@ def an_environment_has_already_been_created_with_data(step):
 @step(u'a tier has already been added to the environment "([^"]*)" with data:')
 def a_tier_has_already_been_added_to_environment_with_data(step, env_name):
     data = dataset_utils.prepare_data(step.hashes[0])
-    tier = Tier(data.get(NAME), world.config['paas']['image'])
+    tier = Tier(data.get(NAME), world.config['paas']['tier_image'])
     tier.parse_and_add_products(data.get(PRODUCTS))
     tier.parse_and_add_networks(data.get(NETWORKS))
     world.env_requests.add_tier_environment(env_name, tier)

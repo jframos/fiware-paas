@@ -14,8 +14,8 @@ class EnvironmentInstance:
     def add_environment(self, environment):
         self.environment = environment
 
-    def get_tier_environment(self, environment):
-        self.environment = environment
+    def get_environment(self):
+        return self.environment
 
     def to_xml(self):
         blueprint_dto = Element('environmentInstanceDto')

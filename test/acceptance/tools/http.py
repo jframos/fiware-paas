@@ -1,7 +1,8 @@
 import urllib
+import time
 __author__ = 'henar'
 import httplib
-from xml.dom.minidom import parse, parseString
+from xml.dom.minidom import parseString
 from urlparse import urlparse
 import sys
 import json
@@ -11,6 +12,7 @@ status_codes = {"OK": 200,
                 "No Content": 204,
                 "Bad Request": 400,
                 "Not Found": 404,
+                "Conflict": 409,
                 "Internal Server Error": 500}
 
 
@@ -93,60 +95,50 @@ def get_token(keystone_url, tenant, user, password):
 
     # url="%s/%s" %(keystone_url,"v2.0/tokens")
     #print keystone_url
-    headers={'Content-Type': 'application/json',
-             'Accept': "application/xml"}
-    payload='{"auth":{"tenantName":"'+tenant+'","passwordCredentials":{"username":"'+user+'","password":"'+password+'"}}}'
-    #print payload
-    response=post(keystone_url, headers, payload)
+    headers = {'Content-Type': 'application/json',
+               'Accept': "application/xml"}
+    payload = {"auth": {"tenantName": tenant, "passwordCredentials": {"username": user, "password": password}}}
+
+    #print json.dumps(payload)
+    response = post(keystone_url, headers, json.dumps(payload))
     data = response.read()
 
     ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
-    if response.status!=200:
-        print 'error to obtain the token ' + str (response.status)
+    if response.status != 200:
+        print 'error to obtain the token ' + str(response.status)
         sys.exit(1)
     else:
-
         dom = parseString(data)
         try:
             result = (dom.getElementsByTagName('token'))[0]
-            var= result.attributes["id"].value
+            var = result.attributes["id"].value
 
             return var
         except:
-            print ("Error in the processing enviroment")
+            print ("Error in the processing environment")
             sys.exit(1)
 
 
-def processTask(headers,taskdom):
+def wait_for_task(task_data, headers):
     try:
-        print taskdom
-        href = taskdom["@href"]
-        status = taskdom["@status"]
-        while status == 'RUNNING':
-            data1 = get_task (href,headers)
-            data = json.loads (data1)
-            status = data["@status"]
-
-        if status == 'ERROR':
-            error = taskdom["error"]
-            message = error["message"]
-            majorErrorCode = error["majorErrorCode"]
-            print "ERROR : " + message + " " + majorErrorCode
-        return status
+        href = task_data["@href"]
+        status = task_data["@status"]
     except:
-        print "Unexpected error:", sys.exc_info()[0]
-        sys.exit(1)
+        assert False, "No task information received: %s" % (task_data)
+
+    while status == 'RUNNING':
+        time.sleep(5)
+        task_data = json.loads(get_task_data(href, headers))
+        status = task_data["@status"]
+
+    return task_data
 
 
-def get_task(url, headers):
+def get_task_data(url, headers):
 
-# url="%s/%s" %(keystone_url,"v2.0/tokens")
-    response=get(url, headers)
+    response = get(url, headers)
 
-    ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
-    if response.status!=200:
-        print 'error to obtain the token ' + str (response.status)
-        sys.exit(1)
-    else:
-        data = response.read()
-        return data
+    assert response.status == 200, \
+    'Unexpected status code getting the task data: %d' % (response.status)
+
+    return response.read()
