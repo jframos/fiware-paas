@@ -220,8 +220,12 @@ public class TierManagerImpl implements TierManager {
         for (Network net : netsAux) {
             tier.deleteNetwork(net);
             tierDao.update(tier);
-            log.debug("Deleting network " + net.getNetworkName());
-            networkManager.delete(net);
+            if (isAvailableToBeDeleted (net)) {
+            	log.debug("Deleting network " + net.getNetworkName());
+            	networkManager.delete(net);
+            }
+           
+            
         }
 
         try {
@@ -236,7 +240,16 @@ public class TierManagerImpl implements TierManager {
 
     }
 
-    public List<Tier> findAll() {
+    private boolean isAvailableToBeDeleted(Network net) {
+    	try {
+			tierDao.findAllWithNetwork (net.getNetworkName());
+			return false;
+		} catch (EntityNotFoundException e) {
+			return true;
+		}
+	}
+
+	public List<Tier> findAll() {
         return tierDao.findAll();
     }
 
