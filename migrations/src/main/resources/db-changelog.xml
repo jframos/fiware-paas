@@ -370,4 +370,15 @@
             <column name="tiername" type="varchar(255)"/>
         </addColumn>
     </changeSet>
+     <!-- Change that corrresponds toug/CLAUDIA3663-Invalidnamesforenvironmentandtiers -->
+     <changeSet author="henar (generated)" id="2-2">
+         <update tableName="environmentinstance">
+             <column name="description" type="VARCHAR(256)">
+                  <constraints nullable="false"/>
+             </column>
+             <column name="blueprintname" type="VARCHAR(256)">
+                  <constraints nullable="false"/>
+             </column>
+        </update>
+     </changeSet>
 </databaseChangeLog>
