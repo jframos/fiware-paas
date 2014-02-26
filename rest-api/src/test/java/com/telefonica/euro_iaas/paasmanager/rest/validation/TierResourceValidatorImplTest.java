@@ -33,7 +33,6 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 
@@ -224,7 +223,7 @@ public class TierResourceValidatorImplTest {
     }
 
     @Test
-    public void shouldValidateATierDependencies() throws EntityNotFoundException, InvalidEnvironmentRequestException {
+    public void shouldValidateATierDependencies() throws EntityNotFoundException, InvalidEntityException {
         // given
         TierResourceValidatorImpl tierResourceValidator = new TierResourceValidatorImpl();
         Set<TierDto> tierDTOlist = new HashSet<TierDto>(2);
@@ -244,9 +243,9 @@ public class TierResourceValidatorImplTest {
         // then
     }
 
-    @Test(expected = InvalidEnvironmentRequestException.class)
-    public void shouldThrowExceptionInValidateATierWithDependencyThatNotExist() throws EntityNotFoundException,
-            InvalidEnvironmentRequestException {
+    @Test(expected = InvalidEntityException.class)
+    public void shouldThrowExceptionInValidateATierWithDependencyThatNotExist() throws EntityNotFoundException, InvalidEntityException
+             {
         // given
         TierResourceValidatorImpl tierResourceValidator = new TierResourceValidatorImpl();
         Set<TierDto> tierDTOlist = new HashSet<TierDto>(2);
@@ -311,7 +310,7 @@ public class TierResourceValidatorImplTest {
     }
     
     public void shouldValidateNameTooLong() throws AlreadyExistEntityException, 
-    InvalidEntityException, InfrastructureException, QuotaExceededException  {
+    	InfrastructureException, QuotaExceededException  {
         // given
          
     	TierDto tierDto = new TierDto();
@@ -322,7 +321,7 @@ public class TierResourceValidatorImplTest {
         try {
         	tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName", systemPropertiesProvider);
         	fail("should not fail because the name is too long");
-        } catch (com.telefonica.euro_iaas.commons.dao.InvalidEntityException e) {
+        } catch (InvalidEntityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

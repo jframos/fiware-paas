@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.rest.exception;
 
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
+import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 
 public enum ErrorCode {
 
@@ -24,10 +25,6 @@ public enum ErrorCode {
                     "The name is not valid",
                     "(.*)InvalidEntityException:(.*)",
                     400),
-    TIER_NAME_NO_VALID2(42,
-                            "The tier name is not valid",
-                            "The tier(.*)InvalidEnvironmentRequestException(.*)",
-                            400),
     INFRASTRUCTURE(50, "OpenStack infrastructure failure", "(.*)InfrastructureException(.*)", 500),
     DEFAULT(500, "Internal PaasManager Server error", "(?s).*", 500);
 

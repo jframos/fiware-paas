@@ -25,10 +25,11 @@ import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+
 import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
@@ -105,8 +106,8 @@ public class EnvironmetnInstanceValidatorTest extends TestCase {
 
 
     @Test
-    public void testCreateEnviornmentInstanceNoEnvironment() throws InvalidEnvironmentRequestException,
-            EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException, InfrastructureException,
+    public void testCreateEnviornmentInstanceNoEnvironment() throws 
+            EntityNotFoundException, AlreadyExistsEntityException, InfrastructureException,
             InvalidOVFException, QuotaExceededException {
         EnvironmentInstanceDto environmentInstanceDto = new EnvironmentInstanceDto();
         environmentInstanceDto.setDescription("description");
@@ -116,7 +117,7 @@ public class EnvironmetnInstanceValidatorTest extends TestCase {
 
         try {
             validator.validateCreate(environmentInstanceDto, systemPropertiesProvider, claudiaData);
-        } catch (InvalidEnvironmentRequestException e) {
+        } catch (InvalidEntityException e) {
             exception = true;
         }
         assertTrue(exception);

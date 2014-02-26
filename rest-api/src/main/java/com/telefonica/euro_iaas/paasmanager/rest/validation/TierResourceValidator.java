@@ -10,10 +10,10 @@ package com.telefonica.euro_iaas.paasmanager.rest.validation;
 import java.util.Set;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
@@ -41,5 +41,5 @@ public interface TierResourceValidator {
     void validateDelete(String vdc, String environmentName, SystemPropertiesProvider systemPropertiesProvider)
             throws InvalidEntityException, EntityNotFoundException;
 
-    void validateTiersDependencies(String name, String vdc, Set<TierDto> set) throws InvalidEnvironmentRequestException;
+    void validateTiersDependencies(String name, String vdc, Set<TierDto> set) throws InvalidEntityException;
 }

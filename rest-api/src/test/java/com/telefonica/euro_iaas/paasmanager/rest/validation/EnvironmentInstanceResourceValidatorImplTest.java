@@ -26,7 +26,6 @@ import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -53,8 +52,7 @@ public class EnvironmentInstanceResourceValidatorImplTest {
 	}
 
     @Test
-    public void shouldValidateInstanceNumberOnCreateWithoutException() throws InvalidEnvironmentRequestException,
-            InvalidEntityException, AlreadyExistEntityException, QuotaExceededException, InfrastructureException {
+    public void shouldValidateInstanceNumberOnCreateWithoutException() throws Exception {
         // given
         
         QuotaClient quotaClient = mock(QuotaClient.class);
@@ -87,8 +85,7 @@ public class EnvironmentInstanceResourceValidatorImplTest {
 
     @Test
     public void shouldValidateInstanceNumberOnCreateAndReturnQuotaExceedByFloatingsIps()
-            throws InvalidEnvironmentRequestException, InvalidEntityException, AlreadyExistEntityException,
-            InfrastructureException {
+            throws Exception {
         // given
        
         QuotaClient quotaClient = mock(QuotaClient.class);
@@ -125,8 +122,8 @@ public class EnvironmentInstanceResourceValidatorImplTest {
     }
 
     @Test
-    public void shouldReturnValidateOKWhenLimitsValuesDontExist() throws InvalidEnvironmentRequestException,
-            InvalidEntityException, AlreadyExistEntityException, InfrastructureException {
+    public void shouldReturnValidateOKWhenLimitsValuesDontExist() throws 
+             AlreadyExistEntityException, InfrastructureException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
         // given
         
         QuotaClient quotaClient = mock(QuotaClient.class);
@@ -158,8 +155,8 @@ public class EnvironmentInstanceResourceValidatorImplTest {
 
     @Test
     public void shouldReturnValidateOKWhenLimitMaxTotalInstancesValuesDontExistEgEssexInstance()
-            throws InvalidEnvironmentRequestException, InvalidEntityException, AlreadyExistEntityException,
-            InfrastructureException {
+            throws  AlreadyExistEntityException,
+            InfrastructureException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
         // given
         
         QuotaClient quotaClient = mock(QuotaClient.class);
@@ -192,8 +189,8 @@ public class EnvironmentInstanceResourceValidatorImplTest {
 
     @Test
     public void shouldValidateInstanceNumberOnCreateAndReturnQuotaExceedByInstancesUsed()
-            throws InvalidEnvironmentRequestException, InvalidEntityException, AlreadyExistEntityException,
-            InfrastructureException {
+            throws AlreadyExistEntityException,
+            InfrastructureException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
         // given
        
         QuotaClient quotaClient = mock(QuotaClient.class);
@@ -230,7 +227,7 @@ public class EnvironmentInstanceResourceValidatorImplTest {
     }
 
     @Test
-    public void shouldValidateTierWithValidTierDto() throws InvalidEnvironmentRequestException {
+    public void shouldValidateTierWithValidTierDto() throws Exception {
         // given
                TierDto tierDto = new TierDto();
         tierDto.setName("name");
@@ -247,8 +244,8 @@ public class EnvironmentInstanceResourceValidatorImplTest {
     }
 
     @Test
-    public void shouldThrowExceptionWithMaxSecurityGroupsAreExceeded() throws InfrastructureException,
-            InvalidEnvironmentRequestException {
+    public void shouldThrowExceptionWithMaxSecurityGroupsAreExceeded() throws InfrastructureException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
+             {
         // given
        
         QuotaClient quotaClient = mock(QuotaClient.class);

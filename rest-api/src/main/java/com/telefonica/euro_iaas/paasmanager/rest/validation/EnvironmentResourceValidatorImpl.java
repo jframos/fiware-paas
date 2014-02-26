@@ -66,8 +66,6 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
                 try {
                     tierResourceValidator.validateCreate(claudiaData, tierDto, vdc, environmentDto.getName(),
                             systemPropertiesProvider);
-                } catch (InvalidEntityException e) {
-                    throw new InvalidEnvironmentRequestException("Tier is invalid", e);
                 } catch (AlreadyExistEntityException e) {
                     throw new InvalidEnvironmentRequestException("The tier " + tierDto.getName()
                             + " already exist in the vdc " + vdc, e);
