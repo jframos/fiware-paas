@@ -23,6 +23,9 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
@@ -60,11 +63,7 @@ public class EnvironmentResourceTest extends TestCase {
 
         when(ovfGeneration.createOvf(any(EnvironmentDto.class))).thenReturn("ovf");
 
-        Mockito.doNothing()
-                .doThrow(new RuntimeException())
-                .when(validator)
-                .validateCreate(any(ClaudiaData.class), any(EnvironmentDto.class), any(String.class),
-                        any(SystemPropertiesProvider.class));
+       
 
         Environment environment = new Environment();
         environment.setName("Name");
@@ -97,6 +96,11 @@ public class EnvironmentResourceTest extends TestCase {
         EnvironmentDto environmentDto = new EnvironmentDto();
         environmentDto.setDescription("Description");
         environmentDto.setName("Name");
+        Mockito.doNothing()
+        .doThrow(new RuntimeException())
+        .when(validator)
+        .validateCreate(any(ClaudiaData.class), any(EnvironmentDto.class), any(String.class),
+                any(SystemPropertiesProvider.class));
 
         boolean thrown = false;
         try {
@@ -108,7 +112,12 @@ public class EnvironmentResourceTest extends TestCase {
     }
 
     @Test
-    public void testInsertEnvironment() {
+    public void testInsertEnvironment() throws InvalidEnvironmentRequestException, AlreadyExistEntityException, InvalidEntityException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+    	 Mockito.doNothing()
+         .doThrow(new RuntimeException())
+         .when(validator)
+         .validateCreate(any(ClaudiaData.class), any(EnvironmentDto.class), any(String.class),
+                 any(SystemPropertiesProvider.class));
         EnvironmentDto environmentDto = new EnvironmentDto();
         environmentDto.setName("Name");
         environmentDto.setDescription("Description");
@@ -137,5 +146,7 @@ public class EnvironmentResourceTest extends TestCase {
             fail();
         }
     }
+    
+    
 
 }
