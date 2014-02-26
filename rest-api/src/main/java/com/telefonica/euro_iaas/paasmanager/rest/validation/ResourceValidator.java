@@ -6,28 +6,30 @@
  */
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
+
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 
 
+
 /**
- * 
+ * Validator.
  * @author henar
  *
  */
 public interface ResourceValidator {
-   /**
-    * 	
-    * @param name
-    * @throws InvalidEntityException
-    */
-	void validateName(String name) throws InvalidEntityException;
 
+
+	
 	/**
-	 * 
-	 * @param description
+	 * It validates a name.
+	 * @param name
 	 * @throws InvalidEntityException
-	 * @throws com.telefonica.euro_iaas.commons.dao.InvalidEntityException 
 	 */
-	void validateDescription(String description) throws InvalidEntityException;
-
+	void validateName(String name) throws InvalidEntityException;
+	/**
+	 * It validates a description.
+	 * @param name
+	 * @throws InvalidEntityException
+	 */
+	void validateDescription(String name) throws InvalidEntityException;
 }

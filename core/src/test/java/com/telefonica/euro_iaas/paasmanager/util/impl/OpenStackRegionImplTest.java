@@ -462,7 +462,7 @@ public class OpenStackRegionImplTest {
         String token = "123123232";
 
         RegionCache regionCache = new RegionCache();
-        regionCache.putUrl("RegionOne", "nova", "http://130.206.80.58:8774/v2/12321312312312321");
+        regionCache.putUrl("RegionOne", "compute", "http://130.206.80.58:8774/v2/12321312312312321");
 
         // when
 

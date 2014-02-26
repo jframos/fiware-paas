@@ -51,11 +51,11 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     private SystemPropertiesProvider systemPropertiesProvider;
 
     @Override
-    public String getEndPointByNameAndRegionName(String name, String regionName, String token)
+    public String getEndPointByNameAndRegionName(String type, String regionName, String token)
             throws OpenStackException {
 
         RegionCache regionCache = new RegionCache();
-        String url = regionCache.getUrl(regionName, name);
+        String url = regionCache.getUrl(regionName, type);
 
         String tokenadmin = this.getTokenAdmin();
         if (url != null) {
@@ -63,11 +63,11 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         } else {
             String responseJSON = callToKeystone(token, tokenadmin);
 
-            String result = parseEndpoint(responseJSON, name, regionName);
+            String result = parseEndpoint(responseJSON, type, regionName);
             if (result == null) {
                 throw new OpenStackException("region not found");
             }
-            regionCache.putUrl(regionName, name, result);
+            regionCache.putUrl(regionName, type, result);
 
             return result;
         }
@@ -83,7 +83,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     @Override
     public String getNovaEndPoint(String regionName, String token) throws OpenStackException {
 
-        String url = getEndPointByNameAndRegionName("nova", regionName, token);
+        String url = getEndPointByNameAndRegionName("compute", regionName, token);
         log.debug("getNovaEndPoint " + regionName + " " + token + " " + url);
 
         Integer index = url.lastIndexOf("/");
@@ -95,7 +95,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
 
     @Override
     public String getQuantumEndPoint(String regionName, String token) throws OpenStackException {
-        String url = getEndPointByNameAndRegionName("quantum", regionName, token);
+        String url = getEndPointByNameAndRegionName("network", regionName, token);
         Integer index = url.lastIndexOf("/v");
         if (index == -1) {
             url = url + "v2.0/";
@@ -148,7 +148,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         return response;
     }
 
-    private String parseEndpoint(String response, String name, String regionName) {
+    private String parseEndpoint(String response, String type, String regionName) {
 
         JSONObject jsonObject = JSONObject.fromObject(response);
 
@@ -164,10 +164,10 @@ public class OpenStackRegionImpl implements OpenStackRegion {
             while (notFound && it.hasNext()) {
 
                 endpointJson = JSONObject.fromObject(it.next());
-                String name1 = endpointJson.get("name").toString();
+                String name1 = endpointJson.get("type").toString();
                 String regionName1 = endpointJson.get("region").toString();
 
-                if (name.equals(name1)) {
+                if (type.equals(name1)) {
                     url = endpointJson.get("publicURL").toString();
                     urlMap.put(regionName1, url);
                     if ((regionName != null) && (regionName.equals(regionName1))) {
@@ -190,9 +190,9 @@ public class OpenStackRegionImpl implements OpenStackRegion {
                 while (notFound && it.hasNext()) {
 
                     serviceJSON = JSONObject.fromObject(it.next());
-                    String name1 = serviceJSON.get("name").toString();
+                    String name1 = serviceJSON.get("type").toString();
 
-                    if (name.equals(name1)) {
+                    if (type.equals(name1)) {
                         JSONArray endpointsArray = serviceJSON.getJSONArray("endpoints");
                         Iterator it2 = endpointsArray.iterator();
 

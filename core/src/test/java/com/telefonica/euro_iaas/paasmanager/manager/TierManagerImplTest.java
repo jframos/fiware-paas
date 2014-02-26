@@ -324,5 +324,27 @@ public class TierManagerImplTest extends TestCase {
         
 
     }
+    
+    @Test
+    public void testTierDeletion() throws Exception {
+
+        productRelease = new ProductRelease("product", "2.0");
+        productRelease.addAttribute(new Attribute("open_ports", "8080"));
+
+        productReleases = new ArrayList<ProductRelease>();
+        productReleases.add(productRelease);
+
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
+                "image", "icono", "keypair", "floatingip", "payload");
+        when(tierDao.load(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
+   
+        tierManager.delete(data, tier);
+
+
+    }
+  
+    
+    
+    
 
 }

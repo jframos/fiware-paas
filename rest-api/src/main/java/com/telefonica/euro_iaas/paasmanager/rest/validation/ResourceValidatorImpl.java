@@ -10,7 +10,6 @@ package com.telefonica.euro_iaas.paasmanager.rest.validation;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 
 
-
 /**
  * * @author Henar Munoz
  */

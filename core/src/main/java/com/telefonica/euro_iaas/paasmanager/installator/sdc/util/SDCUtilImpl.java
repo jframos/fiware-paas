@@ -43,7 +43,6 @@ public class SDCUtilImpl implements SDCUtil {
         while (true) {
 
             task = taskService.load(task.getHref());
-            log.error("Task status " + task.getStatus());
 
             if (task.getStatus().equals(com.telefonica.euro_iaas.sdc.model.Task.TaskStates.ERROR)) {
                 msgerror = "SDCException. " + task.getError().getMajorErrorCode() + ": "
