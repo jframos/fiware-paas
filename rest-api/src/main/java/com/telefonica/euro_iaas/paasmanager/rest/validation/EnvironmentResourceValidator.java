@@ -25,10 +25,11 @@ public interface EnvironmentResourceValidator {
      * 
      * @param EnvironmentDto
      * @throws InvalidEnvironmentRequestException
+     * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException 
      */
     void validateCreate(ClaudiaData claudiaData, EnvironmentDto environmentDto, String vdc,
             SystemPropertiesProvider systemPropertiesProvider) throws InvalidEnvironmentRequestException,
-            AlreadyExistEntityException, InvalidEntityException;
+            AlreadyExistEntityException, InvalidEntityException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 
     void validateDelete(String envName, String vdc, SystemPropertiesProvider systemPropertiesProvider)
             throws InvalidEnvironmentRequestException, AlreadyExistEntityException, InvalidEntityException, EntityNotFoundException;

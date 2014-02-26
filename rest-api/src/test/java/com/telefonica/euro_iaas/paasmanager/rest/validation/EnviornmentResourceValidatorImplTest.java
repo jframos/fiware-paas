@@ -42,7 +42,7 @@ public class EnviornmentResourceValidatorImplTest {
 	SystemPropertiesProvider systemPropertiesProvider;
 	
 	@Before
-	public void setUp () throws EntityNotFoundException, InvalidEntityException {
+	public void setUp () throws EntityNotFoundException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
 		environmentResourceValidator = new EnvironmentResourceValidatorImpl();
 		resourceValidator = mock(ResourceValidator.class);
         EnvironmentManager environmentManager=mock(EnvironmentManager.class);

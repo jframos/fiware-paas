@@ -28,19 +28,22 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+
+
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
+
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
-import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
+
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.paasmanager.model.Environment;
+
 import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
-import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
+
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
@@ -274,7 +277,7 @@ public class TierResourceValidatorImplTest {
         // then
     }
     
-    public void shouldValidateEmptyNameTier() throws AlreadyExistEntityException, InvalidEntityException, InfrastructureException, QuotaExceededException  {
+    public void shouldValidateEmptyNameTier() throws AlreadyExistEntityException, InvalidEntityException, InfrastructureException, QuotaExceededException, com.telefonica.euro_iaas.commons.dao.InvalidEntityException  {
         // given
     	
         TierDto tierDto = new TierDto();
@@ -291,7 +294,7 @@ public class TierResourceValidatorImplTest {
     
 
     public void shouldValidateStrangeCharacteresEnvironment() throws AlreadyExistEntityException, 
-    InvalidEntityException, InfrastructureException, QuotaExceededException  {
+    InvalidEntityException, InfrastructureException, QuotaExceededException, com.telefonica.euro_iaas.commons.dao.InvalidEntityException  {
         // given
          
     	TierDto tierDto = new TierDto();
@@ -318,9 +321,11 @@ public class TierResourceValidatorImplTest {
         ClaudiaData claudiaData = mock(ClaudiaData.class);
         try {
         	tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName", systemPropertiesProvider);
-        } catch (InvalidEntityException e) {
-            fail("should not fail because the name is too long");
-        }
+        	fail("should not fail because the name is too long");
+        } catch (com.telefonica.euro_iaas.commons.dao.InvalidEntityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
        
      
     }

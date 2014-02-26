@@ -43,7 +43,7 @@ public class EnvironmentInstanceResourceValidatorImplTest {
 	ResourceValidator resourceValidator;
 	
 	@Before
-	public void setUp () throws InvalidEntityException {
+	public void setUp () throws  com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
 		environmentInstanceResourceValidator = new EnvironmentInstanceResourceValidatorImpl();
 		resourceValidator = mock(ResourceValidator.class);
 		environmentInstanceResourceValidator.setResourceValidator(resourceValidator);

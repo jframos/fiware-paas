@@ -45,7 +45,7 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
      */
     public void validateCreate(ClaudiaData claudiaData, EnvironmentDto environmentDto, String vdc,
             SystemPropertiesProvider systemPropertiesProvider) throws InvalidEnvironmentRequestException,
-            AlreadyExistEntityException, InvalidEntityException {
+            AlreadyExistEntityException, InvalidEntityException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
 
         try {
             environmentManager.load(environmentDto.getName(), vdc);
@@ -53,7 +53,6 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
             throw new AlreadyExistEntityException("The environment " + environmentDto.getName() + " already exists");
 
         } catch (EntityNotFoundException e1) {
-
         	resourceValidator.validateName(environmentDto.getName());
         	resourceValidator.validateDescription(environmentDto.getDescription());
         }

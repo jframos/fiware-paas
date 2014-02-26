@@ -56,7 +56,7 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
      */
     public void validateCreate(ClaudiaData claudiaData, TierDto tierDto, String vdc, String environmentName,
             SystemPropertiesProvider systemPropertiesProvider) throws InvalidEntityException,
-            AlreadyExistEntityException, InfrastructureException, QuotaExceededException {
+            AlreadyExistEntityException, InfrastructureException, QuotaExceededException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
 
        
         try {
@@ -74,7 +74,7 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
     private void validateCreateTier(ClaudiaData claudiaData, TierDto tierDto,
             SystemPropertiesProvider systemPropertiesProvider) throws InvalidEntityException, InfrastructureException,
-            QuotaExceededException {
+            QuotaExceededException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
     	
     	
         String system = systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
