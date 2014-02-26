@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.paasmanager.environment;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,6 +29,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
@@ -263,6 +265,51 @@ public class TierTest {
         assertEquals(env2.getName(), "testeDeleteTier2");
         assertEquals(env2.getTiers().size(), 0);
 
+    }
+    
+    @Test
+    public void testDeleteTierwithNetworkInAnotherTier() throws Exception {
+        Environment environmentBk = new Environment();
+        environmentBk.setName("env");
+        environmentBk.setDescription("description");
+
+        environmentResource.insert(org, vdc, environmentBk.toDto());
+
+        Tier tierbk = new Tier("tier1", new Integer(1), new Integer(1), new Integer(1), null);
+        tierbk.setImage("image");
+        tierbk.setIcono("icono");
+        tierbk.setFlavour("flavour");
+        tierbk.setFloatingip("floatingip");
+        tierbk.setPayload("");
+        tierbk.setKeypair("keypair");
+        
+        Network net = new Network("network3", vdc);
+        tierbk.addNetwork(net);
+
+        tierResource.insert(org, vdc,environmentBk.getName(), tierbk.toDto());
+        
+        Tier tierbk2 = new Tier("tier2", new Integer(1), new Integer(1), new Integer(1), null);
+        tierbk2.setImage("image");
+        tierbk2.setIcono("icono");
+        tierbk2.setFlavour("flavour");
+        tierbk2.setFloatingip("floatingip");
+        tierbk2.setPayload("");
+        tierbk2.setKeypair("keypair");
+        tierbk2.addNetwork(net);
+        tierResource.insert(org, vdc, environmentBk.getName(), tierbk2.toDto());
+        
+        try {
+        tierResource.delete(org, vdc, environmentBk.getName(), tierbk2.getName());
+        } catch (Exception e){
+        	fail ();
+        }
+        
+        try {
+            tierResource.delete(org, vdc, environmentBk.getName(), tierbk.getName());
+            } catch (Exception e){
+            	fail ();
+            }
+        
     }
 
 }

@@ -72,4 +72,5 @@ public interface NetworkManager {
      */
     Network update(Network network) throws InvalidEntityException;
 
+
 }

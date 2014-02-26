@@ -172,6 +172,44 @@ public class TierDaoJpaImplTest {
         assertEquals(tier2.getName(), TIER_NAME);
         assertEquals(tier2.getNetworks().size(), 1);
     }
+    
+    @Test
+    public void testFindAllWithNetwork () throws Exception {
+    	ProductRelease prodRelease = new ProductRelease(PRODUCT_NAME, PRODUCT_VERSION);
+    	List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
+        prodRelease = productReleaseDao.create(prodRelease);
+        productReleases.add(prodRelease);
+    	String net ="NETFIND";
+    	Network network = new Network(net, "VDC");
+        network = networkDao.create(network);
+        
+        assertEquals(tierDao.findAllWithNetwork(net).size(),0);
+        
+        Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, productReleases);
+        tier.setVdc(VDC);
+        tier.addNetwork(network);
+        tierDao.create(tier);
+        
+        assertEquals(tierDao.findAllWithNetwork(net).size(),1);
+        
+        tier = new Tier(TIER_NAME+2, MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, productReleases);
+        tier.setVdc(VDC);
+        tier.addNetwork(network);
+        tierDao.create(tier);
+        
+        assertEquals(tierDao.findAllWithNetwork(net).size(),2);
+        
+        tier = new Tier(TIER_NAME+3, MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, productReleases);
+        tier.setVdc(VDC);
+        tierDao.create(tier);
+        
+        assertEquals(tierDao.findAllWithNetwork(net).size(),2);
+     
+
+    }
+
+    
+   
 
     public void setProductReleaseDao(ProductReleaseDao productReleaseDao) {
         this.productReleaseDao = productReleaseDao;
