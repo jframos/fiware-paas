@@ -234,9 +234,11 @@ public class OpenStackAuthenticationToken {
 
             if ((response.getStatusLine().getStatusCode() != 201) && (response.getStatusLine().getStatusCode() != 200)) {
 
-                log.error("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
+                String exceptionMessage = "Failed : HTTP error code : (" + postRequest.getURI().toString() + ")"
+                        + response.getStatusLine().getStatusCode() + " message: " + response;
+                log.error(exceptionMessage);
 
-                throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
+                throw new RuntimeException(exceptionMessage);
             }
 
             BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
