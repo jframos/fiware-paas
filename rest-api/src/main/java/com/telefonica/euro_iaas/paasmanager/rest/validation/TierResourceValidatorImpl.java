@@ -55,11 +55,9 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
      * @seecom.telefonica.euro_iaas.paasmanager.rest.validation. EnvironmentInstanceResourceValidator
      * #validateCreate(com.telefonica.euro_iaas .paasmanager.model.dto.EnvironmentDto)
      */
-    public void validateCreate(ClaudiaData claudiaData, TierDto tierDto, String vdc, String environmentName,
-            SystemPropertiesProvider systemPropertiesProvider) throws 
+    public void validateCreate(ClaudiaData claudiaData, TierDto tierDto, String vdc, String environmentName) throws 
             AlreadyExistEntityException, InfrastructureException, QuotaExceededException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
 
-       
         try {
             tierManager.load(tierDto.getName(), vdc, environmentName);
             log.error("The tier " + tierDto.getName() + " already exists in ");
@@ -68,23 +66,38 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
         } catch (EntityNotFoundException e) {
             log.debug("Entity not found. It is possible to create it ");
-            validateCreateTier(claudiaData, tierDto, systemPropertiesProvider);
+            validateCreateTier(claudiaData, tierDto);
         }
 
     }
+    
+    public void validateCreateAbstract (TierDto tierDto, String environmentName) 
+        throws InvalidEntityException, AlreadyExistEntityException {
+        try {
+            tierManager.load(tierDto.getName(), "", environmentName);
+            log.error("The tier " + tierDto.getName() + " already exists in ");
+            throw new AlreadyExistEntityException("The tier " + tierDto.getName() + " already exists in environment" + environmentName);
 
-    private void validateCreateTier(ClaudiaData claudiaData, TierDto tierDto,
-            SystemPropertiesProvider systemPropertiesProvider) throws  InfrastructureException,
-            QuotaExceededException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
-    	
-    	
-        String system = systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
-        if (tierDto.getName() == null) {
-            log.error("Tier name is Null");
-            throw new InvalidEntityException("Tier Name " + "from tierDto is null");
+        } catch (EntityNotFoundException e) {
+            log.debug("Entity not found. It is possible to create it ");
+            resourceValidator.validateName(tierDto.getName());
+            validataDefaultTier (tierDto);
         }
-        resourceValidator.validateName (tierDto.getName());
+        
+    }
 
+    private void validateCreateTier(ClaudiaData claudiaData, TierDto tierDto) throws  InfrastructureException,
+            QuotaExceededException, InvalidEntityException {
+
+        resourceValidator.validateName(tierDto.getName());
+
+        validataDefaultTier (tierDto);
+
+        validateSecurityGroups(claudiaData, tierDto);
+
+    }
+    
+    private void validataDefaultTier (TierDto tierDto) throws InvalidEntityException {
         if (tierDto.getMaximumNumberInstances() == null || tierDto.getMinimumNumberInstances() == null
                 || tierDto.getInitialNumberInstances() == null) {
             log.error("Number initial, maximun o minimul from tierDto " + tierDto.getName() + " is null");
@@ -100,18 +113,12 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
             throw new InvalidEntityException(men);
         }
 
-        if ("FIWARE".equals(system)) {
-            if (tierDto.getImage() == null) {
-                throw new InvalidEntityException("Tier Image from tierDto is null");
-            }
-            if (tierDto.getFlavour() == null) {
-                throw new InvalidEntityException("Tier Flavour from tierDto is null");
-            }
-
+        if (tierDto.getImage() == null) {
+            throw new InvalidEntityException("Tier Image from tierDto is null");
         }
-
-        validateSecurityGroups(claudiaData, tierDto);
-
+        if (tierDto.getFlavour() == null) {
+            throw new InvalidEntityException("Tier Flavour from tierDto is null");
+        }
     }
 
     public void validateSecurityGroups(ClaudiaData claudiaData, TierDto tierDto) throws InfrastructureException,

@@ -54,8 +54,7 @@ public class TierResourceTest extends TestCase {
         Mockito.doNothing()
                 .doThrow(new RuntimeException())
                 .when(validator)
-                .validateCreate(any(ClaudiaData.class), any(TierDto.class), any(String.class), any(String.class),
-                        any(SystemPropertiesProvider.class));
+                .validateCreate(any(ClaudiaData.class), any(TierDto.class), any(String.class), any(String.class));
 
         List<ProductRelease> productRelease = new ArrayList<ProductRelease>();
         productRelease.add(new ProductRelease("test", "0.1"));

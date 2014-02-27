@@ -164,7 +164,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
 
         try {
             addCredentialsToClaudiaData(claudiaData);
-            environmentResourceValidator.validateCreate(claudiaData, environmentDto, vdc, systemPropertiesProvider);
+            environmentResourceValidator.validateCreate(claudiaData, environmentDto, vdc);
 
             Environment environment = new Environment();
             environment.setName(environmentDto.getName());
