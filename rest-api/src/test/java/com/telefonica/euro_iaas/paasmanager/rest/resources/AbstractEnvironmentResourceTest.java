@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
@@ -30,6 +31,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
+import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 public class AbstractEnvironmentResourceTest extends TestCase {
@@ -37,14 +39,17 @@ public class AbstractEnvironmentResourceTest extends TestCase {
     public AbstractEnvironmentResourceImpl environmentResource;
     public EnvironmentManager environmentManager;
     public SystemPropertiesProvider systemPropertiesProvider;
+    public EnvironmentResourceValidator environmentResourceValidator;
 
     @Before
     public void setUp() throws Exception {
         environmentResource = new AbstractEnvironmentResourceImpl();
         environmentManager = mock(EnvironmentManager.class);
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+        environmentResourceValidator = mock(EnvironmentResourceValidator.class);
         environmentResource.setEnvironmentManager(environmentManager);
         environmentResource.setSystemPropertiesProvider(systemPropertiesProvider);
+        environmentResource.setEnvironmentResourceValidator(environmentResourceValidator);
 
         Environment environment = new Environment();
         environment.setName("Name");
@@ -57,6 +62,7 @@ public class AbstractEnvironmentResourceTest extends TestCase {
         tiers.add(tier);
         environment.setTiers(tiers);
 
+        Mockito.doNothing().when(environmentResourceValidator).validateAbstractCreate(any(EnvironmentDto.class));
         when(environmentManager.create(any(ClaudiaData.class), any(Environment.class))).thenReturn(environment);
         when(environmentManager.load(any(String.class), any(String.class))).thenThrow(
                 new EntityNotFoundException(Environment.class, "", environment));

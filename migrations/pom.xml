@@ -37,7 +37,7 @@
 
                                     <changeLogFile>src/main/resources/db-initial.sql</changeLogFile>
                                     <driver>org.postgresql.Driver</driver>
-                                    <url>jdbc:postgresql://localhost:5432/paasmanager</url>
+                                    <url>jdbc:postgresql://130.206.80.112:5432/testjesus</url>
                                     <username>postgres</username>
                                     <password>postgres</password>
 
@@ -68,7 +68,7 @@
 
                                     <changeLogFile>src/main/resources/db-changelog.sql</changeLogFile>
                                     <driver>org.postgresql.Driver</driver>
-                                    <url>jdbc:postgresql://localhost:5432/paasmanager</url>
+                                    <url>jdbc:postgresql://130.206.80.112:5432/testjesus</url>
                                     <username>postgres</username>
                                     <password>postgres</password>
 

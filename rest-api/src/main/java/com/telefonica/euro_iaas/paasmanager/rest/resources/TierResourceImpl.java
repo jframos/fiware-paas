@@ -137,7 +137,7 @@ public class TierResourceImpl implements TierResource {
         claudiaData.setUser(getCredentials());
 
         try {
-            tierResourceValidator.validateCreate(claudiaData, tierDto, vdc, environmentName, systemPropertiesProvider);
+            tierResourceValidator.validateCreate(claudiaData, tierDto, vdc, environmentName);
         } catch (Exception ex) {
             throw new APIException(ex);
         }

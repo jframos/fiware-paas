@@ -12,9 +12,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
@@ -38,14 +38,10 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
     private EnvironmentInstanceManager environmentInstanceManager;
     private ResourceValidator resourceValidator;
 
-    /*
-     * (non-Javadoc)
-     * @seecom.telefonica.euro_iaas.paasmanager.rest.validation. EnvironmentInstanceResourceValidator
-     * #validateCreate(com.telefonica.euro_iaas .paasmanager.model.dto.EnvironmentDto)
+    /**
+     * 
      */
-    public void validateCreate(ClaudiaData claudiaData, EnvironmentDto environmentDto, String vdc,
-            SystemPropertiesProvider systemPropertiesProvider) throws InvalidEnvironmentRequestException,
-            AlreadyExistEntityException, InvalidEntityException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+    public void validateCreate(ClaudiaData claudiaData, EnvironmentDto environmentDto, String vdc) throws AlreadyExistEntityException, InvalidEntityException {
 
         try {
             environmentManager.load(environmentDto.getName(), vdc);
@@ -62,29 +58,39 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
 
             for (TierDto tierDto : environmentDto.getTierDtos()) {
                 log.info("Validating " + tierDto.getName());
-
                 try {
-                    tierResourceValidator.validateCreate(claudiaData, tierDto, vdc, environmentDto.getName(),
-                            systemPropertiesProvider);
-                } catch (AlreadyExistEntityException e) {
-                    throw new InvalidEnvironmentRequestException("The tier " + tierDto.getName()
-                            + " already exist in the vdc " + vdc, e);
-                } catch (QuotaExceededException e) {
-                    throw new InvalidEnvironmentRequestException("Tier is invalid, quota for security groups exceeded",
-                            e);
+                    tierResourceValidator.validateCreate(claudiaData, tierDto, vdc, environmentDto.getName());
                 } catch (InfrastructureException e) {
-                    throw new InvalidEnvironmentRequestException("Tier is invalid", e);
+                    throw new InvalidEntityException(e);
+                } catch (QuotaExceededException e) {
+                    throw new InvalidEntityException(e);
                 }
+            }
+        }
 
-                if (tierDto.getName() == null) {
-                    throw new InvalidEnvironmentRequestException("Tier Name " + "from tierDto is null");
-                }
-                if (tierDto.getImage() == null) {
-                    throw new InvalidEnvironmentRequestException("Tier Image " + "from tierDto is null");
-                }
-                if (tierDto.getFlavour() == null) {
-                    throw new InvalidEnvironmentRequestException("Tier Flavour " + "from tierDto is null");
-                }
+    }
+    
+    /**
+     * 
+     */
+    public void validateAbstractCreate(EnvironmentDto environmentDto) throws AlreadyExistEntityException, InvalidEntityException {
+
+        try {
+            environmentManager.load(environmentDto.getName(), "");
+            log.error("The environment " + environmentDto.getName() + " already exists");
+            throw new AlreadyExistEntityException("The environment " + environmentDto.getName() + " already exists");
+
+        } catch (EntityNotFoundException e1) {
+            resourceValidator.validateName(environmentDto.getName());
+            resourceValidator.validateDescription(environmentDto.getDescription());
+        }
+
+
+        if (environmentDto.getTierDtos() != null) {
+
+            for (TierDto tierDto : environmentDto.getTierDtos()) {
+                log.info("Validating " + tierDto.getName());
+                tierResourceValidator.validateCreateAbstract(tierDto, environmentDto.getName());
             }
         }
 

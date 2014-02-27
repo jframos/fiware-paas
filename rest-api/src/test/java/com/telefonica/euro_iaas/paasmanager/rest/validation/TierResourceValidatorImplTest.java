@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -39,6 +40,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
@@ -51,22 +53,24 @@ public class TierResourceValidatorImplTest {
 	TierResourceValidatorImpl tierResourceValidator ;
 	SystemPropertiesProvider systemPropertiesProvider;
 	ResourceValidator resourceValidator;
+	TierManager tierManager;
+
 	
 	@Before
 	public void setUp () throws EntityNotFoundException, InvalidEntityException {
 		tierResourceValidator = new TierResourceValidatorImpl();
-		TierManager tierManager=mock(TierManager.class);
+		tierManager=mock(TierManager.class);
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         tierResourceValidator.setTierManager(tierManager);
         
 		resourceValidator = mock(ResourceValidator.class);
 		tierResourceValidator.setResourceValidator(resourceValidator);
+	
   
 		Mockito.doNothing().when(resourceValidator).validateName(anyString());
 		Mockito.doNothing().when(resourceValidator).validateDescription(anyString());
 		Tier tier = new Tier ();
 		when(tierManager.load(anyString(), anyString(), anyString())).thenThrow(new EntityNotFoundException(Tier.class, "tier", tier));
-		
 	}
 
     @Test
@@ -284,7 +288,8 @@ public class TierResourceValidatorImplTest {
         ClaudiaData claudiaData = mock(ClaudiaData.class);
         TierDto tierDto = new TierDto();
         tierDto.setName("");
-        tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName", systemPropertiesProvider);
+        tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName");
+
     }
     
     @Test(expected = InvalidEntityException.class)
@@ -296,7 +301,7 @@ public class TierResourceValidatorImplTest {
     	tierDto.setName("name.name");
         
         ClaudiaData claudiaData = mock(ClaudiaData.class);
-        tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName", systemPropertiesProvider);
+        tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName");
     }
     @Test(expected = InvalidEntityException.class)
     public void shouldValidateNameTooLong() throws AlreadyExistEntityException, 
@@ -304,11 +309,32 @@ public class TierResourceValidatorImplTest {
         // given
          
     	TierDto tierDto = new TierDto();
-    	tierDto.setName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
-        		"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    	tierDto.setName("aaaaaaaaaaaaaaaaaaaaaaaahhhhhhhhhhhhhhhhhhhhhaaaaaaaaaaa");
         
         ClaudiaData claudiaData = mock(ClaudiaData.class);
-        tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName", systemPropertiesProvider);
+        tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName");
+
+    }
+    
+    @Test
+    public void shouldValidateAbstractTier() throws EntityNotFoundException  {
+        
+        TierDto tierDTO = new TierDto();
+        tierDTO.setName("tier1");
+        tierDTO.setInitialNumberInstances(new Integer(1));
+        tierDTO.setMaximumNumberInstances(new Integer(1));
+        tierDTO.setMinimumNumberInstances(new Integer(1));
+        tierDTO.setImage("image");
+        tierDTO.setFlavour("flavor");
+        
+        
+        
+        
+        try {
+            tierResourceValidator.validateCreateAbstract(tierDTO, "en");
+        } catch (Exception e) {
+           fail();
+        }
 
     }
     
