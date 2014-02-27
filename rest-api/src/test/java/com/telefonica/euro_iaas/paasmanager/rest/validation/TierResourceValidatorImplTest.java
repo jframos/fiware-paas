@@ -64,6 +64,8 @@ public class TierResourceValidatorImplTest {
   
 		Mockito.doNothing().when(resourceValidator).validateName(anyString());
 		Mockito.doNothing().when(resourceValidator).validateDescription(anyString());
+		Tier tier = new Tier ();
+		when(tierManager.load(anyString(), anyString(), anyString())).thenThrow(new EntityNotFoundException(Tier.class, "tier", tier));
 		
 	}
 
@@ -276,41 +278,29 @@ public class TierResourceValidatorImplTest {
         // then
     }
     
-    public void shouldValidateEmptyNameTier() throws AlreadyExistEntityException, InvalidEntityException, InfrastructureException, QuotaExceededException, com.telefonica.euro_iaas.commons.dao.InvalidEntityException  {
+    @Test(expected = InvalidEntityException.class)
+    public void shouldValidateEmptyNameTier() throws AlreadyExistEntityException, InvalidEntityException, InfrastructureException, QuotaExceededException {
         // given
-    	
+        ClaudiaData claudiaData = mock(ClaudiaData.class);
         TierDto tierDto = new TierDto();
         tierDto.setName("");
-
-        ClaudiaData claudiaData = mock(ClaudiaData.class);
-        try {
-        	tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName", systemPropertiesProvider);
-        } catch (InvalidEntityException e) {
-            fail("should not fail because the name is empty ");
-        }
-
+        tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName", systemPropertiesProvider);
     }
     
-
+    @Test(expected = InvalidEntityException.class)
     public void shouldValidateStrangeCharacteresEnvironment() throws AlreadyExistEntityException, 
-    InvalidEntityException, InfrastructureException, QuotaExceededException, com.telefonica.euro_iaas.commons.dao.InvalidEntityException  {
+    InvalidEntityException, InfrastructureException, QuotaExceededException {
         // given
          
     	TierDto tierDto = new TierDto();
     	tierDto.setName("name.name");
         
         ClaudiaData claudiaData = mock(ClaudiaData.class);
-        try {
-        	tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName", systemPropertiesProvider);
-        } catch (InvalidEntityException e) {
-            fail("should not fail because there is a '.' in the name ");
-        }
-       
-     
+        tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName", systemPropertiesProvider);
     }
-    
+    @Test(expected = InvalidEntityException.class)
     public void shouldValidateNameTooLong() throws AlreadyExistEntityException, 
-    	InfrastructureException, QuotaExceededException  {
+    	InfrastructureException, QuotaExceededException, InvalidEntityException  {
         // given
          
     	TierDto tierDto = new TierDto();
@@ -318,15 +308,8 @@ public class TierResourceValidatorImplTest {
         		"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         
         ClaudiaData claudiaData = mock(ClaudiaData.class);
-        try {
-        	tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName", systemPropertiesProvider);
-        	fail("should not fail because the name is too long");
-        } catch (InvalidEntityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-       
-     
+        tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName", systemPropertiesProvider);
+
     }
 
 }

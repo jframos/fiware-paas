@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
 
 import org.junit.Before;
+import org.junit.Test;
 
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
@@ -28,78 +29,41 @@ public class ResourceValidatorImplTest {
 		resourceValidator = new ResourceValidatorImpl();	
 	}
 
-	public void shouldValidateNullName() throws AlreadyExistEntityException {
-        try {
-        	resourceValidator.validateName(null);
-        	fail("should fail because the name is null ");
-		} catch (InvalidEntityException e) {
-		    
-		}
+	public void shouldValidateNullName() throws AlreadyExistEntityException, InvalidEntityException {
+        resourceValidator.validateName(null);
 	 }
 	
-	public void shouldValidateNullDescription() throws AlreadyExistEntityException {
-        try {
-        	resourceValidator.validateDescription(null);
-        	fail("should fail because the description is null ");
-		} catch (InvalidEntityException e) {
-		    
-		}
+	public void shouldValidateNullDescription() throws AlreadyExistEntityException,InvalidEntityException {
+        resourceValidator.validateDescription(null);
 	 }
-	
-	public void shouldValidateEmptyName() throws AlreadyExistEntityException {
-        try {
-        	resourceValidator.validateName("");
-        	fail("should fail because the name is empty");
-		} catch (InvalidEntityException e) {
-		    
-		}
+	@Test(expected = InvalidEntityException.class)
+	public void shouldValidateEmptyName() throws AlreadyExistEntityException, InvalidEntityException {
+        resourceValidator.validateName("");
+
 	 }
-	
-	public void shouldValidateEmptyDescription() throws AlreadyExistEntityException {
-        try {
-        	resourceValidator.validateDescription("");
-        	fail("should fail because the description is empty");
-		} catch (InvalidEntityException e) {
-		    
-		}
+	@Test(expected = InvalidEntityException.class)
+	public void shouldValidateEmptyDescription() throws AlreadyExistEntityException, InvalidEntityException {
+        resourceValidator.validateDescription("");
+
 	 }
-	
-	public void shouldValidateStrangeCharacterinName() throws AlreadyExistEntityException {
-        try {
-        	resourceValidator.validateName("name.name");
-        	fail("should fail because the name has strange characters");
-		} catch (InvalidEntityException e) {
-		    
-		}
+	@Test(expected = InvalidEntityException.class)
+	public void shouldValidateStrangeCharacterinName() throws AlreadyExistEntityException,InvalidEntityException {
+        resourceValidator.validateName("name.name");
+
 	 }
-	
-	public void shouldValidateStrangeCharacterinDescription() throws AlreadyExistEntityException {
-        try {
-        	resourceValidator.validateDescription("name.name");
-        	fail("should fail because the description has strange characters");
-		} catch (InvalidEntityException e) {
-		    
-		}
+	@Test(expected = InvalidEntityException.class)
+	public void shouldValidateNameTooLong() throws AlreadyExistEntityException, InvalidEntityException {
+        resourceValidator.validateName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
 	 }
-	
-	public void shouldValidateNameTooLong() throws AlreadyExistEntityException {
-        try {
-        	resourceValidator.validateName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        	fail("should fail because the name is too long");
-		} catch (InvalidEntityException e) {
-		    
-		}
-	 }
-	
-	public void shouldValidateDescriptionTooLong() throws AlreadyExistEntityException {
-        try {
-        	resourceValidator.validateDescription("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
-		           "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        	fail("should fail because the description is too long");
-		} catch (InvalidEntityException e) {
-		    
-		}
-	 }
+	@Test(expected = InvalidEntityException.class)
+	public void shouldValidateDescriptionTooLong() throws AlreadyExistEntityException, InvalidEntityException {
+        resourceValidator.validateDescription("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+		    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaajjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjdddddddddddddddddddddddddddddddddddddddjjjjjjjjaaaaaaaaaaaaaaaaaaa"+
+		    "ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"+
+		    "ddddddddddddddddddddddddd");
+
+	}
 	
 }
 
