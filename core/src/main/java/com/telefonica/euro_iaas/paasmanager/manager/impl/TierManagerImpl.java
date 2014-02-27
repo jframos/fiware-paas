@@ -92,11 +92,37 @@ public class TierManagerImpl implements TierManager {
         if (exists(tier.getName(), claudiaData.getVdc(), envName)) {
             return load(tier.getName(), claudiaData.getVdc(), envName);
         } else {
+
+            // check if exist product or need sync with SDC
+            tier = existProductOrSynWithSDCAndUpdateTier(tier);
+
             createSecurityGroups(claudiaData, tier);
             createNetworks(claudiaData, tier);
             return tierInsertBD(tier, claudiaData);
 
         }
+    }
+
+    private Tier existProductOrSynWithSDCAndUpdateTier(Tier tier) throws InvalidEntityException {
+
+        List<ProductRelease> productReleases = new ArrayList();
+        if (tier.getProductReleases() != null && tier.getProductReleases().size() != 0) {
+            for (ProductRelease prod : tier.getProductReleases()) {
+                try {
+                    prod = productReleaseManager.load(prod.getProduct() + "-" + prod.getVersion());
+                    log.debug("Adding product release " + prod.getProduct() + "-" + prod.getVersion() + " to tier "
+                            + tier.getName());
+                    tier.addProductRelease(prod);
+                    return update(tier);
+                } catch (Exception e2) {
+                    String errorMessage = "The ProductRelease Object " + prod.getProduct() + "-" + prod.getVersion()
+                            + " is " + "NOT present in Database";
+                    log.error(errorMessage);
+                    throw new InvalidEntityException(e2);
+                }
+            }
+        }
+        return tier;
     }
 
     /**
@@ -119,10 +145,11 @@ public class TierManagerImpl implements TierManager {
      * @param tier
      * @return
      * @throws InvalidSecurityGroupRequestException
-     * @throws EntityNotFoundException 
+     * @throws EntityNotFoundException
      */
 
-    private void createSecurityGroups(ClaudiaData claudiaData, Tier tier) throws InvalidSecurityGroupRequestException, EntityNotFoundException {
+    private void createSecurityGroups(ClaudiaData claudiaData, Tier tier) throws InvalidSecurityGroupRequestException,
+            EntityNotFoundException {
         if ((systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")
                 && claudiaData.getVdc() != null && claudiaData.getVdc().length() > 0)) {
 
@@ -220,12 +247,11 @@ public class TierManagerImpl implements TierManager {
         for (Network net : netsAux) {
             tier.deleteNetwork(net);
             tierDao.update(tier);
-            if (isAvailableToBeDeleted (net)) {
-            	log.debug("Deleting network " + net.getNetworkName());
-            	networkManager.delete(net);
+            if (isAvailableToBeDeleted(net)) {
+                log.debug("Deleting network " + net.getNetworkName());
+                networkManager.delete(net);
             }
-           
-            
+
         }
 
         try {
@@ -241,15 +267,15 @@ public class TierManagerImpl implements TierManager {
     }
 
     private boolean isAvailableToBeDeleted(Network net) {
-    	try {
-			tierDao.findAllWithNetwork (net.getNetworkName());
-			return false;
-		} catch (EntityNotFoundException e) {
-			return true;
-		}
-	}
+        try {
+            tierDao.findAllWithNetwork(net.getNetworkName());
+            return false;
+        } catch (EntityNotFoundException e) {
+            return true;
+        }
+    }
 
-	public List<Tier> findAll() {
+    public List<Tier> findAll() {
         return tierDao.findAll();
     }
 
@@ -274,7 +300,7 @@ public class TierManagerImpl implements TierManager {
         if (tier.getProductReleases() != null) {
 
             for (ProductRelease productRelease : tier.getProductReleases()) {
-                getRulesFromProduct (productRelease, rules);
+                getRulesFromProduct(productRelease, rules);
             }
 
         }
@@ -295,22 +321,22 @@ public class TierManagerImpl implements TierManager {
         return rules;
 
     }
-    
+
     private void getRulesFromProduct(ProductRelease productRelease, List<Rule> rules) throws EntityNotFoundException {
-       
+
         productRelease = productReleaseManager.loadWithMetadata(productRelease.getProduct() + "-"
-            + productRelease.getVersion());
-            Metadata openPortsAttribute = productRelease.getMetadata("open_ports");
+                + productRelease.getVersion());
+        Metadata openPortsAttribute = productRelease.getMetadata("open_ports");
         if (openPortsAttribute != null) {
-            log.debug ("Adding product rule " + openPortsAttribute.getValue());
+            log.debug("Adding product rule " + openPortsAttribute.getValue());
             StringTokenizer st = new StringTokenizer(openPortsAttribute.getValue());
             while (st.hasMoreTokens()) {
                 Rule rule = createRulePort(st.nextToken());
                 if (!rules.contains(rule)) {
-                    log.debug ("New rule " );
+                    log.debug("New rule ");
                     rules.add(rule);
                 }
-           }
+            }
         }
     }
 
@@ -341,18 +367,17 @@ public class TierManagerImpl implements TierManager {
             throw new EntityNotFoundException(Tier.class, message, e.getMessage());
         }
     }
-    
+
     public Tier loadTierWithNetworks(String tierName, String vdc, String environmentName)
-        throws EntityNotFoundException {
+            throws EntityNotFoundException {
         try {
             return tierDao.loadTierWithNetworks(tierName, vdc, environmentName);
-      
+
         } catch (Exception e) {
-           String message = "Tier " + tierName + " not found";
-           throw new EntityNotFoundException(Tier.class, message, e.getMessage());
+            String message = "Tier " + tierName + " not found";
+            throw new EntityNotFoundException(Tier.class, message, e.getMessage());
         }
     }
-
 
     private void restore(ClaudiaData claudiaData, Tier tier) throws InvalidEntityException, InfrastructureException {
         if (tier.getSecurityGroup() != null) {
@@ -400,8 +425,7 @@ public class TierManagerImpl implements TierManager {
     public Tier tierInsertBD(Tier tier, ClaudiaData data) throws InvalidEntityException, InfrastructureException {
         List<Network> networskout = new ArrayList();
         try {
-            tier = load(tier.getName(), data.getVdc(), data.getService());
-            return tier;
+            return load(tier.getName(), data.getVdc(), data.getService());
         } catch (EntityNotFoundException e) {
 
             tier.setVdc(data.getVdc());
@@ -432,24 +456,6 @@ public class TierManagerImpl implements TierManager {
                 throw new InvalidEntityException(errorMessage);
             }
 
-            if (productReleases != null && productReleases.size() != 0) {
-
-                for (ProductRelease prod : productReleases) {
-
-                    try {
-                        prod = productReleaseManager.load(prod.getProduct() + "-" + prod.getVersion());
-                        log.debug("Adding product release " + prod.getProduct() + "-" + prod.getVersion() + " to tier "
-                                + tier.getName());
-                        tier.addProductRelease(prod);
-                        tier = update(tier);
-                    } catch (Exception e2) {
-                        String errorMessage = "The ProductRelease Object " + prod.getProduct() + "-"
-                                + prod.getVersion() + " is " + "NOT present in Database";
-                        log.error(errorMessage);
-                        throw new InvalidEntityException(e2);
-                    }
-                }
-            }
         }
 
         for (Network net : networskout) {
