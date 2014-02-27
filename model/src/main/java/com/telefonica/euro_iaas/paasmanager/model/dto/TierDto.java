@@ -211,7 +211,12 @@ public class TierDto {
         }
 
         for (NetworkDto networkDto : this.getNetworksDto()) {
-            Network network = networkDto.fromDto(vdc);
+            Network network ;
+            if (vdc == null) {
+                network = networkDto.fromDto("");
+            } else {
+                network = networkDto.fromDto(vdc);
+            }
             tier.addNetwork(network);
         }
         return tier;

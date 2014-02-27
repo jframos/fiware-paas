@@ -36,8 +36,7 @@ public interface TierResourceValidator {
     
     void validateCreateAbstract (TierDto tierDto, String environmentName) throws InvalidEntityException, AlreadyExistEntityException;
 
-    void validateUpdate(TierDto EnvironmentDto, String vdc, String environmentName,
-            SystemPropertiesProvider systemPropertiesProvider) throws InvalidEntityException, EntityNotFoundException;
+    void validateUpdate(String vdc, String environmentName, String tierName, TierDto EnvironmentDto) throws InvalidEntityException, EntityNotFoundException;
 
     void validateDelete(String vdc, String environmentName, String tierName, SystemPropertiesProvider systemPropertiesProvider)
             throws InvalidEntityException, EntityNotFoundException;

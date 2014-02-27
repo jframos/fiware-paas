@@ -17,10 +17,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.AbstractEnvironmentResource;
+import com.telefonica.euro_iaas.paasmanager.rest.resources.AbstractTierResource;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -31,6 +33,9 @@ public class AbstractEnvironmenTest {
 
     @Autowired
     private AbstractEnvironmentResource abstractEnvironmentResource;
+    
+    @Autowired
+    private AbstractTierResource abstractTierResource;
 
     String org = "FIWARE";
 
@@ -109,7 +114,61 @@ public class AbstractEnvironmenTest {
   
     }
     
-
+    @Test
+    public void testAddAbstractTier() throws APIException  {
+        Environment environment= new Environment();
+        environment.setName("ndame");
+        environment.setDescription("Description First environment");
+        abstractEnvironmentResource.insert(org, environment.toDto());  
+        
+        Tier tier = new Tier("ddd", new Integer(1), new Integer(1), new Integer(1), null);
+        tier.setImage("image");
+        tier.setIcono("icono");
+        tier.setFlavour("flavour");
+        tier.setFloatingip("floatingip");
+        tier.setKeypair("keypair");
+        Network net = new Network("testabstrainsert", "dd");
+        tier.addNetwork(net);
+        
+        abstractTierResource.insert(org, environment.getName(), tier.toDto());
   
-
+    }
+    
+    @Test
+    public void testDeleteAbstractEnv() throws APIException  {
+        Environment environment= new Environment();
+        environment.setName("nameAB");
+        environment.setDescription("Description First environment");
+        Tier tier = new Tier("tierdto2", new Integer(1), new Integer(1), new Integer(1), null);
+        tier.setImage("image");
+        tier.setIcono("icono");
+        tier.setFlavour("flavour");
+        tier.setFloatingip("floatingip");
+        tier.setKeypair("keypair");
+       
+        environment.addTier(tier);
+        abstractEnvironmentResource.insert(org, environment.toDto());  
+        abstractEnvironmentResource.delete(org, environment.getName());
+  
+    }
+    
+    @Test
+    public void testDeleteAbstractEnvWithNetworks() throws APIException  {
+        Environment environment= new Environment();
+        environment.setName("nameABN");
+        environment.setDescription("Description First environment");
+        Tier tier = new Tier("tierdto2", new Integer(1), new Integer(1), new Integer(1), null);
+        tier.setImage("image");
+        tier.setIcono("icono");
+        tier.setFlavour("flavour");
+        tier.setFloatingip("floatingip");
+        tier.setKeypair("keypair");
+        Network net = new Network("list", "dd");
+        tier.addNetwork(net);
+       
+        environment.addTier(tier);
+        abstractEnvironmentResource.insert(org, environment.toDto());  
+        abstractEnvironmentResource.delete(org, environment.getName()); 
+  
+    }
 }

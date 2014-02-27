@@ -160,7 +160,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
         ClaudiaData claudiaData = new ClaudiaData(org, "", environmentName);
 
         try {
-            tierResourceValidator.validateUpdate(tierDto, "", environmentName, systemPropertiesProvider);
+            tierResourceValidator.validateUpdate( "", environmentName,tierDto.getName(), tierDto);
             log.debug("Validated tier " + tierDto.getName() + " from env " + environmentName);
 
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {

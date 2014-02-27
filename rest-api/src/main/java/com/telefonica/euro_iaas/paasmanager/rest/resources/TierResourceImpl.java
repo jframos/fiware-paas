@@ -200,7 +200,7 @@ public class TierResourceImpl implements TierResource {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
 
         try {
-            tierResourceValidator.validateUpdate(tierDto, vdc, environmentName, systemPropertiesProvider);
+            tierResourceValidator.validateUpdate(vdc, environmentName, tierDto.getName(), tierDto);
             log.debug("Validated tier " + tierDto.getName() + " from env " + environmentName);
 
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {

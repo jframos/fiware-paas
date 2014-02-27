@@ -146,11 +146,11 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
     }
 
-    public void validateUpdate(String vdc, String environmentName, String tierName, TierDto tierDto, 
-            SystemPropertiesProvider systemPropertiesProvider) throws InvalidEntityException, EntityNotFoundException {
+    public void validateUpdate(String vdc, String environmentName, String tierName, TierDto tierDto) 
+    throws InvalidEntityException, EntityNotFoundException {
 
         try {
-            Tier tier = tierManager.load(tierName, vdc, environmentName);
+            tierManager.load(tierName, vdc, environmentName);
 
         } catch (EntityNotFoundException e1) {
             log.error("The tier " + tierName + " does not  exists vdc " + vdc + " environmentName "
@@ -163,10 +163,8 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
             throw new InvalidEntityException("it is not possible to change the tier Name");
         }
         
-        if (tierDto == null) {
-            log.error("Tier Name  is null");
-            throw new InvalidEntityException("Tier Name is null");
-        }
+        resourceValidator.validateName(tierDto.getName());
+        validataDefaultTier (tierDto);
 
 
         try {
@@ -176,27 +174,6 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
             throw new InvalidEntityException("Invalid tier in env instance");
         }
 
-       
-
-        
-
-        if (tierDto.getName() == null) {
-            throw new InvalidEntityException("Tier Name from tierDto is null");
-        }
-        if (tierDto.getMaximumNumberInstances() == null || tierDto.getMinimumNumberInstances() == null
-                || tierDto.getInitialNumberInstances() == null) {
-            throw new InvalidEntityException("Number initial, maximun o minimul  "
-                    + "from tierDto is null");
-        }
-        if ("FIWARE".equals(system)) {
-            if (tierDto.getImage() == null) {
-                throw new InvalidEntityException("Tier Image " + "from tierDto is null");
-            }
-            if (tierDto.getFlavour() == null) {
-                throw new InvalidEntityException("Tier Flavour " + "from tierDto is null");
-            }
-
-        }
 
     }
 
