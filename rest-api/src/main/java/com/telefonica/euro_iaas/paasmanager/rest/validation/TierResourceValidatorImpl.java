@@ -184,8 +184,10 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
     }
 
-    public void validateDelete(String vdc, String environmentName, SystemPropertiesProvider systemPropertiesProvider)
+    public void validateDelete(String vdc, String environmentName, String tierName, SystemPropertiesProvider systemPropertiesProvider)
             throws InvalidEntityException, EntityNotFoundException {
+    	
+    	tierManager.load(tierName, vdc, environmentName);
 
         try {
             validateTierInEnvInstance(environmentName, vdc);
