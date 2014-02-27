@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.ws.rs.Path;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityExceptio
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
+import com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
@@ -53,8 +55,11 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
     private SystemPropertiesProvider systemPropertiesProvider;
     
     private EnvironmentResourceValidator environmentResourceValidator;
+    
+    private static Logger log = Logger.getLogger(AbstractEnvironmentResourceImpl.class);
 
     public void delete(String org, String envName) throws APIException {
+        log.debug("Deleting env " + envName + " from org " + org);
         ClaudiaData claudiaData = new ClaudiaData(org, null, null);
 
         try {
@@ -92,6 +97,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
     }
 
     public void insert(String org, EnvironmentDto environmentDto) throws APIException {
+        log.debug("Inserting env " + environmentDto.getName() + " from org " + org);
         ClaudiaData claudiaData = new ClaudiaData (org, "",environmentDto.getName() );
         try {
             environmentManager.load(environmentDto.getName());
@@ -111,6 +117,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
     }
 
     public EnvironmentDto load(String org, String name) throws APIException {
+        log.debug("Loading env " + name + " from org " + org);
         try {
             Environment envInstance = environmentManager.load(name);
             EnvironmentDto envDto = envInstance.toDto();
