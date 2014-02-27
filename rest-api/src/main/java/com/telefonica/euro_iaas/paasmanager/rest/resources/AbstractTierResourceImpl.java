@@ -76,19 +76,19 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
             tierManager.delete(claudiaData, tier);
         } catch (Exception e) {
             log.error("Error deleting the tier " + e.getMessage());
-            throw new APIException(e, 500);
+            throw new APIException(e);
         }
 
     }
 
-    public List<TierDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String environment) {
+    public List<TierDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String environment) throws APIException {
         TierSearchCriteria criteria = new TierSearchCriteria();
         Environment env = null;
         try {
             env = environmentManager.load(environment);
 
         } catch (EntityNotFoundException e) {
-            throw new WebApplicationException(e, 404);
+            throw new APIException(e, 404);
         }
 
         criteria.setEnvironment(env);
@@ -115,7 +115,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
             return tierDto;
 
         } catch (EntityNotFoundException e) {
-            throw new WebApplicationException(e, 404);
+            throw new APIException(e);
         }
 
     }

@@ -40,7 +40,7 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 /**
  * default Environment implementation
  * 
- * @author Henar Mu�oz
+ * @author Henar Munoz
  */
 @Path("/catalog/org/{org}/environment")
 @Component
@@ -60,12 +60,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
         try {
             Environment env = environmentManager.load(envName);
             environmentManager.destroy(claudiaData, env);
-
-        } catch (EntityNotFoundException e) {
-            throw new APIException(e, 404);
-        } catch (InfrastructureException e) {
-            throw new APIException(e, 500);
-        } catch (InvalidEntityException e) {
+        } catch (Exception e) {
             throw new APIException(e);
         }
 
@@ -97,7 +92,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
     }
 
     public void insert(String org, EnvironmentDto environmentDto) throws APIException {
-        
+        ClaudiaData claudiaData = new ClaudiaData (org, "",environmentDto.getName() );
         try {
             environmentManager.load(environmentDto.getName());
             throw new APIException(new AlreadyExistEntityException("The enviornment " + environmentDto.getName()
@@ -107,7 +102,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
 
             try {
                 environmentResourceValidator.validateAbstractCreate(environmentDto);
-                environmentManager.create(null, environmentDto.fromDto());
+                environmentManager.create(claudiaData, environmentDto.fromDto(org, ""));
             } catch (Exception e) {
                 throw new APIException(e);
             }
@@ -122,7 +117,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
 
             return envDto;
         } catch (EntityNotFoundException e) {
-            throw new APIException(e, 404);
+            throw new APIException(e);
         }
     }
 

@@ -60,6 +60,7 @@ public interface AbstractTierResource {
      * @param orderType
      *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
      * @return the Tiers.
+     * @throws APIException 
      */
 
     @GET
@@ -67,7 +68,7 @@ public interface AbstractTierResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<TierDto> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
             @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType,
-            @PathParam("environment") String environment);
+            @PathParam("environment") String environment) throws APIException;
 
     /**
      * Retrieve the selected Tier.
