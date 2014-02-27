@@ -6,7 +6,10 @@
  */
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
+
+
 
 /**
  * Validator.
@@ -14,6 +17,8 @@ import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
  *
  */
 public interface ResourceValidator {
+
+
 	
 	/**
 	 * It validates a name.

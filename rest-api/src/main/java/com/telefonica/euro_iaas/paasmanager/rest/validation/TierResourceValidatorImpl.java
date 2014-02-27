@@ -17,10 +17,11 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+
 import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
@@ -47,6 +48,7 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
     private EnvironmentInstanceManager environmentInstanceManager;
     private EnvironmentManager environmentManager;
     private QuotaClient quotaClient;
+    private ResourceValidator resourceValidator;
 
     /*
      * (non-Javadoc)
@@ -54,14 +56,10 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
      * #validateCreate(com.telefonica.euro_iaas .paasmanager.model.dto.EnvironmentDto)
      */
     public void validateCreate(ClaudiaData claudiaData, TierDto tierDto, String vdc, String environmentName,
-            SystemPropertiesProvider systemPropertiesProvider) throws InvalidEntityException,
-            AlreadyExistEntityException, InfrastructureException, QuotaExceededException {
+            SystemPropertiesProvider systemPropertiesProvider) throws 
+            AlreadyExistEntityException, InfrastructureException, QuotaExceededException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
 
-        if (tierDto == null) {
-            log.error("Tier Name  is null");
-            throw new InvalidEntityException(tierDto, new Exception("Tier Name " + " is null"));
-        }
-
+       
         try {
             tierManager.load(tierDto.getName(), vdc, environmentName);
             log.error("The tier " + tierDto.getName() + " already exists in ");
@@ -76,18 +74,22 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
     }
 
     private void validateCreateTier(ClaudiaData claudiaData, TierDto tierDto,
-            SystemPropertiesProvider systemPropertiesProvider) throws InvalidEntityException, InfrastructureException,
-            QuotaExceededException {
+            SystemPropertiesProvider systemPropertiesProvider) throws  InfrastructureException,
+            QuotaExceededException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+    	
+    	
         String system = systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
         if (tierDto.getName() == null) {
             log.error("Tier name is Null");
-            throw new InvalidEntityException(tierDto, new Exception("Tier Name " + "from tierDto is null"));
+            throw new InvalidEntityException("Tier Name " + "from tierDto is null");
         }
+        resourceValidator.validateName (tierDto.getName());
+
         if (tierDto.getMaximumNumberInstances() == null || tierDto.getMinimumNumberInstances() == null
                 || tierDto.getInitialNumberInstances() == null) {
             log.error("Number initial, maximun o minimul from tierDto " + tierDto.getName() + " is null");
-            throw new InvalidEntityException(tierDto, new Exception("Number initial, maximum or minimum  "
-                    + "from tierDto is null"));
+            throw new InvalidEntityException("Number initial, maximum or minimum  "
+                    + "from tierDto is null");
         }
 
         if (!(tierDto.getMinimumNumberInstances() <= tierDto.getInitialNumberInstances() && tierDto
@@ -95,15 +97,15 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
             String men = "Error in the Number initial " + tierDto.getInitialNumberInstances() + " with number min "
                     + tierDto.getMinimumNumberInstances() + " and number max " + tierDto.getMaximumNumberInstances();
             log.error(men);
-            throw new InvalidEntityException(tierDto, new Exception(men));
+            throw new InvalidEntityException(men);
         }
 
         if ("FIWARE".equals(system)) {
             if (tierDto.getImage() == null) {
-                throw new InvalidEntityException(tierDto, new Exception("Tier Image " + "from tierDto is null"));
+                throw new InvalidEntityException("Tier Image from tierDto is null");
             }
             if (tierDto.getFlavour() == null) {
-                throw new InvalidEntityException(tierDto, new Exception("Tier Flavour " + "from tierDto is null"));
+                throw new InvalidEntityException("Tier Flavour from tierDto is null");
             }
 
         }
@@ -142,14 +144,14 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
         if (tierDto == null) {
             log.error("Tier Name  is null");
-            throw new InvalidEntityException(tierDto, new Exception("Tier Name " + " is null"));
+            throw new InvalidEntityException("Tier Name is null");
         }
 
         try {
             validateTierInEnvInstance(environmentName, vdc);
         } catch (InvalidEnvironmentRequestException e) {
             log.error("Invalid tier in env instance");
-            throw new InvalidEntityException(tierDto, e);
+            throw new InvalidEntityException("Invalid tier in env instance");
         }
 
         String system = systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
@@ -165,19 +167,19 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
         }
 
         if (tierDto.getName() == null) {
-            throw new InvalidEntityException(tierDto, new Exception("Tier Name " + "from tierDto is null"));
+            throw new InvalidEntityException("Tier Name from tierDto is null");
         }
         if (tierDto.getMaximumNumberInstances() == null || tierDto.getMinimumNumberInstances() == null
                 || tierDto.getInitialNumberInstances() == null) {
-            throw new InvalidEntityException(tierDto, new Exception("Number initial, maximun o minimul  "
-                    + "from tierDto is null"));
+            throw new InvalidEntityException("Number initial, maximun o minimul  "
+                    + "from tierDto is null");
         }
         if ("FIWARE".equals(system)) {
             if (tierDto.getImage() == null) {
-                throw new InvalidEntityException(tierDto, new Exception("Tier Image " + "from tierDto is null"));
+                throw new InvalidEntityException("Tier Image " + "from tierDto is null");
             }
             if (tierDto.getFlavour() == null) {
-                throw new InvalidEntityException(tierDto, new Exception("Tier Flavour " + "from tierDto is null"));
+                throw new InvalidEntityException("Tier Flavour " + "from tierDto is null");
             }
 
         }
@@ -193,7 +195,7 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
             validateTierInEnvInstance(environmentName, vdc);
         } catch (InvalidEnvironmentRequestException e) {
             log.error("Invalid tier in env instance");
-            throw new InvalidEntityException(new Tier(), e);
+            throw new InvalidEntityException("Invalid tier in env instance");
         }
 
     }
@@ -223,7 +225,7 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
     }
 
     public void validateTiersDependencies(String environmentName, String vdc, Set<TierDto> tierDtoList)
-            throws InvalidEnvironmentRequestException {
+            throws InvalidEntityException {
 
         List<Tier> tiers = new ArrayList<Tier>(2);
         try {
@@ -235,7 +237,7 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
         } catch (EntityNotFoundException e) {
             String message = "Some tier in vdc " + vdc + " with environment " + environmentName + " does not exist";
             log.error(message);
-            throw new InvalidEnvironmentRequestException(message);
+            throw new InvalidEntityException(message);
         }
 
         List<String> allDependencies = createDependenciesForTiers(tiers);
@@ -243,11 +245,11 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
         boolean result = checkTierProductsInDependencyList(allDependencies, allProducts);
         if (!result) {
             String message = "Please review dependencies. Some productrelease is mandatory";
-            throw new InvalidEnvironmentRequestException(message);
+            throw new InvalidEntityException(message);
         }
 
     }
-
+        
     /**
      * Check all the dependencies for a product in a map of dependencies.
      * 
@@ -322,6 +324,9 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
     public void setQuotaClient(QuotaClient quotaClient) {
         this.quotaClient = quotaClient;
+    }
+    public void setResourceValidator (ResourceValidator resourceValidator) {
+    	this.resourceValidator = resourceValidator;
     }
 
 }

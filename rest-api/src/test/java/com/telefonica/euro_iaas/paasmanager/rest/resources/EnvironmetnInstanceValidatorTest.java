@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -24,10 +25,11 @@ import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+
 import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
@@ -38,6 +40,7 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentInstanceResourceValidatorImpl;
+import com.telefonica.euro_iaas.paasmanager.rest.validation.ResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.TierResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
@@ -47,14 +50,20 @@ public class EnvironmetnInstanceValidatorTest extends TestCase {
     EnvironmentInstanceDao environmentInstanceDao;
     Environment environment;
     SystemPropertiesProvider systemPropertiesProvider;
+    ResourceValidator resourceValidator;
 
     @Before
     public void setUp() throws Exception {
         validator = new EnvironmentInstanceResourceValidatorImpl();
         tierResourceValidator = mock(TierResourceValidator.class);
         environmentInstanceDao = mock(EnvironmentInstanceDao.class);
+        resourceValidator = mock(ResourceValidator.class);
         validator.setEnvironmentInstanceDao(environmentInstanceDao);
         validator.setTierResourceValidator(tierResourceValidator);
+        validator.setResourceValidator(resourceValidator);
+        
+        Mockito.doNothing().when(resourceValidator).validateName(anyString());
+		Mockito.doNothing().when(resourceValidator).validateDescription(anyString());
 
         ProductRelease productRelease = new ProductRelease("product", "2.0");
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
@@ -95,43 +104,10 @@ public class EnvironmetnInstanceValidatorTest extends TestCase {
 
     }
 
-    @Test
-    public void testCreateEnviornmentInstanceNoBlueprintName() throws Exception {
-        EnvironmentInstanceDto environmentInstanceDto = new EnvironmentInstanceDto();
-        environmentInstanceDto.setDescription("description");
-        environmentInstanceDto.setEnvironmentDto(environment.toDto());
-        boolean exception = false;
-        ClaudiaData claudiaData = mock(ClaudiaData.class);
-
-        try {
-            validator.validateCreate(environmentInstanceDto, systemPropertiesProvider, claudiaData);
-        } catch (InvalidEnvironmentRequestException e) {
-            exception = true;
-        }
-        assertTrue(exception);
-    }
 
     @Test
-    public void testCreateEnviornmentInstanceNoDescription() throws Exception {
-        EnvironmentInstanceDto environmentInstanceDto = new EnvironmentInstanceDto();
-        environmentInstanceDto.setEnvironmentDto(environment.toDto());
-        environmentInstanceDto.setBlueprintName("blueprintName");
-
-        ClaudiaData claudiaData = mock(ClaudiaData.class);
-
-        boolean exception = false;
-        try {
-            validator.validateCreate(environmentInstanceDto, systemPropertiesProvider, claudiaData);
-        } catch (InvalidEnvironmentRequestException e) {
-            exception = true;
-        }
-        assertTrue(exception);
-
-    }
-
-    @Test
-    public void testCreateEnviornmentInstanceNoEnvironment() throws InvalidEnvironmentRequestException,
-            EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException, InfrastructureException,
+    public void testCreateEnviornmentInstanceNoEnvironment() throws 
+            EntityNotFoundException, AlreadyExistsEntityException, InfrastructureException,
             InvalidOVFException, QuotaExceededException {
         EnvironmentInstanceDto environmentInstanceDto = new EnvironmentInstanceDto();
         environmentInstanceDto.setDescription("description");
@@ -141,7 +117,7 @@ public class EnvironmetnInstanceValidatorTest extends TestCase {
 
         try {
             validator.validateCreate(environmentInstanceDto, systemPropertiesProvider, claudiaData);
-        } catch (InvalidEnvironmentRequestException e) {
+        } catch (InvalidEntityException e) {
             exception = true;
         }
         assertTrue(exception);

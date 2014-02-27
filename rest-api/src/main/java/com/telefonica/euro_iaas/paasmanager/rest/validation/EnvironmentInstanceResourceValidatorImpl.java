@@ -29,6 +29,7 @@ import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
 import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
@@ -54,22 +55,23 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
     private QuotaClient quotaClient;
     private ProductReleaseManager productReleaseManager;
+    private ResourceValidator resourceValidator;
 
     /** The log. */
     private static Logger log = Logger.getLogger(EnvironmentInstanceResourceValidatorImpl.class);
 
-    public void validateCreatePayload(String payload) throws InvalidEnvironmentRequestException {
+    public void validateCreatePayload(String payload) throws InvalidEntityException {
         try {
             Document doc = claudiaUtil.stringToDom(payload);
 
             // EnvironmentName validation
             Node virtualSystem = doc.getElementsByTagName(VIRTUALSYSTEMCOLLECTION).item(0);
             if (virtualSystem == null)
-                throw new InvalidEnvironmentRequestException("VirtualSystemCollection is null");
+                throw new InvalidEntityException("VirtualSystemCollection is null");
 
             Node environmentNameElement = virtualSystem.getAttributes().getNamedItem(GENERAL_ID);
             if (environmentNameElement == null)
-                throw new InvalidEnvironmentRequestException("EnvironmentName is null");
+                throw new InvalidEntityException("EnvironmentName is null");
 
             // ProductName and Version Validation
             NodeList productNameNodeList = doc.getElementsByTagName(extendedOVFUtil.PRODUCTNAME_TAG);
@@ -79,28 +81,28 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
             for (int i = 0; i < productNameNodeList.getLength(); i++) {
                 Node productNameNode = doc.getElementsByTagName(extendedOVFUtil.PRODUCTNAME_TAG).item(i);
                 if (productNameNode == null)
-                    throw new InvalidEnvironmentRequestException("productName is null");
+                    throw new InvalidEntityException("productName is null");
             }
 
             for (int i = 0; i < productVersionNodeList.getLength(); i++) {
                 Node productVersionNode = doc.getElementsByTagName(PRODUCTNAME_TAG).item(i);
                 if (productVersionNode == null)
-                    throw new InvalidEnvironmentRequestException("productVersion is null");
+                    throw new InvalidEntityException("productVersion is null");
             }
 
         } catch (SAXException e) {
             String errorMessage = "SAXException when obtaining ProductRelease." + " Desc: " + e.getMessage();
             log.error(errorMessage);
-            throw new InvalidEnvironmentRequestException(errorMessage);
+            throw new InvalidEntityException(errorMessage);
         } catch (ParserConfigurationException e) {
             String errorMessage = "ParserConfigurationException when obtaining " + "ProductRelease. Desc: "
                     + e.getMessage();
             log.error(errorMessage);
-            throw new InvalidEnvironmentRequestException(errorMessage);
+            throw new InvalidEntityException(errorMessage);
         } catch (IOException e) {
             String errorMessage = "IOException when obtaining " + "ProductRelease. Desc: " + e.getMessage();
             log.error(errorMessage);
-            throw new InvalidEnvironmentRequestException(errorMessage);
+            throw new InvalidEntityException(errorMessage);
         }
 
     }
@@ -112,25 +114,20 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
      */
     public void validateCreate(EnvironmentInstanceDto environmentInstanceDto,
             SystemPropertiesProvider systemPropertiesProvider, ClaudiaData claudiaData)
-            throws InvalidEnvironmentRequestException, QuotaExceededException {
+            throws InvalidEntityException, QuotaExceededException {
 
-        if (environmentInstanceDto.getBlueprintName() == null) {
-            log.error("EnvironmentBlueprintName " + "from EnvironmentDto BlueprintName is null");
-            throw new InvalidEnvironmentRequestException("EnvironmentBlueprintName "
-                    + "from EnviromentDto BlueprintName is null");
-        }
-
-        if (environmentInstanceDto.getDescription() == null) {
-            log.error("EnvironmentDescription " + "from EnvironmentDto Description is null");
-            throw new InvalidEnvironmentRequestException("EnvironmentDescription "
-                    + "from EnviromentDto Description is null");
-        }
+    	
 
         if (environmentInstanceDto.getEnvironmentDto() == null) {
             log.error("The environment to be deployed is null ");
-            throw new InvalidEnvironmentRequestException("The environment to be deployed is null ");
+            throw new InvalidEntityException("The environment to be deployed is null ");
         }
 
+
+		resourceValidator.validateName (environmentInstanceDto.getBlueprintName());
+		resourceValidator.validateDescription (environmentInstanceDto.getDescription());
+	
+        
         log.debug("Validate enviornment instance blueprint " + environmentInstanceDto.getBlueprintName()
                 + " description " + environmentInstanceDto.getDescription() + " environment "
                 + environmentInstanceDto.getEnvironmentDto());
@@ -143,13 +140,13 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
         List<EnvironmentInstance> envInstances = environmentInstanceDao.findByCriteria(criteria);
 
         if (envInstances.size() != 0) {
-            throw new InvalidEnvironmentRequestException("The environment instance "
+            throw new InvalidEntityException("The environment instance "
                     + environmentInstanceDto.getBlueprintName() + " already exists");
         }
 
         if (environmentInstanceDto.getEnvironmentDto().getTierDtos() == null) {
             log.error("There are no tiers " + "defined in EnvironmentDto object");
-            throw new InvalidEnvironmentRequestException("There are no tiers " + "defined in EnvironmentDto object");
+            throw new InvalidEntityException("There are no tiers " + "defined in EnvironmentDto object");
         }
 
         String system = systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
@@ -173,38 +170,38 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
                         + "Please revise the length of " + "BluePrint Instance Name "
                         + environmentInstanceDto.getBlueprintName() + " and tierName " + tierDto.getName();
                 log.error(message);
-                throw new InvalidEnvironmentRequestException(message);
+                throw new InvalidEntityException(message);
             }
         }
 
         validateQuota(claudiaData, environmentInstanceDto);
     }
 
-    public void validateTier(TierDto tierDto) throws InvalidEnvironmentRequestException {
+    public void validateTier(TierDto tierDto) throws InvalidEntityException {
 
         if (tierDto.getMaximumNumberInstances() == null) {
-            throw new InvalidEnvironmentRequestException("Maximum Number Instances " + "from tierDto is null");
+            throw new InvalidEntityException("Maximum Number Instances " + "from tierDto is null");
         }
         if (tierDto.getMinimumNumberInstances() == null) {
-            throw new InvalidEnvironmentRequestException("Minimum Number Instances " + "from tierDto is null");
+            throw new InvalidEntityException("Minimum Number Instances " + "from tierDto is null");
         }
         if (tierDto.getInitialNumberInstances() == null) {
-            throw new InvalidEnvironmentRequestException("Initial Number Instances " + "from tierDto is null");
+            throw new InvalidEntityException("Initial Number Instances " + "from tierDto is null");
         }
         if (tierDto.getName() == null) {
-            throw new InvalidEnvironmentRequestException("Tier Name " + "from tierDto is null");
+            throw new InvalidEntityException("Tier Name " + "from tierDto is null");
         }
         if (tierDto.getImage() == null) {
-            throw new InvalidEnvironmentRequestException("Tier Image " + "from tierDto is null");
+            throw new InvalidEntityException("Tier Image " + "from tierDto is null");
         }
         if (tierDto.getFlavour() == null) {
-            throw new InvalidEnvironmentRequestException("Tier Flavour " + "from tierDto is null");
+            throw new InvalidEntityException("Tier Flavour " + "from tierDto is null");
         }
 
     }
 
     public void validateQuota(ClaudiaData claudiaData, EnvironmentInstanceDto environmentInstanceDto)
-            throws InvalidEnvironmentRequestException, QuotaExceededException {
+            throws QuotaExceededException, InvalidEntityException {
 
         Map<String, Limits> limits = new HashMap<String, Limits>();
 
@@ -219,7 +216,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
                     try {
                         limits.put(region, quotaClient.getLimits(claudiaData, region));
                     } catch (InfrastructureException e) {
-                        throw new InvalidEnvironmentRequestException("Failed in getLimits " + e.getMessage());
+                        throw new InvalidEntityException("Failed in getLimits " + e.getMessage());
                     }
                 }
 
@@ -262,7 +259,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
             }
         }
-    }
+    }    
 
     /**
      * @param claudiaUtil
@@ -286,6 +283,10 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
     public void setQuotaClient(QuotaClient quotaClient) {
         this.quotaClient = quotaClient;
+    }
+    
+    public void setResourceValidator (ResourceValidator resourceValidator) {
+    	this.resourceValidator = resourceValidator;
     }
 
 }

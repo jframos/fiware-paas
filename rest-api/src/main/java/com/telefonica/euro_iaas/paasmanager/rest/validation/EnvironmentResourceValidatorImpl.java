@@ -36,6 +36,7 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
     private TierResourceValidator tierResourceValidator;
     private EnvironmentManager environmentManager;
     private EnvironmentInstanceManager environmentInstanceManager;
+    private ResourceValidator resourceValidator;
 
     /*
      * (non-Javadoc)
@@ -44,7 +45,7 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
      */
     public void validateCreate(ClaudiaData claudiaData, EnvironmentDto environmentDto, String vdc,
             SystemPropertiesProvider systemPropertiesProvider) throws InvalidEnvironmentRequestException,
-            AlreadyExistEntityException, InvalidEntityException {
+            AlreadyExistEntityException, InvalidEntityException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
 
         try {
             environmentManager.load(environmentDto.getName(), vdc);
@@ -52,17 +53,10 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
             throw new AlreadyExistEntityException("The environment " + environmentDto.getName() + " already exists");
 
         } catch (EntityNotFoundException e1) {
-
-            if (environmentDto.getName() == null) {
-                log.error("EnvironmentName " + "from EnvironmentDto is null");
-                throw new InvalidEnvironmentRequestException("EnvironmentName " + "from EnvironmentDto is null");
-            }
-            if (environmentDto.getDescription() == null) {
-                log.error("EnvironmentDescription " + "from EnvironmentDto is null");
-                throw new InvalidEnvironmentRequestException("EnvironmentDescription " + "from EnvironmentDto is null");
-            }
-
+        	resourceValidator.validateName(environmentDto.getName());
+        	resourceValidator.validateDescription(environmentDto.getDescription());
         }
+
 
         if (environmentDto.getTierDtos() != null) {
 
@@ -72,8 +66,6 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
                 try {
                     tierResourceValidator.validateCreate(claudiaData, tierDto, vdc, environmentDto.getName(),
                             systemPropertiesProvider);
-                } catch (InvalidEntityException e) {
-                    throw new InvalidEnvironmentRequestException("Tier is invalid", e);
                 } catch (AlreadyExistEntityException e) {
                     throw new InvalidEnvironmentRequestException("The tier " + tierDto.getName()
                             + " already exist in the vdc " + vdc, e);
@@ -97,7 +89,7 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
         }
 
     }
-
+    
     public void validateDelete(String environmentName, String vdc, SystemPropertiesProvider systemPropertiesProvider)
             throws EntityNotFoundException, InvalidEnvironmentRequestException {
         Environment environment = null;
@@ -147,6 +139,9 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
 
     public void setEnvironmentInstanceManager(EnvironmentInstanceManager environmentInstanceManager) {
         this.environmentInstanceManager = environmentInstanceManager;
+    }
+    public void setResourceValidator (ResourceValidator resourceValidator) {
+    	this.resourceValidator = resourceValidator;
     }
 
 }

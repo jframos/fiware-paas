@@ -75,7 +75,7 @@ public class TierTest {
     @Test
     public void testCreateTierOK() throws Exception {
         Environment environment2 = new Environment();
-        environment2.setName("create_tier_ok");
+        environment2.setName("env2");
         environment2.setDescription("description");
 
         environmentResource.insert(org, vdc, environment2.toDto());
@@ -88,7 +88,7 @@ public class TierTest {
         assertEquals(tomcat7Att.getProduct(), "tomcat8");
         assertEquals(tomcat7Att.getVersion(), "78");
 
-        Tier tierbk = new Tier("tiercreated_ok", new Integer(1), new Integer(1), new Integer(1), null);
+        Tier tierbk = new Tier("dd", new Integer(1), new Integer(1), new Integer(1), null);
         tierbk.setImage("image");
         tierbk.setIcono("icono");
         tierbk.setFlavour("flavour");
@@ -98,9 +98,9 @@ public class TierTest {
         tierbk.addProductRelease(tomcat7Att);
         tierbk.setRegion("regionOne");
 
-        tierResource.insert(org, vdc, "create_tier_ok", tierbk.toDto());
-        TierDto tierDto = tierResource.load(vdc, "create_tier_ok", "tiercreated_ok");
-        assertEquals(tierDto.getName(), "tiercreated_ok");
+        tierResource.insert(org, vdc, environment2.getName(), tierbk.toDto());
+        TierDto tierDto = tierResource.load(vdc, environment2.getName(),tierbk.getName());
+        assertEquals(tierDto.getName(), tierbk.getName());
         assertEquals(tierDto.getProductReleaseDtos().size(), 1);
         assertEquals(tierDto.getProductReleaseDtos().get(0).getProductName(), "tomcat8");
         assertEquals("regionOne", tierDto.getRegion());
@@ -109,7 +109,7 @@ public class TierTest {
     @Test(expected = APIException.class)
     public void testCreateTierAlreadyExist() throws Exception {
         Environment environmentBk = new Environment();
-        environmentBk.setName("create_tier_already");
+        environmentBk.setName("createtieralready");
         environmentBk.setDescription("description");
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
@@ -122,8 +122,8 @@ public class TierTest {
         tierbk.setPayload("");
         tierbk.setKeypair("keypair");
 
-        tierResource.insert(org, vdc, "create_tier_already", tierbk.toDto());
-        tierResource.insert(org, vdc, "create_tier_already", tierbk.toDto());
+        tierResource.insert(org, vdc, "createtieralready", tierbk.toDto());
+        tierResource.insert(org, vdc, "createtieralready", tierbk.toDto());
     }
 
     @Test(expected = Exception.class)

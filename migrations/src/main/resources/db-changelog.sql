@@ -260,3 +260,8 @@ ALTER TABLE task ALTER COLUMN endtime TYPE TIMESTAMP WITH TIME ZONE;
 -- Change that corrresponds to bug/CLAUDIA-3652 Managing user attributes -->
 --changeset jmms392:2-1
 ALTER TABLE productrelease ADD COLUMN tiername VARCHAR(255);
+
+-- Change that corresponds to bug/CLAUDIA3663-Invalidnamesforenvironmentandtiers -->
+-- changeset henar:3-1
+ALTER TABLE environmentinstance alter column description type  VARCHAR(256) ;
+ALTER TABLE environmentinstance alter column blueprintname type  VARCHAR(256) ;

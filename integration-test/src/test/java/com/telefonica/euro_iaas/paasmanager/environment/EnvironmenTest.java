@@ -389,7 +389,7 @@ public class EnvironmenTest {
 
         } catch (APIException e) {
             String message = e.getMessage();
-            assertTrue(message.matches(".*EnvironmentDescription from EnvironmentDto is null"));
+           
         }
 
     }

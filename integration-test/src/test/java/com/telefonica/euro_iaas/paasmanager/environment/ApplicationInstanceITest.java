@@ -81,14 +81,14 @@ public class ApplicationInstanceITest {
     String vdc = "6571e3422ad84f7d828ce2f30373b3d4";
     String PRODUCT_NAME = "productApp";
     String PRODUCT_VERSION = "VERSION"; 
-    String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
+    String ENVIRONMENT_NAME = "ENVIRONMENTNAME";
     String DESCRIPTION = "VERSION";
-    String TIER_NAME = "TIER_NAME";
-    String BLUEPRINT_NAME = "BLUEPRINT_NAME";
-    public static String ARTIFACT_NAME ="ARTIFACT_NAME";
-    public static String ARTIFACT_PATH ="ARTIFACT_PATH";
-    public static String APP_NAME ="APP_NAME";
-    public static String APP_VERSION="APP_VERSION";
+    String TIER_NAME = "TIERNAME";
+    String BLUEPRINT_NAME = "BLUEPRINTNAME";
+    public static String ARTIFACT_NAME ="ARTIFACTNAME";
+    public static String ARTIFACT_PATH ="ARTIFACTPATH";
+    public static String APP_NAME ="APPNAME";
+    public static String APP_VERSION="APPVERSION";
 
     
 

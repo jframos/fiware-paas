@@ -11,6 +11,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -21,22 +23,56 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
+
+
+import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
+
+import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
+
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+
 import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
+
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 public class TierResourceValidatorImplTest {
+	
+	TierResourceValidatorImpl tierResourceValidator ;
+	SystemPropertiesProvider systemPropertiesProvider;
+	ResourceValidator resourceValidator;
+	
+	@Before
+	public void setUp () throws EntityNotFoundException, InvalidEntityException {
+		tierResourceValidator = new TierResourceValidatorImpl();
+		TierManager tierManager=mock(TierManager.class);
+        systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+        tierResourceValidator.setTierManager(tierManager);
+        
+		resourceValidator = mock(ResourceValidator.class);
+		tierResourceValidator.setResourceValidator(resourceValidator);
+  
+		Mockito.doNothing().when(resourceValidator).validateName(anyString());
+		Mockito.doNothing().when(resourceValidator).validateDescription(anyString());
+		Tier tier = new Tier ();
+		when(tierManager.load(anyString(), anyString(), anyString())).thenThrow(new EntityNotFoundException(Tier.class, "tier", tier));
+		
+	}
 
     @Test
     public void shouldReturnTrueWhenAllDependenciesForProductExists() {
         // given
-        TierResourceValidatorImpl tierResourceValidator = new TierResourceValidatorImpl();
+        
 
         Map<String, String> productsNameMap = new HashMap<String, String>();
         productsNameMap.put("tomcat-6", "");
@@ -189,7 +225,7 @@ public class TierResourceValidatorImplTest {
     }
 
     @Test
-    public void shouldValidateATierDependencies() throws EntityNotFoundException, InvalidEnvironmentRequestException {
+    public void shouldValidateATierDependencies() throws EntityNotFoundException, InvalidEntityException {
         // given
         TierResourceValidatorImpl tierResourceValidator = new TierResourceValidatorImpl();
         Set<TierDto> tierDTOlist = new HashSet<TierDto>(2);
@@ -209,9 +245,9 @@ public class TierResourceValidatorImplTest {
         // then
     }
 
-    @Test(expected = InvalidEnvironmentRequestException.class)
-    public void shouldThrowExceptionInValidateATierWithDependencyThatNotExist() throws EntityNotFoundException,
-            InvalidEnvironmentRequestException {
+    @Test(expected = InvalidEntityException.class)
+    public void shouldThrowExceptionInValidateATierWithDependencyThatNotExist() throws EntityNotFoundException, InvalidEntityException
+             {
         // given
         TierResourceValidatorImpl tierResourceValidator = new TierResourceValidatorImpl();
         Set<TierDto> tierDTOlist = new HashSet<TierDto>(2);
@@ -241,4 +277,39 @@ public class TierResourceValidatorImplTest {
         tierResourceValidator.validateTiersDependencies(environmentName, vdc, tierDTOlist);
         // then
     }
+    
+    @Test(expected = InvalidEntityException.class)
+    public void shouldValidateEmptyNameTier() throws AlreadyExistEntityException, InvalidEntityException, InfrastructureException, QuotaExceededException {
+        // given
+        ClaudiaData claudiaData = mock(ClaudiaData.class);
+        TierDto tierDto = new TierDto();
+        tierDto.setName("");
+        tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName", systemPropertiesProvider);
+    }
+    
+    @Test(expected = InvalidEntityException.class)
+    public void shouldValidateStrangeCharacteresEnvironment() throws AlreadyExistEntityException, 
+    InvalidEntityException, InfrastructureException, QuotaExceededException {
+        // given
+         
+    	TierDto tierDto = new TierDto();
+    	tierDto.setName("name.name");
+        
+        ClaudiaData claudiaData = mock(ClaudiaData.class);
+        tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName", systemPropertiesProvider);
+    }
+    @Test(expected = InvalidEntityException.class)
+    public void shouldValidateNameTooLong() throws AlreadyExistEntityException, 
+    	InfrastructureException, QuotaExceededException, InvalidEntityException  {
+        // given
+         
+    	TierDto tierDto = new TierDto();
+    	tierDto.setName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+        		"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        
+        ClaudiaData claudiaData = mock(ClaudiaData.class);
+        tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName", systemPropertiesProvider);
+
+    }
+
 }

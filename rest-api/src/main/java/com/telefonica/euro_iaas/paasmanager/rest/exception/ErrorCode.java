@@ -7,6 +7,9 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.exception;
 
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
+import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
+
 public enum ErrorCode {
 
     DB_CONNECTION(20, "Could not open connection to database", "(.*)JDBCConnectionException(.*)", 500),
@@ -18,6 +21,10 @@ public enum ErrorCode {
             "The environment is being used by an instance",
             "(.*)InvalidEnvironmentRequestException: (.*)is being used(.*)",
             403),
+    NAME_NO_VALID(41,
+                    "The name is not valid",
+                    "(.*)InvalidEntityException:(.*)",
+                    400),
     INFRASTRUCTURE(50, "OpenStack infrastructure failure", "(.*)InfrastructureException(.*)", 500),
     DEFAULT(500, "Internal PaasManager Server error", "(?s).*", 500);
 

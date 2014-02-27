@@ -80,7 +80,7 @@ public class EnvironmenInstanceITest {
         assertEquals(product.getVersion(), "7");
 
         Environment environmentBk = new Environment();
-        environmentBk.setName("testCreatedEnvirionmentInstance");
+        environmentBk.setName("tCEI");
         environmentBk.setDescription("Description First environment");
         Tier tierbk = new Tier("tierdtotest", new Integer(1), new Integer(1), new Integer(1), null);
         tierbk.setImage("image");
@@ -94,7 +94,7 @@ public class EnvironmenInstanceITest {
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
 
-        Environment env2 = environmentManager.load("testCreatedEnvirionmentInstance");
+        Environment env2 = environmentManager.load("tCEI");
 
         EnvironmentInstanceDto envInst = new EnvironmentInstanceDto();
         envInst.setBlueprintName("blueprintname");
@@ -118,7 +118,7 @@ public class EnvironmenInstanceITest {
         EnvironmentInstance envInstResult = environmentInstanceManager.load(vdc, "blueprintname");
         assertNotNull(envInstResult);
         assertEquals(envInstResult.getBlueprintName(), "blueprintname");
-        assertEquals(envInstResult.getEnvironment().getName(), "testCreatedEnvirionmentInstance");
+        assertEquals(envInstResult.getEnvironment().getName(), "tCEI");
 
         TierInstance tierInstance = tierInstanceManager.load("blueprintname-tierdtotest-1");
         assertEquals(tierInstance.getName(), "blueprintname-tierdtotest-1");
@@ -156,7 +156,7 @@ public class EnvironmenInstanceITest {
 
         } catch (APIException e) {
             String message = e.getMessage();
-            int result = message.indexOf("Description is null");
+            int result = message.indexOf("is null");
 
             assertTrue(result != -1);
         }
@@ -172,7 +172,7 @@ public class EnvironmenInstanceITest {
 
         } catch (APIException e) {
             String message = e.getMessage();
-            int result = message.indexOf("BlueprintName is null");
+            int result = message.indexOf(" is null");
 
             assertTrue(result != -1);
         }
@@ -191,7 +191,7 @@ public class EnvironmenInstanceITest {
         assertEquals(product.getVersion(), "7");
 
         Environment environmentBk = new Environment();
-        environmentBk.setName("testCreatedEnvirionmentInstanceTierInstance");
+        environmentBk.setName("tcETierInstance");
         environmentBk.setDescription("Description First environment");
         Tier tierbk = new Tier("tierdAddTierInstancr", new Integer(2), new Integer(1), new Integer(1), null);
         tierbk.setImage("image");
@@ -205,9 +205,9 @@ public class EnvironmenInstanceITest {
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
 
-        Environment env2 = environmentManager.load("testCreatedEnvirionmentInstanceTierInstance");
+        Environment env2 = environmentManager.load("tcETierInstance");
         assertNotNull(env2);
-        assertEquals(env2.getName(), "testCreatedEnvirionmentInstanceTierInstance");
+        assertEquals(env2.getName(), "tcETierInstance");
         assertEquals(env2.getDescription(), "Description First environment");
         assertEquals(env2.getVdc(), vdc);
         assertEquals(env2.getOrg(), org);
@@ -233,7 +233,7 @@ public class EnvironmenInstanceITest {
         EnvironmentInstance envInstResult = environmentInstanceManager.load(vdc, "blueprintnameTierInstance");
         assertNotNull(envInstResult);
         assertEquals(envInstResult.getBlueprintName(), "blueprintnameTierInstance");
-        assertEquals(envInstResult.getEnvironment().getName(), "testCreatedEnvirionmentInstanceTierInstance");
+        assertEquals(envInstResult.getEnvironment().getName(), "tcETierInstance");
         assertEquals(envInstResult.getTierInstances().size(), 1);
 
         TierInstance tierInstance = tierInstanceManager.load("blueprintnameTierInstance-tierdAddTierInstancr-1");
@@ -261,7 +261,7 @@ public class EnvironmenInstanceITest {
         assertEquals(product.getVersion(), "7");
 
         Environment environmentBk = new Environment();
-        environmentBk.setName("testCreatedEnvirionmentInstanceDeleteTierInstance");
+        environmentBk.setName("tcEDeleteTierInstance");
         environmentBk.setDescription("Description First environment");
         Tier tierbk = new Tier("tierdAddDeleteTierInstancr", new Integer(2), new Integer(0), new Integer(1), null);
         tierbk.setImage("image");
@@ -274,15 +274,15 @@ public class EnvironmenInstanceITest {
         environmentBk.addTier(tierbk);
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
-        Environment env = environmentManager.load("testCreatedEnvirionmentInstanceDeleteTierInstance", vdc);
+        Environment env = environmentManager.load("tcEDeleteTierInstance", vdc);
 
         assertNotNull(env);
-        assertEquals(env.getName(), "testCreatedEnvirionmentInstanceDeleteTierInstance");
+        assertEquals(env.getName(), "tcEDeleteTierInstance");
         assertEquals(env.getDescription(), "Description First environment");
         assertEquals(env.getTiers().size(), 1);
 
         EnvironmentInstanceDto envInst = new EnvironmentInstanceDto();
-        envInst.setBlueprintName("blueprintnameTierInstanceDelete");
+        envInst.setBlueprintName("btid");
         envInst.setDescription("description");
         envInst.setEnvironmentDto(environmentBk.toDto());
         List<TierInstanceDto> tierInstanceDtos = new ArrayList(2);
@@ -298,19 +298,19 @@ public class EnvironmenInstanceITest {
         Thread.sleep(5000);
         assertEquals(task.getStatus(), Task.TaskStates.RUNNING);
 
-        EnvironmentInstance envInstResult = environmentInstanceManager.load(vdc, "blueprintnameTierInstanceDelete");
+        EnvironmentInstance envInstResult = environmentInstanceManager.load(vdc, "btid");
         assertNotNull(envInstResult);
-        assertEquals(envInstResult.getBlueprintName(), "blueprintnameTierInstanceDelete");
-        assertEquals(envInstResult.getEnvironment().getName(), "testCreatedEnvirionmentInstanceDeleteTierInstance");
+        assertEquals(envInstResult.getBlueprintName(), "btid");
+        assertEquals(envInstResult.getEnvironment().getName(), "tcEDeleteTierInstance");
         assertEquals(envInstResult.getTierInstances().size(), 1);
         String name = envInstResult.getTierInstances().get(0).getName();
 
-        tierInstanceResource.removeTierInstance(org, vdc, "blueprintnameTierInstanceDelete", name, "");
+        tierInstanceResource.removeTierInstance(org, vdc, "btid", name, "");
 
-        envInstResult = environmentInstanceManager.load(vdc, "blueprintnameTierInstanceDelete");
+        envInstResult = environmentInstanceManager.load(vdc, "btid");
         assertNotNull(envInstResult);
-        assertEquals(envInstResult.getBlueprintName(), "blueprintnameTierInstanceDelete");
-        assertEquals(envInstResult.getEnvironment().getName(), "testCreatedEnvirionmentInstanceDeleteTierInstance");
+        assertEquals(envInstResult.getBlueprintName(), "btid");
+        assertEquals(envInstResult.getEnvironment().getName(), "tcEDeleteTierInstance");
 
         assertEquals(envInstResult.getTierInstances().size(), 0);
 
@@ -328,7 +328,7 @@ public class EnvironmenInstanceITest {
         assertEquals(product.getVersion(), "7");
 
         Environment environmentBk = new Environment();
-        environmentBk.setName("testDeleteEnvirionmentInstance");
+        environmentBk.setName("tdei");
         environmentBk.setDescription("Description First environment");
         Tier tierbk = new Tier("tierDeleteEnvInst", new Integer(1), new Integer(1), new Integer(1), null);
         tierbk.setImage("image");
@@ -341,9 +341,9 @@ public class EnvironmenInstanceITest {
         environmentBk.addTier(tierbk);
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
-        Environment env = environmentManager.load("testDeleteEnvirionmentInstance", vdc);
+        Environment env = environmentManager.load("tdei", vdc);
         assertNotNull(env);
-        assertEquals(env.getName(), "testDeleteEnvirionmentInstance");
+        assertEquals(env.getName(), "tdei");
         assertEquals(env.getDescription(), "Description First environment");
         assertEquals(env.getTiers().size(), 1);
 
@@ -368,7 +368,7 @@ public class EnvironmenInstanceITest {
         EnvironmentInstance envInstResult = environmentInstanceManager.load(vdc, "blueprintnameDeleteEnvInstn");
         assertNotNull(envInstResult);
         assertEquals(envInstResult.getBlueprintName(), "blueprintnameDeleteEnvInstn");
-        assertEquals(envInstResult.getEnvironment().getName(), "testDeleteEnvirionmentInstance");
+        assertEquals(envInstResult.getEnvironment().getName(), "tdei");
         assertEquals(envInstResult.getTierInstances().size(), 1);
 
         environmentInstanceResource.destroy(org, vdc, "blueprintnameDeleteEnvInstn", "");
