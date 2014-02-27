@@ -195,7 +195,7 @@ public class TierResourceImpl implements TierResource {
         this.tierResourceValidator = tierResourceValidator;
     }
 
-    public void update(String org, String vdc, String environmentName, TierDto tierDto) throws APIException {
+    public void update(String org, String vdc, String environmentName, String tierName, TierDto tierDto) throws APIException {
         log.debug("Update tier " + tierDto.getName() + " from env " + environmentName);
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
 

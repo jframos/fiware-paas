@@ -29,6 +29,7 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.TierResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
@@ -39,6 +40,9 @@ public class TierResourceTest extends TestCase {
     public SystemPropertiesProvider systemPropertiesProvider;
     public EnvironmentManager environmentManager;
     public TierResourceValidator validator;
+    public static String vdc ="VDC";
+    public static String org ="ORG";
+    public static String env ="env";
 
     @Before
     public void setUp() throws Exception {
@@ -79,7 +83,7 @@ public class TierResourceTest extends TestCase {
     }
 
     @Test
-    public void testInsertTier() {
+    public void testInsertTier() throws APIException {
 
         List<ProductReleaseDto> productReleaseDto = new ArrayList<ProductReleaseDto>();
         productReleaseDto.add(new ProductReleaseDto("test", "0.1"));
@@ -92,14 +96,9 @@ public class TierResourceTest extends TestCase {
 
         List<TierDto> tiers = new ArrayList<TierDto>();
         tiers.add(tierDto);
-
-        /*
-         * try { tierResource.insert("org", "vdc", "environment",tierDto); } catch (InvalidEntityException e) { // TODO
-         * Auto-generated catch block e.printStackTrace(); } catch (AlreadyExistEntityException e) { // TODO
-         * Auto-generated catch block e.printStackTrace(); } catch (EntityNotFoundException e) { // TODO Auto-generated
-         * catch block e.printStackTrace(); } catch (InvalidSecurityGroupRequestException e) { // TODO Auto-generated
-         * catch block e.printStackTrace(); }
-         */
+        
+        tierResource.insert(org, vdc, env, tierDto);
+        assertNotNull (tierResource.load(vdc, env, tierDto.getName()));
 
     }
 
@@ -115,8 +114,84 @@ public class TierResourceTest extends TestCase {
 
         List<TierDto> tiers = new ArrayList<TierDto>();
         tiers.add(tierDto);
+        tierResource.insert(org, vdc, env, tierDto);
+        assertNotNull (tierResource.load(vdc, env, tierDto.getName()));
 
-        // tierResource.insert("org", "vdc", "environment",tierDto);
+    }
+    
+    @Test(expected=APIException.class)
+    public void testTierException() throws APIException  {
+
+        TierDto tierDto = new TierDto("", new Integer(1), new Integer(1), new Integer(1), null);
+        tierDto.setImage("image");
+        tierDto.setIcono("icono");
+        tierDto.setFlavour("flavour");
+        tierDto.setFloatingip("floatingip");
+        tierDto.setKeypair("keypair");
+
+        tierResource.insert(org, vdc, env, tierDto);
+    }
+    
+    @Test(expected=APIException.class)
+    public void testDeleteTier() throws APIException {
+
+        List<ProductReleaseDto> productReleaseDto = new ArrayList<ProductReleaseDto>();
+        productReleaseDto.add(new ProductReleaseDto("test", "0.1"));
+        TierDto tierDto = new TierDto("tiername22", new Integer(1), new Integer(1), new Integer(1), productReleaseDto);
+        tierDto.setImage("image");
+        tierDto.setIcono("icono");
+        tierDto.setFlavour("flavour");
+        tierDto.setFloatingip("floatingip");
+        tierDto.setKeypair("keypair");
+        
+        tierResource.insert(org, vdc, env, tierDto);
+        tierResource.delete(org, vdc, env, tierDto.getName());
+        tierResource.load(vdc, env, tierDto.getName());
+
+    }
+    
+
+    public void testUpdateTier() throws APIException {
+
+        List<ProductReleaseDto> productReleaseDto = new ArrayList<ProductReleaseDto>();
+        productReleaseDto.add(new ProductReleaseDto("test", "0.1"));
+        TierDto tierDto = new TierDto("tiername22", new Integer(1), new Integer(1), new Integer(1), productReleaseDto);
+        tierDto.setImage("image");
+        tierDto.setIcono("icono");
+        tierDto.setFlavour("flavour");
+        tierDto.setFloatingip("floatingip");
+        tierDto.setKeypair("keypair");
+
+        tierResource.insert(org, vdc, env, tierDto);
+        
+        TierDto tierDto2 = new TierDto("tiername22", new Integer(1), new Integer(1), new Integer(1), productReleaseDto);
+        tierDto2.setImage("image2");
+        tierDto2.setIcono("icono");
+        tierDto2.setFlavour("flavour");
+        tierDto2.setFloatingip("floatingip");
+        tierDto2.setKeypair("keypair");
+        tierResource.update(org, vdc, env, tierDto.getName(), tierDto2);
+        TierDto tier= tierResource.load(vdc, env, tierDto2.getName());
+        assertEquals(tier.getImage(), tierDto2.getImage());
+
+    }
+    
+    @Test(expected=APIException.class)
+    public void testUpdateTierDifferent() throws APIException {
+
+        List<ProductReleaseDto> productReleaseDto = new ArrayList<ProductReleaseDto>();
+        productReleaseDto.add(new ProductReleaseDto("test", "0.1"));
+        TierDto tierDto = new TierDto("tiername3", new Integer(1), new Integer(1), new Integer(1), productReleaseDto);
+        tierDto.setImage("image");
+        tierDto.setIcono("icono");
+        tierDto.setFlavour("flavour");
+        tierDto.setFloatingip("floatingip");
+        tierDto.setKeypair("keypair");
+
+        tierResource.insert(org, vdc, env, tierDto);
+        
+        TierDto tierDto2 = new TierDto("tiername4", new Integer(1), new Integer(1), new Integer(1), productReleaseDto);
+        tierResource.update(org, vdc, env, tierDto.getName(), tierDto2);
 
     }
 

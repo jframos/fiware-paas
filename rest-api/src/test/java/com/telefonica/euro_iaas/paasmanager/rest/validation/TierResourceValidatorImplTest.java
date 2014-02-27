@@ -311,5 +311,18 @@ public class TierResourceValidatorImplTest {
         tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName", systemPropertiesProvider);
 
     }
+    
+    @Test
+    public void shouldValidateUpdateTier() throws AlreadyExistEntityException, 
+        InfrastructureException, QuotaExceededException, InvalidEntityException, EntityNotFoundException  {
+        // given
+         
+        TierDto tierDto = new TierDto();
+        tierDto.setName("aaaa");
+
+
+        tierResourceValidator.validateUpdate(tierDto, "vdc", "envName", systemPropertiesProvider);
+
+    }
 
 }
