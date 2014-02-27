@@ -468,5 +468,25 @@ public class EnvironmenTest {
         assertEquals(env2.getTiers().size(), 1);
 
     }
+    
+    @Test
+    public void testFindAll() throws APIException  {
+        int number= environmentResource.findAll(org, vdc, null, null, null, null).size();
+        Environment environment= new Environment();
+        environment.setName("nassme");
+        environment.setDescription("Description First environment");
+        Tier tier = new Tier("sss", new Integer(1), new Integer(1), new Integer(1), null);
+        tier.setImage("image");
+        tier.setIcono("icono");
+        tier.setFlavour("flavour");
+        tier.setFloatingip("floatingip");
+        tier.setKeypair("keypair");
+       
+        environment.addTier(tier);
+        environmentResource.insert(org, vdc, environment.toDto());  
+        
+        assertEquals (environmentResource.findAll(org, vdc, null, null, null, null).size(), number+1);
+  
+    }
 
 }

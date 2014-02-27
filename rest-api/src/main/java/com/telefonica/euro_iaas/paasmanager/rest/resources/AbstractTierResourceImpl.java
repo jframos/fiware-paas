@@ -151,7 +151,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
             return tier.toDto();
 
         } catch (EntityNotFoundException e) {
-            throw new APIException(e, 404);
+            throw new APIException(e);
         }
     }
 

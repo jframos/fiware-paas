@@ -9,6 +9,7 @@ package com.telefonica.euro_iaas.paasmanager.environment;
 
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +86,26 @@ public class AbstractEnvironmenTest {
        
         environment.addTier(tier);
         abstractEnvironmentResource.insert(org, environment.toDto());  
+  
+    }
+    
+    @Test
+    public void testFindAll() throws APIException  {
+        int number= abstractEnvironmentResource.findAll(org, null, null, null, null).size();
+        Environment environment= new Environment();
+        environment.setName("nassme");
+        environment.setDescription("Description First environment");
+        Tier tier = new Tier("sss", new Integer(1), new Integer(1), new Integer(1), null);
+        tier.setImage("image");
+        tier.setIcono("icono");
+        tier.setFlavour("flavour");
+        tier.setFloatingip("floatingip");
+        tier.setKeypair("keypair");
+       
+        environment.addTier(tier);
+        abstractEnvironmentResource.insert(org, environment.toDto());  
+        
+        assertEquals (abstractEnvironmentResource.findAll(org, null, null, null, null).size(), number+1);
   
     }
     

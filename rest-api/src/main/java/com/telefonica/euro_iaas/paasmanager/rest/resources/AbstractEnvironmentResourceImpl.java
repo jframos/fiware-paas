@@ -22,18 +22,12 @@ import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
-import com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
-import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
@@ -60,7 +54,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
 
     public void delete(String org, String envName) throws APIException {
         log.debug("Deleting env " + envName + " from org " + org);
-        ClaudiaData claudiaData = new ClaudiaData(org, "", null);
+        ClaudiaData claudiaData = new ClaudiaData(org, null, null);
 
         try {
             Environment env = environmentManager.load(envName);
@@ -87,18 +81,20 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
             criteria.setOrderBy(orderType);
         }
 
-        List<Environment> envs = environmentManager.findByCriteria(criteria);
+        List<Environment> env = environmentManager.findByCriteria(criteria);
 
         List<EnvironmentDto> envsDto = new ArrayList<EnvironmentDto>();
-        for (Environment e: envs) {          
-            envsDto.add(e.toDto());
+        for (int i = 0; i < env.size(); i++) {
+            envsDto.add(env.get(i).toDto());
+
         }
         return envsDto;
+       
     }
 
     public void insert(String org, EnvironmentDto environmentDto) throws APIException {
         log.debug("Inserting env " + environmentDto.getName() + " from org " + org);
-        ClaudiaData claudiaData = new ClaudiaData (org, "",environmentDto.getName() );
+        ClaudiaData claudiaData = new ClaudiaData (org, null,null );
         try {
             environmentManager.load(environmentDto.getName());
             throw new APIException(new AlreadyExistEntityException("The enviornment " + environmentDto.getName()
@@ -108,7 +104,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
 
             try {
                 environmentResourceValidator.validateAbstractCreate(environmentDto);
-                environmentManager.create(claudiaData, environmentDto.fromDto(org, ""));
+                environmentManager.create(claudiaData, environmentDto.fromDto(org, null));
             } catch (Exception e) {
                 throw new APIException(e);
             }
