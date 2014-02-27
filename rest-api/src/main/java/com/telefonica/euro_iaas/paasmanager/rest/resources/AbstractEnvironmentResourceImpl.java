@@ -60,7 +60,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
 
     public void delete(String org, String envName) throws APIException {
         log.debug("Deleting env " + envName + " from org " + org);
-        ClaudiaData claudiaData = new ClaudiaData(org, null, null);
+        ClaudiaData claudiaData = new ClaudiaData(org, "", null);
 
         try {
             Environment env = environmentManager.load(envName);
