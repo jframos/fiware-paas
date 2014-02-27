@@ -35,9 +35,9 @@
                                 <phase>process-resources</phase>
                                 <configuration>
 
-                                    <changeLogFile>${basedir}/src/main/resources/db-initial.sql</changeLogFile>
+                                    <changeLogFile>src/main/resources/db-initial.sql</changeLogFile>
                                     <driver>org.postgresql.Driver</driver>
-                                    <url>jdbc:postgresql://130.206.80.112:5432/paasmanager_int_grizzly2</url>
+                                    <url>jdbc:postgresql://130.206.80.112:5432/testjesus</url>
                                     <username>postgres</username>
                                     <password>postgres</password>
 
@@ -66,9 +66,9 @@
                                 <phase>process-resources</phase>
                                 <configuration>
 
-                                    <changeLogFile>${basedir}/src/main/resources/db-changelog.sql</changeLogFile>
+                                    <changeLogFile>src/main/resources/db-changelog.sql</changeLogFile>
                                     <driver>org.postgresql.Driver</driver>
-                                    <url>jdbc:postgresql://130.206.80.112:5432/paasmanager_int_grizzly2</url>
+                                    <url>jdbc:postgresql://130.206.80.112:5432/testjesus</url>
                                     <username>postgres</username>
                                     <password>postgres</password>
 
