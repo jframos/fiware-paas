@@ -139,13 +139,28 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
     }
 
-    public void validateUpdate(TierDto tierDto, String vdc, String environmentName,
+    public void validateUpdate(String vdc, String environmentName, String tierName, TierDto tierDto, 
             SystemPropertiesProvider systemPropertiesProvider) throws InvalidEntityException, EntityNotFoundException {
 
+        try {
+            Tier tier = tierManager.load(tierName, vdc, environmentName);
+
+        } catch (EntityNotFoundException e1) {
+            log.error("The tier " + tierName + " does not  exists vdc " + vdc + " environmentName "
+                    + environmentName);
+            throw new EntityNotFoundException(Tier.class, "The tier " + tierName + " does not  exists vdc "
+                    + vdc + " environmentName " + environmentName, e1.getMessage());
+        }
+        
+        if (!tierName.equals(tierDto.getName())) {
+            throw new InvalidEntityException("it is not possible to change the tier Name");
+        }
+        
         if (tierDto == null) {
             log.error("Tier Name  is null");
             throw new InvalidEntityException("Tier Name is null");
         }
+
 
         try {
             validateTierInEnvInstance(environmentName, vdc);
@@ -154,17 +169,9 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
             throw new InvalidEntityException("Invalid tier in env instance");
         }
 
-        String system = systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
+       
 
-        try {
-            Tier tier = tierManager.load(tierDto.getName(), vdc, environmentName);
-
-        } catch (EntityNotFoundException e1) {
-            log.error("The tier " + tierDto.getName() + " does not  exists vdc " + vdc + " environmentName "
-                    + environmentName);
-            throw new EntityNotFoundException(Tier.class, "The tier " + tierDto.getName() + " does not  exists vdc "
-                    + vdc + " environmentName " + environmentName, e1.getMessage());
-        }
+        
 
         if (tierDto.getName() == null) {
             throw new InvalidEntityException("Tier Name from tierDto is null");
