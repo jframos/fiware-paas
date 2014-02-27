@@ -262,6 +262,6 @@ ALTER TABLE task ALTER COLUMN endtime TYPE TIMESTAMP WITH TIME ZONE;
 ALTER TABLE productrelease ADD COLUMN tiername VARCHAR(255);
 
 -- Change that corresponds to bug/CLAUDIA3663-Invalidnamesforenvironmentandtiers -->
--- changeset henar:1-1
-ALTER TABLE environmentinstance alter column description type  VARCHAR(256);
-ALTER TABLE environmentinstance alter column blueprintname type  VARCHAR(256);
+-- changeset henar:3-1
+ALTER TABLE environmentinstance alter column description type  VARCHAR(256) ;
+ALTER TABLE environmentinstance alter column blueprintname type  VARCHAR(256) ;
