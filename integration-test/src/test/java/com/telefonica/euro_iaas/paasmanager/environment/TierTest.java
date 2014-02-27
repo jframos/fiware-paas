@@ -312,4 +312,14 @@ public class TierTest {
         
     }
 
+    @Test
+    public void testDeleteANonExistingtier() throws Exception {
+        try {
+            tierResource.delete(org, vdc, "12env", "noexistingier");
+            fail ();
+        } catch (Exception e){
+            	
+        }
+        
+    }
 }

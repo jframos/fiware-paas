@@ -62,7 +62,7 @@ public class TierResourceImpl implements TierResource {
         log.debug("Deleting tier " + tierName + " from env " + envName);
 
         try {
-            tierResourceValidator.validateDelete(vdc, envName, systemPropertiesProvider);
+            tierResourceValidator.validateDelete(vdc, envName, tierName, systemPropertiesProvider);
 
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                 claudiaData.setUser(getCredentials());

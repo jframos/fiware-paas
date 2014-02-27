@@ -318,7 +318,8 @@ CREATE TABLE tierinstance (
   vmid          VARCHAR(512),
   id            INT8 NOT NULL,
   tier_id       INT8,
-  taskid        VARCHAR(255)
+  taskid        VARCHAR(255),
+  ip            VARCHAR(128)
 );
 --changeset initial:38
 
