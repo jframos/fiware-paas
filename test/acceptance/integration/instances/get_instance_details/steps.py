@@ -11,6 +11,8 @@ dataset_utils = DatasetUtils()
 # Auxiliary constants used in .feature files or interfaces
 NAME = "name"
 DESCRIPTION = "description"
+ENV_NAME = "envname"
+ENV_DESC = "envdesc"
 PRODUCTS = "products"
 NETWORKS = "networks"
 
@@ -48,11 +50,6 @@ def an_environment_has_already_been_created_with_the_previous_tiers_and_data(ste
 
 @step(u'an instance of the environment "([^"]*)" has already been created using data:')
 def an_instance_of_the_environment_has_already_been_created_using_data(step, env_name):
-    i_request_the_creation_of_an_instance_of_an_environment_using_data(step, env_name)
-
-
-@step(u'I request the creation of an instance of the environment "([^"]*)" using data:')
-def i_request_the_creation_of_an_instance_of_an_environment_using_data(step, env_name):
     # First, send the request to get the environment on which the instance will be based
     env_name = dataset_utils.generate_fixed_length_param(env_name)
     world.env_requests.get_environment(env_name)
@@ -66,12 +63,22 @@ def i_request_the_creation_of_an_instance_of_an_environment_using_data(step, env
     world.inst_requests.add_instance(instance)
 
 
-@step(u'I receive an? "([^"]*)" response(?: with a task)?')
+@step(u'I request the details of the instance "([^"]*)"')
+def i_request_the_details_of_the_instance(step, name):
+    name = dataset_utils.generate_fixed_length_param(name)
+    world.inst_requests.get_instance(name)
+
+
+@step(u'I receive an? "([^"]*)" response with the previous tiers and data:')
+def i_receive_a_response_of_type_with_the_previous_tiers_and_data(step, response_type):
+    status_code = http.status_codes[response_type]
+    data = dataset_utils.prepare_data(step.hashes[0])
+    environment_instance_request.check_get_instance_response(world.response, status_code,
+                                                       data.get(NAME), data.get(DESCRIPTION),
+                                                       world.tiers)
+
+
+@step(u'I receive an? "([^"]*)" response$')
 def i_receive_a_response_of_type(step, response_type):
     status_code = http.status_codes[response_type]
-    environment_instance_request.check_add_instance_response(world.response, status_code)
-
-
-@step(u'the task ends with "([^"]*)" status')
-def the_task_ends_with_status(step, status):
-    environment_instance_request.check_task_status(world.task_data, status)
+    environment_instance_request.check_get_instance_response(world.response, status_code)

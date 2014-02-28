@@ -37,7 +37,6 @@ Feature: Get the details of an abstract environment
             | accountsqa4             | Non-ASCII: á.é.í.ñ       |
             | accountsqa5             | [STRING_WITH_LENGTH_150] |
 
-    @skip @CLAUDIA-3679
     Scenario: Get the details of a nonexistent abstract environment
         Given the paas manager is up and properly configured
         And there is no abstract environment with name "nameqa" already created

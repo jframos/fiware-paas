@@ -31,7 +31,6 @@ Feature: Create an environment in a tenant
             | nameqa4                 | Non-ASCII: á.é.í.ñ       |
             | nameqa5                 | [STRING_WITH_LENGTH_256] |
 
-    @skip @CLAUDIA-3663
     Scenario Outline: Create environment with different invalid data
         Given the paas manager is up and properly configured
         When I request the creation of an environment with data:
@@ -48,9 +47,8 @@ Feature: Create an environment in a tenant
             | [MISSING_PARAM]         | descqa                   |
             | nameqa1                 | [STRING_WITH_LENGTH_257] |
             | nameqa2                 |                          |
-            | nameqa2                 | [MISSING_PARAM]          |
+            | nameqa3                 | [MISSING_PARAM]          |
 
-    @skip @CLAUDIA-3674
     Scenario: Create environment with the same name of an already existing one
         Given the paas manager is up and properly configured
         And an environment has already been created with data:
@@ -59,4 +57,4 @@ Feature: Create an environment in a tenant
         When I request the creation of an environment with data:
             | name   | description |
             | nameqa | descqa      |
-        Then I receive a "Bad Request" response
+        Then I receive a "Conflict" response

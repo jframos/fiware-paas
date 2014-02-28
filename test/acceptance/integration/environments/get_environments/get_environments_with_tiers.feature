@@ -170,9 +170,7 @@ Feature: Get the environments with tiers in a tenant
             | nameqa1 | descqa1     |
         And a list of tiers has been defined with data:
             | name        | networks |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | tiernameqa2 | netqa1,netqa2 |
-            | tiernameqa2 | netqa2,netqa3 |
+            | tiernameqa2 | netqa1,netqa2 |
         And an environment has already been created with the previous tiers and data:
             | name    | description |
             | nameqa2 | descqa2     |

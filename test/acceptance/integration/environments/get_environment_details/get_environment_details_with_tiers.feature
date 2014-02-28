@@ -97,9 +97,7 @@ Feature: Get the details of an environment with tiers in a tenant
         Examples:
             | name    | tiername    | networks      |
             | nameqa1 | tiernameqa1 | netqa1        |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | nameqa2 | tiernameqa2 | netqa1,netqa2 |
-            | nameqa2 | tiernameqa2 | netqa2,netqa3 |
+            | nameqa2 | tiernameqa2 | netqa1,netqa2 |
 
     Scenario: Get the details of an environment with several tiers with networks
         Given the paas manager is up and properly configured
@@ -131,9 +129,7 @@ Feature: Get the details of an environment with tiers in a tenant
         Examples:
             | name    | tiername    | products                 | networks      |
             | nameqa1 | tiernameqa1 | git=1.7                  | netqa1        |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
-            | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa2,netqa3 |
+            | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
             
     Scenario: Get the details of an environment with several tiers with products and networks
         Given the paas manager is up and properly configured

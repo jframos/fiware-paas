@@ -104,9 +104,7 @@ Feature: Get the list of tiers of an environment in a tenant
             | tiernameqa1 | netqa1   |
         And a tier has already been added to the environment "nameqa" with data:
             | name        | networks      |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | tiernameqa2 | netqa1,netqa2 |
-            | tiernameqa2 | netqa2,netqa3 |
+            | tiernameqa2 | netqa1,netqa2 |
         When I request the list of tiers of the environment "nameqa"
         Then I receive an "OK" response with "2" items in the list
         And there is a tier in the list with data:
@@ -114,9 +112,7 @@ Feature: Get the list of tiers of an environment in a tenant
             | tiernameqa1 | netqa1   |
         And there is a tier in the list with data:
             | name        | networks      |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | tiernameqa2 | netqa1,netqa2 |
-            | tiernameqa2 | netqa2,netqa3 |
+            | tiernameqa2 | netqa1,netqa2 |
 
     Scenario: Get a list with many tiers with products and networks
         Given the paas manager is up and properly configured
@@ -137,19 +133,13 @@ Feature: Get the list of tiers of an environment in a tenant
             | tiernameqa4 | netqa1   |
         And a tier has already been added to the environment "nameqa" with data:
             | name        | networks      |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | tiernameqa5 | netqa1,netqa2 |
-            | tiernameqa5 | netqa2,netqa3 |
+            | tiernameqa5 | netqa1,netqa2 |
         And a tier has already been added to the environment "nameqa" with data:
             | name        | products | networks |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | tiernameqa6 | git=1.7  | netqa1   |
-            | tiernameqa6 | git=1.7  | netqa4   |
+            | tiernameqa6 | git=1.7  | netqa1   |
         And a tier has already been added to the environment "nameqa" with data:
             | name        | products                 | networks      |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | tiernameqa7 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
-            | tiernameqa7 | git=1.7,mediawiki=1.17.0 | netqa5,netqa6 |
+            | tiernameqa7 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
         When I request the list of tiers of the environment "nameqa"
         Then I receive an "OK" response with "7" items in the list
         And there is a tier in the list with data:
@@ -166,16 +156,10 @@ Feature: Get the list of tiers of an environment in a tenant
             | tiernameqa4 | netqa1   |
         And there is a tier in the list with data:
             | name        | networks      |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | tiernameqa5 | netqa1,netqa2 |
-            | tiernameqa5 | netqa2,netqa3 |
+            | tiernameqa5 | netqa1,netqa2 |
         And there is a tier in the list with data:
             | name        | products | networks |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | tiernameqa6 | git=1.7  | netqa1   |
-            | tiernameqa6 | git=1.7  | netqa4   |
+            | tiernameqa6 | git=1.7  | netqa1   |
         And there is a tier in the list with data:
             | name        | products                 | networks      |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | tiernameqa7 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
-            | tiernameqa7 | git=1.7,mediawiki=1.17.0 | netqa5,netqa6 |
+            | tiernameqa7 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |

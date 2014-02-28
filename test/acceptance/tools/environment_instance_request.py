@@ -3,7 +3,7 @@ __author__ = 'henar'
 import json
 from xml.etree.ElementTree import tostring
 
-from tools import http, environment_request
+from tools import http, tier
 from tools.environment_instance import EnvironmentInstance
 from lettuce import world
 
@@ -70,7 +70,7 @@ class EnvironmentInstanceRequest:
             """Wait for the associated task to finish and store its data"""
             world.task_data = http.wait_for_task(json.loads(world.response.read()), headers)
 
-    def get_instances(self, instance_name):
+    def get_instances(self):
 
         url = "%s/%s/%s/%s/%s" % (self.paasmanager_url, "envInst/org/FIWARE",
                                   "vdc", self.vdc, "environmentInstance")
@@ -121,10 +121,12 @@ def process_instance(instance):
     :param instance: instance to be processed.
     :return: a EnvironmentInstance object.
     """
-    processed_instance = EnvironmentInstance(instance['blueprintName'], instance['description'])
+    processed_instance = EnvironmentInstance(instance['blueprintName'],
+                                             instance['description'],
+                                             status=instance['status'])
     try:
-        environment = environment_request.process_environment(instance['environmentDto'])
-        processed_instance.add_environment(environment)
+        tiers = tier.process_tiers(instance['tierDto'])
+        processed_instance.add_tiers(tiers)
     except:
         pass
     return processed_instance
@@ -174,7 +176,7 @@ def check_get_instances_response(response, expected_status_code,
             # No content expected when the lists of instances is empty
             assert data == None, "Unexpected content received: %s" % data
         else:
-            instances = data["environmentInstanceDto"]
+            instances = data["environmentInstancePDto"]
             world.response.instances = process_instances(instances)
 
             assert len(world.response.instances) == expected_instances_number, \
@@ -182,8 +184,7 @@ def check_get_instances_response(response, expected_status_code,
             % (len(world.response.instances), expected_instances_number)
 
 
-def check_instance_in_list(instances_list, instance_name, instance_description,
-                           env_name=None, tiers_number=0):
+def check_instance_in_list(instances_list, instance_name, instance_description, tiers_number=0):
     """
     Check that a certain instance is in the list of instances provided.
     :param instances_list: List of instances to be checked.
@@ -193,18 +194,14 @@ def check_instance_in_list(instances_list, instance_name, instance_description,
     :param tiers_number: Number of tiers of the environment to be found.
     """
     for inst in instances_list:
-        if inst.name == instance_name:  # Expected instances found
-            assert inst.description == instance_description, \
+        if inst.blueprint_name == instance_name:  # Expected instance found
+            assert inst.blueprint_description == instance_description, \
             "Wrong description received for instance %s: %s. Expected: %s." \
-            % (inst.name, inst.description, instance_description)
+            % (inst.blueprint_name, inst.blueprint_description, instance_description)
 
-            assert inst.get_environment().name == env_name, \
-            "Wrong environment name received for instance %s: %d. Expected: %d." \
-            % (inst.name, inst.get_environment().name, env_name)
-
-            assert len(inst.tiers) == tiers_number, \
+            assert len(inst.get_tiers()) == tiers_number, \
             "Wrong number of tiers received for instance %s: %d. Expected: %d." \
-            % (inst.name, len(inst.tiers), tiers_number)
+            % (inst.blueprint_name, len(inst.get_tiers()), tiers_number)
 
             return
 
@@ -214,9 +211,7 @@ def check_instance_in_list(instances_list, instance_name, instance_description,
 def check_get_instance_response(response, expected_status_code,
                                    expected_instance_name=None,
                                    expected_instance_description=None,
-                                   expected_environment_name=None,
-                                   expected_environment_description=None,
-                                   expected_environment_tiers=None):
+                                   expected_tiers=None):
     """
     Check that the response for a get instance request is the
     expected one.
@@ -224,47 +219,35 @@ def check_get_instance_response(response, expected_status_code,
     :param expected_status_code: Expected status code of the response.
     :param expected_instance_name: Expected name of the instance.
     :param expected_instance_description: Expected description of the instance.
-    :param expected_environment_name: Expected name of the template environment.
-    :param expected_environment_description: Expected description of the template environment.
-    :param expected_environment_tiers: Expected tiers of the template environment.
+    :param expected_tiers: Expected tiers of the instance.
     """
     assert response.status == expected_status_code, \
     "Wrong status code received: %d. Expected: %d. Body content: %s" \
     % (response.status, expected_status_code, response.read())
 
     if expected_instance_name is not None:
-        instance = process_instance(json.loads(response.read()))
+        data = json.loads(response.read())
+        #print data, "\n\n\n\n"
+        instance = process_instance(data)
 
-        assert instance.name == expected_instance_name, \
+        assert instance.blueprint_name == expected_instance_name, \
         "Wrong name received: %s. Expected: %s." \
-        % (instance.name, expected_instance_name)
+        % (instance.blueprint_name, expected_instance_name)
 
     if expected_instance_description is not None:
-        assert instance.description == expected_instance_description, \
+        assert instance.blueprint_description == expected_instance_description, \
         "Wrong description received: %s. Expected: %s." \
-        % (instance.description, expected_instance_description)
+        % (instance.blueprint_description, expected_instance_description)
 
-    if expected_environment_name is not None:
-        environment = instance.get_environment()
-
-        assert environment.name == expected_environment_name, \
-        "Wrong template environment name received: %s. Expected: %s." \
-        % (environment.name, expected_environment_name)
-
-    if expected_environment_description is not None:
-        assert environment.description == expected_environment_description, \
-        "Wrong template environment description received: %s. Expected: %s." \
-        % (environment.description, expected_environment_description)
-
-    if expected_environment_tiers is not None:
-        assert len(environment.tiers) == len(expected_environment_tiers), \
+    if expected_tiers is not None:
+        assert len(instance.get_tiers()) == len(expected_tiers), \
         "Wrong number of tiers received: %d. Expected: %d." \
-        % (len(environment.tiers), len(expected_environment_tiers))
+        % (len(instance.get_tiers()), len(expected_tiers))
 
-        for expected_tier in expected_environment_tiers:
+        for expected_tier in expected_tiers:
             # Find the tier that matches each of the expected ones and compare
             received_tier = None
-            for tier in environment.tiers:
+            for tier in instance.get_tiers():
                 if tier.name == expected_tier.name:
                     received_tier = tier
                     break

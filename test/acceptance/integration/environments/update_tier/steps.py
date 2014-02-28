@@ -46,7 +46,7 @@ def i_request_the_update_of_a_tier_of_a_environment_with_data(step, tier_name, e
 @step(u'I receive an? "([^"]*)" response')
 def i_receive_a_response_of_type(step, response_type):
     status_code = http.status_codes[response_type]
-    tier.check_add_tier_response(world.response, status_code)
+    tier.check_update_tier_response(world.response, status_code)
 
 
 @step(u'the data of the tier "([^"]*)" of the environment "([^"]*)" becomes:')

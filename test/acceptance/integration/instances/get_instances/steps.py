@@ -48,11 +48,6 @@ def an_environment_has_already_been_created_with_the_previous_tiers_and_data(ste
 
 @step(u'an instance of the environment "([^"]*)" has already been created using data:')
 def an_instance_of_the_environment_has_already_been_created_using_data(step, env_name):
-    i_request_the_creation_of_an_instance_of_an_environment_using_data(step, env_name)
-
-
-@step(u'I request the creation of an instance of the environment "([^"]*)" using data:')
-def i_request_the_creation_of_an_instance_of_an_environment_using_data(step, env_name):
     # First, send the request to get the environment on which the instance will be based
     env_name = dataset_utils.generate_fixed_length_param(env_name)
     world.env_requests.get_environment(env_name)
@@ -66,12 +61,25 @@ def i_request_the_creation_of_an_instance_of_an_environment_using_data(step, env
     world.inst_requests.add_instance(instance)
 
 
-@step(u'I receive an? "([^"]*)" response(?: with a task)?')
-def i_receive_a_response_of_type(step, response_type):
+@step(u'I request the list of existing instances')
+def i_request_the_list_of_existing_instances(step):
+    world.inst_requests.get_instances()
+
+
+@step(u'I receive an? "([^"]*)" response with "(\d)" items? in the list')
+def i_receive_a_response_of_type_with_items(step, response_type, items_number):
     status_code = http.status_codes[response_type]
-    environment_instance_request.check_add_instance_response(world.response, status_code)
+    environment_instance_request.check_get_instances_response(world.response, status_code, int(items_number))
 
 
-@step(u'the task ends with "([^"]*)" status')
-def the_task_ends_with_status(step, status):
-    environment_instance_request.check_task_status(world.task_data, status)
+@step(u'I receive an? "([^"]*)" response with no content')
+def i_receive_a_response_of_type_with_no_content(step, response_type):
+    status_code = http.status_codes[response_type]
+    environment_instance_request.check_get_instances_response(world.response, status_code, 0)
+
+
+@step(u'there is an instance in the list with "(\d)" tiers? and data:')
+def there_is_an_instance_in_the_list_based_on_environment_with_tiers_and_data(step, tiers_number):
+    data = dataset_utils.prepare_data(step.hashes[0])
+    environment_instance_request.check_instance_in_list(world.response.instances, data.get(NAME),
+                                                        data.get(DESCRIPTION), int(tiers_number))

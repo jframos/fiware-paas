@@ -10,6 +10,7 @@ class EnvironmentInstance:
         self.blueprint_description = blueprint_description
         self.status = status
         self.environment = environment
+        self.tiers = []
 
     def add_environment(self, environment):
         self.environment = environment
@@ -34,5 +35,8 @@ class EnvironmentInstance:
                 var = var + '\t' + product.name + '\t' + product.version
         print var
 
-    def add_tier_instance(self, tier_instance):
-        self.tier_instances.append(tier_instance)
+    def add_tiers(self, tiers):
+        self.tiers.extend(tiers)
+
+    def get_tiers(self):
+        return self.tiers

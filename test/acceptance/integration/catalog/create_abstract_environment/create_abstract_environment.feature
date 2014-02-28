@@ -31,7 +31,6 @@ Feature: Create an abstract environment
             | nameqa4                 | Non-ASCII: á.é.í.ñ       |
             | nameqa5                 | [STRING_WITH_LENGTH_256] |
 
-    @skip @CLAUDIA-3663
     Scenario Outline: Create abstract environment with different invalid data
         Given the paas manager is up and properly configured
         When I request the creation of an abstract environment with data:
@@ -50,7 +49,6 @@ Feature: Create an abstract environment
             | nameqa2                 |                          |
             | nameqa2                 | [MISSING_PARAM]          |
 
-    @skip @CLAUDIA-3674
     Scenario: Create abstract environment with the same name of an already existing one
         Given the paas manager is up and properly configured
         And an abstract environment has already been created with data:
@@ -59,4 +57,4 @@ Feature: Create an abstract environment
         When I request the creation of an abstract environment with data:
             | name   | description |
             | nameqa | descqa      |
-        Then I receive a "Bad Request" response
+        Then I receive a "Conflict" response

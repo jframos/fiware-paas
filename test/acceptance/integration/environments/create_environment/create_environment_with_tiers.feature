@@ -40,7 +40,6 @@ Feature: Create an environment with tiers in a tenant
             | nameqa | descqa      |
         Then I receive a "No Content" response
 
-    @skip @CLAUDIA-3663
     Scenario Outline: Create environment with tiers with different invalid data
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -98,9 +97,7 @@ Feature: Create an environment with tiers in a tenant
         Examples:
             | name    | tiername    | networks      |
             | nameqa1 | tiernameqa1 | netqa1        |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | nameqa2 | tiernameqa2 | netqa1,netqa2 |
-            | nameqa2 | tiernameqa2 | netqa2,netqa3 |
+            | nameqa2 | tiernameqa2 | netqa1,netqa2 |
 
     Scenario: Create environment with several tiers with networks
         Given the paas manager is up and properly configured
@@ -125,9 +122,7 @@ Feature: Create an environment with tiers in a tenant
         Examples:
             | name    | tiername    | products                 | networks      |
             | nameqa1 | tiernameqa1 | git=1.7                  | netqa1        |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
-            | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa2,netqa3 |
+            | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
 
     Scenario: Create environment with several tiers with products and networks
         Given the paas manager is up and properly configured

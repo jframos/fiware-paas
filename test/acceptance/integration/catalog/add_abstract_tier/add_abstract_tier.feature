@@ -45,7 +45,6 @@ Feature: Add a tier to an abstract environment
             | nameqa2 | nameqa-1                |
             | nameqa3 | [STRING_WITH_LENGTH_30] |
 
-    @skip @CLAUDIA-3663
     Scenario Outline: Add tier with different invalid data to an abstract environment
         Given the paas manager is up and properly configured
         And an abstract environment has already been created with data:
@@ -64,7 +63,6 @@ Feature: Add a tier to an abstract environment
             | nameqa4 |                         |
             | nameqa5 | [MISSING_PARAM]         |
 
-    @skip @CLAUDIA-3674
     Scenario: Add tier with the name of an already existing tier to an abstract environment
         Given the paas manager is up and properly configured
         And an abstract environment has already been created with data:
@@ -76,7 +74,7 @@ Feature: Add a tier to an abstract environment
         When I request the addition of a tier to the abstract environment "nameqa" with data:
             | name       |
             | tiernameqa |
-        Then I receive a "Bad Request" response
+        Then I receive a "Conflict" response
         
     Scenario Outline: Add tier with products to an abstract environment
         Given the paas manager is up and properly configured
@@ -93,6 +91,7 @@ Feature: Add a tier to an abstract environment
             | nameqa1 | tiernameqa1 | git=1.7                  |
             | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 |
         
+    @skip @CLAUDIA-3718
     Scenario Outline: Add tier with networks to an abstract environment
         Given the paas manager is up and properly configured
         And an abstract environment has already been created with data:
@@ -106,10 +105,9 @@ Feature: Add a tier to an abstract environment
         Examples:
             | name    | tiername    | networks      |
             | nameqa1 | tiernameqa1 | netqa1        |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | nameqa2 | tiernameqa2 | netqa1,netqa2 |
-            | nameqa2 | tiernameqa2 | netqa2,netqa3 |
+            | nameqa2 | tiernameqa2 | netqa1,netqa2 |
         
+    @skip @CLAUDIA-3718
     Scenario Outline: Add tier with products and networks to an abstract environment
         Given the paas manager is up and properly configured
         And an abstract environment has already been created with data:
@@ -123,9 +121,7 @@ Feature: Add a tier to an abstract environment
         Examples:
             | name    | tiername    | products                 | networks      |
             | nameqa1 | tiernameqa1 | git=1.7                  | netqa1        |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
-            | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa2,netqa3 |
+            | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
         
     Scenario: Add tier to non existent abstract environment
         Given the paas manager is up and properly configured

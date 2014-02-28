@@ -3,6 +3,7 @@
 target/
 .classpath
 .project
+.pydevproject
 .settings
 
 # Package Files #

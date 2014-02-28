@@ -16,8 +16,7 @@ Feature: Delete an abstract environment with tiers
             | nameqa | descqa      |
         When I request the deletion of the abstract environment with name "nameqa"
         Then I receive a "No Content" response
-        # skip, CLAUDIA-3679
-        # And the abstract environment with name "nameqa" is no longer available
+        And the abstract environment with name "nameqa" is no longer available
         
     Scenario: Delete abstract environment with several tiers
         Given the paas manager is up and properly configured
@@ -31,8 +30,7 @@ Feature: Delete an abstract environment with tiers
             | nameqa | descqa      |
         When I request the deletion of the abstract environment with name "nameqa"
         Then I receive a "No Content" response
-        # skip, CLAUDIA-3679
-        # And the abstract environment with name "nameqa" is no longer available
+        And the abstract environment with name "nameqa" is no longer available
         
     Scenario: Delete abstract environment with several tiers with different valid data
         Given the paas manager is up and properly configured
@@ -46,8 +44,7 @@ Feature: Delete an abstract environment with tiers
             | nameqa | descqa      |
         When I request the deletion of the abstract environment with name "nameqa"
         Then I receive a "No Content" response
-        # skip, CLAUDIA-3679
-        # And the abstract environment with name "nameqa" is no longer available
+        And the abstract environment with name "nameqa" is no longer available
         
     Scenario Outline: Delete abstract environment with one tier with products
         Given the paas manager is up and properly configured
@@ -59,8 +56,7 @@ Feature: Delete an abstract environment with tiers
             | <name> | descqa      |
         When I request the deletion of the abstract environment with name "<name>"
         Then I receive a "No Content" response
-        # skip, CLAUDIA-3679
-        # And the abstract environment with name "<name>" is no longer available
+        And the abstract environment with name "<name>" is no longer available
         
         Examples:
             | name    | tiername    | products                 |
@@ -78,10 +74,9 @@ Feature: Delete an abstract environment with tiers
             | nameqa | descqa      |
         When I request the deletion of the abstract environment with name "nameqa"
         Then I receive a "No Content" response
-        # skip, CLAUDIA-3679
-        # And the abstract environment with name "nameqa" is no longer available
+        And the abstract environment with name "nameqa" is no longer available
         
-    @skip @CLAUDIA-3680
+    @skip @CLAUDIA-3718
     Scenario Outline: Delete abstract environment with one tier with networks
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -92,17 +87,14 @@ Feature: Delete an abstract environment with tiers
             | <name> | descqa      |
         When I request the deletion of the abstract environment with name "<name>"
         Then I receive a "No Content" response
-        # skip, CLAUDIA-3679
-        # And the abstract environment with name "<name>" is no longer available
+        And the abstract environment with name "<name>" is no longer available
         
         Examples:
             | name    | tiername    | networks      |
             | nameqa1 | tiernameqa1 | netqa1        |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | nameqa2 | tiernameqa2 | netqa1,netqa2 |
-            | nameqa2 | tiernameqa2 | netqa2,netqa3 |
+            | nameqa2 | tiernameqa2 | netqa1,netqa2 |
 
-    @skip @CLAUDIA-3680
+    @skip @CLAUDIA-3718
     Scenario: Delete abstract environment with several tiers with networks
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -114,10 +106,9 @@ Feature: Delete an abstract environment with tiers
             | nameqa | descqa      |
         When I request the deletion of the abstract environment with name "nameqa"
         Then I receive a "No Content" response
-        # skip, CLAUDIA-3679
-        # And the abstract environment with name "nameqa" is no longer available
+        And the abstract environment with name "nameqa" is no longer available
         
-    @skip @CLAUDIA-3680
+    @skip @CLAUDIA-3718
     Scenario Outline: Delete abstract environment with one tier with products and networks
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -128,17 +119,14 @@ Feature: Delete an abstract environment with tiers
             | <name> | descqa      |
         When I request the deletion of the abstract environment with name "<name>"
         Then I receive a "No Content" response
-        # skip, CLAUDIA-3679
-        # And the abstract environment with name "<name>" is no longer available
+        And the abstract environment with name "<name>" is no longer available
 
         Examples:
             | name    | tiername    | products                 | networks      |
             | nameqa1 | tiernameqa1 | git=1.7                  | netqa1        |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
-            | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa2,netqa3 |
+            | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
         
-    @skip @CLAUDIA-3680
+    @skip @CLAUDIA-3718
     Scenario: Delete abstract environment with several tiers with products and networks
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -150,5 +138,4 @@ Feature: Delete an abstract environment with tiers
             | nameqa | descqa      |
         When I request the deletion of the abstract environment with name "nameqa"
         Then I receive a "No Content" response
-        # skip, CLAUDIA-3679
-        # And the abstract environment with name "nameqa" is no longer available
+        And the abstract environment with name "nameqa" is no longer available

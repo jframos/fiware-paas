@@ -68,9 +68,7 @@ Feature: Delete a tier from an environment in a tenant
         Examples:
             | name    | tiername    | networks      |
             | nameqa1 | tiernameqa1 | netqa1        |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | nameqa2 | tiernameqa2 | netqa1,netqa2 |
-            | nameqa2 | tiernameqa2 | netqa2,netqa3 |
+            | nameqa2 | tiernameqa2 | netqa1,netqa2 |
         
     Scenario Outline: Delete tier with products and networks from an environment
         Given the paas manager is up and properly configured
@@ -87,9 +85,7 @@ Feature: Delete a tier from an environment in a tenant
         Examples:
             | name    | tiername    | products                 | networks      |
             | nameqa1 | tiernameqa1 | git=1.7                  | netqa1        |
-            # skip, CLAUDIA-3673 (workaround below)
-            # | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
-            | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa2,netqa3 |
+            | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
 
     @skip @CLAUDIA-3678
     Scenario: Delete nonexistent tier from an environment
