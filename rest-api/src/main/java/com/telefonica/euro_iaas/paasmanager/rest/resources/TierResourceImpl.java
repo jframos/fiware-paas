@@ -20,8 +20,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -236,7 +236,7 @@ public class TierResourceImpl implements TierResource {
         }
     }
 
-    public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException {
+    public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException, com.telefonica.euro_iaas.commons.dao.InvalidEntityException {
         tierold.setFlavour(tiernew.getFlavour());
         tierold.setFloatingip(tiernew.getFloatingip());
         tierold.setIcono(tiernew.getIcono());

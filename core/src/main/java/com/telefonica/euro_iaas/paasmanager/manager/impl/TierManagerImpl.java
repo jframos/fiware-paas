@@ -256,8 +256,11 @@ public class TierManagerImpl implements TierManager {
 
     private boolean isAvailableToBeDeleted(Network net) {
     	try {
-			tierDao.findAllWithNetwork (net.getNetworkName());
-			log.debug("The network " + net + " cannot be deleted" );
+			List<Tier> tiers = tierDao.findAllWithNetwork (net.getNetworkName());
+			log.debug("The network " + net.getNetworkName() + " cannot be deleted. The following tiers are using it" );
+			for (Tier tier: tiers) {
+			    log.debug(tier.getName());
+			}
 			return false;
 		} catch (EntityNotFoundException e) {
 		    log.debug("The network " + net + " can be deleted" );
