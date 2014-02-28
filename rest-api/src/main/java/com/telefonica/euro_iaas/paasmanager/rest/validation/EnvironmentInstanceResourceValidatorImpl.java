@@ -30,7 +30,6 @@ import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -60,6 +59,9 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
     /** The log. */
     private static Logger log = Logger.getLogger(EnvironmentInstanceResourceValidatorImpl.class);
 
+    /**
+     * It validates the payload.
+     */
     public void validateCreatePayload(String payload) throws InvalidEntityException {
         try {
             Document doc = claudiaUtil.stringToDom(payload);
@@ -111,16 +113,12 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
     }
 
-    /*
-     * (non-Javadoc)
-     * @seecom.telefonica.euro_iaas.paasmanager.rest.validation. EnvironmentInstanceResourceValidator
-     * #validateCreate(com.telefonica.euro_iaas .paasmanager.model.dto.EnvironmentDto)
+    /**
+     * It validate the creation of an environment instance.
      */
     public void validateCreate(EnvironmentInstanceDto environmentInstanceDto,
-            SystemPropertiesProvider systemPropertiesProvider, ClaudiaData claudiaData)
-            throws InvalidEntityException, QuotaExceededException {
-
-    	
+        SystemPropertiesProvider systemPropertiesProvider, ClaudiaData claudiaData)
+        throws InvalidEntityException, QuotaExceededException {
 
         if (environmentInstanceDto.getEnvironmentDto() == null) {
             log.error("The environment to be deployed is null ");
@@ -128,10 +126,9 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
         }
 
 
-		resourceValidator.validateName (environmentInstanceDto.getBlueprintName());
-		resourceValidator.validateDescription (environmentInstanceDto.getDescription());
-	
-        
+        resourceValidator.validateName(environmentInstanceDto.getBlueprintName());
+        resourceValidator.validateDescription(environmentInstanceDto.getDescription());
+
         log.debug("Validate enviornment instance blueprint " + environmentInstanceDto.getBlueprintName()
                 + " description " + environmentInstanceDto.getDescription() + " environment "
                 + environmentInstanceDto.getEnvironmentDto());
@@ -179,6 +176,11 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
         validateQuota(claudiaData, environmentInstanceDto);
     }
 
+    /**
+     * It validates the tier.
+     * @param tierDto
+     * @throws InvalidEntityException
+     */
     public void validateTier(TierDto tierDto) throws InvalidEntityException {
 
         if (tierDto.getMaximumNumberInstances() == null) {
@@ -202,14 +204,17 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
     }
 
+    /**
+     * It validates the quota.
+     */
     public void validateQuota(ClaudiaData claudiaData, EnvironmentInstanceDto environmentInstanceDto)
-            throws QuotaExceededException, InvalidEntityException {
+        throws QuotaExceededException, InvalidEntityException {
 
         Map<String, Limits> limits = new HashMap<String, Limits>();
 
         Integer initialNumberInstances = 0;
         Integer floatingIPs = 0;
-        List securityGroupList = new ArrayList<String>(2);
+        List<String> securityGroupList = new ArrayList<String>(2);
 
         if (environmentInstanceDto.getTierInstances() != null) {
             for (TierInstanceDto tierInstanceDto : environmentInstanceDto.getTierInstances()) {
@@ -261,7 +266,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
             }
         }
-    }    
+    }
 
     /**
      * @param claudiaUtil
@@ -287,8 +292,8 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
         this.quotaClient = quotaClient;
     }
     
-    public void setResourceValidator (ResourceValidator resourceValidator) {
-    	this.resourceValidator = resourceValidator;
+    public void setResourceValidator(ResourceValidator resourceValidator) {
+        this.resourceValidator = resourceValidator;
     }
 
 }
