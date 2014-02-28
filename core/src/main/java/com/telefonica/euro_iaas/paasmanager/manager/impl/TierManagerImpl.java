@@ -202,7 +202,7 @@ public class TierManagerImpl implements TierManager {
             throw new InvalidEntityException(tier, e);
         }
 
-        if (tier.getSecurityGroup() != null) {
+        if (tier.getSecurityGroup() != null && !claudiaData.getVdc().isEmpty()) {
             SecurityGroup sec = tier.getSecurityGroup();
             log.debug("Deleting security group " + sec.getName() + " in tier " + tier.getName());
             tier.setSecurityGroup(null);

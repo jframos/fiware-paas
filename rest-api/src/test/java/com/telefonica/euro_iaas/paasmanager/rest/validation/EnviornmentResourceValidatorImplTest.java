@@ -11,6 +11,7 @@ package com.telefonica.euro_iaas.paasmanager.rest.validation;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
 
@@ -26,7 +27,9 @@ import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestE
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
+import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
@@ -65,8 +68,24 @@ public class EnviornmentResourceValidatorImplTest {
         
         ClaudiaData claudiaData = mock(ClaudiaData.class);
 
-        environmentResourceValidator.validateCreate(claudiaData, envDto, "vdc", systemPropertiesProvider);
+        environmentResourceValidator.validateCreate(claudiaData, envDto, "vdc");
        
+    }
+    
+    @Test
+    public void shouldValidateAbstractEnv() throws EntityNotFoundException  {
+        
+        EnvironmentDto envDto = new EnvironmentDto();
+        envDto.setName("name");
+        envDto.setDescription("description");
+       
+        
+        try {
+            environmentResourceValidator.validateAbstractCreate(envDto);
+        } catch (Exception e) {
+           fail();
+        }
+
     }
     
 
