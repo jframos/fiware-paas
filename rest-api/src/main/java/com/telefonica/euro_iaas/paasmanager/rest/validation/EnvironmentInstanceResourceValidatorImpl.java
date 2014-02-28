@@ -66,12 +66,14 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
             // EnvironmentName validation
             Node virtualSystem = doc.getElementsByTagName(VIRTUALSYSTEMCOLLECTION).item(0);
-            if (virtualSystem == null)
+            if (virtualSystem == null) {
                 throw new InvalidEntityException("VirtualSystemCollection is null");
+            }
 
             Node environmentNameElement = virtualSystem.getAttributes().getNamedItem(GENERAL_ID);
-            if (environmentNameElement == null)
+            if (environmentNameElement == null) {
                 throw new InvalidEntityException("EnvironmentName is null");
+            }
 
             // ProductName and Version Validation
             NodeList productNameNodeList = doc.getElementsByTagName(extendedOVFUtil.PRODUCTNAME_TAG);
@@ -80,14 +82,16 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
             for (int i = 0; i < productNameNodeList.getLength(); i++) {
                 Node productNameNode = doc.getElementsByTagName(extendedOVFUtil.PRODUCTNAME_TAG).item(i);
-                if (productNameNode == null)
+                if (productNameNode == null) {
                     throw new InvalidEntityException("productName is null");
+                }
             }
 
             for (int i = 0; i < productVersionNodeList.getLength(); i++) {
                 Node productVersionNode = doc.getElementsByTagName(PRODUCTNAME_TAG).item(i);
-                if (productVersionNode == null)
+                if (productVersionNode == null) {
                     throw new InvalidEntityException("productVersion is null");
+                }
             }
 
         } catch (SAXException e) {
@@ -160,9 +164,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
         // Validating length of hostname (maximum =64)
         for (TierDto tierDto : environmentInstanceDto.getEnvironmentDto().getTierDtos()) {
-            // String hostname = (claudiaData.getService() + "-"
-            // + tier.getName() + "-"
-            // + numReplica).toLowerCase();
+
             int hostnameLength = environmentInstanceDto.getBlueprintName().length() + tierDto.getName().length() + 5;
             if (hostnameLength > 64) {
                 int exceed = hostnameLength - 64;

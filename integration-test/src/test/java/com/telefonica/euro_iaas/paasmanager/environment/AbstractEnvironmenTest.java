@@ -135,6 +135,49 @@ public class AbstractEnvironmenTest {
     }
     
     @Test
+    public void testAddAndLoadAbstractTier() throws APIException  {
+        Environment environment= new Environment();
+        environment.setName("ndame5");
+        environment.setDescription("Description First environment");
+        abstractEnvironmentResource.insert(org, environment.toDto());  
+        
+        Tier tier = new Tier("ddd", new Integer(1), new Integer(1), new Integer(1), null);
+        tier.setImage("image");
+        tier.setIcono("icono");
+        tier.setFlavour("flavour");
+        tier.setFloatingip("floatingip");
+        tier.setKeypair("keypair");
+        Network net = new Network("testabsstrainsert", "dd");
+        tier.addNetwork(net);
+        
+        abstractTierResource.insert(org, environment.getName(), tier.toDto());
+        abstractTierResource.load(org, environment.getName(), tier.getName());
+  
+    }
+    
+    @Test
+    public void testDeleteAbstractTier() throws APIException  {
+        Environment environment= new Environment();
+        environment.setName("ndame2");
+        environment.setDescription("Description First environment");
+        abstractEnvironmentResource.insert(org, environment.toDto());  
+        abstractEnvironmentResource.load(org, environment.getName());  
+        
+        Tier tier = new Tier("ddd2", new Integer(1), new Integer(1), new Integer(1), null);
+        tier.setImage("image");
+        tier.setIcono("icono");
+        tier.setFlavour("flavour");
+        tier.setFloatingip("floatingip");
+        tier.setKeypair("keypair");
+        Network net = new Network("testdeat", "dd");
+        tier.addNetwork(net);
+        
+        abstractTierResource.insert(org, environment.getName(), tier.toDto());
+        abstractTierResource.delete(org, environment.getName(), tier.getName());
+  
+    }
+    
+    @Test
     public void testDeleteAbstractEnv() throws APIException  {
         Environment environment= new Environment();
         environment.setName("nameAB");

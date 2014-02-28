@@ -106,7 +106,11 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
     }
 
     public Environment load(String name, String vdc) throws EntityNotFoundException {
-        return environmentDao.load(name, vdc);
+        if (vdc==null || vdc.isEmpty()) {
+            return environmentDao.load(name);
+        } else {
+            return environmentDao.load(name, vdc);
+        }
     }
 
     public Environment load(String name) throws EntityNotFoundException {

@@ -360,5 +360,22 @@ public class TierResourceValidatorImplTest {
         tierResourceValidator.validateUpdate("vdc", "envName", tierDTO.getName(), tierDTO);
 
     }
+    
+    @Test
+    public void shouldValidateDeleteTier() throws InvalidEntityException, EntityNotFoundException  {
+        // given
+         
+        TierDto tierDTO = new TierDto();
+        tierDTO.setName("aaaa");
+        tierDTO.setInitialNumberInstances(new Integer(1));
+        tierDTO.setMaximumNumberInstances(new Integer(1));
+        tierDTO.setMinimumNumberInstances(new Integer(1));
+        tierDTO.setImage("image");
+        tierDTO.setFlavour("flavor");
+        when(tierManager.load(anyString(), anyString(), anyString())).thenReturn(tierDTO.fromDto("vdc"));
+
+        tierResourceValidator.validateDelete("vdc", "envName", "tierName");
+
+    }
 
 }

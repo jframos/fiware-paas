@@ -70,7 +70,7 @@ public class TierResourceTest extends TestCase {
         
         
         Mockito.doNothing().when(tierResourceValidator).validateCreate(any(ClaudiaData.class), any(TierDto.class), any(String.class), any(String.class));
-        Mockito.doNothing().when(tierResourceValidator).validateDelete(any(String.class), any(String.class), any(String.class), any(SystemPropertiesProvider.class)); 
+        Mockito.doNothing().when(tierResourceValidator).validateDelete(any(String.class), any(String.class), any(String.class)); 
         Mockito.doNothing().when(tierResourceValidator).validateUpdate(any(String.class), any(String.class), any(String.class), any(TierDto.class));
         tierResource.setTierResourceValidator(tierResourceValidator);
 

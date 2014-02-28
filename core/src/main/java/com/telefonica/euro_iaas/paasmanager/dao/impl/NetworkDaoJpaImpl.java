@@ -44,8 +44,6 @@ public class NetworkDaoJpaImpl extends AbstractBaseDao<Network, String> implemen
             return findNetworkWithSubNet(networkName, vdc);
         
     }
-    
-    
 
     private Network findNetworkWithSubNet(String name, String vdc) throws EntityNotFoundException {
         Query query = getEntityManager().createQuery(
