@@ -196,11 +196,11 @@ public class TierResourceImpl implements TierResource {
     }
 
     public void update(String org, String vdc, String environmentName, String tierName, TierDto tierDto) throws APIException {
-        log.debug("Update tier " + tierDto.getName() + " from env " + environmentName);
+        log.debug("Update tier " + tierName + " from env " + environmentName);
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
 
         try {
-            tierResourceValidator.validateUpdate(vdc, environmentName, tierDto.getName(), tierDto);
+            tierResourceValidator.validateUpdate(vdc, environmentName,tierName, tierDto);
             log.debug("Validated tier " + tierDto.getName() + " from env " + environmentName);
 
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {

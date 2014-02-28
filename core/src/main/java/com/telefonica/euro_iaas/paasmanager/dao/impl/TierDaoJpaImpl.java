@@ -201,16 +201,10 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
     }
 
 
-	public List<Tier> findAllWithNetwork(String networkName) throws EntityNotFoundException {
+	public List<Tier> findAllWithNetwork(String networkName)  {
 		Query query = getEntityManager().createQuery("select tier from Tier tier left join fetch tier.networks nets where nets.name=:net");
         query.setParameter("net", networkName);
-        List<Tier> tiers = null;
-        try {
-            tiers = ( List<Tier>) query.getResultList();
-        } catch (NoResultException e) {
-            String message = " No Tier found in the database with network: " + networkName;
-            throw new EntityNotFoundException(Tier.class, message, networkName);
-        }
+        List<Tier> tiers = (List<Tier>) query.getResultList();
         return tiers;
 	}
 
