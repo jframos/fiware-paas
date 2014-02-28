@@ -228,6 +228,46 @@ public class TierTest {
         assertEquals(env3.getTiers().size(), 1);
 
     }
+    
+    @Test(expected = APIException.class)
+    public void testdUpdateTierNoExist() throws Exception {
+
+        ProductRelease product2 = new ProductRelease("test22", "0.1", "test 0.1", null);
+        product2 = productReleaseDao.create(product2);
+
+        Environment environmentBk = new Environment();
+        environmentBk.setName("updattier22");
+        environmentBk.setDescription("Description Second environment");
+        Tier tierbk = new Tier("tiersoftware", new Integer(1), new Integer(1), new Integer(1), null);
+
+        environmentResource.insert(org, vdc, environmentBk.toDto());
+        tierResource.update(org, vdc, environmentBk.getName(), tierbk.getName(), tierbk.toDto());
+    }
+    
+    
+    
+    @Test(expected = APIException.class)
+    public void testdUpdateTier2() throws Exception {
+
+        ProductRelease product2 = new ProductRelease("test22", "0.1", "test 0.1", null);
+        product2 = productReleaseDao.create(product2);
+
+        Environment environmentBk = new Environment();
+        environmentBk.setName("updattier22");
+        environmentBk.setDescription("Description Second environment");
+        Tier tierbk = new Tier("tsetUPdatetier2", new Integer(1), new Integer(1), new Integer(1), null);
+        tierbk.addProductRelease(product2);
+        tierbk.setImage("image");
+        tierbk.setIcono("icono");
+        tierbk.setFlavour("flavour");
+        tierbk.setFloatingip("floatingip");
+        tierbk.setPayload("");
+        tierbk.setKeypair("keypair");
+        environmentBk.addTier(tierbk);
+
+        environmentResource.insert(org, vdc, environmentBk.toDto());
+        tierResource.update(org, vdc, environmentBk.getName(), "henar", tierbk.toDto());
+    }
 
     @Test
     public void testeDeleteTier() throws Exception {

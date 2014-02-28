@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -62,26 +61,26 @@ public class TierResourceValidatorImplTest {
 	
 	@Before
 	public void setUp () throws EntityNotFoundException, InvalidEntityException {
-		tierResourceValidator = new TierResourceValidatorImpl();
-		tierManager=mock(TierManager.class);
-		EnvironmentManager environmentManager=mock(EnvironmentManager.class);
-		EnvironmentInstanceManager environmentInstanceManager=mock(EnvironmentInstanceManager.class);
+        tierResourceValidator = new TierResourceValidatorImpl();
+        tierManager = mock(TierManager.class);
+        EnvironmentManager environmentManager = mock(EnvironmentManager.class);
+        EnvironmentInstanceManager environmentInstanceManager = mock(EnvironmentInstanceManager.class);
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         tierResourceValidator.setTierManager(tierManager);
         tierResourceValidator.setEnvironmentInstanceManager(environmentInstanceManager);
         tierResourceValidator.setEnvironmentManager(environmentManager);
         
-		resourceValidator = mock(ResourceValidator.class);
-		tierResourceValidator.setResourceValidator(resourceValidator);
+        resourceValidator = mock(ResourceValidator.class);
+        tierResourceValidator.setResourceValidator(resourceValidator);
 	
   
-		Mockito.doNothing().when(resourceValidator).validateName(anyString());
-		Mockito.doNothing().when(resourceValidator).validateDescription(anyString());
-		Environment env= new Environment();
-		when(environmentManager.load(anyString(), anyString())).thenReturn(env);
+        Mockito.doNothing().when(resourceValidator).validateName(anyString());
+        Mockito.doNothing().when(resourceValidator).validateDescription(anyString());
+        Environment env= new Environment();
+        when(environmentManager.load(anyString(), anyString())).thenReturn(env);
 		
-		List<EnvironmentInstance> envs= new ArrayList<EnvironmentInstance>();
-		when(environmentInstanceManager.findByCriteria(any(EnvironmentInstanceSearchCriteria.class))).thenReturn(envs);
+        List<EnvironmentInstance> envs= new ArrayList<EnvironmentInstance>();
+        when(environmentInstanceManager.findByCriteria(any(EnvironmentInstanceSearchCriteria.class))).thenReturn(envs);
 	}
 
     @Test
@@ -358,6 +357,24 @@ public class TierResourceValidatorImplTest {
         when(tierManager.load(anyString(), anyString(), anyString())).thenReturn(tierDTO.fromDto("vdc"));
 
         tierResourceValidator.validateUpdate("vdc", "envName", tierDTO.getName(), tierDTO);
+
+    }
+    
+    @Test(expected = InvalidEntityException.class)
+    public void shouldValidateUpdateTierError() throws AlreadyExistEntityException, 
+        InfrastructureException, QuotaExceededException, InvalidEntityException, EntityNotFoundException  {
+        // given
+         
+        TierDto tierDTO = new TierDto();
+        tierDTO.setName("aaaa");
+        tierDTO.setInitialNumberInstances(new Integer(1));
+        tierDTO.setMaximumNumberInstances(new Integer(1));
+        tierDTO.setMinimumNumberInstances(new Integer(1));
+        tierDTO.setImage("image");
+        tierDTO.setFlavour("flavor");
+        when(tierManager.load(anyString(), anyString(), anyString())).thenReturn(tierDTO.fromDto("vdc"));
+
+        tierResourceValidator.validateUpdate("vdc", "envName", "ddd", tierDTO);
 
     }
     
