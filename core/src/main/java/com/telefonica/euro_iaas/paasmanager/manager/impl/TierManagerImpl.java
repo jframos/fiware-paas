@@ -226,28 +226,28 @@ public class TierManagerImpl implements TierManager {
         }
 
         log.debug("Deleting the networks");
+       
+        
         List<Network> netsAux = new ArrayList<Network>();
         for (Network netNet : tier.getNetworks()) {
             netsAux.add(netNet);
         }
+        
+        tier.setNetworks(null);
+        tierDao.update(tier);
 
         for (Network net : netsAux) {
-            tier.deleteNetwork(net);
-            tierDao.update(tier);
             if (isAvailableToBeDeleted (net)) {
             	log.debug("Deleting network " + net.getNetworkName());
             	networkManager.delete(net);
             }
-           
-            
         }
+        log.debug("Networks deleted");
 
         try {
             tierDao.remove(tier);
         } catch (Exception e) {
-
             String mens = "It is not possible to delete the tier since it is not exist " + e.getMessage();
-
             log.error(mens);
             throw new InvalidEntityException(tier, e);
         }
@@ -257,8 +257,10 @@ public class TierManagerImpl implements TierManager {
     private boolean isAvailableToBeDeleted(Network net) {
     	try {
 			tierDao.findAllWithNetwork (net.getNetworkName());
+			log.debug("The network " + net + " cannot be deleted" );
 			return false;
 		} catch (EntityNotFoundException e) {
+		    log.debug("The network " + net + " can be deleted" );
 			return true;
 		}
 	}

@@ -68,7 +68,7 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
             tier = (Tier) query.getSingleResult();
         } catch (NoResultException e) {
             String message = " No Tier found in the database with name: " + name;
-            throw new EntityNotFoundException(Tier.class, e.getMessage(), message);
+            throw new EntityNotFoundException(Tier.class, message, name);
         }
         return tier;
     }
@@ -91,7 +91,7 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
         } catch (NoResultException e) {
             String message = " No Tier found in the database with name: " + name + " vdc " + vdc
                     + " and environmentname " + environmentname;
-            throw new EntityNotFoundException(Tier.class, e.getMessage(), message);
+            throw new EntityNotFoundException(Tier.class, message, name);
         }
 
         return tier;
@@ -110,7 +110,7 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
         } catch (NoResultException e) {
             String message = " No Tier found in the database with name: " + name + " vdc " + vdc
                     + " no products and environmentname " + environmentname;
-            throw new EntityNotFoundException(Tier.class, e.getMessage(), message);
+            throw new EntityNotFoundException(Tier.class, message, name);
         }
         return tier;
     }
@@ -179,7 +179,7 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
         } catch (NoResultException e) {
             String message = " No Tier found in the database with name: " + name + " vdc " + vdc
             + " no products and environmentname " + environmentname;
-            throw new EntityNotFoundException(Tier.class, e.getMessage(), message);
+            throw new EntityNotFoundException(Tier.class, message, name);
         }
         return tier;
     }
@@ -194,7 +194,7 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
             tier = (Tier) query.getSingleResult();
         } catch (NoResultException e) {
             String message = " No Tier found in the database with security group id: " + idSecurityGroup;
-            throw new EntityNotFoundException(Tier.class, e.getMessage(), message);
+            throw new EntityNotFoundException(Tier.class, message, idSecurityGroup);
         }
         return tier.getRegion();
 
@@ -209,7 +209,7 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
             tiers = ( List<Tier>) query.getResultList();
         } catch (NoResultException e) {
             String message = " No Tier found in the database with network: " + networkName;
-            throw new EntityNotFoundException(Tier.class, e.getMessage(), message);
+            throw new EntityNotFoundException(Tier.class, message, networkName);
         }
         return tiers;
 	}

@@ -63,6 +63,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
         try {
             tierResourceValidator.validateDelete("", envName, tierName);
+            log.debug("Tier validated correctly to be deleted");
 
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                 claudiaData.setUser(getCredentials());
