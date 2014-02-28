@@ -40,7 +40,7 @@ public class AbstractEnvironmenTest {
     String org = "FIWARE";
 
 
-    @Test
+   @Test
     public void testAbstractEnvironment() throws Exception {
         EnvironmentDto environmentBk = new EnvironmentDto();
         environmentBk.setName("absenvtest");
@@ -155,16 +155,16 @@ public class AbstractEnvironmenTest {
         abstractTierResource.load(org, environment.getName(), tier.getName());
   
     }
-    
-    @Test
+   
+   @Test
     public void testDeleteAbstractTier() throws APIException  {
         Environment environment= new Environment();
-        environment.setName("ndame2");
+        environment.setName("ndameDATI");
         environment.setDescription("Description First environment");
         abstractEnvironmentResource.insert(org, environment.toDto());  
         abstractEnvironmentResource.load(org, environment.getName());  
         
-        Tier tier = new Tier("ddd2", new Integer(1), new Integer(1), new Integer(1), null);
+        Tier tier = new Tier("henar", new Integer(1), new Integer(1), new Integer(1), null);
         tier.setImage("image");
         tier.setIcono("icono");
         tier.setFlavour("flavour");
@@ -181,15 +181,15 @@ public class AbstractEnvironmenTest {
     @Test
     public void testDeleteAbstractTierII() throws APIException  {
         Environment environment= new Environment();
-        environment.setName("ndame2");
+        environment.setName("ndameDATII");
         environment.setDescription("Description First environment");
-        Tier tier = new Tier("ddd2", new Integer(1), new Integer(1), new Integer(1), null);
+        Tier tier = new Tier("aa", new Integer(1), new Integer(1), new Integer(1), null);
         tier.setImage("image");
         tier.setIcono("icono");
         tier.setFlavour("flavour");
         tier.setFloatingip("floatingip");
         tier.setKeypair("keypair");
-        Network net = new Network("testdeat", "dd");
+        Network net = new Network("ss", "dd");
         tier.addNetwork(net);
         
         environment.addTier(tier);

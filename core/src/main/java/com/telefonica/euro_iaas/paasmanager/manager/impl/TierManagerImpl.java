@@ -418,6 +418,7 @@ public class TierManagerImpl implements TierManager {
             return tier;
         } catch (EntityNotFoundException e) {
 
+            
             tier.setVdc(data.getVdc());
             tier.setEnviromentName(data.getService());
 
