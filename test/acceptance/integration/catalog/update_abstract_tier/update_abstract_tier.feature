@@ -152,7 +152,6 @@ Feature: Update a tier of an abstract environment
             | nameqa1 | tiernameqa1 | git=1.7                  | netqa1        |
             | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
         
-    @skip @CLAUDIA-3676
     Scenario: Update tier of an abstract environment changing its name
         Given the paas manager is up and properly configured
         And an abstract environment has already been created with data:
@@ -166,7 +165,6 @@ Feature: Update a tier of an abstract environment
             | newtiername | netqa1   |
         Then I receive a "Bad Request" response
         
-    @skip @CLAUDIA-3676
     Scenario: Update tier of an abstract environment in the wrong path
         Given the paas manager is up and properly configured
         And an abstract environment has already been created with data:
