@@ -161,7 +161,7 @@ public class TierTest {
 
         tierDto.setFlavour("flavour3");
         tierDto.setIcono("icono2");
-        tierResource.update(org, vdc, "updatedenvironmenttierv2", tierDto);
+        tierResource.update(org, vdc, "updatedenvironmenttierv2", tierDto.getName(), tierDto);
         TierDto tier2Dto = tierResource.load(vdc, "updatedenvironmenttierv2", "tierupdatetier22");
         assertEquals(tier2Dto.getFlavour(), "flavour3");
         assertEquals(tier2Dto.getIcono(), "icono2");
@@ -217,7 +217,7 @@ public class TierTest {
         tierDto.setFlavour("flavour3");
         tierDto.setIcono("icono2");
         tierDto.addProductRelease(product3.toDto());
-        tierResource.update(org, vdc, "updatedenvironmentsoftwware", tierDto);
+        tierResource.update(org, vdc, "updatedenvironmentsoftwware", tierDto.getName(), tierDto);
         TierDto tier2Dto = tierResource.load(vdc, "updatedenvironmentsoftwware", "tiersoftware");
         assertEquals(tier2Dto.getProductReleaseDtos().size(), 2);
         assertEquals(tier2Dto.getProductReleaseDtos().get(0).getProductName(), "test");

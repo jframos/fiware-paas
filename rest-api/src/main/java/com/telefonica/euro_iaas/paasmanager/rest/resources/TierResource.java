@@ -90,6 +90,6 @@ public interface TierResource {
     @Path("/{tierName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void update(@PathParam("org") String org, @PathParam("vdc") String vdc,
-            @PathParam("environment") String environment, TierDto TierDto) throws APIException;
+            @PathParam("environment") String environment, @PathParam("tierName") String tierName, TierDto TierDto) throws APIException;
 
 }

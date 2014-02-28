@@ -70,8 +70,12 @@ public class NetworkManagerImpl implements NetworkManager {
             if (network.getSubNets().isEmpty()) {
                 createDefaultSubNetwork(claudiaData, network, region);
             }
+            if (network.getVdc()== null ){
+                network.setVdc("");
+            }
             network = networkDao.create(network);
         }
+        
         return network;
     }
 
@@ -109,14 +113,14 @@ public class NetworkManagerImpl implements NetworkManager {
      */
     private void createDefaultSubNetwork(ClaudiaData claudiaData, Network network, String region)
             throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
-        int cidrOpenstack = networkInstanceManager.getNumberDeployedNetwork(claudiaData, region) + 1;
-        int cidrdb = this.findAll().size();
-        int cidrCount = 0;
-        if (cidrdb > cidrOpenstack) {
-            cidrCount = cidrdb;
-        } else {
-            cidrCount = cidrOpenstack;
+        int cidrOpenstack =1;
+        if (!(claudiaData.getVdc() == null || claudiaData.getVdc().isEmpty())) {
+            cidrOpenstack = networkInstanceManager.getNumberDeployedNetwork(claudiaData, region) + 1;
         }
+
+        int cidrdb = this.findAll().size();
+        int cidrCount = cidrdb+cidrOpenstack;
+      
         SubNetwork subNet = new SubNetwork("sub-net-" + network.getNetworkName() + "-" + cidrCount, "" + cidrCount);
         subNet = subNetworkManager.create(subNet);
         network.addSubNet(subNet);
