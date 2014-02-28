@@ -108,8 +108,6 @@ public class AbstractEnvironmenTest {
         assertEquals (abstractEnvironmentResource.findAll(org, null, null, null, null).size(), number+1);
   
     }
-    
-
   
 
 }
