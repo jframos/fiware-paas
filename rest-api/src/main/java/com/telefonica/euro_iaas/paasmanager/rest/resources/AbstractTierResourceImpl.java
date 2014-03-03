@@ -62,7 +62,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
         log.debug("Deleting tier " + tierName + " from env " + envName);
 
         try {
-            tierResourceValidator.validateDelete("", envName, tierName, systemPropertiesProvider);
+            tierResourceValidator.validateDelete("", envName, tierName);
 
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                 claudiaData.setUser(getCredentials());
@@ -160,7 +160,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
         ClaudiaData claudiaData = new ClaudiaData(org, "", environmentName);
 
         try {
-            tierResourceValidator.validateUpdate(tierDto, "", environmentName, systemPropertiesProvider);
+            tierResourceValidator.validateUpdate( "", environmentName,tierDto.getName(), tierDto);
             log.debug("Validated tier " + tierDto.getName() + " from env " + environmentName);
 
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {

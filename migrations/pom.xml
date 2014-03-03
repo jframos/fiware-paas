@@ -68,7 +68,7 @@
 
                                     <changeLogFile>src/main/resources/db-changelog.sql</changeLogFile>
                                     <driver>org.postgresql.Driver</driver>
-                                    <url>jdbc:postgresql://localhost:5432/paasmanage</url>
+                                    <url>jdbc:postgresql://localhost:5432/paasmanager</url>
                                     <username>postgres</username>
                                     <password>postgres</password>
 

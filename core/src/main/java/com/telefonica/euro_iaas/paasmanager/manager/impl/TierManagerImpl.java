@@ -97,7 +97,13 @@ public class TierManagerImpl implements TierManager {
             existProductOrSyncWithSDC(tier);
 
             createSecurityGroups(claudiaData, tier);
-            createNetworks(claudiaData, tier);
+
+            if (claudiaData.getVdc() == null || claudiaData.getVdc().isEmpty()) {
+                createAbstractNetworks(claudiaData, tier);
+            } else {
+                createNetworks(claudiaData, tier);
+            }
+
             return tierInsertBD(tier, claudiaData);
 
         }
@@ -195,6 +201,15 @@ public class TierManagerImpl implements TierManager {
             } else {
                 network = networkManager.create(claudiaData, network, tier.getRegion());
             }
+            tier.addNetwork(network);
+        }
+    }
+
+    public void createAbstractNetworks(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException,
+            InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
+
+        for (Network network : tier.getNetworks()) {
+            network = networkManager.create(claudiaData, network, tier.getRegion());
             tier.addNetwork(network);
         }
     }

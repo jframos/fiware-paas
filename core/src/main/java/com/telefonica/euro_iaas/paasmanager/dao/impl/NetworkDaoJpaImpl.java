@@ -44,24 +44,29 @@ public class NetworkDaoJpaImpl extends AbstractBaseDao<Network, String> implemen
             return findNetworkWithSubNet(networkName, vdc);
         
     }
-    
-    
 
     private Network findNetworkWithSubNet(String name, String vdc) throws EntityNotFoundException {
         Query query = getEntityManager().createQuery(
                 "select p from Network p left join " + " fetch p.subNets where p.name = :name and p.vdc = :vdc");
         query.setParameter("name", name);
-        query.setParameter("vdc", vdc);
+        if (vdc == null ){
+            query.setParameter("vdc", "");
+        }
+        else {
+            query.setParameter("vdc", vdc);
+        }
         Network network = null;
         try {
             network = (Network) query.getSingleResult();
         } catch (NoResultException e) {
             String message = " No network found in the database with id: " + name + " Exception: " + e.getMessage();
     
-            throw new EntityNotFoundException(ProductRelease.class, "name", name);
+            throw new EntityNotFoundException(Network.class, "name", name);
         }
         return network;
     }
+    
+    
 
     @Override
     public Network load(String networkName) throws EntityNotFoundException {

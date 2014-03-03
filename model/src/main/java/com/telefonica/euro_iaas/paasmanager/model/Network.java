@@ -140,6 +140,14 @@ public class Network {
     public void setNetworkName(String name) {
         this.name=name;
     }
+    
+    public String getVdc () {
+        return vdc;
+    }
+    
+    public void setVdc (String vdc) {
+        this.vdc=vdc;
+    }
 
 
     /**
