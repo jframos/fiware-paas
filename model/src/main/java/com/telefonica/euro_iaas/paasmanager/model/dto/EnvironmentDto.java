@@ -72,6 +72,29 @@ public class EnvironmentDto {
         environment.setVdc(vdc);
         return environment;
     }
+    
+    /**
+     * from Dto.
+     * 
+     * @return
+     */
+    public Environment fromDto(String org, String vdc) {
+
+        Environment environment = new Environment();
+        environment.setName(getName());
+        environment.setDescription(getDescription());
+
+        if (getTierDtos() != null) {
+            Set<Tier> lTier = new HashSet<Tier>();
+            for (TierDto tierDto : getTierDtos()) {
+                lTier.add(tierDto.fromDto(vdc));
+            }
+            environment.setTiers(lTier);
+        }
+        environment.setOrg(org);
+        environment.setVdc(vdc);
+        return environment;
+    }
 
     /**
      * @return the name

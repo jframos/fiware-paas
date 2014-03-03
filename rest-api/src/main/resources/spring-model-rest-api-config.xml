@@ -10,6 +10,12 @@
     <bean id="applicationInstanceResource" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.rest.resources.ApplicationInstanceResourceImpl">
         <property name="validator" ref="applicationInstanceResourceValidator"/>
+        <property name="taskManager" ref="taskManager"/>
+        <property name="environmentInstanceAsyncManager" ref="environmentInstanceAsyncManager"/>
+        <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
+        <property name="applicationInstanceAsyncManager" ref="applicationInstanceAsyncManager"/>
+        <property name="applicationInstanceManager" ref="applicationInstanceManager"/>
+        <property name="applicationReleaseManager" ref="applicationReleaseManager"/>
     </bean>
 
     <bean id="environmentInstanceResource" lazy-init="true"
@@ -37,9 +43,8 @@
     <bean id="abstractEnvironmentResource" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.rest.resources.AbstractEnvironmentResourceImpl">
         <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
-
+        <property name="environmentResourceValidator" ref="environmentResourceValidator"/>
         <property name="environmentManager" ref="environmentManager"/>
-
     </bean>
 
     <bean id="productReleaseResource" lazy-init="true"
@@ -105,6 +110,7 @@
         <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
         <property name="quotaClient" ref="quotaClient"/>
         <property name="tierResourceValidator" ref="tierResourceValidator"/>
+        <property name="resourceValidator" ref="resourceValidator"/>
 
     </bean>
 
@@ -113,6 +119,7 @@
         <property name="tierResourceValidator" ref="tierResourceValidator"/>
         <property name="environmentManager" ref="environmentManager"/>
         <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
+        <property name="resourceValidator" ref="resourceValidator"/>
 
     </bean>
 
@@ -127,9 +134,17 @@
         <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
         <property name="environmentManager" ref="environmentManager"/>
         <property name="quotaClient" ref="quotaClient"/>
+        <property name="resourceValidator" ref="resourceValidator"/>
+        
 
 
     </bean>
+    
+    <bean id="resourceValidator" lazy-init="true"
+          class="com.telefonica.euro_iaas.paasmanager.rest.validation.ResourceValidatorImpl">
+
+    </bean>
+    
 
     <!-- ===========
     == UTIL ==

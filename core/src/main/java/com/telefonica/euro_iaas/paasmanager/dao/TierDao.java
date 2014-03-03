@@ -66,4 +66,12 @@ public interface TierDao extends BaseDAO<Tier, String> {
      * @throws EntityNotFoundException 
      */
     Tier loadTierWithNetworks(String tierName, String vdc, String environmentName) throws EntityNotFoundException;
+
+    /**
+     * 
+     * @param networkName
+     * @return
+     * @throws EntityNotFoundException 
+     */
+	List<Tier> findAllWithNetwork(String networkName) throws EntityNotFoundException;
 }

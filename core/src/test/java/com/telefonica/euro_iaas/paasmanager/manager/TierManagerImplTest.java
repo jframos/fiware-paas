@@ -296,6 +296,37 @@ public class TierManagerImplTest extends TestCase {
     }
     
     @Test
+    public void testCreateAbstractTierNetwork() throws Exception {
+
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
+                "keypair", "floatingip", "payload");
+        Network net = new Network("NETWORK_NAME", "vd");
+        tier.addNetwork(net);
+        tier.setVdc(null);
+        tier.setEnviromentName(ENV);
+
+        when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("FIWARE");
+
+        when(tierDao.create(any(Tier.class))).thenReturn(tier);
+        when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
+        when(networkManager.exists(any(String.class),any(String.class))).thenReturn(false);
+        when(networkManager.create(any(ClaudiaData.class),any(Network.class),any(String.class))).thenReturn(net);
+        when(networkManager.load(any(String.class),any(String.class))).thenReturn(net);
+
+
+        Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
+                .load(any(String.class), any(String.class), any(String.class));
+
+        tierManager.create(data, "env", tier);
+
+        Tier tier2 = tierManager.loadTierWithNetworks("name", null, ENV);
+        assertEquals(tier2.getName(), tier.getName());
+        assertEquals(tier2.getNetworks().size(), 1);
+        
+
+    }
+    
+    @Test
     public void testTierAlreadyNetwork() throws Exception {
 
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
@@ -324,5 +355,27 @@ public class TierManagerImplTest extends TestCase {
         
 
     }
+    
+    @Test
+    public void testTierDeletion() throws Exception {
+
+        productRelease = new ProductRelease("product", "2.0");
+        productRelease.addAttribute(new Attribute("open_ports", "8080"));
+
+        productReleases = new ArrayList<ProductRelease>();
+        productReleases.add(productRelease);
+
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
+                "image", "icono", "keypair", "floatingip", "payload");
+        when(tierDao.load(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
+   
+        tierManager.delete(data, tier);
+
+
+    }
+  
+    
+    
+    
 
 }

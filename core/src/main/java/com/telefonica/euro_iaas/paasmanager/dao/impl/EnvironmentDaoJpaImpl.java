@@ -99,6 +99,7 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
     private List<Environment> filterByOrg(List<Environment> environments, String org) {
         List<Environment> result = new ArrayList<Environment>();
         for (Environment environment : environments) {
+         
             if (environment.getOrg().equals(org) && environment.getVdc() == null) {
                 result.add(environment);
             }

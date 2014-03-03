@@ -16,18 +16,18 @@ class Network:
 
 class Tier:
     def __init__(self, tier_name, tier_image, tier_num_min='1', tier_num_max='1', tier_num_initial='1',
-                 tier_flavour='2', tier_keypair='jesuspg-keypair', tier_floatingip='false' ):
-        self.name = tier_name
-        self.tier_num_min = tier_num_min
-        self.tier_num_max = tier_num_max
-        self.tier_num_initial = tier_num_initial
-        self.tier_image = tier_image
-        self.tier_flavour = tier_flavour
-        self.tier_keypair = tier_keypair
-        self.tier_floatingip = tier_floatingip
-        self.products = []
+                 tier_flavour='2',tier_keypair='',tier_floatingip='false', region ="RegionOne" ):
+        self.name=tier_name
+        self.tier_num_min=tier_num_min
+        self.tier_num_max=tier_num_max
+        self.tier_num_initial=tier_num_initial
+        self.tier_image=tier_image
+        self.tier_flavour=tier_flavour
+        self.tier_keypair=tier_keypair
+        self.tier_floatingip=tier_floatingip
+        self.products=[]
         self.networks = []
-        self.region = "RegionOne"
+        self.region = region
 
     def add_product(self, product):
         self.products.append(product)

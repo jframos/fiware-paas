@@ -22,11 +22,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.EnvironmentInstanceNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -36,6 +31,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentSearchCriteria;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
@@ -82,16 +78,18 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
         return tiers;
     }
 
-    public void delete(String org, String vdc, String envName) throws AlreadyExistEntityException,
-            InvalidEntityException, InvalidEnvironmentRequestException, EntityNotFoundException,
-            InfrastructureException {
+    public void delete(String org, String vdc, String envName) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
-        environmentResourceValidator.validateDelete(envName, vdc, systemPropertiesProvider);
+        try {
+            environmentResourceValidator.validateDelete(envName, vdc, systemPropertiesProvider);
 
-        addCredentialsToClaudiaData(claudiaData);
+            addCredentialsToClaudiaData(claudiaData);
 
-        Environment env = environmentManager.load(envName, vdc);
-        environmentManager.destroy(claudiaData, env);
+            Environment env = environmentManager.load(envName, vdc);
+            environmentManager.destroy(claudiaData, env);
+        } catch (Exception e) {
+            throw new APIException(e);
+        }
 
     }
 
@@ -158,44 +156,36 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
 
     }
 
-    public void insert(String org, String vdc, EnvironmentDto environmentDto)
-            throws InvalidEnvironmentRequestException, AlreadyExistEntityException, InvalidEntityException {
+    public void insert(String org, String vdc, EnvironmentDto environmentDto) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentDto.getName());
 
         log.debug("Create a environment " + environmentDto.getName() + " " + environmentDto.getDescription() + " "
                 + environmentDto.getVdc() + " " + environmentDto.getOrg() + " " + environmentDto.getTierDtos());
 
-        // try
-        // {
-        addCredentialsToClaudiaData(claudiaData);
-        environmentResourceValidator.validateCreate(claudiaData, environmentDto, vdc, systemPropertiesProvider);
-        /*
-         * } catch (InvalidEnvironmentRequestException e) { throw new WebApplicationException(e, ERROR_REQUEST); } catch
-         * (AlreadyExistEntityException e) { throw new WebApplicationException(e, ERROR_REQUEST); } catch
-         * (InvalidEntityException e) { throw new WebApplicationException(e, ERROR_REQUEST); }
-         */
+        try {
+            addCredentialsToClaudiaData(claudiaData);
+            environmentResourceValidator.validateCreate(claudiaData, environmentDto, vdc);
 
-        Environment environment = new Environment();
-        environment.setName(environmentDto.getName());
-        environment.setDescription(environmentDto.getDescription());
+            Environment environment = new Environment();
+            environment.setName(environmentDto.getName());
+            environment.setDescription(environmentDto.getDescription());
 
-        /*
-         * String payload = ovfGeneration.createOvf(environmentDto); environment.setOvf(payload);
-         */
-        if (environmentDto.getTierDtos() != null) {
-            environment.setTiers(convertToTiers(environmentDto.getTierDtos(), environment.getName(), vdc));
+            /*
+             * String payload = ovfGeneration.createOvf(environmentDto); environment.setOvf(payload);
+             */
+            if (environmentDto.getTierDtos() != null) {
+                environment.setTiers(convertToTiers(environmentDto.getTierDtos(), environment.getName(), vdc));
+            }
+            environment.setOrg(org);
+            environment.setVdc(vdc);
+            // try {
+            environmentManager.create(claudiaData, environment);
+        } catch (Exception e) {
+            throw new APIException(e);
         }
-        environment.setOrg(org);
-        environment.setVdc(vdc);
-        // try {
-        environmentManager.create(claudiaData, environment);
-        // } catch (InvalidEnvironmentRequestException e) {
-        // TODO Auto-generated catch block
-        // throw new WebApplicationException(e.getCause(), ERROR_REQUEST);
-        // }
     }
 
-    public EnvironmentDto load(String org, String vdc, String name) throws EnvironmentInstanceNotFoundException {
+    public EnvironmentDto load(String org, String vdc, String name) throws APIException {
 
         EnvironmentSearchCriteria criteria = new EnvironmentSearchCriteria();
         criteria.setVdc(vdc);
@@ -208,18 +198,13 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
         // List<Environment> envs = filterEqualTiers(env);
 
         if (env == null || env.size() == 0) {
-            throw new WebApplicationException(new EntityNotFoundException(Environment.class, "Environmetn " + name
+            throw new WebApplicationException(new EntityNotFoundException(Environment.class, "Environment " + name
                     + " not found", ""), ERROR_NOT_FOUND);
         } else {
             EnvironmentDto envDto = env.get(0).toDto();
             // EnvironmentDto envDto = env.get(0).toDto();
             return envDto;
         }
-
-        /*
-         * try { return environmentManager.load(name, vdc).toDto(); } catch (EntityNotFoundException e) { throw new
-         * EnvironmentInstanceNotFoundException (e); }
-         */
 
     }
 

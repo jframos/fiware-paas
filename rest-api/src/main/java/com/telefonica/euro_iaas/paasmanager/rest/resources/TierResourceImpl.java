@@ -19,15 +19,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidSecurityGroupRequestException;
-import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -37,6 +31,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.TierResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
@@ -62,30 +57,26 @@ public class TierResourceImpl implements TierResource {
 
     private static Logger log = Logger.getLogger(TierResourceImpl.class);
 
-    public void delete(String org, String vdc, String envName, String tierName) throws EntityNotFoundException,
-            InvalidEntityException {
+    public void delete(String org, String vdc, String envName, String tierName) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
         log.debug("Deleting tier " + tierName + " from env " + envName);
 
-        tierResourceValidator.validateDelete(vdc, envName, systemPropertiesProvider);
-
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            claudiaData.setUser(getCredentials());
-        }
-
         try {
+            tierResourceValidator.validateDelete(vdc, envName, tierName);
+
+            if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+                claudiaData.setUser(getCredentials());
+            }
+
             Tier tier = tierManager.load(tierName, vdc, envName);
 
             Environment environment = environmentManager.load(envName);
             environment.deleteTier(tier);
             environmentManager.update(environment);
             tierManager.delete(claudiaData, tier);
-        } catch (InvalidEntityException e) {
+        } catch (Exception e) {
             log.error("Error deleting the tier " + e.getMessage());
-            throw new WebApplicationException(e, 500);
-        } catch (InfrastructureException e) {
-            log.error("Error deleting the tier " + e.getMessage());
-            throw new WebApplicationException(e, 500);
+            throw new APIException(e);
         }
 
         // throw new WebApplicationException(e, 500);
@@ -139,22 +130,16 @@ public class TierResourceImpl implements TierResource {
         }
     }
 
-    public void insert(String org, String vdc, String environmentName, TierDto tierDto) throws EntityNotFoundException,
-            InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException,
-            AlreadyExistsEntityException {
+    public void insert(String org, String vdc, String environmentName, TierDto tierDto) throws APIException {
 
         log.debug("Insert tier " + tierDto.getName() + " from env " + environmentName);
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
         claudiaData.setUser(getCredentials());
 
         try {
-            tierResourceValidator.validateCreate(claudiaData, tierDto, vdc, environmentName, systemPropertiesProvider);
-        } catch (InvalidEntityException e1) {
-            throw new WebApplicationException(e1, 500);
-        } catch (AlreadyExistEntityException e1) {
-            throw new WebApplicationException(e1, 500);
-        } catch (QuotaExceededException e) {
-            throw new WebApplicationException(e, 500);
+            tierResourceValidator.validateCreate(claudiaData, tierDto, vdc, environmentName);
+        } catch (Exception ex) {
+            throw new APIException(ex);
         }
 
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
@@ -165,20 +150,24 @@ public class TierResourceImpl implements TierResource {
         Tier tier = tierDto.fromDto(vdc);
         log.debug("to tier " + tier + "  product " + tier.getProductReleases() + " nets " + tier.getNetworks());
 
-        Environment environment = environmentManager.load(environmentName);
-        Tier newTier = tierManager.create(claudiaData, environmentName, tier);
-        environment.addTier(newTier);
-        environmentManager.update(environment);
+        try {
+            Environment environment = environmentManager.load(environmentName);
+            Tier newTier = tierManager.create(claudiaData, environmentName, tier);
+            environment.addTier(newTier);
+            environmentManager.update(environment);
+        } catch (Exception ex) {
+            throw new APIException(ex);
+        }
     }
 
-    public TierDto load(String vdc, String envName, String name) throws EntityNotFoundException {
+    public TierDto load(String vdc, String envName, String name) throws APIException {
         try {
             Tier tier = tierManager.load(name, vdc, envName);
 
             return tier.toDto();
 
         } catch (EntityNotFoundException e) {
-            throw new WebApplicationException(e, 404);
+            throw new APIException(e);
         }
     }
 
@@ -206,21 +195,20 @@ public class TierResourceImpl implements TierResource {
         this.tierResourceValidator = tierResourceValidator;
     }
 
-    public void update(String org, String vdc, String environmentName, TierDto tierDto) throws EntityNotFoundException,
-            InvalidEntityException, ProductReleaseNotFoundException {
+    public void update(String org, String vdc, String environmentName, String tierName, TierDto tierDto) throws APIException {
         log.debug("Update tier " + tierDto.getName() + " from env " + environmentName);
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
 
-        tierResourceValidator.validateUpdate(tierDto, vdc, environmentName, systemPropertiesProvider);
-        log.debug("Validated tier " + tierDto.getName() + " from env " + environmentName);
-
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            claudiaData.setUser(getCredentials());
-        }
-
-        Tier newtier = tierDto.fromDto(vdc);
-
         try {
+            tierResourceValidator.validateUpdate(vdc, environmentName, tierDto.getName(), tierDto);
+            log.debug("Validated tier " + tierDto.getName() + " from env " + environmentName);
+
+            if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+                claudiaData.setUser(getCredentials());
+            }
+
+            Tier newtier = tierDto.fromDto(vdc);
+
             Environment environment = environmentManager.load(environmentName);
             List<Tier> tiers = new ArrayList();
             for (Tier tier : environment.getTiers()) {
@@ -243,8 +231,8 @@ public class TierResourceImpl implements TierResource {
 
             // environmentManager.update(environment);
 
-        } catch (EntityNotFoundException e) {
-            throw new WebApplicationException(e, 404);
+        } catch (Exception e) {
+            throw new APIException(e);
         }
     }
 

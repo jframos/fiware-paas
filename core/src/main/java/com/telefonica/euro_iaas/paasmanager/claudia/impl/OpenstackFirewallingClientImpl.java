@@ -91,15 +91,22 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
             } else {
                 log.error("Error to create a security rule " + result);
-                throw new InfrastructureException("Error to create a security rule " + result);
+                throw new InfrastructureException("Error to create a security rule " + parseOpenStackError(result));
             }
 
         } catch (Exception e) {
-            String errorMessage = "Error performing post on the resource: " + url + " with payload: " + payload + " "
-                    + e.getMessage();
-            log.error(errorMessage);
 
-            throw new InfrastructureException(errorMessage);
+            if (!(e instanceof InfrastructureException)) {
+                String errorMessage = "Error performing post on the resource: " + url + " with payload: " + payload
+                        + " " + e.getMessage();
+                log.error(errorMessage);
+
+                throw new InfrastructureException(errorMessage);
+            } else {
+
+                throw new InfrastructureException(e.getMessage());
+            }
+
         }
     }
 
@@ -157,16 +164,21 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
                 return id;
             } else {
                 log.error("Error to create a security group " + result);
-                throw new InfrastructureException(result);
+                throw new InfrastructureException(parseOpenStackError(result));
             }
 
         } catch (Exception e) {
 
-            String errorMessage = "Error performing post on the resource: " + url + " with payload: " + payload + " "
-                    + e.getMessage();
-            log.error(errorMessage);
+            if (!(e instanceof InfrastructureException)) {
+                String errorMessage = "Error performing post on the resource: " + url + " with payload: " + payload
+                        + " " + e.getMessage();
+                log.error(errorMessage);
 
-            throw new InfrastructureException(errorMessage);
+                throw new InfrastructureException(errorMessage);
+            } else {
+
+                throw new InfrastructureException(e.getMessage());
+            }
         }
 
     }
@@ -204,13 +216,21 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
                 log.debug("Operation ok result " + result);
             } else {
                 log.error("Error to delete a security rule " + rule.getIdRule() + ": " + result);
-                throw new InfrastructureException(result);
+                throw new InfrastructureException(parseOpenStackError(result));
             }
 
         } catch (Exception e) {
-            String errorMessage = "Error performing delete on the resource: " + url + " " + e.getMessage();
 
-            throw new InfrastructureException(errorMessage);
+            if (!(e instanceof InfrastructureException)) {
+                String errorMessage = "Error performing delete on the resource: " + url + " " + e.getMessage();
+                log.error(errorMessage);
+
+                throw new InfrastructureException(errorMessage);
+            } else {
+
+                throw new InfrastructureException(e.getMessage());
+            }
+
         }
 
     }
@@ -252,14 +272,20 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
             } else {
                 log.error("Error to delete a security group " + securityGroup + " : " + result);
-                throw new InfrastructureException(result);
+                throw new InfrastructureException(parseOpenStackError(result));
             }
 
         } catch (Exception e) {
-            String errorMessage = "Error performing delete on the resource: " + url + " " + e;
-            e.printStackTrace();
 
-            throw new InfrastructureException(errorMessage);
+            if (!(e instanceof InfrastructureException)) {
+                String errorMessage = "Error performing delete on the resource: " + url + " " + e;
+                log.error(errorMessage);
+
+                throw new InfrastructureException(errorMessage);
+            } else {
+
+                throw new InfrastructureException(e.getMessage());
+            }
         }
 
     }
@@ -319,6 +345,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
         if (response.getStatus() != 200) {
             String message = "Error calling OpenStack to recover all secGroups. " + "Status " + response.getStatus()
                     + " " + responseEntity;
+            log.warn(message);
             throw new InfrastructureException(responseEntity);
         }
         log.debug("Status " + response.getStatus());
@@ -379,6 +406,13 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
             log.error(errorMessage);
             throw new EntityNotFoundException(SecurityGroup.class, securityGroupId, errorMessage);
         }
+    }
+
+    public String parseOpenStackError(String response) {
+
+        JSONObject jsonObject = JSONObject.fromObject(response);
+        JSONObject computeFault = JSONObject.fromObject(jsonObject.get("computeFault"));
+        return computeFault.getString("message");
     }
 
     /**

@@ -7,6 +7,7 @@ Created on 16/04/2013
 from tools.enviornmentrequest import EnvironmentRequest
 from tools.environment_instance import EnvironmentInstance
 from tools.enviornment_instance_request import EnvironmentInstanceRequest
+from xml.etree.ElementTree import tostring
 
 
 config = {}
@@ -19,8 +20,8 @@ g=EnvironmentRequest(config['keystone_url'], config['paasmanager_url'], config['
 instance_request = EnvironmentInstanceRequest (config['keystone_url'], config['paasmanager_url'], config['tenant'], config['user'], config['password'],
                                                config['vdc'],config['sdc_url'])
 
-environment_name = 'just94'
-blueprintname = 'nombreblue9'
+environment_name = 'git26'
+blueprintname = 's47'
 
 
 print('Create a blueprint Template No tiers for nodemysql: ')
@@ -29,16 +30,17 @@ print("  OK")
 
 print('Create createTierNoProduct: node')
 tier_name = 'nodejsjust66'
-g.add_tier_environment(environment_name,tier_name, "nodejs=0.6.15")
+g.add_tier_environment(environment_name,tier_name, "tomcat=6")
 print("  OK")
 
 print('Get Information about the Blueprint: ' + environment_name )
 env = g.get_environment(environment_name)
-env.to_string()
+env.to_xml()
 print("  OK")
 
 print('Deploy an environment Instance' + blueprintname )
 blueprint_instance = EnvironmentInstance (blueprintname, 'description',  env, 'INIT')
+print tostring(blueprint_instance.to_xml())
 instance_request.add_blueprint_instance(blueprint_instance)
 print ('OK')
 

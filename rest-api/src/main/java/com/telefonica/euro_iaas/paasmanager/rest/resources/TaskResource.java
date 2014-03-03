@@ -17,9 +17,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
 /**
  * Provides the way to find some tasks stored in the system.
@@ -30,16 +30,11 @@ public interface TaskResource {
 
     /**
      * Find a task for a given id.
-     * 
-     * @param id
-     *            the task's id
-     * @return the task
-     * @throws EntityNotFoundException
      */
     @GET
     @Path("/{id}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    Task load(@PathParam("id") Long id) throws EntityNotFoundException;
+    Task load(@PathParam("id") Long id) throws APIException;
 
     /**
      * Retrieve the tasks that match with the given criteria
@@ -74,18 +69,7 @@ public interface TaskResource {
             @QueryParam("toDate") Date toDate, @PathParam("vdc") String vdc);
 
     /**
-     * @param page
-     * @param pageSize
-     * @param orderBy
-     * @param orderType
-     * @param states
-     * @param resource
-     * @param owner
-     * @param fromDate
-     * @param toDate
-     * @param vdc
-     * @param environment
-     * @return
+     * Find an environment with pagination.
      */
     @GET
     @Path("/environmentInstance/{name}")
@@ -97,19 +81,7 @@ public interface TaskResource {
             @QueryParam("toDate") Date toDate, @PathParam("vdc") String vdc, @PathParam("name") String environment);
 
     /**
-     * @param page
-     * @param pageSize
-     * @param orderBy
-     * @param orderType
-     * @param states
-     * @param resource
-     * @param owner
-     * @param fromDate
-     * @param toDate
-     * @param vdc
-     * @param environment
-     * @param tierInstance
-     * @return
+     * Find tier instances with pagination.
      */
     @GET
     @Path("/environmentInstance/{name}/tierInstance/{tierName}")

@@ -92,8 +92,13 @@ public class TierManagerImpl implements TierManager {
         if (exists(tier.getName(), claudiaData.getVdc(), envName)) {
             return load(tier.getName(), claudiaData.getVdc(), envName);
         } else {
-            createSecurityGroups(claudiaData, tier);
-            createNetworks(claudiaData, tier);
+            createSecurityGroups(claudiaData,tier);
+            
+            if (claudiaData.getVdc()== null || claudiaData.getVdc().isEmpty()) {
+                createAbstractNetworks (claudiaData, tier);
+            } else {
+                createNetworks(claudiaData, tier);
+            }
             return tierInsertBD(tier, claudiaData);
 
         }
@@ -176,6 +181,15 @@ public class TierManagerImpl implements TierManager {
             tier.addNetwork(network);
         }
     }
+    
+    public void createAbstractNetworks(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException,
+    InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
+
+        for (Network network : tier.getNetworks()) {
+           network = networkManager.create(claudiaData, network, tier.getRegion());
+           tier.addNetwork(network);
+         }
+    }
 
     /**
      * It deletes the tier.
@@ -202,7 +216,7 @@ public class TierManagerImpl implements TierManager {
             throw new InvalidEntityException(tier, e);
         }
 
-        if (tier.getSecurityGroup() != null) {
+        if (tier.getSecurityGroup() != null && !claudiaData.getVdc().isEmpty()) {
             SecurityGroup sec = tier.getSecurityGroup();
             log.debug("Deleting security group " + sec.getName() + " in tier " + tier.getName());
             tier.setSecurityGroup(null);
@@ -220,8 +234,12 @@ public class TierManagerImpl implements TierManager {
         for (Network net : netsAux) {
             tier.deleteNetwork(net);
             tierDao.update(tier);
-            log.debug("Deleting network " + net.getNetworkName());
-            networkManager.delete(net);
+            if (isAvailableToBeDeleted (net)) {
+            	log.debug("Deleting network " + net.getNetworkName());
+            	networkManager.delete(net);
+            }
+           
+            
         }
 
         try {
@@ -236,7 +254,16 @@ public class TierManagerImpl implements TierManager {
 
     }
 
-    public List<Tier> findAll() {
+    private boolean isAvailableToBeDeleted(Network net) {
+    	try {
+			tierDao.findAllWithNetwork (net.getNetworkName());
+			return false;
+		} catch (EntityNotFoundException e) {
+			return true;
+		}
+	}
+
+	public List<Tier> findAll() {
         return tierDao.findAll();
     }
 
