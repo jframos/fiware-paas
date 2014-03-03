@@ -98,11 +98,11 @@ public class TierManagerImpl implements TierManager {
 
             createSecurityGroups(claudiaData, tier);
 
-            if (claudiaData.getVdc() == null || claudiaData.getVdc().isEmpty()) {
-                createAbstractNetworks(claudiaData, tier);
-            } else {
-                createNetworks(claudiaData, tier);
-            }
+            // if (claudiaData.getVdc()== null || claudiaData.getVdc().isEmpty()) {
+            // createAbstractNetworks (claudiaData, tier);
+            // } else {
+            createNetworks(claudiaData, tier);
+            // }
 
             return tierInsertBD(tier, claudiaData);
 
@@ -206,12 +206,18 @@ public class TierManagerImpl implements TierManager {
     }
 
     public void createAbstractNetworks(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException,
-            InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
 
+    InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
+        List<Network> networkToBeDeployed = new ArrayList<Network>();
         for (Network network : tier.getNetworks()) {
+            networkToBeDeployed.add(network);
+        }
+
+        for (Network network : networkToBeDeployed) {
             network = networkManager.create(claudiaData, network, tier.getRegion());
             tier.addNetwork(network);
         }
+
     }
 
     /**
@@ -249,27 +255,33 @@ public class TierManagerImpl implements TierManager {
         }
 
         log.debug("Deleting the networks");
+
         List<Network> netsAux = new ArrayList<Network>();
         for (Network netNet : tier.getNetworks()) {
             netsAux.add(netNet);
         }
 
+        tier.setNetworks(null);
+        tierDao.update(tier);
+
         for (Network net : netsAux) {
-            tier.deleteNetwork(net);
-            tierDao.update(tier);
+
             if (isAvailableToBeDeleted(net)) {
                 log.debug("Deleting network " + net.getNetworkName());
-                networkManager.delete(net);
+                try {
+                    networkManager.delete(net);
+                } catch (Exception e) {
+                    log.debug("There is an error to delete the network");
+                }
             }
 
         }
+        log.debug("Networks deleted");
 
         try {
             tierDao.remove(tier);
         } catch (Exception e) {
-
             String mens = "It is not possible to delete the tier since it is not exist " + e.getMessage();
-
             log.error(mens);
             throw new InvalidEntityException(tier, e);
         }
@@ -277,15 +289,23 @@ public class TierManagerImpl implements TierManager {
     }
 
     private boolean isAvailableToBeDeleted(Network net) {
-        try {
-            tierDao.findAllWithNetwork(net.getNetworkName());
-            return false;
-        } catch (EntityNotFoundException e) {
+
+        List<Tier> tiers = tierDao.findAllWithNetwork(net.getNetworkName());
+        if (tiers.isEmpty()) {
+            log.debug("The network " + net + " can be deleted");
             return true;
+        } else {
+            log.debug("The network " + net.getNetworkName() + " cannot be deleted. The following tiers are using it");
+            for (Tier tier : tiers) {
+                log.debug(tier.getName());
+            }
+            return false;
         }
+
     }
 
     public List<Tier> findAll() {
+
         return tierDao.findAll();
     }
 
@@ -489,7 +509,7 @@ public class TierManagerImpl implements TierManager {
         for (Network net : networskout) {
 
             try {
-                net = networkManager.load(net.getNetworkName(), data.getVdc());
+                net = networkManager.load(net.getNetworkName(), net.getVdc());
                 log.debug("Adding network " + net.getNetworkName() + "-" + " to tier " + tier.getName());
                 tier.addNetwork(net);
                 update(tier);
@@ -511,6 +531,37 @@ public class TierManagerImpl implements TierManager {
             log.error("It is not possible to update the tier " + tier.getName() + " : " + e.getMessage(), e);
             throw new InvalidEntityException("It is not possible to update the tier " + tier.getName() + " : "
                     + e.getMessage());
+        }
+
+    }
+
+    public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException {
+        tierold.setFlavour(tiernew.getFlavour());
+        tierold.setFloatingip(tiernew.getFloatingip());
+        tierold.setIcono(tiernew.getIcono());
+        tierold.setImage(tiernew.getImage());
+        tierold.setInitialNumberInstances(tiernew.getInitialNumberInstances());
+        tierold.setKeypair(tiernew.getKeypair());
+        tierold.setMaximumNumberInstances(tiernew.getMaximumNumberInstances());
+        tierold.setMinimumNumberInstances(tiernew.getMinimumNumberInstances());
+
+        tierold.setProductReleases(null);
+        update(tierold);
+
+        if (tiernew.getProductReleases() == null)
+            return;
+
+        for (ProductRelease productRelease : tiernew.getProductReleases()) {
+            try {
+                productRelease = productReleaseManager.load(productRelease.getProduct() + "-"
+                        + productRelease.getVersion());
+            } catch (EntityNotFoundException e) {
+                log.error("The new software " + productRelease.getProduct() + "-" + productRelease.getVersion()
+                        + " is not found");
+
+            }
+            tierold.addProductRelease(productRelease);
+            update(tierold);
         }
 
     }

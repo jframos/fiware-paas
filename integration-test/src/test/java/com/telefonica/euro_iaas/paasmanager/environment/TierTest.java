@@ -32,6 +32,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
+import com.telefonica.euro_iaas.paasmanager.model.dto.NetworkDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.EnvironmentResource;
@@ -241,7 +242,7 @@ public class TierTest {
         Tier tierbk = new Tier("tiersoftware", new Integer(1), new Integer(1), new Integer(1), null);
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
-        tierResource.update(org, vdc, environmentBk.getName(), tierbk.getName(), tierbk.toDto());
+        tierResource.update(org, vdc, environmentBk.getName(), "henar", tierbk.toDto());
     }
     
     
@@ -268,6 +269,7 @@ public class TierTest {
         environmentResource.insert(org, vdc, environmentBk.toDto());
         tierResource.update(org, vdc, environmentBk.getName(), "henar", tierbk.toDto());
     }
+    
 
     @Test
     public void testeDeleteTier() throws Exception {

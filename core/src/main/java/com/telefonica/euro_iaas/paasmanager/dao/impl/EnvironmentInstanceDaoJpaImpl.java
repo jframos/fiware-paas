@@ -60,29 +60,6 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @seecom.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao#
-     * findByCriteria(com.telefonica.euro_iaas.paasmanager.model.searchcriteria. EnvironmentInstanceSearchCriteria)
-     */
-    /*
-     * public List<EnvironmentInstance> findByCriteria( EnvironmentInstanceSearchCriteria criteria) { Session session =
-     * (Session) getEntityManager().getDelegate(); Criteria baseCriteria = session
-     * .createCriteria(EnvironmentInstance.class); List<EnvironmentInstance> environments =
-     * setOptionalPagination(criteria, baseCriteria).list(); if (criteria.getStatus() != null &&
-     * !criteria.getStatus().isEmpty()) { Criterion statusCr = null; for (Status status : criteria.getStatus()) {
-     * statusCr = addStatus(statusCr, status); } baseCriteria.add(statusCr); } if
-     * (!StringUtils.isEmpty(criteria.getVdc()) && !StringUtils.isEmpty(criteria.getEnvironmentName())) { environments =
-     * filterByEnvironment(environments, criteria.getVdc(), criteria.getEnvironmentName()); return environments; } else
-     * if (!StringUtils.isEmpty(criteria.getVdc())) { baseCriteria.add(Restrictions.eq(EnvironmentInstance.VDC_FIELD,
-     * criteria.getVdc())); } List<EnvironmentInstance> environmentInstances = setOptionalPagination( criteria,
-     * baseCriteria).list(); // TODO sarroyo: try to do this filter using hibernate criteria. /* if
-     * (criteria.getApplicatonRelease() != null) { applicationInstances = filterByApplicationRelease(
-     * applicationInstances, criteria.getApplicatonRelease()); }
-     */
-
-    // return environmentInstances;
-    // }
 
     public List<EnvironmentInstance> findByCriteria(EnvironmentInstanceSearchCriteria criteria) {
         Session session = (Session) getEntityManager().getDelegate();
@@ -135,7 +112,7 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
         } catch (NoResultException e) {
             String message = " No EnvironmentInstance found in the database with tiers" + "with blueprintName: "
                     + envInstanceName;
-            throw new EntityNotFoundException(EnvironmentInstance.class, "blueprintName", envInstanceName);
+            throw new EntityNotFoundException(EnvironmentInstance.class, message, envInstanceName);
         }
         return environmentInstance;
     }
@@ -153,7 +130,7 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
         } catch (NoResultException e) {
             String message = " No EnvironmentInstance found in the database no tiers " + "with blueprintName: "
                     + envInstanceName;
-            throw new EntityNotFoundException(EnvironmentInstance.class, "blueprintName", envInstanceName);
+            throw new EntityNotFoundException(EnvironmentInstance.class, message, envInstanceName);
         }
         return environmentInstance;
     }
