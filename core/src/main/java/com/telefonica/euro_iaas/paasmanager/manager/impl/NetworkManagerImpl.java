@@ -141,12 +141,19 @@ public class NetworkManagerImpl implements NetworkManager {
         for (SubNetwork subNet : network.getSubNets()) {
             subNetsAux.add(subNet);
         }
-
-        for (SubNetwork subNet : subNetsAux) {
-            network.deleteSubNet(subNet);
-            networkDao.update(network);
-            subNetworkManager.delete(subNet);
+        
+        try {
+        	for (SubNetwork subNet : subNetsAux) {
+                network.deleteSubNet(subNet);
+                networkDao.update(network);
+                subNetworkManager.delete(subNet);
+            }
+        } catch (Exception e) {
+            log.error("Error to delete the network " + e.getMessage());
+            throw new InvalidEntityException(network);
         }
+
+        
 
         log.debug("Deleting the network");
         try {
@@ -196,6 +203,12 @@ public class NetworkManagerImpl implements NetworkManager {
      * @return the network
      */
     public Network update(Network network) throws InvalidEntityException {
+        return networkDao.update(network);
+    }
+    
+    public Network update(Network network, Network network2) throws InvalidEntityException {
+    	network.setNetworkName(network2.getNetworkName());
+    	network.setVdc(network2.getVdc());
         return networkDao.update(network);
     }
 

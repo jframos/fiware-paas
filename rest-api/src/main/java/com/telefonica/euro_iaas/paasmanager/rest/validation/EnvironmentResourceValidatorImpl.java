@@ -97,26 +97,26 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
     }
     
     public void validateDelete(String environmentName, String vdc, SystemPropertiesProvider systemPropertiesProvider)
-            throws EntityNotFoundException, InvalidEnvironmentRequestException {
+            throws EntityNotFoundException, InvalidEntityException {
         Environment environment = null;
 
         environment = environmentManager.load(environmentName, vdc);
 
         if (validateEnvironmentInstance(environment, vdc)) {
-            throw new InvalidEnvironmentRequestException("The environment is being used by an environment instance");
+            throw new InvalidEntityException("The environment is being used by an environment instance");
         }
 
     }
 
     public void validateUpdate(String environmentName, String vdc, SystemPropertiesProvider systemPropertiesProvider)
-            throws InvalidEnvironmentRequestException, EntityNotFoundException {
+            throws InvalidEntityException, EntityNotFoundException {
 
         Environment environment = null;
 
         environment = environmentManager.load(environmentName, vdc);
 
         if (validateEnvironmentInstance(environment, vdc)) {
-            throw new InvalidEnvironmentRequestException("The environment is being used by an env instance");
+            throw new InvalidEntityException("The environment is being used by an env instance");
         }
 
     }
