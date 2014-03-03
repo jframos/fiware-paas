@@ -246,7 +246,11 @@ public class TierManagerImpl implements TierManager {
         for (Network net : netsAux) {
             if (isAvailableToBeDeleted (net)) {
             	log.debug("Deleting network " + net.getNetworkName());
+            	try {
             	networkManager.delete(net);
+            	} catch (Exception e) {
+            		log.debug("There is an error to delete the network");
+            	}
             }
         }
         log.debug("Networks deleted");

@@ -141,12 +141,19 @@ public class NetworkManagerImpl implements NetworkManager {
         for (SubNetwork subNet : network.getSubNets()) {
             subNetsAux.add(subNet);
         }
-
-        for (SubNetwork subNet : subNetsAux) {
-            network.deleteSubNet(subNet);
-            networkDao.update(network);
-            subNetworkManager.delete(subNet);
+        
+        try {
+        	for (SubNetwork subNet : subNetsAux) {
+                network.deleteSubNet(subNet);
+                networkDao.update(network);
+                subNetworkManager.delete(subNet);
+            }
+        } catch (Exception e) {
+            log.error("Error to delete the network " + e.getMessage());
+            throw new InvalidEntityException(network);
         }
+
+        
 
         log.debug("Deleting the network");
         try {
