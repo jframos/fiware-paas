@@ -94,7 +94,7 @@ public class TierManagerImpl implements TierManager {
         } else {
 
             // check if exist product or need sync with SDC
-            tier = existProductOrSynWithSDCAndUpdateTier(tier);
+            existProductOrSyncWithSDC(tier);
 
             createSecurityGroups(claudiaData, tier);
             createNetworks(claudiaData, tier);
@@ -103,26 +103,21 @@ public class TierManagerImpl implements TierManager {
         }
     }
 
-    private Tier existProductOrSynWithSDCAndUpdateTier(Tier tier) throws InvalidEntityException {
+    private void existProductOrSyncWithSDC(Tier tier) throws InvalidEntityException {
 
-        List<ProductRelease> productReleases = new ArrayList();
         if (tier.getProductReleases() != null && tier.getProductReleases().size() != 0) {
             for (ProductRelease prod : tier.getProductReleases()) {
                 try {
+                    log.debug("Sync product release " + prod.getProduct() + "-" + prod.getVersion());
                     prod = productReleaseManager.load(prod.getProduct() + "-" + prod.getVersion());
-                    log.debug("Adding product release " + prod.getProduct() + "-" + prod.getVersion() + " to tier "
-                            + tier.getName());
-                    tier.addProductRelease(prod);
-                    return update(tier);
                 } catch (Exception e2) {
                     String errorMessage = "The ProductRelease Object " + prod.getProduct() + "-" + prod.getVersion()
-                            + " is " + "NOT present in Database";
+                            + " not exist in database";
                     log.error(errorMessage);
                     throw new InvalidEntityException(e2);
                 }
             }
         }
-        return tier;
     }
 
     /**
@@ -454,6 +449,24 @@ public class TierManagerImpl implements TierManager {
                 log.error(errorMessage);
                 restore(data, tier);
                 throw new InvalidEntityException(errorMessage);
+            }
+
+            if (productReleases != null && productReleases.size() != 0) {
+                for (ProductRelease prod : productReleases) {
+
+                    try {
+                        prod = productReleaseManager.load(prod.getProduct() + "-" + prod.getVersion());
+                        log.debug("Adding product release " + prod.getProduct() + "-" + prod.getVersion() + " to tier "
+                                + tier.getName());
+                        tier.addProductRelease(prod);
+                        tier = update(tier);
+                    } catch (Exception e2) {
+                        String errorMessage = "The ProductRelease Object " + prod.getProduct() + "-"
+                                + prod.getVersion() + " is " + "NOT present in Database";
+                        log.error(errorMessage);
+                        throw new InvalidEntityException(e2);
+                    }
+                }
             }
 
         }
