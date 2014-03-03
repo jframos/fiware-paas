@@ -100,7 +100,7 @@ public interface AbstractTierResource {
     @PUT
     @Path("/{tierName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    void update(@PathParam("org") String org, @PathParam("environment") String environment, TierDto TierDto)
+    void update(@PathParam("org") String org, @PathParam("environment") String environment, @PathParam("tierName") String tierName, TierDto TierDto)
             throws APIException;
 
 }

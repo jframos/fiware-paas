@@ -63,6 +63,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
         try {
             tierResourceValidator.validateDelete("", envName, tierName);
+            log.debug("Tier validated correctly to be deleted");
 
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                 claudiaData.setUser(getCredentials());
@@ -155,12 +156,12 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
         }
     }
 
-    public void update(String org, String environmentName, TierDto tierDto) throws APIException {
-        log.debug("Update tier " + tierDto.getName() + " from env " + environmentName);
+    public void update(String org, String environmentName, String tierName, TierDto tierDto) throws APIException {
+        log.debug("Update tier " + tierName + " from env " + environmentName);
         ClaudiaData claudiaData = new ClaudiaData(org, "", environmentName);
 
         try {
-            tierResourceValidator.validateUpdate( "", environmentName,tierDto.getName(), tierDto);
+            tierResourceValidator.validateUpdate( "", environmentName,tierName, tierDto);
             log.debug("Validated tier " + tierDto.getName() + " from env " + environmentName);
 
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {

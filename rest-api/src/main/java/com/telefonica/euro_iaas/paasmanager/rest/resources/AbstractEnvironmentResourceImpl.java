@@ -94,7 +94,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
 
     public void insert(String org, EnvironmentDto environmentDto) throws APIException {
         log.debug("Inserting env " + environmentDto.getName() + " from org " + org);
-        ClaudiaData claudiaData = new ClaudiaData (org, null,null );
+        ClaudiaData claudiaData = new ClaudiaData (org, null,environmentDto.getName() );
         try {
             environmentManager.load(environmentDto.getName());
             throw new APIException(new AlreadyExistEntityException("The enviornment " + environmentDto.getName()
