@@ -58,6 +58,7 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
 
     }
 
+
     /*
      * public Tier load(String name, String vdc, String environmentName) throws EntityNotFoundException {
      * TierSearchCriteria criteria = new TierSearchCriteria(); criteria.setVdc(vdc); criteria.setName(name);

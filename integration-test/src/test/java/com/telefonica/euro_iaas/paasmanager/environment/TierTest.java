@@ -161,7 +161,7 @@ public class TierTest {
 
         tierDto.setFlavour("flavour3");
         tierDto.setIcono("icono2");
-        tierResource.update(org, vdc, "updatedenvironmenttierv2", tierDto);
+        tierResource.update(org, vdc, "updatedenvironmenttierv2", tierDto.getName(), tierDto);
         TierDto tier2Dto = tierResource.load(vdc, "updatedenvironmenttierv2", "tierupdatetier22");
         assertEquals(tier2Dto.getFlavour(), "flavour3");
         assertEquals(tier2Dto.getIcono(), "icono2");
@@ -217,7 +217,7 @@ public class TierTest {
         tierDto.setFlavour("flavour3");
         tierDto.setIcono("icono2");
         tierDto.addProductRelease(product3.toDto());
-        tierResource.update(org, vdc, "updatedenvironmentsoftwware", tierDto);
+        tierResource.update(org, vdc, "updatedenvironmentsoftwware", tierDto.getName(), tierDto);
         TierDto tier2Dto = tierResource.load(vdc, "updatedenvironmentsoftwware", "tiersoftware");
         assertEquals(tier2Dto.getProductReleaseDtos().size(), 2);
         assertEquals(tier2Dto.getProductReleaseDtos().get(0).getProductName(), "test");
@@ -227,6 +227,46 @@ public class TierTest {
         assertEquals(env3.getName(), "updatedenvironmentsoftwware");
         assertEquals(env3.getTiers().size(), 1);
 
+    }
+    
+    @Test(expected = APIException.class)
+    public void testdUpdateTierNoExist() throws Exception {
+
+        ProductRelease product2 = new ProductRelease("test22", "0.1", "test 0.1", null);
+        product2 = productReleaseDao.create(product2);
+
+        Environment environmentBk = new Environment();
+        environmentBk.setName("updattier22");
+        environmentBk.setDescription("Description Second environment");
+        Tier tierbk = new Tier("tiersoftware", new Integer(1), new Integer(1), new Integer(1), null);
+
+        environmentResource.insert(org, vdc, environmentBk.toDto());
+        tierResource.update(org, vdc, environmentBk.getName(), tierbk.getName(), tierbk.toDto());
+    }
+    
+    
+    
+    @Test(expected = APIException.class)
+    public void testdUpdateTier2() throws Exception {
+
+        ProductRelease product2 = new ProductRelease("test22", "0.1", "test 0.1", null);
+        product2 = productReleaseDao.create(product2);
+
+        Environment environmentBk = new Environment();
+        environmentBk.setName("updattier22");
+        environmentBk.setDescription("Description Second environment");
+        Tier tierbk = new Tier("tsetUPdatetier2", new Integer(1), new Integer(1), new Integer(1), null);
+        tierbk.addProductRelease(product2);
+        tierbk.setImage("image");
+        tierbk.setIcono("icono");
+        tierbk.setFlavour("flavour");
+        tierbk.setFloatingip("floatingip");
+        tierbk.setPayload("");
+        tierbk.setKeypair("keypair");
+        environmentBk.addTier(tierbk);
+
+        environmentResource.insert(org, vdc, environmentBk.toDto());
+        tierResource.update(org, vdc, environmentBk.getName(), "henar", tierbk.toDto());
     }
 
     @Test

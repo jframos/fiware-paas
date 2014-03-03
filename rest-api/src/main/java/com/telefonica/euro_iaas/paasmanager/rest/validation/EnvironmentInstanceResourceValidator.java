@@ -23,7 +23,7 @@ public interface EnvironmentInstanceResourceValidator {
      * 
      * @param payload
      * @throws InvalidEnvironmentRequestException
-     * @throws InvalidEntityException 
+     * @throws InvalidEntityException
      */
     void validateCreatePayload(String payload) throws InvalidEntityException;
 
@@ -31,21 +31,21 @@ public interface EnvironmentInstanceResourceValidator {
      * Validate the requets to create and EnvironmentInstance from a EnvironmentDto.
      * 
      *
-     * @param EnvironmentDto
+     * @param environmentDto
      * @param claudiaData
      * @throws InvalidEnvironmentRequestException
-     * @throws InvalidEntityException 
+     * @throws InvalidEntityException
      */
-    void validateCreate(EnvironmentInstanceDto EnvironmentDto, SystemPropertiesProvider systemPropertiesProvider, ClaudiaData claudiaData)
-            throws  QuotaExceededException, InvalidEntityException;
+    void validateCreate(EnvironmentInstanceDto environmentDto, SystemPropertiesProvider systemPropertiesProvider,
+        ClaudiaData claudiaData)throws  QuotaExceededException, InvalidEntityException;
 
     /**
      * Validate quota.
      * 
      * @param claudiaData
      * @param environmentInstanceDto
-     * @throws InvalidEntityException 
+     * @throws InvalidEntityException
      */
     void validateQuota(ClaudiaData claudiaData, EnvironmentInstanceDto environmentInstanceDto)
-            throws QuotaExceededException, InvalidEntityException;
+        throws QuotaExceededException, InvalidEntityException;
 }

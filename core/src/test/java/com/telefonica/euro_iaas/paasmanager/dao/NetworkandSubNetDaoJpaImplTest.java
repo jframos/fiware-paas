@@ -61,6 +61,26 @@ public class NetworkandSubNetDaoJpaImplTest {
         assertEquals(networkOut.getSubNets().size(), 0);
 
     }
+    
+    @Test
+    public void testNetworkVDCNull() throws Exception {
+
+        Network network = new Network(NETWORK_NAME, "");
+
+        network = networkDao.create(network);
+        assertNotNull(network);
+        assertEquals(network.getNetworkName(), NETWORK_NAME);
+        assertEquals(network.getSubNets().size(), 0);
+
+        List<Network> networks = networkDao.findAll();
+        assertNotNull(networks);
+
+        Network networkOut = networkDao.load(NETWORK_NAME, "");
+        assertNotNull(networkOut);
+        assertEquals(networkOut.getNetworkName(), NETWORK_NAME);
+        assertEquals(networkOut.getSubNets().size(), 0);
+
+    }
 
     @Test
     public void testDestroyNetworkNoSubNet() throws InvalidEntityException, AlreadyExistsEntityException {
