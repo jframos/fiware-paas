@@ -23,9 +23,11 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
+import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
@@ -46,6 +48,8 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 public class TierResourceImpl implements TierResource {
 
     private TierManager tierManager;
+    
+    private NetworkManager networkManager;
 
     private EnvironmentManager environmentManager;
 
@@ -194,6 +198,10 @@ public class TierResourceImpl implements TierResource {
     public void setTierResourceValidator(TierResourceValidator tierResourceValidator) {
         this.tierResourceValidator = tierResourceValidator;
     }
+    
+    public void setNetworkManager(NetworkManager networkManager) {
+        this.networkManager = networkManager;
+    }
 
     public void update(String org, String vdc, String environmentName, String tierName, TierDto tierDto) throws APIException {
         log.debug("Update tier " + tierName + " from env " + environmentName);
@@ -220,7 +228,7 @@ public class TierResourceImpl implements TierResource {
                 if (tier.getName().equals(newtier.getName())) {
                     log.debug("load tier " + tierDto.getName());
                     tier = tierManager.load(tierDto.getName(), vdc, environmentName);
-                    updateTier(tier, newtier);
+                    tierManager.updateTier(tier, newtier);
 
                 }
                 environment.addTier(tier);
@@ -236,34 +244,6 @@ public class TierResourceImpl implements TierResource {
         }
     }
 
-    public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException, com.telefonica.euro_iaas.commons.dao.InvalidEntityException {
-        tierold.setFlavour(tiernew.getFlavour());
-        tierold.setFloatingip(tiernew.getFloatingip());
-        tierold.setIcono(tiernew.getIcono());
-        tierold.setImage(tiernew.getImage());
-        tierold.setInitialNumberInstances(tiernew.getInitialNumberInstances());
-        tierold.setKeypair(tiernew.getKeypair());
-        tierold.setMaximumNumberInstances(tiernew.getMaximumNumberInstances());
-        tierold.setMinimumNumberInstances(tiernew.getMinimumNumberInstances());
-
-        tierold.setProductReleases(null);
-        tierManager.update(tierold);
-        if (tiernew.getProductReleases() == null)
-            return;
-
-        for (ProductRelease productRelease : tiernew.getProductReleases()) {
-            try {
-                productRelease = productReleaseDao
-                        .load(productRelease.getProduct() + "-" + productRelease.getVersion());
-            } catch (EntityNotFoundException e) {
-                log.error("The new software " + productRelease.getProduct() + "-" + productRelease.getVersion()
-                        + " is not found");
-
-            }
-            tierold.addProductRelease(productRelease);
-            tierManager.update(tierold);
-        }
-
-    }
+    
 
 }

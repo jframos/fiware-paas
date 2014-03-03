@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -16,6 +18,7 @@ import org.apache.log4j.Logger;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
@@ -94,11 +97,11 @@ public class TierManagerImpl implements TierManager {
         } else {
             createSecurityGroups(claudiaData,tier);
             
-            if (claudiaData.getVdc()== null || claudiaData.getVdc().isEmpty()) {
-                createAbstractNetworks (claudiaData, tier);
-            } else {
+          //  if (claudiaData.getVdc()== null || claudiaData.getVdc().isEmpty()) {
+            //    createAbstractNetworks (claudiaData, tier);
+         //   } else {
                 createNetworks(claudiaData, tier);
-            }
+          //  }
             return tierInsertBD(tier, claudiaData);
 
         }
@@ -184,8 +187,12 @@ public class TierManagerImpl implements TierManager {
     
     public void createAbstractNetworks(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException,
     InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
-
+        List<Network> networkToBeDeployed = new ArrayList<Network>();
         for (Network network : tier.getNetworks()) {
+            networkToBeDeployed.add(network);
+        }
+
+        for (Network network : networkToBeDeployed) {
            network = networkManager.create(claudiaData, network, tier.getRegion());
            tier.addNetwork(network);
          }
@@ -477,7 +484,7 @@ public class TierManagerImpl implements TierManager {
         for (Network net : networskout) {
 
             try {
-                net = networkManager.load(net.getNetworkName(), data.getVdc());
+                net = networkManager.load(net.getNetworkName(), net.getVdc());
                 log.debug("Adding network " + net.getNetworkName() + "-" + " to tier " + tier.getName());
                 tier.addNetwork(net);
                 update(tier);
@@ -499,6 +506,36 @@ public class TierManagerImpl implements TierManager {
             log.error("It is not possible to update the tier " + tier.getName() + " : " + e.getMessage(), e);
             throw new InvalidEntityException("It is not possible to update the tier " + tier.getName() + " : "
                     + e.getMessage());
+        }
+
+    }
+    
+    public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException {
+        tierold.setFlavour(tiernew.getFlavour());
+        tierold.setFloatingip(tiernew.getFloatingip());
+        tierold.setIcono(tiernew.getIcono());
+        tierold.setImage(tiernew.getImage());
+        tierold.setInitialNumberInstances(tiernew.getInitialNumberInstances());
+        tierold.setKeypair(tiernew.getKeypair());
+        tierold.setMaximumNumberInstances(tiernew.getMaximumNumberInstances());
+        tierold.setMinimumNumberInstances(tiernew.getMinimumNumberInstances());
+
+        tierold.setProductReleases(null);
+        update(tierold);
+        
+        if (tiernew.getProductReleases() == null)
+            return;
+
+        for (ProductRelease productRelease : tiernew.getProductReleases()) {
+            try {
+                productRelease = productReleaseManager.load(productRelease.getProduct() + "-" + productRelease.getVersion());
+            } catch (EntityNotFoundException e) {
+                log.error("The new software " + productRelease.getProduct() + "-" + productRelease.getVersion()
+                        + " is not found");
+
+            }
+            tierold.addProductRelease(productRelease);
+            update(tierold);
         }
 
     }

@@ -177,6 +177,28 @@ public class AbstractEnvironmenTest {
         abstractTierResource.delete(org, environment.getName(), tier.getName());
   
     }
+   
+   @Test
+   public void testDeleteTwoNetworks() throws APIException  {
+       Environment environment= new Environment();
+       environment.setName("ndameDATtwonet");
+       environment.setDescription("Description First environment");
+       Tier tier = new Tier("henar", new Integer(1), new Integer(1), new Integer(1), null);
+       tier.setImage("image");
+       tier.setIcono("icono");
+       tier.setFlavour("flavour");
+       tier.setFloatingip("floatingip");
+       tier.setKeypair("keypair");
+       Network net = new Network("t2n1", "dd");
+       tier.addNetwork(net);
+       Network net2 = new Network("t2n2", "dd");
+       tier.addNetwork(net2);
+       environment.addTier(tier);
+       abstractEnvironmentResource.insert(org, environment.toDto());  
+       abstractEnvironmentResource.load(org, environment.getName());  
+       abstractEnvironmentResource.delete(org, environment.getName());
+ 
+   }
     
     @Test
     public void testDeleteAbstractTierII() throws APIException  {
@@ -200,6 +222,44 @@ public class AbstractEnvironmenTest {
     }
     
     @Test
+    public void testCreationTiersWiththeSameNetwork() throws APIException  {
+    	
+    	Environment environment= new Environment();
+        environment.setName("firstsevn");
+        environment.setDescription("Description First environment");
+        Tier tier = new Tier("assa", new Integer(1), new Integer(1), new Integer(1), null);
+        tier.setImage("image");
+        tier.setIcono("icono");
+        tier.setFlavour("flavour");
+        tier.setFloatingip("floatingip");
+        tier.setKeypair("keypair");
+        Network net = new Network("red1", "dd");
+        tier.addNetwork(net);
+        
+        environment.addTier(tier);
+        
+        abstractEnvironmentResource.insert(org, environment.toDto());  
+        
+        Environment environment2= new Environment();
+        environment2.setName("secondtswo");
+        environment2.setDescription("Description First environment");
+        Tier tier3 = new Tier("aa", new Integer(1), new Integer(1), new Integer(1), null);
+        tier3.setImage("image");
+        tier3.setIcono("icono");
+        tier3.setFlavour("flavour");
+        tier3.setFloatingip("floatingip");
+        tier3.setKeypair("keypair");
+        Network net2 = new Network("red2", "dd");
+        tier3.addNetwork(net2);
+        tier3.addNetwork(net);
+        environment2.addTier(tier3);
+        
+        abstractEnvironmentResource.insert(org, environment2.toDto());        
+        
+  
+    }
+    
+   @Test
     public void testDeleteAbstractEnv() throws APIException  {
         Environment environment= new Environment();
         environment.setName("nameAB");

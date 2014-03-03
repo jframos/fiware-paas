@@ -198,6 +198,12 @@ public class NetworkManagerImpl implements NetworkManager {
     public Network update(Network network) throws InvalidEntityException {
         return networkDao.update(network);
     }
+    
+    public Network update(Network network, Network network2) throws InvalidEntityException {
+    	network.setNetworkName(network2.getNetworkName());
+    	network.setVdc(network2.getVdc());
+        return networkDao.update(network);
+    }
 
     /**
      * It checks if the network already exists.
