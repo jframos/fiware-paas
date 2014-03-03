@@ -31,9 +31,10 @@ public interface TierResourceValidator {
      * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException 
      * @throws InvalidEnvironmentRequestException
      */
-    void validateCreate(ClaudiaData claudiaData, TierDto EnvironmentDto, String vdc, String environmentName,
-            SystemPropertiesProvider systemPropertiesProvider) throws InvalidEntityException,
-            AlreadyExistEntityException, InfrastructureException, QuotaExceededException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
+    void validateCreate(ClaudiaData claudiaData, TierDto EnvironmentDto, String vdc, String environmentName) throws InvalidEntityException,
+            AlreadyExistEntityException, InfrastructureException, QuotaExceededException;
+    
+    void validateCreateAbstract (TierDto tierDto, String environmentName) throws InvalidEntityException, AlreadyExistEntityException;
 
     void validateUpdate(TierDto EnvironmentDto, String vdc, String environmentName,
             SystemPropertiesProvider systemPropertiesProvider) throws InvalidEntityException, EntityNotFoundException;

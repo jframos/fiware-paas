@@ -99,8 +99,7 @@ public class EnvironmentResourceTest extends TestCase {
         Mockito.doNothing()
         .doThrow(new RuntimeException())
         .when(validator)
-        .validateCreate(any(ClaudiaData.class), any(EnvironmentDto.class), any(String.class),
-                any(SystemPropertiesProvider.class));
+        .validateCreate(any(ClaudiaData.class), any(EnvironmentDto.class), any(String.class));
 
         boolean thrown = false;
         try {
@@ -116,8 +115,7 @@ public class EnvironmentResourceTest extends TestCase {
     	 Mockito.doNothing()
          .doThrow(new RuntimeException())
          .when(validator)
-         .validateCreate(any(ClaudiaData.class), any(EnvironmentDto.class), any(String.class),
-                 any(SystemPropertiesProvider.class));
+         .validateCreate(any(ClaudiaData.class), any(EnvironmentDto.class), any(String.class));
         EnvironmentDto environmentDto = new EnvironmentDto();
         environmentDto.setName("Name");
         environmentDto.setDescription("Description");
