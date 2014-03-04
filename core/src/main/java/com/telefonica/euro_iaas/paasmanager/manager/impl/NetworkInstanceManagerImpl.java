@@ -272,7 +272,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         int cidrdb = this.findAll().size();
         int cidrCount = cidrdb+cidrOpenstack;
 
-        return "10.0."+cidrCount+".0";
+        return "10.0."+cidrCount+".0/24";
     }
 
 }
