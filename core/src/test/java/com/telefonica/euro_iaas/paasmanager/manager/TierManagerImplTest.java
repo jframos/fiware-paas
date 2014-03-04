@@ -53,11 +53,11 @@ public class TierManagerImplTest extends TestCase {
     private List<ProductRelease> productReleases;
 
     private ClaudiaData data;
-    
-    public static String NETWORK_NAME="NETWORK_NAME";
-    public static String TIER_NAME="TIER_NAME";
-    public static String VDC="VDC";
-    public static String ENV="ENV";
+
+    public static String NETWORK_NAME = "NETWORK_NAME";
+    public static String TIER_NAME = "TIER_NAME";
+    public static String VDC = "VDC";
+    public static String ENV = "ENV";
 
     @Override
     @Before
@@ -67,7 +67,7 @@ public class TierManagerImplTest extends TestCase {
         tierDao = mock(TierDao.class);
         productReleaseManager = mock(ProductReleaseManager.class);
         securityGroupManager = mock(SecurityGroupManager.class);
-        networkManager = mock (NetworkManager.class);
+        networkManager = mock(NetworkManager.class);
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         tierManager.setProductReleaseManager(productReleaseManager);
         tierManager.setSecurityGroupManager(securityGroupManager);
@@ -98,7 +98,7 @@ public class TierManagerImplTest extends TestCase {
     }
 
     @Test
-    public void testcreateSecurityGroup() throws EntityNotFoundException{
+    public void testcreateSecurityGroup() throws EntityNotFoundException {
         productRelease = new ProductRelease("product", "2.0");
         productRelease.addMetadata(new Metadata("open_ports", "8080"));
 
@@ -106,7 +106,7 @@ public class TierManagerImplTest extends TestCase {
         productReleases.add(productRelease);
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
                 "image", "icono", "keypair", "floatingip", "payload");
-        when (productReleaseManager.loadWithMetadata(any(String.class))).thenReturn(productRelease);
+        when(productReleaseManager.loadWithMetadata(any(String.class))).thenReturn(productRelease);
 
         SecurityGroup securityGroup = tierManager.generateSecurityGroup(data, tier);
         assertEquals(securityGroup.getName(), "sg_dd_dd_" + tier.getName());
@@ -122,12 +122,11 @@ public class TierManagerImplTest extends TestCase {
         productReleases.add(productRelease);
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
                 "image", "icono", "keypair", "floatingip", "payload");
-        when (productReleaseManager.loadWithMetadata(any(String.class))).thenReturn(productRelease);
+        when(productReleaseManager.loadWithMetadata(any(String.class))).thenReturn(productRelease);
         SecurityGroup securityGroup = tierManager.generateSecurityGroup(data, tier);
         assertEquals(securityGroup.getName(), "sg_dd_dd_" + tier.getName());
         assertEquals(securityGroup.getRules().size(), 2);
     }
-
 
     @Test
     public void testTierAddProduct() throws Exception {
@@ -206,6 +205,8 @@ public class TierManagerImplTest extends TestCase {
 
         Tier tier3 = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image",
                 "icono", "keypair", "floatingip", "payload");
+        when(tierDao.update(any(Tier.class))).thenReturn(tier);
+
         Tier tier2 = tierManager.create(data, "env", tier3);
         assertEquals(tier2.getName(), tier.getName());
         assertEquals(tier2.getKeypair(), tier.getKeypair());
@@ -215,8 +216,8 @@ public class TierManagerImplTest extends TestCase {
     @Test
     public void testTierAllDataSecurityPortNoAttributesInProductRelease() throws Exception {
 
+        // given
         productRelease = new ProductRelease("product", "2.0");
-        // productRelease.addAttributeport(new Attribute("puerto", "8080"));
 
         productReleases = new ArrayList<ProductRelease>();
         productReleases.add(productRelease);
@@ -225,6 +226,8 @@ public class TierManagerImplTest extends TestCase {
         SecurityGroup securityGroup = new SecurityGroup("nanme", "description");
         securityGroup.addRule(new Rule("ipProtocol", "fromPort", "toPort", "sourceGroup", "cidr"));
         tier.setSecurityGroup(securityGroup);
+        // when
+
         when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("FIWARE");
         when(securityGroupManager.create(anyString(), anyString(), anyString(), any(SecurityGroup.class))).thenReturn(
                 securityGroup);
@@ -234,7 +237,11 @@ public class TierManagerImplTest extends TestCase {
         when(productReleaseManager.load(any(String.class))).thenReturn(productRelease);
         Tier tier3 = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image",
                 "icono", "keypair", "floatingip", "payload");
+        when(tierDao.update(any(Tier.class))).thenReturn(tier);
+
         Tier tier2 = tierManager.create(data, "env", tier3);
+        // then
+
         assertEquals(tier2.getName(), tier.getName());
         assertEquals(tier2.getKeypair(), tier.getKeypair());
 
@@ -263,7 +270,7 @@ public class TierManagerImplTest extends TestCase {
         assertEquals(tier2.getKeypair(), tier.getKeypair());
 
     }
-    
+
     @Test
     public void testTierNetwork() throws Exception {
 
@@ -278,10 +285,9 @@ public class TierManagerImplTest extends TestCase {
 
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
         when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
-        when(networkManager.exists(any(String.class),any(String.class))).thenReturn(false);
-        when(networkManager.create(any(ClaudiaData.class),any(Network.class),any(String.class))).thenReturn(net);
-        when(networkManager.load(any(String.class),any(String.class))).thenReturn(net);
-
+        when(networkManager.exists(any(String.class), any(String.class))).thenReturn(false);
+        when(networkManager.create(any(ClaudiaData.class), any(Network.class), any(String.class))).thenReturn(net);
+        when(networkManager.load(any(String.class), any(String.class))).thenReturn(net);
 
         Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
                 .load(any(String.class), any(String.class), any(String.class));
@@ -291,10 +297,9 @@ public class TierManagerImplTest extends TestCase {
         Tier tier2 = tierManager.loadTierWithNetworks("name", VDC, ENV);
         assertEquals(tier2.getName(), tier.getName());
         assertEquals(tier2.getNetworks().size(), 1);
-        
 
     }
-    
+
     @Test
     public void testCreateAbstractTierNetwork() throws Exception {
 
@@ -331,7 +336,7 @@ public class TierManagerImplTest extends TestCase {
 
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
                 "keypair", "floatingip", "payload");
-        Network net = new Network("NETWORK_NAME","vdc");
+        Network net = new Network("NETWORK_NAME", "vdc");
         tier.addNetwork(net);
         tier.setVdc(VDC);
         tier.setEnviromentName(ENV);
@@ -340,9 +345,8 @@ public class TierManagerImplTest extends TestCase {
 
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
         when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
-        when(networkManager.exists(any(String.class),any(String.class))).thenReturn(true);
-        when(networkManager.load(any(String.class),any(String.class))).thenReturn(net);
-
+        when(networkManager.exists(any(String.class), any(String.class))).thenReturn(true);
+        when(networkManager.load(any(String.class), any(String.class))).thenReturn(net);
 
         Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
                 .load(any(String.class), any(String.class), any(String.class));
@@ -352,10 +356,9 @@ public class TierManagerImplTest extends TestCase {
         Tier tier2 = tierManager.loadTierWithNetworks("name", VDC, ENV);
         assertEquals(tier2.getName(), tier.getName());
         assertEquals(tier2.getNetworks().size(), 1);
-        
 
     }
-    
+
     @Test
     public void testTierDeletion() throws Exception {
 
@@ -368,14 +371,9 @@ public class TierManagerImplTest extends TestCase {
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
                 "image", "icono", "keypair", "floatingip", "payload");
         when(tierDao.load(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
-   
+
         tierManager.delete(data, tier);
 
-
     }
-  
-    
-    
-    
 
 }

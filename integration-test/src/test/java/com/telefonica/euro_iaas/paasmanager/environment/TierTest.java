@@ -75,6 +75,8 @@ public class TierTest {
 
     @Test
     public void testCreateTierOK() throws Exception {
+
+        // given
         Environment environment2 = new Environment();
         environment2.setName("env2");
         environment2.setDescription("description");
@@ -83,11 +85,6 @@ public class TierTest {
         ProductRelease tomcat7Att = new ProductRelease("tomcat8", "78", "Tomcat server 8", null);
 
         tomcat7Att = productReleaseDao.create(tomcat7Att);
-
-        assertNotNull(tomcat7Att);
-        assertNotNull(tomcat7Att.getId());
-        assertEquals(tomcat7Att.getProduct(), "tomcat8");
-        assertEquals(tomcat7Att.getVersion(), "78");
 
         Tier tierbk = new Tier("dd", new Integer(1), new Integer(1), new Integer(1), null);
         tierbk.setImage("image");
@@ -99,10 +96,13 @@ public class TierTest {
         tierbk.addProductRelease(tomcat7Att);
         tierbk.setRegion("regionOne");
 
+        // when
         tierResource.insert(org, vdc, environment2.getName(), tierbk.toDto());
-        TierDto tierDto = tierResource.load(vdc, environment2.getName(),tierbk.getName());
+        TierDto tierDto = tierResource.load(vdc, environment2.getName(), tierbk.getName());
+
+        // then
         assertEquals(tierDto.getName(), tierbk.getName());
-        assertEquals(tierDto.getProductReleaseDtos().size(), 1);
+        assertEquals(1, tierDto.getProductReleaseDtos().size());
         assertEquals(tierDto.getProductReleaseDtos().get(0).getProductName(), "tomcat8");
         assertEquals("regionOne", tierDto.getRegion());
     }
@@ -308,7 +308,7 @@ public class TierTest {
         assertEquals(env2.getTiers().size(), 0);
 
     }
-    
+
     @Test
     public void testDeleteTierwithNetworkInAnotherTier() throws Exception {
         Environment environmentBk = new Environment();
@@ -324,12 +324,12 @@ public class TierTest {
         tierbk.setFloatingip("floatingip");
         tierbk.setPayload("");
         tierbk.setKeypair("keypair");
-        
+
         Network net = new Network("network3", vdc);
         tierbk.addNetwork(net);
 
-        tierResource.insert(org, vdc,environmentBk.getName(), tierbk.toDto());
-        
+        tierResource.insert(org, vdc, environmentBk.getName(), tierbk.toDto());
+
         Tier tierbk2 = new Tier("tier2", new Integer(1), new Integer(1), new Integer(1), null);
         tierbk2.setImage("image");
         tierbk2.setIcono("icono");
@@ -339,29 +339,29 @@ public class TierTest {
         tierbk2.setKeypair("keypair");
         tierbk2.addNetwork(net);
         tierResource.insert(org, vdc, environmentBk.getName(), tierbk2.toDto());
-        
+
         try {
-        tierResource.delete(org, vdc, environmentBk.getName(), tierbk2.getName());
-        } catch (Exception e){
-        	fail ();
+            tierResource.delete(org, vdc, environmentBk.getName(), tierbk2.getName());
+        } catch (Exception e) {
+            fail();
         }
-        
+
         try {
             tierResource.delete(org, vdc, environmentBk.getName(), tierbk.getName());
-            } catch (Exception e){
-            	fail ();
-            }
-        
+        } catch (Exception e) {
+            fail();
+        }
+
     }
 
     @Test
     public void testDeleteANonExistingtier() throws Exception {
         try {
             tierResource.delete(org, vdc, "12env", "noexistingier");
-            fail ();
-        } catch (Exception e){
-            	
+            fail();
+        } catch (Exception e) {
+
         }
-        
+
     }
 }
