@@ -18,6 +18,8 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidSecurityGroupRequestException;
 import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.manager.SecurityGroupManager;
@@ -31,6 +33,7 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
+import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import java.util.Set;
 import java.util.HashSet;
@@ -187,7 +190,7 @@ public class TierManagerImpl implements TierManager {
     }
 
     public void createNetworks(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException,
-            InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
+            InvalidEntityException, AlreadyExistsEntityException {
         List<Network> networkToBeDeployed = new ArrayList<Network>();
         for (Network network : tier.getNetworks()) {
             networkToBeDeployed.add(network);

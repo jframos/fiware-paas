@@ -74,7 +74,7 @@ public class NetworkManagerImplTest extends TestCase {
         when(networkInstanceManager.getNumberDeployedNetwork(any(ClaudiaData.class), anyString())).thenReturn(0);
 
         // Verity
-        networkManager.create(claudiaData, net, "region");
+        networkManager.create(net);
         assertEquals(net.getNetworkName(), NETWORK_NAME);
         assertEquals(net.getSubNets().size(), 1);
 
@@ -102,7 +102,7 @@ public class NetworkManagerImplTest extends TestCase {
         when(networkDao.create(any(Network.class))).thenReturn(net);
 
         // Verity
-        networkManager.create(claudiaData, net, "region");
+        networkManager.create(net);
         assertEquals(net.getNetworkName(), NETWORK_NAME);
         assertEquals(net.getSubNets().size(), 1);
         for (SubNetwork subNet2 : net.getSubNets()) {
@@ -130,7 +130,7 @@ public class NetworkManagerImplTest extends TestCase {
         when(networkDao.create(any(Network.class))).thenReturn(net);
 
         // Verity
-        networkManager.create(claudiaData, net, "region");
+        networkManager.create(net);
         assertEquals(net.getNetworkName(), NETWORK_NAME);
         assertEquals(net.getSubNets().size(), 1);
         for (SubNetwork subNet2 : net.getSubNets()) {
