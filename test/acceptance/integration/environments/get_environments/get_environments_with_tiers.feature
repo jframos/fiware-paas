@@ -5,8 +5,8 @@ Feature: Get the environments with tiers in a tenant
     I want to be able to get the list of environments with tiers in a tenant
     so that I know the environments I can use to create new instances 
 
-    # IMPORTANT NOTE: For these scenarios to pass, it is required that the list
-    #                 of environments in the tenant used for the tests is empty  
+    # IMPORTANT NOTE: These scenarios will not be executed unless the list of
+    #                 environments in the tenant used for the tests is empty  
     @happy_path
     Scenario: Get a list with just one environment with one tier
         Given the paas manager is up and properly configured
@@ -205,4 +205,3 @@ Feature: Get the environments with tiers in a tenant
         And there is an environment in the list with "1" tier and data:
             | name    | description |
             | nameqa2 | descqa2     |
-            

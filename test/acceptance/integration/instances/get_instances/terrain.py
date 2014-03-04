@@ -3,25 +3,31 @@ from lettuce import world, after, before
 from tools import environment_request, environment_instance_request
 from tools.environment_request import EnvironmentRequest
 from tools.environment_instance_request import EnvironmentInstanceRequest
+from tools.constants import PAAS, KEYSTONE_URL, PAASMANAGER_URL, TENANT, USER,\
+    PASSWORD, VDC, SDC_URL
 
 
-@before.each_scenario
-def before_each_scenario(scenario):
-    world.env_requests = EnvironmentRequest(world.config['paas']['keystone_url'],
-                                            world.config['paas']['paasmanager_url'],
-                                            world.config['paas']['tenant'],
-                                            world.config['paas']['user'],
-                                            world.config['paas']['password'],
-                                            world.config['paas']['vdc'],
-                                            world.config['paas']['sdc_url'])
+@before.each_feature
+def before_each_scenario(feature):
+    world.env_requests = EnvironmentRequest(world.config[PAAS][KEYSTONE_URL],
+                                            world.config[PAAS][PAASMANAGER_URL],
+                                            world.config[PAAS][TENANT],
+                                            world.config[PAAS][USER],
+                                            world.config[PAAS][PASSWORD],
+                                            world.config[PAAS][VDC],
+                                            world.config[PAAS][SDC_URL])
 
-    world.inst_requests = EnvironmentInstanceRequest(world.config['paas']['keystone_url'],
-                                                     world.config['paas']['paasmanager_url'],
-                                                     world.config['paas']['tenant'],
-                                                     world.config['paas']['user'],
-                                                     world.config['paas']['password'],
-                                                     world.config['paas']['vdc'],
-                                                     world.config['paas']['sdc_url'])
+    world.inst_requests = EnvironmentInstanceRequest(world.config[PAAS][KEYSTONE_URL],
+                                                     world.config[PAAS][PAASMANAGER_URL],
+                                                     world.config[PAAS][TENANT],
+                                                     world.config[PAAS][USER],
+                                                     world.config[PAAS][PASSWORD],
+                                                     world.config[PAAS][VDC],
+                                                     world.config[PAAS][SDC_URL])
+
+    # Check that the initial list of instances is empty before launching the tests
+    world.inst_requests.get_instances()
+    environment_instance_request.check_get_instances_response(world.response, 200, 0)
 
 
 @after.each_scenario

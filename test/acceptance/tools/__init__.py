@@ -14,6 +14,7 @@ from lettuce import world
 import json
 import os
 import sys
+from tools.constants import ENVIRONMENT, LOGS_PATH
 
 """
 Parse the JSON configuration file located in the src folder and
@@ -29,5 +30,5 @@ with open("properties.json") as config_file:
 """
 Make sure the logs path exists and create it otherwise.
 """
-if not os.path.exists(world.config["environment"]["logs_path"]):
-    os.makedirs(world.config["environment"]["logs_path"])
+if not os.path.exists(world.config[ENVIRONMENT][LOGS_PATH]):
+    os.makedirs(world.config[ENVIRONMENT][LOGS_PATH])

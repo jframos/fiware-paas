@@ -5,8 +5,6 @@ Feature: Get the details of an instance of an environment in a tenant
     I want to be able to get the details of an instance of an environment in a tenant
     so that I can have access to its data
 
-    # IMPORTANT NOTE: For these scenarios to pass, it is required that the list
-    #                 of instances in the tenant used for the tests is empty  
     @happy_path @slow
     Scenario: Get the details of an instance of an environment with one tier
         Given the paas manager is up and properly configured

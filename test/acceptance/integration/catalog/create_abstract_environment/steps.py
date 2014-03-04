@@ -4,14 +4,10 @@ from tdaf_lettuce_tools.dataset_utils.dataset_utils import DatasetUtils
 from tools import http
 from tools import environment_request
 from tools.tier import Tier
+from tools.constants import NAME, DESCRIPTION, PRODUCTS, NETWORKS, PAAS,\
+    TIER_IMAGE
 
 dataset_utils = DatasetUtils()
-
-# Auxiliary constants used in .feature files or interfaces
-NAME = "name"
-DESCRIPTION = "description"
-PRODUCTS = "products"
-NETWORKS = "networks"
 
 
 @step(u'the paas manager is up and properly configured')
@@ -24,7 +20,7 @@ def a_list_of_tiers_has_been_defined_with_data(step):
     world.tiers = []
     for row in step.hashes:
         data = dataset_utils.prepare_data(row)
-        tier = Tier(data.get(NAME), world.config['paas']['tier_image'])
+        tier = Tier(data.get(NAME), world.config[PAAS][TIER_IMAGE])
         tier.parse_and_add_products(data.get(PRODUCTS))
         tier.parse_and_add_networks(data.get(NETWORKS))
         world.tiers.append(tier)

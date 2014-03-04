@@ -4,14 +4,10 @@ from tdaf_lettuce_tools.dataset_utils.dataset_utils import DatasetUtils
 from tools import http
 from tools import tier
 from tools.tier import Tier
+from tools.constants import NAME, DESCRIPTION, PRODUCTS, NETWORKS, PAAS,\
+    TIER_IMAGE
 
 dataset_utils = DatasetUtils()
-
-# Auxiliary constants used in .feature files or interfaces
-NAME = "name"
-DESCRIPTION = "description"
-PRODUCTS = "products"
-NETWORKS = "networks"
 
 
 @step(u'the paas manager is up and properly configured')
@@ -28,7 +24,7 @@ def an_abstract_environment_has_already_been_created_with_data(step):
 @step(u'a tier has already been added to the abstract environment "([^"]*)" with data:')
 def a_tier_has_already_been_added_to_abstract_environment_with_data(step, env_name):
     data = dataset_utils.prepare_data(step.hashes[0])
-    tier = Tier(data.get(NAME), world.config['paas']['tier_image'])
+    tier = Tier(data.get(NAME), world.config[PAAS][TIER_IMAGE])
     tier.parse_and_add_products(data.get(PRODUCTS))
     tier.parse_and_add_networks(data.get(NETWORKS))
     world.env_requests.add_tier_abstract_environment(env_name, tier)

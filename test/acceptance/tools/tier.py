@@ -1,4 +1,6 @@
 import json
+from tools.constants import PAAS, TIER_NUM_MIN, TIER_NUM_MAX, TIER_NUM_INITIAL,\
+    TIER_FLAVOUR, TIER_KEYPAIR, TIER_FLOATINGIP, TIER_IMAGE
 __author__ = 'henar'
 
 from xml.etree.ElementTree import Element, SubElement
@@ -25,12 +27,12 @@ class Network:
 
 class Tier:
     def __init__(self, tier_name, tier_image,
-                 tier_num_min=world.config['paas']['tier_num_min'],
-                 tier_num_max=world.config['paas']['tier_num_max'],
-                 tier_num_initial=world.config['paas']['tier_num_initial'],
-                 tier_flavour=world.config['paas']['tier_flavour'],
-                 tier_keypair=world.config['paas']['tier_keypair'],
-                 tier_floatingip=world.config['paas']['tier_floatingip']):
+                 tier_num_min=world.config[PAAS][TIER_NUM_MIN],
+                 tier_num_max=world.config[PAAS][TIER_NUM_MAX],
+                 tier_num_initial=world.config[PAAS][TIER_NUM_INITIAL],
+                 tier_flavour=world.config[PAAS][TIER_FLAVOUR],
+                 tier_keypair=world.config[PAAS][TIER_KEYPAIR],
+                 tier_floatingip=world.config[PAAS][TIER_FLOATINGIP]):
         self.name = tier_name
         self.tier_num_min = tier_num_min
         self.tier_num_max = tier_num_max
@@ -169,7 +171,7 @@ def process_tier(tier):
     :param tiers: tier to be processed.
     :return: a Tier object.
     """
-    processed_tier = Tier(tier['name'], world.config['paas']['tier_image'])
+    processed_tier = Tier(tier['name'], world.config[PAAS][TIER_IMAGE])
 
     try:
         product_dtos = tier['productReleaseDtos']
