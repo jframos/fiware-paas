@@ -65,7 +65,7 @@ public class NetworkManagerImplTest extends TestCase {
     public void testCreateNetwork() throws Exception {
         // Given
         Network net = new Network(NETWORK_NAME, "vdc");
-        SubNetwork subNet = new SubNetwork("sub-net-" + NETWORK_NAME + "-1", CIDR_ID);
+        SubNetwork subNet = new SubNetwork("sub-net-" + NETWORK_NAME + "-1");
 
         // When
         when(networkDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
@@ -80,7 +80,6 @@ public class NetworkManagerImplTest extends TestCase {
 
         for (SubNetwork subNet2 : net.getSubNets()) {
             assertEquals(subNet2.getName(), "sub-net-" + NETWORK_NAME + "-1");
-            assertEquals(subNet2.getCidr(), CIDR);
         }
 
     }
@@ -94,7 +93,7 @@ public class NetworkManagerImplTest extends TestCase {
     public void testCreateNetworkSubNetSpecified() throws Exception {
         // Given
         Network net = new Network(NETWORK_NAME, "vdc");
-        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, CIDR_ID);
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME);
         net.addSubNet(subNet);
 
         // When
@@ -108,7 +107,6 @@ public class NetworkManagerImplTest extends TestCase {
         assertEquals(net.getSubNets().size(), 1);
         for (SubNetwork subNet2 : net.getSubNets()) {
             assertEquals(subNet2.getName(), SUB_NETWORK_NAME);
-            assertEquals(subNet2.getCidr(), CIDR);
         }
 
     }
@@ -122,7 +120,7 @@ public class NetworkManagerImplTest extends TestCase {
     public void testCreateNetworkAlreadyexist() throws Exception {
         // Given
         Network net = new Network(NETWORK_NAME, "vdc");
-        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, CIDR_ID);
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME);
         net.addSubNet(subNet);
 
         // When
@@ -137,7 +135,6 @@ public class NetworkManagerImplTest extends TestCase {
         assertEquals(net.getSubNets().size(), 1);
         for (SubNetwork subNet2 : net.getSubNets()) {
             assertEquals(subNet2.getName(), SUB_NETWORK_NAME);
-            assertEquals(subNet2.getCidr(), CIDR);
         }
 
     }

@@ -179,7 +179,7 @@ public class TierManagerImpl implements TierManager {
                 network = networkManager.load(network.getNetworkName(), claudiaData.getVdc());
 
             } else {
-                network = networkManager.create(claudiaData, network, tier.getRegion());
+                network = networkManager.create(network);
             }
             tier.addNetwork(network);
         }
@@ -193,7 +193,7 @@ public class TierManagerImpl implements TierManager {
         }
 
         for (Network network : networkToBeDeployed) {
-           network = networkManager.create(claudiaData, network, tier.getRegion());
+           network = networkManager.create( network);
            tier.addNetwork(network);
          }
     }
@@ -514,7 +514,7 @@ public class TierManagerImpl implements TierManager {
 
     }
     
-    public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException {
+    public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException, EntityNotFoundException, AlreadyExistsEntityException {
         tierold.setFlavour(tiernew.getFlavour());
         tierold.setFloatingip(tiernew.getFloatingip());
         tierold.setIcono(tiernew.getIcono());
@@ -524,6 +524,31 @@ public class TierManagerImpl implements TierManager {
         tierold.setMaximumNumberInstances(tiernew.getMaximumNumberInstances());
         tierold.setMinimumNumberInstances(tiernew.getMinimumNumberInstances());
 
+       
+        update(tierold);
+        
+        //Get networks to be delete
+        Set<Network> nets = new HashSet<Network> ();
+        for (Network net : tierold.getNetworks()) {
+        	nets.add(net);
+        }
+        
+        //delete networks
+        tierold.setNetworks(null);
+        update(tierold);
+        
+        for (Network net : nets) {
+            networkManager.delete(net);
+        }
+        
+        //adding networks
+        for (Network net : tiernew.getNetworks()) {
+        	net = networkManager.create(net);
+        	tierold.addNetwork(net);
+            update(tierold);
+        }
+        	
+        	
         tierold.setProductReleases(null);
         update(tierold);
         
