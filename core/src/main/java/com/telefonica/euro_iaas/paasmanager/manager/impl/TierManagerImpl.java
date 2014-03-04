@@ -8,9 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -18,11 +16,8 @@ import org.apache.log4j.Logger;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidSecurityGroupRequestException;
 import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.manager.SecurityGroupManager;
@@ -36,8 +31,10 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Rule;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
-import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+import java.util.Set;
+import java.util.HashSet;
+
 
 /**
  * It is the manager for the Tier.
@@ -95,15 +92,37 @@ public class TierManagerImpl implements TierManager {
         if (exists(tier.getName(), claudiaData.getVdc(), envName)) {
             return load(tier.getName(), claudiaData.getVdc(), envName);
         } else {
-            createSecurityGroups(claudiaData,tier);
-            
-          //  if (claudiaData.getVdc()== null || claudiaData.getVdc().isEmpty()) {
-            //    createAbstractNetworks (claudiaData, tier);
-         //   } else {
-                createNetworks(claudiaData, tier);
-          //  }
+
+            // check if exist product or need sync with SDC
+            existProductOrSyncWithSDC(tier);
+
+            createSecurityGroups(claudiaData, tier);
+
+            // if (claudiaData.getVdc()== null || claudiaData.getVdc().isEmpty()) {
+            // createAbstractNetworks (claudiaData, tier);
+            // } else {
+            createNetworks(claudiaData, tier);
+            // }
+
             return tierInsertBD(tier, claudiaData);
 
+        }
+    }
+
+    private void existProductOrSyncWithSDC(Tier tier) throws InvalidEntityException {
+
+        if (tier.getProductReleases() != null && tier.getProductReleases().size() != 0) {
+            for (ProductRelease prod : tier.getProductReleases()) {
+                try {
+                    log.debug("Sync product release " + prod.getProduct() + "-" + prod.getVersion());
+                    prod = productReleaseManager.load(prod.getProduct() + "-" + prod.getVersion());
+                } catch (Exception e2) {
+                    String errorMessage = "The ProductRelease Object " + prod.getProduct() + "-" + prod.getVersion()
+                            + " not exist in database";
+                    log.error(errorMessage);
+                    throw new InvalidEntityException(e2);
+                }
+            }
         }
     }
 
@@ -127,10 +146,11 @@ public class TierManagerImpl implements TierManager {
      * @param tier
      * @return
      * @throws InvalidSecurityGroupRequestException
-     * @throws EntityNotFoundException 
+     * @throws EntityNotFoundException
      */
 
-    private void createSecurityGroups(ClaudiaData claudiaData, Tier tier) throws InvalidSecurityGroupRequestException, EntityNotFoundException {
+    private void createSecurityGroups(ClaudiaData claudiaData, Tier tier) throws InvalidSecurityGroupRequestException,
+            EntityNotFoundException {
         if ((systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")
                 && claudiaData.getVdc() != null && claudiaData.getVdc().length() > 0)) {
 
@@ -184,19 +204,7 @@ public class TierManagerImpl implements TierManager {
             tier.addNetwork(network);
         }
     }
-    
-    public void createAbstractNetworks(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException,
-    InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
-        List<Network> networkToBeDeployed = new ArrayList<Network>();
-        for (Network network : tier.getNetworks()) {
-            networkToBeDeployed.add(network);
-        }
 
-        for (Network network : networkToBeDeployed) {
-           network = networkManager.create( network);
-           tier.addNetwork(network);
-         }
-    }
 
     /**
      * It deletes the tier.
@@ -233,25 +241,26 @@ public class TierManagerImpl implements TierManager {
         }
 
         log.debug("Deleting the networks");
-       
-        
+
         List<Network> netsAux = new ArrayList<Network>();
         for (Network netNet : tier.getNetworks()) {
             netsAux.add(netNet);
         }
-        
+
         tier.setNetworks(null);
         tierDao.update(tier);
 
         for (Network net : netsAux) {
-            if (isAvailableToBeDeleted (net)) {
-            	log.debug("Deleting network " + net.getNetworkName());
-            	try {
-            	networkManager.delete(net);
-            	} catch (Exception e) {
-            		log.debug("There is an error to delete the network");
-            	}
+
+            if (isAvailableToBeDeleted(net)) {
+                log.debug("Deleting network " + net.getNetworkName());
+                try {
+                    networkManager.delete(net);
+                } catch (Exception e) {
+                    log.debug("There is an error to delete the network");
+                }
             }
+
         }
         log.debug("Networks deleted");
 
@@ -267,21 +276,22 @@ public class TierManagerImpl implements TierManager {
 
     private boolean isAvailableToBeDeleted(Network net) {
 
-		List<Tier> tiers = tierDao.findAllWithNetwork (net.getNetworkName());
-		if (tiers.isEmpty()) {
-			 log.debug("The network " + net + " can be deleted" );
-			 return true;
-		} else {
-			log.debug("The network " + net.getNetworkName() + " cannot be deleted. The following tiers are using it" );
-			for (Tier tier: tiers) {
-			    log.debug(tier.getName());
-			}
-			return false;
-		}
-		
-	}
+        List<Tier> tiers = tierDao.findAllWithNetwork(net.getNetworkName());
+        if (tiers.isEmpty()) {
+            log.debug("The network " + net + " can be deleted");
+            return true;
+        } else {
+            log.debug("The network " + net.getNetworkName() + " cannot be deleted. The following tiers are using it");
+            for (Tier tier : tiers) {
+                log.debug(tier.getName());
+            }
+            return false;
+        }
 
-	public List<Tier> findAll() {
+    }
+
+    public List<Tier> findAll() {
+
         return tierDao.findAll();
     }
 
@@ -306,7 +316,7 @@ public class TierManagerImpl implements TierManager {
         if (tier.getProductReleases() != null) {
 
             for (ProductRelease productRelease : tier.getProductReleases()) {
-                getRulesFromProduct (productRelease, rules);
+                getRulesFromProduct(productRelease, rules);
             }
 
         }
@@ -327,22 +337,22 @@ public class TierManagerImpl implements TierManager {
         return rules;
 
     }
-    
+
     private void getRulesFromProduct(ProductRelease productRelease, List<Rule> rules) throws EntityNotFoundException {
-       
+
         productRelease = productReleaseManager.loadWithMetadata(productRelease.getProduct() + "-"
-            + productRelease.getVersion());
-            Metadata openPortsAttribute = productRelease.getMetadata("open_ports");
+                + productRelease.getVersion());
+        Metadata openPortsAttribute = productRelease.getMetadata("open_ports");
         if (openPortsAttribute != null) {
-            log.debug ("Adding product rule " + openPortsAttribute.getValue());
+            log.debug("Adding product rule " + openPortsAttribute.getValue());
             StringTokenizer st = new StringTokenizer(openPortsAttribute.getValue());
             while (st.hasMoreTokens()) {
                 Rule rule = createRulePort(st.nextToken());
                 if (!rules.contains(rule)) {
-                    log.debug ("New rule " );
+                    log.debug("New rule ");
                     rules.add(rule);
                 }
-           }
+            }
         }
     }
 
@@ -373,18 +383,17 @@ public class TierManagerImpl implements TierManager {
             throw new EntityNotFoundException(Tier.class, message, e.getMessage());
         }
     }
-    
+
     public Tier loadTierWithNetworks(String tierName, String vdc, String environmentName)
-        throws EntityNotFoundException {
+            throws EntityNotFoundException {
         try {
             return tierDao.loadTierWithNetworks(tierName, vdc, environmentName);
-      
+
         } catch (Exception e) {
-           String message = "Tier " + tierName + " not found";
-           throw new EntityNotFoundException(Tier.class, message, e.getMessage());
+            String message = "Tier " + tierName + " not found";
+            throw new EntityNotFoundException(Tier.class, message, e.getMessage());
         }
     }
-
 
     private void restore(ClaudiaData claudiaData, Tier tier) throws InvalidEntityException, InfrastructureException {
         if (tier.getSecurityGroup() != null) {
@@ -432,11 +441,9 @@ public class TierManagerImpl implements TierManager {
     public Tier tierInsertBD(Tier tier, ClaudiaData data) throws InvalidEntityException, InfrastructureException {
         List<Network> networskout = new ArrayList();
         try {
-            tier = load(tier.getName(), data.getVdc(), data.getService());
-            return tier;
+            return load(tier.getName(), data.getVdc(), data.getService());
         } catch (EntityNotFoundException e) {
 
-            
             tier.setVdc(data.getVdc());
             tier.setEnviromentName(data.getService());
 
@@ -466,7 +473,6 @@ public class TierManagerImpl implements TierManager {
             }
 
             if (productReleases != null && productReleases.size() != 0) {
-
                 for (ProductRelease prod : productReleases) {
 
                     try {
@@ -483,6 +489,7 @@ public class TierManagerImpl implements TierManager {
                     }
                 }
             }
+
         }
 
         for (Network net : networskout) {
@@ -513,8 +520,10 @@ public class TierManagerImpl implements TierManager {
         }
 
     }
+
     
     public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException, EntityNotFoundException, AlreadyExistsEntityException {
+
         tierold.setFlavour(tiernew.getFlavour());
         tierold.setFloatingip(tiernew.getFloatingip());
         tierold.setIcono(tiernew.getIcono());
@@ -551,13 +560,14 @@ public class TierManagerImpl implements TierManager {
         	
         tierold.setProductReleases(null);
         update(tierold);
-        
+
         if (tiernew.getProductReleases() == null)
             return;
 
         for (ProductRelease productRelease : tiernew.getProductReleases()) {
             try {
-                productRelease = productReleaseManager.load(productRelease.getProduct() + "-" + productRelease.getVersion());
+                productRelease = productReleaseManager.load(productRelease.getProduct() + "-"
+                        + productRelease.getVersion());
             } catch (EntityNotFoundException e) {
                 log.error("The new software " + productRelease.getProduct() + "-" + productRelease.getVersion()
                         + " is not found");

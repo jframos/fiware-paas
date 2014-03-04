@@ -119,6 +119,6 @@ public interface TierManager {
      * @param tiernew
      * @throws InvalidEntityException
      */
-    void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException, EntityNotFoundException;
+    void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException, EntityNotFoundException, AlreadyExistsEntityException;
 
 }
