@@ -105,7 +105,6 @@ Feature: Update an abstract environment with tiers
             | nameqa4 |                         |
             | nameqa5 | [MISSING_PARAM]         |
         
-    @skip @CLAUDIA-3718
     Scenario: Update abstract environment without tiers to add new ones with products and networks
         Given the paas manager is up and properly configured
         And an abstract environment has already been created with data:

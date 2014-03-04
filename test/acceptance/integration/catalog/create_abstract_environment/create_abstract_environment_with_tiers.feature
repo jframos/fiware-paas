@@ -84,7 +84,6 @@ Feature: Create an abstract environment with tiers
             | nameqa | descqa      |
         Then I receive a "No Content" response
 
-    @skip @CLAUDIA-3718
     Scenario Outline: Create abstract environment with one tier with networks
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -100,7 +99,6 @@ Feature: Create an abstract environment with tiers
             | nameqa1 | tiernameqa1 | netqa1        |
             | nameqa2 | tiernameqa2 | netqa1,netqa2 |
 
-    @skip @CLAUDIA-3718
     Scenario: Create abstract environment with several tiers with networks
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -112,7 +110,6 @@ Feature: Create an abstract environment with tiers
             | nameqa | descqa      |
         Then I receive a "No Content" response
 
-    @skip @CLAUDIA-3718
     Scenario Outline: Create abstract environment with one tier with products and networks
         And a list of tiers has been defined with data:
             | name       | products   | networks   |
@@ -127,7 +124,6 @@ Feature: Create an abstract environment with tiers
             | nameqa1 | tiernameqa1 | git=1.7                  | netqa1        |
             | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
 
-    @skip @CLAUDIA-3718
     Scenario: Create abstract environment with several tiers with products and networks
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:

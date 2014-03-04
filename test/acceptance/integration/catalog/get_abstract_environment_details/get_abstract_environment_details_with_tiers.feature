@@ -81,7 +81,6 @@ Feature: Get the details of an abstract environment with tiers
             | name   | description |
             | nameqa | descqa      |
 
-    @skip @CLAUDIA-3718
     Scenario Outline: Get the details of an abstract environment with one tier with networks
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -100,7 +99,6 @@ Feature: Get the details of an abstract environment with tiers
             | nameqa1 | tiernameqa1 | netqa1        |
             | nameqa2 | tiernameqa2 | netqa1,netqa2 |
 
-    @skip @CLAUDIA-3718
     Scenario: Get the details of an abstract environment with several tiers with networks
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -115,7 +113,6 @@ Feature: Get the details of an abstract environment with tiers
             | name   | description |
             | nameqa | descqa      |
             
-    @skip @CLAUDIA-3718
     Scenario Outline: Get the details of an abstract environment with one tier with products and networks
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -134,7 +131,6 @@ Feature: Get the details of an abstract environment with tiers
             | nameqa1 | tiernameqa1 | git=1.7                  | netqa1        |
             | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
             
-    @skip @CLAUDIA-3718
     Scenario: Get the details of an abstract environment with several tiers with products and networks
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:

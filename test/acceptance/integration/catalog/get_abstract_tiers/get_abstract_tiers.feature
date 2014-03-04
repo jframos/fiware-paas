@@ -94,7 +94,6 @@ Feature: Get the list of tiers of an abstract environment
             | name        | products                 |
             | tiernameqa2 | git=1.7,mediawiki=1.17.0 |
 
-    @skip @CLAUDIA-3718
     Scenario: Get a list with several tiers with networks
         Given the paas manager is up and properly configured
         And an abstract environment has already been created with data:
@@ -115,7 +114,6 @@ Feature: Get the list of tiers of an abstract environment
             | name        | networks      |
             | tiernameqa2 | netqa1,netqa2 |
 
-    @skip @CLAUDIA-3718
     Scenario: Get a list with many tiers with products and networks
         Given the paas manager is up and properly configured
         And an abstract environment has already been created with data:

@@ -91,7 +91,6 @@ Feature: Add a tier to an abstract environment
             | nameqa1 | tiernameqa1 | git=1.7                  |
             | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 |
         
-    @skip @CLAUDIA-3718
     Scenario Outline: Add tier with networks to an abstract environment
         Given the paas manager is up and properly configured
         And an abstract environment has already been created with data:
@@ -107,7 +106,6 @@ Feature: Add a tier to an abstract environment
             | nameqa1 | tiernameqa1 | netqa1        |
             | nameqa2 | tiernameqa2 | netqa1,netqa2 |
         
-    @skip @CLAUDIA-3718
     Scenario Outline: Add tier with products and networks to an abstract environment
         Given the paas manager is up and properly configured
         And an abstract environment has already been created with data:

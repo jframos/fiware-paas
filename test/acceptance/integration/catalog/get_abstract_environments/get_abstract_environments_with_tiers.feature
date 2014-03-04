@@ -159,7 +159,6 @@ Feature: Get the abstract environments with tiers
             | name    | description |
             | nameqa2 | descqa2     |
             
-    @skip @CLAUDIA-3718
     Scenario: Get a list with several abstract environments with tiers with networks
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -183,7 +182,6 @@ Feature: Get the abstract environments with tiers
             | name    | description |
             | nameqa2 | descqa2     |
             
-    @skip @CLAUDIA-3718
     Scenario: Get a list with several abstract environments with tiers with products and networks
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:

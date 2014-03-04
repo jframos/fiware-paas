@@ -64,7 +64,7 @@ Feature: Update a tier of an abstract environment
             | nameqa1 | tiernameqa1 | git=1.7                  |
             | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 |
         
-    @skip @CLAUDIA-3718 @CLAUDIA-3677
+    @skip @CLAUDIA-3677
     Scenario Outline: Update tier of an abstract environment adding new networks
         Given the paas manager is up and properly configured
         And an abstract environment has already been created with data:
@@ -86,7 +86,7 @@ Feature: Update a tier of an abstract environment
             | nameqa1 | tiernameqa1 | netqa1        |
             | nameqa2 | tiernameqa2 | netqa1,netqa2 |
         
-    @skip @CLAUDIA-3718 @CLAUDIA-3677
+    @skip @CLAUDIA-3677
     Scenario Outline: Update tier of an abstract environment removing its networks
         Given the paas manager is up and properly configured
         And an abstract environment has already been created with data:
@@ -108,7 +108,7 @@ Feature: Update a tier of an abstract environment
             | nameqa1 | tiernameqa1 | netqa1        |
             | nameqa2 | tiernameqa2 | netqa1,netqa2 |
         
-    @skip @CLAUDIA-3718 @CLAUDIA-3677
+    @skip @CLAUDIA-3677
     Scenario Outline: Update tier of an abstract environment adding new products and networks
         Given the paas manager is up and properly configured
         And an abstract environment has already been created with data:
@@ -130,7 +130,7 @@ Feature: Update a tier of an abstract environment
             | nameqa1 | tiernameqa1 | git=1.7                  | netqa1        |
             | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
         
-    @skip @CLAUDIA-3718 @CLAUDIA-3677
+    @skip @CLAUDIA-3677
     Scenario Outline: Update tier of an abstract environment removing its products and networks
         Given the paas manager is up and properly configured
         And an abstract environment has already been created with data:
