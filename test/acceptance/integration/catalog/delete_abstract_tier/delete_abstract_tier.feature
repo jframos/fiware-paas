@@ -87,7 +87,6 @@ Feature: Delete a tier from an abstract environment
             | nameqa1 | tiernameqa1 | git=1.7                  | netqa1        |
             | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
 
-    @skip @CLAUDIA-3678
     Scenario: Delete nonexistent tier from an abstract environment
         Given the paas manager is up and properly configured
         And an abstract environment has already been created with data:

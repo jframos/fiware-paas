@@ -114,6 +114,7 @@ class EnvironmentRequest:
     def delete_abstract_environment(self, environment_name):
         url = "%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
                             "environment", environment_name)
+
         world.response = self.__delete_environment(url)
 
         """Remove it from the world too"""
@@ -125,6 +126,7 @@ class EnvironmentRequest:
     def delete_environment(self, environment_name):
         url = "%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
                                      "vdc", self.vdc, "environment", environment_name)
+
         world.response = self.__delete_environment(url)
 
         """Remove it from the world too"""
@@ -219,13 +221,25 @@ class EnvironmentRequest:
         url = "%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
                                      "environment", environment_name, "tier", tier_name)
 
-        self.__delete_tier_environment(url)
+        world.response = self.__delete_tier_environment(url)
+
+        """Remove it from the world too"""
+        try:
+            world.tiers.remove(tier_name)
+        except:
+            pass
 
     def delete_tier_environment(self, environment_name, tier_name):
         url = "%s/%s/%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
                                            "vdc", self.vdc, "environment", environment_name, "tier", tier_name)
 
-        self.__delete_tier_environment(url)
+        world.response = self.__delete_tier_environment(url)
+
+        """Remove it from the world too"""
+        try:
+            world.tiers.remove(tier_name)
+        except:
+            pass
 
     def update_tier_abstract_environment(self, environment_name, tier_name, tier):
         """
