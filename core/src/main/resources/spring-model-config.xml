@@ -79,6 +79,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
             <property name="networkManager" ref="networkManager"/>
             <property name="securityGroupManager" ref="securityGroupManager"/>
+           
         </bean>
         <bean id="applicationReleaseManager" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.manager.impl.ApplicationReleaseManagerImpl">

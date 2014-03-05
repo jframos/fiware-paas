@@ -230,6 +230,46 @@ public class TierTest {
 
     }
     
+    @Test
+    public void testdUpdateNetworks() throws Exception {
+
+        Environment environmentBk = new Environment();
+        environmentBk.setName("testUN");
+        environmentBk.setDescription("Description Second environment");
+        Tier tierbk = new Tier("te", new Integer(1), new Integer(1), new Integer(1), null);
+        tierbk.setImage("image");
+        tierbk.setIcono("icono");
+        tierbk.setFlavour("flavour");
+        tierbk.setFloatingip("floatingip");
+        tierbk.setPayload("");
+        tierbk.setKeypair("keypair");
+        tierbk.addNetwork(new Network("dddd", "dd"));
+        environmentBk.addTier(tierbk);
+
+        environmentResource.insert(org, vdc, environmentBk.toDto());
+        
+        Tier tierbk2 = new Tier("te", new Integer(1), new Integer(1), new Integer(1), null);
+        tierbk2.setImage("image");
+        tierbk2.setIcono("icono");
+        tierbk2.setFlavour("flavour");
+        tierbk2.setFloatingip("floatingip");
+        tierbk2.setPayload("");
+        tierbk2.setKeypair("keypair");
+        tierbk2.addNetwork(new Network("aaaa", "dd"));
+
+        tierResource.update(org, vdc, environmentBk.getName(), tierbk.getName(), tierbk2.toDto());
+        TierDto tierOut = tierResource.load(vdc, environmentBk.getName(), tierbk.getName());
+        
+        assertEquals (tierbk.getName(), tierOut.getName());
+        assertEquals (tierbk.getNetworks().size(), 1);
+        for (NetworkDto net: tierOut.getNetworksDto()) {
+        	 assertEquals (net.getNetworkName(), "aaaa");
+
+        }
+        
+
+    }
+    
     @Test(expected = APIException.class)
     public void testdUpdateTierNoExist() throws Exception {
 
