@@ -487,17 +487,23 @@ public class TierManagerImpl implements TierManager {
             }
 
             if (productReleases != null && productReleases.size() != 0) {
-                for (ProductRelease prod : productReleases) {
+                for (ProductRelease product : productReleases) {
 
                     try {
-                        prod = productReleaseManager.load(prod.getProduct() + "-" + prod.getVersion());
-                        log.debug("Adding product release " + prod.getProduct() + "-" + prod.getVersion() + " to tier "
-                                + tier.getName());
-                        tier.addProductRelease(prod);
+                        ProductRelease templateProduct = productReleaseManager.load(product.getProduct() + "-"
+                                + product.getVersion());
+                        log.debug("Adding product release " + templateProduct.getProduct() + "-"
+                                + templateProduct.getVersion() + " to tier " + templateProduct.getName());
+
+                        mergeAttributes(product, templateProduct);
+                        mergeMetadatas(product, templateProduct);
+
+                        tier.addProductRelease(templateProduct);
+
                         tier = update(tier);
                     } catch (Exception e2) {
-                        String errorMessage = "The ProductRelease Object " + prod.getProduct() + "-"
-                                + prod.getVersion() + " is " + "NOT present in Database";
+                        String errorMessage = "The ProductRelease Object " + product.getProduct() + "-"
+                                + product.getVersion() + " is " + "NOT present in Database";
                         log.error(errorMessage);
                         throw new InvalidEntityException(e2);
                     }
@@ -521,6 +527,49 @@ public class TierManagerImpl implements TierManager {
         }
 
         return tier;
+    }
+
+    public void mergeAttributes(ProductRelease product, ProductRelease templateProduct) {
+
+        if (product.getAttributes() != null) {
+            if (!templateProduct.getAttributes().isEmpty()) {
+
+                for (Attribute attribute : product.getAttributes()) {
+
+                    String key = attribute.getKey();
+                    boolean notExistInTemplate = templateProduct.getAttribute(key) == null;
+                    if (notExistInTemplate) {
+                        templateProduct.addAttribute(attribute);
+                    } else {
+                        templateProduct.getAttribute(key).setValue(attribute.getValue());
+                    }
+                }
+
+            } else {
+                templateProduct.setAttributes(product.getAttributes());
+            }
+        }
+    }
+
+    public void mergeMetadatas(ProductRelease productRelease, ProductRelease newProductRelease) {
+        if (productRelease.getMetadatas() != null) {
+            if (!newProductRelease.getMetadatas().isEmpty()) {
+
+                for (Metadata metadata : productRelease.getMetadatas()) {
+
+                    String key = metadata.getKey();
+                    boolean notExistInTemplate = newProductRelease.getMetadata(key) == null;
+                    if (notExistInTemplate) {
+                        newProductRelease.addMetadata(metadata);
+                    } else {
+                        newProductRelease.getMetadata(key).setValue(metadata.getValue());
+                    }
+                }
+
+            } else {
+                newProductRelease.setMetadatas(productRelease.getMetadatas());
+            }
+        }
     }
 
     public Tier update(Tier tier) throws InvalidEntityException {
