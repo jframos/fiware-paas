@@ -177,7 +177,7 @@ public class TierDto {
      * 
      * @tier
      */
-    public Tier fromDto(String vdc) {
+    public Tier fromDto(String vdc, String envName) {
 
         Tier tier = new Tier();
         tier.setName(getName());
@@ -190,6 +190,8 @@ public class TierDto {
         tier.setKeypair(getKeypair());
         tier.setFloatingip(getFloatingip());
         tier.setRegion(getRegion());
+        tier.setVdc(vdc);
+        tier.setEnviromentName(envName);
 
         for (ProductReleaseDto pReleaseDto : getProductReleaseDtos()) {
             ProductRelease pRelease = new ProductRelease();

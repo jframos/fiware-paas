@@ -20,6 +20,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.AbstractEnvironmentResource;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.AbstractTierResource;
@@ -40,7 +41,7 @@ public class AbstractEnvironmenTest {
     String org = "FIWARE";
 
 
-   @Test
+/*   @Test
     public void testAbstractEnvironment() throws Exception {
         EnvironmentDto environmentBk = new EnvironmentDto();
         environmentBk.setName("absenvtest");
@@ -294,6 +295,62 @@ public class AbstractEnvironmenTest {
         environment.addTier(tier);
         abstractEnvironmentResource.insert(org, environment.toDto());  
         abstractEnvironmentResource.delete(org, environment.getName()); 
+  
+    }*/
+    
+    @Test
+    public void testUpdateAddaNewNet() throws APIException  {
+    	Environment environment1= new Environment();
+        environment1.setName("updatenewnet");
+        environment1.setDescription("Description First environment");
+        Tier tier = new Tier("testss", new Integer(1), new Integer(1), new Integer(1), null);
+        tier.setImage("image");
+        tier.setIcono("icono");
+        tier.setFlavour("flavour");
+        tier.setFloatingip("floatingip");
+        tier.setKeypair("keypair");
+        Network net2 = new Network("one", "dd");
+        tier.addNetwork(net2);
+       
+        environment1.addTier(tier);
+       
+
+        abstractEnvironmentResource.insert(org, environment1.toDto());  
+        TierDto tierDto = abstractTierResource.load(org, environment1.getName(), tier.getName());
+        assertEquals (tierDto.getNetworksDto().size(),1);
+        
+        Environment environment2= new Environment();
+        environment2.setName("updatenewnet2");
+        environment2.setDescription("Description First environment");
+        Tier tier2 = new Tier("testss3", new Integer(1), new Integer(1), new Integer(1), null);
+        tier2.setImage("image");
+        tier2.setIcono("icono");
+        tier2.setFlavour("flavour");
+        tier2.setFloatingip("floatingip");
+        tier2.setKeypair("keypair");
+        tier2.addNetwork(net2);
+       
+        environment2.addTier(tier2);
+        abstractEnvironmentResource.insert(org, environment2.toDto());  
+        tierDto = abstractTierResource.load(org, environment2.getName(), tier2.getName());
+        assertEquals (tierDto.getNetworksDto().size(),1);
+        
+        
+        Tier tier3 = new Tier("testss3", new Integer(1), new Integer(1), new Integer(1), null);
+        tier3.setImage("image");
+        tier3.setIcono("icono");
+        tier3.setFlavour("flavour");
+        tier3.setFloatingip("floatingip");
+        tier3.setKeypair("keypair");
+        Network net3 = new Network("llala", "dd");
+        tier3.addNetwork(net2);
+        tier3.addNetwork(net3);
+      
+        
+        abstractTierResource.update(org, environment2.getName(), tier2.getName(), tier3.toDto());  
+        tierDto = abstractTierResource.load(org, environment2.getName(), tier2.getName());
+        assertEquals (tierDto.getNetworksDto().size(),2);
+
   
     }
 }

@@ -64,7 +64,7 @@ public class EnvironmentDto {
         if (getTierDtos() != null) {
             Set<Tier> lTier = new HashSet<Tier>();
             for (TierDto tierDto : getTierDtos()) {
-                lTier.add(tierDto.fromDto(vdc));
+                lTier.add(tierDto.fromDto(vdc, getName()));
             }
             environment.setTiers(lTier);
         }
@@ -87,7 +87,7 @@ public class EnvironmentDto {
         if (getTierDtos() != null) {
             Set<Tier> lTier = new HashSet<Tier>();
             for (TierDto tierDto : getTierDtos()) {
-                lTier.add(tierDto.fromDto(vdc));
+                lTier.add(tierDto.fromDto(vdc, getName()));
             }
             environment.setTiers(lTier);
         }

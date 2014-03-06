@@ -354,7 +354,7 @@ public class TierResourceValidatorImplTest {
         tierDTO.setMinimumNumberInstances(new Integer(1));
         tierDTO.setImage("image");
         tierDTO.setFlavour("flavor");
-        when(tierManager.load(anyString(), anyString(), anyString())).thenReturn(tierDTO.fromDto("vdc"));
+        when(tierManager.load(anyString(), anyString(), anyString())).thenReturn(tierDTO.fromDto("vdc", "env"));
 
         tierResourceValidator.validateUpdate("vdc", "envName", tierDTO.getName(), tierDTO);
 
@@ -372,7 +372,7 @@ public class TierResourceValidatorImplTest {
         tierDTO.setMinimumNumberInstances(new Integer(1));
         tierDTO.setImage("image");
         tierDTO.setFlavour("flavor");
-        when(tierManager.load(anyString(), anyString(), anyString())).thenReturn(tierDTO.fromDto("vdc"));
+        when(tierManager.load(anyString(), anyString(), anyString())).thenReturn(tierDTO.fromDto("vdc", "env"));
 
         tierResourceValidator.validateUpdate("vdc", "envName", "ddd", tierDTO);
 
@@ -389,7 +389,7 @@ public class TierResourceValidatorImplTest {
         tierDTO.setMinimumNumberInstances(new Integer(1));
         tierDTO.setImage("image");
         tierDTO.setFlavour("flavor");
-        when(tierManager.load(anyString(), anyString(), anyString())).thenReturn(tierDTO.fromDto("vdc"));
+        when(tierManager.load(anyString(), anyString(), anyString())).thenReturn(tierDTO.fromDto("vdc", "env"));
 
         tierResourceValidator.validateDelete("vdc", "envName", "tierName");
 

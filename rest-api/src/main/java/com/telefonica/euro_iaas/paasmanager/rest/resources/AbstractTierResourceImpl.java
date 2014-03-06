@@ -124,7 +124,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
     public void insert(String org, String environmentName, TierDto tierDto) throws APIException {
 
         log.debug("Insert tier " + tierDto.getName() + " from env " + environmentName + " with product release "
-                + tierDto.getProductReleaseDtos());
+                + tierDto.getProductReleaseDtos()  + " with nets " + tierDto.getNetworksDto());
         ClaudiaData claudiaData = new ClaudiaData(org, "", environmentName);
 
         try {
@@ -133,7 +133,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                 claudiaData.setUser(getCredentials());
             }
-            Tier tier = tierDto.fromDto("");
+            Tier tier = tierDto.fromDto("", environmentName);
             log.debug("vdc " + claudiaData.getVdc());
 
             Environment environment = environmentManager.load(environmentName);
@@ -157,7 +157,8 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
     }
 
     public void update(String org, String environmentName, String tierName, TierDto tierDto) throws APIException {
-        log.debug("Update tier " + tierName + " from env " + environmentName);
+        log.debug("Update tier " + tierName + " from env " + environmentName + "with product release " + 
+        		    tierDto.getProductReleaseDtos() + " with nets " + tierDto.getNetworksDto() );
         ClaudiaData claudiaData = new ClaudiaData(org, "", environmentName);
 
         try {
@@ -168,7 +169,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
                 claudiaData.setUser(getCredentials());
             }
 
-            Tier newtier = tierDto.fromDto("");
+            Tier newtier = tierDto.fromDto("", environmentName);
 
             Environment environment = environmentManager.load(environmentName);
             List<Tier> tiers = new ArrayList();
@@ -179,51 +180,24 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
             environmentManager.update(environment);
             for (Tier tier : tiers) {
                 if (tier.getName().equals(newtier.getName())) {
-                    log.debug("load tier " + tierDto.getName());
-                    tier = tierManager.load(tierDto.getName(), "", environmentName);
-                    updateTier(tier, newtier);
+                    
+                    tier = tierManager.loadTierWithNetworks(tierDto.getName(), "", environmentName);
+                    log.debug("load tier " + tierDto.getName() + " with nets " + tier.getName() + " " + tier.getNetworks());
+                    tierManager.updateTier(tier, newtier);
 
                 }
                 environment.addTier(tier);
                 environmentManager.update(environment);
             }
-
-            log.debug("update tier " + tierDto.getName());
+            log.debug("updated tier " + tierDto.getName());
 
         } catch (Exception e) {
             throw new APIException(e);
         }
     }
 
-    public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException {
-        tierold.setFlavour(tiernew.getFlavour());
-        tierold.setFloatingip(tiernew.getFloatingip());
-        tierold.setIcono(tiernew.getIcono());
-        tierold.setImage(tiernew.getImage());
-        tierold.setInitialNumberInstances(tiernew.getInitialNumberInstances());
-        tierold.setKeypair(tiernew.getKeypair());
-        tierold.setMaximumNumberInstances(tiernew.getMaximumNumberInstances());
-        tierold.setMinimumNumberInstances(tiernew.getMinimumNumberInstances());
 
-        tierold.setProductReleases(null);
-        tierManager.update(tierold);
-        if (tiernew.getProductReleases() == null)
-            return;
-
-        for (ProductRelease productRelease : tiernew.getProductReleases()) {
-            try {
-                productRelease = productReleaseDao
-                        .load(productRelease.getProduct() + "-" + productRelease.getVersion());
-            } catch (EntityNotFoundException e) {
-                log.error("The new software " + productRelease.getProduct() + "-" + productRelease.getVersion()
-                        + " is not found");
-
-            }
-            tierold.addProductRelease(productRelease);
-            tierManager.update(tierold);
-        }
-
-    }
+  
 
     /**
      * @param systemPropertiesProvider

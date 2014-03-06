@@ -70,7 +70,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
     private Set<Tier> convertToTiers(Set<TierDto> tierDtos, String environmentName, String vdc) {
         Set<Tier> tiers = new HashSet<Tier>();
         for (TierDto tierDto : tierDtos) {
-            Tier tier = tierDto.fromDto(vdc);
+            Tier tier = tierDto.fromDto(vdc, environmentName);
             // tier.setSecurity_group("sg_"
             // +environmentName+"_"+vdc+"_"+tier.getName());
             tiers.add(tier);
@@ -166,20 +166,8 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
             addCredentialsToClaudiaData(claudiaData);
             environmentResourceValidator.validateCreate(claudiaData, environmentDto, vdc);
 
-            Environment environment = new Environment();
-            environment.setName(environmentDto.getName());
-            environment.setDescription(environmentDto.getDescription());
-
-            /*
-             * String payload = ovfGeneration.createOvf(environmentDto); environment.setOvf(payload);
-             */
-            if (environmentDto.getTierDtos() != null) {
-                environment.setTiers(convertToTiers(environmentDto.getTierDtos(), environment.getName(), vdc));
-            }
-            environment.setOrg(org);
-            environment.setVdc(vdc);
             // try {
-            environmentManager.create(claudiaData, environment);
+            environmentManager.create(claudiaData, environmentDto.fromDto(org, vdc));
         } catch (Exception e) {
             throw new APIException(e);
         }

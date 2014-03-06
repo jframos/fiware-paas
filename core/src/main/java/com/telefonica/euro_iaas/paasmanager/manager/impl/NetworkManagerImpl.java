@@ -22,6 +22,8 @@ import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
 import com.telefonica.euro_iaas.paasmanager.manager.SubNetworkManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
+import com.telefonica.euro_iaas.paasmanager.model.Port;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 
 /**
@@ -49,23 +51,30 @@ public class NetworkManagerImpl implements NetworkManager {
      */
     public Network create(Network network) throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException  {
         log.debug("Create network " + network.getNetworkName());
+        Network networkDB = null;
 
         if (network.getVdc()== null ){
             network.setVdc("");
         }
         if (exists(network.getNetworkName(), network.getVdc())) {
-            log.debug("The network " + network.getNetworkName() + " already exists");
-            Network networkDB = networkDao.load(network.getNetworkName(), network.getVdc());
+            
+            networkDB = networkDao.load(network.getNetworkName(), network.getVdc());
+            log.debug("The network " + network.getNetworkName() + " already exists with subnets  " + networkDB.getSubNets());
+            
+            if (networkDB.getSubNets().isEmpty()) {
+            	log.debug("There is not a associated subnet");
+                createDefaultSubNetwork(networkDB);
+            }
+            
             for (SubNetwork subnet : network.getSubNets()) {
                 if (!networkDB.contains(subnet)) {
-                    createSubNetwork(network, subnet);
+                	log.debug("The subnet " + subnet.getName() + " is not in the net " + networkDB.getNetworkName());
+                    createSubNetwork(networkDB, subnet);
                 }
             }
 
-            if (network.getSubNets().isEmpty()) {
-                createDefaultSubNetwork(network);
-            }
-            networkDao.update(network);
+            
+            networkDao.update(networkDB);
 
         } else {
             for (SubNetwork subnet : network.getSubNets()) {
@@ -76,10 +85,10 @@ public class NetworkManagerImpl implements NetworkManager {
                 createDefaultSubNetwork(network);
             }
             
-            network = networkDao.create(network);
+            networkDB = networkDao.create(network);
         }
         
-        return network;
+        return networkDB;
     }
 
     public void createPublicNetwork() {
@@ -98,7 +107,7 @@ public class NetworkManagerImpl implements NetworkManager {
      */
     private void createSubNetwork(Network network, SubNetwork subNetwork) throws InvalidEntityException,
             AlreadyExistsEntityException {
-
+        log.debug("Creating subnect " + subNetwork.getName());
         subNetwork = subNetworkManager.create(subNetwork);
         network.updateSubNet(subNetwork);
         log.debug("SubNetwork " + subNetwork.getName() + " in network  " + network.getNetworkName() + " deployed");
@@ -219,6 +228,5 @@ public class NetworkManagerImpl implements NetworkManager {
             return false;
         }
     }
-
 
 }

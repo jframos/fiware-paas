@@ -55,7 +55,7 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
                 Tier tierDB = null;
 
                 try {
-                    tierDB = tierManager.load(tier.getName(), claudiaData.getVdc(), environment.getName());
+                    tierDB = tierManager.load(tier.getName(), environment.getVdc(), environment.getName());
                 } catch (EntityNotFoundException e) {
                     try {
                         tierDB = tierManager.create(claudiaData, environment.getName(), tier);
