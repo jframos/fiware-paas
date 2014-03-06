@@ -28,10 +28,8 @@ public interface NetworkManager {
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
      * @throws EntityNotFoundException
-     * @throws InfrastructureException
      */
-    Network create(ClaudiaData claudiaData, Network network, String region) throws InvalidEntityException,
-            AlreadyExistsEntityException, EntityNotFoundException, InfrastructureException;
+	Network create(Network network) throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException;
 
     /**
      * Delete a Network.
@@ -41,7 +39,7 @@ public interface NetworkManager {
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    void delete(Network network) throws EntityNotFoundException, InvalidEntityException, InfrastructureException;
+    void delete(Network network) throws EntityNotFoundException, InvalidEntityException;
 
     /**
      * Retrieve all Network created in the system.
@@ -71,5 +69,6 @@ public interface NetworkManager {
      * @return the tierInstance created
      */
     Network update(Network network) throws InvalidEntityException;
+
 
 }

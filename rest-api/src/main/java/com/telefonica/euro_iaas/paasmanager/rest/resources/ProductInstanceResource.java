@@ -20,7 +20,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ProductInstanceDto;
@@ -84,11 +83,6 @@ public interface ProductInstanceResource {
 
     /**
      * Retrieve the selected product instance.
-     * 
-     * @param id
-     *            the product id
-     * @return the product instance
-     * @throws EntityNotFoundException
      */
     @GET
     @Path("/{name}")

@@ -10,6 +10,7 @@ package com.telefonica.euro_iaas.paasmanager.rest.validation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,27 +18,43 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
+import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.Limits;
+import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 public class EnvironmentInstanceResourceValidatorImplTest {
+	EnvironmentInstanceResourceValidatorImpl environmentInstanceResourceValidator;
+	ResourceValidator resourceValidator;
+	
+	@Before
+	public void setUp () throws  com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+		environmentInstanceResourceValidator = new EnvironmentInstanceResourceValidatorImpl();
+		resourceValidator = mock(ResourceValidator.class);
+		environmentInstanceResourceValidator.setResourceValidator(resourceValidator);
+  
+		Mockito.doNothing().when(resourceValidator).validateName(anyString());
+		Mockito.doNothing().when(resourceValidator).validateDescription(anyString());
+	}
 
     @Test
-    public void shouldValidateInstanceNumberOnCreateWithoutException() throws InvalidEnvironmentRequestException,
-            InvalidEntityException, AlreadyExistEntityException, QuotaExceededException, InfrastructureException {
+    public void shouldValidateInstanceNumberOnCreateWithoutException() throws Exception {
         // given
-        EnvironmentInstanceResourceValidator environmentInstanceResourceValidator = new EnvironmentInstanceResourceValidatorImpl();
+        
         QuotaClient quotaClient = mock(QuotaClient.class);
         ((EnvironmentInstanceResourceValidatorImpl) environmentInstanceResourceValidator).setQuotaClient(quotaClient);
         ClaudiaData claudiaData = mock(ClaudiaData.class);
@@ -68,10 +85,9 @@ public class EnvironmentInstanceResourceValidatorImplTest {
 
     @Test
     public void shouldValidateInstanceNumberOnCreateAndReturnQuotaExceedByFloatingsIps()
-            throws InvalidEnvironmentRequestException, InvalidEntityException, AlreadyExistEntityException,
-            InfrastructureException {
+            throws Exception {
         // given
-        EnvironmentInstanceResourceValidator environmentInstanceResourceValidator = new EnvironmentInstanceResourceValidatorImpl();
+       
         QuotaClient quotaClient = mock(QuotaClient.class);
         ((EnvironmentInstanceResourceValidatorImpl) environmentInstanceResourceValidator).setQuotaClient(quotaClient);
         ClaudiaData claudiaData = mock(ClaudiaData.class);
@@ -106,10 +122,10 @@ public class EnvironmentInstanceResourceValidatorImplTest {
     }
 
     @Test
-    public void shouldReturnValidateOKWhenLimitsValuesDontExist() throws InvalidEnvironmentRequestException,
-            InvalidEntityException, AlreadyExistEntityException, InfrastructureException {
+    public void shouldReturnValidateOKWhenLimitsValuesDontExist() throws 
+             AlreadyExistEntityException, InfrastructureException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
         // given
-        EnvironmentInstanceResourceValidator environmentInstanceResourceValidator = new EnvironmentInstanceResourceValidatorImpl();
+        
         QuotaClient quotaClient = mock(QuotaClient.class);
         ((EnvironmentInstanceResourceValidatorImpl) environmentInstanceResourceValidator).setQuotaClient(quotaClient);
         ClaudiaData claudiaData = mock(ClaudiaData.class);
@@ -139,10 +155,10 @@ public class EnvironmentInstanceResourceValidatorImplTest {
 
     @Test
     public void shouldReturnValidateOKWhenLimitMaxTotalInstancesValuesDontExistEgEssexInstance()
-            throws InvalidEnvironmentRequestException, InvalidEntityException, AlreadyExistEntityException,
-            InfrastructureException {
+            throws  AlreadyExistEntityException,
+            InfrastructureException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
         // given
-        EnvironmentInstanceResourceValidator environmentInstanceResourceValidator = new EnvironmentInstanceResourceValidatorImpl();
+        
         QuotaClient quotaClient = mock(QuotaClient.class);
         ((EnvironmentInstanceResourceValidatorImpl) environmentInstanceResourceValidator).setQuotaClient(quotaClient);
         ClaudiaData claudiaData = mock(ClaudiaData.class);
@@ -173,10 +189,10 @@ public class EnvironmentInstanceResourceValidatorImplTest {
 
     @Test
     public void shouldValidateInstanceNumberOnCreateAndReturnQuotaExceedByInstancesUsed()
-            throws InvalidEnvironmentRequestException, InvalidEntityException, AlreadyExistEntityException,
-            InfrastructureException {
+            throws AlreadyExistEntityException,
+            InfrastructureException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
         // given
-        EnvironmentInstanceResourceValidator environmentInstanceResourceValidator = new EnvironmentInstanceResourceValidatorImpl();
+       
         QuotaClient quotaClient = mock(QuotaClient.class);
         ((EnvironmentInstanceResourceValidatorImpl) environmentInstanceResourceValidator).setQuotaClient(quotaClient);
         ClaudiaData claudiaData = mock(ClaudiaData.class);
@@ -211,10 +227,9 @@ public class EnvironmentInstanceResourceValidatorImplTest {
     }
 
     @Test
-    public void shouldValidateTierWithValidTierDto() throws InvalidEnvironmentRequestException {
+    public void shouldValidateTierWithValidTierDto() throws Exception {
         // given
-        EnvironmentInstanceResourceValidatorImpl environmentInstanceResourceValidatorImpl = new EnvironmentInstanceResourceValidatorImpl();
-        TierDto tierDto = new TierDto();
+               TierDto tierDto = new TierDto();
         tierDto.setName("name");
         tierDto.setFlavour("flavour");
         tierDto.setImage("image");
@@ -222,17 +237,17 @@ public class EnvironmentInstanceResourceValidatorImplTest {
         tierDto.setMaximumNumberInstances(new Integer(4));
         tierDto.setMinimumNumberInstances(new Integer(1));
         // when
-        environmentInstanceResourceValidatorImpl.validateTier(tierDto);
+        environmentInstanceResourceValidator.validateTier(tierDto);
 
         // then
         assertTrue(true);
     }
 
     @Test
-    public void shouldThrowExceptionWithMaxSecurityGroupsAreExceeded() throws InfrastructureException,
-            InvalidEnvironmentRequestException {
+    public void shouldThrowExceptionWithMaxSecurityGroupsAreExceeded() throws InfrastructureException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
+             {
         // given
-        EnvironmentInstanceResourceValidator environmentInstanceResourceValidator = new EnvironmentInstanceResourceValidatorImpl();
+       
         QuotaClient quotaClient = mock(QuotaClient.class);
         ((EnvironmentInstanceResourceValidatorImpl) environmentInstanceResourceValidator).setQuotaClient(quotaClient);
         ClaudiaData claudiaData = mock(ClaudiaData.class);

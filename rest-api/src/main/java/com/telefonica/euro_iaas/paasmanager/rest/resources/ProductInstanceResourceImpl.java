@@ -134,13 +134,6 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
         return null;
     }
 
-    /**
-     * createTask
-     * 
-     * @param description
-     * @param vdc
-     * @return
-     */
     private Task createTask(String description, String enviromentName) {
         Task task = new Task(TaskStates.RUNNING);
         task.setDescription(description);

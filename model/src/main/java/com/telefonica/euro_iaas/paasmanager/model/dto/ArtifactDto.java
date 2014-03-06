@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 
 /**
@@ -157,6 +158,18 @@ public class ArtifactDto {
             atts.put(att.getKey(), att.getValue());
         }
         return atts;
+    }
+    
+    public Artifact fromDto () {
+        Artifact artifact = new Artifact();
+        artifact.setName(this.getName());
+        if (this.getPath() != null) {
+            artifact.setPath(this.getPath());
+        }
+        if (this.getProductReleaseDto() != null) {
+            artifact.setProductRelease(this.getProductReleaseDto().fromDto());
+        }
+        return artifact;
     }
 
 }

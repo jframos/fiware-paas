@@ -165,7 +165,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
             InvalidOVFException, InvalidEntityException, EntityNotFoundException {
 
         // Deploy MVs
-        log.debug("Creating infrastructure for environemnt instance " + environmentInstance.getBlueprintName());
+        log.debug("Creating infrastructure for environment instance " + environmentInstance.getBlueprintName());
         log.debug("Deploy VDC ");
         deployVDC(claudiaData);
         log.debug("Insert service ");
@@ -213,11 +213,11 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                     tierInstance = insertTierInstanceBD(claudiaData, environmentInstance.getEnvironment().getName(),
                             tierInstance);
                     log.debug("Return: Number of networks " + tierInstance.getNetworkInstances().size()
-                            + " floatin ip " + tierInstance.getTier().getFloatingip());
+                            + " floating ip " + tierInstance.getTier().getFloatingip());
                     environmentInstance.addTierInstance(tierInstance);
                     environmentInstanceDao.update(environmentInstance);
                 } catch (EntityNotFoundException e) {
-                    log.error("Entitiy NOt found: Tier " + tierInstance.getTier().getName() + " " + e.getMessage());
+                    log.error("Entity Not found: Tier " + tierInstance.getTier().getName() + " " + e.getMessage());
                     throw new InfrastructureException(e);
                 } catch (InvalidEntityException e) {
                     log.error("Invalid: Tier " + tierInstance.getTier().getName() + " " + e.getMessage());
@@ -239,7 +239,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 } catch (Exception e) {
                     log.error("Error deploying a VM: " + e.getMessage());
                     environmentInstance.setStatus(Status.ERROR);
-                    throw new InfrastructureException(e);
+                    throw new InfrastructureException(e.getMessage());
                 }
 
                 if (!systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
@@ -345,7 +345,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         for (NetworkInstance network : netInsts) {
             log.debug("Is network default? " + network.isDefaultNet());
             if (!network.isDefaultNet()) {
-            networkInstanceManager.delete(claudiaData, network, region);
+                networkInstanceManager.delete(claudiaData, network, region);
             }
         }
     }

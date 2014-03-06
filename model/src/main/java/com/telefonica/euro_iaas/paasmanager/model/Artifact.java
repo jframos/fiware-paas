@@ -48,8 +48,6 @@ public class Artifact {
     @Column(length = 2048)
     private String path;
 
-    @ManyToOne
-    private ArtifactType artifactType;
 
     // productrelease.id?
     @ManyToOne
@@ -62,6 +60,7 @@ public class Artifact {
      * Default Constructor.
      */
     public Artifact() {
+        attributes = new ArrayList<Attribute>();
 
     }
 
@@ -71,11 +70,11 @@ public class Artifact {
      * @param artifactType
      * @param productRelease
      */
-    public Artifact(String name, String path, ArtifactType artifactType, ProductRelease productRelease) {
+    public Artifact(String name, String path, ProductRelease productRelease) {
         this.name = name;
         this.path = path;
-        this.artifactType = artifactType;
         this.productRelease = productRelease;
+        attributes = new ArrayList<Attribute>();
     }
 
     /**
@@ -89,13 +88,6 @@ public class Artifact {
             attributes = new ArrayList<Attribute>();
         }
         attributes.add(attribute);
-    }
-
-    /**
-     * @return the artifactType
-     */
-    public ArtifactType getArtifactType() {
-        return artifactType;
     }
 
     /**
@@ -142,14 +134,6 @@ public class Artifact {
      */
     public ProductRelease getProductRelease() {
         return productRelease;
-    }
-
-    /**
-     * @param artifactType
-     *            the artifactType to set
-     */
-    public void setArtifactType(ArtifactType artifactType) {
-        this.artifactType = artifactType;
     }
 
     /**

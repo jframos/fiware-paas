@@ -467,7 +467,12 @@ public class Tier {
     }
 
     public void setVdc(String vdc) {
-        this.vdc = vdc;
+        if (vdc==null) {
+            this.vdc ="";
+        }
+        else {
+            this.vdc = vdc;
+        }
     }
 
     /**

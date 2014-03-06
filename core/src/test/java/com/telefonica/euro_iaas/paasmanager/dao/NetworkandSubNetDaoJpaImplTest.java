@@ -61,6 +61,26 @@ public class NetworkandSubNetDaoJpaImplTest {
         assertEquals(networkOut.getSubNets().size(), 0);
 
     }
+    
+    @Test
+    public void testNetworkVDCNull() throws Exception {
+
+        Network network = new Network(NETWORK_NAME, "");
+
+        network = networkDao.create(network);
+        assertNotNull(network);
+        assertEquals(network.getNetworkName(), NETWORK_NAME);
+        assertEquals(network.getSubNets().size(), 0);
+
+        List<Network> networks = networkDao.findAll();
+        assertNotNull(networks);
+
+        Network networkOut = networkDao.load(NETWORK_NAME, "");
+        assertNotNull(networkOut);
+        assertEquals(networkOut.getNetworkName(), NETWORK_NAME);
+        assertEquals(networkOut.getSubNets().size(), 0);
+
+    }
 
     @Test
     public void testDestroyNetworkNoSubNet() throws InvalidEntityException, AlreadyExistsEntityException {
@@ -83,7 +103,7 @@ public class NetworkandSubNetDaoJpaImplTest {
     @Test
     public void testDestroySubNet() throws AlreadyExistsEntityException, InvalidEntityException {
 
-        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, "1");
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME);
         subNet = subNetworkDao.create(subNet);
         subNetworkDao.remove(subNet);
 
@@ -103,7 +123,7 @@ public class NetworkandSubNetDaoJpaImplTest {
         assertNotNull(networks);
 
         int number = networks.size();
-        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, "1");
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME);
         subNet = subNetworkDao.create(subNet);
 
         Set<SubNetwork> subNets = new HashSet<SubNetwork>();
@@ -131,7 +151,7 @@ public class NetworkandSubNetDaoJpaImplTest {
     public void testDeleteNetworkWithSubNets() throws InvalidEntityException, AlreadyExistsEntityException {
 
         // Given
-        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, "1");
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME);
         subNet = subNetworkDao.create(subNet);
         Set<SubNetwork> subNets = new HashSet<SubNetwork>();
         subNets.add(subNet);

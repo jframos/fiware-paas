@@ -7,7 +7,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
@@ -23,26 +23,29 @@ public interface EnvironmentInstanceResourceValidator {
      * 
      * @param payload
      * @throws InvalidEnvironmentRequestException
+     * @throws InvalidEntityException
      */
-    void validateCreatePayload(String payload) throws InvalidEnvironmentRequestException;
+    void validateCreatePayload(String payload) throws InvalidEntityException;
 
     /**
      * Validate the requets to create and EnvironmentInstance from a EnvironmentDto.
      * 
      *
-     * @param EnvironmentDto
+     * @param environmentDto
      * @param claudiaData
      * @throws InvalidEnvironmentRequestException
+     * @throws InvalidEntityException
      */
-    void validateCreate(EnvironmentInstanceDto EnvironmentDto, SystemPropertiesProvider systemPropertiesProvider, ClaudiaData claudiaData)
-            throws InvalidEnvironmentRequestException, QuotaExceededException;
+    void validateCreate(EnvironmentInstanceDto environmentDto, SystemPropertiesProvider systemPropertiesProvider,
+        ClaudiaData claudiaData)throws  QuotaExceededException, InvalidEntityException;
 
     /**
      * Validate quota.
      * 
      * @param claudiaData
      * @param environmentInstanceDto
+     * @throws InvalidEntityException
      */
     void validateQuota(ClaudiaData claudiaData, EnvironmentInstanceDto environmentInstanceDto)
-            throws InvalidEnvironmentRequestException, QuotaExceededException;
+        throws QuotaExceededException, InvalidEntityException;
 }

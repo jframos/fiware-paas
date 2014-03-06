@@ -455,9 +455,9 @@ public class InitDbBootstrap implements ServletContextListener {
                 // Ambos asociados a un productTypeAWS
 
                 Artifact artifactWarHelloWorld = new Artifact("war",
-                        "/opt/war/releases/80f5053b166c69d81697ba21113c673f8372aca0.war", artifactTypeWar, tomcat6);
+                        "/opt/war/releases/80f5053b166c69d81697ba21113c673f8372aca0.war",  tomcat6);
                 Artifact artifactDescriptorWarHelloWorld = new Artifact("HelloWorldAWSDescriptor",
-                        "/opt/war/releases/80f5053b166c69d81697ba21113c673f8372aca0.xml", artifactTypeDescriptorWar,
+                        "/opt/war/releases/80f5053b166c69d81697ba21113c673f8372aca0.xml", 
                         tomcat6);
 
                 artifactWarHelloWorld = artifactDao.create(artifactWarHelloWorld);

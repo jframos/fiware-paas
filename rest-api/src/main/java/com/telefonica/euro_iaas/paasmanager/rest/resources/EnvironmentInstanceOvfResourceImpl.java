@@ -21,12 +21,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsyncManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
@@ -40,6 +35,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceOvfDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.rest.util.OVFMacro;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentInstanceResourceValidator;
@@ -69,9 +65,7 @@ public class EnvironmentInstanceOvfResourceImpl implements EnvironmentInstanceOv
     private ExtendedOVFUtil extendedOVFUtil;
     private OVFMacro ovfMacro;
 
-    public Task create(String org, String vdc, String payload, String callback)
-            throws InvalidEnvironmentRequestException, EntityNotFoundException, InvalidEntityException,
-            AlreadyExistsEntityException, InfrastructureException, InvalidOVFException {
+    public Task create(String org, String vdc, String payload, String callback) throws APIException {
 
         Task task = null;
         List<String> virtualServices = new ArrayList<String>();
@@ -79,67 +73,68 @@ public class EnvironmentInstanceOvfResourceImpl implements EnvironmentInstanceOv
         log.debug("Deploy environmetn instace from a payload ");
         log.debug(payload);
 
-        if (!extendedOVFUtil.isVirtualServicePayload(payload)) {
+        try {
+            if (!extendedOVFUtil.isVirtualServicePayload(payload)) {
 
-            // Validations
-            validator.validateCreatePayload(payload);
-            log.debug("Validating OVF payload : OK");
-            String instantiateOvfParams = extendedOVFUtil.getEnvironmentName(payload);
-            Set<Tier> tiers = extendedOVFUtil.getTiers(payload, vdc);
+                // Validations
+                validator.validateCreatePayload(payload);
+                log.debug("Validating OVF payload : OK");
+                String instantiateOvfParams = extendedOVFUtil.getEnvironmentName(payload);
+                Set<Tier> tiers = extendedOVFUtil.getTiers(payload, vdc);
 
-            Environment environment = new Environment();
-            environment.setOvf(payload);
-            environment = ovfMacro.resolveMacros(environment);
-            environment.setVdc(vdc);
-            environment.setOrg(org);
-            environment.setName(instantiateOvfParams);
-            environment.setDescription("Environment " + environment.getName());
-            environment.setTiers(tiers);
+                Environment environment = new Environment();
+                environment.setOvf(payload);
+                environment = ovfMacro.resolveMacros(environment);
+                environment.setVdc(vdc);
+                environment.setOrg(org);
+                environment.setName(instantiateOvfParams);
+                environment.setDescription("Environment " + environment.getName());
+                environment.setTiers(tiers);
 
-            log.debug("Environment name " + environment.getName() + " " + environment.getVdc() + " "
-                    + environment.getOrg() + " ");
-            for (Tier tier : tiers) {
-                log.debug("Tier " + tier.getName() + " image " + tier.getImage());
+                log.debug("Environment name " + environment.getName() + " " + environment.getVdc() + " "
+                        + environment.getOrg() + " ");
+                for (Tier tier : tiers) {
+                    log.debug("Tier " + tier.getName() + " image " + tier.getImage());
+                }
+
+                ClaudiaData claudiaData = new ClaudiaData(org, vdc, instantiateOvfParams);
+                claudiaData.setUser(extendedOVFUtil.getCredentials());
+
+                task = createTask(MessageFormat.format("Create environment {0}", environment.getName()), vdc,
+                        environment.getName());
+
+                EnvironmentInstance environmentInstance = new EnvironmentInstance();
+                environmentInstance.setVdc(vdc);
+                environmentInstance.setStatus(Status.INIT);
+                environmentInstance.setBlueprintName(instantiateOvfParams);
+                environmentInstance.setDescription("description");
+                environmentInstance.setEnvironment(environment);
+
+                log.debug("EnvironmentInstance name " + environmentInstance.getBlueprintName() + " vdc "
+                        + environmentInstance.getVdc() + "  description " + environmentInstance.getDescription()
+                        + "  status " + environmentInstance.getStatus() + " environment  "
+                        + environmentInstance.getEnvironment().getName());
+
+                environmentInstanceAsyncManager.create(claudiaData, environmentInstance, task, callback);
+            } else {
+                virtualServices = extendedOVFUtil.getVirtualServices(payload);
+
+                task = createTaskVS(
+                        MessageFormat.format("Install Virtual Service environment {0}", "virtualServiceCollection"),
+                        "VirtualService");
+
+                for (int i = 0; i < virtualServices.size(); i++) {
+                    String virtualServiceName = extendedOVFUtil.getVirtualServiceName(virtualServices.get(i));
+
+                    virtualServiceAsyncManager.create(virtualServiceName, virtualServices.get(i), task, callback);
+                }
             }
-
-            ClaudiaData claudiaData = new ClaudiaData(org, vdc, instantiateOvfParams);
-            claudiaData.setUser(extendedOVFUtil.getCredentials());
-
-            task = createTask(MessageFormat.format("Create environment {0}", environment.getName()), vdc,
-                    environment.getName());
-
-            EnvironmentInstance environmentInstance = new EnvironmentInstance();
-            environmentInstance.setVdc(vdc);
-            environmentInstance.setStatus(Status.INIT);
-            environmentInstance.setBlueprintName(instantiateOvfParams);
-            environmentInstance.setDescription("description");
-            environmentInstance.setEnvironment(environment);
-
-            log.debug("EnvironmentInstance name " + environmentInstance.getBlueprintName() + " vdc "
-                    + environmentInstance.getVdc() + "  description " + environmentInstance.getDescription()
-                    + "  status " + environmentInstance.getStatus() + " environment  "
-                    + environmentInstance.getEnvironment().getName());
-
-            environmentInstanceAsyncManager.create(claudiaData, environmentInstance, task, callback);
-        } else {
-            virtualServices = extendedOVFUtil.getVirtualServices(payload);
-
-            task = createTaskVS(
-                    MessageFormat.format("Install Virtual Service environment {0}", "virtualServiceCollection"),
-                    "VirtualService");
-
-            for (int i = 0; i < virtualServices.size(); i++) {
-                String virtualServiceName = extendedOVFUtil.getVirtualServiceName(virtualServices.get(i));
-
-                virtualServiceAsyncManager.create(virtualServiceName, virtualServices.get(i), task, callback);
-            }
+            return task;
+        } catch (Exception ex) {
+            throw new APIException(ex);
         }
-        return task;
     }
 
-    /**
-	 * 
-	 */
     public List<EnvironmentInstanceOvfDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType,
             List<Status> status, String vdc) {
 
@@ -240,11 +235,6 @@ public class EnvironmentInstanceOvfResourceImpl implements EnvironmentInstanceOv
     public void setOvfMacro(OVFMacro ovfMacro) {
         this.ovfMacro = ovfMacro;
     }
-
-    /**
-     * @param environmentTypeDao
-     *            the environmentTypeDao to set
-     */
 
     public void setEnvironmentInstanceAsyncManager(EnvironmentInstanceAsyncManager environmentInstanceAsyncManager) {
         this.environmentInstanceAsyncManager = environmentInstanceAsyncManager;

@@ -100,13 +100,12 @@ public class NetworkTest extends TestCase {
 
         Network network = new Network(NETWORK_NAME, VDC);
    
-        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, CIDR_ID);
+        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME);
         network.addSubNet(subnet);
         assertEquals(network.getNetworkName(), NETWORK_NAME);
         assertEquals(network.getSubNets().size(), 1);
         for (SubNetwork subNet: network.getSubNets()) {
             assertEquals(subNet.getName(), SUBNETWORK_NAME);
-            assertEquals(subNet.getCidr(), CIDR);
         }
     }
     
@@ -119,39 +118,16 @@ public class NetworkTest extends TestCase {
     public void testCloneSubNets() throws Exception {
 
         Network network = new Network();
-        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, CIDR_ID);
+        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME);
         network.addSubNet(subnet);
         
         Set<SubNetwork> subNets = network.cloneSubNets();
         assertEquals(subNets.size(), 1);
         for (SubNetwork subNet: subNets) {
             assertEquals(subNet.getName(), SUBNETWORK_NAME);
-            assertEquals(subNet.getCidr(), CIDR);
         }
     }
     
-    /**
-     * Update subNet.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testUpdateSubNet() throws Exception {
-
-        Network network = new Network();
-        network.setNetworkName(NETWORK_NAME);
-        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, CIDR_ID);
-        network.addSubNet(subnet);
-        
-        SubNetwork subnet2 = new SubNetwork(SUBNETWORK_NAME, CIDR2_ID);
-        network.updateSubNet(subnet2);
-        
-        assertEquals(network.getSubNets().size(), 1);
-        for (SubNetwork subNet: network.getSubNets()) {
-            assertEquals(subNet.getName(), SUBNETWORK_NAME);
-            assertEquals(subNet.getCidr(), CIDR2);
-        }
-    }
     
     /**
      * Update subNet.
@@ -163,10 +139,10 @@ public class NetworkTest extends TestCase {
 
         Network network = new Network();
         network.setNetworkName(NETWORK_NAME);
-        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, CIDR_ID);
+        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME);
         network.addSubNet(subnet);
         
-        SubNetwork subnet2 = new SubNetwork(SUBNETWORK_NAME+2, CIDR2_ID);
+        SubNetwork subnet2 = new SubNetwork(SUBNETWORK_NAME+2);
         
         assertEquals(network.contains(subnet), true);
         assertEquals(network.contains(subnet2), false);
@@ -183,7 +159,7 @@ public class NetworkTest extends TestCase {
 
         Network network = new Network();
         network.setNetworkName(NETWORK_NAME);
-        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, CIDR_ID);
+        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME);
         Set<SubNetwork> subNets = new HashSet<SubNetwork>();
         subNets.add(subnet);
         network.setSubNets(subNets);
@@ -202,7 +178,7 @@ public class NetworkTest extends TestCase {
 
         Network network = new Network();
         network.setNetworkName(NETWORK_NAME);
-        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, CIDR_ID);
+        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME);
         network.addSubNet(subnet);
         NetworkDto netDto = network.toDto();
         assertEquals(netDto.getNetworkName(), NETWORK_NAME);
@@ -253,7 +229,7 @@ public class NetworkTest extends TestCase {
     public void testCreateNetworkAndSubNetAndRouter() throws Exception {
 
         Network network = new Network(NETWORK_NAME,VDC);
-        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, CIDR_ID);
+        SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME);
         network.addSubNet(subnet);
         RouterInstance router = new RouterInstance(ID_PUBLIC_NET, ROUTER_NAME);
 
@@ -262,7 +238,6 @@ public class NetworkTest extends TestCase {
         assertEquals(network.getSubNets().size(), 1);
         for (SubNetwork subNet: network.getSubNets()) {
             assertEquals(subNet.getName(), SUBNETWORK_NAME);
-            assertEquals(subNet.getCidr(), CIDR);
         }
     }
 
@@ -317,7 +292,6 @@ public class NetworkTest extends TestCase {
         assertEquals(net.getSubNets().size(), 1);
         for (SubNetwork subNet: net.getSubNets()) {
             assertEquals(subNet.getName(), SUBNETWORK_NAME);
-            assertEquals(subNet.getCidr(), CIDR);
         }
     }
     

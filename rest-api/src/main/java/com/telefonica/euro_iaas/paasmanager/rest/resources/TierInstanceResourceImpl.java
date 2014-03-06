@@ -20,8 +20,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidTierInstanceRequestException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
@@ -40,6 +38,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TaskSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierInstanceSearchCriteria;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.TierInstanceResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
@@ -158,8 +157,7 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
     }
 
     public Task removeTierInstance(String org, String vdc, String environmentInstance, String tierInstanceName,
-            String callback) throws EntityNotFoundException, InvalidTierInstanceRequestException,
-            InvalidEnvironmentRequestException {
+            String callback) throws APIException {
 
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentInstance);
         claudiaData.setUser(extendedOVFUtil.getCredentials());
@@ -195,65 +193,68 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
     }
 
     public Task insert(String org, String vdc, String environmentName, TierDto tierDto, String callback)
-            throws InvalidTierInstanceRequestException, InvalidEnvironmentRequestException, InvalidEntityException,
-            EntityNotFoundException {
+            throws APIException {
 
-        log.debug("Insert tierinstance " + tierDto.getName() + " from environment " + environmentName);
-        ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            claudiaData.setUser(extendedOVFUtil.getCredentials());
-        }
-
-        Task task = null;
-
-        EnvironmentInstance envInstance = environmentInstanceManager.load(vdc, environmentName);
-
-        TierInstance tierInstance = new TierInstance();
-        tierInstance.setVdc(vdc);
-        Tier tier = tierManager.load(tierDto.getName(), vdc, envInstance.getEnvironment().getName());
-        // Tier tier = tierDto.fromDto();
-        /*
-         * List<ProductRelease> lProductRelease = new ArrayList <ProductRelease> (); if
-         * (tierDto.getProductReleaseDtos()!= null){ for (ProductReleaseDto productReleaseDto:
-         * tierDto.getProductReleaseDtos()) { lProductRelease.add(productReleaseDto.fromDto()); } }
-         * tier.setProductReleases(lProductRelease);
-         */
-
-        tierInstance.setTier(tier);
-
-        // Obtain replica
-        int replica = obtainReplicaNumber(envInstance, tier) + 1;
-        tierInstance.setNumberReplica(replica);
-        tierInstance.setName(envInstance.getBlueprintName() + "-" + tier.getName() + "-" + replica);
-        log.debug("New instance " + envInstance.getName() + "-" + tier.getName() + "-" + replica);
-
-        validatorTierInstance.validateScaleUpTierInstance(org, vdc, envInstance, tierInstance.getName());
-
-        tierInstance.setOvf(getOVF(envInstance, tierInstance.getTier().getName()));
-        tierInstance.setProductInstances(getProductFirst(envInstance, tierInstance.getTier().getName()));
-
-        if (!(isExecutiongTask(vdc, environmentName, tierInstance.getTier().getName()))) {
-            log.debug("Number instances " + tierInstance.getNumberReplica() + " "
-                    + tierInstance.getTier().getMaximumNumberInstances());
-            if (tierInstance.getNumberReplica() <= tierInstance.getTier().getMaximumNumberInstances()) {
-                task = createTask(MessageFormat.format("Scale Up Tier Instance {0}", tierInstance.getName()), vdc,
-                        environmentName, tierInstance.getName());
-                log.debug("Creating tier instance " + tierInstance.getName() + " asyncronous");
-                tierInstanceAsyncManager.create(claudiaData, tierInstance, envInstance, task, callback);
-            } else {
-                log.error("It is not possible to scale. " + "The number maximun of instances has been got");
-                throw new WebApplicationException(new InvalidTierInstanceRequestException(
-                        "It is not possible to scale. " + "The number maximun of instances has been got"), 500);
+        try {
+            log.debug("Insert tierinstance " + tierDto.getName() + " from environment " + environmentName);
+            ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
+            if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+                claudiaData.setUser(extendedOVFUtil.getCredentials());
             }
-        } else {
-            log.error("Scaling action in progress. Cancelled");
-            task = createTask(
-                    MessageFormat.format("Already in progress: Scale Up Tier Instance {0}", tierInstance.getName()),
-                    vdc, environmentName, tierInstance.getName());
-            task.setStatus(TaskStates.CANCELLED);
-        }
 
-        return task;
+            Task task = null;
+
+            EnvironmentInstance envInstance = environmentInstanceManager.load(vdc, environmentName);
+
+            TierInstance tierInstance = new TierInstance();
+            tierInstance.setVdc(vdc);
+            Tier tier = tierManager.load(tierDto.getName(), vdc, envInstance.getEnvironment().getName());
+            // Tier tier = tierDto.fromDto();
+            /*
+             * List<ProductRelease> lProductRelease = new ArrayList <ProductRelease> (); if
+             * (tierDto.getProductReleaseDtos()!= null){ for (ProductReleaseDto productReleaseDto:
+             * tierDto.getProductReleaseDtos()) { lProductRelease.add(productReleaseDto.fromDto()); } }
+             * tier.setProductReleases(lProductRelease);
+             */
+
+            tierInstance.setTier(tier);
+
+            // Obtain replica
+            int replica = obtainReplicaNumber(envInstance, tier) + 1;
+            tierInstance.setNumberReplica(replica);
+            tierInstance.setName(envInstance.getBlueprintName() + "-" + tier.getName() + "-" + replica);
+            log.debug("New instance " + envInstance.getName() + "-" + tier.getName() + "-" + replica);
+
+            validatorTierInstance.validateScaleUpTierInstance(org, vdc, envInstance, tierInstance.getName());
+
+            tierInstance.setOvf(getOVF(envInstance, tierInstance.getTier().getName()));
+            tierInstance.setProductInstances(getProductFirst(envInstance, tierInstance.getTier().getName()));
+
+            if (!(isExecutiongTask(vdc, environmentName, tierInstance.getTier().getName()))) {
+                log.debug("Number instances " + tierInstance.getNumberReplica() + " "
+                        + tierInstance.getTier().getMaximumNumberInstances());
+                if (tierInstance.getNumberReplica() <= tierInstance.getTier().getMaximumNumberInstances()) {
+                    task = createTask(MessageFormat.format("Scale Up Tier Instance {0}", tierInstance.getName()), vdc,
+                            environmentName, tierInstance.getName());
+                    log.debug("Creating tier instance " + tierInstance.getName() + " asyncronous");
+                    tierInstanceAsyncManager.create(claudiaData, tierInstance, envInstance, task, callback);
+                } else {
+                    log.error("It is not possible to scale. " + "The number maximun of instances has been got");
+                    throw new WebApplicationException(new InvalidTierInstanceRequestException(
+                            "It is not possible to scale. " + "The number maximun of instances has been got"), 500);
+                }
+            } else {
+                log.error("Scaling action in progress. Cancelled");
+                task = createTask(
+                        MessageFormat.format("Already in progress: Scale Up Tier Instance {0}", tierInstance.getName()),
+                        vdc, environmentName, tierInstance.getName());
+                task.setStatus(TaskStates.CANCELLED);
+            }
+
+            return task;
+        } catch (Exception ex) {
+            throw new APIException(ex);
+        }
     }
 
     private boolean isExecutiongTask(String vdc, String environmentInstance, String name) {

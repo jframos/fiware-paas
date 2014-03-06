@@ -12,9 +12,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
@@ -36,15 +36,12 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
     private TierResourceValidator tierResourceValidator;
     private EnvironmentManager environmentManager;
     private EnvironmentInstanceManager environmentInstanceManager;
+    private ResourceValidator resourceValidator;
 
-    /*
-     * (non-Javadoc)
-     * @seecom.telefonica.euro_iaas.paasmanager.rest.validation. EnvironmentInstanceResourceValidator
-     * #validateCreate(com.telefonica.euro_iaas .paasmanager.model.dto.EnvironmentDto)
+    /**
+     * 
      */
-    public void validateCreate(ClaudiaData claudiaData, EnvironmentDto environmentDto, String vdc,
-            SystemPropertiesProvider systemPropertiesProvider) throws InvalidEnvironmentRequestException,
-            AlreadyExistEntityException, InvalidEntityException {
+    public void validateCreate(ClaudiaData claudiaData, EnvironmentDto environmentDto, String vdc) throws AlreadyExistEntityException, InvalidEntityException {
 
         try {
             environmentManager.load(environmentDto.getName(), vdc);
@@ -52,73 +49,74 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
             throw new AlreadyExistEntityException("The environment " + environmentDto.getName() + " already exists");
 
         } catch (EntityNotFoundException e1) {
-
-            if (environmentDto.getName() == null) {
-                log.error("EnvironmentName " + "from EnvironmentDto is null");
-                throw new InvalidEnvironmentRequestException("EnvironmentName " + "from EnvironmentDto is null");
-            }
-            if (environmentDto.getDescription() == null) {
-                log.error("EnvironmentDescription " + "from EnvironmentDto is null");
-                throw new InvalidEnvironmentRequestException("EnvironmentDescription " + "from EnvironmentDto is null");
-            }
-
+        	resourceValidator.validateName(environmentDto.getName());
+        	resourceValidator.validateDescription(environmentDto.getDescription());
         }
+
 
         if (environmentDto.getTierDtos() != null) {
 
             for (TierDto tierDto : environmentDto.getTierDtos()) {
                 log.info("Validating " + tierDto.getName());
-
                 try {
-                    tierResourceValidator.validateCreate(claudiaData, tierDto, vdc, environmentDto.getName(),
-                            systemPropertiesProvider);
-                } catch (InvalidEntityException e) {
-                    throw new InvalidEnvironmentRequestException("Tier is invalid", e);
-                } catch (AlreadyExistEntityException e) {
-                    throw new InvalidEnvironmentRequestException("The tier " + tierDto.getName()
-                            + " already exist in the vdc " + vdc, e);
-                } catch (QuotaExceededException e) {
-                    throw new InvalidEnvironmentRequestException("Tier is invalid, quota for security groups exceeded",
-                            e);
+                    tierResourceValidator.validateCreate(claudiaData, tierDto, vdc, environmentDto.getName());
                 } catch (InfrastructureException e) {
-                    throw new InvalidEnvironmentRequestException("Tier is invalid", e);
-                }
-
-                if (tierDto.getName() == null) {
-                    throw new InvalidEnvironmentRequestException("Tier Name " + "from tierDto is null");
-                }
-                if (tierDto.getImage() == null) {
-                    throw new InvalidEnvironmentRequestException("Tier Image " + "from tierDto is null");
-                }
-                if (tierDto.getFlavour() == null) {
-                    throw new InvalidEnvironmentRequestException("Tier Flavour " + "from tierDto is null");
+                    throw new InvalidEntityException(e);
+                } catch (QuotaExceededException e) {
+                    throw new InvalidEntityException(e);
                 }
             }
         }
 
     }
+    
+    /**
+     * 
+     */
+    public void validateAbstractCreate(EnvironmentDto environmentDto) throws AlreadyExistEntityException, InvalidEntityException {
 
+        try {
+            environmentManager.load(environmentDto.getName(), "");
+            log.error("The environment " + environmentDto.getName() + " already exists");
+            throw new AlreadyExistEntityException("The environment " + environmentDto.getName() + " already exists");
+
+        } catch (EntityNotFoundException e1) {
+            resourceValidator.validateName(environmentDto.getName());
+            resourceValidator.validateDescription(environmentDto.getDescription());
+        }
+
+
+        if (environmentDto.getTierDtos() != null) {
+
+            for (TierDto tierDto : environmentDto.getTierDtos()) {
+                log.info("Validating " + tierDto.getName());
+                tierResourceValidator.validateCreateAbstract(tierDto, environmentDto.getName());
+            }
+        }
+
+    }
+    
     public void validateDelete(String environmentName, String vdc, SystemPropertiesProvider systemPropertiesProvider)
-            throws EntityNotFoundException, InvalidEnvironmentRequestException {
+            throws EntityNotFoundException, InvalidEntityException {
         Environment environment = null;
 
         environment = environmentManager.load(environmentName, vdc);
 
         if (validateEnvironmentInstance(environment, vdc)) {
-            throw new InvalidEnvironmentRequestException("The environment is being used by an environment instance");
+            throw new InvalidEntityException("The environment is being used by an environment instance");
         }
 
     }
 
     public void validateUpdate(String environmentName, String vdc, SystemPropertiesProvider systemPropertiesProvider)
-            throws InvalidEnvironmentRequestException, EntityNotFoundException {
+            throws InvalidEntityException, EntityNotFoundException {
 
         Environment environment = null;
 
         environment = environmentManager.load(environmentName, vdc);
 
         if (validateEnvironmentInstance(environment, vdc)) {
-            throw new InvalidEnvironmentRequestException("The environment is being used by an env instance");
+            throw new InvalidEntityException("The environment is being used by an env instance");
         }
 
     }
@@ -147,6 +145,9 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
 
     public void setEnvironmentInstanceManager(EnvironmentInstanceManager environmentInstanceManager) {
         this.environmentInstanceManager = environmentInstanceManager;
+    }
+    public void setResourceValidator (ResourceValidator resourceValidator) {
+    	this.resourceValidator = resourceValidator;
     }
 
 }

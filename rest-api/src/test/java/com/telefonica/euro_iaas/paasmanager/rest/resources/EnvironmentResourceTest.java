@@ -34,6 +34,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
@@ -62,11 +63,7 @@ public class EnvironmentResourceTest extends TestCase {
 
         when(ovfGeneration.createOvf(any(EnvironmentDto.class))).thenReturn("ovf");
 
-        Mockito.doNothing()
-                .doThrow(new RuntimeException())
-                .when(validator)
-                .validateCreate(any(ClaudiaData.class), any(EnvironmentDto.class), any(String.class),
-                        any(SystemPropertiesProvider.class));
+       
 
         Environment environment = new Environment();
         environment.setName("Name");
@@ -94,23 +91,15 @@ public class EnvironmentResourceTest extends TestCase {
 
     }
 
-    /*
-     * @Test public void testCreateEnvironmentNoName() throws Exception { EnvironmentDto environmentDto = new
-     * EnvironmentDto (); environmentDto.setDescription("Description"); List<ProductReleaseDto> productReleaseDto = new
-     * ArrayList<ProductReleaseDto> (); productReleaseDto.add(new ProductReleaseDto ("test", "0.1")); TierDto tierDto =
-     * new TierDto ("tiername", new Integer (1), new Integer (1), new Integer(1),productReleaseDto);
-     * tierDto.setImage("image"); tierDto.setIcono("icono"); tierDto.setFlavour("flavour");
-     * tierDto.setFloatingip("floatingip"); tierDto.setKeypair("keypair"); tierDto.setSecurity_group("security_group");
-     * List<TierDto> tiers = new ArrayList<TierDto> (); tiers.add(tierDto); environmentDto.setTierDtos(tiers); boolean
-     * thrown = false; try { environmentResource.insert("org", "vdc", environmentDto); } catch (Exception e) { thrown =
-     * true; } assertTrue(thrown); }
-     */
-
     @Test
     public void testCreateEnvironmentNoTiers() throws Exception {
         EnvironmentDto environmentDto = new EnvironmentDto();
         environmentDto.setDescription("Description");
         environmentDto.setName("Name");
+        Mockito.doNothing()
+        .doThrow(new RuntimeException())
+        .when(validator)
+        .validateCreate(any(ClaudiaData.class), any(EnvironmentDto.class), any(String.class));
 
         boolean thrown = false;
         try {
@@ -121,20 +110,12 @@ public class EnvironmentResourceTest extends TestCase {
 
     }
 
-    /*
-     * @Test public void testCreateEnvironmentNoName() throws Exception { EnvironmentDto environmentDto = new
-     * EnvironmentDto (); environmentDto.setDescription("Description"); List<ProductReleaseDto> productReleaseDto = new
-     * ArrayList<ProductReleaseDto> (); productReleaseDto.add(new ProductReleaseDto ("test", "0.1")); TierDto tierDto =
-     * new TierDto ("tiername", new Integer (1), new Integer (1), new Integer(1),productReleaseDto);
-     * tierDto.setImage("image"); tierDto.setIcono("icono"); tierDto.setFlavour("flavour");
-     * tierDto.setFloatingip("floatingip"); tierDto.setKeypair("keypair"); tierDto.setSecurity_group("security_group");
-     * List<TierDto> tiers = new ArrayList<TierDto> (); tiers.add(tierDto); environmentDto.setTierDtos(tiers); boolean
-     * thrown = false; try { environmentResource.insert("org", "vdc", environmentDto); } catch (Exception e) { thrown =
-     * true; } assertTrue(thrown); }
-     */
-
     @Test
-    public void testInsertEnvironment() {
+    public void testInsertEnvironment() throws InvalidEnvironmentRequestException, AlreadyExistEntityException, InvalidEntityException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+    	 Mockito.doNothing()
+         .doThrow(new RuntimeException())
+         .when(validator)
+         .validateCreate(any(ClaudiaData.class), any(EnvironmentDto.class), any(String.class));
         EnvironmentDto environmentDto = new EnvironmentDto();
         environmentDto.setName("Name");
         environmentDto.setDescription("Description");
@@ -159,16 +140,11 @@ public class EnvironmentResourceTest extends TestCase {
 
         try {
             environmentResource.insert("org", "vdc", environmentDto);
-        } catch (InvalidEnvironmentRequestException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (AlreadyExistEntityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidEntityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (APIException e) {
+            fail();
         }
     }
+    
+    
 
 }

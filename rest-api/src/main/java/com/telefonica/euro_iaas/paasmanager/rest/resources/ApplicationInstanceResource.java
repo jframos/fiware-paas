@@ -20,13 +20,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.telefonica.euro_iaas.paasmanager.exception.ApplicationInstanceNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidApplicationReleaseException;
-import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
 /**
  * Provides a rest api to works with ApplicationInstances
@@ -37,20 +35,6 @@ public interface ApplicationInstanceResource {
 
     /**
      * Install a list of application in a given host running on the selected products.
-     * 
-     * @param org
-     *            , the org environment belongs to
-     * @param vdc
-     *            the vdc where the application will be installed.
-     * @param environmentInstanceName
-     * @param application
-     *            the application to install containing the , the appName and the environment Intance where the
-     *            application is going to be installed.
-     * @param callback
-     *            if not null, contains the url where the system shall notify when the task is done
-     * @throws InvalidApplicationReleaseException
-     *             , ApplicationInstanceNotFoundException, ProductReleaseNotFoundException
-     * @return the task referencing the installed application.
      */
     @POST
     @Path("/")
@@ -58,23 +42,10 @@ public interface ApplicationInstanceResource {
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     Task install(@PathParam("org") String org, @PathParam("vdc") String vdc,
             @PathParam("environmentInstance") String environmentInstance, ApplicationReleaseDto applicationReleaseDto,
-            @HeaderParam("callback") String callback) throws InvalidApplicationReleaseException,
-            ApplicationInstanceNotFoundException, ProductReleaseNotFoundException;
+            @HeaderParam("callback") String callback) throws APIException;
 
     /**
-     * Find the applications according to the criteria specified in the request
-     * 
-     * @param page
-     * @param pageSize
-     * @param orderBy
-     * @param orderType
-     * @param status
-     * @param vdc
-     * @param environmentInstance
-     * @param productInstance
-     * @param applicationName
-     * @return
-     * @throws ApplicationInstanceNotFoundException
+     * Find the applications according to the criteria specified in the request.
      */
     @GET
     @Path("/")
@@ -84,15 +55,10 @@ public interface ApplicationInstanceResource {
             @QueryParam("status") List<Status> status, @PathParam("vdc") String vdc,
             @PathParam("environmentInstance") String environmentInstance,
             @PathParam("productInstance") String productInstance, @QueryParam("applicationName") String applicationName)
-            throws ApplicationInstanceNotFoundException;
+            throws APIException;
 
     /**
      * Retrieve the selected application instance.
-     * 
-     * @param name
-     *            the applicationInstanceName
-     * @param vdc
-     * @return the application instance
      */
     @GET
     @Path("/{name}")

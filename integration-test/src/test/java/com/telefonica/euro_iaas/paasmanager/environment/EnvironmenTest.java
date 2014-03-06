@@ -9,6 +9,8 @@ package com.telefonica.euro_iaas.paasmanager.environment;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,14 +25,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.EnvironmentResource;
 import com.telefonica.euro_iaas.paasmanager.rest.resources.TierResource;
 
@@ -105,7 +106,6 @@ public class EnvironmenTest {
         assertEquals(env2.getVdc(), vdc);
         assertEquals(env2.getOrg(), org);
         assertEquals(env2.getTiers().size(), 1);
-     
 
         TierDto tierDto = tierResource.load(vdc, "envtest", "tierdto2");
         assertNotNull(tierDto);
@@ -218,7 +218,6 @@ public class EnvironmenTest {
         assertEquals(env2.getOrg(), org);
         assertEquals(env2.getTiers().size(), 3);
 
-
         TierDto tierDto = tierResource.load(vdc, "envthreetiers", "tier1");
         assertNotNull(tierDto);
         assertEquals(tierDto.getName(), "tier1");
@@ -272,8 +271,8 @@ public class EnvironmenTest {
 
     }
 
-    @Test(expected = AlreadyExistEntityException.class)
-    public void testbSecondCreateEnvironmentRepiteOK() throws Exception {
+    @Test
+    public void shouldReturnErrorWhenSecondCreation() throws Exception {
         Environment environmentBk = new Environment();
         environmentBk.setName("alreadyexistsenvironment");
         environmentBk.setDescription("Description First environment");
@@ -287,7 +286,13 @@ public class EnvironmenTest {
         environmentBk.addTier(tierbk);
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
-        environmentResource.insert(org, vdc, environmentBk.toDto());
+        try {
+            environmentResource.insert(org, vdc, environmentBk.toDto());
+            fail();
+        } catch (APIException e) {
+            String message = e.getMessage();
+            assertTrue(message.matches(".*The environment .* already exists"));
+        }
 
     }
 
@@ -364,8 +369,8 @@ public class EnvironmenTest {
 
     }
 
-    @Test(expected = InvalidEnvironmentRequestException.class)
-    public void testCreateEnvironmentNoDescription() throws Exception {
+    @Test
+    public void shouldFailWithEnvironmentWithoutDescription() throws Exception {
 
         Environment environmentBk = new Environment();
         environmentBk.setName("EnvNodescription");
@@ -378,8 +383,14 @@ public class EnvironmenTest {
         tierbk.setPayload("");
         tierbk.setKeypair("keypair");
         environmentBk.addTier(tierbk);
+        try {
+            environmentResource.insert(org, vdc, environmentBk.toDto());
+            fail();
 
-        environmentResource.insert(org, vdc, environmentBk.toDto());
+        } catch (APIException e) {
+            String message = e.getMessage();
+           
+        }
 
     }
 
@@ -447,7 +458,6 @@ public class EnvironmenTest {
 
         assertEquals(env.getName(), "testeDeleteAndCreatedEnv1");
         assertEquals(env.getTiers().size(), 1);
-     
 
         environmentResource.delete(org, vdc, "testeDeleteAndCreatedEnv1");
 
@@ -457,6 +467,26 @@ public class EnvironmenTest {
         assertEquals(env2.getName(), "testeDeleteAndCreatedEnv1");
         assertEquals(env2.getTiers().size(), 1);
 
+    }
+    
+    @Test
+    public void testFindAll() throws APIException  {
+        int number= environmentResource.findAll(org, vdc, null, null, null, null).size();
+        Environment environment= new Environment();
+        environment.setName("nassme");
+        environment.setDescription("Description First environment");
+        Tier tier = new Tier("sss", new Integer(1), new Integer(1), new Integer(1), null);
+        tier.setImage("image");
+        tier.setIcono("icono");
+        tier.setFlavour("flavour");
+        tier.setFloatingip("floatingip");
+        tier.setKeypair("keypair");
+       
+        environment.addTier(tier);
+        environmentResource.insert(org, vdc, environment.toDto());  
+        
+        assertEquals (environmentResource.findAll(org, vdc, null, null, null, null).size(), number+1);
+  
     }
 
 }

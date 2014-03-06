@@ -13,34 +13,30 @@ import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.Path;
-import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.EnvironmentInstanceNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
-import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentSearchCriteria;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
+import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * default Environment implementation
  * 
- * @author Henar Mu�oz
+ * @author Henar Munoz
  */
 @Path("/catalog/org/{org}/environment")
 @Component
@@ -51,21 +47,20 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
     private EnvironmentManager environmentManager;
 
     private SystemPropertiesProvider systemPropertiesProvider;
+    
+    private EnvironmentResourceValidator environmentResourceValidator;
+    
+    private static Logger log = Logger.getLogger(AbstractEnvironmentResourceImpl.class);
 
-    public void delete(String org, String envName) throws EnvironmentInstanceNotFoundException, InvalidEntityException {
+    public void delete(String org, String envName) throws APIException {
+        log.debug("Deleting env " + envName + " from org " + org);
         ClaudiaData claudiaData = new ClaudiaData(org, null, null);
 
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            // claudiaData.setUser(getCredentials());
-        }
         try {
             Environment env = environmentManager.load(envName);
             environmentManager.destroy(claudiaData, env);
-
-        } catch (EntityNotFoundException e) {
-            throw new WebApplicationException(e, 404);
-        } catch (InfrastructureException e) {
-            throw new WebApplicationException(e, 500);
+        } catch (Exception e) {
+            throw new APIException(e);
         }
 
     }
@@ -90,154 +85,44 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
 
         List<EnvironmentDto> envsDto = new ArrayList<EnvironmentDto>();
         for (int i = 0; i < env.size(); i++) {
-            EnvironmentDto envDto = new EnvironmentDto();
-
-            if (env.get(i).getName() != null)
-                envDto.setName(env.get(i).getName());
-
-            if (env.get(i).getDescription() != null)
-                envDto.setDescription(env.get(i).getDescription());
-
-            if (env.get(i).getTiers() != null)
-                envDto.setTierDtos(convertToTierDtos(env.get(i).getTiers()));
-
-            envsDto.add(envDto);
+            envsDto.add(env.get(i).toDto());
 
         }
         return envsDto;
+       
     }
 
-    public void insert(String org, EnvironmentDto environmentDto) {
-        ClaudiaData claudiaData = new ClaudiaData(org, "", "");
-
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            // claudiaData.setUser(getCredentials());
-        }
+    public void insert(String org, EnvironmentDto environmentDto) throws APIException {
+        log.debug("Inserting env " + environmentDto.getName() + " from org " + org);
+        ClaudiaData claudiaData = new ClaudiaData (org, null,environmentDto.getName() );
         try {
             environmentManager.load(environmentDto.getName());
-            throw new WebApplicationException(new AlreadyExistEntityException("The enviornment "
-                    + environmentDto.getName() + " already exists"), 500);
+            throw new APIException(new AlreadyExistEntityException("The enviornment " + environmentDto.getName()
+                    + " already exists"));
 
         } catch (EntityNotFoundException e1) {
-            Environment environment = new Environment();
-            environment.setName(environmentDto.getName());
-            environment.setDescription(environmentDto.getDescription());
 
-            environment.setOrg(org);
-
-            if (environmentDto.getTierDtos() != null)
-                environment.setTiers(convertToTiers(environmentDto.getTierDtos()));
             try {
-                environmentManager.create(claudiaData, environment);
-            } catch (InvalidEnvironmentRequestException e) {
-                // TODO Auto-generated catch block
-                throw new WebApplicationException(e, 500);
+                environmentResourceValidator.validateAbstractCreate(environmentDto);
+                environmentManager.create(claudiaData, environmentDto.fromDto(org, null));
+            } catch (Exception e) {
+                throw new APIException(e);
             }
         }
 
     }
 
-    public EnvironmentDto load(String org, String name) throws EnvironmentInstanceNotFoundException {
+    public EnvironmentDto load(String org, String name) throws APIException {
+        log.debug("Loading env " + name + " from org " + org);
         try {
             Environment envInstance = environmentManager.load(name);
-            EnvironmentDto envDto = convertToDto(envInstance);
+            EnvironmentDto envDto = envInstance.toDto();
 
             return envDto;
         } catch (EntityNotFoundException e) {
-            throw new WebApplicationException(e, 404);
+            throw new APIException(e);
         }
     }
-
-    private EnvironmentDto convertToDto(Environment envInstance) {
-        EnvironmentDto envInstanceDto = new EnvironmentDto();
-
-        if (envInstance.getName() != null)
-            envInstanceDto.setName(envInstance.getName());
-        if (envInstance.getDescription() != null)
-            envInstanceDto.setDescription(envInstance.getDescription());
-
-        if (envInstance.getTiers() != null)
-            envInstanceDto.setTierDtos(convertToTierDtos(envInstance.getTiers()));
-
-        return envInstanceDto;
-    }
-
-    /**
-     * Convert a list of tierDtos to a list of Tiers
-     * 
-     * @return
-     */
-    private Set<Tier> convertToTiers(Set<TierDto> tierDtos) {
-        Set<Tier> tiers = new HashSet<Tier>();
-        for (TierDto tierDto: tierDtos) {
-            Tier tier = tierDto.fromDto("");
-
-            tiers.add(tier);
-        }
-        return tiers;
-    }
-
-    /**
-     * Convert a list of tierDtos to a list of Tiers
-     * 
-     * @return
-     */
-    private Set<TierDto> convertToTierDtos(Set<Tier> tiers) {
-    	Set<TierDto> tierDtos = new HashSet<TierDto>();
-        for (Tier tier: tiers) {
-            TierDto tierDto = tier.toDto();
-
-            tierDtos.add(tierDto);
-        }
-        return tierDtos;
-    }
-
-    /**
-     * Method to convert Tier to TierDto
-     * 
-     * @param tier
-     * @return
-     */
-    /*
-     * private Tier convertToTier(TierDto tierDto) { List<ProductRelease> productReleases = new
-     * ArrayList<ProductRelease>(); Tier tier = new Tier(); if (tierDto.getName() != null)
-     * tier.setName(tierDto.getName()); if (tierDto.getInitialNumberNnstances() != null)
-     * tier.setInitial_number_instances(tierDto.getInitialNumberNnstances()); if (tierDto.getMaximum_number_instances()
-     * != null) tier.setMaximum_number_instances(tierDto.getMaximum_number_instances()); if
-     * (tierDto.getMinimum_number_instances() != null)
-     * tier.setMinimum_number_instances(tierDto.getMinimum_number_instances()); for (int i=0; i <
-     * tierDto.getProductReleaseDtos().size(); i++) { ProductRelease pRelease = new ProductRelease (); ProductReleaseDto
-     * pReleaseDto = tierDto.getProductReleaseDtos().get(i); pRelease.setProduct(pReleaseDto.getProductName());
-     * pRelease.setVersion(pReleaseDto.getVersion()); if (pReleaseDto.getProductDescription()!= null)
-     * pRelease.setProduct(pReleaseDto.getProductDescription()); productReleases.add(pRelease); }
-     * tier.setProductReleases(productReleases); return tier; }
-     */
-
-    /**
-     * Method to convert Tier to TierDto
-     * 
-     * @param tier
-     * @return
-     */
-    /*
-     * private TierDto convertToTierDto(Tier tier) { List<ProductReleaseDto> productReleasesDto = new
-     * ArrayList<ProductReleaseDto>(); TierDto tierDto = new TierDto(); if (tier.getName() != null) {
-     * tierDto.setName(tier.getName()); } if (tier.getInitialNumberNnstances() != null) {
-     * tierDto.setInitial_number_instances(tier.getInitialNumberNnstances()); } if (tier.getMaximum_number_instances()
-     * != null) { tierDto.setMaximum_number_instances(tier.getMaximum_number_instances()); } if
-     * (tier.getMinimum_number_instances() != null) {
-     * tierDto.setMinimum_number_instances(tier.getMinimum_number_instances()); } if (tier.getIcono() != null) {
-     * tierDto.setIcono(tier.getIcono()); } if (tier.getImage() != null) { tierDto.setImage(tier.getImage()); } if
-     * (tier.getFlavour() != null) { tierDto.setFlavour(tier.getFlavour()); } if (tier.getFloatingip() != null) {
-     * tierDto.setFloatingip(tier.getFloatingip()); } if (tier.getKeypair() != null) {
-     * tierDto.setKeypair(tier.getKeypair()); } if (tier.getSecurity_group() != null) {
-     * tierDto.setSecurity_group(tier.getSecurity_group()); } for (int i=0; i < tier.getProductReleases().size(); i++) {
-     * ProductReleaseDto pReleaseDto = new ProductReleaseDto (); ProductRelease pRelease =
-     * tier.getProductReleases().get(i); pReleaseDto.setProductName(pRelease.getProduct());
-     * pReleaseDto.setVersion(pRelease.getVersion()); if (pRelease.getDescription()!= null)
-     * pReleaseDto.setProductDescription(pRelease.getDescription()); productReleasesDto.add(pReleaseDto); }
-     * tierDto.setProductReleaseDtos(productReleasesDto); return tierDto; }
-     */
 
     public void setEnvironmentManager(EnvironmentManager environmentManager) {
         this.environmentManager = environmentManager;
@@ -250,6 +135,11 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
+    
+    public void setEnvironmentResourceValidator(EnvironmentResourceValidator environmentResourceValidator) {
+        this.environmentResourceValidator = environmentResourceValidator;
+    }
+
 
     public PaasManagerUser getCredentials() {
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE"))

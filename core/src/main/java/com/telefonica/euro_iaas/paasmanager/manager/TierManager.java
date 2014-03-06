@@ -112,5 +112,13 @@ public interface TierManager {
      */
     void addSecurityGroupToProductRelease(ClaudiaData claudiaData, Tier tier, ProductRelease productRelease)
             throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException;
+    
+    /**
+     * Update tier
+     * @param tierold
+     * @param tiernew
+     * @throws InvalidEntityException
+     */
+    void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException, EntityNotFoundException, AlreadyExistsEntityException;
 
 }

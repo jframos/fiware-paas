@@ -49,8 +49,9 @@ public class EnvironmentInstance extends InstallableInstance {
 
     @ManyToOne()
     private Environment environment;
-
+    @Column(length = 256)
     private String description;
+    @Column(length = 256)
     private String blueprintName = "";
     private String taskId = "";
 
