@@ -41,7 +41,7 @@ public class AbstractEnvironmenTest {
     String org = "FIWARE";
 
 
-/*   @Test
+   @Test
     public void testAbstractEnvironment() throws Exception {
         EnvironmentDto environmentBk = new EnvironmentDto();
         environmentBk.setName("absenvtest");
@@ -296,7 +296,7 @@ public class AbstractEnvironmenTest {
         abstractEnvironmentResource.insert(org, environment.toDto());  
         abstractEnvironmentResource.delete(org, environment.getName()); 
   
-    }*/
+    }
     
     @Test
     public void testUpdateAddaNewNet() throws APIException  {

@@ -100,7 +100,7 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
         List<Environment> result = new ArrayList<Environment>();
         for (Environment environment : environments) {
          
-            if (environment.getOrg().equals(org) && environment.getVdc() == null) {
+            if (environment.getOrg().equals(org) && (environment.getVdc() == null || environment.getVdc().isEmpty())) {
                 result.add(environment);
             }
         }
