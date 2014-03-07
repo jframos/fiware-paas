@@ -35,6 +35,9 @@ import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+import java.util.Set;
+import java.util.HashSet;
+
 
 /**
  * It is the manager for the Tier.
@@ -187,7 +190,7 @@ public class TierManagerImpl implements TierManager {
     }
 
     public void createNetworks(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException,
-            InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
+            InvalidEntityException, AlreadyExistsEntityException {
         List<Network> networkToBeDeployed = new ArrayList<Network>();
         for (Network network : tier.getNetworks()) {
             networkToBeDeployed.add(network);
@@ -199,26 +202,12 @@ public class TierManagerImpl implements TierManager {
                 network = networkManager.load(network.getNetworkName(), claudiaData.getVdc());
 
             } else {
-                network = networkManager.create(claudiaData, network, tier.getRegion());
+                network = networkManager.create(network);
             }
             tier.addNetwork(network);
         }
     }
 
-    public void createAbstractNetworks(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException,
-
-    InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
-        List<Network> networkToBeDeployed = new ArrayList<Network>();
-        for (Network network : tier.getNetworks()) {
-            networkToBeDeployed.add(network);
-        }
-
-        for (Network network : networkToBeDeployed) {
-            network = networkManager.create(claudiaData, network, tier.getRegion());
-            tier.addNetwork(network);
-        }
-
-    }
 
     /**
      * It deletes the tier.
@@ -584,7 +573,9 @@ public class TierManagerImpl implements TierManager {
 
     }
 
-    public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException {
+    
+    public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException, EntityNotFoundException, AlreadyExistsEntityException {
+
         tierold.setFlavour(tiernew.getFlavour());
         tierold.setFloatingip(tiernew.getFloatingip());
         tierold.setIcono(tiernew.getIcono());
@@ -594,6 +585,31 @@ public class TierManagerImpl implements TierManager {
         tierold.setMaximumNumberInstances(tiernew.getMaximumNumberInstances());
         tierold.setMinimumNumberInstances(tiernew.getMinimumNumberInstances());
 
+       
+        update(tierold);
+        
+        //Get networks to be delete
+        Set<Network> nets = new HashSet<Network> ();
+        for (Network net : tierold.getNetworks()) {
+        	nets.add(net);
+        }
+        
+        //delete networks
+        tierold.setNetworks(null);
+        update(tierold);
+        
+        for (Network net : nets) {
+            networkManager.delete(net);
+        }
+        
+        //adding networks
+        for (Network net : tiernew.getNetworks()) {
+        	net = networkManager.create(net);
+        	tierold.addNetwork(net);
+            update(tierold);
+        }
+        	
+        	
         tierold.setProductReleases(null);
         update(tierold);
 

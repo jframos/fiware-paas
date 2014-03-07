@@ -58,21 +58,6 @@ public class SubNetwork {
     }
 
     /**
-     * @param networkName
-     */
-    public SubNetwork(String name, String id) {
-        this.name = name;
-        this.cidr = "10.100." + id + ".0/24";
-    }
-
-    /**
-     * @return the cidr
-     */
-    public String getCidr() {
-        return cidr;
-    }
-
-    /**
      * @return the networkName
      */
     public String getName() {
@@ -126,7 +111,6 @@ public class SubNetwork {
      */
     public SubNetworkDto toDto() {
         SubNetworkDto subNetworkDto = new SubNetworkDto(this.getName());
-        subNetworkDto.setCidr(this.getCidr());
         return subNetworkDto;
 
     }
@@ -137,7 +121,6 @@ public class SubNetwork {
      */
     public SubNetworkInstance toInstance() {
     	SubNetworkInstance subNetworkInstance = new SubNetworkInstance(this.getName());
-    	subNetworkInstance.setCidr(this.getCidr());
         return subNetworkInstance;
 
     }

@@ -287,7 +287,7 @@ public class TierManagerImplTest {
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
         when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
         when(networkManager.exists(any(String.class), any(String.class))).thenReturn(false);
-        when(networkManager.create(any(ClaudiaData.class), any(Network.class), any(String.class))).thenReturn(net);
+        when(networkManager.create(any(Network.class))).thenReturn(net);
         when(networkManager.load(any(String.class), any(String.class))).thenReturn(net);
 
         Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
@@ -315,8 +315,9 @@ public class TierManagerImplTest {
 
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
         when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
+
         when(networkManager.exists(any(String.class), any(String.class))).thenReturn(false);
-        when(networkManager.create(any(ClaudiaData.class), any(Network.class), any(String.class))).thenReturn(net);
+        when(networkManager.create(any(Network.class))).thenReturn(net);
         when(networkManager.load(any(String.class), any(String.class))).thenReturn(net);
 
         Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)

@@ -13,3 +13,6 @@ target/
 # pyhon 
 *.pyc
 
+# Acceptance tests logs and reports
+testreport/
+logs/
