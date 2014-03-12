@@ -68,14 +68,16 @@ public class EnvironmenDaoTest {
 
     /**
      * Test the load method
+     * @throws AlreadyExistsEntityException 
+     * @throws InvalidEntityException 
      * 
      * @throws AlreadyExistsEntityException
      * @throws InvalidEntityException
+     * @throws EntityNotFoundException 
      * @throws EntityNotFoundException
      */
-    @Test(expected = com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
-    public void testDeleteNoTiers() throws InvalidEntityException, AlreadyExistsEntityException,
-            EntityNotFoundException {
+    @Test(expected = EntityNotFoundException.class)
+    public void testDeleteNoTiers() throws InvalidEntityException, AlreadyExistsEntityException, EntityNotFoundException {
 
         Environment environment = new Environment();
         environment.setName(ENVIRONMENT_NAME);

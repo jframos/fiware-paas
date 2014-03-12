@@ -7,6 +7,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -88,18 +89,21 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
     public void destroy(ClaudiaData data, Environment environment) throws InvalidEntityException,
             InfrastructureException, EntityNotFoundException {
 
-        Set<Tier> tiers = environment.getTiers();
+    	List<Tier> tiers = new ArrayList<Tier> ();
+    	for (Tier tier: environment.getTiers()) {
+    		log.debug ("Adding tier " + tier.getName() + " " + tier.getNetworks());
+    		tiers.add(tier);
+    	}
+        
+        for (Tier tier: tiers) {
+        	
+        	for (Tier tier1: tiers) {
+        		log.debug ("checking " + tier1.getName() + " " + tier1.getNetworks());
+        	}
 
-        if (tiers != null && tiers.size() > 0) {
-            environment.setTiers(null);
-
-            environmentDao.update(environment);
-
-            for (Tier tier : tiers) {
-
-                tierManager.delete(data, tier);
-
-            }
+            environment.deleteTier(tier);
+            update(environment);
+            tierManager.delete(data, tier);
         }
 
         environmentDao.remove(environment);

@@ -41,7 +41,7 @@ public class AbstractEnvironmenTest {
     String org = "FIWARE";
 
 
-   @Test
+ /*  @Test
     public void testAbstractEnvironment() throws Exception {
         EnvironmentDto environmentBk = new EnvironmentDto();
         environmentBk.setName("absenvtest");
@@ -200,6 +200,28 @@ public class AbstractEnvironmenTest {
        abstractEnvironmentResource.delete(org, environment.getName());
  
    }
+   
+   @Test
+   public void testDeleteTwoNetworksII() throws APIException  {
+       Environment environment= new Environment();
+       environment.setName("ndameDAssTtwonet");
+       environment.setDescription("Description First environment");
+       Tier tier = new Tier("henar", new Integer(1), new Integer(1), new Integer(1), null);
+       tier.setImage("image");
+       tier.setIcono("icono");
+       tier.setFlavour("flavour");
+       tier.setFloatingip("floatingip");
+       tier.setKeypair("keypair");
+       Network net = new Network("t2n1", "dd");
+       tier.addNetwork(net);
+       Network net2 = new Network("t2n2", "dd");
+       tier.addNetwork(net2);
+       environment.addTier(tier);
+       abstractEnvironmentResource.insert(org, environment.toDto());  
+       abstractEnvironmentResource.load(org, environment.getName());  
+       abstractTierResource.delete(org, environment.getName(), tier.getName());
+ 
+   }
     
     @Test
     public void testDeleteAbstractTierII() throws APIException  {
@@ -350,6 +372,60 @@ public class AbstractEnvironmenTest {
         abstractTierResource.update(org, environment2.getName(), tier2.getName(), tier3.toDto());  
         tierDto = abstractTierResource.load(org, environment2.getName(), tier2.getName());
         assertEquals (tierDto.getNetworksDto().size(),2);
+
+
+  
+    }*/
+    
+    @Test
+    public void testSeveralTiersWithNet() throws APIException  {
+    	Environment environment1= new Environment();
+        environment1.setName("seeraltiersnet");
+        environment1.setDescription("Description First environment");
+        Tier tier = new Tier("testss5", new Integer(1), new Integer(1), new Integer(1), null);
+        tier.setImage("image");
+        tier.setIcono("icono");
+        tier.setFlavour("flavour");
+        tier.setFloatingip("floatingip");
+        tier.setKeypair("keypair");
+        Network net1 = new Network("one1", "dd");
+        tier.addNetwork(net1);
+       
+        environment1.addTier(tier);
+       
+
+        abstractEnvironmentResource.insert(org, environment1.toDto());  
+     
+
+        Tier tier2 = new Tier("testss2", new Integer(1), new Integer(1), new Integer(1), null);
+        tier2.setImage("image");
+        tier2.setIcono("icono");
+        tier2.setFlavour("flavour");
+        tier2.setFloatingip("floatingip");
+        tier2.setKeypair("keypair");
+        tier2.addNetwork(net1);
+        Network net2 = new Network("one2", "dd");
+        tier2.addNetwork(net2);
+
+        abstractTierResource.insert(org, environment1.getName(), tier2.toDto());
+       
+        
+        
+        Tier tier3 = new Tier("testss3", new Integer(1), new Integer(1), new Integer(1), null);
+        tier3.setImage("image");
+        tier3.setIcono("icono");
+        tier3.setFlavour("flavour");
+        tier3.setFloatingip("floatingip");
+        tier3.setKeypair("keypair");
+        Network net3 = new Network("llala2", "dd");
+        tier3.addNetwork(net2);
+        tier3.addNetwork(net3);
+        
+        abstractTierResource.insert(org, environment1.getName(), tier3.toDto());
+      
+        
+        abstractEnvironmentResource.delete(org, environment1.getName());
+
 
   
     }

@@ -81,7 +81,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
     public void delete(String org, String vdc, String envName) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
         try {
-            environmentResourceValidator.validateDelete(envName, vdc, systemPropertiesProvider);
+            environmentResourceValidator.validateDelete(envName, vdc);
 
             addCredentialsToClaudiaData(claudiaData);
 

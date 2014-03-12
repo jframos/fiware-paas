@@ -92,7 +92,7 @@ public class TierManagerImpl implements TierManager {
                 + " product releases " + tier.getProductReleases() + "  vdc " + claudiaData.getVdc() + " networks "
                 + tier.getNetworks());
 
-        if (exists(tier.getName(), claudiaData.getVdc(), envName)) {
+        if (exists(tier.getName(), tier.getVdc(), envName)) {
             return load(tier.getName(), claudiaData.getVdc(), envName);
         } else {
 
@@ -214,20 +214,15 @@ public class TierManagerImpl implements TierManager {
     public void delete(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException, InvalidEntityException,
             InfrastructureException {
 
-        log.debug("Deleting tier " + tier.getName() + " from vdc " + tier.getVdc()+ "  env  "+ tier.getEnviromentName());
+        
         try {
-            tier = load(tier.getName(), tier.getVdc(), tier.getEnviromentName());
+            tier = loadTierWithNetworks(tier.getName(), tier.getVdc(), tier.getEnviromentName());
+            log.debug("Deleting tier " + tier.getName() + " from vdc " + tier.getVdc()+ "  env  "+ tier.getEnviromentName() + " " + tier.getNetworks());
         } catch (EntityNotFoundException e) {
-            if (tier.getId() == null) {
-                String mens = "It is not possible to delete the tier " + tier.getName() + " since it is not exist";
-                log.error(mens);
-                throw new EntityNotFoundException(Tier.class, mens, tier);
-            }
-        } catch (Exception e) {
 
-            String mens = "It is not possible to delete the tier since there is an error " + e.getMessage();
-            log.error(mens);
-            throw new InvalidEntityException(tier, e);
+             String mens = "It is not possible to delete the tier " + tier.getName() + " since it is not exist";
+             log.error(mens);
+             throw new EntityNotFoundException(Tier.class, mens, tier);
         }
 
         if (tier.getSecurityGroup() != null && !tier.getVdc().isEmpty()) {
@@ -239,7 +234,7 @@ public class TierManagerImpl implements TierManager {
 
         }
 
-        log.debug("Deleting the networks");
+        log.debug("Deleting the networks " +tier.getNetworks());
 
         List<Network> netsAux = new ArrayList<Network>();
         for (Network netNet : tier.getNetworks()) {
@@ -557,6 +552,10 @@ public class TierManagerImpl implements TierManager {
         	}
         	tierold.addNetwork(net);
             update(tierold);
+        }
+        
+        for (Network net: nets) {
+        	networkManager.delete (net);
         }
         	
         	

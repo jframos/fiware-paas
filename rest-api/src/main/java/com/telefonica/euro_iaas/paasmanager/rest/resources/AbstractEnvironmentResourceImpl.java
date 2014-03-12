@@ -23,9 +23,11 @@ import org.springframework.stereotype.Component;
 import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
+import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentSearchCriteria;
@@ -46,7 +48,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
     @InjectParam("environmentManager")
     private EnvironmentManager environmentManager;
 
-    private SystemPropertiesProvider systemPropertiesProvider;
+
     
     private EnvironmentResourceValidator environmentResourceValidator;
     
@@ -54,16 +56,22 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
 
     public void delete(String org, String envName) throws APIException {
         log.debug("Deleting env " + envName + " from org " + org);
-        ClaudiaData claudiaData = new ClaudiaData(org, null, null);
+        ClaudiaData claudiaData = new ClaudiaData(org, "", envName);
+        try {
+			environmentResourceValidator.validateDelete(envName,"");
+		} catch (Exception e1) {
+			 throw new APIException(e1);
+		}
 
         try {
-            Environment env = environmentManager.load(envName);
+            Environment env = environmentManager.load(envName, "");
             environmentManager.destroy(claudiaData, env);
         } catch (Exception e) {
             throw new APIException(e);
         }
 
     }
+
 
     public List<EnvironmentDto> findAll(String org, Integer page, Integer pageSize, String orderBy, String orderType) {
         EnvironmentSearchCriteria criteria = new EnvironmentSearchCriteria();
@@ -128,23 +136,9 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
         this.environmentManager = environmentManager;
     }
 
-    /**
-     * @param systemPropertiesProvider
-     *            the systemPropertiesProvider to set
-     */
-    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
-        this.systemPropertiesProvider = systemPropertiesProvider;
-    }
     
     public void setEnvironmentResourceValidator(EnvironmentResourceValidator environmentResourceValidator) {
         this.environmentResourceValidator = environmentResourceValidator;
     }
 
-
-    public PaasManagerUser getCredentials() {
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE"))
-            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        else
-            return null;
-    }
 }

@@ -103,12 +103,17 @@ public class NetworkManagerImpl implements NetworkManager {
      * @throws InvalidEntityException
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
+     * @throws EntityNotFoundException 
      * @throws InfrastructureException
      */
     private void createSubNetwork(Network network, SubNetwork subNetwork) throws InvalidEntityException,
-            AlreadyExistsEntityException {
+            AlreadyExistsEntityException, EntityNotFoundException {
         log.debug("Creating subnect " + subNetwork.getName());
-        subNetwork = subNetworkManager.create(subNetwork);
+        try {
+            subNetwork = subNetworkManager.create(subNetwork);
+        } catch (AlreadyExistsEntityException e) {
+            subNetwork = subNetworkManager.load(subNetwork.getName());
+        }
         network.updateSubNet(subNetwork);
         log.debug("SubNetwork " + subNetwork.getName() + " in network  " + network.getNetworkName() + " deployed");
     }
@@ -123,13 +128,12 @@ public class NetworkManagerImpl implements NetworkManager {
      * @throws InvalidEntityException
      * @throws InfrastructureException
      * @throws AlreadyExistsEntityException
+     * @throws EntityNotFoundException 
      * @throws InfrastructureException
      */
-    private void createDefaultSubNetwork(Network network) throws InvalidEntityException, AlreadyExistsEntityException {
+    private void createDefaultSubNetwork(Network network) throws InvalidEntityException, AlreadyExistsEntityException, EntityNotFoundException {
         SubNetwork subNet = new SubNetwork("sub-net-" + network.getNetworkName());
-        subNet = subNetworkManager.create(subNet);
-        network.addSubNet(subNet);
-        log.debug("SubNetwork " + subNet.getName() + " in network  " + network.getNetworkName() + " deployed");
+        createSubNetwork(network, subNet);
     }
 
     /**
