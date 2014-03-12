@@ -15,7 +15,8 @@ CREATE TABLE applicationrelease (
   id                 VARCHAR(255) NOT NULL,
   description        VARCHAR(2048),
   name               VARCHAR(256) NOT NULL,
-  applicationtype_id INT8
+  applicationtype_id INT8,
+  version            VARCHAR(256) NOT NULL
 
 );
 
@@ -141,7 +142,7 @@ CREATE TABLE environmenttype (
 --changeset initial:19
 CREATE TABLE installableinstance (
   id     INT8         NOT NULL,
-  date   TIMESTAMP WITH TIME ZONE,
+  date   TIMESTAMP WITHOUT TIME ZONE,
   name   VARCHAR(256) NOT NULL,
   status VARCHAR(255),
   vdc    VARCHAR(255)
@@ -252,7 +253,7 @@ CREATE TABLE service_attribute (
 CREATE TABLE task (
   id                      INT8 NOT NULL,
   description             VARCHAR(1024),
-  endtime                 TIMESTAMP WITH TIME ZONE,
+  endtime                 TIMESTAMP WITHOUT TIME ZONE,
   environment             VARCHAR(1024),
   majorerrorcode          VARCHAR(1024),
   message                 VARCHAR(1024),
@@ -265,7 +266,7 @@ CREATE TABLE task (
   result_href             VARCHAR(255),
   result_name             VARCHAR(255),
   result_type             VARCHAR(255),
-  starttime               TIMESTAMP WITH TIME ZONE,
+  starttime               TIMESTAMP WITHOUT TIME ZONE,
   status                  INT4,
   tier                    VARCHAR(1024),
   vdc                     VARCHAR(1024)
@@ -276,7 +277,7 @@ CREATE TABLE task (
 CREATE TABLE template (
   id              INT8         NOT NULL,
   name            VARCHAR(256) NOT NULL,
-  tierinstance_id INT8         NOT NULL
+  tierinstance_id INT8
 );
 
 --changeset initial:35
@@ -435,8 +436,8 @@ ALTER TABLE tier ADD CONSTRAINT fk_tier_securitygroup FOREIGN KEY (securitygroup
 REFERENCES securitygroup (id) NOT DEFERRABLE;
 
 --changeset initial:71
-ALTER TABLE productrelease_productrelease ADD CONSTRAINT fk_productrelease_productrelease_securitygroup FOREIGN KEY (transitablereleases_id)
-REFERENCES securitygroup (id) NOT DEFERRABLE;
+ALTER TABLE productrelease_productrelease ADD CONSTRAINT fk_productrelease_productrelease_transitablereleases FOREIGN KEY (transitablereleases_id)
+REFERENCES productrelease (id) NOT DEFERRABLE;
 
 --changeset initial:72
 ALTER TABLE productrelease_productrelease ADD CONSTRAINT fk_productrelease_productrelease_productrelease FOREIGN KEY (productrelease_id)
