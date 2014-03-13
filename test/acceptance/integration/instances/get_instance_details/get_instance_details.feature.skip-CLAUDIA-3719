@@ -1,0 +1,220 @@
+# -*- coding: utf-8 -*-
+Feature: Get the details of an instance of an environment in a tenant
+
+    As a fi-ware user
+    I want to be able to get the details of an instance of an environment in a tenant
+    so that I can have access to its data
+
+    @happy_path @slow
+    Scenario: Get the details of an instance of an environment with one tier
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name       |
+            | tiernameqa |
+        And an environment has already been created with the previous tiers and data:
+            | name   | description |
+            | nameqa | descqa      |
+        And an instance of the environment "nameqa" has already been created using data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+        When I request the details of the instance "instancenameqa"
+        Then I receive an "OK" response with the previous tiers and data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+        
+    @slow
+    Scenario: Get the details of an instance of an environment with several tiers
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name        |
+            | tiernameqa1 |
+            | tiernameqa2 |
+            | tiernameqa3 |
+        And an environment has already been created with the previous tiers and data:
+            | name   | description |
+            | nameqa | descqa      |
+        And an instance of the environment "nameqa" has already been created using data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+        When I request the details of the instance "instancenameqa"
+        Then I receive an "OK" response with the previous tiers and data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+
+    @slow
+    Scenario Outline: Get the details of an instance of an environment with tiers with different valid data
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name                    |
+            | a                       |
+            | tiernameqa-1            |
+            | [STRING_WITH_LENGTH_30] |
+        And an environment has already been created with the previous tiers and data:
+            | name      | description |
+            | <envname> | <envdesc>   |
+        And an instance of the environment "<envname>" has already been created using data:
+            | name   | description    |
+            | <name> | instancedescqa |
+        When I request the details of the instance "<name>"
+        Then I receive an "OK" response with the previous tiers and data:
+            | name   | description    |
+            | <name> | instancedescqa |
+        
+        Examples:
+            | name            | envname                 | envdesc                  |
+            | instancenameqa1 | a                       | descqa                   |
+            | instancenameqa2 | nameqa-1                | descqa                   |
+            | instancenameqa3 | [STRING_WITH_LENGTH_30] | descqa                   |
+        
+    @slow
+    Scenario Outline: Get the details of an instance with different valid data of an environment with tiers
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name       |
+            | tiernameqa |
+        And an environment has already been created with the previous tiers and data:
+            | name      | description |
+            | <envname> | descqa      |
+        And an instance of the environment "<envname>" has already been created using data:
+            | name   | description   |
+            | <name> | <description> |
+        When I request the details of the instance "<name>"
+        Then I receive an "OK" response with the previous tiers and data:
+            | name   | description   |
+            | <name> | <description> |
+        
+        Examples:
+            | name                    | description              | envname |
+            | a                       | descqa                   | nameqa1 |
+            | instancenameqa-1        | descqa                   | nameqa2 |
+            | [STRING_WITH_LENGTH_30] | descqa                   | nameqa3 |
+            | instancenameqa1         | a                        | nameqa4 |
+            | instancenameqa2         | descqa-1                 | nameqa5 |
+            | instancenameqa3         | Symbols: +*=._,;"@#%)/?! | nameqa6 |
+            | instancenameqa4         | Non-ASCII: á.é.í.ñ       | nameqa7 |
+            | instancenameqa5         | [STRING_WITH_LENGTH_256] | nameqa8 |
+
+    @slow
+    Scenario Outline: Get the details of an instance of an environment with one tier with products
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name       | products   |
+            | <tiername> | <products> |
+        And an environment has already been created with the previous tiers and data:
+            | name      | description |
+            | <envname> | descqa      |
+        And an instance of the environment "<envname>" has already been created using data:
+            | name   | description    |
+            | <name> | instancedescqa |
+        When I request the details of the instance "<name>"
+        Then I receive an "OK" response with the previous tiers and data:
+            | name   | description    |
+            | <name> | instancedescqa |
+
+        Examples:
+            | name            | envname | tiername    | products                 |
+            | instancenameqa1 | nameqa1 | tiernameqa1 | git=1.7                  |
+            | instancenameqa2 | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 |
+
+    @slow
+    Scenario: Get the details of an instance of an environment with several tiers with products
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name        | products         |
+            | tiernameqa1 | git=1.7          |
+            | tiernameqa2 | mediawiki=1.17.0 |
+        And an environment has already been created with the previous tiers and data:
+            | name   | description |
+            | nameqa | descqa      |
+        And an instance of the environment "nameqa" has already been created using data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+        When I request the details of the instance "instancenameqa"
+        Then I receive an "OK" response with the previous tiers and data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+
+    @slow
+    Scenario Outline: Get the details of an instance of an environment with one tier with networks
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name       | networks   |
+            | <tiername> | <networks> |
+        And an environment has already been created with the previous tiers and data:
+            | name      | description |
+            | <envname> | descqa      |
+        And an instance of the environment "<envname>" has already been created using data:
+            | name   | description    |
+            | <name> | instancedescqa |
+        When I request the details of the instance "<name>"
+        Then I receive an "OK" response with the previous tiers and data:
+            | name   | description    |
+            | <name> | instancedescqa |
+
+        Examples:
+            | name            | envname | tiername    | networks      |
+            | instancenameqa1 | nameqa1 | tiernameqa1 | netqa1        |
+            | instancenameqa2 | nameqa2 | tiernameqa2 | netqa1,netqa2 |
+
+    @slow
+    Scenario: Get the details of an instance of an environment with several tiers with networks
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name        | networks |
+            | tiernameqa1 | netqa1   |
+            | tiernameqa2 | netqa2   |
+        And an environment has already been created with the previous tiers and data:
+            | name   | description |
+            | nameqa | descqa      |
+        And an instance of the environment "nameqa" has already been created using data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+        When I request the details of the instance "instancenameqa"
+        Then I receive an "OK" response with the previous tiers and data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+
+    @slow
+    Scenario Outline: Get the details of an instance of an environment with one tier with products and networks
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name       | products   | networks   |
+            | <tiername> | <products> | <networks> |
+        And an environment has already been created with the previous tiers and data:
+            | name      | description |
+            | <envname> | descqa      |
+        And an instance of the environment "<envname>" has already been created using data:
+            | name   | description    |
+            | <name> | instancedescqa |
+        When I request the details of the instance "<name>"
+        Then I receive an "OK" response with the previous tiers and data:
+            | name   | description    |
+            | <name> | instancedescqa |
+
+        Examples:
+            | name            | envname | tiername    | products                 | networks      |
+            | instancenameqa1 | nameqa1 | tiernameqa1 | git=1.7                  | netqa1        |
+            | instancenameqa2 | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
+
+    @slow
+    Scenario: Get the details of an instance of an environment with tiers with products and networks
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name        | products         | networks |
+            | tiernameqa1 | git=1.7          | netqa1   |
+            | tiernameqa2 | mediawiki=1.17.0 | netqa2   |
+        And an environment has already been created with the previous tiers and data:
+            | name   | description |
+            | nameqa | descqa      |
+        And an instance of the environment "nameqa" has already been created using data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+        When I request the details of the instance "instancenameqa"
+        Then I receive an "OK" response with the previous tiers and data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+
+    Scenario: Get the details of a nonexistent instance
+        Given the paas manager is up and properly configured
+        When I request the details of the instance "instancenameqa"
+        Then I receive a "Not Found" response
