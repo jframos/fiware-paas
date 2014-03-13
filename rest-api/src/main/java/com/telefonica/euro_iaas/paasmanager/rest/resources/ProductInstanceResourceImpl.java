@@ -158,6 +158,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
 
         productReleaseDto.setProductName(productRelease.getName());
         productReleaseDto.setVersion(productRelease.getVersion());
+        productReleaseDto.setPrivateAttributes(productRelease.getAttributes());
 
         return productReleaseDto;
     }

@@ -159,7 +159,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
     public void insert(String org, String vdc, EnvironmentDto environmentDto) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentDto.getName());
 
-        log.debug("Create a environment " + environmentDto.getName() + " " + environmentDto.getDescription() + " "
+        log.debug("Create an environment " + environmentDto.getName() + " " + environmentDto.getDescription() + " "
                 + environmentDto.getVdc() + " " + environmentDto.getOrg() + " " + environmentDto.getTierDtos());
 
         try {
