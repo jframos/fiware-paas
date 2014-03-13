@@ -7,8 +7,11 @@
 
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
-import java.util.List;
 import java.util.Set;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 
@@ -17,8 +20,8 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
  * 
  * @author Jesus M. Movilla
  */
-// @XmlRootElement
-// @XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ProductInstanceDto {
 
     private ProductReleaseDto productReleaseDto;
@@ -33,10 +36,6 @@ public class ProductInstanceDto {
     public ProductInstanceDto() {
     }
 
-    /**
-     * @param product
-     * @param vm
-     */
     public ProductInstanceDto(ProductReleaseDto productReleaseDto) {
         this.productReleaseDto = productReleaseDto;
 
@@ -49,10 +48,6 @@ public class ProductInstanceDto {
         return productReleaseDto;
     }
 
-    /**
-     * @param product
-     *            the product to set
-     */
     public void setProductReleaseDto(ProductReleaseDto productReleaseDto) {
         this.productReleaseDto = productReleaseDto;
     }
@@ -91,10 +86,6 @@ public class ProductInstanceDto {
         return name;
     }
 
-    /**
-     * @param vdc
-     *            the vdc to set
-     */
     public void setName(String name) {
         this.name = name;
     }

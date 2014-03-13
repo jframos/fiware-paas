@@ -7,15 +7,19 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import java.util.Set;
+
 
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +45,8 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 /**
  * @author jesus.movilla
  */
-public class TierManagerImplTest  {
+
+public class TierManagerImplTest {
 
     private TierManagerImpl tierManager;
     private TierDao tierDao;
@@ -316,10 +321,10 @@ public class TierManagerImplTest  {
 
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
         when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
-        when(networkManager.exists(any(String.class),any(String.class))).thenReturn(false);
-        when(networkManager.create(any(Network.class))).thenReturn(net);
-        when(networkManager.load(any(String.class),any(String.class))).thenReturn(net);
 
+        when(networkManager.exists(any(String.class), any(String.class))).thenReturn(false);
+        when(networkManager.create(any(Network.class))).thenReturn(net);
+        when(networkManager.load(any(String.class), any(String.class))).thenReturn(net);
 
         Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
                 .load(any(String.class), any(String.class), any(String.class));
@@ -329,10 +334,9 @@ public class TierManagerImplTest  {
         Tier tier2 = tierManager.loadTierWithNetworks("name", null, ENV);
         assertEquals(tier2.getName(), tier.getName());
         assertEquals(tier2.getNetworks().size(), 1);
-        
 
     }
-    
+
     @Test
     public void testTierAlreadyNetwork() throws Exception {
 
@@ -418,6 +422,136 @@ public class TierManagerImplTest  {
 
         tierManager.delete(data, tier);
 
+    }
+
+    @Test
+    public void shouldMergeNewEmptyAttributesWithOld() {
+        // given
+        TierManagerImpl tierManagerImpl = new TierManagerImpl();
+        ProductRelease productRelease1 = new ProductRelease();
+        ProductRelease newProductRelease = new ProductRelease();
+        Attribute attributes[] = { new Attribute("c", "v"), new Attribute("c2", "v2") };
+        Set<Attribute> attributesSet = new HashSet(Arrays.asList(attributes));
+        productRelease1.setAttributes(attributesSet);
+
+        // when
+        tierManagerImpl.mergeAttributes(productRelease1, newProductRelease);
+
+        // then
+        assertEquals("v", newProductRelease.getAttribute("c").getValue());
+        assertEquals("v2", newProductRelease.getAttribute("c2").getValue());
+    }
+
+    @Test
+    public void shouldMergeNewAttributesWithOldWhenExistsAttributesInNewProduct() {
+        // given
+        TierManagerImpl tierManagerImpl = new TierManagerImpl();
+        ProductRelease productRelease1 = new ProductRelease();
+        ProductRelease newProductRelease = new ProductRelease();
+        Attribute attributes[] = { new Attribute("c", "v"), new Attribute("c2", "v2") };
+        Set<Attribute> attributesSet = new HashSet(Arrays.asList(attributes));
+        productRelease1.setAttributes(attributesSet);
+
+        Attribute attributes2[] = { new Attribute("c3", "v3"), new Attribute("c4", "v4") };
+        Set<Attribute> attributesSet2 = new HashSet(Arrays.asList(attributes2));
+        newProductRelease.setAttributes(attributesSet2);
+
+        // when
+        tierManagerImpl.mergeAttributes(productRelease1, newProductRelease);
+
+        // then
+        assertEquals("v", newProductRelease.getAttribute("c").getValue());
+        assertEquals("v2", newProductRelease.getAttribute("c2").getValue());
+        assertEquals("v3", newProductRelease.getAttribute("c3").getValue());
+        assertEquals("v4", newProductRelease.getAttribute("c4").getValue());
+    }
+
+    @Test
+    public void shouldMergeNewAttributesWithOldWhenExistsAttributesInNewProductWithSameName() {
+        // given
+        TierManagerImpl tierManagerImpl = new TierManagerImpl();
+        ProductRelease productRelease1 = new ProductRelease();
+        ProductRelease newProductRelease = new ProductRelease();
+        Attribute attributes[] = { new Attribute("c", "v"), new Attribute("c2", "v2") };
+        Set<Attribute> attributesSet = new HashSet(Arrays.asList(attributes));
+        productRelease1.setAttributes(attributesSet);
+
+        Attribute attributes2[] = { new Attribute("c", "v3"), new Attribute("c4", "v4") };
+        Set<Attribute> attributesSet2 = new HashSet(Arrays.asList(attributes2));
+        newProductRelease.setAttributes(attributesSet2);
+
+        // when
+        tierManagerImpl.mergeAttributes(productRelease1, newProductRelease);
+
+        // then
+        assertEquals("v", newProductRelease.getAttribute("c").getValue());
+        assertEquals("v2", newProductRelease.getAttribute("c2").getValue());
+        assertEquals("v4", newProductRelease.getAttribute("c4").getValue());
+    }
+
+    @Test
+    public void shouldMergeNewEmptyMetadataWithOld() {
+        // given
+        TierManagerImpl tierManagerImpl = new TierManagerImpl();
+        ProductRelease productRelease1 = new ProductRelease();
+        ProductRelease newProductRelease = new ProductRelease();
+        Metadata metadatas[] = { new Metadata("c", "v"), new Metadata("c2", "v2") };
+        Set<Metadata> metadatasSet = new HashSet(Arrays.asList(metadatas));
+        productRelease1.setMetadatas(metadatasSet);
+
+        // when
+        tierManagerImpl.mergeMetadatas(productRelease1, newProductRelease);
+
+        // then
+        assertEquals("v", newProductRelease.getMetadata("c").getValue());
+        assertEquals("v2", newProductRelease.getMetadata("c2").getValue());
+    }
+
+    @Test
+    public void shouldMergeNewMetadatasWithOldWhenExistsMetadatasInNewProduct() {
+        // given
+        TierManagerImpl tierManagerImpl = new TierManagerImpl();
+        ProductRelease productRelease1 = new ProductRelease();
+        ProductRelease newProductRelease = new ProductRelease();
+        Metadata metadatas[] = { new Metadata("c", "v"), new Metadata("c2", "v2") };
+        Set<Metadata> metadatasSet = new HashSet(Arrays.asList(metadatas));
+        productRelease1.setMetadatas(metadatasSet);
+
+        Metadata metadata2[] = { new Metadata("c3", "v3"), new Metadata("c4", "v4") };
+        Set<Metadata> metadatasSet2 = new HashSet(Arrays.asList(metadata2));
+        newProductRelease.setMetadatas(metadatasSet2);
+
+        // when
+        tierManagerImpl.mergeMetadatas(productRelease1, newProductRelease);
+
+        // then
+        assertEquals("v", newProductRelease.getMetadata("c").getValue());
+        assertEquals("v2", newProductRelease.getMetadata("c2").getValue());
+        assertEquals("v3", newProductRelease.getMetadata("c3").getValue());
+        assertEquals("v4", newProductRelease.getMetadata("c4").getValue());
+    }
+
+    @Test
+    public void shouldMergeNewMetadatasWithOldWhenExistsMetadatasInNewProductWithSameKey() {
+        // given
+        TierManagerImpl tierManagerImpl = new TierManagerImpl();
+        ProductRelease productRelease1 = new ProductRelease();
+        ProductRelease newProductRelease = new ProductRelease();
+        Metadata metadatas[] = { new Metadata("c", "v"), new Metadata("c2", "v2") };
+        Set<Metadata> metadatasSet = new HashSet(Arrays.asList(metadatas));
+        productRelease1.setMetadatas(metadatasSet);
+
+        Metadata metadatas2[] = { new Metadata("c", "v3"), new Metadata("c4", "v4") };
+        Set<Metadata> metadatasSet2 = new HashSet(Arrays.asList(metadatas2));
+        newProductRelease.setMetadatas(metadatasSet2);
+
+        // when
+        tierManagerImpl.mergeMetadatas(productRelease1, newProductRelease);
+
+        // then
+        assertEquals("v", newProductRelease.getMetadata("c").getValue());
+        assertEquals("v2", newProductRelease.getMetadata("c2").getValue());
+        assertEquals("v4", newProductRelease.getMetadata("c4").getValue());
     }
 
 }
