@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from lettuce import step, world
-from tdaf_lettuce_tools.dataset_utils.dataset_utils import DatasetUtils
+from lettuce_tools.dataset_utils.dataset_utils import DatasetUtils
 from tools import http, environment_request, environment_instance_request
 from tools.tier import Tier
 from tools.environment_instance import EnvironmentInstance
