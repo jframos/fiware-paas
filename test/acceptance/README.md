@@ -12,6 +12,8 @@ Folder for acceptance tests of the Paas Manager.
 
 - virtualenv installed (pip install virtalenv)
 
+- Git installed (yum install git-core / apt-get install git)
+
 ### Environment preparation:
 
 - Create a virtual environment somewhere, e.g. in ~/venv (virtualenv ~/venv)
