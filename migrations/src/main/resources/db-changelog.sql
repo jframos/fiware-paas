@@ -125,7 +125,7 @@ ALTER TABLE networkinstance_router ADD CONSTRAINT networkinstance_router_pkey PR
 ALTER TABLE networkinstance_subnetworkinstance ADD CONSTRAINT networkinstance_subnetworkinstance_pkey PRIMARY KEY (networkinstance_id, subnets_id);
 
 --changeset jesuspg:1-23
-ALTER TABLE productrelease_attribute ADD CONSTRAINT productrelease_attribute_pkey PRIMARY KEY (productrelease_id);
+ALTER TABLE productrelease_attribute ADD CONSTRAINT productrelease_attribute_pkey PRIMARY KEY (productrelease_id, attributes_id);
 
 --changeset jesuspg:1-24
 ALTER TABLE productrelease_metadata ADD CONSTRAINT productrelease_metadata_pkey PRIMARY KEY (productrelease_id, metadatas_id);
@@ -252,16 +252,22 @@ DROP TABLE environmenttype;
 --changeset jesuspg:1-60
 ALTER TABLE environment DROP COLUMN environmenttype_id;
 --changeset jesuspg:1-61
-ALTER TABLE installableinstance ALTER COLUMN date TYPE TIMESTAMP WITH TIME ZONE;
+ALTER TABLE installableinstance ALTER COLUMN date TYPE TIMESTAMP WITHOUT TIME ZONE;
 
 --changeset jesuspg:1-62
-ALTER TABLE task ALTER COLUMN endtime TYPE TIMESTAMP WITH TIME ZONE;
+ALTER TABLE task ALTER COLUMN endtime TYPE TIMESTAMP WITHOUT TIME ZONE;
 
 -- Change that corrresponds to bug/CLAUDIA-3652 Managing user attributes -->
 --changeset jmms392:2-1
-ALTER TABLE productrelease ADD COLUMN tiername VARCHAR(255);
+ALTER TABLE productrelease ADD COLUMN tiername VARCHAR(256);
 
 -- Change that corresponds to bug/CLAUDIA3663-Invalidnamesforenvironmentandtiers -->
 -- changeset henar:3-1
 ALTER TABLE environmentinstance alter column description type  VARCHAR(256) ;
 ALTER TABLE environmentinstance alter column blueprintname type  VARCHAR(256) ;
+
+
+-- changeset jesuspg:4-1
+ALTER TABLE tierinstance DROP COLUMN networks;
+
+ALTER TABLE artifact DROP COLUMN artifacttype_id;
