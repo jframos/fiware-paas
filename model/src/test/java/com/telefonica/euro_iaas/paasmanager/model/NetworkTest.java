@@ -44,8 +44,8 @@ public class NetworkTest extends TestCase {
     public static String SUBNETWORK_STRING = "{\"subnet\":{"
         + "      \"name\":\"" + SUBNETWORK_NAME + "\","
         + "      \"network_id\":\"" + ID + "\","
-        + "      \"ip_version\":4," 
-        + "      \"cidr\":\"" + CIDR + "\""
+        + "      \"ip_version\":4,    \"dns_nameservers\": [\"8.8.8.8\"],       \"cidr\":\""+      
+         CIDR + "\""
         + "   }"
         + "}";
 

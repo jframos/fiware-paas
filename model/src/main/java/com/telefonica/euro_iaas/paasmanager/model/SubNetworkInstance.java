@@ -181,7 +181,7 @@ public class SubNetworkInstance {
     public String toJson() {
 
         return "{\"subnet\":{" + "      \"name\":\"" + name + "\"," + "      \"network_id\":\"" + this.idNetwork
-        + "\"," + "      \"ip_version\":4,  \"dns_nameservers\": [\"8.8.8.8\"],       \"cidr\":\"" + this.cidr + "\"   }" + "}";
+        + "\"," + "      \"ip_version\":4,    \"dns_nameservers\": [\"8.8.8.8\"],       \"cidr\":\"" + this.cidr + "\"   }" + "}";
     }
 
     /**
