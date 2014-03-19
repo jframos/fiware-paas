@@ -12,13 +12,13 @@ Folder for acceptance tests of the Paas Manager.
 
 - virtualenv installed (pip install virtalenv)
 
+- Git installed (yum install git-core / apt-get install git)
+
 ### Environment preparation:
 
 - Create a virtual environment somewhere, e.g. in ~/venv (virtualenv ~/venv)
 
 - Activate the virtual environment (source ~/venv/bin/activate)
-
-- Make sure pdihub.hi.inet domain is reachable from your system (some of the requirements come from it) and instruct Git not to validate SSL connections to it (export GIT\_SSL\_NO\_VERIFY=true).
 
 - Change to the test/acceptance folder of the project
 
@@ -28,4 +28,4 @@ Folder for acceptance tests of the Paas Manager.
 
 - Change to the test/acceptance folder of the project if not already on it
 
-- Run lettucetdaf (see available params with the -h option)
+- Run lettuce_tools with appropriate params (see available ones with the -h option)
