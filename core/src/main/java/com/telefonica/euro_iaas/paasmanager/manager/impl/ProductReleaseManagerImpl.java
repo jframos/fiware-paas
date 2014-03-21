@@ -47,7 +47,9 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
             productRelease = productReleaseDao.load(name);
         } catch (EntityNotFoundException e) {
             // Buscar en el SDC y si existe darlo de alta en el paas-manager
+            log.debug("The product " + name + " is not in database");
             try {
+                log.debug("Loading from sdc " + product + " " + version );
                 ProductRelease pRelease = productReleaseSdcDao.load(product, version);
 
                 List<OS> ssoo = new ArrayList<OS>();

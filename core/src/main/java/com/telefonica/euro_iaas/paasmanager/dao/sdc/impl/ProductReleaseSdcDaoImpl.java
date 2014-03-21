@@ -116,9 +116,10 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
     }
 
     private String loadByName(String product, String version) throws EntityNotFoundException, SdcException {
+        log.debug ("Load by name " + product + " " + version );
         String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.SDC_SERVER_URL)
                 + "/catalog/product/" + product + "/release/" + version;
-        log.debug("url: " + url);
+        log.debug("the url: " + url);
 
         ClientResponse response = null;
         WebResource wr = client.resource(url);
