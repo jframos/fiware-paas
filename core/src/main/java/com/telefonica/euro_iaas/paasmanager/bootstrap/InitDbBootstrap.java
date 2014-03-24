@@ -22,7 +22,6 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.ApplicationReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ApplicationTypeDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ArtifactDao;
@@ -136,8 +135,6 @@ public class InitDbBootstrap implements ServletContextListener {
             log.error(msg + ex1);
         } catch (AlreadyExistsEntityException ex2) {
             log.error("alread exists " + ex2);
-        } catch (InvalidEntityException ex3) {
-            log.error("invalid entity " + ex3);
         } catch (Exception ex4) {
             log.error("generic exception " + ex4);
         }
@@ -455,10 +452,9 @@ public class InitDbBootstrap implements ServletContextListener {
                 // Ambos asociados a un productTypeAWS
 
                 Artifact artifactWarHelloWorld = new Artifact("war",
-                        "/opt/war/releases/80f5053b166c69d81697ba21113c673f8372aca0.war",  tomcat6);
+                        "/opt/war/releases/80f5053b166c69d81697ba21113c673f8372aca0.war", tomcat6);
                 Artifact artifactDescriptorWarHelloWorld = new Artifact("HelloWorldAWSDescriptor",
-                        "/opt/war/releases/80f5053b166c69d81697ba21113c673f8372aca0.xml", 
-                        tomcat6);
+                        "/opt/war/releases/80f5053b166c69d81697ba21113c673f8372aca0.xml", tomcat6);
 
                 artifactWarHelloWorld = artifactDao.create(artifactWarHelloWorld);
                 artifactDescriptorWarHelloWorld = artifactDao.create(artifactDescriptorWarHelloWorld);
@@ -483,10 +479,6 @@ public class InitDbBootstrap implements ServletContextListener {
 
             } catch (AlreadyExistsEntityException e1) {
                 log.error("alread exists " + e1);
-            } catch (InvalidEntityException e1) {
-                log.error("invalid entity " + e1);
-            } catch (Exception ex) {
-                log.error("generic exception " + ex);
             }
         }
 

@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -35,9 +37,6 @@ import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import java.util.Set;
-import java.util.HashSet;
-
 
 /**
  * It is the manager for the Tier.
@@ -207,7 +206,6 @@ public class TierManagerImpl implements TierManager {
             tier.addNetwork(network);
         }
     }
-
 
     /**
      * It deletes the tier.
@@ -565,7 +563,7 @@ public class TierManagerImpl implements TierManager {
         log.debug("Update tier " + tier.getName());
         try {
             return tierDao.update(tier);
-        } catch (InvalidEntityException e) {
+        } catch (Exception e) {
             log.error("It is not possible to update the tier " + tier.getName() + " : " + e.getMessage(), e);
             throw new InvalidEntityException("It is not possible to update the tier " + tier.getName() + " : "
                     + e.getMessage());
@@ -573,8 +571,8 @@ public class TierManagerImpl implements TierManager {
 
     }
 
-    
-    public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException, EntityNotFoundException, AlreadyExistsEntityException {
+    public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException, EntityNotFoundException,
+            AlreadyExistsEntityException {
 
         tierold.setFlavour(tiernew.getFlavour());
         tierold.setFloatingip(tiernew.getFloatingip());
@@ -585,31 +583,29 @@ public class TierManagerImpl implements TierManager {
         tierold.setMaximumNumberInstances(tiernew.getMaximumNumberInstances());
         tierold.setMinimumNumberInstances(tiernew.getMinimumNumberInstances());
 
-       
         update(tierold);
-        
-        //Get networks to be delete
-        Set<Network> nets = new HashSet<Network> ();
+
+        // Get networks to be delete
+        Set<Network> nets = new HashSet<Network>();
         for (Network net : tierold.getNetworks()) {
-        	nets.add(net);
+            nets.add(net);
         }
-        
-        //delete networks
+
+        // delete networks
         tierold.setNetworks(null);
         update(tierold);
-        
+
         for (Network net : nets) {
             networkManager.delete(net);
         }
-        
-        //adding networks
+
+        // adding networks
         for (Network net : tiernew.getNetworks()) {
-        	net = networkManager.create(net);
-        	tierold.addNetwork(net);
+            net = networkManager.create(net);
+            tierold.addNetwork(net);
             update(tierold);
         }
-        	
-        	
+
         tierold.setProductReleases(null);
         update(tierold);
 

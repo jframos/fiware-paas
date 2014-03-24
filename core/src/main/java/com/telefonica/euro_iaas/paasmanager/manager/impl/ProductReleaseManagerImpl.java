@@ -63,10 +63,6 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
                         } catch (EntityNotFoundException e1) {
                             try {
                                 so = osDao.create(ssoo.get(j));
-                            } catch (InvalidEntityException e2) {
-                                String msg = "Invalid Entity OSType: " + ssoo.get(j).getOsType();
-                                log.warn(msg);
-                                throw new EntityNotFoundException(OS.class, "osType", ssoo.get(j).getOsType());
                             } catch (AlreadyExistsEntityException e3) {
                                 String msg = "Already Exist OSType: " + ssoo.get(j).getOsType();
                                 log.warn(msg);
@@ -128,12 +124,12 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
 
         return productReleaseDao.load(productName + "-" + productVersion);
     }
-    
+
     public ProductRelease loadWithMetadata(String name) throws EntityNotFoundException {
 
         return productReleaseDao.loadProductReleaseWithMetadata(name);
     }
-    
+
     public ProductRelease update(ProductRelease productRelease) throws InvalidEntityException {
 
         return productReleaseDao.update(productRelease);

@@ -328,7 +328,7 @@ public class OpenStackSyncImpl extends Thread implements OpenStackSync {
                 tierInstances.remove(tierInstance);
                 environmentInstance.setTierInstances(tierInstances);
                 environmentInstance = environmentInstanceDao.update(environmentInstance);
-            } catch (InvalidEntityException e) {
+            } catch (Exception e) {
                 String message = " Error updating tierInstances of environmentInstance "
                         + environmentInstance.getName();
                 log.error(message);

@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.ConfigurationDao;
 import com.telefonica.euro_iaas.paasmanager.model.Configuration;
 
@@ -23,8 +22,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Configuration;
 public class ConfigurationDaoJpaImpl extends AbstractBaseDao<Configuration, Long> implements ConfigurationDao {
 
     @Override
-    public Configuration create(Configuration configuration) throws InvalidEntityException,
-            AlreadyExistsEntityException {
+    public Configuration create(Configuration configuration) throws AlreadyExistsEntityException {
         return super.create(configuration);
     }
 
@@ -42,7 +40,7 @@ public class ConfigurationDaoJpaImpl extends AbstractBaseDao<Configuration, Long
     }
 
     @Override
-    public Configuration update(Configuration configuration) throws InvalidEntityException {
+    public Configuration update(Configuration configuration) {
         return super.update(configuration);
     }
 
