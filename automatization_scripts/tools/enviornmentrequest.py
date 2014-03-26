@@ -214,6 +214,22 @@ class EnvironmentRequest:
         print payload
         self.__add_tier_environment(url, payload)
 
+    def add_abstract_tier_environment_network(self, environment_name, tier_name, products_information=None, networks=None):
+        url = "%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE/environment", environment_name, "tier")
+        tier = Tier(tier_name, self.image)
+        if products_information:
+            products = self.__process_product(products_information)
+            for product in products:
+                tier.add_product(product)
+
+        if networks:
+            networks = self.__process_metwork(networks)
+            for net in networks:
+                tier.add_network(net)
+
+        payload = tostring(tier.to_tier_xml())
+        self.__add_tier_environment(url, payload)
+
     def __add_product_to_tier(self, url, products_information):
         product = self.__process_product(products_information)
         payload = tostring(product[0].to_product_xml())

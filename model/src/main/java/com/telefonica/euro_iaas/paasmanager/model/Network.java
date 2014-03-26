@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+
 import com.telefonica.euro_iaas.paasmanager.model.dto.NetworkDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.SubNetworkDto;
 
@@ -48,6 +49,7 @@ public class Network {
     private String name;
     
     private String vdc;
+    
 
     @OneToMany
     private Set<SubNetwork> subNets;

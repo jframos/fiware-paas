@@ -111,7 +111,7 @@ public class TierResourceTest extends TestCase {
         List<TierDto> tiers = new ArrayList<TierDto>();
         tiers.add(tierDto);
         
-        when(tierManager.create(any(ClaudiaData.class), any(String.class), any(Tier.class))).thenReturn(tierDto.fromDto(vdc));
+        when(tierManager.create(any(ClaudiaData.class), any(String.class), any(Tier.class))).thenReturn(tierDto.fromDto(vdc, "env"));
         
         tierResource.insert(org, vdc, env, tierDto);
 
@@ -134,7 +134,7 @@ public class TierResourceTest extends TestCase {
         List<TierDto> tiers = new ArrayList<TierDto>();
         tiers.add(tierDto);
         
-        when(tierManager.create(any(ClaudiaData.class), any(String.class), any(Tier.class))).thenReturn(tierDto.fromDto(vdc));
+        when(tierManager.create(any(ClaudiaData.class), any(String.class), any(Tier.class))).thenReturn(tierDto.fromDto(vdc, "env"));
         
         tierResource.insert(org, vdc, env, tierDto);
 
@@ -152,7 +152,7 @@ public class TierResourceTest extends TestCase {
 
         List<TierDto> tiers = new ArrayList<TierDto>();
         tiers.add(tierDto);
-        when(tierManager.create(any(ClaudiaData.class), any(String.class), any(Tier.class))).thenReturn(tierDto.fromDto(vdc));
+        when(tierManager.create(any(ClaudiaData.class), any(String.class), any(Tier.class))).thenReturn(tierDto.fromDto(vdc, "env"));
         tierResource.insert(org, vdc, env, tierDto);
 
     }
@@ -166,7 +166,7 @@ public class TierResourceTest extends TestCase {
         tierDto.setFlavour("flavour");
         tierDto.setFloatingip("floatingip");
         tierDto.setKeypair("keypair");
-        when(tierManager.create(any(ClaudiaData.class), any(String.class), any(Tier.class))).thenReturn(tierDto.fromDto(vdc));
+        when(tierManager.create(any(ClaudiaData.class), any(String.class), any(Tier.class))).thenReturn(tierDto.fromDto(vdc, "env"));
         tierResource.insert(org, vdc, env, tierDto);
     }
     
@@ -181,7 +181,7 @@ public class TierResourceTest extends TestCase {
         tierDto.setFlavour("flavour");
         tierDto.setFloatingip("floatingip");
         tierDto.setKeypair("keypair");
-        when(tierManager.load( any(String.class), any(String.class),any(String.class))).thenReturn(tierDto.fromDto(vdc));
+        when(tierManager.load( any(String.class), any(String.class),any(String.class))).thenReturn(tierDto.fromDto(vdc, "env"));
         tierResource.delete(org, vdc, env, tierDto.getName());
     }
     
@@ -198,7 +198,7 @@ public class TierResourceTest extends TestCase {
         tierDto.setFloatingip("floatingip");
         tierDto.setKeypair("keypair");
         tierDto.addNetworkDto(net);
-        when(tierManager.load( any(String.class), any(String.class),any(String.class))).thenReturn(tierDto.fromDto(vdc));
+        when(tierManager.load( any(String.class), any(String.class),any(String.class))).thenReturn(tierDto.fromDto(vdc, "env"));
         tierResource.delete(org, vdc, env, tierDto.getName());
     }
     
@@ -213,9 +213,9 @@ public class TierResourceTest extends TestCase {
         tierDto.setFlavour("flavour");
         tierDto.setFloatingip("floatingip");
         tierDto.setKeypair("keypair");
-        when(tierManager.create(any(ClaudiaData.class), any(String.class), any(Tier.class))).thenReturn(tierDto.fromDto(vdc));
+        when(tierManager.create(any(ClaudiaData.class), any(String.class), any(Tier.class))).thenReturn(tierDto.fromDto(vdc, "env"));
         
-        when(tierManager.load( any(String.class), any(String.class),any(String.class))).thenReturn(tierDto.fromDto(vdc));
+        when(tierManager.load( any(String.class), any(String.class),any(String.class))).thenReturn(tierDto.fromDto(vdc, "env"));
         tierResource.insert(org, vdc, env, tierDto);
         
         TierDto tierDto2 = new TierDto("tiername22", new Integer(1), new Integer(1), new Integer(1), productReleaseDto);
@@ -242,7 +242,7 @@ public class TierResourceTest extends TestCase {
         tierDto.setFloatingip("floatingip");
         tierDto.setKeypair("keypair");
 
-        when(tierManager.load( any(String.class), any(String.class),any(String.class))).thenReturn(tierDto.fromDto(vdc));
+        when(tierManager.load( any(String.class), any(String.class),any(String.class))).thenReturn(tierDto.fromDto(vdc, "env"));
         
         TierDto tierDto2 = new TierDto("tiername4", new Integer(1), new Integer(1), new Integer(1), productReleaseDto);
         tierResource.update(org, vdc, env, tierDto.getName(), tierDto2);

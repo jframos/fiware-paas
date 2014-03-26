@@ -39,7 +39,7 @@ public interface TierResourceValidator {
     void validateUpdate(String vdc, String environmentName, String tierName, TierDto EnvironmentDto) throws InvalidEntityException, EntityNotFoundException;
 
     void validateDelete(String vdc, String environmentName, String tierName)
-            throws InvalidEntityException;
+            throws InvalidEntityException, EntityNotFoundException;
 
     void validateTiersDependencies(String name, String vdc, Set<TierDto> set) throws InvalidEntityException;
 }

@@ -92,7 +92,7 @@ public class TierManagerImpl implements TierManager {
                 + " product releases " + tier.getProductReleases() + "  vdc " + claudiaData.getVdc() + " networks "
                 + tier.getNetworks());
 
-        if (exists(tier.getName(), claudiaData.getVdc(), envName)) {
+        if (exists(tier.getName(), tier.getVdc(), envName)) {
             return load(tier.getName(), claudiaData.getVdc(), envName);
         } else {
 
@@ -101,11 +101,7 @@ public class TierManagerImpl implements TierManager {
 
             createSecurityGroups(claudiaData, tier);
 
-            // if (claudiaData.getVdc()== null || claudiaData.getVdc().isEmpty()) {
-            // createAbstractNetworks (claudiaData, tier);
-            // } else {
-            createNetworks(claudiaData, tier);
-            // }
+            createNetworks(tier);
 
             return tierInsertBD(tier, claudiaData);
 
@@ -189,7 +185,7 @@ public class TierManagerImpl implements TierManager {
 
     }
 
-    public void createNetworks(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException,
+    public void createNetworks(Tier tier) throws EntityNotFoundException,
             InvalidEntityException, AlreadyExistsEntityException {
         List<Network> networkToBeDeployed = new ArrayList<Network>();
         for (Network network : tier.getNetworks()) {
@@ -197,9 +193,9 @@ public class TierManagerImpl implements TierManager {
         }
 
         for (Network network : networkToBeDeployed) {
-            if (networkManager.exists(network.getNetworkName(), claudiaData.getVdc())) {
+            if (networkManager.exists(network.getNetworkName(), network.getVdc())) {
                 log.debug("the network " + network.getNetworkName() + " already exists");
-                network = networkManager.load(network.getNetworkName(), claudiaData.getVdc());
+                network = networkManager.load(network.getNetworkName(), network.getVdc());
 
             } else {
                 network = networkManager.create(network);
@@ -218,23 +214,18 @@ public class TierManagerImpl implements TierManager {
     public void delete(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException, InvalidEntityException,
             InfrastructureException {
 
-        log.debug("Deleting tier " + tier.getName());
+        
         try {
-            tier = load(tier.getName(), claudiaData.getVdc(), claudiaData.getService());
+            tier = loadTierWithNetworks(tier.getName(), tier.getVdc(), tier.getEnviromentName());
+            log.debug("Deleting tier " + tier.getName() + " from vdc " + tier.getVdc()+ "  env  "+ tier.getEnviromentName() + " " + tier.getNetworks());
         } catch (EntityNotFoundException e) {
-            if (tier.getId() == null) {
-                String mens = "It is not possible to delete the tier " + tier.getName() + " since it is not exist";
-                log.error(mens);
-                throw new EntityNotFoundException(Tier.class, mens, tier);
-            }
-        } catch (Exception e) {
 
-            String mens = "It is not possible to delete the tier since there is an error " + e.getMessage();
-            log.error(mens);
-            throw new InvalidEntityException(tier, e);
+             String mens = "It is not possible to delete the tier " + tier.getName() + " since it is not exist";
+             log.error(mens);
+             throw new EntityNotFoundException(Tier.class, mens, tier);
         }
 
-        if (tier.getSecurityGroup() != null && !claudiaData.getVdc().isEmpty()) {
+        if (tier.getSecurityGroup() != null && !tier.getVdc().isEmpty()) {
             SecurityGroup sec = tier.getSecurityGroup();
             log.debug("Deleting security group " + sec.getName() + " in tier " + tier.getName());
             tier.setSecurityGroup(null);
@@ -243,7 +234,7 @@ public class TierManagerImpl implements TierManager {
 
         }
 
-        log.debug("Deleting the networks");
+        log.debug("Deleting the networks " +tier.getNetworks());
 
         List<Network> netsAux = new ArrayList<Network>();
         for (Network netNet : tier.getNetworks()) {
@@ -444,11 +435,11 @@ public class TierManagerImpl implements TierManager {
     public Tier tierInsertBD(Tier tier, ClaudiaData data) throws InvalidEntityException, InfrastructureException {
         List<Network> networskout = new ArrayList();
         try {
-            return load(tier.getName(), data.getVdc(), data.getService());
+            return load(tier.getName(), tier.getVdc(), tier.getEnviromentName());
         } catch (EntityNotFoundException e) {
 
-            tier.setVdc(data.getVdc());
-            tier.setEnviromentName(data.getService());
+       //     tier.setVdc(data.getVdc());
+        //    tier.setEnviromentName(data.getService());
 
             List<ProductRelease> productReleases = new ArrayList();
             if (tier.getProductReleases() != null && tier.getProductReleases().size() != 0) {
@@ -597,16 +588,23 @@ public class TierManagerImpl implements TierManager {
         //delete networks
         tierold.setNetworks(null);
         update(tierold);
-        
-        for (Network net : nets) {
-            networkManager.delete(net);
-        }
+
         
         //adding networks
         for (Network net : tiernew.getNetworks()) {
-        	net = networkManager.create(net);
+        	log.debug ("Creating new network " + net.getNetworkName());
+        	try {
+        	    net = networkManager.create(net);
+        	}
+        	catch (AlreadyExistsEntityException e) {
+        		net = networkManager.load(net.getNetworkName(), net.getVdc());
+        	}
         	tierold.addNetwork(net);
             update(tierold);
+        }
+        
+        for (Network net: nets) {
+        	networkManager.delete (net);
         }
         	
         	

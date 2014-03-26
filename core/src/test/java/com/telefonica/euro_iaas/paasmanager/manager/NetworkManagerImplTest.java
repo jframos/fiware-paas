@@ -68,7 +68,7 @@ public class NetworkManagerImplTest extends TestCase {
         SubNetwork subNet = new SubNetwork("sub-net-" + NETWORK_NAME + "-1");
 
         // When
-        when(networkDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
+        when(networkDao.load(any(String.class), any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
         when(subNetworkManager.create(any(SubNetwork.class))).thenReturn(subNet);
         when(networkDao.create(any(Network.class))).thenReturn(net);
         when(networkInstanceManager.getNumberDeployedNetwork(any(ClaudiaData.class), anyString())).thenReturn(0);

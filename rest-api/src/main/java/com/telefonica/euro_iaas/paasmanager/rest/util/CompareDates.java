@@ -120,6 +120,7 @@ public class CompareDates {
     }
 
     public String validateDates(String dateString1, String dateString2) {
+        log.debug("date 1 " + dateString1 + " date 2" + dateString2);
         Date date1 = this.getDate(dateString1, getType(dateString1)); // 0);
         Date date2 = this.getDate(dateString2, getType(dateString2)); // 1);
 
@@ -130,7 +131,7 @@ public class CompareDates {
         long timeDiff = dateLong1 - dateLong2;
 
         if (timeDiff != date) {
-            log.error("Date format incorrect between token.expires " + "and Header field in the HTTP message");
+            log.error("Date format incorrect between token.expires " + "and Header field in the HTTP message " +timeDiff + " " + date);
 
             dateLong1 += (date - timeDiff);
         }

@@ -34,7 +34,7 @@ public interface EnvironmentResourceValidator {
     void validateAbstractCreate(EnvironmentDto environmentDto) 
         throws AlreadyExistEntityException, InvalidEntityException;
 
-    void validateDelete(String envName, String vdc, SystemPropertiesProvider systemPropertiesProvider)
+    void validateDelete(String envName, String vdc)
             throws  AlreadyExistEntityException, InvalidEntityException, EntityNotFoundException;
 
     void validateUpdate(String envName, String vdc, SystemPropertiesProvider systemPropertiesProvider)

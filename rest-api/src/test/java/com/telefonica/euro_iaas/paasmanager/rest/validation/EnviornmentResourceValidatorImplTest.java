@@ -124,7 +124,7 @@ public class EnviornmentResourceValidatorImplTest {
         envDto.setTierDtos(ltiers);
         when(environmentManager.load(anyString(),anyString())).thenReturn(envDto.fromDto());
         when(environmentInstanceManager.findByCriteria(any(EnvironmentInstanceSearchCriteria.class))).thenReturn(new ArrayList<EnvironmentInstance>());        
-        environmentResourceValidator.validateDelete(envDto.getName(), "vdc", systemPropertiesProvider);
+        environmentResourceValidator.validateDelete(envDto.getName(), "vdc");
 
 
     }

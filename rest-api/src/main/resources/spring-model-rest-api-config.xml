@@ -42,7 +42,7 @@
 
     <bean id="abstractEnvironmentResource" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.rest.resources.AbstractEnvironmentResourceImpl">
-        <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
+      
         <property name="environmentResourceValidator" ref="environmentResourceValidator"/>
         <property name="environmentManager" ref="environmentManager"/>
     </bean>

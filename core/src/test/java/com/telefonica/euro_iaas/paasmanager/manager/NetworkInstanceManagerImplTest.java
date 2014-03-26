@@ -18,7 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
 import com.telefonica.euro_iaas.paasmanager.dao.NetworkInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
@@ -108,11 +110,16 @@ public class NetworkInstanceManagerImplTest {
 
     /**
      * It tests the creation of a network.
+     * @throws EntityNotFoundException 
+     * @throws InfrastructureException 
+     * @throws AlreadyExistsEntityException 
+     * @throws InvalidEntityException 
      * 
      * @throws Exception
      */
-    @Test(expected = InfrastructureException.class)
-    public void testCreateNetworkSubNetFailure() throws Exception {
+
+    @Test(expected=InfrastructureException.class)
+    public void testCreateNetworkSubNetFailure() throws EntityNotFoundException, InfrastructureException, InvalidEntityException, AlreadyExistsEntityException {
         // Given
         Network net = new Network(NETWORK_NAME, "vdc");
         SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME);

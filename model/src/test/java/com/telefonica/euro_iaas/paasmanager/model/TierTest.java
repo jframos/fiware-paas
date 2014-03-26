@@ -41,7 +41,7 @@ public class TierTest extends TestCase {
         tier.setSecurityGroup(securityGroup);
 
         TierDto tierDto = tier.toDto();
-        Tier tier3 = tierDto.fromDto("vdc");
+        Tier tier3 = tierDto.fromDto("vdc", "env");
 
         assertEquals(tier.getSecurityGroup().getRules().size(), 1);
         assertEquals(tier.getInitialNumberInstances(), initial);

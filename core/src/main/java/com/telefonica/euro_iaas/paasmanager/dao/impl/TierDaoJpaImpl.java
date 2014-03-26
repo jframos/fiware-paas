@@ -49,6 +49,7 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
         }
     }
 
+
     public Tier load(String name, String vdc, String environmentName) throws EntityNotFoundException {
         try {
             return this.findByNameAndVdcAndEnvironment(name, vdc, environmentName);
@@ -96,6 +97,7 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
 
         return tier;
     }
+
 
     private Tier findByNameAndVdcAndEnvironmentNoProduct(String name, String vdc, String environmentname)
             throws EntityNotFoundException {
@@ -183,6 +185,7 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
         }
         return tier;
     }
+    
 
     @Override
     public String findRegionBySecurityGroup(String idSecurityGroup) throws EntityNotFoundException {
