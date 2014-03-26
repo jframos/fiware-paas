@@ -48,7 +48,6 @@ public class AbstractEnvironmentResourceTest extends TestCase {
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         environmentResourceValidator = mock(EnvironmentResourceValidator.class);
         environmentResource.setEnvironmentManager(environmentManager);
-        environmentResource.setSystemPropertiesProvider(systemPropertiesProvider);
         environmentResource.setEnvironmentResourceValidator(environmentResourceValidator);
 
         Environment environment = new Environment();

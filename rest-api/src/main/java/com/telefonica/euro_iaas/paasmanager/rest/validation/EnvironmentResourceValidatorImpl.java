@@ -96,7 +96,7 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
 
     }
     
-    public void validateDelete(String environmentName, String vdc, SystemPropertiesProvider systemPropertiesProvider)
+    public void validateDelete(String environmentName, String vdc)
             throws EntityNotFoundException, InvalidEntityException {
         Environment environment = null;
 

@@ -187,9 +187,14 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             String newOVF = " ";
             Tier tier = tierManager.loadTierWithProductReleaseAndMetadata(tierInstance.getTier().getName(),
                     tierInstance.getTier().getEnviromentName(), tierInstance.getTier().getVdc());
+            log.debug("The tier " + tier.getName() + " is in bd");
+            log.debug (tier.getProductReleases());
             if ((tier.getProductReleases() != null) && !(tier.getProductReleases().isEmpty())) {
 
                 for (ProductRelease productRelease : tier.getProductReleases()) {
+                    
+                    log.info("Install software " + productRelease.getProduct() + " " + productRelease.getVersion() + " " + productRelease.getName() );
+                 
                     productRelease = productReleaseManager.load(productRelease.getName());
 
                     log.info("Install software " + productRelease.getProduct() + " " + productRelease.getVersion());
@@ -483,7 +488,10 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
     private ProductRelease updateProductReleaseDB(ProductRelease productReleaseDB, ProductRelease productRelease) {
 
         if (productRelease.getDescription() != null) {
-            productReleaseDB.setName(productRelease.getDescription());
+            productReleaseDB.setDescription(productRelease.getDescription());
+        }
+        if (productRelease.getName() != null) {
+            productReleaseDB.setName(productRelease.getName());
         }
         if (productRelease.getTierName() != null) {
             productReleaseDB.setTierName(productRelease.getTierName());

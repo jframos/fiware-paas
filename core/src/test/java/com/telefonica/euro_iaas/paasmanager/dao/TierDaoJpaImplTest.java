@@ -160,6 +160,9 @@ public class TierDaoJpaImplTest {
         Network network = new Network(NETWORK_NAME, "VDC");
         network = networkDao.create(network);
         networks.add(network);
+        Network network2 = new Network(NETWORK_NAME+2, "VDC");
+        network2 = networkDao.create(network2);
+        networks.add(network2);
 
         Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, productReleases);
         tier.setVdc(VDC);
@@ -167,10 +170,17 @@ public class TierDaoJpaImplTest {
         tier.setEnviromentName(ENV);
 
         tier = tierDao.create(tier);
+        
+        Tier tier3 = tierDao.load(TIER_NAME, VDC, ENV);
+        assertNotNull(tier3);
+        assertEquals(tier3.getName(), TIER_NAME);
+        assertEquals(tier3.getNetworks().size(), 2);
+        
+        
         Tier tier2 = tierDao.loadTierWithNetworks(TIER_NAME, VDC, ENV);
         assertNotNull(tier2);
         assertEquals(tier2.getName(), TIER_NAME);
-        assertEquals(tier2.getNetworks().size(), 1);
+        assertEquals(tier2.getNetworks().size(), 2);
     }
     
     @Test

@@ -196,13 +196,13 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
      * It validates the data for delete a tier.
      */
     public void validateDelete(String vdc, String environmentName, String tierName)
-            throws InvalidEntityException {
+            throws InvalidEntityException, EntityNotFoundException {
     	
         try {
             tierManager.load(tierName, vdc, environmentName);
         } catch (EntityNotFoundException e) {
             log.error("The tier " + environmentName + " does not exist");
-            throw new InvalidEntityException("The tier " + tierName + " does not exist");
+            throw new EntityNotFoundException(Tier.class, "The tier " + tierName + " does not exist", tierName);
         }
 
         validateTierInEnvInstance(environmentName, vdc);

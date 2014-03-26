@@ -17,7 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+
 import java.util.Set;
+
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +27,9 @@ import org.mockito.Mockito;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.TierManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -41,6 +45,7 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 /**
  * @author jesus.movilla
  */
+
 public class TierManagerImplTest {
 
     private TierManagerImpl tierManager;
@@ -60,6 +65,7 @@ public class TierManagerImplTest {
     public static String TIER_NAME = "TIER_NAME";
     public static String VDC = "VDC";
     public static String ENV = "ENV";
+
 
     @Before
     public void setUp() throws Exception {
@@ -370,7 +376,49 @@ public class TierManagerImplTest {
 
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
                 "image", "icono", "keypair", "floatingip", "payload");
-        when(tierDao.load(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
+        when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
+
+        tierManager.delete(data, tier);
+
+    }
+    
+    @Test(expected=EntityNotFoundException.class)
+    public void testTierDeletionNotFound() throws EntityNotFoundException, InvalidEntityException, InfrastructureException  {
+
+        productRelease = new ProductRelease("product", "2.0");
+        productRelease.addAttribute(new Attribute("open_ports", "8080"));
+
+        productReleases = new ArrayList<ProductRelease>();
+        productReleases.add(productRelease);
+
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
+                "image", "icono", "keypair", "floatingip", "payload");
+        when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).
+          thenThrow(new EntityNotFoundException (Tier.class, "error", tier));
+
+        tierManager.delete(data, tier);
+
+    }
+    
+    @Test
+    public void testTierDeletionTierWithNetsandSecurityGroups() throws EntityNotFoundException, InvalidEntityException, InfrastructureException  {
+
+        productRelease = new ProductRelease("product", "2.0");
+        productRelease.addAttribute(new Attribute("open_ports", "8080"));
+
+        productReleases = new ArrayList<ProductRelease>();
+        productReleases.add(productRelease);
+
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
+                "image", "icono", "keypair", "floatingip", "payload");
+        SecurityGroup securityGroup = new SecurityGroup ("dd", "ddd");
+        securityGroup.addRule(new Rule());
+        tier.setSecurityGroup(securityGroup);
+        
+        Network net = new Network("NETWORK_NAME", "vdc");
+        tier.addNetwork(net);
+        
+        when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
 
         tierManager.delete(data, tier);
 

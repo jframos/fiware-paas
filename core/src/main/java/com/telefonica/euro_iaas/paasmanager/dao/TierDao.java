@@ -56,7 +56,7 @@ public interface TierDao extends BaseDAO<Tier, String> {
      * @return
      */
     String findRegionBySecurityGroup(String idSecurityGroup) throws EntityNotFoundException;
-
+    
     /**
      * 
      * @param tierName
@@ -74,4 +74,6 @@ public interface TierDao extends BaseDAO<Tier, String> {
      * @throws EntityNotFoundException 
      */
 	List<Tier> findAllWithNetwork(String networkName);
+	
+	
 }
