@@ -14,7 +14,6 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.TaskDao;
 import com.telefonica.euro_iaas.paasmanager.exception.PaasManagerServerRuntimeException;
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
@@ -41,8 +40,6 @@ public class TaskManagerImpl implements TaskManager {
             task.setHref(MessageFormat.format(propertiesProvider.getProperty(TASK_BASE_URL), Long.valueOf(task.getId())
                     .toString(), task.getVdc()));
             return task;
-        } catch (InvalidEntityException e) {
-            throw new PaasManagerServerRuntimeException(e);
         } catch (AlreadyExistsEntityException e) {
             throw new PaasManagerServerRuntimeException(e);
         }
@@ -57,7 +54,7 @@ public class TaskManagerImpl implements TaskManager {
             task.setHref(MessageFormat.format(propertiesProvider.getProperty(TASK_BASE_URL), Long.valueOf(task.getId())
                     .toString(), task.getVdc()));
             return task;
-        } catch (InvalidEntityException e) {
+        } catch (Exception e) {
             throw new PaasManagerServerRuntimeException(e);
         }
     }

@@ -406,14 +406,9 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         List<ProductInstance> productInstances = tierInstance.getProductInstances();
 
         tierInstance.setProductInstances(null);
-        try {
-            tierInstanceDao.update(tierInstance);
-        } catch (InvalidEntityException e) {
-            // TODO Auto-generated catch block
 
-            throw new InvalidEntityException("Error to delete the Tier Instance " + tierInstance.getName());
+        tierInstanceDao.update(tierInstance);
 
-        }
         if (productInstances != null && productInstances.size() > 0) {
             for (ProductInstance productInstance : productInstances) {
                 try {

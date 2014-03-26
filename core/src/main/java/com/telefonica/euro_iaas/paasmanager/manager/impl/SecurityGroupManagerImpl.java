@@ -81,8 +81,6 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
 
         try {
             securityGroupDB = securityGroupDao.create(securityGroupDB);
-        } catch (InvalidEntityException iee) {
-            throw new InvalidEntityException(securityGroupDB);
         } catch (AlreadyExistsEntityException aee) {
             throw new AlreadyExistsEntityException(securityGroup);
         } catch (Exception aee) {

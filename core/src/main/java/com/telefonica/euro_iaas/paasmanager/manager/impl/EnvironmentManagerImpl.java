@@ -71,10 +71,7 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
 
         try {
             environmentDB = environmentDao.create(environmentDB);
-        } catch (InvalidEntityException iee) {
-            String errorMessage = "The Environment Object " + environment.getName() + " is " + "NOT valid: "
-                    + iee.getMessage();
-            throw new InvalidEnvironmentRequestException(errorMessage);
+
         } catch (AlreadyExistsEntityException aee) {
             String errorMessage = "The Environment Object " + environment.getName() + " already exist in Database";
             throw new InvalidEnvironmentRequestException(errorMessage);
@@ -105,7 +102,7 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
     }
 
     public Environment load(String name, String vdc) throws EntityNotFoundException {
-        if (vdc==null || vdc.isEmpty()) {
+        if (vdc == null || vdc.isEmpty()) {
             return environmentDao.load(name);
         } else {
             return environmentDao.load(name, vdc);

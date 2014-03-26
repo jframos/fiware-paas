@@ -38,7 +38,7 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
      * @see com.telefonica.euro_iaas.paasmanager.manager.ProductManager#load(java .lang.String)
      */
     public ProductRelease load(String name) throws EntityNotFoundException {
-        log.debug ("Loading product release " + name);
+        log.debug("Loading product release " + name);
         // return productReleaseDao.load(name);
         ProductRelease productRelease = null;
         String product = name.split("-")[0];
@@ -46,12 +46,12 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
 
         try {
             productRelease = productReleaseDao.load(name);
-            
+
         } catch (EntityNotFoundException e) {
             // Buscar en el SDC y si existe darlo de alta en el paas-manager
             log.debug("The product " + name + " is not in database");
             try {
-                log.debug("Loading from sdc " + product + " " + version );
+                log.debug("Loading from sdc " + product + " " + version);
                 ProductRelease pRelease = productReleaseSdcDao.load(product, version);
 
                 List<OS> ssoo = new ArrayList<OS>();
@@ -67,10 +67,6 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
                         } catch (EntityNotFoundException e1) {
                             try {
                                 so = osDao.create(ssoo.get(j));
-                            } catch (InvalidEntityException e2) {
-                                String msg = "Invalid Entity OSType: " + ssoo.get(j).getOsType();
-                                log.warn(msg);
-                                throw new EntityNotFoundException(OS.class, "osType", ssoo.get(j).getOsType());
                             } catch (AlreadyExistsEntityException e3) {
                                 String msg = "Already Exist OSType: " + ssoo.get(j).getOsType();
                                 log.warn(msg);
@@ -129,17 +125,17 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
      * telefonica.euro_iaas.sdc.model.Product, java.lang.String)
      */
     public ProductRelease load(String productName, String productVersion) throws EntityNotFoundException {
-        log.debug("Loading " +productName + "-" + productVersion);
+        log.debug("Loading " + productName + "-" + productVersion);
 
         return productReleaseDao.load(productName + "-" + productVersion);
     }
-    
+
     public ProductRelease loadWithMetadata(String name) throws EntityNotFoundException {
         log.debug("Loading " + name);
 
         return productReleaseDao.loadProductReleaseWithMetadata(name);
     }
-    
+
     public ProductRelease update(ProductRelease productRelease) throws InvalidEntityException {
         log.debug("Updating " + productRelease.getName());
 

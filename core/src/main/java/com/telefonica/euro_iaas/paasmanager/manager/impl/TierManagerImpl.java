@@ -8,7 +8,9 @@
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -35,9 +37,6 @@ import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import java.util.Set;
-import java.util.HashSet;
-
 
 /**
  * It is the manager for the Tier.
@@ -185,8 +184,8 @@ public class TierManagerImpl implements TierManager {
 
     }
 
-    public void createNetworks(Tier tier) throws EntityNotFoundException,
-            InvalidEntityException, AlreadyExistsEntityException {
+    public void createNetworks(Tier tier) throws EntityNotFoundException, InvalidEntityException,
+            AlreadyExistsEntityException {
         List<Network> networkToBeDeployed = new ArrayList<Network>();
         for (Network network : tier.getNetworks()) {
             networkToBeDeployed.add(network);
@@ -204,7 +203,6 @@ public class TierManagerImpl implements TierManager {
         }
     }
 
-
     /**
      * It deletes the tier.
      * 
@@ -214,15 +212,15 @@ public class TierManagerImpl implements TierManager {
     public void delete(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException, InvalidEntityException,
             InfrastructureException {
 
-        
         try {
             tier = loadTierWithNetworks(tier.getName(), tier.getVdc(), tier.getEnviromentName());
-            log.debug("Deleting tier " + tier.getName() + " from vdc " + tier.getVdc()+ "  env  "+ tier.getEnviromentName() + " " + tier.getNetworks());
+            log.debug("Deleting tier " + tier.getName() + " from vdc " + tier.getVdc() + "  env  "
+                    + tier.getEnviromentName() + " " + tier.getNetworks());
         } catch (EntityNotFoundException e) {
 
-             String mens = "It is not possible to delete the tier " + tier.getName() + " since it is not exist";
-             log.error(mens);
-             throw new EntityNotFoundException(Tier.class, mens, tier);
+            String mens = "It is not possible to delete the tier " + tier.getName() + " since it is not exist";
+            log.error(mens);
+            throw new EntityNotFoundException(Tier.class, mens, tier);
         }
 
         if (tier.getSecurityGroup() != null && !tier.getVdc().isEmpty()) {
@@ -234,7 +232,7 @@ public class TierManagerImpl implements TierManager {
 
         }
 
-        log.debug("Deleting the networks " +tier.getNetworks());
+        log.debug("Deleting the networks " + tier.getNetworks());
 
         List<Network> netsAux = new ArrayList<Network>();
         for (Network netNet : tier.getNetworks()) {
@@ -438,8 +436,8 @@ public class TierManagerImpl implements TierManager {
             return load(tier.getName(), tier.getVdc(), tier.getEnviromentName());
         } catch (EntityNotFoundException e) {
 
-       //     tier.setVdc(data.getVdc());
-        //    tier.setEnviromentName(data.getService());
+            // tier.setVdc(data.getVdc());
+            // tier.setEnviromentName(data.getService());
 
             List<ProductRelease> productReleases = new ArrayList();
             if (tier.getProductReleases() != null && tier.getProductReleases().size() != 0) {
@@ -556,7 +554,7 @@ public class TierManagerImpl implements TierManager {
         log.debug("Update tier " + tier.getName());
         try {
             return tierDao.update(tier);
-        } catch (InvalidEntityException e) {
+        } catch (Exception e) {
             log.error("It is not possible to update the tier " + tier.getName() + " : " + e.getMessage(), e);
             throw new InvalidEntityException("It is not possible to update the tier " + tier.getName() + " : "
                     + e.getMessage());
@@ -564,8 +562,8 @@ public class TierManagerImpl implements TierManager {
 
     }
 
-    
-    public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException, EntityNotFoundException, AlreadyExistsEntityException {
+    public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException, EntityNotFoundException,
+            AlreadyExistsEntityException {
 
         tierold.setFlavour(tiernew.getFlavour());
         tierold.setFloatingip(tiernew.getFloatingip());
@@ -576,38 +574,34 @@ public class TierManagerImpl implements TierManager {
         tierold.setMaximumNumberInstances(tiernew.getMaximumNumberInstances());
         tierold.setMinimumNumberInstances(tiernew.getMinimumNumberInstances());
 
-       
         update(tierold);
-        
-        //Get networks to be delete
-        Set<Network> nets = new HashSet<Network> ();
+
+        // Get networks to be delete
+        Set<Network> nets = new HashSet<Network>();
         for (Network net : tierold.getNetworks()) {
-        	nets.add(net);
+            nets.add(net);
         }
-        
-        //delete networks
+
+        // delete networks
         tierold.setNetworks(null);
         update(tierold);
 
-        
-        //adding networks
+        // adding networks
         for (Network net : tiernew.getNetworks()) {
-        	log.debug ("Creating new network " + net.getNetworkName());
-        	try {
-        	    net = networkManager.create(net);
-        	}
-        	catch (AlreadyExistsEntityException e) {
-        		net = networkManager.load(net.getNetworkName(), net.getVdc());
-        	}
-        	tierold.addNetwork(net);
+            log.debug("Creating new network " + net.getNetworkName());
+            try {
+                net = networkManager.create(net);
+            } catch (AlreadyExistsEntityException e) {
+                net = networkManager.load(net.getNetworkName(), net.getVdc());
+            }
+            tierold.addNetwork(net);
             update(tierold);
         }
-        
-        for (Network net: nets) {
-        	networkManager.delete (net);
+
+        for (Network net : nets) {
+            networkManager.delete(net);
         }
-        	
-        	
+
         tierold.setProductReleases(null);
         update(tierold);
 

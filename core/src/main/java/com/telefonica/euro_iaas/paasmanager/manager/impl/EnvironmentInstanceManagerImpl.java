@@ -103,7 +103,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         environmentInstance.setEnvironment(environment);
         environmentInstance.setStatus(Status.INIT);
 
-        environmentInstance = insertEnvironenttInstanceInDatabase(environmentInstance);
+        environmentInstance = insertEnvironmentInstanceInDatabase(environmentInstance);
 
         log.info("Creating the infrastructure");
         environmentInstance.setStatus(Status.DEPLOYING);
@@ -279,7 +279,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
     public EnvironmentInstance update(EnvironmentInstance envInst) throws InvalidEntityException {
         try {
             return environmentInstanceDao.update(envInst);
-        } catch (InvalidEntityException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             log.error("It is not possible to update the environment " + envInst.getName() + " : " + e.getMessage());
             throw new InvalidEntityException(EnvironmentInstance.class, e);
@@ -357,7 +357,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                 envInstance.setTierInstances(null);
                 try {
                     envInstance = environmentInstanceDao.update(envInstance);
-                } catch (InvalidEntityException e) {
+                } catch (Exception e) {
                     log.error(e.getMessage());
                     throw new InvalidEntityException(EnvironmentInstance.class, e);
                 }
@@ -453,19 +453,15 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         return environment;
     }
 
-    private EnvironmentInstance insertEnvironenttInstanceInDatabase(EnvironmentInstance environmentInstance)
+    private EnvironmentInstance insertEnvironmentInstanceInDatabase(EnvironmentInstance environmentInstance)
             throws InvalidEntityException {
         try {
             environmentInstance = environmentInstanceDao.create(environmentInstance);
-        } catch (InvalidEntityException e) {
-            String errorMessage = " Invalid environmentInstance objetc . Desc: " + e.getMessage();
+        } catch (Exception e) {
+            String errorMessage = " Invalid environmentInstance object . Desc: " + e.getMessage();
             log.error(errorMessage);
             throw new InvalidEntityException(EnvironmentInstance.class, e);
-        } catch (AlreadyExistsEntityException e) {
-            String errorMessage = " Already exists environmentInstance objetc . " + environmentInstance.getName()
-                    + ". " + "Desc: " + e.getMessage();
-            log.error(errorMessage);
-            throw new InvalidEntityException(EnvironmentInstance.class, e);
+
         }
 
         return environmentInstance;

@@ -34,7 +34,6 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationInstanceSearchCriteria;
 
-
 /**
  * Application Instance Manager operations: install
  * 
@@ -57,8 +56,6 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
      *            the vdc where the instance will be installed
      * @param environmentInstance
      *            the environmentInstance on which the application is going to be installed
-     * @param application
-     *            the application to be installed
      * @throws ProductReleaseNotFoundException
      *             if ProuctRelease provided is not in the paas-manager database
      * @throws ApplicationTypeNotFoundException
@@ -73,10 +70,10 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
             ApplicationRelease applicationRelease) throws ProductReleaseNotFoundException, InvalidEntityException,
             AlreadyExistsEntityException, ApplicationTypeNotFoundException, ProductInstallatorException {
 
-        log.info("Install aplication " + applicationRelease.getName() + " " +
-                applicationRelease.getVersion() + " on "
-                + " enviornment " + environmentInstance + " with number of artifacts " + applicationRelease.getArtifacts().size() );
-        
+        log.info("Install aplication " + applicationRelease.getName() + " " + applicationRelease.getVersion() + " on "
+                + " enviornment " + environmentInstance + " with number of artifacts "
+                + applicationRelease.getArtifacts().size());
+
         if (!(canInstall(environmentInstance, applicationRelease.getArtifacts()))) {
             throw new InvalidEntityException("The Products included in "
                     + "ApplicationRelease does NOT correspond with the "
@@ -85,11 +82,12 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
 
         // Install The applicationRelease=n-Artifacts
         for (Artifact artifact : applicationRelease.getArtifacts()) {
-            log.debug ("Installing artifact " + artifact.getName() + " version " + artifact.getPath() + " product " + artifact.getProductRelease());
+            log.debug("Installing artifact " + artifact.getName() + " version " + artifact.getPath() + " product "
+                    + artifact.getProductRelease());
             // Install the artifact in the product instance associated
             // Obtain the VMs from EnvInstance where productRelease is installed
             ProductInstance productInstance = getProductInstanceFromEnvironment(artifact, environmentInstance);
-            log.debug("Installing artifact " + artifact.getName() );
+            log.debug("Installing artifact " + artifact.getName());
             productInstallator.installArtifact(productInstance, artifact);
 
         }
@@ -164,7 +162,7 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
     private ApplicationInstance insertApplicationInstanceDB(ApplicationInstance application)
             throws ProductReleaseNotFoundException, ApplicationTypeNotFoundException, InvalidEntityException,
             AlreadyExistsEntityException {
-        log.debug ("Inser application " + application.getName() + " in DB");
+        log.debug("Inser application " + application.getName() + " in DB");
 
         ApplicationInstance applicationInstance = null;
         Artifact artifact;
@@ -196,8 +194,6 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
                         artifact = artifactDao.create(new Artifact(artifactsIn.get(i).getName(), artifactsIn.get(i)
                                 .getPath(), productRelease));
                         artifactsDB.add(artifact);
-                    } catch (InvalidEntityException e3) {
-                        throw new InvalidEntityException(e3);
                     } catch (AlreadyExistsEntityException e3) {
                         throw new AlreadyExistsEntityException(e3);
                     }
@@ -217,8 +213,6 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
                         application.getApplicationRelease().getDescription(), null,
 
                         application.getApplicationRelease().getTransitableReleases(), artifactsDB));
-            } catch (InvalidEntityException e3) {
-                throw new InvalidEntityException(e3);
             } catch (AlreadyExistsEntityException e3) {
                 throw new AlreadyExistsEntityException(e3);
             }
@@ -226,8 +220,6 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
             try {
                 applicationInstance = applicationInstanceDao.create(new ApplicationInstance(applicationRelease,
                         application.getEnvironmentInstance(), application.getVdc(), application.getStatus()));
-            } catch (InvalidEntityException e3) {
-                throw new InvalidEntityException(ApplicationInstance.class, e3);
             } catch (AlreadyExistsEntityException e3) {
                 throw new AlreadyExistsEntityException(ApplicationInstance.class, e3);
             }
@@ -278,14 +270,12 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
      * case the method return false
      * 
      * @param envInstance
-     * @param applicationRelease
      * @return true/false
      */
     private boolean canInstall(EnvironmentInstance envInstance, List<Artifact> applicationArtifact) {
 
-        if (applicationArtifact==null)
-        {
-            log.debug ("There is not any product release to install");
+        if (applicationArtifact == null) {
+            log.debug("There is not any product release to install");
             return false;
         }
         List<ProductRelease> productReleasesApp = new ArrayList<ProductRelease>();
@@ -306,8 +296,8 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
 
         for (int i = 0; i < productReleasesApp.size(); i++) {
             if (!(isProductReleaseinProductList(productReleasesApp.get(i), productReleasesEnv))) {
-                log.info("The artifacts cannot be deployed in the environmetn instance, since the product release " +
-                        productReleasesApp.get(i) + " is not in the environment" );
+                log.info("The artifacts cannot be deployed in the environmetn instance, since the product release "
+                        + productReleasesApp.get(i) + " is not in the environment");
                 return false;
             }
         }

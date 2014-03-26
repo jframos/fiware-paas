@@ -85,8 +85,8 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         return productInstanceDao.findByCriteria(criteria);
     }
 
-    public ProductInstance create2(ProductInstance productInstance, TierInstance tierInstance) throws InvalidEntityException,
-            AlreadyExistsEntityException {
+    public ProductInstance create2(ProductInstance productInstance, TierInstance tierInstance)
+            throws InvalidEntityException, AlreadyExistsEntityException {
         ProductRelease productRelease = productInstance.getProductRelease();
         if (productInstance.getName() == null) {
             productInstance.setName(tierInstance + "_" + productRelease.getProduct() + "_"
@@ -106,10 +106,6 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         if (productInstance.getId() == null)
             try {
                 productInstanceDao.create(productInstance);
-            } catch (InvalidEntityException e) {
-                // TODO Auto-generated catch block
-                throw new InvalidEntityException("Error to persist the product Instance " + productInstance.getName()
-                        + " : " + e.getMessage());
             } catch (AlreadyExistsEntityException e) {
                 // TODO Auto-generated catch block
                 throw new AlreadyExistsEntityException("Error to persist the product Instance "
@@ -129,8 +125,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
     }
 
     /**
-     * @param productReleaseDao
-     *            the productReleaseDao to set
+     * the productReleaseDao to set
      */
     public void setProductReleaseManager(ProductReleaseManager productReleaseManager) {
         this.productReleaseManager = productReleaseManager;
@@ -173,9 +168,6 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
                 productInstance = productInstanceDao.create(productInstance);
 
-            } catch (InvalidEntityException iee) {
-                String errorMessage = "The Product Instance Object " + productInstance.getName() + " is " + "NOT valid";
-                throw new InvalidProductInstanceRequestException(errorMessage);
             } catch (AlreadyExistsEntityException aee) {
                 String errorMessage = "The ProductRelease Object " + productInstance.getName()
                         + " already exist in Database";
