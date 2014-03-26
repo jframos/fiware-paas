@@ -96,11 +96,6 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
     	}
         
         for (Tier tier: tiers) {
-        	
-        	for (Tier tier1: tiers) {
-        		log.debug ("checking " + tier1.getName() + " " + tier1.getNetworks());
-        	}
-
             environment.deleteTier(tier);
             update(environment);
             tierManager.delete(data, tier);
