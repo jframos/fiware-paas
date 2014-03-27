@@ -90,31 +90,37 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
 
         return securityGroupDB;
     }
+    
+    /**
+     * It destroy a security group.
+     */
 
     public void destroy(String region, String token, String vdc, SecurityGroup securityGroup)
             throws InvalidEntityException, InfrastructureException {
-
-        List<Rule> rules = new ArrayList<Rule>();
-        for (Rule rule : securityGroup.getRules()) {
-            rules.add(rule);
-        }
-
-        if (securityGroup.getRules() != null) {
+        
+        if (securityGroup.getRules().isEmpty()) {
+            log.warn ("There is not any rule associated to the security group");
+        } else {
+            List<Rule> rules = securityGroup.cloneRules ();
             securityGroup.setRules(null);
             securityGroupDao.update(securityGroup);
-
+            
             for (Rule rule : rules) {
-                ruleManager.destroy(region, token, vdc, rule);
-
+                try {
+                    ruleManager.destroy(region, token, vdc, rule); 
+                } catch (Exception e) {
+                    log.warn("Error to destroy the rule " + e.getMessage());
+                }
             }
         }
 
-        firewallingClient.destroySecurityGroup(region, token, vdc, securityGroup);
         try {
-            securityGroupDao.remove(securityGroup);
+            firewallingClient.destroySecurityGroup(region, token, vdc, securityGroup);
         } catch (Exception e) {
-            throw new InfrastructureException(e.getMessage());
+            log.warn("There is not any rule associated to the security group");
         }
+        
+        securityGroupDao.remove(securityGroup);
 
     }
 

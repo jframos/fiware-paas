@@ -138,6 +138,14 @@ public class SecurityGroup {
     public void setRules(List<Rule> rules) {
         this.rules = rules;
     }
+    
+    public List<Rule> cloneRules (){
+        List<Rule> rules = new ArrayList<Rule>();
+        for (Rule rule : this.getRules()) {
+            rules.add(rule);
+        }
+        return rules;
+    }
 
     /**
      * Json.

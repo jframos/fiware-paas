@@ -39,6 +39,7 @@ public class RuleManagerImpl implements RuleManager {
     public void destroy(String region, String token, String vdc, Rule rule) throws InvalidEntityException,
             InfrastructureException {
         log.debug("Destroying rule " + rule.getFromPort() + " from security group " + rule.getIdParent());
+        
         firewallingClient.destroyRule(region, token, vdc, rule);
         try {
             ruleDao.remove(rule);
