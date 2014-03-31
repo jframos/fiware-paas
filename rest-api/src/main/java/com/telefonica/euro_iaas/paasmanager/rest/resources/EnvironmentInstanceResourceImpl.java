@@ -165,11 +165,11 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
 
         List<EnvironmentInstance> envInstances = environmentInstanceManager.findByCriteria(criteria);
 
-        List<EnvironmentInstance> environmentInstances = filterEqualTiers(envInstances);
+    //    List<EnvironmentInstance> environmentInstances = filterEqualTiers(envInstances);
 
         List<EnvironmentInstancePDto> envInstancesDto = new ArrayList<EnvironmentInstancePDto>();
-        for (int i = 0; i < environmentInstances.size(); i++) {
-            envInstancesDto.add(environmentInstances.get(i).toPDtos());
+        for (int i = 0; i < envInstances.size(); i++) {
+            envInstancesDto.add(envInstances.get(i).toPDtos());
         }
         return envInstancesDto;
     }
@@ -184,14 +184,14 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
 
         List<EnvironmentInstance> envInstances = environmentInstanceManager.findByCriteria(criteria);
 
-        List<EnvironmentInstance> environmentInstances = filterEqualTiers(envInstances);
+   //     List<EnvironmentInstance> environmentInstances = filterEqualTiers(envInstances);
 
         if (envInstances == null || envInstances.size() == 0) {
             throw new WebApplicationException(new EntityNotFoundException(Environment.class, "EnvironmeniInstance "
                     + name + " not found", ""), ERROR_NOT_FOUND);
         } else {
             // EnvironmentInstancePDto envInstanceDto = envInstances.get(0).toPDto();
-            EnvironmentInstancePDto envInstanceDto = environmentInstances.get(0).toPDto();
+            EnvironmentInstancePDto envInstanceDto = envInstances.get(0).toPDto();
             return envInstanceDto;
         }
 

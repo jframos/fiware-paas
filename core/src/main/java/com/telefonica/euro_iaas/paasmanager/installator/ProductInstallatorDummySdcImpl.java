@@ -101,7 +101,7 @@ public class ProductInstallatorDummySdcImpl implements ProductInstallator {
      * @see com.telefonica.euro_iaas.paasmanager.installator.ProductInstallator#loadNode(java.lang.String,
      * java.lang.String)
      */
-    public ChefClient loadNode(String vdc, String nodeName) throws ProductInstallatorException, EntityNotFoundException {
+    public ChefClient loadNode(ClaudiaData claudiaData, String vdc, String nodeName) throws ProductInstallatorException, EntityNotFoundException {
 
         return null;
     }

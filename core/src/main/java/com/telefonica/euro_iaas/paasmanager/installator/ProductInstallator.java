@@ -70,5 +70,5 @@ public interface ProductInstallator {
     /*
      * Operation that load a chefClient from the node manager (Chef server in SDC, for instance)
      */
-    ChefClient loadNode(String vdc, String nodeName) throws ProductInstallatorException, EntityNotFoundException;
+    ChefClient loadNode(ClaudiaData claudiaData, String vdc, String nodeName) throws ProductInstallatorException, EntityNotFoundException;
 }

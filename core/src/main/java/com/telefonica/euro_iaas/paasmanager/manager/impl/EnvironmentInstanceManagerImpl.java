@@ -306,8 +306,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                 tierInstance.setStatus(Status.UNINSTALLING);
                 tierInstanceDao.update(tierInstance);
                 try {
-                    ChefClient chefClient = productInstallator.loadNode(tierInstance.getVdc(), tierInstance.getVM()
-                            .getHostname());
+                    ChefClient chefClient = productInstallator.loadNode(claudiaData, tierInstance.getVdc(), tierInstance.getVM()
+                            .getHostname() );
 
                     productInstallator.deleteNode(claudiaData, tierInstance.getVdc(), chefClient.getName());
 

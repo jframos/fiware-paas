@@ -347,7 +347,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
         // Borrado del Nodo en el chef Server
         try {
-            task = chefClientService.delete(vdc, sdcNodeName);
+            task = chefClientService.delete(vdc, sdcNodeName, claudiaData.getUser().getToken());
         } catch (Exception e) {
             String errorMessage = " Error invokg SDC to delete Chef Server Node " + sdcNodeName + " " + e.getMessage();
             log.error(errorMessage);
@@ -360,7 +360,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
     }
 
     // Load a node from the nodename
-    public ChefClient loadNode(String vdc, String hostname) throws ProductInstallatorException, EntityNotFoundException {
+    public ChefClient loadNode(ClaudiaData data, String vdc, String hostname) throws ProductInstallatorException, EntityNotFoundException {
 
         String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
         String sdcMediaType = systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
@@ -373,7 +373,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
         // Borrado del Nodo en el chef Server
         try {
-            return chefClientService.loadByHostname(vdc, hostname);
+            return chefClientService.loadByHostname(vdc, hostname, data.getUser().getToken());
         } catch (ResourceNotFoundException rnfe) {
             throw new EntityNotFoundException(ChefClient.class, rnfe.getMessage(), rnfe);
         } catch (Exception e) {
