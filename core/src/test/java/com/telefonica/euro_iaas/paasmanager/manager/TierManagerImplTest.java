@@ -94,7 +94,7 @@ public class TierManagerImplTest {
         tier.setName("tierName");
         tier.setProductReleases(productReleases);
 
-        when(productReleaseManager.load(any(String.class))).thenReturn(productRelease);
+        when(productReleaseManager.load(any(String.class),any(ClaudiaData.class))).thenReturn(productRelease);
 
         data = new ClaudiaData("dd", "dd", "dd");
         List<? extends GrantedAuthority> authorities = new ArrayList();
@@ -241,7 +241,7 @@ public class TierManagerImplTest {
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
         Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
                 .load(any(String.class), any(String.class), any(String.class));
-        when(productReleaseManager.load(any(String.class))).thenReturn(productRelease);
+        when(productReleaseManager.load(any(String.class),any(ClaudiaData.class))).thenReturn(productRelease);
         Tier tier3 = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image",
                 "icono", "keypair", "floatingip", "payload");
         when(tierDao.update(any(Tier.class))).thenReturn(tier);

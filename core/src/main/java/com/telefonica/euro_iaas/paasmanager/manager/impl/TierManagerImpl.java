@@ -96,7 +96,7 @@ public class TierManagerImpl implements TierManager {
         } else {
 
             // check if exist product or need sync with SDC
-            existProductOrSyncWithSDC(tier);
+            existProductOrSyncWithSDC(claudiaData, tier);
 
             createSecurityGroups(claudiaData, tier);
 
@@ -107,13 +107,13 @@ public class TierManagerImpl implements TierManager {
         }
     }
 
-    private void existProductOrSyncWithSDC(Tier tier) throws InvalidEntityException {
+    private void existProductOrSyncWithSDC(ClaudiaData data, Tier tier) throws InvalidEntityException {
 
         if (tier.getProductReleases() != null && tier.getProductReleases().size() != 0) {
             for (ProductRelease prod : tier.getProductReleases()) {
                 try {
                     log.debug("Sync product release " + prod.getProduct() + "-" + prod.getVersion());
-                    prod = productReleaseManager.load(prod.getProduct() + "-" + prod.getVersion());
+                    prod = productReleaseManager.load(prod.getProduct() + "-" + prod.getVersion(), data);
                 } catch (Exception e2) {
                     String errorMessage = "The ProductRelease Object " + prod.getProduct() + "-" + prod.getVersion()
                             + " not exist in database";
@@ -469,7 +469,7 @@ public class TierManagerImpl implements TierManager {
 
                     try {
                         ProductRelease templateProduct = productReleaseManager.load(product.getProduct() + "-"
-                                + product.getVersion());
+                                + product.getVersion(), data);
                         log.debug("Adding product release " + templateProduct.getProduct() + "-"
                                 + templateProduct.getVersion() + " to tier " + templateProduct.getName());
 
@@ -562,7 +562,7 @@ public class TierManagerImpl implements TierManager {
 
     }
 
-    public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException, EntityNotFoundException,
+    public void updateTier(ClaudiaData data, Tier tierold, Tier tiernew) throws InvalidEntityException, EntityNotFoundException,
             AlreadyExistsEntityException {
 
         tierold.setFlavour(tiernew.getFlavour());
@@ -611,7 +611,7 @@ public class TierManagerImpl implements TierManager {
         for (ProductRelease productRelease : tiernew.getProductReleases()) {
             try {
                 productRelease = productReleaseManager.load(productRelease.getProduct() + "-"
-                        + productRelease.getVersion());
+                        + productRelease.getVersion(), data);
             } catch (EntityNotFoundException e) {
                 log.error("The new software " + productRelease.getProduct() + "-" + productRelease.getVersion()
                         + " is not found");
@@ -622,5 +622,6 @@ public class TierManagerImpl implements TierManager {
         }
 
     }
+
 
 }

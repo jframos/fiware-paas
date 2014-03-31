@@ -20,6 +20,7 @@ import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.dao.sdc.ProductReleaseSdcDao;
 import com.telefonica.euro_iaas.paasmanager.exception.SdcException;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.OS;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 
@@ -37,7 +38,7 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.paasmanager.manager.ProductManager#load(java .lang.String)
      */
-    public ProductRelease load(String name) throws EntityNotFoundException {
+    public ProductRelease load(String name, ClaudiaData data) throws EntityNotFoundException {
         log.debug("Loading product release " + name);
         // return productReleaseDao.load(name);
         ProductRelease productRelease = null;
@@ -52,7 +53,7 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
             log.debug("The product " + name + " is not in database");
             try {
                 log.debug("Loading from sdc " + product + " " + version);
-                ProductRelease pRelease = productReleaseSdcDao.load(product, version);
+                ProductRelease pRelease = productReleaseSdcDao.load(product, version, data);
 
                 List<OS> ssoo = new ArrayList<OS>();
                 ssoo = pRelease.getSupportedOOSS();
@@ -94,7 +95,7 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
                 log.warn(msg);
                 throw new EntityNotFoundException(ProductRelease.class, "name", name);
             } catch (SdcException e6) {
-                String msg = "SDC failure at loading ProductRelease " + name;
+                String msg = "SDC failure at loading ProductRelease " + name + " " + e6.getMessage();
                 log.warn(msg);
                 throw new EntityNotFoundException(ProductRelease.class, "name", name);
             }

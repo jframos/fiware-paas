@@ -8,6 +8,7 @@
 package com.telefonica.euro_iaas.paasmanager.manager.async;
 
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 
 public interface ApplicationInstanceAsyncManager {
@@ -28,9 +29,9 @@ public interface ApplicationInstanceAsyncManager {
      * @param callback
      *            if not empty, contains the url where the result of the execution will be sent
      */
-    void install(String org, String vdc, String environmentInstanceName, ApplicationRelease applicationRelease,
+    void install(ClaudiaData data, String environmentInstanceName, ApplicationRelease applicationRelease,
             Task task, String callback);
 
-    void uninstall(String org, String vdc, String envInstance, String appInstance, Task task, String callback);
+    void uninstall(ClaudiaData data, String envInstance, String appInstance, Task task, String callback);
 
 }

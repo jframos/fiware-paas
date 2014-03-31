@@ -183,7 +183,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
                     
                     tier = tierManager.loadTierWithNetworks(tierDto.getName(), "", environmentName);
                     log.debug("load tier " + tierDto.getName() + " with nets " + tier.getName() + " " + tier.getNetworks());
-                    tierManager.updateTier(tier, newtier);
+                    tierManager.updateTier(claudiaData, tier, newtier);
 
                 }
                 environment.addTier(tier);

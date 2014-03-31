@@ -98,7 +98,7 @@ public interface ProductInstanceManager {
      * @throws FSMViolationException
      *             if try to make a forbidden transition
      */
-    void uninstall(ProductInstance productInstance) throws ProductInstallatorException;
+    void uninstall(ClaudiaData claudiaData, ProductInstance productInstance) throws ProductInstallatorException;
 
     // throws NodeExecutionException, ApplicationInstalledException,
     // FSMViolationException;
@@ -157,7 +157,7 @@ public interface ProductInstanceManager {
      */
     // ProductInstance update(ProductInstance productInstance);
 
-    ProductInstance create(ProductInstance productInstance) throws InvalidEntityException,
+    ProductInstance create(ClaudiaData data, ProductInstance productInstance) throws InvalidEntityException,
             AlreadyExistsEntityException, InvalidProductInstanceRequestException;
 
     void remove(ProductInstance productInstance);

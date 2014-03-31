@@ -62,7 +62,7 @@ public class ProductReleaseSdcDaoImplTest {
         when(builder.type(MediaType.APPLICATION_JSON)).thenReturn(builder);
         when(builder.get(InputStream.class)).thenReturn(inputStream);
         
-        List<String> products = productReleaseSdcDaoImpl.findAllProducts();
+        List<String> products = productReleaseSdcDaoImpl.findAllProducts("token", "tenant");
         
         //then
         assertNotNull(products);
@@ -95,7 +95,7 @@ public class ProductReleaseSdcDaoImplTest {
         when(builder.type(MediaType.APPLICATION_JSON)).thenReturn(builder);
         when(builder.get(InputStream.class)).thenReturn(inputStream);
         
-        List<ProductRelease> productReleases = productReleaseSdcDaoImpl.findAllProductReleasesOfProduct("tomcat");
+        List<ProductRelease> productReleases = productReleaseSdcDaoImpl.findAllProductReleasesOfProduct("tomcat","token", "tenant");
         
         //then
         assertNotNull(productReleases);

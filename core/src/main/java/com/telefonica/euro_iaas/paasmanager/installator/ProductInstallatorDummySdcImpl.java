@@ -30,12 +30,12 @@ public class ProductInstallatorDummySdcImpl implements ProductInstallator {
     private SystemPropertiesProvider systemPropertiesProvider;
     private SDCUtil sDCUtil;
 
-    public void installArtifact(ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException {
+    public void installArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException {
         // TODO Auto-generated method stub
 
     }
 
-    public void uninstall(ProductInstance productInstance) throws ProductInstallatorException {
+    public void uninstall(ClaudiaData claudiaData, ProductInstance productInstance) throws ProductInstallatorException {
         // TODO Auto-generated method stub
 
     }
@@ -61,7 +61,7 @@ public class ProductInstallatorDummySdcImpl implements ProductInstallator {
         this.sDCUtil = sDCUtil;
     }
 
-    public void uninstallArtifact(ProductInstance productInstance, Artifact artifact)
+    public void uninstallArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact)
             throws ProductInstallatorException {
         // TODO Auto-generated method stub
 
@@ -91,7 +91,7 @@ public class ProductInstallatorDummySdcImpl implements ProductInstallator {
      * @seecom.telefonica.euro_iaas.paasmanager.installator.ProductInstallator# deleteNode(java.lang.String,
      * java.lang.String)
      */
-    public void deleteNode(String vdc, String nodeName) throws ProductInstallatorException {
+    public void deleteNode(ClaudiaData claudiaData, String vdc, String nodeName) throws ProductInstallatorException {
         // TODO Auto-generated method stub
 
     }

@@ -12,6 +12,7 @@ import java.util.List;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 
 /**
@@ -28,7 +29,7 @@ public interface ProductReleaseManager {
      * @throws EntityNotFoundException
      *             if the product instance does not exists
      */
-    ProductRelease load(String name) throws EntityNotFoundException;
+    ProductRelease load(String name,  ClaudiaData data) throws EntityNotFoundException;
 
     /**
      * Retrieve all ProductRelease created in the system.

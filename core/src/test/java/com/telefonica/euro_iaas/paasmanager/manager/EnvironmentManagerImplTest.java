@@ -20,6 +20,8 @@ import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
+
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,7 +78,7 @@ public class EnvironmentManagerImplTest extends TestCase {
         productReleaseDao = mock(ProductReleaseDao.class);
         when(productReleaseDao.load(any(String.class))).thenReturn(productRelease);
         productReleaseManager = mock(ProductReleaseManager.class);
-        when(productReleaseManager.load(any(String.class))).thenReturn(productRelease);
+        when(productReleaseManager.load(any(String.class),any(ClaudiaData.class))).thenReturn(productRelease);
 
         tierManager = mock(TierManager.class);
         when(tierManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
@@ -97,7 +99,16 @@ public class EnvironmentManagerImplTest extends TestCase {
 
         when(environmentDao.create(any(Environment.class))).thenReturn(envResult);
 
-        data = new ClaudiaData("dd", "dd", "service");
+        data = mock(ClaudiaData.class);
+        PaasManagerUser user = mock(PaasManagerUser.class);
+        
+    
+
+        when (data.getUser()).thenReturn(user);
+        when (data.getOrg()).thenReturn("FIWARE");
+        when (data.getService()).thenReturn("deploytm");
+        when (data.getVdc()).thenReturn("60b4125450fc4a109f50357894ba2e28");
+        when (user.getToken()).thenReturn("any");
 
     }
 

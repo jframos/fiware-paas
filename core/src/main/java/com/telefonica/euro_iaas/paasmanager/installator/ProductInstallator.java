@@ -43,7 +43,7 @@ public interface ProductInstallator {
      * @return
      * @throws ProductInstallatorException
      */
-    void installArtifact(ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException;
+    void installArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException;
 
     /**
      * Operation that uninstalls an artefact in the productInstance
@@ -52,12 +52,12 @@ public interface ProductInstallator {
      * @return
      * @throws ProductInstallatorException
      */
-    void uninstallArtifact(ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException;
+    void uninstallArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException;
 
     /*
      * Operation that installs the productInstance
      */
-    void uninstall(ProductInstance productInstance) throws ProductInstallatorException;
+    void uninstall(ClaudiaData claudiaData, ProductInstance productInstance) throws ProductInstallatorException;
 
     void configure(ClaudiaData claudiaData, ProductInstance productInstance, List<Attribute> properties)
             throws ProductInstallatorException, EntityNotFoundException, ProductReconfigurationException;
@@ -65,7 +65,7 @@ public interface ProductInstallator {
     /*
      * Operation that deletes a chefClien from the node manager (Chef server in SDC, for instance)
      */
-    void deleteNode(String vdc, String nodeName) throws ProductInstallatorException;
+    void deleteNode(ClaudiaData claudiaData, String vdc, String nodeName) throws ProductInstallatorException;
 
     /*
      * Operation that load a chefClient from the node manager (Chef server in SDC, for instance)

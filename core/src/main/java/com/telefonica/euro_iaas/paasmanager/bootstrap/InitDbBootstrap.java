@@ -96,7 +96,7 @@ public class InitDbBootstrap implements ServletContextListener {
          */
 
         // Taking the ProductRelease from SDC *******************
-        List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
+     /*   List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
         try {
             productReleases = productReleaseSdcDao.findAll();
 
@@ -137,7 +137,7 @@ public class InitDbBootstrap implements ServletContextListener {
             log.error("alread exists " + ex2);
         } catch (Exception ex4) {
             log.error("generic exception " + ex4);
-        }
+        }*/
 
         try {
             osDao.load("95");

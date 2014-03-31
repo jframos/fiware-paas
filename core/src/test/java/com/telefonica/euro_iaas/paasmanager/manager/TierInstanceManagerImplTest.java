@@ -145,7 +145,7 @@ public class TierInstanceManagerImplTest extends TestCase {
         when(tierInstanceDao.load(any(String.class))).thenThrow(
                 new EntityNotFoundException(TierInstance.class, "dD", null));
 
-        when(productInstanceManager.create(any(ProductInstance.class))).thenReturn(productInstance);
+        when(productInstanceManager.create(any(ClaudiaData.class), any(ProductInstance.class))).thenReturn(productInstance);
 
         Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tierProductConfig);

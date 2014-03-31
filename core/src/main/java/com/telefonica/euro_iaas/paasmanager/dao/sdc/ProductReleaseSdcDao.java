@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.SdcException;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 
 /**
@@ -24,7 +25,7 @@ public interface ProductReleaseSdcDao {
      * @return
      * @throws SdcException
      */
-    List<ProductRelease> findAll() throws SdcException;
+    List<ProductRelease> findAll(String token, String tenant) throws SdcException;
 
     /**
      * Load a ProductRelease from the SDC by Name.
@@ -33,19 +34,19 @@ public interface ProductReleaseSdcDao {
      * @return
      * @throws EntityNotFoundException
      */
-    ProductRelease load(String product, String version) throws EntityNotFoundException, SdcException;
+    ProductRelease load(String product, String version,  ClaudiaData data) throws EntityNotFoundException, SdcException;
 
     /**
      * Load all products from SDC.
      * @return a list with the product names present in SDC
      * @throws SdcException
      */
-    List<String> findAllProducts() throws SdcException;
+    List<String> findAllProducts(String token, String tenant) throws SdcException;
     
     /**
      * Load all productRelease of a product from SDC.
      * @return a list with the product names present in SDC
      * @throws SdcException
      */
-    List<ProductRelease> findAllProductReleasesOfProduct(String pName) throws SdcException;
+    List<ProductRelease> findAllProductReleasesOfProduct(String pName, String token, String tenant) throws SdcException;
 }
