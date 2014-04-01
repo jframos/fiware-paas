@@ -5,7 +5,7 @@
     <artifactId>paas-manager-server</artifactId>
     <packaging>pom</packaging>
     <name>paas-manager-server</name>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
 
     <url>${ciURI}/sites/fiware/${project.artifactId}</url>
