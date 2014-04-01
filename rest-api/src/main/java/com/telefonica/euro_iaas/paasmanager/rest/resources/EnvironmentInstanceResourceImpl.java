@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
@@ -43,7 +44,6 @@ import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentInstanceResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 
 /**
  * Default EnvironmentInstanceResource implementation.
@@ -104,8 +104,8 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentInstanceDto.getBlueprintName());
         addCredentialsToClaudiaData(claudiaData);
         try {
-			validator.validateCreate(environmentInstanceDto, systemPropertiesProvider, claudiaData);
-	
+            validator.validateCreate(environmentInstanceDto, systemPropertiesProvider, claudiaData);
+
         } catch (InvalidEntityException e) {
             log.error("The environment instance is not valid " + e.getMessage());
             throw new APIException(e);
@@ -142,7 +142,7 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
     }
 
     /**
-	 * 
+	 *
 	 */
     public List<EnvironmentInstancePDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType,
             List<Status> status, String vdc) {
@@ -163,9 +163,9 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
             criteria.setOrderBy(orderType);
         }
 
-        List<EnvironmentInstance> envInstances = environmentInstanceManager.findByCriteria(criteria);
+        List<EnvironmentInstance> environmentInstances = environmentInstanceManager.findByCriteria(criteria);
 
-        List<EnvironmentInstance> environmentInstances = filterEqualTiers(envInstances);
+        // List<EnvironmentInstance> environmentInstances = filterEqualTiers(envInstances);
 
         List<EnvironmentInstancePDto> envInstancesDto = new ArrayList<EnvironmentInstancePDto>();
         for (int i = 0; i < environmentInstances.size(); i++) {
@@ -182,11 +182,11 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
         criteria.setVdc(vdc);
         criteria.setEnviromentName(name);
 
-        List<EnvironmentInstance> envInstances = environmentInstanceManager.findByCriteria(criteria);
+        List<EnvironmentInstance> environmentInstances = environmentInstanceManager.findByCriteria(criteria);
 
-        List<EnvironmentInstance> environmentInstances = filterEqualTiers(envInstances);
+        // List<EnvironmentInstance> environmentInstances = filterEqualTiers(envInstances);
 
-        if (envInstances == null || envInstances.size() == 0) {
+        if (environmentInstances == null || environmentInstances.size() == 0) {
             throw new WebApplicationException(new EntityNotFoundException(Environment.class, "EnvironmeniInstance "
                     + name + " not found", ""), ERROR_NOT_FOUND);
         } else {
