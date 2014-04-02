@@ -20,9 +20,9 @@ instance_request = EnvironmentInstanceRequest (config['keystone_url'], config['p
                                                config['vdc'],config['sdc_url'])
 
 
-environment_name = 'diasss4'
-blueprintname ="diass4"
-network ="diass4"
+environment_name = 'hena2dr'
+blueprintname ="ddd2d"
+network ="mysreds"
 
 
 

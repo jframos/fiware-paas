@@ -85,6 +85,7 @@ def get_token(keystone_url, tenant, user, password):
     print payload
     response=post(keystone_url, headers, payload)
     data = response.read()
+    print data
 
     ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
     if response.status!=200:
