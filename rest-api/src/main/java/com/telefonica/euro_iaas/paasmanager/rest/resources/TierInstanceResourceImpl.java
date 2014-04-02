@@ -17,6 +17,7 @@ import javax.ws.rs.WebApplicationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -34,12 +35,12 @@ import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TaskSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
-import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.TierInstanceResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
@@ -66,7 +67,6 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
     private SystemPropertiesProvider systemPropertiesProvider;
 
     private TierInstanceResourceValidator validatorTierInstance;
-    private ExtendedOVFUtil extendedOVFUtil;
 
     private static Logger log = Logger.getLogger(TierInstanceResourceImpl.class);
 
@@ -135,7 +135,7 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
     public Task update(String org, String vdc, String environmentInstance, TierInstanceDto tierInstanceDto,
             String callback) {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentInstance);
-        claudiaData.setUser(extendedOVFUtil.getCredentials());
+        claudiaData.setUser(getCredentials());
 
         Task task = null;
         try {
@@ -160,7 +160,7 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
             String callback) throws APIException {
 
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentInstance);
-        claudiaData.setUser(extendedOVFUtil.getCredentials());
+        claudiaData.setUser(getCredentials());
 
         Task task = null;
 
@@ -199,7 +199,7 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
             log.debug("Insert tierinstance " + tierDto.getName() + " from environment " + environmentName);
             ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-                claudiaData.setUser(extendedOVFUtil.getCredentials());
+                claudiaData.setUser(getCredentials());
             }
 
             Task task = null;
@@ -316,15 +316,6 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
         this.validatorTierInstance = validatorTierInstance;
     }
 
-    /**
-     * Setter of the Extended OVF Util
-     * 
-     * @param extendedOVFUtil
-     */
-
-    public void setExtendedOVFUtil(ExtendedOVFUtil extendedOVFUtil) {
-        this.extendedOVFUtil = extendedOVFUtil;
-    }
 
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
@@ -388,6 +379,16 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
             }
         }
         return rTierInstance;
+    }
+    
+    public PaasManagerUser getCredentials() {
+        if (systemPropertiesProvider.getProperty(
+                SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+            return (PaasManagerUser) SecurityContextHolder.getContext()
+                    .getAuthentication().getPrincipal();
+        } else {
+            return null;
+        }
     }
 
 }

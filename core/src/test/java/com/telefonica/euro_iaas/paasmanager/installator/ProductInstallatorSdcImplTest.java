@@ -34,8 +34,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.SDC_SERVER_MEDIATYPE;
 import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.SDC_SERVER_URL;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -67,6 +65,7 @@ public class ProductInstallatorSdcImplTest {
     private final VM host = new VM("fqn", "ip", "hostname", "domain");
     private Task task;
     private com.telefonica.euro_iaas.sdc.model.ProductInstance pInstanceSDC;
+    private static String SDC_SERVER_MEDIATYPE = "application/json";
 
     @Before
     public void setUp() throws Exception {
@@ -147,13 +146,6 @@ public class ProductInstallatorSdcImplTest {
         installator.configure(data, productInstance, attributes);
 
         verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_URL);
-        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_MEDIATYPE);
-
-        // only one product will be installed, the other one causes error.
-        // verify(productInstanceDao,
-        // times(1)).update(any(ProductInstance.class));
-        // verify(productInstanceDao, times(1)).findUniqueByCriteria(
-        // any(ProductInstanceSearchCriteria.class));
     }
 
     @Test
@@ -172,13 +164,6 @@ public class ProductInstallatorSdcImplTest {
         assertEquals(expectedProductInstance, installedProduct);
 
         verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_URL);
-        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_MEDIATYPE);
-
-        // only one product will be installed, the other one causes error.
-        // verify(productInstanceDao,
-        // times(1)).update(any(ProductInstance.class));
-        // verify(productInstanceDao, times(1)).findUniqueByCriteria(
-        // any(ProductInstanceSearchCriteria.class));
     }
     
     @Test
@@ -202,8 +187,6 @@ public class ProductInstallatorSdcImplTest {
                         productReleaseWithoutAttrs, new HashSet<Attribute>());
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);
-
-        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_MEDIATYPE);
     }
     
     @Test
@@ -222,13 +205,6 @@ public class ProductInstallatorSdcImplTest {
         assertEquals(expectedProductInstance, installedProduct);
 
         verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_URL);
-        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_MEDIATYPE);
-
-        // only one product will be installed, the other one causes error.
-        // verify(productInstanceDao,
-        // times(1)).update(any(ProductInstance.class));
-        // verify(productInstanceDao, times(1)).findUniqueByCriteria(
-        // any(ProductInstanceSearchCriteria.class));
     }
     
     @Test

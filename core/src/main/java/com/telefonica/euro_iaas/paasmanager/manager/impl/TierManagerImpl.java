@@ -320,10 +320,6 @@ public class TierManagerImpl implements TierManager {
         List<Rule> rules = new ArrayList<Rule>();
         // 9990
         log.debug("Generate security rule " + 9990);
-
-        Rule rule = new Rule("TCP", "9990", "9990", "", systemPropertiesProvider.getProperty("sdcIp") + "/32");
-
-        rules.add(rule);
         Rule rule2 = new Rule("TCP", "22", "22", "", "0.0.0.0/0");
         rules.add(rule2);
         return rules;

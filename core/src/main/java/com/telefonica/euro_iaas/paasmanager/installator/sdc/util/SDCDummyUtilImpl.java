@@ -7,18 +7,21 @@
 
 package com.telefonica.euro_iaas.paasmanager.installator.sdc.util;
 
+import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.sdc.model.Task;
 
 public class SDCDummyUtilImpl implements SDCUtil {
 
-    public void checkTaskStatus(Task task, String vdc) throws ProductInstallatorException {
+    public void checkTaskStatus(ClaudiaData data, Task task, String vdc) throws ProductInstallatorException {
 
     }
 
-    public void checkIfSdcNodeIsReady(String ip) throws ProductInstallatorException {
+    public String getSdcUtil(String token) throws OpenStackException {
         // TODO Auto-generated method stub
-
+        return null;
     }
+
 
 }

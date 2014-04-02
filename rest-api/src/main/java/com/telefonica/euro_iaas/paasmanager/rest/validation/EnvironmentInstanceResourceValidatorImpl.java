@@ -7,26 +7,16 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
-import static com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil.GENERAL_ID;
-import static com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil.PRODUCTNAME_TAG;
-import static com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil.VIRTUALSYSTEMCOLLECTION;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
-import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
@@ -39,7 +29,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
-import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
+
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
@@ -47,8 +37,6 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
  */
 public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInstanceResourceValidator {
 
-    private ClaudiaUtil claudiaUtil;
-    private ExtendedOVFUtil extendedOVFUtil;
     private EnvironmentInstanceDao environmentInstanceDao;
     private TierResourceValidator tierResourceValidator;
 
@@ -59,59 +47,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
     /** The log. */
     private static Logger log = Logger.getLogger(EnvironmentInstanceResourceValidatorImpl.class);
 
-    /**
-     * It validates the payload.
-     */
-    public void validateCreatePayload(String payload) throws InvalidEntityException {
-        try {
-            Document doc = claudiaUtil.stringToDom(payload);
-
-            // EnvironmentName validation
-            Node virtualSystem = doc.getElementsByTagName(VIRTUALSYSTEMCOLLECTION).item(0);
-            if (virtualSystem == null) {
-                throw new InvalidEntityException("VirtualSystemCollection is null");
-            }
-
-            Node environmentNameElement = virtualSystem.getAttributes().getNamedItem(GENERAL_ID);
-            if (environmentNameElement == null) {
-                throw new InvalidEntityException("EnvironmentName is null");
-            }
-
-            // ProductName and Version Validation
-            NodeList productNameNodeList = doc.getElementsByTagName(extendedOVFUtil.PRODUCTNAME_TAG);
-
-            NodeList productVersionNodeList = doc.getElementsByTagName(extendedOVFUtil.PRODUCTNAME_TAG);
-
-            for (int i = 0; i < productNameNodeList.getLength(); i++) {
-                Node productNameNode = doc.getElementsByTagName(extendedOVFUtil.PRODUCTNAME_TAG).item(i);
-                if (productNameNode == null) {
-                    throw new InvalidEntityException("productName is null");
-                }
-            }
-
-            for (int i = 0; i < productVersionNodeList.getLength(); i++) {
-                Node productVersionNode = doc.getElementsByTagName(PRODUCTNAME_TAG).item(i);
-                if (productVersionNode == null) {
-                    throw new InvalidEntityException("productVersion is null");
-                }
-            }
-
-        } catch (SAXException e) {
-            String errorMessage = "SAXException when obtaining ProductRelease." + " Desc: " + e.getMessage();
-            log.error(errorMessage);
-            throw new InvalidEntityException(errorMessage);
-        } catch (ParserConfigurationException e) {
-            String errorMessage = "ParserConfigurationException when obtaining " + "ProductRelease. Desc: "
-                    + e.getMessage();
-            log.error(errorMessage);
-            throw new InvalidEntityException(errorMessage);
-        } catch (IOException e) {
-            String errorMessage = "IOException when obtaining " + "ProductRelease. Desc: " + e.getMessage();
-            log.error(errorMessage);
-            throw new InvalidEntityException(errorMessage);
-        }
-
-    }
+    
 
     /**
      * It validate the creation of an environment instance.
@@ -268,13 +204,6 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
         }
     }
 
-    /**
-     * @param claudiaUtil
-     *            the claudiaUtil to set
-     */
-    public void setClaudiaUtil(ClaudiaUtil claudiaUtil) {
-        this.claudiaUtil = claudiaUtil;
-    }
 
     public void setEnvironmentInstanceDao(EnvironmentInstanceDao environmentInstanceDao) {
         this.environmentInstanceDao = environmentInstanceDao;
@@ -295,5 +224,6 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
     public void setResourceValidator(ResourceValidator resourceValidator) {
         this.resourceValidator = resourceValidator;
     }
+
 
 }

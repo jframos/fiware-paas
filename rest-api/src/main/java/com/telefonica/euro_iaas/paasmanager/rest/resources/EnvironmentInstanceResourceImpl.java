@@ -19,11 +19,11 @@ import javax.ws.rs.WebApplicationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
+
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsyncManager;
@@ -37,10 +37,9 @@ import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstancePDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
-import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
-import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentInstanceResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
@@ -65,10 +64,6 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
 
     private EnvironmentInstanceResourceValidator validator;
 
-    private ExtendedOVFUtil extendedOVFUtil;
-
-    private OVFGeneration ovfGeneration;
-
     private SystemPropertiesProvider systemPropertiesProvider;
 
     private static Logger log = Logger.getLogger(EnvironmentInstanceResourceImpl.class);
@@ -81,7 +76,7 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
     public void addCredentialsToClaudiaData(ClaudiaData claudiaData) {
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
 
-            claudiaData.setUser(extendedOVFUtil.getCredentials());
+            claudiaData.setUser(getCredentials());
             claudiaData.getUser().setTenantId(claudiaData.getVdc());
         }
 
@@ -123,8 +118,6 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
         environmentInstance.setVdc(vdc);
 
         environmentInstance.setStatus(Status.INIT);
-        String payload = ovfGeneration.createOvf(environmentInstanceDto);
-        environmentInstance.getEnvironment().setOvf(payload);
         environmentInstance.setDescription(environmentInstanceDto.getDescription());
         environmentInstance.setBlueprintName(environmentInstanceDto.getBlueprintName());
 
@@ -214,7 +207,7 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, name);
 
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            claudiaData.setUser(extendedOVFUtil.getCredentials());
+            claudiaData.setUser(getCredentials());
         }
 
         Task task = createTask(MessageFormat.format("Destroying EnvironmentInstance {0} ", name), vdc, name);
@@ -243,22 +236,6 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
      */
     public void setValidator(EnvironmentInstanceResourceValidator validator) {
         this.validator = validator;
-    }
-
-    /**
-     * @param extendedOVFUtil
-     *            the extendedOVFUtil to set
-     */
-    public void setExtendedOVFUtil(ExtendedOVFUtil extendedOVFUtil) {
-        this.extendedOVFUtil = extendedOVFUtil;
-    }
-
-    /**
-     * @param ovfGeneration
-     *            the ovfGeneration to set
-     */
-    public void setOvfGeneration(OVFGeneration ovfGeneration) {
-        this.ovfGeneration = ovfGeneration;
     }
 
     /**
@@ -312,5 +289,14 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
             result.add(environmentInstance);
         }
         return result;
+    }
+    
+    public PaasManagerUser getCredentials() {
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } else {
+            return null;
+        }
+
     }
 }

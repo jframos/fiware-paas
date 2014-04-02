@@ -37,24 +37,17 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
-import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
-import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
-import com.telefonica.euro_iaas.paasmanager.rest.util.OVFMacro;
+
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentInstanceResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 public class EnvironmentInstanceResourceImplTest {
 
     public EnvironmentInstanceResourceImpl environmentInstanceResource;
-    public EnvironmentInstanceOvfResourceImpl environmentOvfInstanceResource;
-
     public SystemPropertiesProvider systemPropertiesProvider;
     public EnvironmentInstanceAsyncManager environmentInstanceAsyncManager;
     public EnvironmentInstanceResourceValidator environmentInstanceResourceValidator;
-    public OVFGeneration ovfGeneration;
-    public ExtendedOVFUtil extendedOVFUtil;
     public ProductReleaseManager productReleaseManager;
-    public OVFMacro ovfMacro;
     public String vdc = "vdc";
     public String org = "org";
     public String callback = "callback";
@@ -66,28 +59,17 @@ public class EnvironmentInstanceResourceImplTest {
     @Before
     public void setUp() throws Exception {
         environmentInstanceResource = new EnvironmentInstanceResourceImpl();
-        environmentOvfInstanceResource = new EnvironmentInstanceOvfResourceImpl();
         environmentInstanceResourceValidator = mock(EnvironmentInstanceResourceValidator.class);
-        extendedOVFUtil = mock(ExtendedOVFUtil.class);
-        ovfGeneration = mock(OVFGeneration.class);
         productReleaseManager = mock(ProductReleaseManager.class);
         environmentInstanceAsyncManager = mock(EnvironmentInstanceAsyncManager.class);
-        ovfMacro = mock(OVFMacro.class);
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         taskManager = mock(TaskManager.class);
-
         environmentInstanceResource.setValidator(environmentInstanceResourceValidator);
-        environmentInstanceResource.setExtendedOVFUtil(extendedOVFUtil);
-        environmentInstanceResource.setOvfGeneration(ovfGeneration);
 
         environmentInstanceResource.setSystemPropertiesProvider(systemPropertiesProvider);
         environmentInstanceResource.setEnvironmentInstanceAsyncManager(environmentInstanceAsyncManager);
         environmentInstanceResource.setTaskManager(taskManager);
-        environmentOvfInstanceResource.setValidator(environmentInstanceResourceValidator);
-        environmentOvfInstanceResource.setExtendedOVFUtil(extendedOVFUtil);
-        environmentOvfInstanceResource.setEnvironmentInstanceAsyncManager(environmentInstanceAsyncManager);
-        environmentOvfInstanceResource.setOvfMacro(ovfMacro);
-        environmentOvfInstanceResource.setTaskManager(taskManager);
+
         when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("");
         Mockito.doNothing().when(environmentInstanceAsyncManager)
                 .create(any(ClaudiaData.class), any(EnvironmentInstance.class), any(Task.class), any(String.class));
@@ -141,26 +123,6 @@ public class EnvironmentInstanceResourceImplTest {
 
     }
 
-    @Test
-    public void testCreateEnviornmentInstance() throws Exception {
-
-        when(extendedOVFUtil.isVirtualServicePayload(any(String.class))).thenReturn(false);
-        when(extendedOVFUtil.getEnvironmentName(any(String.class))).thenReturn("servicename");
-        when(ovfMacro.resolveMacros(any(Environment.class))).thenReturn(environment);
-        when(extendedOVFUtil.getTiers(any(String.class), any(String.class))).thenReturn(tiers);
-        Mockito.doNothing().when(environmentInstanceResourceValidator).validateCreatePayload(any(String.class));
-
-        String payload = "ovf";
-
-        environmentOvfInstanceResource.create(org, vdc, payload, callback);
-        ClaudiaData data = new ClaudiaData(org, vdc, "servicename");
-        data.setUser(null);
-
-        EnvironmentInstance envInst = new EnvironmentInstance("servicename", "description", environment);
-        verify(environmentInstanceAsyncManager, times(1)).create(any(ClaudiaData.class),
-                any(EnvironmentInstance.class), any(Task.class), any(String.class));
-
-    }
 
     @Test
     public void testCreateOvfEnviornmentInstance() throws Exception {
@@ -174,14 +136,13 @@ public class EnvironmentInstanceResourceImplTest {
         PaasManagerUser paasManagerUser = mock(PaasManagerUser.class);
 
         // When
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM)).thenReturn("FIWARE");
-        when(extendedOVFUtil.getCredentials()).thenReturn(paasManagerUser);
+        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM)).thenReturn("ss");
         environmentInstanceResource.create(org, vdc, environmentInstanceDto, callback);
 
         // Then
         verify(environmentInstanceAsyncManager, times(1)).create(any(ClaudiaData.class),
                 any(EnvironmentInstance.class), any(Task.class), any(String.class));
         verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.CLOUD_SYSTEM);
-        verify(extendedOVFUtil, times(1)).getCredentials();
+
     }
 }

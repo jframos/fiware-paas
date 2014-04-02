@@ -7,8 +7,8 @@
 
 package com.telefonica.euro_iaas.paasmanager.installator;
 
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.SDC_SERVER_MEDIATYPE;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.SDC_SERVER_URL;
+
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.SDC_SERVER_MEDIATYPE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +18,7 @@ import java.util.StringTokenizer;
 import org.apache.log4j.Logger;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.installator.sdc.util.SDCUtil;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
@@ -46,12 +47,12 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
     private SDCUtil sDCUtil;
 
     private static Logger log = Logger.getLogger(ProductInstallatorSdcImpl.class);
+    
 
     public ProductInstance install(ClaudiaData claudiaData, String envName, TierInstance tierInstance,
-            ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException {
+            ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException, OpenStackException {
 
-        String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
-        String sdcMediaType = systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
+        String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
 
         log.debug("Install software " + productRelease.getProduct() + "-" + productRelease.getVersion());
         // From Paasmanager ProductRelease To SDC ProductInstanceDto
@@ -69,7 +70,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         
         // SDCClient client = new SDCClient();
         com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService pIService = sDCClient
-                .getProductInstanceService(sdcServerUrl, sdcMediaType);
+                .getProductInstanceService(sdcServerUrl, SDC_SERVER_MEDIATYPE);
         log.debug("sdc url " + sdcServerUrl);
 
         com.telefonica.euro_iaas.sdc.model.Task task = null;
@@ -144,7 +145,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
             tierInstance.setTaskId(id);
             tierInstanceManager.update(claudiaData, envName, tierInstance);
 
-            sDCUtil.checkTaskStatus(task, tierInstance.getVdc());
+            sDCUtil.checkTaskStatus(claudiaData, task, tierInstance.getVdc());
 
             com.telefonica.euro_iaas.sdc.model.ProductInstance pInstanceSDC = pIService.load(tierInstance.getVdc(),
                     productInstanceDto.getVm().getFqn() + "_" + productInstanceDto.getProduct().getName() + "_"
@@ -173,15 +174,14 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
     }
 
-    public void installArtifact(ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException {
+    public void installArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException, OpenStackException {
         log.debug ("Install artifact " + artifact.getName() + " in product " + artifact.getProductRelease().getProduct() + " for productinstance " 
                 + productInstance.getName());
-        String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
-        String sdcMediaType = systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
+        String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
 
         // SDCClient client = new SDCClient();
         com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService service = sDCClient
-                .getProductInstanceService(sdcServerUrl, sdcMediaType);
+                .getProductInstanceService(sdcServerUrl, SDC_SERVER_MEDIATYPE);
 
         List<com.telefonica.euro_iaas.sdc.model.Attribute> atts = new ArrayList();
 
@@ -214,7 +214,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         productInstance.setTaskId(id);
 
 
-        sDCUtil.checkTaskStatus(task, productInstance.getVdc());
+        sDCUtil.checkTaskStatus(claudiaData, task, productInstance.getVdc());
 
         /* How to catch an productInstallation error */
         if (task.getStatus() == com.telefonica.euro_iaas.sdc.model.Task.TaskStates.ERROR)
@@ -226,14 +226,13 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
     }
 
-    public void uninstallArtifact(ProductInstance productInstance, Artifact artifact)
-            throws ProductInstallatorException {
-        String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
-        String sdcMediaType = systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
+    public void uninstallArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact)
+            throws ProductInstallatorException, OpenStackException {
+        String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
 
         // SDCClient client = new SDCClient();
         com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService service = sDCClient
-                .getProductInstanceService(sdcServerUrl, sdcMediaType);
+                .getProductInstanceService(sdcServerUrl, SDC_SERVER_MEDIATYPE);
 
         List<com.telefonica.euro_iaas.sdc.model.Attribute> atts = new ArrayList();
 
@@ -260,22 +259,13 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
     }
 
-    public void uninstall(ProductInstance productInstance) throws ProductInstallatorException {
+    public void uninstall(ClaudiaData claudiaData, ProductInstance productInstance) throws ProductInstallatorException, OpenStackException {
 
-        String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
-        String sdcMediaType = systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
+        String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
 
         // SDCClient client = new SDCClient();
         com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService productService = sDCClient
-                .getProductInstanceService(sdcServerUrl, sdcMediaType);
-
-        // TODO check if the product to be uninstalled supports a current
-        // application instance:
-        /*
-         * List<InstallableInstanceDto> applicationInstances = supportedApplicationInstanceInstalled(fqn, instance); if
-         * (applicationInstances.size() > 0) throw new
-         * SupportedApplicationInstanceInstalledException(applicationInstances, instance); else
-         */
+                .getProductInstanceService(sdcServerUrl, SDC_SERVER_MEDIATYPE);
 
         try {
             productService.uninstall(productInstance.getVdc(), productInstance.getName(), null);
@@ -285,21 +275,17 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
             throw new ProductInstallatorException(errorMessage);
         }
 
-        // productService.uninstall(productInstance.getVdc(),
-        // productInstance.getId(), null);
-
     }
 
     public void configure(ClaudiaData claudiaData, ProductInstance productInstance, List<Attribute> properties)
-            throws ProductInstallatorException {
+            throws ProductInstallatorException, OpenStackException {
         log.info("Configure product " + productInstance.getName() + " "
                 + productInstance.getProductRelease().getProduct());
-        String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
-        String sdcMediaType = systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
+        String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
 
         // SDCClient client = new SDCClient();
         com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService pIService = sDCClient
-                .getProductInstanceService(sdcServerUrl, sdcMediaType);
+                .getProductInstanceService(sdcServerUrl, SDC_SERVER_MEDIATYPE);
 
         List<com.telefonica.euro_iaas.sdc.model.Attribute> arguments = new ArrayList();
 
@@ -328,20 +314,19 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
             throw new ProductInstallatorException(errorMessage);
         }
 
-        sDCUtil.checkTaskStatus(task, productInstance.getVdc());
+        sDCUtil.checkTaskStatus(claudiaData, task, productInstance.getVdc());
 
         return;
 
     }
 
     // Borrado del nodo en el ChefServer
-    public void deleteNode(String vdc, String sdcNodeName) throws ProductInstallatorException {
+    public void deleteNode(ClaudiaData claudiaData, String vdc, String sdcNodeName) throws ProductInstallatorException, OpenStackException {
 
-        String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
-        String sdcMediaType = systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
+        String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
 
         // SDCClient client = new SDCClient();
-        ChefClientService chefClientService = sDCClient.getChefClientService(sdcServerUrl, sdcMediaType);
+        ChefClientService chefClientService = sDCClient.getChefClientService(sdcServerUrl, SDC_SERVER_MEDIATYPE);
 
         com.telefonica.euro_iaas.sdc.model.Task task = null;
 
@@ -354,20 +339,20 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
             throw new ProductInstallatorException(errorMessage);
         }
 
-        sDCUtil.checkTaskStatus(task, vdc);
+        sDCUtil.checkTaskStatus(claudiaData, task, vdc);
 
         return;
     }
 
     // Load a node from the nodename
-    public ChefClient loadNode(String vdc, String hostname) throws ProductInstallatorException, EntityNotFoundException {
+    public ChefClient loadNode(ClaudiaData claudiaData, String vdc, String hostname) throws ProductInstallatorException, EntityNotFoundException, OpenStackException {
 
-        String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
-        String sdcMediaType = systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
+        String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
+
 
         // SDCClient client = new SDCClient();
         com.telefonica.euro_iaas.sdc.client.services.ChefClientService chefClientService = sDCClient
-                .getChefClientService(sdcServerUrl, sdcMediaType);
+                .getChefClientService(sdcServerUrl, SDC_SERVER_MEDIATYPE);
 
         com.telefonica.euro_iaas.sdc.model.Task task = null;
 

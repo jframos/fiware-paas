@@ -7,7 +7,9 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.async.impl;
 
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL;
+
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PAAS_MANAGER_URL;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.PRODUCT_INSTANCE_PATH;
 
 import java.text.MessageFormat;
 import java.util.Date;
@@ -120,24 +122,28 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      * Update the task with necessary information when the task is success.
      */
     private void updateSuccessTask(Task task, ProductInstance productInstance) {
-        String piResource = MessageFormat.format(propertiesProvider.getProperty(PRODUCT_INSTANCE_BASE_URL),
-                productInstance.getId(), // the id
-
-                productInstance.getProductRelease().getProduct(), productInstance.getVdc()); // the product
+        String piResource = getUrl (productInstance);
         task.setResult(new TaskReference(piResource));
         task.setEndTime(new Date());
         task.setStatus(TaskStates.SUCCESS);
         taskManager.updateTask(task);
+    }
+    
+    private String getUrl (ProductInstance productInstance) {
+        String path = MessageFormat.format(PRODUCT_INSTANCE_PATH,
+                productInstance.getId(), // the id
+
+                productInstance.getProductRelease().getProduct(), productInstance.getVdc());
+
+        
+        return propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
     }
 
     /*
      * Update the task with necessary information when the task is wrong and the product instance exists in the system.
      */
     private void updateErrorTask(ProductInstance productInstance, Task task, String message, Throwable t) {
-        String piResource = MessageFormat.format(propertiesProvider.getProperty(PRODUCT_INSTANCE_BASE_URL),
-                productInstance.getId(), // the id
-
-                productInstance.getProductRelease().getProduct(), productInstance.getVdc()); // the product
+        String piResource = getUrl (productInstance);
         task.setResult(new TaskReference(piResource));
         updateErrorTask(task, message, t);
     }

@@ -44,7 +44,6 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
-import com.telefonica.euro_iaas.paasmanager.util.EnvironmentUtils;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 
@@ -60,7 +59,6 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
     private TierInstanceManager tierInstanceManager;
     private TierManager tierManager;
     private ProductReleaseManager productReleaseManager;
-    private EnvironmentUtils environmentUtils;
     private ProductInstallator productInstallator;
 
     /** The log. */
@@ -224,9 +222,6 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                     image_Name = infrastructureManager.ImageScalability(claudiaData, tierInstance);
                     log.info("Generating image " + image_Name);
                     log.info("Updating OVF ");
-                    newOVF = environmentUtils.updateVmOvf(tierInstance.getOvf(), image_Name);
-                    tierInstance.setOvf(newOVF);
-                    // tierInstance.setOvf(newOVF);
                 }
 
                 if (state && tierInstance.getNumberReplica() > 1) {
@@ -553,14 +548,6 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
      */
     public void setInfrastructureManager(InfrastructureManager infrastructureManager) {
         this.infrastructureManager = infrastructureManager;
-    }
-
-    /**
-     * @param environmentUtils
-     *            the environmentUtils to set
-     */
-    public void setEnvironmentUtils(EnvironmentUtils environmentUtils) {
-        this.environmentUtils = environmentUtils;
     }
 
     /**

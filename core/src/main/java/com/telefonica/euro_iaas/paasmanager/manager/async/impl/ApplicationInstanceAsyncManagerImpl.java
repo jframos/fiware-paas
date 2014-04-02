@@ -7,10 +7,13 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.async.impl;
 
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.APPLICATION_RELEASE_BASE_URL;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.APPLICATION_TYPE_BASE_URL;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.ENVIRONMENT_INSTANCE_BASE_URL;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PRODUCT_RELEASE_BASE_URL;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.APPLICATION_RELEASE_PATH;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.ENVIRONMENT_INSTANCE_PATH;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.PRODUCT_RELEASE_PATH;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.TASK_PATH;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PAAS_MANAGER_URL;
+
+
 
 import java.text.MessageFormat;
 import java.util.Date;
@@ -84,25 +87,25 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
                     + " installed successfully " + " on Environment " + environmentInstanceName);
         } catch (EntityNotFoundException e) {
             String errorMsg = e.getMessage();
-            updateErrorTask(environmentInstanceName, ENVIRONMENT_INSTANCE_BASE_URL, task, errorMsg, e);
+            updateErrorTask(environmentInstanceName, ENVIRONMENT_INSTANCE_PATH, task, errorMsg, e);
         } catch (ProductReleaseNotFoundException prNFE) {
             String errorMsg = prNFE.getMessage();
-            updateErrorTask(prNFE.getProductRelease().getName(), PRODUCT_RELEASE_BASE_URL, task, errorMsg, prNFE);
+            updateErrorTask(prNFE.getProductRelease().getName(), PRODUCT_RELEASE_PATH, task, errorMsg, prNFE);
         } catch (ApplicationTypeNotFoundException atNFE) {
             String errorMsg = atNFE.getMessage();
-            updateErrorTask(atNFE.getApplicationType().getName(), APPLICATION_TYPE_BASE_URL, task, errorMsg, atNFE);
+            updateErrorTask(atNFE.getApplicationType().getName(), APPLICATION_RELEASE_PATH, task, errorMsg, atNFE);
         } catch (InvalidEntityException iee) {
             String errorMsg = iee.getMessage();
-            updateErrorTask(applicationRelease.getName(), APPLICATION_RELEASE_BASE_URL, task, errorMsg, iee);
+            updateErrorTask(applicationRelease.getName(), APPLICATION_RELEASE_PATH, task, errorMsg, iee);
         } catch (AlreadyExistsEntityException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ProductInstallatorException e) {
             String errorMsg = "Error installing an application. Description:" + e.getMessage();
-            updateErrorTask("Error installing an application", PRODUCT_RELEASE_BASE_URL, task, errorMsg, e);
+            updateErrorTask("Error installing an application", PRODUCT_RELEASE_PATH, task, errorMsg, e);
         } catch (TaskNotFoundException e) {
             String errorMsg = "Error installing an application. Description:" + e.getMessage();
-            updateErrorTask("Error installing an application", PRODUCT_RELEASE_BASE_URL, task, errorMsg, e);
+            updateErrorTask("Error installing an application", PRODUCT_RELEASE_PATH, task, errorMsg, e);
         } finally {
             notifyTask(callback, task);
         }
@@ -122,13 +125,13 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
                     + " on Environment " + environmentInstanceName);
         } catch (EntityNotFoundException e) {
             String errorMsg = e.getMessage();
-            updateErrorTask(environmentInstanceName, ENVIRONMENT_INSTANCE_BASE_URL, task, errorMsg, e);
+            updateErrorTask(environmentInstanceName, ENVIRONMENT_INSTANCE_PATH, task, errorMsg, e);
         } catch (ProductInstallatorException e) {
             String errorMsg = e.getMessage();
-            updateErrorTask(environmentInstanceName, ENVIRONMENT_INSTANCE_BASE_URL, task, errorMsg, e);
+            updateErrorTask(environmentInstanceName, ENVIRONMENT_INSTANCE_PATH, task, errorMsg, e);
         } catch (TaskNotFoundException e) {
             String errorMsg = e.getMessage();
-            updateErrorTask(environmentInstanceName, ENVIRONMENT_INSTANCE_BASE_URL, task, errorMsg, e);
+            updateErrorTask(environmentInstanceName, ENVIRONMENT_INSTANCE_PATH, task, errorMsg, e);
         }
 
     }
@@ -136,8 +139,10 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
     private void updateSuccessTask(Task task, EnvironmentInstance environmentInstance) throws TaskNotFoundException {
         InstallableInstance productInstance;
         Task loadedTask;
-        String piResource = MessageFormat.format(propertiesProvider.getProperty(ENVIRONMENT_INSTANCE_BASE_URL),
+        String path = MessageFormat.format(TASK_PATH,
                 environmentInstance.getVdc(), environmentInstance.getName()); // the
+        
+        String psyh = propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
         // vdc
 
         try {
@@ -160,7 +165,7 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
      * in the system.
      */
     private void updateErrorTask(String resourceName, String baseUrl, Task task, String message, Throwable t) {
-        String piResource = MessageFormat.format(propertiesProvider.getProperty(baseUrl), resourceName); // the name
+        String piResource = MessageFormat.format(baseUrl, resourceName); // the name
         task.setResult(new TaskReference(piResource));
         updateErrorTask(task, message, t);
     }

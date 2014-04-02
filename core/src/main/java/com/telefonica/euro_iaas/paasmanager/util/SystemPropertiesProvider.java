@@ -18,9 +18,21 @@ import java.util.Properties;
  */
 public interface SystemPropertiesProvider {
 
-    String TASK_BASE_URL = "taskBaseUrl";
+ //   String TASK_PATH = "/rest/vdc/{1}/task/{0}";
+    String PAAS_MANAGER_URL = "paas_manager_url";
+  /*  String ENVIRONMENT_PATH = "/rest/catalog/environment/{0}";
+    String ENVIRONMENT_INSTANCE_PATH = "environment_instance_path";
+    String PRODUCT_INSTANCE_PATH = "productinstance_path";
+    String PRODUCT_RELEASE_PATH = "productrelease_path";
+    String APPLICATION_RELEASE_PATH = "applicationrelease_path";*/
+    
+    
+    
+    
+    
+   // String TASK_BASE_URL = "taskBaseUrl";
 
-    String PRODUCT_INSTANCE_BASE_URL = "productInstanceBaseUrl";
+  /*  String PRODUCT_INSTANCE_BASE_URL = "productInstanceBaseUrl";
     String PRODUCT_RELEASE_BASE_URL = "productReleaseBaseUrl";
     String APPLICATION_INSTANCE_BASE_URL = "applicationInstanceBaseUrl";
     String ENVIRONMENT_INSTANCE_BASE_URL = "environmentInstanceBaseUrl";
@@ -28,15 +40,14 @@ public interface SystemPropertiesProvider {
     String APPLICATION_RELEASE_BASE_URL = "applicationReleaseBaseUrl";
     String APPLICATION_TYPE_BASE_URL = "applicationTypeBaseUrl";
     String VIRTUAL_SERVICE_BASE_URL = "virtualServiceBaseUrl";
-    String TIER_INSTANCE_BASE_URL = "tierInstanceBaseUrl";
+    String TIER_INSTANCE_BASE_URL = "tierInstanceBaseUrl";*/
 
-    String SDC_SERVER_URL = "sdcServerUrl";
-    String SDC_SERVER_MEDIATYPE = "sdcServerMediaType";
+  //  String SDC_SERVER_URL = "sdcServerUrl";
+ //   String SDC_SERVER_MEDIATYPE = "sdcServerMediaType";
 
-    String REC_SERVER_URL = "recServerUrl";
-    String REC_SERVER_MEDIATYPE = "recServerMediaType";
 
-    String FQN1 = "fqn1";
+
+   /* String FQN1 = "fqn1";
     String FQN2 = "fqn2";
     String IP1 = "ip1";
     String IP2 = "ip2";
@@ -44,9 +55,9 @@ public interface SystemPropertiesProvider {
     String HOSTNAME2 = "hostname2";
     String DOMAINNAME1 = "domainname1";
     String DOMAINNAME2 = "domainname2";
-    String OSTYPE = "osType";
+    String OSTYPE = "osType";*/
 
-    String NEOCLAUDIA_IP = "neoclaudiaIP";
+    /*String NEOCLAUDIA_IP = "neoclaudiaIP";
     String NEOCLAUDIA_PORT = "neoclaudiaPort";
     String NEOCLAUDIA_BASEURL = "neoclaudiaBaseUrl";
     String NEOCLAUDIA_ORG = "neoclaudiaOrg";
@@ -59,19 +70,13 @@ public interface SystemPropertiesProvider {
     String NEOCLAUDIA_VDC_CPU = "neoclaudiaVDCcpu";
     String NEOCLAUDIA_VDC_MEM = "neoclaudiaVDCmem";
     String NEOCLAUDIA_VDC_DISK = "neoclaudiaVDCdisk";
-    String NEOCLAUDIA_NETWORK_NAME = "neoClaudiaNetworkName";
+    String NEOCLAUDIA_NETWORK_NAME = "neoClaudiaNetworkName";*/
 
-    String NEOCLAUDIA_VDCTEMPLATE_LOCATION = "neoclaudiaVDCTemplateLocation";
-    String NEOCLAUDIA_OVFSERVICE_LOCATION = "neoclaudiaOvfServiceLocation";
-    String NEOCLAUDIA_OVFVM_LOCATION = "neoclaudiaOvfVMLocation";
-    String CLAUDIA_RESOURCE_NOTEXIST_PATTERN = "claudiaResourceNotExistPattern";
-    String ENVELOPE_TEMPLATE_LOCATION = "envelopeTemplateRECManager";
-    String OVF_TEMPLATE_LOCATION = "ovfTemplateLocation";
 
-    String VM_DEPLOYMENT_DELAY = "vmDeploymentDelay";
-    String TCLOUD_METADATA_TOKEN = "tcloud_metadata_token";
-    String TCLOUD_METADATA_TENANT = "tcloud_metadata_tenant";
-    String TCLOUD_METADATA_USER = "tcloud_metadata_user";
+  //  String VM_DEPLOYMENT_DELAY = "vmDeploymentDelay";
+   // String TCLOUD_METADATA_TOKEN = "tcloud_metadata_token";
+   // String TCLOUD_METADATA_TENANT = "tcloud_metadata_tenant";
+   // String TCLOUD_METADATA_USER = "tcloud_metadata_user";
 
     /** The Constant KEYSTONE_URL. */
     String KEYSTONE_URL = "openstack-tcloud.keystone.url";
@@ -79,14 +84,6 @@ public interface SystemPropertiesProvider {
     /** The Constant CLOUD_SYSTEM. */
     String CLOUD_SYSTEM = "openstack-tcloud.cloudSystem";
 
-    /** The Constant KEYSTONE_USER. */
-    String KEYSTONE_USER = "openstack-tcloud.keystone.user";
-
-    /** The Constant KEYSTONE_PASS. */
-    String KEYSTONE_PASS = "openstack-tcloud.keystone.pass";
-
-    /** The Constant KEYSTONE_TENANT. */
-    String KEYSTONE_TENANT = "openstack-tcloud.keystone.tenant";
 
     /** The Constant SYSTEM_FASTTRACK. */
     String VALIDATION_TIME_THRESHOLD = "openstack-tcloud.keystone.threshold";
@@ -97,26 +94,31 @@ public interface SystemPropertiesProvider {
     String DEFAULT_REGION_NAME = "openstack-tcloud.region.default";
 
     /*** OPENSTACK CONSTANTS */
-    String URL_PROPERTY = "management.provisioning.openstack.url";
-    String URL_KEYSTONE_PROPERTY = "management.provisioning.openstack.keystone.url";
-    String USER_PROPERTY = "management.provisioning.openstack.user";
-    String PASSWORD_PROPERTY = "management.provisioning.openstack.password";
+  //  String URL_PROPERTY = "management.provisioning.openstack.url";
+  //  String URL_KEYSTONE_PROPERTY = "management.provisioning.openstack.keystone.url";
+  //  String USER_PROPERTY = "management.provisioning.openstack.user";
+  //  String PASSWORD_PROPERTY = "management.provisioning.openstack.password";
 
-    String URL_OPENSTACK_DISTRIBUTION = "openstack.distribution";
+//    String URL_OPENSTACK_DISTRIBUTION = "openstack.distribution";
 
     String OPENSTACK_SYNCHRONIZATION_POLLING_PERIOD = "openstack.sync.polling.period";
+    
+    // For sycronization with keystone
 
-    String KEYSTONE_DATABASE_URL = "keystone.database.url";
+  /*  String KEYSTONE_DATABASE_URL = "keystone.database.url";
     String KEYSTONE_DATABASE_DRIVER = "keystone.database.driver";
     String KEYSTONE_DATABASE_USERNAME = "keystone.database.username";
-    String KEYSTONE_DATABASE_PASSWORD = "keystone.database.password";
+    String KEYSTONE_DATABASE_PASSWORD = "keystone.database.password";*/
+    /** The Constant KEYSTONE_USER. */
+    String KEYSTONE_USER = "openstack-tcloud.keystone.user";
 
+    String KEYSTONE_PASS = "openstack-tcloud.keystone.pass";
+ 
+    String KEYSTONE_TENANT = "openstack-tcloud.keystone.tenant";
+    
+    
     String PUBLIC_NETWORK_ID = "openstack.network.public";
     String PUBLIC_ROUTER_ID = "openstack.router.public";
-
-    /**
-     * pool name in nova *
-     */
     String NOVA_IPFLOATING_POOLNAME = "nova.ipfloating.poolname";
 
     /**

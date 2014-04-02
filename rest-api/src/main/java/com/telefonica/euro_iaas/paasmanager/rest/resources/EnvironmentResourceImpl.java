@@ -32,8 +32,6 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
-import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
-import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
@@ -56,9 +54,6 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
 
     private EnvironmentResourceValidator environmentResourceValidator;
 
-    private OVFGeneration ovfGeneration;
-
-    private ExtendedOVFUtil extendedOVFUtil;
 
     private static Logger log = Logger.getLogger(EnvironmentManagerImpl.class);
 
@@ -150,7 +145,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
     public void addCredentialsToClaudiaData(ClaudiaData claudiaData) {
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
 
-            claudiaData.setUser(extendedOVFUtil.getCredentials());
+            claudiaData.setUser(getCredentials());
             claudiaData.getUser().setTenantId(claudiaData.getVdc());
         }
 
@@ -205,14 +200,6 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
     }
 
     /**
-     * @param ovfGeneration
-     *            the ovfGeneration to set
-     */
-    public void setOvfGeneration(OVFGeneration ovfGeneration) {
-        this.ovfGeneration = ovfGeneration;
-    }
-
-    /**
      * @param systemPropertiesProvider
      *            the systemPropertiesProvider to set
      */
@@ -220,12 +207,6 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
-    public ExtendedOVFUtil getExtendedOVFUtil() {
-        return extendedOVFUtil;
-    }
 
-    public void setExtendedOVFUtil(ExtendedOVFUtil extendedOVFUtil) {
-        this.extendedOVFUtil = extendedOVFUtil;
-    }
 
 }

@@ -31,8 +31,19 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
  */
 public class ClaudiaDummyClientImpl implements ClaudiaClient {
 
-    private SystemPropertiesProvider systemPropertiesProvider;
+
     private FileUtils fileUtils = null;
+    
+   /* ovfTemplateLocation = ./src/main/resources/
+    neoclaudiaOvfServiceLocation = empty.ovf
+    neoclaudiaVDCTemplateLocation = InstantiateVDCTemplate.xml
+    neoclaudiaOvfVMLocation = paasmanagerOVF.ovf*/
+    public static String neoclaudiaOvfVMLocation = "paasmanagerOVF.ovf";
+    public static String vappTestServiceLocation = "VappDummyService.xml";
+    public static String iP_VM_DummyClaudia = "IP_VM_DummyClaudia";
+    public static String neoclaudiaVappVMLocation = "VappTemplate.xml";
+    
+    
 
     public String onOffScalability(ClaudiaData claudiaData, String environmentName, boolean b)
             throws InfrastructureException {
@@ -42,7 +53,7 @@ public class ClaudiaDummyClientImpl implements ClaudiaClient {
     public String browseService(ClaudiaData claudiaData) throws ClaudiaResourceNotFoundException {
         String payload = null;
         try {
-            payload = fileUtils.readFile(systemPropertiesProvider.getProperty("vappTestServiceLocation"));
+            payload = fileUtils.readFile(vappTestServiceLocation);
         } catch (FileUtilsException e) {
             throw new ClaudiaResourceNotFoundException("Error in the Claudia Dummy Utils " + e.getMessage());
         }
@@ -64,10 +75,10 @@ public class ClaudiaDummyClientImpl implements ClaudiaClient {
             throws ClaudiaResourceNotFoundException {
 
         String payload = null;
-        String ip = systemPropertiesProvider.getProperty("IP_VM_DummyClaudia");
+        String ip = iP_VM_DummyClaudia;
 
         try {
-            payload = fileUtils.readFile(systemPropertiesProvider.getProperty("neoclaudiaVappVMLocation"))
+            payload = fileUtils.readFile(neoclaudiaVappVMLocation)
                     .replace("{org}", claudiaData.getOrg()).replace("{vdc}", claudiaData.getVdc())
                     .replace("{service}", claudiaData.getService()).replace("{vm}", tierName).replace("{replica}", "1")
                     .replace("{IP}", ip);
@@ -117,7 +128,7 @@ public class ClaudiaDummyClientImpl implements ClaudiaClient {
 
         FileUtils fileUtils = null;
         String payload = null;
-        String ip = systemPropertiesProvider.getProperty("IP_VM_DummyClaudia");
+        String ip = iP_VM_DummyClaudia;
 
         try {
             payload = fileUtils.readFile("VappTemplate.xml", "./src/main/resources").replace("{org}", org)
@@ -135,15 +146,14 @@ public class ClaudiaDummyClientImpl implements ClaudiaClient {
             throws InfrastructureException {
 
         List<String> ips = new ArrayList<String>();
-        ips.add(systemPropertiesProvider.getProperty("IP_VM_DummyClaudia"));
+        ips.add(iP_VM_DummyClaudia);
         return ips;
     }
 
     public String obtainIPFromFqn(String org, String vdc, String service, String vmName, PaasManagerUser user)
             throws IPNotRetrievedException, ClaudiaResourceNotFoundException, NetworkNotRetrievedException {
 
-        String ip = systemPropertiesProvider.getProperty("IP_VM_DummyClaudia");
-        return ip;
+        return iP_VM_DummyClaudia;
     }
 
     public String obtainOS(String org, String vdc, String service, String vmName, PaasManagerUser user)
@@ -157,13 +167,7 @@ public class ClaudiaDummyClientImpl implements ClaudiaClient {
 
     }
 
-    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
-        this.systemPropertiesProvider = systemPropertiesProvider;
-    }
 
-    public SystemPropertiesProvider getSystemPropertiesProvider() {
-        return this.systemPropertiesProvider;
-    }
 
     public void setFileUtils(FileUtils fileUtils) {
         this.fileUtils = fileUtils;
