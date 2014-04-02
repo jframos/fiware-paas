@@ -47,12 +47,20 @@ public class ProductInstallatorDummySdcImpl implements ProductInstallator {
     private SystemPropertiesProvider systemPropertiesProvider;
     private SDCUtil sDCUtil;
 
+<<<<<<< HEAD
     public void installArtifact(ClaudiaData claudiaData,ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException {
+=======
+    public void installArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException {
+>>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
         // TODO Auto-generated method stub
 
     }
 
+<<<<<<< HEAD
     public void uninstall(ClaudiaData claudiaData,ProductInstance productInstance) throws ProductInstallatorException {
+=======
+    public void uninstall(ClaudiaData claudiaData, ProductInstance productInstance) throws ProductInstallatorException {
+>>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
         // TODO Auto-generated method stub
 
     }
@@ -78,7 +86,11 @@ public class ProductInstallatorDummySdcImpl implements ProductInstallator {
         this.sDCUtil = sDCUtil;
     }
 
+<<<<<<< HEAD
     public void uninstallArtifact(ClaudiaData claudiaData,ProductInstance productInstance, Artifact artifact)
+=======
+    public void uninstallArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact)
+>>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
             throws ProductInstallatorException {
         // TODO Auto-generated method stub
 
@@ -108,7 +120,11 @@ public class ProductInstallatorDummySdcImpl implements ProductInstallator {
      * @seecom.telefonica.euro_iaas.paasmanager.installator.ProductInstallator# deleteNode(java.lang.String,
      * java.lang.String)
      */
+<<<<<<< HEAD
     public void deleteNode(ClaudiaData claudiaData,String vdc, String nodeName) throws ProductInstallatorException {
+=======
+    public void deleteNode(ClaudiaData claudiaData, String vdc, String nodeName) throws ProductInstallatorException {
+>>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
         // TODO Auto-generated method stub
 
     }
@@ -118,7 +134,11 @@ public class ProductInstallatorDummySdcImpl implements ProductInstallator {
      * @see com.telefonica.euro_iaas.paasmanager.installator.ProductInstallator#loadNode(java.lang.String,
      * java.lang.String)
      */
+<<<<<<< HEAD
     public ChefClient loadNode(ClaudiaData claudiaData,String vdc, String nodeName) throws ProductInstallatorException, EntityNotFoundException {
+=======
+    public ChefClient loadNode(ClaudiaData claudiaData, String vdc, String nodeName) throws ProductInstallatorException, EntityNotFoundException {
+>>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
 
         return null;
     }

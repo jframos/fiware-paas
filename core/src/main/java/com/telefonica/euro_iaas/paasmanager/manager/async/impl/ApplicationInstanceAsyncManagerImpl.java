@@ -51,6 +51,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.async.ApplicationInstanceAsy
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
@@ -88,7 +89,7 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
      * @param callback
      *            if not empty, contains the url where the result of the execution will be sent
      */
-    public void install(String org, String vdc, String environmentInstanceName, ApplicationRelease applicationRelease,
+    public void install(ClaudiaData data,  String environmentInstanceName, ApplicationRelease applicationRelease,
             Task task, String callback) {
         LOGGER.info("Install aplication " + applicationRelease.getName() + " " +
                 applicationRelease.getVersion() + " on "
@@ -97,7 +98,7 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
         try {
             EnvironmentInstance environmentInstance = environmentInstanceDao.load(environmentInstanceName);
 
-            ApplicationInstance applicationInstance = applicationInstanceManager.install(org, vdc, environmentInstance,
+            ApplicationInstance applicationInstance = applicationInstanceManager.install(data, environmentInstance,
                     applicationRelease);
             updateSuccessTask(task, environmentInstance);
             LOGGER.info("Application " + applicationRelease.getName() + '-' + applicationRelease.getVersion()
@@ -129,14 +130,14 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
 
     }
 
-    public void uninstall(String org, String vdc, String environmentInstanceName, String applicationName, Task task,
+    public void uninstall(ClaudiaData data, String environmentInstanceName, String applicationName, Task task,
             String callback) {
 
         ApplicationInstance applicationInstance = null;
         try {
-            applicationInstance = applicationInstanceManager.load(vdc, applicationName);
+            applicationInstance = applicationInstanceManager.load(data.getVdc(), applicationName);
             EnvironmentInstance environmentInstance = environmentInstanceDao.load(environmentInstanceName);
-            applicationInstanceManager.uninstall(org, vdc, environmentInstance, applicationInstance);
+            applicationInstanceManager.uninstall(data, environmentInstance, applicationInstance);
             updateSuccessTask(task, environmentInstance);
             LOGGER.info("Application " + applicationInstance.getName() + '-' + " uninstalled successfully "
                     + " on Environment " + environmentInstanceName);

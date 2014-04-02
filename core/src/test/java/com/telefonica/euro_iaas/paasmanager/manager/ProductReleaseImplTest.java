@@ -28,12 +28,14 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.ProductReleaseManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
+import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -61,7 +63,7 @@ public class ProductReleaseImplTest extends TestCase {
         ProductRelease productRelease2 = new ProductRelease("product", "2.0");
         productRelease2.addAttribute(new Attribute("openports", "8080"));
 
-        productReleaseManager.load("test-0.1");
+     //   productReleaseManager.load("test-0.1", "token", "tenant");
     }
 
 }

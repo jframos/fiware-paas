@@ -41,6 +41,7 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.ProductType;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.client.SDCClient;
@@ -82,7 +83,11 @@ public class ProductInstallatorSdcImplTest {
     private final VM host = new VM("fqn", "ip", "hostname", "domain");
     private Task task;
     private com.telefonica.euro_iaas.sdc.model.ProductInstance pInstanceSDC;
+<<<<<<< HEAD
     private static String SDC_SERVER_MEDIATYPE = "application/json";
+=======
+    private ClaudiaData data ;
+>>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
 
     @Before
     public void setUp() throws Exception {
@@ -122,7 +127,7 @@ public class ProductInstallatorSdcImplTest {
         tierInstanceManager = mock(TierInstanceManager.class);
 
         productReleaseManager = mock(ProductReleaseManager.class);
-        when(productReleaseManager.load(any(String.class))).thenReturn(productRelease);
+        when(productReleaseManager.load(any(String.class),any(ClaudiaData.class))).thenReturn(productRelease);
         when(productReleaseManager.load(any(String.class), any(String.class))).thenReturn(productRelease);
 
         task = new Task();
@@ -132,14 +137,26 @@ public class ProductInstallatorSdcImplTest {
         when(pInstanceSDC.getVm()).thenReturn(new com.telefonica.euro_iaas.sdc.model.dto.VM("aa", "bb", "cc", "dd"));
 
         service = mock(ProductInstanceService.class);
-        when(service.install(Mockito.anyString(), Mockito.any(ProductInstanceDto.class), Mockito.anyString()))
+        when(service.install(Mockito.anyString(), Mockito.any(ProductInstanceDto.class), Mockito.anyString(),Mockito.anyString()))
                 .thenReturn(task);
-        when(service.load(Mockito.anyString(), Mockito.anyString())).thenReturn(pInstanceSDC);
+        when(service.load(Mockito.anyString(), Mockito.anyString(),Mockito.anyString())).thenReturn(pInstanceSDC);
 
         sdcClient = mock(SDCClient.class);
         when(sdcClient.getProductInstanceService(Mockito.anyString(), Mockito.anyString())).thenReturn(service);
 
         sDCUtil = mock(SDCUtil.class);
+        
+        data = mock(ClaudiaData.class);
+        PaasManagerUser user = mock(PaasManagerUser.class);
+        
+    
+
+        when (data.getUser()).thenReturn(user);
+        when (data.getOrg()).thenReturn("FIWARE");
+        when (data.getService()).thenReturn("deploytm");
+        when (data.getVdc()).thenReturn("60b4125450fc4a109f50357894ba2e28");
+        when (user.getToken()).thenReturn("any");
+
         /*
          * when(sDCUtil.checkTaskStatus(any(Task.class), Mockito.anyString()));
          */
@@ -159,8 +176,9 @@ public class ProductInstallatorSdcImplTest {
         List<Attribute> attributes = new ArrayList();
         attributes.add(new Attribute("dd", "ddd"));
 
-        ClaudiaData data = new ClaudiaData("org", "vdc", "service");
+        
         installator.configure(data, productInstance, attributes);
+
 
         verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_URL);
     }
@@ -174,7 +192,7 @@ public class ProductInstallatorSdcImplTest {
         installator.setSDCUtil(sDCUtil);
         installator.setTierInstanceManager(tierInstanceManager);
 
-        ClaudiaData data = new ClaudiaData("org", "vdc", "");
+    
         ProductInstance installedProduct = installator.install(data, "env", tierInstance,
                 expectedProductInstance.getProductRelease(), new HashSet<Attribute>());
         // make verifications
@@ -199,7 +217,7 @@ public class ProductInstallatorSdcImplTest {
         productReleaseWithoutAttrs.setProductType(new ProductType("type A", "Type A desc"));
         productReleaseWithoutAttrs.setWithArtifact(true);
         
-        ClaudiaData data = new ClaudiaData("org", "vdc", "");
+      
         ProductInstance installedProduct = installator.install(data, "env", tierInstance,
                         productReleaseWithoutAttrs, new HashSet<Attribute>());
         // make verifications
@@ -215,7 +233,7 @@ public class ProductInstallatorSdcImplTest {
         installator.setSDCUtil(sDCUtil);
         installator.setTierInstanceManager(tierInstanceManager);
         
-        ClaudiaData data = new ClaudiaData("org", "vdc", "");
+
         ProductInstance installedProduct = installator.install(data, "env", tierInstance,
                 expectedProductInstance.getProductRelease(), new HashSet<Attribute>());
         // make verifications
@@ -233,7 +251,7 @@ public class ProductInstallatorSdcImplTest {
         installator.setSDCUtil(sDCUtil);
         installator.setTierInstanceManager(tierInstanceManager);
 
-        ClaudiaData data = new ClaudiaData("FIWARE", "60b4125450fc4a109f50357894ba2e28", "deploytm");
+
         expectedProductInstance.setName("deploytm-contextbrokr-1_mongos_2.2.3");
         String name = installator.getProductInstanceName(data, expectedProductInstance);
         // make verifications

@@ -210,7 +210,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                     
                     log.info("Install software " + productRelease.getProduct() + " " + productRelease.getVersion() + " " + productRelease.getName() );
                  
-                    productRelease = productReleaseManager.load(productRelease.getName());
+                    productRelease = productReleaseManager.load(productRelease.getName(), claudiaData);
 
                     log.info("Install software " + productRelease.getProduct() + " " + productRelease.getVersion());
 
@@ -318,10 +318,10 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                 tierInstance.setStatus(Status.UNINSTALLING);
                 tierInstanceDao.update(tierInstance);
                 try {
-                    ChefClient chefClient = productInstallator.loadNode(tierInstance.getVdc(), tierInstance.getVM()
-                            .getHostname());
+                    ChefClient chefClient = productInstallator.loadNode(claudiaData, tierInstance.getVdc(), tierInstance.getVM()
+                            .getHostname() );
 
-                    productInstallator.deleteNode(tierInstance.getVdc(), chefClient.getName());
+                    productInstallator.deleteNode(claudiaData, tierInstance.getVdc(), chefClient.getName());
 
                     tierInstance.setStatus(Status.UNINSTALLED);
                     tierInstanceDao.update(tierInstance);
@@ -418,7 +418,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                     List<ProductRelease> productReleases = tier.getProductReleases();
                     for (ProductRelease pRelease : productReleases) {
                         ProductRelease pReleaseDB = productReleaseManager.load(pRelease.getProduct() + "-"
-                                + pRelease.getVersion());
+                                + pRelease.getVersion(), claudiaData);
                         pReleaseDB = updateProductReleaseDB(pReleaseDB, pRelease);
                         pReleaseDB = productReleaseManager.update(pReleaseDB);
 

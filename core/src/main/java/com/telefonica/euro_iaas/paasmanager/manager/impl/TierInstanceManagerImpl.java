@@ -106,7 +106,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                     productInstanceDB = productInstanceManager.load(productInstance.getName());
                 } catch (EntityNotFoundException e) {
                     try {
-                        productInstanceDB = productInstanceManager.create(productInstance);
+                        productInstanceDB = productInstanceManager.create(data, productInstance);
                     } catch (InvalidEntityException e1) {
                         throw new InvalidEntityException("Error to create the " + "product instance "
                                 + productInstance.getName() + " : " + e1.getMessage());

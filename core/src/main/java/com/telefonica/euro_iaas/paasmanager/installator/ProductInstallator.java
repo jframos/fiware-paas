@@ -63,7 +63,11 @@ public interface ProductInstallator {
      * @throws ProductInstallatorException
      * @throws OpenStackException 
      */
+<<<<<<< HEAD
     void installArtifact(ClaudiaData claudiaData,ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException, OpenStackException;
+=======
+    void installArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException;
+>>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
 
     /**
      * Operation that uninstalls an artefact in the productInstance
@@ -73,12 +77,20 @@ public interface ProductInstallator {
      * @throws ProductInstallatorException
      * @throws OpenStackException 
      */
+<<<<<<< HEAD
     void uninstallArtifact(ClaudiaData claudiaData,ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException, OpenStackException;
+=======
+    void uninstallArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException;
+>>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
 
     /*
      * Operation that installs the productInstance
      */
+<<<<<<< HEAD
     void uninstall(ClaudiaData claudiaData,ProductInstance productInstance) throws ProductInstallatorException, OpenStackException;
+=======
+    void uninstall(ClaudiaData claudiaData, ProductInstance productInstance) throws ProductInstallatorException;
+>>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
 
     void configure(ClaudiaData claudiaData, ProductInstance productInstance, List<Attribute> properties)
             throws ProductInstallatorException, EntityNotFoundException, ProductReconfigurationException, OpenStackException;
@@ -86,10 +98,18 @@ public interface ProductInstallator {
     /*
      * Operation that deletes a chefClien from the node manager (Chef server in SDC, for instance)
      */
+<<<<<<< HEAD
     void deleteNode(ClaudiaData claudiaData,String vdc, String nodeName) throws ProductInstallatorException, OpenStackException;
+=======
+    void deleteNode(ClaudiaData claudiaData, String vdc, String nodeName) throws ProductInstallatorException;
+>>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
 
     /*
      * Operation that load a chefClient from the node manager (Chef server in SDC, for instance)
      */
+<<<<<<< HEAD
     ChefClient loadNode(ClaudiaData claudiaData,String vdc, String nodeName) throws ProductInstallatorException, EntityNotFoundException, OpenStackException;
+=======
+    ChefClient loadNode(ClaudiaData claudiaData, String vdc, String nodeName) throws ProductInstallatorException, EntityNotFoundException;
+>>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
 }
