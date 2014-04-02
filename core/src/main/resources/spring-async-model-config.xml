@@ -25,13 +25,7 @@
         <property name="taskNotificator" ref="taskNotificator"/>
         <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
     </bean>
-    <bean id="virtualServiceAsyncManager" lazy-init="true"
-          class="com.telefonica.euro_iaas.paasmanager.manager.async.impl.VirtualServiceAsyncManagerImpl">
-        <property name="taskManager" ref="taskManager"/>
-        <property name="virtualServiceManager" ref="virtualServiceManager"/>
-        <property name="taskNotificator" ref="taskNotificator"/>
-        <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
-    </bean>
+
     <bean id="applicationInstanceAsyncManager" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.manager.async.impl.ApplicationInstanceAsyncManagerImpl">
         <property name="applicationInstanceManager" ref="applicationInstanceManager"/>

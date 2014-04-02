@@ -1,19 +1,41 @@
+# -*- coding: utf-8 -*-
+# Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
+#
+# This file is part of FI-WARE project.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+#
+# You may obtain a copy of the License at:
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# For those usages not covered by the Apache version 2.0 License please
+# contact with opensource@tid.es
+
 __author__ = 'henar'
 
-
-from xml.etree.ElementTree import Element, SubElement,tostring
+from xml.etree.ElementTree import Element, SubElement, tostring
 
 class Attribute:
     def __init__(self, att_name, att_value):
-        self.key=att_name
-        self.value=att_value
+        self.key = att_name
+        self.value = att_value
+
 
 class Product:
     def __init__(self, product_name, product_description=''):
-        self.name=product_name
-        self.description=product_description
-        self.attributes=[]
-        self.metadatas=[]
+        self.name = product_name
+        self.description = product_description
+        self.attributes = []
+        self.metadatas = []
 
     def add_attribute(self, attribute):
         self.attributes.append(attribute)
@@ -27,7 +49,7 @@ class Product:
     def add_metadatas(self, metadatas):
         self.metadatas = metadatas
 
-    def to_product_xml (self):
+    def to_product_xml(self):
         product = Element('product')
         name = SubElement(product, 'name')
         name.text = self.name
@@ -49,8 +71,7 @@ class Product:
             value.text = att.value
         return product
 
-    def to_product_xml_env (self):
-
+    def to_product_xml_env(self):
         product = Element('productReleaseDtos')
         name = SubElement(product, 'productName')
         name.text = self.name
@@ -70,59 +91,57 @@ class Product:
 
         return product
 
-    def to_string (self):
-
-        var = self.name+ "\t" +self.description + '\t' + self.version+ '\t'
+    def to_string(self):
+        var = self.name + "\t" + self.description + '\t' + self.version + '\t'
         for att in self.attributes:
             var = var + att.key + ':' + att.value
         print var
 
+
 class ProductRelease:
-    def __init__(self, product,product_version):
-        self.version=product_version
-        self.product=product
+    def __init__(self, product, product_version):
+        self.version = product_version
+        self.product = product
 
     def __eq__(self, other):
-        return self.product == other.product \
-            and self.version == other.version
+        return self.product == other.product\
+        and self.version == other.version
 
     def __gt__(self, other):
-        return self.product > other.product \
-            or self.product == other.product and self.version > other.version
+        return self.product > other.product\
+        or self.product == other.product and self.version > other.version
 
-    def to_product_xml (self):
+    def to_product_xml(self):
         product_release = Element('productReleaseDtos')
         version = SubElement(product_release, 'version')
         version.text = self.version
         return product_release
 
-    def to_product_xml_env (self):
-
+    def to_product_xml_env(self):
         product = Element('productReleaseDtos')
         name = SubElement(product, 'productName')
         name.text = self.product
         version = SubElement(product, 'version')
         version.text = self.version
 
-     #   if self.product.attributes == None:
-     #       return product
-     #   for att in self.product.attributes:
-     #       attribute = SubElement(product, "privateAttributes")
-     #       key = SubElement(attribute, "key")
-     #       key.text = att.key
-     #       value = SubElement(attribute, "value")
-     #       value.text = att.value
+        #   if self.product.attributes == None:
+        #       return product
+        #   for att in self.product.attributes:
+        #       attribute = SubElement(product, "privateAttributes")
+        #       key = SubElement(attribute, "key")
+        #       key.text = att.key
+        #       value = SubElement(attribute, "value")
+        #       value.text = att.value
 
         return product
 
-    def to_string (self):
-
-        var = self.name+ "\t" +self.description + '\t' + self.version+ '\t'
+    def to_string(self):
+        var = self.name + "\t" + self.description + '\t' + self.version + '\t'
         for att in self.attributes:
             var = var + att.key + ':' + att.value
         print var
 
-    ##
-    ## get_images - Obtiene la lista de imagenes --- Detalle images/detail
-    ##
+        ##
+        ## get_images - Obtiene la lista de imagenes --- Detalle images/detail
+        ##
 

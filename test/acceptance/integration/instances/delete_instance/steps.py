@@ -1,4 +1,25 @@
 # -*- coding: utf-8 -*-
+# Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
+#
+# This file is part of FI-WARE project.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+#
+# You may obtain a copy of the License at:
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# For those usages not covered by the Apache version 2.0 License please
+# contact with opensource@tid.es
+
 from lettuce import step, world
 from lettuce_tools.dataset_utils.dataset_utils import DatasetUtils
 from tools import http, environment_request, environment_instance_request
@@ -37,8 +58,8 @@ def an_environment_has_already_been_created_with_data(step):
 def an_environment_has_already_been_created_with_the_previous_tiers_and_data(step):
     data = dataset_utils.prepare_data(step.hashes[0])
     world.env_requests.add_environment(data.get(NAME), data.get(DESCRIPTION), world.tiers)
-    assert world.response.status == 204, \
-    "Wrong status code received creating environment: %d. Expected: %d. Body content: %s" \
+    assert world.response.status == 204,\
+    "Wrong status code received creating environment: %d. Expected: %d. Body content: %s"\
     % (world.response.status, 204, world.response.read())
 
 
@@ -47,8 +68,8 @@ def an_instance_of_the_environment_has_already_been_created_using_data(step, env
     # First, send the request to get the environment on which the instance will be based
     env_name = dataset_utils.generate_fixed_length_param(env_name)
     world.env_requests.get_environment(env_name)
-    assert world.response.status == 200, \
-    "Wrong status code received getting environment: %d. Expected: %d. Body content: %s" \
+    assert world.response.status == 200,\
+    "Wrong status code received getting environment: %d. Expected: %d. Body content: %s"\
     % (world.response.status, 200, world.response.read())
     environment = environment_request.process_environment(json.loads(world.response.read()))
     # Then, create the instance
