@@ -1,9 +1,0 @@
-package com.telefonica.euro_iaas.paasmanager.dao.impl;
-
-import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
-import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
-
-public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<T, ID>
-		implements EnvironmentInstanceDao {
-
-}

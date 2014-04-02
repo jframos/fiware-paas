@@ -2,13 +2,14 @@
 <beans
         xmlns="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:tx="http://www.springframework.org/schema/tx"
         xsi:schemaLocation="http://www.springframework.org/schema/beans
               http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
         default-autowire="no">
 
+        <bean id="restClient" class="com.sun.jersey.api.client.Client" factory-method="create"/>
     <bean id="productReleaseSdcDao" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.dao.sdc.impl.ProductReleaseSdcDaoImpl">
-           <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
-     </bean>
+        <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
+        <property name="client" ref="restClient"></property>
+    </bean>
 </beans>

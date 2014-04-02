@@ -1,179 +1,165 @@
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
+
 package com.telefonica.euro_iaas.paasmanager.dao;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import javax.persistence.EntityManager;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.telefonica.euro_iaas.paasmanager.dao.impl.TierInstanceDaoJpaImpl;
-import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
-import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
-import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierInstanceSearchCriteria;
-import static org.mockito.Mockito.mock;
 
 /**
- * Unit test for TierInstanceDaoJpaImpl
+ * Unit test for TierDaoJpaImplTest
  * 
  * @author Jesus M. Movilla
- * 
  */
-public class TierInstanceDaoJpaImplTest extends AbstractJpaDaoTest {
 
-	private ProductInstanceDao productInstanceDao;
-	private ProductTypeDao productTypeDao;
-	private TierDao tierDao;
-	private OSDao osDao;
-	private ProductReleaseDao productReleaseDao;
-	private ServiceDao serviceDao;
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
+public class TierInstanceDaoJpaImplTest {
 
-	public final static String TIERINSTANCE_NAME = "tierInstanceName";
-	public final static String TIERINSTANCE2_NAME = "tierInstance2Name";
-	public final static String PINSTANCE_NAME = "pinstanceName";
-	public final static String PINSTANCE2_NAME = "pinstance2Name";
 
-	/**
-	 * Test the create and load method
-	 */
-	/*
-	 * public void testCreate() throws Exception {
-	 * 
-	 * TierInstanceDaoJpaImpl tierInstanceDao = new TierInstanceDaoJpaImpl();
-	 * 
-	 * EntityManager entityManager = mock (EntityManager.class);
-	 * tierInstanceDao.setEntityManager(entityManager);
-	 * 
-	 * 
-	 * 
-	 * Tier tier = new Tier ();
-	 * 
-	 * List<ProductInstance> productInstances = new ArrayList<ProductInstance>
-	 * (); productInstances.add(new ProductInstance ());
-	 * 
-	 * TierInstance tierInstance = new TierInstance();
-	 * tierInstance.setName("tierInstance1");
-	 * tierInstance.setStatus(Status.INSTALLED); tierInstance.setTier(tier);
-	 * tierInstance.setProductInstances(productInstances);
-	 * 
-	 * tierInstance = tierInstanceDao.create(tierInstance);
-	 * assertEquals(tierInstance, tierInstanceDao.load(tierInstance.getName()));
-	 * //assertEquals(1, tierInstanceDao.findAll().size()); }
-	 * 
-	 * /** Test the create and load method
-	 */
-	/*
-	 * public void testCreate2() throws Exception { TierInstanceDaoJpaImpl
-	 * tierInstanceDao = new TierInstanceDaoJpaImpl();
-	 * 
-	 * ProductRelease productRelease = productReleaseDao.findAll().get(0);
-	 * 
-	 * 
-	 * 
-	 * Tier tier = tierDao.findAll().get(0);
-	 * 
-	 * List<ProductInstance> productInstances = productInstanceDao.findAll();
-	 * 
-	 * 
-	 * TierInstance tierInstance = new TierInstance();
-	 * tierInstance.setName("tierInstance2");
-	 * tierInstance.setStatus(Status.INSTALLED); tierInstance.setTier(tier);
-	 * tierInstance.setProductInstances(productInstances); tierInstance =
-	 * tierInstanceDao.create(tierInstance); }
-	 * 
-	 * /** Test the create and load method
-	 */
-	/*
-	 * public void testFindAllAndUpdate() throws Exception {
-	 * TierInstanceDaoJpaImpl tierInstanceDao = new TierInstanceDaoJpaImpl();
-	 * assertEquals(0, tierInstanceDao.findAll().size()); testCreate();
-	 * List<TierInstance> tierInstances = tierInstanceDao.findAll();
-	 * assertEquals(1, tierInstances.size()); TierInstance tierInstance =
-	 * tierInstances.get(0); tierInstance.setDate(new Date(86,12,19));
-	 * tierInstanceDao.update(tierInstance); assertEquals(new Date(86,12,19),
-	 * tierInstanceDao.load(tierInstance.getName()).getDate());
-	 * tierInstanceDao.remove(tierInstance); assertEquals(0,
-	 * tierInstanceDao.findAll().size()); }
-	 * 
-	 * 
-	 * public void testFindByCriteria() throws Exception {
-	 * TierInstanceDaoJpaImpl tierInstanceDao = new TierInstanceDaoJpaImpl();
-	 * assertEquals(0, tierInstanceDao.findAll().size());
-	 * 
-	 * testCreate(); testCreate2();
-	 * 
-	 * List<TierInstance> tierInstances = tierInstanceDao.findAll();
-	 * assertEquals(2, tierInstanceDao.findAll().size());
-	 * 
-	 * TierInstance createdTierInstance1 = tierInstances.get(0); TierInstance
-	 * createdTierInstance2 = tierInstances.get(0);
-	 * 
-	 * TierInstanceSearchCriteria criteria = new TierInstanceSearchCriteria();
-	 * 
-	 * //find all tierInstances = tierInstanceDao.findByCriteria(criteria);
-	 * assertEquals(2, tierInstances.size());
-	 * 
-	 * }
-	 * 
-	 * /**
-	 * 
-	 * @param tierInstanceDao the tierInstanceDao to set
-	 */
-	/*
-	 * public void setTierInstanceDao(TierInstanceDao tierInstanceDao) {
-	 * this.tierInstanceDao = tierInstanceDao; }
-	 */
+    @Autowired
+    private TierInstanceDao tierInstanceDao;
+    @Autowired
+    private TierDao tierDao;
+    @Autowired
+    private NetworkInstanceDao networkInstanceDao;
 
-	/**
-	 * @param productInstanceDao
-	 *            the productInstanceDao to set
-	 */
-	/*
-	 * public void setProductInstanceDao(ProductInstanceDao productInstanceDao)
-	 * { this.productInstanceDao = productInstanceDao; }
-	 */
+    public final static String TIER_NAME = "TierName";
+    public final static String TIER_INSTANCE_NAME = "TierInstanceName";
+    public final static String PRODUCT_NAME = "Product";
+    public final static String NETWORK_NAME = "NETWORK";
+    public final static String VDC = "vdc";
+    public final static String ENV = "env";
+    public final static String PRODUCT_VERSION = "version";
+    public final static Integer MAXIMUM_INSTANCES = 8;
+    public final static Integer MINIMUM_INSTANCES = 1;
+    public final static Integer INITIAL_INSTANCES = 1;
 
-	/**
-	 * @param osDao
-	 *            the osDao to set
-	 */
-	/*
-	 * public void setOsDao(OSDao osDao) { this.osDao = osDao; }
-	 */
+    /**
+     * Test the create method
+     */
+    @Test
+    public void testCreateAndLoad() throws Exception {
+        Integer minimum = new Integer(1);
+        Integer initial = new Integer(2);
+        Integer maximum = new Integer(1);
 
-	/**
-	 * @param productReleaseDao
-	 *            the productReleaseDao to set
-	 */
-	/*
-	 * public void setProductReleaseDao(ProductReleaseDao productReleaseDao) {
-	 * this.productReleaseDao = productReleaseDao; }
-	 */
+        NetworkInstance networkInstance = new NetworkInstance ("net", "vdc");
+        networkInstance.setIdNetwork("ID");
+        networkInstance = networkInstanceDao.create(networkInstance);
 
-	/**
-	 * @param serviceDao
-	 *            the serviceDao to set
-	 */
-	/*
-	 * public void setServiceDao(ServiceDao serviceDao) { this.serviceDao =
-	 * serviceDao; }
-	 */
-	/**
-	 * @param tierDao
-	 *            the tierDao to set
-	 */
-	/*
-	 * public void setTierDao(TierDao tierDao) { this.tierDao = tierDao; }
-	 */
+        Tier tier = new Tier(TIER_NAME, maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes", null);
+        tier = tierDao.create(tier);
+        TierInstance tierInst = new TierInstance();
+        tierInst.setName(TIER_INSTANCE_NAME);
+        tierInst.setNumberReplica(2);
+        tierInst.addNetworkInstance(networkInstance);
+        tierInst.setTier(tier);
+        tierInst = tierInstanceDao.create(tierInst);
+        assertNotNull(tierInst);
+        assertNotNull(tierInst.getId());
+        
+        tierInst = tierInstanceDao.load(TIER_INSTANCE_NAME);
+        assertEquals(tierInst.getName(), TIER_INSTANCE_NAME);
+        assertEquals(tierInst.getNumberReplica(), 2); 
 
-	/**
-	 * @param productTypeDao
-	 *            the productTypeDao to set
-	 */
-	/*
-	 * public void setProductTypeDao(ProductTypeDao productTypeDao) {
-	 * this.productTypeDao = productTypeDao; }
-	 */
+    }
+
+    @Test
+    public void testUpdate() throws Exception {
+        Integer minimum = new Integer(1);
+        Integer initial = new Integer(2);
+        Integer maximum = new Integer(1);
+
+        NetworkInstance networkInstance = new NetworkInstance ("net","vdc");
+        networkInstance.setIdNetwork("ID");
+        networkInstance = networkInstanceDao.create(networkInstance);
+
+        Tier tier = new Tier(TIER_NAME, maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes", null);
+        tier = tierDao.create(tier);
+        TierInstance tierInst = new TierInstance ();
+        tierInst.setName(TIER_INSTANCE_NAME);
+        tierInst.addNetworkInstance(networkInstance);
+        tierInst.setTier(tier);
+        tierInst = tierInstanceDao.create (tierInst);
+        assertNotNull (tierInst);
+        tierInst.setNumberReplica(55);
+        tierInst = tierInstanceDao.update(tierInst);
+        assertNotNull (tierInst);
+        assertEquals (tierInst.getNumberReplica(), 55);
+
+    }
+    
+    /**
+     * Test delete method
+     * @throws AlreadyExistsEntityException 
+     * @throws InvalidEntityException 
+     */
+    @Test
+    public void testDelete() throws InvalidEntityException, AlreadyExistsEntityException  {
+        Integer minimum = new Integer(1);
+        Integer initial = new Integer(2);
+        Integer maximum = new Integer(1);
+
+        NetworkInstance networkInstance = new NetworkInstance ("net","vdc");
+        networkInstance.setIdNetwork("ID");
+        networkInstance = networkInstanceDao.create(networkInstance);
+
+        Tier tier = new Tier(TIER_NAME, maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes", null);
+        tier = tierDao.create(tier);
+        TierInstance tierInst = new TierInstance();
+        tierInst.setName(TIER_INSTANCE_NAME);
+        tierInst.addNetworkInstance(networkInstance);
+        tierInst.setTier(tier);
+        tierInst = tierInstanceDao.create(tierInst);
+        
+        tierInstanceDao.remove(tierInst);
+        
+     /*   try {
+            tierInstanceDao.load(TIER_INSTANCE_NAME);
+            fail("Should have thrown an EntityNotFoundException because the tier instance does not exit!");
+        } catch (Exception e) {
+            assertNotNull(e);
+        }*/
+
+    }
+   
+
+    public void setNetworkInstanceDao(NetworkInstanceDao networkInstanceDao) {
+        this.networkInstanceDao = networkInstanceDao;
+    }
+
+    public void setTierDao(TierDao tierDao) {
+        this.tierDao = tierDao;
+    }
+    
+    public void setTierInstanceDao(TierInstanceDao tierInstanceDao) {
+        this.tierInstanceDao = tierInstanceDao;
+    }
+
 }

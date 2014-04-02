@@ -1,7 +1,16 @@
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
+
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,10 +18,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.JoinColumn;
+
 import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 
@@ -25,363 +35,532 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 @Entity
 public class Tier {
 
-	public final static String NAME_FIELD = "name";
-	public final static String VDC_FIELD = "vdc";
-	public final static String ENVIRONMENT_NAME_FIELD = "environmentname";
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+    public static final String NAME_FIELD = "name";
+    public static final String VDC_FIELD = "vdc";
+    public static final String ENVIRONMENT_NAME_FIELD = "environmentname";
 
-	@Column(nullable = false, length = 256)
-	private String name = "";
-	private String vdc = "";
-	private String environmentname = "";
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-	private String flavour = "";
-	private String image = "";
-	private String icono = "";
-	// private String securityGroupName;
-	private String keypair = "";
-	private String floatingip = "false";
+    @Column(nullable = false, length = 256)
+    private String name = "";
+    private String vdc = "";
+    private String environmentname = "";
 
-	private Integer maximumNumberInstances = new Integer(0);
-	private Integer minimumNumberInstances = new Integer(0);
-	private Integer initialNumberInstances = new Integer(0);
+    private String flavour = "";
+    private String image = "";
+    private String icono = "";
 
-	@Column(length = 90000)
-	private String payload;
+    private String keypair = "";
+    private String floatingip = "false";
 
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "tier_has_productReleases", joinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "productRelease_ID", nullable = false, updatable = false) })
-	private List<ProductRelease> productReleases;
+    private Integer maximumNumberInstances = new Integer(0);
+    private Integer minimumNumberInstances = new Integer(0);
+    private Integer initialNumberInstances = new Integer(0);
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	private SecurityGroup securityGroup;
+    @Column(length = 90000)
+    private String payload;
 
-	/**
-	 * Default Constructor
-	 */
-	public Tier() {
-	}
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tier_has_productReleases", joinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "productRelease_ID", nullable = false, updatable = false) })
+    private List<ProductRelease> productReleases;
 
-	public Tier(String name) {
-		this.name = name;
-	}
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tier_has_networks", joinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "network_ID", nullable = false, updatable = false) })
+    private Set<Network> networks;
 
-	/**
-	 * @param name
-	 * @param maximum_number_instances
-	 * @param minimum_number_instances
-	 * @param initial_number_instances
-	 * @param productReleases
-	 */
-	public Tier(String name, Integer maximumNumberInstances,
-			Integer minimumNumberInstances, Integer initialNumberInstances,
-			List<ProductRelease> productReleases, String flavour, String image,
-			String icono) {
-		this.name = name;
-		this.maximumNumberInstances = maximumNumberInstances;
-		this.minimumNumberInstances = minimumNumberInstances;
-		this.initialNumberInstances = initialNumberInstances;
-		this.productReleases = productReleases;
-		this.flavour = flavour;
-		this.image = image;
-		this.icono = icono;
-	}
+    @ManyToOne(fetch = FetchType.EAGER)
+    private SecurityGroup securityGroup;
 
-	public Tier(String name, Integer maximumNumberInstances,
-			Integer minimumNumberInstances, Integer initialNumberInstances,
-			List<ProductRelease> productReleases, String flavour, String image,
-			String icono, String keypair, String floatingip, String payload) {
-		this.name = name;
-		this.maximumNumberInstances = maximumNumberInstances;
-		this.minimumNumberInstances = minimumNumberInstances;
-		this.initialNumberInstances = initialNumberInstances;
-		this.productReleases = productReleases;
+    private String region = "";
 
-		this.flavour = flavour;
-		this.image = image;
-		this.icono = icono;
-		// this.securityGroupName = securityGroupName;
-		this.keypair = keypair;
-		this.floatingip = floatingip;
-		this.payload = payload;
-	}
+    /**
+     * Default Constructor.
+     */
+    public Tier() {
+        networks = new HashSet<Network>();
+    }
 
-	public Tier(String name, Integer maximumNumberInstances,
-			Integer minimumNumberInstances, Integer initialNumberInstances,
-			List<ProductRelease> productReleases) {
-		this.name = name;
-		this.maximumNumberInstances = maximumNumberInstances;
-		this.minimumNumberInstances = minimumNumberInstances;
-		this.initialNumberInstances = initialNumberInstances;
-		this.productReleases = productReleases;
+    /**
+     * @arg name
+     */
+    public Tier(String name) {
+        this.name = name;
+        networks = new HashSet<Network>();
+    }
 
-	}
+    public Tier(String name, Integer maximumNumberInstances, Integer minimumNumberInstances,
+            Integer initialNumberInstances, List<ProductRelease> productReleases) {
+        this.name = name;
+        this.maximumNumberInstances = maximumNumberInstances;
+        this.minimumNumberInstances = minimumNumberInstances;
+        this.initialNumberInstances = initialNumberInstances;
+        this.productReleases = productReleases;
+        networks = new HashSet<Network>();
+    }
 
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
-	
-	public void setEnviromentName(String environmentname) {
-		this.environmentname = environmentname;
-	}
-	
-	
+    /**
+     * @param name
+     * @param maximum_number_instances
+     * @param minimum_number_instances
+     * @param initial_number_instances
+     * @param productReleases
+     */
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    public Tier(String name, Integer maximumNumberInstances, Integer minimumNumberInstances,
+            Integer initialNumberInstances, List<ProductRelease> productReleases, String flavour, String image,
+            String icono) {
+        this.name = name;
+        this.maximumNumberInstances = maximumNumberInstances;
+        this.minimumNumberInstances = minimumNumberInstances;
+        this.initialNumberInstances = initialNumberInstances;
+        this.productReleases = productReleases;
+        this.flavour = flavour;
+        this.image = image;
+        this.icono = icono;
+        networks = new HashSet<Network>();
+    }
 
-	public String getVdc() {
-		return vdc;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param name
+     * @param maximumNumberInstances
+     * @param minimumNumberInstances
+     * @param initialNumberInstances
+     * @param productReleases
+     * @param flavour
+     * @param image
+     * @param icono
+     * @param keypair
+     * @param floatingip
+     * @param payload
+     */
+    public Tier(String name, Integer maximumNumberInstances, Integer minimumNumberInstances,
+            Integer initialNumberInstances, List<ProductRelease> productReleases, String flavour, String image,
+            String icono, String keypair, String floatingip, String payload) {
+        this.name = name;
+        this.maximumNumberInstances = maximumNumberInstances;
+        this.minimumNumberInstances = minimumNumberInstances;
+        this.initialNumberInstances = initialNumberInstances;
+        this.productReleases = productReleases;
 
-	public void setVdc(String vdc) {
-		this.vdc = vdc;
-	}
+        this.flavour = flavour;
+        this.image = image;
+        this.icono = icono;
+        // this.securityGroupName = securityGroupName;
+        this.keypair = keypair;
+        this.floatingip = floatingip;
+        this.payload = payload;
+        networks = new HashSet<Network>();
+    }
 
-	/**
-	 * @return the maximum_number_instances
-	 */
-	public Integer getMaximumNumberInstances() {
-		return maximumNumberInstances;
-	}
+    /**
+     * @param network
+     *            the network list
+     */
+    public void addNetwork(Network network) {
+        if (this.networks == null) {
+            this.networks = new HashSet<Network>();
+        }
+        int count = 0;
+        if ((count = containsNetwork(network)) != -1) {
+            networks.remove(count);
+        }
+        networks.add(network);
 
-	/**
-	 * @return the minimum_number_instances
-	 */
-	public Integer getMinimumNumberInstances() {
-		return minimumNumberInstances;
-	}
+    }
 
-	/**
-	 * @return the initial_number_instances
-	 */
-	public Integer getInitialNumberInstances() {
-		return initialNumberInstances;
-	}
+    /**
+     * @param network
+     *            the network list
+     */
+    public void deleteNetwork(Network network) {
+        if (networks.contains(network)) {
+            networks.remove(network);
+        }
 
-	/**
-	 * @return the productReleases
-	 */
-	public List<ProductRelease> getProductReleases() {
-		return productReleases;
-	}
+    }
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * Add the product release for the tier.
+     * 
+     * @param productRelease
+     */
+    public void addProductRelease(ProductRelease productRelease) {
+        if (this.productReleases == null) {
+            productReleases = new ArrayList<ProductRelease>();
+        }
+        productReleases.add(productRelease);
+    }
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setFlavour(String flavour) {
-		this.flavour = flavour;
-	}
+    /**
+     * It returns the position in the array list of the network.
+     * 
+     * @param net2
+     * @return
+     */
+    public int containsNetwork(Network net2) {
+        int i = 0;
+        for (Network net : networks) {
+            if (net2.getNetworkName().equals(net.getNetworkName())) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
 
-	public String getFlavour() {
-		return flavour;
-	}
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Tier other = (Tier) obj;
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
+            return false;
+        }
+        if (!name.equals(other.name)) {
+        	return false;
+        }
+        
+        if (!image.equals(other.image)) {
+        	return false;
+        }
+        return true;
+    }
 
-	public void setImage(String image) {
-		this.image = image;
-	}
+    public String getFlavour() {
+        return flavour;
+    }
 
-	public String getImage() {
-		return this.image;
-	}
+    public String getFloatingip() {
+        return this.floatingip;
+    }
 
-	/**
-	 * @param maximum_number_instances
-	 *            the maximum_number_instances to set
-	 */
-	public void setMaximumNumberInstances(Integer maximumNumberInstances) {
-		this.maximumNumberInstances = maximumNumberInstances;
-	}
+    public String getIcono() {
+        return this.icono;
+    }
 
-	/**
-	 * @param minimum_number_instances
-	 *            the minimum_number_instances to set
-	 */
-	public void setMinimumNumberInstances(Integer minimumNumberInstances) {
-		this.minimumNumberInstances = minimumNumberInstances;
-	}
+    /**
+     * @return the id
+     */
+    public Long getId() {
+        return id;
+    }
 
-	/**
-	 * @param initial_number_instances
-	 *            the initial_number_instances to set
-	 */
-	public void setInitialNumberInstances(Integer initialNumberInstances) {
-		this.initialNumberInstances = initialNumberInstances;
-	}
+    public String getImage() {
+        return this.image;
+    }
 
-	/**
-	 * @param productReleases
-	 *            the productReleases to set
-	 */
-	public void setProductReleases(List<ProductRelease> productReleases) {
-		this.productReleases = productReleases;
-	}
+    /**
+     * @return the initial_number_instances
+     */
+    public Integer getInitialNumberInstances() {
+        return initialNumberInstances;
+    }
 
-	public void addProductRelease(ProductRelease productRelease) {
-		if (this.productReleases == null) {
-			productReleases = new ArrayList<ProductRelease>();
-		}
+    public String getKeypair() {
+        return this.keypair;
+    }
 
-		productReleases.add(productRelease);
-	}
+    /**
+     * @return the maximum_number_instances
+     */
+    public Integer getMaximumNumberInstances() {
+        return maximumNumberInstances;
+    }
 
-	public void removeProductRelease(ProductRelease productRelease) {
+    /**
+     * @return the minimum_number_instances
+     */
+    public Integer getMinimumNumberInstances() {
+        return minimumNumberInstances;
+    }
 
-		productReleases.remove(productRelease);
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	public void setIcono(String icono) {
-		this.icono = icono;
-	}
+    /**
+     * @return networks the network list
+     */
+    public Set<Network> getNetworks() {
+        return this.networks;
+    }
 
-	public String getIcono() {
-		return this.icono;
-	}
+    public String getPayload() {
+        return this.payload;
+    }
 
-	/*
-	 * public void setSecurity_group(String securityGroupName) {
-	 * this.securityGroupName = securityGroupName; }
-	 * 
-	 * public String getSecurity_group() { return this.securityGroupName; }
-	 */
+    /**
+     * @return the product name
+     */
+    public String getProductNameBalanced() {
+        if (getProductReleases() != null) {
+            for (ProductRelease productRelease : getProductReleases()) {
+                Attribute attBalancer = productRelease.getAttribute("balancer");
+                return attBalancer.getValue();
+            }
+        }
+        return null;
+    }
 
-	public void setKeypair(String keypair) {
-		this.keypair = keypair;
-	}
+    /**
+     * @return the productReleases
+     */
+    public List<ProductRelease> getProductReleases() {
+        if (productReleases == null) {
+            this.productReleases = new ArrayList<ProductRelease>();
+        }
+        return productReleases;
+    }
 
-	public String getKeypair() {
-		return this.keypair;
-	}
+    public SecurityGroup getSecurityGroup() {
+        return this.securityGroup;
+    }
 
-	public void setFloatingip(String floatingip) {
-		this.floatingip = floatingip;
-	}
+    public String getVdc() {
+        return vdc;
+    } /*
+       * (non-Javadoc)
+       * @see java.lang.Object#hashCode()
+       */
 
-	public String getFloatingip() {
-		return this.floatingip;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
 
-	public void setPayload(String payload) {
-		this.payload = payload;
-	}
+    /**
+     * @param network
+     *            the network to remove
+     */
+    public void removeNetwork(Network network) {
+        if (networks.contains(network)) {
+            networks.remove(network);
+        }
+    }
 
-	public String getPayload() {
-		return this.payload;
-	}
+    /**
+     * to remove the product release.
+     * 
+     * @param productRelease
+     */
+    public void removeProductRelease(ProductRelease productRelease) {
+        if (productReleases.contains(productRelease)) {
+            productReleases.remove(productRelease);
+        }
+    }
 
-	public SecurityGroup getSecurityGroup() {
-		return this.securityGroup;
-	}
+    public void setEnviromentName(String environmentname) {
+        this.environmentname = environmentname;
+    }
+    
+    public String getEnviromentName() {
+        return this.environmentname;
+    }
 
-	public void setSecurityGroup(SecurityGroup securityGroup) {
-		this.securityGroup = securityGroup;
-	}
-	
-	public String getProductNameBalanced ()
-	{
-		if (getProductReleases() != null)
-		{
-			for (ProductRelease productRelease: getProductReleases()) {
-				Attribute attBalancer = productRelease.getAttribute("balancer");
-				return attBalancer.getValue();
-			}
-		}
-		return null;
-	}
+    /**
+     * @param flavour
+     *            the flavour to set
+     */
+    public void setFlavour(String flavour) {
+        this.flavour = flavour;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
+    public void setFloatingip(String floatingip) {
+        this.floatingip = floatingip;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Tier other = (Tier) obj;
-		if (id == null) {
-			if (other.id != null) {
-				return false;
-			}
-		} else if (!id.equals(other.id)) {
-			return false;
-		}
-		return true;
-	}
+    public void setIcono(String icono) {
+        this.icono = icono;
+    }
 
-	public TierDto toDto() {
-		List<ProductReleaseDto> productReleasesDto = new ArrayList<ProductReleaseDto>();
-		TierDto tierDto = new TierDto();
-		tierDto.setName(getName());
-		tierDto.setInitialNumberInstances(getInitialNumberInstances());
-		tierDto.setMaximumNumberInstances(getMaximumNumberInstances());
-		tierDto.setMinimumNumberInstances(getMinimumNumberInstances());
-		tierDto.setIcono(getIcono());
-		tierDto.setFlavour(getFlavour());
-		tierDto.setImage(getImage());
-		if (this.getSecurityGroup() != null)
-			tierDto.setSecurity_group(this.getSecurityGroup().getName());
-		tierDto.setKeypair(getKeypair());
-		tierDto.setFloatingip(getFloatingip());
+    public void setImage(String image) {
+        this.image = image;
+    }
 
-		if (getProductReleases() != null) {
-			for (ProductRelease pRelease : getProductReleases()) {
+    /**
+     * @param initialNumberInstances
+     *            the initialNumberInstances to set
+     */
+    public void setInitialNumberInstances(Integer initialNumberInstances) {
+        this.initialNumberInstances = initialNumberInstances;
+    }
 
-				ProductReleaseDto pReleaseDto = new ProductReleaseDto();
-				pReleaseDto.setProductName(pRelease.getProduct());
-				pReleaseDto.setVersion(pRelease.getVersion());
+    public void setKeypair(String keypair) {
+        this.keypair = keypair;
+    }
 
-				if (pRelease.getDescription() != null) {
-					pReleaseDto
-							.setProductDescription(pRelease.getDescription());
-				}
-				if (!productReleasesDto.contains(pReleaseDto)) {
-				productReleasesDto.add(pReleaseDto);
-				}
-			}
-		}
+    /**
+     * @param maximumNumberInstances
+     *            the maximumNumberInstances to set
+     */
+    public void setMaximumNumberInstances(Integer maximumNumberInstances) {
+        this.maximumNumberInstances = maximumNumberInstances;
+    }
 
-		tierDto.setProductReleaseDtos(productReleasesDto);
-		return tierDto;
-	}
+    /**
+     * @param minimumNumberInstances
+     *            the minimumNumberInstances to set
+     */
+    public void setMinimumNumberInstances(Integer minimumNumberInstances) {
+        this.minimumNumberInstances = minimumNumberInstances;
+    }
 
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @param networks
+     *            the network list
+     */
+    public void setNetworks(Set<Network> networks) {
+        this.networks = networks;
+    }
+
+    /**
+     * @param payload
+     *            the payload to set
+     */
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
+
+    /**
+     * @param productReleases
+     *            the productReleases to set
+     */
+    public void setProductReleases(List<ProductRelease> productReleases) {
+        this.productReleases = productReleases;
+    }
+
+    public void setSecurityGroup(SecurityGroup securityGroup) {
+        this.securityGroup = securityGroup;
+    }
+
+    public void setVdc(String vdc) {
+        if (vdc==null) {
+            this.vdc ="";
+        }
+        else {
+            this.vdc = vdc;
+        }
+    }
+
+    /**
+     * To the dto entity.
+     * 
+     * @return
+     */
+    public TierDto toDto() {
+        List<ProductReleaseDto> productReleasesDto = new ArrayList<ProductReleaseDto>();
+        TierDto tierDto = new TierDto();
+        tierDto.setName(getName());
+        tierDto.setInitialNumberInstances(getInitialNumberInstances());
+        tierDto.setMaximumNumberInstances(getMaximumNumberInstances());
+        tierDto.setMinimumNumberInstances(getMinimumNumberInstances());
+        tierDto.setIcono(getIcono());
+        tierDto.setFlavour(getFlavour());
+        tierDto.setImage(getImage());
+        tierDto.setRegion(getRegion());
+        if (this.getSecurityGroup() != null) {
+            tierDto.setSecurityGroup(this.getSecurityGroup().getName());
+        }
+        tierDto.setKeypair(getKeypair());
+        tierDto.setFloatingip(getFloatingip());
+
+        if (getProductReleases() != null) {
+            for (ProductRelease pRelease : getProductReleases()) {
+
+                ProductReleaseDto pReleaseDto = new ProductReleaseDto();
+                pReleaseDto.setProductName(pRelease.getProduct());
+                pReleaseDto.setVersion(pRelease.getVersion());
+
+                if (pRelease.getDescription() != null) {
+                    pReleaseDto.setProductDescription(pRelease.getDescription());
+                }
+                if (!productReleasesDto.contains(pReleaseDto)) {
+                    productReleasesDto.add(pReleaseDto);
+                }
+            }
+        }
+
+        for (Network net : this.getNetworks()) {
+            tierDto.addNetworkDto(net.toDto());
+        }
+
+        tierDto.setProductReleaseDtos(productReleasesDto);
+        return tierDto;
+    }
+
+    /**
+     * to json.
+     * 
+     * @return
+     */
+    public String toJson() {
+        String payload = "{\"server\": " + "{\"key_name\": \"" + getKeypair() + "\", ";
+        if (getSecurityGroup() != null) {
+            payload += "\"security_groups\": [{ \"name\": \"" + getSecurityGroup().getName() + "\"}], ";
+        }
+        /*
+         * if (getNetworks() != null) { payload = payload + "\"networks\": ["; for (Network net: this.getNetworks()){
+         * payload = payload + "{ \"uuid\": \"" + net.getIdNetwork() + "\"}"; } payload = payload + "], "; }
+         */
+
+        payload += "\"region\":\"" + getRegion() + "\",";
+        payload += "\"flavorRef\": \"" + getFlavour() + "\", " + "\"imageRef\": \"" + getImage() + "\", "
+                + "\"name\": \"" + name + "\"}}";
+        return payload;
+
+    }
+
+    /**
+     * @param network
+     *            the network list
+     */
+    public void updateNetwork(Network network) {
+        for (Network net : this.networks) {
+            if (net.getNetworkName().equals(network.getNetworkName())) {
+                networks.remove(net);
+                networks.add(network);
+            }
+        }
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
 }

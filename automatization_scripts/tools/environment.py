@@ -39,8 +39,8 @@ class Environment:
         var = str(self.name).upper()
         for tier in self.tiers:
             var = var+  '\t' + tier.name
-            for product in tier.products:
-                var = var + '\t' + product.name + '\t' + product.version
+            for product_release in tier.products:
+                var = var + '\t' + product_release.product + '\t' + product_release.version
         print var
 
     ##

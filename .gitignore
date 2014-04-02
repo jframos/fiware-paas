@@ -3,6 +3,7 @@
 target/
 .classpath
 .project
+.pydevproject
 .settings
 
 # Package Files #
@@ -10,3 +11,9 @@ target/
 *.war
 *.ear
 
+# pyhon 
+*.pyc
+
+# Acceptance tests logs and reports
+testreport/
+logs/

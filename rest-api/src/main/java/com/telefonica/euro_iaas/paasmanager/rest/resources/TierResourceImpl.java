@@ -1,3 +1,10 @@
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
+
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.util.ArrayList;
@@ -12,280 +19,231 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidSecurityGroupRequestException;
-import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
+import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
-import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
+import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.TierResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
- * default Tier implementation
+ * default Tier implementation.
  * 
- * @author Henar Muñoz
- * 
+ * @author Henar Muï¿½oz
  */
 @Path("/catalog/org/{org}/vdc/{vdc}/environment/{environment}/tier")
 @Component
 @Scope("request")
 public class TierResourceImpl implements TierResource {
 
+    private TierManager tierManager;
+    
+    private NetworkManager networkManager;
 
-	private TierManager tierManager;
+    private EnvironmentManager environmentManager;
 
-	private EnvironmentManager environmentManager;
+    private SystemPropertiesProvider systemPropertiesProvider;
 
-	private SystemPropertiesProvider systemPropertiesProvider;
+    private TierResourceValidator tierResourceValidator;
 
-	private TierResourceValidator tierResourceValidator;
-	
-	private ProductReleaseDao productReleaseDao;
+    private ProductReleaseDao productReleaseDao;
 
-	private static Logger log = Logger.getLogger(TierResourceImpl.class);
+    private static Logger log = Logger.getLogger(TierResourceImpl.class);
 
-	public void delete(String org, String vdc, String envName, String tierName)
-			throws EntityNotFoundException, InvalidEntityException {
-		ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
-		log.debug("Deleting tier " + tierName + " from env " + envName);
-		
-		tierResourceValidator.validateDelete(vdc, envName, systemPropertiesProvider);
+    public void delete(String org, String vdc, String envName, String tierName) throws APIException {
+        ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
+        log.debug("Deleting tier " + tierName + " from env " + envName);
 
+        try {
+            tierResourceValidator.validateDelete(vdc, envName, tierName);
 
-		if (systemPropertiesProvider.getProperty(
-				SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-			claudiaData.setUser(getCredentials());
-		}
+            if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+                claudiaData.setUser(getCredentials());
+            }
 
-		try {
-			Tier tier = tierManager.load(tierName, vdc, envName);
+            Tier tier = tierManager.load(tierName, vdc, envName);
 
-			Environment environment = environmentManager.load(envName);
-			environment.deleteTier(tier);
-			environmentManager.update(environment);
-			tierManager.delete(claudiaData, tier);
-		} catch (InvalidEntityException e) {
-			log.error("Error deleting the tier " + e.getMessage());
-			throw new WebApplicationException(e, 500);
-		} catch (InfrastructureException e) {
-			log.error("Error deleting the tier " + e.getMessage());
-			throw new WebApplicationException(e, 500);
-		}
+            Environment environment = environmentManager.load(envName);
+            environment.deleteTier(tier);
+            environmentManager.update(environment);
+            tierManager.delete(claudiaData, tier);
+        } catch (Exception e) {
+            log.error("Error deleting the tier " + e.getMessage());
+            throw new APIException(e);
+        }
 
-		// throw new WebApplicationException(e, 500);
+        // throw new WebApplicationException(e, 500);
 
-	}
+    }
 
-	public List<TierDto> findAll(Integer page, Integer pageSize,
-			String orderBy, String orderType, String environment) {
-		TierSearchCriteria criteria = new TierSearchCriteria();
-		Environment env = null;
-		try {
-			env = environmentManager.load(environment);
+    public List<TierDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String environment) {
+        TierSearchCriteria criteria = new TierSearchCriteria();
+        Environment env = null;
+        try {
+            env = environmentManager.load(environment);
 
-		} catch (EntityNotFoundException e) {
-			throw new WebApplicationException(e, 404);
-		}
+        } catch (EntityNotFoundException e) {
+            throw new WebApplicationException(e, 404);
+        }
 
-		criteria.setEnvironment(env);
+        criteria.setEnvironment(env);
 
-		if (page != null && pageSize != null) {
-			criteria.setPage(page);
-			criteria.setPageSize(pageSize);
-		}
-		if (!StringUtils.isEmpty(orderBy)) {
-			criteria.setOrderBy(orderBy);
-		}
-		if (!StringUtils.isEmpty(orderType)) {
-			criteria.setOrderBy(orderType);
-		}
+        if (page != null && pageSize != null) {
+            criteria.setPage(page);
+            criteria.setPageSize(pageSize);
+        }
+        if (!StringUtils.isEmpty(orderBy)) {
+            criteria.setOrderBy(orderBy);
+        }
+        if (!StringUtils.isEmpty(orderType)) {
+            criteria.setOrderBy(orderType);
+        }
 
-		try {
+        try {
 
-			List<TierDto> tierDto = new ArrayList<TierDto>();
-			List<Tier> tiers = tierManager.findByCriteria(criteria);
+            List<TierDto> tierDto = new ArrayList<TierDto>();
+            List<Tier> tiers = tierManager.findByCriteria(criteria);
 
-			for (Tier tier : tiers) {
-				tierDto.add(tier.toDto());
-			}
-			return tierDto;
+            for (Tier tier : tiers) {
+                tierDto.add(tier.toDto());
+            }
+            return tierDto;
 
-		} catch (EntityNotFoundException e) {
-			throw new WebApplicationException(e, 404);
-		}
+        } catch (EntityNotFoundException e) {
+            throw new WebApplicationException(e, 404);
+        }
 
-	}
+    }
 
-	public void insert(String org, String vdc, String environmentName,
-			TierDto tierDto) throws EntityNotFoundException, InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException {
+    private PaasManagerUser getCredentials() {
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } else {
+            return null;
+        }
+    }
 
-		log.debug("Insert tier " + tierDto.getName() + " from env "
-				+ environmentName );
-		ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
+    public void insert(String org, String vdc, String environmentName, TierDto tierDto) throws APIException {
 
-		try {
-			tierResourceValidator.validateCreate(tierDto, vdc,environmentName,
-					systemPropertiesProvider);
-		} catch (InvalidEntityException e1) {
-			throw new
-			  WebApplicationException(e1, 500); 
-		}
-		catch (AlreadyExistEntityException e1) {
-			throw new
-			  WebApplicationException(e1, 500); 
-			}
+        log.debug("Insert tier " + tierDto.getName() + " from env " + environmentName);
+        ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
+        claudiaData.setUser(getCredentials());
 
-		if (systemPropertiesProvider.getProperty(
-				SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-			claudiaData.setUser(getCredentials());
-		}
-		Tier tier = tierDto.fromDto();
+        try {
+            tierResourceValidator.validateCreate(claudiaData, tierDto, vdc, environmentName);
+        } catch (Exception ex) {
+            throw new APIException(ex);
+        }
 
-	
-		Environment environment = environmentManager.load(environmentName);
-		Tier newTier = tierManager.create(claudiaData,environmentName, tier);
-		environment.addTier(newTier);
-		environmentManager.update(environment);
-	}
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+            claudiaData.setUser(getCredentials());
+        }
+        log.debug("From tier dto " + tierDto + "  product " + tierDto.getProductReleaseDtos() + " nets "
+                + tierDto.getNetworksDto());
+        Tier tier = tierDto.fromDto(vdc, environmentName);
+        log.debug("to tier " + tier + "  product " + tier.getProductReleases() + " nets " + tier.getNetworks());
 
-	public TierDto load(String vdc, String envName, String name)
-			throws EntityNotFoundException {
-		try {
-			Tier tier = tierManager.load(name, vdc,envName);
+        try {
+            Environment environment = environmentManager.load(environmentName);
+            Tier newTier = tierManager.create(claudiaData, environmentName, tier);
+            environment.addTier(newTier);
+            environmentManager.update(environment);
+        } catch (Exception ex) {
+            throw new APIException(ex);
+        }
+    }
 
-			return tier.toDto();
+    public TierDto load(String vdc, String envName, String name) throws APIException {
+        try {
+            Tier tier = tierManager.load(name, vdc, envName);
 
-		} catch (EntityNotFoundException e) {
-			throw new WebApplicationException(e, 404);
-		}
-	}
+            return tier.toDto();
 
-	public void update(String org, String vdc, String environmentName,
-			TierDto tierDto) throws EntityNotFoundException,
-			InvalidEntityException, ProductReleaseNotFoundException {
-		log.debug("Update tier " + tierDto.getName() + " from env "
-				+ environmentName);
-		ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
+        } catch (EntityNotFoundException e) {
+            throw new APIException(e);
+        }
+    }
 
-		tierResourceValidator.validateUpdate(tierDto, vdc,environmentName,
-				systemPropertiesProvider);
-		log.debug("Validated tier " + tierDto.getName() + " from env "
-				+ environmentName);
+    public void setEnvironmentManager(EnvironmentManager environmentManager) {
+        this.environmentManager = environmentManager;
+    }
 
-		if (systemPropertiesProvider.getProperty(
-				SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-			claudiaData.setUser(getCredentials());
-		}
-		
-		
-		Tier newtier = tierDto.fromDto();
+    public void setProductReleaseDao(ProductReleaseDao productReleaseDao) {
+        this.productReleaseDao = productReleaseDao;
+    }
 
-		try {
-			Environment environment = environmentManager.load(environmentName);
-			List<Tier> tiers = new ArrayList ();
-			for (Tier tier: environment.getTiers())
-			{
-				tiers.add(tier);
-			}
-			environment.setTiers(null);
-			environmentManager.update(environment);
-			for (Tier tier: tiers) {
-				if (tier.getName().equals(newtier.getName())) {
-					log.debug("load tier " + tierDto.getName());
-					tier = tierManager.load(tierDto.getName(), vdc, environmentName);
-					updateTier(tier, newtier);
-					
-				}
-				environment.addTier(tier);
-				environmentManager.update(environment);
-			}
-			
-			log.debug("update tier " + tierDto.getName());
-			
-		//	environmentManager.update(environment);
+    /**
+     * @param systemPropertiesProvider
+     *            the systemPropertiesProvider to set
+     */
+    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
+        this.systemPropertiesProvider = systemPropertiesProvider;
+    }
 
-		} catch (EntityNotFoundException e) {
-			throw new WebApplicationException(e, 404);
-		}
-	}
+    public void setTierManager(TierManager tierManager) {
+        this.tierManager = tierManager;
+    }
 
-	public void updateTier(Tier tierold, Tier tiernew) throws InvalidEntityException {
-		tierold.setFlavour(tiernew.getFlavour());
-		tierold.setFloatingip(tiernew.getFloatingip());
-		tierold.setIcono(tiernew.getIcono());
-		tierold.setImage(tiernew.getImage());
-		tierold.setInitialNumberInstances(tiernew.getInitialNumberInstances());
-		tierold.setKeypair(tiernew.getKeypair());
-		tierold.setMaximumNumberInstances(tiernew.getMaximumNumberInstances());
-		tierold.setMinimumNumberInstances(tiernew.getMinimumNumberInstances());
-		
-		tierold.setProductReleases(null);
-		tierManager.update(tierold);
-		if (tiernew.getProductReleases() == null)
-			return;
-		
-		for (ProductRelease productRelease: tiernew.getProductReleases()) {
-			try {
-				productRelease = productReleaseDao.load(productRelease.getProduct()+"-"+ productRelease.getVersion());
-			} catch (EntityNotFoundException e) {
-				log.error("The new software " + productRelease.getProduct() + "-" + productRelease.getVersion() +" is not found");
-				
-			}
-			tierold.addProductRelease(productRelease);
-			tierManager.update(tierold);
-		}
+    public void setTierResourceValidator(TierResourceValidator tierResourceValidator) {
+        this.tierResourceValidator = tierResourceValidator;
+    }
+    
+    public void setNetworkManager(NetworkManager networkManager) {
+        this.networkManager = networkManager;
+    }
 
-	}
+    public void update(String org, String vdc, String environmentName, String tierName, TierDto tierDto) throws APIException {
+        log.debug("Update tier " + tierName + " from env " + environmentName);
+        ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
 
-	/**
-	 * @param systemPropertiesProvider
-	 *            the systemPropertiesProvider to set
-	 */
-	public void setSystemPropertiesProvider(
-			SystemPropertiesProvider systemPropertiesProvider) {
-		this.systemPropertiesProvider = systemPropertiesProvider;
-	}
+        try {
+            tierResourceValidator.validateUpdate(vdc, environmentName,tierName, tierDto);
+            log.debug("Validated tier " + tierDto.getName() + " from env " + environmentName);
 
-	public void setTierManager(TierManager tierManager) {
-		this.tierManager = tierManager;
-	}
+            if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+                claudiaData.setUser(getCredentials());
+            }
 
-	public void setEnvironmentManager(EnvironmentManager environmentManager) {
-		this.environmentManager = environmentManager;
-	}
+            Tier newtier = tierDto.fromDto(vdc, environmentName);
 
-	public void setTierResourceValidator(
-			TierResourceValidator tierResourceValidator) {
-		this.tierResourceValidator = tierResourceValidator;
-	}
-	
-	public void setProductReleaseDao(
-			ProductReleaseDao productReleaseDao) {
-		this.productReleaseDao = productReleaseDao;
-	}
+            Environment environment = environmentManager.load(environmentName);
+            List<Tier> tiers = new ArrayList();
+            for (Tier tier : environment.getTiers()) {
+                tiers.add(tier);
+            }
+            environment.setTiers(null);
+            environmentManager.update(environment);
+            for (Tier tier : tiers) {
+                if (tier.getName().equals(newtier.getName())) {
+                    log.debug("load tier " + tierDto.getName());
+                    tier = tierManager.load(tierDto.getName(), vdc, environmentName);
+                    tierManager.updateTier(tier, newtier);
 
-	
-	private PaasManagerUser getCredentials() {
-		if (systemPropertiesProvider.getProperty(
-				SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE"))
-			return (PaasManagerUser) SecurityContextHolder.getContext()
-					.getAuthentication().getPrincipal();
-		else
-			return null;
-	}
+                }
+                environment.addTier(tier);
+                environmentManager.update(environment);
+            }
+
+            log.debug("update tier " + tierDto.getName());
+
+            // environmentManager.update(environment);
+
+        } catch (Exception e) {
+            throw new APIException(e);
+        }
+    }
+
+    
 
 }

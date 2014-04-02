@@ -1,29 +1,26 @@
-
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-    xsi:schemaLocation="
-   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <import resource="spring-jersey-config.xml" />
-    <import resource="classpath:/spring-db-test-config.xml" />
-    <import resource="classpath:/spring-dao-config.xml" />
-    <import resource="classpath:/spring-dao-sdc-config.xml" />
-    <import resource="classpath:/spring-async-model-config.xml" />
-    <import resource="classpath:/spring-model-config.xml" />
-    <import resource="classpath:/spring-model-rest-api-config.xml" />
-    <import resource="classpath:/spring-properties-config-test.xml" />
-    <import resource="classpath:/spring-tx-config.xml" />
-    <import resource="classpath:/spring-task-config.xml" />
-    <import resource="classpath:/spring-security-config.xml" />
-    
+    <import resource="spring-jersey-config.xml"/>
+    <import resource="classpath:/spring-test-db-config.xml"/>
+    <import resource="classpath:/spring-dao-config.xml"/>
+    <import resource="classpath:/spring-dao-sdc-config.xml"/>
+    <import resource="classpath:/spring-async-model-config.xml"/>
+    <import resource="classpath:/spring-model-config.xml"/>
+    <import resource="classpath:/spring-model-rest-api-config.xml"/>
+    <import resource="classpath:/spring-properties-config-test.xml"/>
+    <import resource="classpath:/spring-tx-config.xml"/>
+    <import resource="classpath:/spring-task-config.xml"/>
+    <import resource="classpath:/spring-security-config.xml"/>
+
     <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
-    <property name="scopes">
-        <map>
-            <entry key="request">
-                <bean class="org.springframework.context.support.SimpleThreadScope"/>
-            </entry>
-        </map>
-    </property>
-</bean>
+        <property name="scopes">
+            <map>
+                <entry key="request">
+                    <bean class="org.springframework.context.support.SimpleThreadScope"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
 </beans>

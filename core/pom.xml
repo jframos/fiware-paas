@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>paas-manager-core</artifactId>
     <packaging>jar</packaging>
@@ -8,7 +9,7 @@
     <parent>
         <groupId>com.telefonica.euro_iaas</groupId>
         <artifactId>paas-manager-server</artifactId>
-        <version>0.0.4</version>
+        <version>1.0.0</version>
     </parent>
 
 
@@ -23,7 +24,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.1.1</version>
+            <version>4.3.1</version>
         </dependency>
         <!--  restlet libraries for REC Manager -->
         <dependency>
@@ -64,17 +65,26 @@
             <artifactId>claudia-commons</artifactId>
             <version>0.3.21</version>
         </dependency>
-        <!-- Introduce hibernate-core-3.6.0 -->
+
+        <!-- jpa implementation - hibernate -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>3.3.0.SP1</version>
+            <version>${hibernate.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.4.0.GA</version>
+            <version>${hibernate.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>1.2.0.RELEASE</version>
+        </dependency>
+
         <dependency>
             <groupId>com.telefonica.claudia</groupId>
             <artifactId>claudia-client</artifactId>
@@ -101,13 +111,13 @@
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-client</artifactId>
             <!--<version>1.9.50</version>-->
-            <version>2.0.0-SNAPSHOT</version>
+            <version>2.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-server-model</artifactId>
-            <!--<version>1.9.50</version>-->
-            <version>2.0.0-SNAPSHOT</version>
+            <version>2.1.0-SNAPSHOT</version>
+            <!--   <version>2.1.0-SNAPSHOT</version>-->
         </dependency>
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
@@ -123,18 +133,7 @@
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>commons-properties</artifactId>
         </dependency>
-        <!-- FOR ENTITY-MANAGER -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.4.2</version>
-        </dependency>
-        <!-- concrete Log4J Implementation for SLF4J API -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.4.2</version>
-        </dependency>
+
 
         <dependency>
             <groupId>commons-lang</groupId>
@@ -152,11 +151,11 @@
             <version>1.4</version>
         </dependency>
 
-        <!-- MYSQL DEPENDENCIES  -->
+        <!-- jsr 330 -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.24</version>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
         </dependency>
 
         <!-- SPRING DEPENDENCIES -->
@@ -164,7 +163,14 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
@@ -214,6 +220,12 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -252,9 +264,14 @@
 
         <dependency>
             <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -276,12 +293,14 @@
         </dependency>
 
 
+        <!-- Memory DataBase -->
         <dependency>
-            <groupId>hsqldb</groupId>
+            <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>1.8.0.7</version>
+            <version>2.2.8</version>
             <scope>test</scope>
         </dependency>
+
 
         <!-- TAR/ZIP DEPENDENCIES -->
         <dependency>
@@ -293,7 +312,6 @@
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>1.6</version>
         </dependency>
         <!--<dependency>
             <groupId>bouncycastle</groupId>
@@ -323,6 +341,13 @@
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>openstack-tcloud-schemas</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>${ehcache.version}</version>
+        </dependency>
+
     </dependencies>
 
 

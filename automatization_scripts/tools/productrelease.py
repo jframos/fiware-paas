@@ -8,12 +8,12 @@ class Attribute:
         self.key=att_name
         self.value=att_value
 
-class ProductRelease:
-    def __init__(self, product_name,product_version, product_description=''):
+class Product:
+    def __init__(self, product_name, product_description=''):
         self.name=product_name
         self.description=product_description
-        self.version=product_version
         self.attributes=[]
+        self.metadatas=[]
 
     def add_attribute(self, attribute):
         self.attributes.append(attribute)
@@ -21,26 +21,32 @@ class ProductRelease:
     def add_attributes(self, attributes):
         self.attributes = attributes
 
-    def to_product_xml (self):
+    def add_metadata(self, metadata):
+        self.metadatas.append(metadata)
 
-        product = Element('productReleaseDto')
-        name = SubElement(product, 'productName')
+    def add_metadata(self, metadatas):
+        self.metadatas = metadatas
+
+    def to_product_xml (self):
+        product = Element('product')
+        name = SubElement(product, 'name')
         name.text = self.name
-        description = SubElement(product, "productDescription")
+        description = SubElement(product, "description")
         description.text = self.description
-        version = SubElement(product, 'version')
-        version.text = self.version
-        print product
         if self.attributes == None:
             return tostring(product)
         for att in self.attributes:
-
-            attribute = SubElement(product, "privateAttributes")
+            attribute = SubElement(product, "attributes")
             key = SubElement(attribute, "key")
             key.text = att.key
             value = SubElement(attribute, "value")
             value.text = att.value
-        print product
+        for att in self.metadatas:
+            metadata = SubElement(product, "metadatas")
+            key = SubElement(metadata, "key")
+            key.text = att.key
+            value = SubElement(metadata, "value")
+            value.text = att.value
         return product
 
     def to_product_xml_env (self):
@@ -61,6 +67,44 @@ class ProductRelease:
             key.text = att.key
             value = SubElement(attribute, "value")
             value.text = att.value
+
+        return product
+
+    def to_string (self):
+
+        var = self.name+ "\t" +self.description + '\t' + self.version+ '\t'
+        for att in self.attributes:
+            var = var + att.key + ':' + att.value
+        print var
+
+class ProductRelease:
+    def __init__(self, product,product_version):
+        self.version=product_version
+        self.product=product
+
+
+    def to_product_xml (self):
+        product_release = Element('productReleaseDto')
+        version = SubElement(product_release, 'version')
+        version.text = self.version
+        return product_release
+
+    def to_product_xml_env (self):
+
+        product = Element('productReleaseDtos')
+        name = SubElement(product, 'productName')
+        name.text = self.product
+        version = SubElement(product, 'version')
+        version.text = self.version
+
+     #   if self.product.attributes == None:
+     #       return product
+     #   for att in self.product.attributes:
+     #       attribute = SubElement(product, "privateAttributes")
+     #       key = SubElement(attribute, "key")
+     #       key.text = att.key
+     #       value = SubElement(attribute, "value")
+     #       value.text = att.value
 
         return product
 

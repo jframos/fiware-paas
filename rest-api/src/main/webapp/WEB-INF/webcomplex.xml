@@ -1,7 +1,7 @@
 <web-app
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-    version="2.5">
+        version="2.5">
 
     <display-name>paas_manager-server</display-name>
 
@@ -28,7 +28,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     </listener>
     <!-- END SPRING -->
 
-   
+
     <!-- This way can see lazy initialized objects -->
     <filter>
         <filter-name>jpaFilter</filter-name>
@@ -50,25 +50,25 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     <filter>
         <filter-name>CORS</filter-name>
         <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
-        
+
         <init-param>
             <param-name>cors.allowOrigin</param-name>
-         
+
             <param-value>*</param-value>
         </init-param>
         <init-param>
             <param-name>cors.supportedHeaders</param-name>
             <param-value>Content-Type,Accept-Type,X-Auth-Token,Origin,Accept</param-value>
         </init-param>
-        
-    </filter>  
+
+    </filter>
     <filter-mapping>
         <filter-name>CORS</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping> 
-  
+    </filter-mapping>
+
     <!-- Jersey Servlet  -->
-     <servlet>
+    <servlet>
         <servlet-name>Paas Manager Server Rest Servlet</servlet-name>
         <servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet
         </servlet-class>
@@ -76,28 +76,27 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 
     <servlet-mapping>
         <servlet-name>Paas Manager Server Rest Servlet</servlet-name>
-          <url-pattern>/rest/*</url-pattern>
+        <url-pattern>/rest/*</url-pattern>
         <!-- <url-pattern>/*</url-pattern> -->
-     </servlet-mapping>
+    </servlet-mapping>
 
     <!-- SPRING SECURITY -->
-       <filter>
+    <filter>
         <filter-name>springSecurityFilterChain</filter-name>
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class> 
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
     <filter-mapping>
-        <filter-name>springSecurityFilterChain</filter-name> 
+        <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
-  </filter-mapping>
+    </filter-mapping>
 
-    
- 
-     <listener>
+
+    <listener>
         <listener-class>
             com.telefonica.euro_iaas.paasmanager.bootstrap.InitDbBootstrap
         </listener-class>
     </listener>
-   
+
     <!-- init the properties -->
     <listener>
         <listener-class>
@@ -105,11 +104,12 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
         </listener-class>
     </listener>
     <!-- register the properties through jmx-->
-      <listener>
+    <listener>
         <listener-class>
             com.telefonica.euro_iaas.paasmanager.bootstrap.PropertiesMBeanRegisterBootstrap
         </listener-class>
-    </listener>   <!-- SECURITY -->
+    </listener>
+    <!-- SECURITY -->
 
 
     <!--  ERROR PAGES -->

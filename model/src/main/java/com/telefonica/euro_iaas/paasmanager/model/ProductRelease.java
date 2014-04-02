@@ -1,7 +1,16 @@
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
+
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,23 +24,20 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
-import com.telefonica.euro_iaas.paasmanager.model.Attribute;
-import com.telefonica.euro_iaas.paasmanager.model.OS;
-import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 
 /**
  * A product release is a concrete version of a given product.
  * 
  * @author Jesus M. Movilla
- * 
  */
 
 @SuppressWarnings("serial")
@@ -41,427 +47,508 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 @Table(name = "ProductRelease")
 public class ProductRelease {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id", unique = true, nullable = false)
-	@XmlTransient
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", unique = true, nullable = false)
+    @XmlTransient
+    private Long id;
 
-	/*
-	 * @Id
-	 * 
-	 * @GeneratedValue(strategy = GenerationType.AUTO)
-	 * 
-	 * @XmlTransient private Long id;
-	 */
+    /*
+     * @Id
+     * @GeneratedValue(strategy = GenerationType.AUTO)
+     * @XmlTransient private Long id;
+     */
 
-	@Column(nullable = false, length = 256)
-	private String name;
-	@Column(nullable = false, length = 256)
-	private String product;
-	@Column(nullable = false, length = 256)
-	private String version;
+    @Column(nullable = false, length = 256)
+    private String name;
+    @Column(nullable = false, length = 256)
+    private String product;
+    @Column(nullable = false, length = 256)
+    private String version;
+    
+    @Column(length = 2048)
+    private String description;
+    @Column(length = 256)
+    private String tierName = "";
+    
+    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Attribute> attributes = null;
 
-	@Column(length = 2048)
-	private String description;
-	
-	@OneToMany(cascade = CascadeType.ALL)
-	private List<Attribute> attributes;
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Metadata> metadatas;
 
-	@OneToMany(cascade = CascadeType.ALL)
-	private List<Metadata> metadatas;
-	
-	// @OneToMany(cascade = CascadeType.ALL)
-	// private List<Attribute> attributesPort;
+    // @OneToMany(cascade = CascadeType.ALL)
+    // private List<Attribute> attributesPort;
 
-	@XmlTransient
-	@ManyToMany
-	private List<ProductRelease> transitableReleases = null;
+    @XmlTransient
+    @ManyToMany
+    private List<ProductRelease> transitableReleases = null;
 
-	@ManyToMany
-	@JoinTable(name = "productRelease_has_ooss")
-	private List<OS> supportedOOSS = null;
+    @ManyToMany
+    @JoinTable(name = "productRelease_has_ooss")
+    private List<OS> supportedOOSS = null;
 
-	@Column(nullable = true)
-	private Boolean withArtifact = false;
+    @Column(nullable = true)
+    private Boolean withArtifact = false;
 
-	@ManyToOne
-	private ProductType productType = null;
+    @ManyToOne
+    private ProductType productType = null;
 
-	// @ManyToMany(fetch = FetchType.LAZY, mappedBy = "productReleases")
-	// private List<Tier> tiers;
+    /**
+     * Constructor.
+     */
+    public ProductRelease() {
+        attributes = new HashSet<Attribute>();
+        metadatas = new HashSet<Metadata>();
 
-	public ProductRelease() {
+    }
 
-	}
+    /**
+     * Constructor.
+     * 
+     * @param product
+     * @param version
+     * @param object2
+     * @param list
+     * @param product2
+     * @param object
+     */
+    public ProductRelease(String product, String version) {
+        this.name = product + "-" + version;
+        this.product = product;
+        this.version = version;
+        attributes = new HashSet<Attribute>();
+        metadatas = new HashSet<Metadata>();
+    }
 
-	/**
-	 * @param product
-	 * @param version
-	 * @param object2
-	 * @param list
-	 * @param product2
-	 * @param object
-	 */
-	public ProductRelease(String product, String version) {
-		this.name = product + "-" + version;
-		this.product = product;
-		this.version = version;
-	}
+    /**
+     * @param name
+     * @param version
+     * @param description
+     * @param attributes
+     */
+    public ProductRelease(String name, String version, String description, Set<Attribute> attributes) {
+        this.product = name;
+        this.version = version;
+        this.name = product + "-" + version;
+        this.description = description;
+        this.attributes = attributes;
+        attributes = new HashSet<Attribute>();
+        metadatas = new HashSet<Metadata>();
+    }
 
-	/**
-	 * @param product
-	 * @param version
-	 * @param description
-	 * @param attributes
-	 * @param transitableReleases
-	 * @param supportedOOSS
-	 * @param withArtifact
-	 * @param productType
-	 */
-	public ProductRelease(String product, String version, String description,
-			List<Attribute> attributes,
-			List<ProductRelease> transitableReleases, List<OS> supportedOOSS,
-			Boolean withArtifact, ProductType productType) {
-		this.name = product + "-" + version;
-		this.product = product;
-		this.version = version;
-		this.description = description;
-		// this.attributes = attributes;
-		this.transitableReleases = transitableReleases;
-		this.supportedOOSS = supportedOOSS;
-		this.withArtifact = withArtifact;
-		this.productType = productType;
-	}
+    /**
+     * @param product
+     * @param version
+     * @param description
+     * @param attributes
+     * @param transitableReleases
+     * @param supportedOOSS
+     * @param withArtifact
+     * @param productType
+     */
+    public ProductRelease(String product, String version, String description, Set<Attribute> attributes,
+            List<ProductRelease> transitableReleases, List<OS> supportedOOSS, Boolean withArtifact,
+            ProductType productType) {
+        this.name = product + "-" + version;
+        this.product = product;
+        this.version = version;
+        this.description = description;
+        this.attributes = attributes;
+        this.transitableReleases = transitableReleases;
+        this.supportedOOSS = supportedOOSS;
+        this.withArtifact = withArtifact;
+        this.productType = productType;
+        metadatas = new HashSet<Metadata>();
+    }
 
-	public ProductRelease(String name, String version, String description,
-			List<Attribute> attributes) {
-		this.product = name;
-		this.version = version;
-		this.name = product + "-" + version;
-		this.description = description;
-		this.attributes = attributes;
-	}
+    /**
+     * Add an attribute to the product release.
+     * 
+     * @param attribute
+     */
+    public void addAttribute(Attribute attribute) {
+        if (attributes == null) {
+            attributes = new HashSet<Attribute>();
+        }
+        attributes.add(attribute);
+    }
 
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
+    /**
+     * Add a metadata.
+     * 
+     * @param metadata
+     */
+    public void addMetadata(Metadata metadata) {
+        if (metadatas == null) {
+            metadatas = new HashSet<Metadata>();
+        }
+        metadatas.add(metadata);
+    }
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(Long id) {
-		this.id = id;
-	}
+    /**
+     * Add a transitable release.
+     * 
+     * @param transitableRelease
+     *            the new release.
+     */
+    public void addTransitableRelease(ProductRelease transitableRelease) {
+        if (transitableReleases == null) {
+            transitableReleases = new ArrayList<ProductRelease>();
+        }
+        transitableReleases.add(transitableRelease);
+    }
 
-	/**
-	 * @return the id
-	 */
-	public String getName() {
-		return name;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ProductRelease other = (ProductRelease) obj;
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
+            return false;
+        }
+        return true;
+    }
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	
+    private JSONObject formatJsonArray(JSONObject productJson) {
+        String stringProductJson = productJson.toString();
+        if (stringProductJson.contains("\"attributes\":{")) {
+            stringProductJson = stringProductJson.replace("\"}}", "\"}]}");
+            stringProductJson = stringProductJson.replace("\"attributes\":{", "\"attributes\":[{");
 
-	/**
-	 * @return the product
-	 */
-	public String getProduct() {
-		return product;
-	}
+        }
+        return JSONObject.fromObject(stringProductJson);
+    }
+    
+    private JSONObject formatJsonArray(JSONObject productJson, String tag) {
+        String stringProductJson = productJson.toString();
+        if (stringProductJson.contains("\"" + tag + "\":{")) {
+            String openArray = "\"" + tag + "\":[{";
+            stringProductJson = stringProductJson.replace("\"" + tag + "\":{", openArray);
+            String oldString = stringProductJson.split(tag)[1];
+            String newString = oldString.replaceFirst("\"}", "\"}]");
+            stringProductJson = stringProductJson.replace(oldString, newString);
 
-	/**
-	 * @param product
-	 *            the product to set
-	 */
-	public void setProduct(String product) {
-		this.product = product;
-	}
+        }
+        return JSONObject.fromObject(stringProductJson);
+    }
 
-	/**
-	 * @return the version
-	 */
-	public String getVersion() {
-		return version;
-	}
+    /**
+     * the json.
+     * 
+     * @param jsonNode
+     */
+    public void fromSdcJson(JSONObject jsonNode) {
+        version = jsonNode.getString("version");
+        product = jsonNode.getJSONObject("product").getString("name");
+        name = product + "-" + version;
+        if (jsonNode.containsKey("releaseNotes")) {
+            description = jsonNode.getString("releaseNotes");
+        }
 
-	/**
-	 * @param version
-	 *            the version to set
-	 */
-	public void setVersion(String version) {
-		this.version = version;
-	}
+        JSONObject productJson = jsonNode.getJSONObject("product");
+        // Attributes
+        if (productJson.containsKey("attributes")) {
+            Set<Attribute> attributes = new HashSet<Attribute>();
+            productJson = formatJsonArray(productJson, "attributes");
+            JSONArray attributtesJsonArray = productJson.getJSONArray("attributes");
+            for (int i = 0; i < attributtesJsonArray.size(); i++) {
+                JSONObject object = attributtesJsonArray.getJSONObject(i);
+                Attribute attribute = new Attribute();
+                attribute.fromJson(object);
+                attributes.add(attribute);
+            }
+            setAttributes(attributes);
+        }
 
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
+     // Attributes
+        if (productJson.containsKey("metadatas")) {
+            Set<Metadata> metadatas = new HashSet<Metadata>();
+            productJson = formatJsonArray(productJson, "metadatas");
+            JSONArray metadatasJsonArray = productJson.getJSONArray("metadatas");
+            for (int i = 0; i < metadatasJsonArray.size(); i++) {
+                JSONObject object = metadatasJsonArray.getJSONObject(i);
+                Metadata metadata = new Metadata();
+                metadata.fromJson(object);
+                metadatas.add(metadata);
+            }
+            setMetadatas(metadatas);
+        }
 
-	/**
-	 * @param description
-	 *            the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+        // SSOO
+        if (jsonNode.containsKey("supportedOOSS")) {
+            JSONArray ssooJsonArray = jsonNode.getJSONArray("supportedOOSS");
+            List<OS> ooss = new ArrayList<OS>();
+            for (int i = 0; i < ssooJsonArray.size(); i++) {
+                JSONObject object = ssooJsonArray.getJSONObject(i);
+                OS os = new OS();
+                os.fromJson(object);
+                ooss.add(os);
+            }
+            setSupportedOOSS(ooss);
+        }
+    }
 
-	/**
-	 * @return the attributes
-	 */
-	public List<Attribute> getAttributes() {
-		return attributes;
-	}
+    /**
+     * Get the attribute with the key.
+     * 
+     * @param key
+     * @return
+     */
+    public Attribute getAttribute(String key) {
+        if (attributes == null) {
+            return null;
+        }
+        for (Attribute attribute : attributes) {
+            if (attribute.getKey().equals(key)) {
+                return attribute;
+            }
+        }
+        return null;
+    }
 
-	
-	/**
-	 * @param attributes
-	 *            the attributes to set
-	 */
-	/*
-	 * public void setAttributesPort(List<Attribute> attributes) {
-	 * this.attributesPort = attributes; }
-	 */
+    /**
+     * @return the attributes
+     */
+    public Set<Attribute> getAttributes() {
+        return attributes;
+    }
 
-	/**
-	 * @return the attributes
-	 */
-	/*
-	 * public List<Attribute> getAttributesPorts() { return attributesPort; }
-	 * 
-	 * public void addAttributeport(Attribute attributeport) { if
-	 * (attributesPort == null) { attributesPort = new ArrayList<Attribute>(); }
-	 * attributesPort.add(attributeport); }
-	 */
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
 
-	/**
-	 * @param attributes
-	 *            the attributes to set
-	 */
-	public void setAttributes(List<Attribute> attributes) {
-		this.attributes = attributes;
-	}
+    /**
+     * @return the id
+     */
+    public Long getId() {
+        return id;
+    }
 
-	/**
-	 * @return the metadatas
-	 */
-	public List<Metadata> getMetadatas() {
-		return metadatas;
-	}
+    /**
+     * Get the metadata from the key.
+     * 
+     * @param key
+     * @return
+     */
+    public Metadata getMetadata(String key) {
+        if (metadatas == null) {
+            return null;
+        }
+        for (Metadata metadata : metadatas) {
+            if (metadata.getKey().equals(key)) {
+                return metadata;
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * @param metadatas
-	 *            the metadatas to set
-	 */
-	public void setMetadatas(List<Metadata> metadatas) {
-		this.metadatas = metadatas;
-	}
-	
-	/**
-	 * @return the transitableReleases
-	 */
-	public List<ProductRelease> getTransitableReleases() {
-		return transitableReleases;
-	}
+    /**
+     * @return the metadatas
+     */
+    public Set<Metadata> getMetadatas() {
+    	if (metadatas == null) {
+    		metadatas = new HashSet<Metadata> ();
+    	}
+        return metadatas;
+    }
 
-	/**
-	 * @param transitableReleases
-	 *            the transitableReleases to set
-	 */
-	public void setTransitableReleases(List<ProductRelease> transitableReleases) {
-		this.transitableReleases = transitableReleases;
-	}
+    /**
+     * @return the id
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Add a transitable release.
-	 * 
-	 * @param transitableRelease
-	 *            the new release.
-	 */
-	public void addTransitableRelease(ProductRelease transitableRelease) {
-		if (transitableReleases == null) {
-			transitableReleases = new ArrayList<ProductRelease>();
-		}
-		transitableReleases.add(transitableRelease);
-	}
+    /**
+     * @return the product
+     */
+    public String getProduct() {
+        return product;
+    }
 
-	/**
-	 * @return the supportedOOSS
-	 */
-	public List<OS> getSupportedOOSS() {
-		return supportedOOSS;
-	}
+    /**
+     * @return the productType
+     */
+    public ProductType getProductType() {
+        return productType;
+    }
 
-	/**
-	 * @param supportedOOSS
-	 *            the supportedOOSS to set
-	 */
-	public void setSupportedOOSS(List<OS> supportedOOSS) {
-		this.supportedOOSS = supportedOOSS;
-	}
+    /**
+     * @return the supportedOOSS
+     */
+    public List<OS> getSupportedOOSS() {
+        return supportedOOSS;
+    }
 
-	/**
-	 * @return the withArtifact
-	 */
-	public Boolean getWithArtifact() {
-		return withArtifact;
-	}
+    /**
+     * @return the transitableReleases
+     */
+    public List<ProductRelease> getTransitableReleases() {
+        return transitableReleases;
+    }
 
-	/**
-	 * @param withArtifact
-	 *            the withArtifact to set
-	 */
-	public void setWithArtifact(Boolean withArtifact) {
-		this.withArtifact = withArtifact;
-	}
+    /**
+     * @return the version
+     */
+    public String getVersion() {
+        return version;
+    }
 
-	/**
-	 * @return the productType
-	 */
-	public ProductType getProductType() {
-		return productType;
-	}
+    /**
+     * @return the withArtifact
+     */
+    public Boolean getWithArtifact() {
+        return withArtifact;
+    }
+    
+    /**
+     * @return the tierName
+     */
+    
+    public String getTierName() {
+        return this.tierName;
+    }
+    
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
 
-	/**
-	 * @param productType
-	 *            the productType to set
-	 */
-	public void setProductType(ProductType productType) {
-		this.productType = productType;
-	}
+    /**
+     * @param attributes
+     *            the attributes to set
+     */
+    public void setAttributes(Set<Attribute> attributes) {
+        this.attributes = attributes;
+    }
 
-	public Attribute getAttribute(String key) {
-		if (attributes == null)
-			return null;
-		for (Attribute attribute : attributes) {
-			if (attribute.getKey().equals(key))
-				return attribute;
-		}
-		return null;
-	}
+    /**
+     * @param description
+     *            the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public Metadata getMetadata(String key) {
-		if (metadatas == null)
-			return null;
-		for (Metadata metadata : metadatas) {
-			if (metadata.getKey().equals(key))
-				return metadata;
-		}
-		return null;
-	}
-	
-	public void addAttribute(Attribute attribute) {
-		if (attributes == null)
-			attributes = new ArrayList();
-		attributes.add(attribute);
-	}
+    /**
+     * @param id
+     *            the id to set
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void addMetadata(Metadata metadata) {
-		if (metadatas == null)
-			metadatas = new ArrayList();
-		metadatas.add(metadata);
-	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
+    /**
+     * @param metadatas
+     *            the metadatas to set
+     */
+    public void setMetadatas(Set<Metadata> metadatas) {
+        this.metadatas = metadatas;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ProductRelease other = (ProductRelease) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public ProductReleaseDto toDto() {
-		ProductReleaseDto pReleaseDto = new ProductReleaseDto();
+    /**
+     * @param product
+     *            the product to set
+     */
+    public void setProduct(String product) {
+        this.product = product;
+    }
 
-		pReleaseDto.setProductName(getProduct());
-		pReleaseDto.setVersion(getVersion());
-		
-		
-		if (getDescription() != null)
-			pReleaseDto.setProductDescription(getDescription());
+    /**
+     * @param productType
+     *            the productType to set
+     */
+    public void setProductType(ProductType productType) {
+        this.productType = productType;
+    }
 
-		if (getAttributes() != null)
-			pReleaseDto.setPrivateAttributes(getAttributes());
+    /**
+     * @param supportedOOSS
+     *            the supportedOOSS to set
+     */
+    public void setSupportedOOSS(List<OS> supportedOOSS) {
+        this.supportedOOSS = supportedOOSS;
+    }
 
-		return pReleaseDto;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void fromSdcJson(JSONObject jsonNode) {
-		version = jsonNode.getString("version");
-		product = jsonNode.getJSONObject("product").getString("name");
-		name = product + "-" + version;
-		if (jsonNode.containsKey("releaseNotes"))
-			description = jsonNode.getString("releaseNotes");
-		
-		JSONObject productJson = jsonNode.getJSONObject("product");
-		//Attributes
-		if (productJson.containsKey("attributes")){
-			List<Attribute> attributes = new ArrayList<Attribute>();
-			productJson = formatJsonArray(productJson);
-			JSONArray attributtesJsonArray = productJson.getJSONArray("attributes");
-			for(int i = 0; i < attributtesJsonArray.size(); i++)	{
-				JSONObject object = attributtesJsonArray.getJSONObject(i);
-				Attribute attribute = new Attribute();
-				attribute.fromJson(object);
-				attributes.add(attribute);
-			}
-			setAttributes(attributes);
-		}
-		
-		//SSOO
-		if (jsonNode.containsKey("supportedOOSS")){
-			JSONArray ssooJsonArray = jsonNode.getJSONArray("supportedOOSS");
-			List<OS> ooss = new ArrayList<OS>();
-			for(int i = 0; i < ssooJsonArray.size(); i++)	{
-				JSONObject object = ssooJsonArray.getJSONObject(i);
-				OS os = new OS();
-				os.fromJson(object);
-				ooss.add(os);
-			}
-			setSupportedOOSS(ooss);
-		}
-	}
-	
-	private JSONObject formatJsonArray(JSONObject productJson){
-		String stringProductJson = productJson.toString();
-		if (stringProductJson.contains("\"attributes\":{")){
-			stringProductJson = stringProductJson.replace("\"}}","\"}]}");
-			stringProductJson = stringProductJson.replace("\"attributes\":{","\"attributes\":[{");
-			
-		}
-		return JSONObject.fromObject(stringProductJson);
-	}
+    /**
+     * @param transitableReleases
+     *            the transitableReleases to set
+     */
+    public void setTransitableReleases(List<ProductRelease> transitableReleases) {
+        this.transitableReleases = transitableReleases;
+    }
+
+    /**
+     * @param version
+     *            the version to set
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    /**
+     * @param withArtifact
+     *            the withArtifact to set
+     */
+    public void setWithArtifact(Boolean withArtifact) {
+        this.withArtifact = withArtifact;
+    }
+    
+    /**
+     * @param tierName
+     *            the tierName to set
+     */
+    public void setTierName(String tierName) {
+        this.tierName = tierName;
+    }
+    
+    /**
+     * the dto representation.
+     * 
+     * @return
+     */
+    public ProductReleaseDto toDto() {
+        ProductReleaseDto pReleaseDto = new ProductReleaseDto();
+
+        pReleaseDto.setProductName(getProduct());
+        pReleaseDto.setVersion(getVersion());
+
+        if (getDescription() != null) {
+            pReleaseDto.setProductDescription(getDescription());
+        }
+
+        if (getAttributes() != null) {
+            pReleaseDto.setPrivateAttributes(getAttributes());
+        }
+
+        return pReleaseDto;
+    }
 
 }

@@ -1,134 +1,168 @@
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
+
 package com.telefonica.euro_iaas.paasmanager.environment;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-
-import junit.framework.TestCase;
-
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.bootstrap.InitDbBootstrap;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.paasmanager.dao.impl.EnvironmentDaoJpaImpl;
-import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.EnvironmentInstanceNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
-import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
-import com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
-import com.telefonica.euro_iaas.paasmanager.model.Environment;
+import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
-import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
-import com.telefonica.euro_iaas.paasmanager.rest.resources.EnvironmentResource;
-import com.telefonica.euro_iaas.paasmanager.rest.resources.EnvironmentResourceImpl;
-import com.telefonica.euro_iaas.paasmanager.rest.resources.TierResource;
-import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
-import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
-import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidatorImpl;
-import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
+/**
+ * Integration Tests for Product Release entity
+ * 
+ * @author henar
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
-// ApplicationContext will be loaded from "classpath:/app-config.xml"
-@ContextConfiguration(locations = {"classpath:/applicationContextTest.xml"})
+@ContextConfiguration(locations = { "classpath:/applicationContextTest.xml" })
 @ActiveProfiles("dummy")
+public class AProductReleaseTest {
 
-public class AProductReleaseTest{
+    @Autowired
+    private ProductReleaseDao productReleaseDao;
+
+    @Test
+    public void testProductReleasesNotAttributes() throws Exception {
+
+        ProductRelease productTomcat = new ProductRelease("mysql", "2", "tomcat 7", null);
+
+        productTomcat = productReleaseDao.create(productTomcat);
+        assertNotNull(productTomcat);
+        assertEquals(productTomcat.getProduct(), "mysql");
+        assertEquals(productTomcat.getVersion(), "2");
+
+        List<ProductRelease> productReleases = productReleaseDao.findAll();
+        assertNotNull(productReleases);
+
+        ProductRelease productRelease = productReleaseDao.load("mysql-2");
+        assertNotNull(productRelease);
+        assertEquals(productRelease.getProduct(), "mysql");
+        assertEquals(productRelease.getVersion(), "2");
+    
+        assertEquals(productRelease.getMetadatas().size(), 0);
+        assertEquals(productRelease.getAttributes().size(), 0);
+
+    }
+
+    @Test
+    public void testProductReleasesWithAttributes() throws Exception {
+
+        List<ProductRelease> productReleases = productReleaseDao.findAll();
+        assertNotNull(productReleases);
+
+        int number = productReleases.size();
+
+        Set<Attribute> attproduct = new HashSet<Attribute>();
+        attproduct.add(new Attribute("product", "product", "product"));
+
+        ProductRelease productproduct = new ProductRelease("product", "0.1", "product 0.1", attproduct);
+
+        productproduct = productReleaseDao.create(productproduct);
+        assertNotNull(productproduct);
+        assertEquals(productproduct.getProduct(), "product");
+        assertEquals(productproduct.getVersion(), "0.1");
+
+        productReleases = productReleaseDao.findAll();
+        assertNotNull(productReleases);
+        assertEquals(productReleases.size(), number + 1);
+
+        ProductRelease productRelease = productReleaseDao.load("product-0.1");
+        assertNotNull(productRelease);
+        assertEquals(productRelease.getProduct(), "product");
+        assertEquals(productRelease.getVersion(), "0.1");
+        assertEquals(productRelease.getAttributes().size(), 1);
+
+    }
+    
+    
+    
+    @Test
+    public void testProductReleasesWithMetadata() throws Exception {
+
+        Metadata metproduct = new Metadata("product", "product", "product");
+
+        ProductRelease productproduct = new ProductRelease("product2", "0.1");
+        productproduct.addMetadata(metproduct);
+
+        productproduct = productReleaseDao.create(productproduct);
+        assertNotNull(productproduct);
+        assertEquals(productproduct.getProduct(), "product2");
+        assertEquals(productproduct.getVersion(), "0.1");
+        assertEquals(productproduct.getMetadatas().size(), 1);
+
+        ProductRelease productRelease = productReleaseDao.load("product2-0.1");
+        assertNotNull(productRelease);
+        assertEquals(productRelease.getProduct(), "product2");
+        assertEquals(productRelease.getVersion(), "0.1");
+        assertEquals(productRelease.getMetadatas().size(), 1);
+        assertEquals(productRelease.getAttributes().size(), 0);
+
+    }
+    
+    @Test
+    public void testProductReleasesWithAttributes2() throws Exception {
+
+        Attribute att = new Attribute("product", "product", "product");
+
+        ProductRelease productproduct = new ProductRelease("product3", "0.3");
+        productproduct.addAttribute(att);
+
+        productproduct = productReleaseDao.create(productproduct);
+        assertNotNull(productproduct);
+        assertEquals(productproduct.getProduct(), "product3");
+        assertEquals(productproduct.getVersion(), "0.3");
+        assertEquals(productproduct.getAttributes().size(), 1);
+        assertEquals(productproduct.getMetadatas().size(), 0);
 
 
-	
-	  @Autowired
-	   private ProductReleaseDao productReleaseDao;
-	   
-	 
-	   
-	  
+        ProductRelease productRelease = productReleaseDao.load("product3-0.3");
+        assertNotNull(productRelease);
+        assertEquals(productRelease.getProduct(), "product3");
+        assertEquals(productRelease.getVersion(), "0.3");
+        assertEquals(productRelease.getAttributes().size(), 1);
 
-	   @Test
-	   public void testProductReleasesWithAttributes() throws Exception {
-		   
-		
-		  List<ProductRelease> productReleases = productReleaseDao.findAll();
-		  assertNotNull(productReleases);
-		  System.out.println ("Number of product releases .." + productReleases);
-		  System.out.println ("Number of enviornment .." + productReleases.size());
-			  
-		  int number = productReleases.size();
-		  
-		  List<Attribute> attHenar = new ArrayList();
-		  attHenar.add(new Attribute("henar", "henar",
-					"henar"));
-		
+    }
+    
+    @Test
+    public void testProductReleasesWithEmptyAttributes() throws Exception {
 
-		  ProductRelease productHenar = new ProductRelease(
-					"henar", "0.1", "henar 0.1",
-					attHenar);
-		
-	
-		  productHenar = productReleaseDao.create(productHenar);
-		  assertNotNull(productHenar);
-		  assertEquals(productHenar.getProduct(), "henar");
-		  assertEquals(productHenar.getVersion(), "0.1");
-		  
-		  productReleases = productReleaseDao.findAll();
-		  assertNotNull(productReleases);
-		  System.out.println ("Number of product releases .." + productReleases);
-		  System.out.println ("Number of product releases  .." + productReleases.size());
-		  assertEquals(productReleases.size(), number+1);
-		  System.out.println (productReleases.get(0).getProduct() + " " + productReleases.get(0).getVersion() + " " + productReleases.get(0).getName());
-		  
-		  ProductRelease productRelease = productReleaseDao.load("henar-0.1");
-		  assertNotNull(productRelease);
-		  assertEquals(productRelease.getProduct(), "henar");
-		  assertEquals(productRelease.getVersion(), "0.1");
-			
-	   }
-	   
-	   @Test
-	   public void testProductReleasesNotAttributes() throws Exception {
-		   
-		
+        ProductRelease productproduct = new ProductRelease("product4", "0.1");
 
-		  ProductRelease productTomcat= new ProductRelease(
-					"mysql", "2", "tomcat 7",
-					null);
-		
-	
-		  productTomcat = productReleaseDao.create(productTomcat);
-		  assertNotNull(productTomcat);
-		  assertEquals(productTomcat.getProduct(), "mysql");
-		  assertEquals(productTomcat.getVersion(), "2");
-		  
-		  List<ProductRelease> productReleases = productReleaseDao.findAll();
-		  assertNotNull(productReleases);
-		  System.out.println ("Number of product releases .." + productReleases);
-		  System.out.println ("Number of product releases  .." + productReleases.size());
-		 
-		  System.out.println (productReleases.get(0).getProduct() + " " + productReleases.get(0).getVersion() + " " + productReleases.get(0).getName());
-		  
-		  ProductRelease productRelease = productReleaseDao.load("mysql-2");
-		  assertNotNull(productRelease);
-		  assertEquals(productRelease.getProduct(), "mysql");
-		  assertEquals(productRelease.getVersion(), "2");
-				
-	   }
-	
+        productproduct = productReleaseDao.create(productproduct);
+        assertNotNull(productproduct);
+        assertEquals(productproduct.getProduct(), "product4");
+        assertEquals(productproduct.getVersion(), "0.1");
+        assertEquals(productproduct.getMetadatas().size(), 0);
+        assertEquals(productproduct.getAttributes().size(), 0);
+
+        ProductRelease productRelease = productReleaseDao.load("product4-0.1");
+        assertNotNull(productRelease);
+        assertEquals(productRelease.getProduct(), "product4");
+        assertEquals(productRelease.getVersion(), "0.1");
+        assertEquals(productRelease.getAttributes().size(), 0);
+
+    }
+
+
 
 }

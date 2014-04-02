@@ -1,0 +1,258 @@
+# -*- coding: utf-8 -*-
+Feature: Get the instances in a tenant
+
+    As a fi-ware user
+    I want to be able to get the list of instances in a tenant
+    so that I know the instances I can work with
+
+    # IMPORTANT NOTE: These scenarios will not be executed unless the list of 
+    #                 instances in the tenant used for the tests is empty  
+    @happy_path @slow
+    Scenario: Get a list with just one instance with one tier
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name       |
+            | tiernameqa |
+        And an environment has already been created with the previous tiers and data:
+            | name   | description |
+            | nameqa | descqa      |
+        And an instance of the environment "nameqa" has already been created using data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+        When I request the list of existing instances
+        Then I receive an "OK" response with "1" item in the list
+        And there is an instance in the list with "1" tier and data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+
+    @slow        
+    Scenario: Get a list with just one instance with several tiers
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name        |
+            | tiernameqa1 |
+            | tiernameqa2 |
+            | tiernameqa3 |
+        And an environment has already been created with the previous tiers and data:
+            | name   | description |
+            | nameqa | descqa      |
+        And an instance of the environment "nameqa" has already been created using data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+        When I request the list of existing instances
+        Then I receive an "OK" response with "1" items in the list
+        And there is an instance in the list with "3" tiers and data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+        
+    @slow        
+    Scenario: Get a list with several instances with one tier
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name        |
+            | tiernameqa1 |
+        And an environment has already been created with the previous tiers and data:
+            | name    | description |
+            | nameqa1 | descqa1     |
+        And an instance of the environment "nameqa1" has already been created using data:
+            | name            | description     |
+            | instancenameqa1 | instancedescqa1 |
+        And a list of tiers has been defined with data:
+            | name        |
+            | tiernameqa2 |
+        And an environment has already been created with the previous tiers and data:
+            | name    | description |
+            | nameqa2 | descqa2     |
+        And an instance of the environment "nameqa1" has already been created using data:
+            | name            | description     |
+            | instancenameqa2 | instancedescqa2 |
+        And a list of tiers has been defined with data:
+            | name        |
+            | tiernameqa3 |
+        And an environment has already been created with the previous tiers and data:
+            | name    | description |
+            | nameqa3 | descqa3     |
+        And an instance of the environment "nameqa1" has already been created using data:
+            | name            | description     |
+            | instancenameqa3 | instancedescqa3 |
+        When I request the list of existing instances
+        Then I receive an "OK" response with "3" items in the list
+        And there is an instance in the list with "1" tier and data:
+            | name            | description     |
+            | instancenameqa1 | instancedescqa1 |
+        And there is an instance in the list with "1" tier and data:
+            | name            | description     |
+            | instancenameqa2 | instancedescqa2 |
+        And there is an instance in the list with "1" tier and data:
+            | name            | description     |
+            | instancenameqa3 | instancedescqa3 |
+        
+    @slow        
+    Scenario: Get a list with several instances with different valid data and one tier
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name        |
+            | tiernameqa1 |
+        And an environment has already been created with the previous tiers and data:
+            | name    | description |
+            | nameqa1 | descqa1     |
+        And an instance of the environment "nameqa1" has already been created using data:
+            | name                    | description              |
+            | a                       | descqa                   |
+        And a list of tiers has been defined with data:
+            | name        |
+            | tiernameqa2 |
+        And an environment has already been created with the previous tiers and data:
+            | name    | description |
+            | nameqa2 | descqa2     |
+        And an instance of the environment "nameqa1" has already been created using data:
+            | name                    | description              |
+            | instancenameqa-1        | descqa                   |
+        And a list of tiers has been defined with data:
+            | name        |
+            | tiernameqa3 |
+        And an environment has already been created with the previous tiers and data:
+            | name    | description |
+            | nameqa3 | descqa3     |
+        And an instance of the environment "nameqa1" has already been created using data:
+            | name                    | description              |
+            | [STRING_WITH_LENGTH_30] | descqa                   |
+        And a list of tiers has been defined with data:
+            | name        |
+            | tiernameqa4 |
+        And an environment has already been created with the previous tiers and data:
+            | name    | description |
+            | nameqa4 | descqa4     |
+        And an instance of the environment "nameqa1" has already been created using data:
+            | name                    | description              |
+            | instancenameqa1         | a                        |
+        And a list of tiers has been defined with data:
+            | name        |
+            | tiernameqa5 |
+        And an environment has already been created with the previous tiers and data:
+            | name    | description |
+            | nameqa5 | descqa5     |
+        And an instance of the environment "nameqa1" has already been created using data:
+            | name                    | description              |
+            | instancenameqa2         | descqa-1                 |
+        And a list of tiers has been defined with data:
+            | name        |
+            | tiernameqa6 |
+        And an environment has already been created with the previous tiers and data:
+            | name    | description |
+            | nameqa6 | descqa6     |
+        And an instance of the environment "nameqa1" has already been created using data:
+            | name                    | description              |
+            | instancenameqa3         | Symbols: +*=._,;"@#%)/?! |
+        And a list of tiers has been defined with data:
+            | name        |
+            | tiernameqa7 |
+        And an environment has already been created with the previous tiers and data:
+            | name    | description |
+            | nameqa7 | descqa7     |
+        And an instance of the environment "nameqa1" has already been created using data:
+            | name                    | description              |
+            | instancenameqa4         | Non-ASCII: á.é.í.ñ       |
+        And a list of tiers has been defined with data:
+            | name        |
+            | tiernameqa8 |
+        And an environment has already been created with the previous tiers and data:
+            | name    | description |
+            | nameqa8 | descqa8     |
+        And an instance of the environment "nameqa1" has already been created using data:
+            | name                    | description              |
+            | instancenameqa5         | [STRING_WITH_LENGTH_256] |
+        When I request the list of existing instances
+        Then I receive an "OK" response with "7" items in the list
+        And there is an instance in the list with "1" tier and data:
+            | name                    | description              |
+            | a                       | descqa                   |
+        And there is an instance in the list with "1" tier and data:
+            | name                    | description              |
+            | instancenameqa-1        | descqa                   |
+        And there is an instance in the list with "1" tier and data:
+            | name                    | description              |
+            | [STRING_WITH_LENGTH_30] | descqa                   |
+        And there is an instance in the list with "1" tier and data:
+            | name                    | description              |
+            | instancenameqa1         | a                        |
+        And there is an instance in the list with "1" tier and data:
+            | name                    | description              |
+            | instancenameqa2         | descqa-1                 |
+        And there is an instance in the list with "1" tier and data:
+            | name                    | description              |
+            | instancenameqa3         | Symbols: +*=._,;"@#%)/?! |
+        And there is an instance in the list with "1" tier and data:
+            | name                    | description              |
+            | instancenameqa4         | Non-ASCII: á.é.í.ñ       |
+        And there is an instance in the list with "1" tier and data:
+            | name                    | description              |
+            | instancenameqa5         | [STRING_WITH_LENGTH_256] |
+        
+    @slow        
+    Scenario: Get a list with one instance with tiers with products
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name        | products |
+            | tiernameqa1 | git=1.7  |
+            | tiernameqa2 | git=1.7,mediawiki=1.17.0 |
+        And an environment has already been created with the previous tiers and data:
+            | name   | description |
+            | nameqa | descqa      |
+        And an instance of the environment "nameqa" has already been created using data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+        When I request the list of existing instances
+        Then I receive an "OK" response with "1" item in the list
+        And there is an instance in the list with "2" tier2 and data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+        
+    @slow
+    Scenario: Get a list with one instance with tiers with networks
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name        | networks |
+            | tiernameqa1 | netqa1   |
+            | tiernameqa2 | netqa1,netqa2 |
+        And an environment has already been created with the previous tiers and data:
+            | name   | description |
+            | nameqa | descqa      |
+        And an instance of the environment "nameqa" has already been created using data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+        When I request the list of existing instances
+        Then I receive an "OK" response with "1" item in the list
+        And there is an instance in the list with "2" tiers and data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+        
+    @slow
+    Scenario: Get a list with several instances with one tier with products and networks
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name        | products | networks |
+            | tiernameqa1 | git=1.7  | netqa1   |
+        And an environment has already been created with the previous tiers and data:
+            | name    | description |
+            | nameqa1 | descqa1     |
+        And an instance of the environment "nameqa" has already been created using data:
+            | name            | description     |
+            | instancenameqa1 | instancedescqa1 |
+        And a list of tiers has been defined with data:
+            | name        | products                 | networks      |
+            | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
+        And an environment has already been created with the previous tiers and data:
+            | name    | description |
+            | nameqa2 | descqa2     |
+        And an instance of the environment "nameqa" has already been created using data:
+            | name            | description     |
+            | instancenameqa2 | instancedescqa2 |
+        When I request the list of existing instances
+        Then I receive an "OK" response with "2" items in the list
+        And there is an instance in the list with "1" tier and data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |
+        And there is an instance in the list with "1" tier and data:
+            | name           | description    |
+            | instancenameqa | instancedescqa |

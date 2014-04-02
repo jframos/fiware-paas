@@ -1,239 +1,245 @@
-/*
-
- (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights
- Reserved.
-
- The copyright to the software program(s) is property of Telefonica I+D.
- The program(s) may be used and or copied only with the express written
- consent of Telefonica I+D or in accordance with the terms and conditions
- stipulated in the agreement/contract under which the program(s) have
- been supplied.
-
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.util;
 
-//import org.openstack.docs.compute.api.v1.Server;
+// import org.openstack.docs.compute.api.v1.Server;
+
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
+import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
 /**
  * @author jesus.movilla
- *
  */
 public interface OpenStackUtil {
 
     /**
      * pool name in nova *
      */
-   // public static final String IPFLOATING_POOL_NAME = "fiprt1";
+    // public static final String IPFLOATING_POOL_NAME = "fiprt1";
     /**
      * name of the json type.
      */
-    public static final String APPLICATION_JSON = "application/json";
+    String APPLICATION_JSON = "application/json";
     /**
      * name of the xml type.
      */
-    public static final String APPLICATION_XML = "application/xml";
+    String APPLICATION_XML = "application/xml";
     /**
      * name of the accept header.
      */
-    public static final String ACCEPT = "Accept";
+    String ACCEPT = "Accept";
     /**
      * name of the content-Type header.
      */
-    public static final String CONTENT_TYPE = "Content-Type";
+    String CONTENT_TYPE = "Content-Type";
     /**
      * name of the Authentication header.
      */
-    public static final String X_AUTH_TOKEN = "X-Auth-Token";
+    String X_AUTH_TOKEN = "X-Auth-Token";
     /**
      * name of the resource Images.
      */
-    public static final String RESOURCE_IMAGES = "images/";
+    String RESOURCE_IMAGES = "images/";
     /**
      * name of the resource Flavors.
      */
-    public static final String RESOURCE_FLAVORS = "flavors/";
+    String RESOURCE_FLAVORS = "flavors/";
     /**
      * name of the resource Networks.
      */
-    public static final String RESOURCE_NETWORKS = "networks";
+    String RESOURCE_NETWORKS = "networks";
+    
+    /**
+     * name of the resource Networks.
+     */
+    String RESOURCE_PORTS = "ports";
     /**
      * name of the resource Subnets.
      */
-    public static final String RESOURCE_SUBNETS = "subnets";
+    String RESOURCE_SUBNETS = "subnets";
     /**
      * name of the resource Subnets.
      */
-    public static final String RESOURCE_ROUTERS = "routers";
+    String RESOURCE_ROUTERS = "routers";
     /**
      * name of the resource Servers.
      */
-    public static final String RESOURCE_SERVERS = "servers";
+    String RESOURCE_SERVERS = "servers";
     /**
      * path for a detailed resource .
      */
-    public static final String RESOURCE_DETAIL = "detail";
+    String RESOURCE_DETAIL = "detail";
     /**
      * path for actions.
      */
-    public static final String RESOURCE_ACTION = "action";
+    String RESOURCE_ACTION = "action";
     /**
      * path for add interfaces to routers.
      */
-    public static final String RESOURCE_ADD_INTERFACE = "add_router_interface";
+    String RESOURCE_ADD_INTERFACE = "add_router_interface";
+    /**
+     * path for remove interfaces to routers.
+     */
+    String RESOURCE_REMOVE_INTERFACE = "remove_router_interface";
+
     /**
      * path for floatingIPS.
      */
-    public static final String RESOURCE_FLOATINGIP = "os-floating-ips";
+    String RESOURCE_FLOATINGIP = "os-floating-ips";
     /**
-     * name of OpenStack constant name: org.openstack.compute.storage.root.
-     * Amount of root Disk.
+     * name of OpenStack constant name: org.openstack.compute.storage.root. Amount of root Disk.
      */
-    public static final String OPENSTACK_COMPUTE_STORAGE_ROOT = "org.openstack.compute.storage.root";
+    String OPENSTACK_COMPUTE_STORAGE_ROOT = "org.openstack.compute.storage.root";
     /**
-     * name of OpenStack constant name: org.openstack.compute.storage.root.
-     * Amount of root Disk.
+     * name of OpenStack constant name: org.openstack.compute.storage.root. Amount of root Disk.
      */
-    public static final String OPENSTACK_COMPUTE_STORAGE_EPHEMERAL = "org.openstack.compute.storage.ephemeral";
+    String OPENSTACK_COMPUTE_STORAGE_EPHEMERAL = "org.openstack.compute.storage.ephemeral";
     /**
-     * name of OpenStack constant name: org.openstack.compute.swap. Amount of
-     * swap.
+     * name of OpenStack constant name: org.openstack.compute.swap. Amount of swap.
      */
-    public static final String OPENSTACK_COMPUTE_SWAP = "org.openstack.compute.swap";
+    String OPENSTACK_COMPUTE_SWAP = "org.openstack.compute.swap";
     /**
-     * path for a detailed resource
+     * path for a detailed resource.
      */
-    public static final String ERROR_AUTHENTICATION_HEADERS = "Authentication Token, Tenant ID and User must be initialized...";
+
+    String ERROR_AUTHENTICATION_HEADERS = "Authentication Token, Tenant ID and User must be initialized...";
 
     /**
-     * Get the Server details
-     *
-     * @param serverId
-     * @return
-     * @throws OpenStackException
+     * It adds an network interface to the public router.
      */
-    String getServer(String serverId, PaasManagerUser user)
+    String addInterfaceToPublicRouter(PaasManagerUser user, NetworkInstance net, String region)
             throws OpenStackException;
 
     /**
-     * List all servers in OpenStack
-     *
-     * @return
-     * @throws OpenStackException
+     * It adds an interface to the router.
      */
-    String listServers(PaasManagerUser user) throws OpenStackException;
-
-    /**
-     * Deploys a VM inOpenStack
-     *
-     * @param payload
-     * @return serverId
-     * @throws OpenStackException
-     */
-    String createServer(String payload, PaasManagerUser user)
+    String addInterface(String idRouter, NetworkInstance net, String region, String token, String vdc)
             throws OpenStackException;
 
     /**
-     * Undeploys a VM in Openstack
-     *
-     * @param serverId the VM to be undeployed
-     * @param the user
+     * Method to add an interface to the router.
      */
-    String deleteServer(String serverId, PaasManagerUser user)
+    String addRouterInterface(String routerId, String subNetId, String region, String token, String vdc)
             throws OpenStackException;
 
     /**
-     * Obtain the floating IP's of a certain tenantID
-     *
+     * Assign FloatingIP to a serverId.
      */
-    String getFloatingIP(PaasManagerUser user) throws OpenStackException;
-
-    /**
-     * Allocate a new FloatingIP to a tenant
-     *
-     * @return
-     * @throws OpenStackException
-     */
-    // public String allocateFloatingIP(String payload) throws
-    // OpenStackException;
-    /**
-     * Assign FloatingIP to a serverId
-     *
-     * @param serverId
-     * @param floatingIP
-     * @return
-     * @throws OpenStackException
-     */
-    String assignFloatingIP(String serverId, String floatingIP,
-            PaasManagerUser user) throws OpenStackException;
+    String assignFloatingIP(String serverId, String floatingIP, String region, String token, String vdc)
+            throws OpenStackException;
 
     /**
      * Method to create a new network.
-     *
-     * @param name the name of the network
-     * @param user the user
+     * @param payload
+     * @param user
+     *            the user
      * @return the result
-     * @throws OpenStackException OpenStackException
+     * @throws OpenStackException
+     *             OpenStackException
      */
-    String createNetwork(String name, PaasManagerUser user) throws OpenStackException;
+    String createNetwork(String payload, String region, String token, String vdc)
+        throws OpenStackException;
+
+    /**
+     * Method to create a new router.
+     */
+    String createRouter(RouterInstance router, String region, String token, String vdc) throws OpenStackException;
+
+    /**
+     * Deploys a VM inOpenStack.
+     */
+    String createServer(String payload, String region, String token, String vdc) throws OpenStackException;
+
+    /**
+     * Method to create a new subnet.
+     */
+    String createSubNet(SubNetworkInstance subNet, String region, String token, String vdc) throws OpenStackException;
 
     /**
      * Method to delete a network.
-     *
-     * @param networkId the Id of the network
-     * @param user the user
-     * @return the result
-     * @throws OpenStackException OpenStackException
      */
-    String deleteNetwork(String networkId, PaasManagerUser user) throws OpenStackException;
+    String deleteNetwork(String networkId, String region, String token, String vdc) throws OpenStackException;
+
+    /**
+     * Undeploys a router in Openstack.
+     */
+    String deleteRouter(String routerId, String region, String token, String vdc) throws OpenStackException;
+
+    /**
+     * Undeploys a VM in Openstack.
+     */
+    String deleteServer(String serverId, String region, String token, String vdc) throws OpenStackException;
+
+    /**
+     * It deletes the subnetwork.
+     */
+    void deleteSubNetwork(String idSubNet, String region, String vdc, String token) throws OpenStackException;
+
+    /**
+     * Obtain the floating IP's of a certain tenantID.
+     */
+    String getFloatingIP(String region, String token, String vdc) throws OpenStackException;
 
     /**
      * Method to get a single Network.
-     *
-     * @param networkId the Id of the network
-     * @param user the user
-     * @return the result
-     * @throws OpenStackException OpenStackException
      */
-    String getNetworkDetails(String networkId, PaasManagerUser user) throws OpenStackException;
+    String getNetworkDetails(String networkId, String region, String token, String vdc) throws OpenStackException;
 
     /**
      * Method to get a list of Networks.
-     *
-     * @param user the user
-     * @return the result
-     * @throws OpenStackException OpenStackException
      */
-    String getNetworks(PaasManagerUser user) throws OpenStackException;
+    String getNetworks(String region, String token, String vdc) throws OpenStackException;
+
     /**
-     * Method to create a new router.
-     *
-     * @param name the name of the router
-     * @param networkId the id of the external network to associate with
-     * @param user the user
-     * @return the result
-     * @throws OpenStackException OpenStackException
+     * Get the Server details.
      */
-    String createRouter(String name, String networkId, PaasManagerUser user) throws OpenStackException;
-     /**
-     * Method to create a new subnet.
-     *
-     * @param name the name of the subnet
-     * @param networkId the id of the external network to associate with
-     * @param user the user
-     * @return the result
-     * @throws OpenStackException OpenStackException
-     */
-    String createSubNet(String name, String networkId, PaasManagerUser user) throws OpenStackException;   
+
+    String getServer(String serverId, String region, String token, String vdc) throws OpenStackException;
+
     /**
-     * Method to add an interface to the router.
-     *
-     * @param routerId the id of the router
-     * @param subNetId the id of the subNet to associate with
-     * @param user the user
-     * @return the result
-     * @throws OpenStackException OpenStackException
+     * List all servers in OpenStack.
      */
-    String addRouterInterface(String routerId, String subNetId, PaasManagerUser user) throws OpenStackException;
+    String listServers(String region, String token, String vdc) throws OpenStackException;
+    
+    /**
+     * List all ports in OpenStack.
+     */
+    String listPorts(PaasManagerUser user, String region) throws OpenStackException;
+
+    /**
+     * It removes the interface of the network in the router.
+     */
+    String removeInterface(RouterInstance router, String net, String region, String token, String vdc)
+            throws OpenStackException;
+
+    /**
+     * It return all absolute limit values by tenantId.
+     */
+    String getAbsoluteLimits(PaasManagerUser user, String region) throws OpenStackException;
+
+    /**
+     * It gets the subnetwork details.
+     */
+    String getSubNetworkDetails(String subNetworkId, String region, String token, String vdc) throws OpenStackException;
+
+    /**
+     * It gets the network from the user.
+     */
+
+    String listNetworks(PaasManagerUser user, String region) throws OpenStackException;
+
+    /**
+     * It deletes the interface in the public router.
+     */
+    String deleteInterfaceToPublicRouter(PaasManagerUser user, NetworkInstance netInstance, String region)
+            throws OpenStackException;
+
 }

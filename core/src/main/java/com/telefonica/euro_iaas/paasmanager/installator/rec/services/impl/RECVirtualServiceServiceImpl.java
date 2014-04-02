@@ -1,15 +1,10 @@
-/*
-
-  (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights
-  Reserved.
-
-  The copyright to the software program(s) is property of Telefonica I+D.
-  The program(s) may be used and or copied only with the express written
-  consent of Telefonica I+D or in accordance with the terms and conditions
-  stipulated in the agreement/contract under which the program(s) have
-  been supplied.
-
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.installator.rec.services.impl;
 
 import java.text.MessageFormat;
@@ -30,65 +25,54 @@ import com.telefonica.euro_iaas.paasmanager.installator.rec.services.RECVirtualS
 
 /**
  * @author jesus.movilla
- * 
  */
-public class RECVirtualServiceServiceImpl extends AbstractBaseService implements
-		RECVirtualServiceService {
+public class RECVirtualServiceServiceImpl extends AbstractBaseService implements RECVirtualServiceService {
 
-	private MediaType APPLICATION_OVF_XML;
-	private static Logger log = Logger
-			.getLogger(RECVirtualServiceServiceImpl.class);
+    private MediaType APPLICATION_OVF_XML;
+    private static Logger log = Logger.getLogger(RECVirtualServiceServiceImpl.class);
 
-	public RECVirtualServiceServiceImpl(Client client, String baseUrl,
-			String mediaType) {
-		APPLICATION_OVF_XML = MediaType.register(mediaType, "XML OVF document");
-		setBaseHost(baseUrl);
-		setType(APPLICATION_OVF_XML);
-		setClient(client);
-	}
+    public RECVirtualServiceServiceImpl(Client client, String baseUrl, String mediaType) {
+        APPLICATION_OVF_XML = MediaType.register(mediaType, "XML OVF document");
+        setBaseHost(baseUrl);
+        setType(APPLICATION_OVF_XML);
+        setClient(client);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seecom.telefonica.euro_iaas.paasmanager.installator.rec.services.
-	 * RECVirtualServiceService#createVirtualService(java.lang.String)
-	 */
-	public void createVirtualService(String appId, String vmId, String picId,
-			String acId, String payload)
-			throws VirtualServiceInstallationException {
-		
-		log.debug("Virtual service payload " + payload);
+    /*
+     * (non-Javadoc)
+     * @seecom.telefonica.euro_iaas.paasmanager.installator.rec.services.
+     * RECVirtualServiceService#createVirtualService(java.lang.String)
+     */
+    public void createVirtualService(String appId, String vmId, String picId, String acId, String payload)
+            throws VirtualServiceInstallationException {
 
-		DomRepresentation data = null;
-		Response postResponse = null;
+        log.debug("Virtual service payload " + payload);
 
-		Reference urlGet = new Reference(getBaseHost()
-				+ MessageFormat.format(
-						ClientConstants.BASE_VIRTUALSERVICE_PATH, appId, vmId,
-						picId) + "/" + acId);
+        DomRepresentation data = null;
+        Response postResponse = null;
 
-		Reference urlPost = new Reference(getBaseHost()
-				+ MessageFormat.format(
-						ClientConstants.BASE_VIRTUALSERVICE_PATH, appId, vmId,
-						picId));
+        Reference urlGet = new Reference(getBaseHost()
+                + MessageFormat.format(ClientConstants.BASE_VIRTUALSERVICE_PATH, appId, vmId, picId) + "/" + acId);
 
-		Response getResponse = client.get(urlGet);
+        Reference urlPost = new Reference(getBaseHost()
+                + MessageFormat.format(ClientConstants.BASE_VIRTUALSERVICE_PATH, appId, vmId, picId));
 
-		if (!getResponse.getStatus().equals(Status.SUCCESS_OK)) {
-			Document doc;
-			try {
-				doc = getDocument(payload);
+        Response getResponse = client.get(urlGet);
 
-				data = new DomRepresentation(APPLICATION_OVF_XML, doc);
-				log.info("createVirtualService.url():" + urlPost);
-				postResponse = client.post(urlPost, data);
+        if (!getResponse.getStatus().equals(Status.SUCCESS_OK)) {
+            Document doc;
+            try {
+                doc = getDocument(payload);
 
-				checkRECTaskStatus(postResponse);
-			} catch (ProductInstallatorException e) {
-				String msg = " Error agregating a Virtual Service. Desc: "
-						+ e.getMessage();
-				throw new VirtualServiceInstallationException(msg);
-			}
-		}
-	}
+                data = new DomRepresentation(APPLICATION_OVF_XML, doc);
+                log.info("createVirtualService.url():" + urlPost);
+                postResponse = client.post(urlPost, data);
+
+                checkRECTaskStatus(postResponse);
+            } catch (ProductInstallatorException e) {
+                String msg = " Error agregating a Virtual Service. Desc: " + e.getMessage();
+                throw new VirtualServiceInstallationException(msg);
+            }
+        }
+    }
 }

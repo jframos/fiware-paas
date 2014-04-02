@@ -1,23 +1,98 @@
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
+
 package com.telefonica.euro_iaas.paasmanager.dao.impl;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentDao;
+import com.telefonica.euro_iaas.paasmanager.model.Environment;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/spring-test-db-config.xml", "classpath:/spring-dao-config.xml" })
+public class EnvironmenDaoTest {
 
-//@RunWith(SpringJUnit4ClassRunner.class)
- //ApplicationContext will be loaded from "classpath:/app-config.xml"
-//@ContextConfiguration(locations = {"classpath:/applicationContextTest.xml"})
-//@ActiveProfiles("dummy")
+    @Autowired
+    EnvironmentDao environmentDao;
 
-public class EnvironmenDaoTest{
-	@Test
-	public void testFirst ()
-	{
-		
-	}
+    public static String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
+    public static String ORG = "org";
+
+    /**
+     * Test the create method
+     */
+    @Test
+    public void testEnvironmentNoTiers() throws Exception {
+
+        Environment environment = new Environment();
+        environment.setName(ENVIRONMENT_NAME);
+        environment.setOrg(ORG);
+        environment.setDescription("description");
+        environment = environmentDao.create(environment);
+        assertNotNull(environment);
+        assertNotNull(environment.getId());
+
+    }
+
+    /**
+     * Test the load method
+     */
+    @Test
+    public void testLoadNoTiers() throws Exception {
+
+        Environment environment = new Environment();
+        environment.setName(ENVIRONMENT_NAME);
+        environment.setOrg(ORG);
+        environment.setVdc("vdc");
+        environment.setDescription("description");
+        environment = environmentDao.create(environment);
+        environment = environmentDao.load(environment.getName(), "vdc");
+        assertNotNull(environment);
+        assertNotNull(environment.getId());
+
+    }
+
+    /**
+     * Test the load method
+     * @throws AlreadyExistsEntityException 
+     * @throws InvalidEntityException 
+     * 
+     * @throws AlreadyExistsEntityException
+     * @throws InvalidEntityException
+     * @throws EntityNotFoundException 
+     * @throws EntityNotFoundException
+     */
+    @Test(expected = EntityNotFoundException.class)
+    public void testDeleteNoTiers() throws InvalidEntityException, AlreadyExistsEntityException, EntityNotFoundException {
+
+        Environment environment = new Environment();
+        environment.setName(ENVIRONMENT_NAME);
+        environment.setDescription("description");
+        environment.setOrg(ORG);
+        environment.setVdc("vdc");
+        environment = environmentDao.create(environment);
+        environmentDao.remove(environment);
+        environmentDao.load(ENVIRONMENT_NAME, "vdc");
+        fail("Should have thrown an EntityNotFoundException because the environment does not exit!");
+
+    }
+
+    public void setEnvironmentDao(EnvironmentDao environmentDao) {
+        this.environmentDao = environmentDao;
+    }
 
 }

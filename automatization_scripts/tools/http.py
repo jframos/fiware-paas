@@ -78,13 +78,12 @@ def post(url, headers, payload):
 def get_token(keystone_url, tenant, user, password):
 
    # url="%s/%s" %(keystone_url,"v2.0/tokens")
-
+    print keystone_url
     headers={'Content-Type': 'application/json',
              'Accept': "application/xml"}
     payload='{"auth":{"tenantName":"'+tenant+'","passwordCredentials":{"username":"'+user+'","password":"'+password+'"}}}'
-
+    print payload
     response=post(keystone_url, headers, payload)
-
     data = response.read()
 
     ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
@@ -120,7 +119,7 @@ def processTask (headers,taskdom):
             print "ERROR : " + message + " " + majorErrorCode
         return status
     except:
-        print ("Error in parsing the taskId " )
+        print "Unexpected error:", sys.exc_info()[0]
         sys.exit(1)
 
 def get_task(url, headers):

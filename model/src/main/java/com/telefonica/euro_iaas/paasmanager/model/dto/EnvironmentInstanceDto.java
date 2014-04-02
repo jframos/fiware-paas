@@ -1,170 +1,183 @@
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
+
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 
+/**
+ * The dto entity for the environment instance.
+ * 
+ * @author henar
+ */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class EnvironmentInstanceDto {
 
-	private String environmentInstanceName;
-	private String vdc;
-	private String description;
-	private Status status;
-	private String blueprintName;
+    private String environmentInstanceName;
+    private String vdc;
+    private String description;
+    private Status status;
+    private String blueprintName;
 
-	private EnvironmentDto environmentDto;
+    private EnvironmentDto environmentDto;
 
-	private List<TierInstanceDto> tierInstanceDtos;
+    private List<TierInstanceDto> tierInstanceDtos;
 
-	private List<Attribute> attributes;
+    private Set<Attribute> attributes;
 
-	/**
-	 * @param environmentInstanceName
-	 * @param vdc
-	 * @param environment
-	 * @param tierInstances
-	 */
-	public EnvironmentInstanceDto(String environmentInstanceName,
-			EnvironmentDto environmentDto,
-			List<TierInstanceDto> tierInstanceDtos, String vdc) {
-		this.environmentInstanceName = environmentInstanceName;
-		this.environmentDto = environmentDto;
-		this.tierInstanceDtos = tierInstanceDtos;
-		this.vdc = vdc;
-	}
+    /**
+     * 
+     */
+    public EnvironmentInstanceDto() {
+    }
 
-	/**
-	 * 
-	 */
-	public EnvironmentInstanceDto() {
-	}
+    /**
+     * @param environmentInstanceName
+     * @param vdc
+     * @param environment
+     * @param tierInstances
+     */
+    public EnvironmentInstanceDto(String environmentInstanceName, EnvironmentDto environmentDto,
+            List<TierInstanceDto> tierInstanceDtos, String vdc) {
+        this.environmentInstanceName = environmentInstanceName;
+        this.environmentDto = environmentDto;
+        this.tierInstanceDtos = tierInstanceDtos;
+        this.vdc = vdc;
+    }
 
-	/**
-	 * @return the environmentInstanceName
-	 */
-	public String getEnvironmentInstanceName() {
-		return environmentInstanceName;
-	}
+    /**
+     * the dto specification.
+     * 
+     * @return
+     */
+    public EnvironmentInstance fromDto() {
+        EnvironmentInstance environmentInstance = new EnvironmentInstance();
+        environmentInstance.setBlueprintName(getBlueprintName());
+        environmentInstance.setDescription(getDescription());
+        if (getEnvironmentDto() != null) {
+            String envInstanceName = vdc + "-" + getEnvironmentDto().getName();
+            environmentInstance.setName(envInstanceName);
+        }
+        if (getEnvironmentDto() != null) {
+            Environment environment = getEnvironmentDto().fromDto();
+            environmentInstance.setEnvironment(environment);
+        }
+        return environmentInstance;
+    }
 
-	/**
-	 * @param environmentInstanceName
-	 *            the environmentInstanceName to set
-	 */
-	public void setEnvironmentInstanceName(String environmentInstanceName) {
-		this.environmentInstanceName = environmentInstanceName;
-	}
+    /**
+     * @return the attributes
+     */
+    public Set<Attribute> getAttributes() {
+        return attributes;
+    }
 
-	public void setBlueprintName(String blueprintName) {
-		this.blueprintName = blueprintName;
-	}
+    public String getBlueprintName() {
+        return blueprintName;
+    }
 
-	public String getBlueprintName() {
-		return blueprintName;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	/**
-	 * @return the vdc
-	 */
-	public String getVdc() {
-		return vdc;
-	}
+    /**
+     * @return the environment
+     */
 
-	public String getDescription() {
-		return description;
-	}
+    public EnvironmentDto getEnvironmentDto() {
+        return environmentDto;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    /**
+     * @return the environmentInstanceName
+     */
+    public String getEnvironmentInstanceName() {
+        return environmentInstanceName;
+    }
 
-	public Status getStatus() {
-		return status;
-	}
+    public Status getStatus() {
+        return status;
+    }
 
-	public void setStatus(Status status) {
-		this.status = status;
-	}
+    /**
+     * @return the tierInstances
+     */
+    public List<TierInstanceDto> getTierInstances() {
+        return tierInstanceDtos;
+    }
 
-	/**
-	 * @param vdc
-	 *            the vdc to set
-	 */
-	public void setVdc(String vdc) {
-		this.vdc = vdc;
-	}
+    /**
+     * @return the vdc
+     */
+    public String getVdc() {
+        return vdc;
+    }
 
-	/**
-	 * @return the environment
-	 */
+    /**
+     * @param attributes
+     *            the attributes to set
+     */
+    public void setAttributes(Set<Attribute> attributes) {
+        this.attributes = attributes;
+    }
 
-	public EnvironmentDto getEnvironmentDto() {
-		return environmentDto;
-	}
+    public void setBlueprintName(String blueprintName) {
+        this.blueprintName = blueprintName;
+    }
 
-	/**
-	 * @param environment
-	 *            the environment to set
-	 */
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setEnvironmentDto(EnvironmentDto environmentDto) {
-		this.environmentDto = environmentDto;
-	}
+    /**
+     * @param environmentDto
+     *            the environmentDto to set
+     */
 
-	/**
-	 * @return the tierInstances
-	 */
-	public List<TierInstanceDto> getTierInstances() {
-		return tierInstanceDtos;
-	}
+    public void setEnvironmentDto(EnvironmentDto environmentDto) {
+        this.environmentDto = environmentDto;
+    }
 
-	/**
-	 * @param tierInstances
-	 *            the tierInstances to set
-	 */
-	public void setTierInstances(List<TierInstanceDto> tierInstanceDtos) {
-		this.tierInstanceDtos = tierInstanceDtos;
-	}
+    /**
+     * @param environmentInstanceName
+     *            the environmentInstanceName to set
+     */
+    public void setEnvironmentInstanceName(String environmentInstanceName) {
+        this.environmentInstanceName = environmentInstanceName;
+    }
 
-	/**
-	 * @return the attributes
-	 */
-	public List<Attribute> getAttributes() {
-		return attributes;
-	}
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
-	/**
-	 * @param attributes
-	 *            the attributes to set
-	 */
-	public void setAttributes(List<Attribute> attributes) {
-		this.attributes = attributes;
-	}
+    /**
+     * @param tierInstanceDtos
+     *            the tierInstances to set
+     */
+    public void setTierInstances(List<TierInstanceDto> tierInstanceDtos) {
+        this.tierInstanceDtos = tierInstanceDtos;
+    }
 
-	public EnvironmentInstance fromDto() {
-		EnvironmentInstance environmentInstance = new EnvironmentInstance();
-		environmentInstance.setBlueprintName(getBlueprintName());
-		environmentInstance.setDescription(getDescription());
-		if (getEnvironmentDto() != null) {
-			String envInstanceName = vdc + "-" + getEnvironmentDto().getName();
-			environmentInstance.setName(envInstanceName);
-		}
-		if (getEnvironmentDto() != null) {
-			Environment environment = getEnvironmentDto().fromDto();
-			environmentInstance.setEnvironment(environment);
-		}
-		return environmentInstance;
-	}
+    /**
+     * @param vdc
+     *            the vdc to set
+     */
+    public void setVdc(String vdc) {
+        this.vdc = vdc;
+    }
 }

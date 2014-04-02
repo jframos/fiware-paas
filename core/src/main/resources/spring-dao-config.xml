@@ -2,14 +2,13 @@
 <beans
         xmlns="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:tx="http://www.springframework.org/schema/tx"
         xsi:schemaLocation="http://www.springframework.org/schema/beans
               http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
         default-autowire="no">
 
     <bean id="configurationDao" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.ConfigurationDaoJpaImpl"/>
-  
+
     <bean id="osDao" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.OSDaoJpaImpl"/>
     <bean id="productReleaseDao" lazy-init="true"
@@ -23,13 +22,11 @@
     <bean id="artifactDao" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.ArtifactDaoJpaImpl"/>
     <bean id="serviceDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.paasmanager.dao.impl.ServiceDaoJpaImpl"/> 
+          class="com.telefonica.euro_iaas.paasmanager.dao.impl.ServiceDaoJpaImpl"/>
     <bean id="tierDao" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.TierDaoJpaImpl"/>
     <bean id="environmentDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.paasmanager.dao.impl.EnvironmentDaoJpaImpl"/>                           
-    <bean id="environmentTypeDao" lazy-init="true"
-          class="com.telefonica.euro_iaas.paasmanager.dao.impl.EnvironmentTypeDaoJpaImpl"/>                           
+          class="com.telefonica.euro_iaas.paasmanager.dao.impl.EnvironmentDaoJpaImpl"/>
     <bean id="tierInstanceDao" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.TierInstanceDaoJpaImpl"/>
     <bean id="productInstanceDao" lazy-init="true"
@@ -46,9 +43,19 @@
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.TemplateDaoJpaImpl"/>
     <bean id="ruleDao" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.RuleDaoJpaImpl"/>
+    <bean id="networkDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.paasmanager.dao.impl.NetworkDaoJpaImpl"/>
+    <bean id="networkInstanceDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.paasmanager.dao.impl.NetworkInstanceDaoJpaImpl"/>
+    <bean id="subNetworkDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.paasmanager.dao.impl.SubNetworkDaoJpaImpl"/>
+    <bean id="subNetworkInstanceDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.paasmanager.dao.impl.SubNetworkInstanceDaoJpaImpl"/>
+    <bean id="routerDao" lazy-init="true"
+          class="com.telefonica.euro_iaas.paasmanager.dao.impl.RouterDaoJpaImpl"/>
     <bean id="securityGroupDao" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.SecurityGroupDaoJpaImpl"/>
-     <bean id="attributeDao" lazy-init="true"
+    <bean id="attributeDao" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.dao.impl.AttributeDaoJpaImpl"/>
 
 </beans>

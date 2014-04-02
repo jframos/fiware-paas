@@ -1,34 +1,25 @@
-/*
-
-  (c) Copyright 2011 Telefonica, I+D. Printed in Spain (Europe). All Rights
-  Reserved.
-
-  The copyright to the software program(s) is property of Telefonica I+D.
-  The program(s) may be used and or copied only with the express written
-  consent of Telefonica I+D or in accordance with the terms and conditions
-  stipulated in the agreement/contract under which the program(s) have
-  been supplied.
-
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
  */
+
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-
-import junit.framework.TestCase;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -39,15 +30,19 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
 import com.telefonica.euro_iaas.paasmanager.claudia.util.ClaudiaUtil;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
+import com.telefonica.euro_iaas.paasmanager.manager.NetworkInstanceManager;
+import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
+import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
-import com.telefonica.euro_iaas.paasmanager.monitoring.MonitoringClient;
 import com.telefonica.euro_iaas.paasmanager.util.ClaudiaResponseAnalyser;
 import com.telefonica.euro_iaas.paasmanager.util.OVFUtils;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
@@ -55,31 +50,26 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 /**
  * @author jesus.movilla
  */
-public class InfrastructureManagerImplTest extends TestCase {
+public class InfrastructureManagerImplTest {
 
-    private String vdc, org;
-    private int number_vms;
     private SystemPropertiesProvider propertiesProvider;
     private ClaudiaClient claudiaClient;
     private ClaudiaUtil claudiaUtil;
-    private MonitoringClient monitoringClient;
     private OVFUtils ovfUtils;
     private ClaudiaResponseAnalyser claudiaResponseAnalyser;
 
-    private String vdcResponse = "vdcResponse";
-
-    private String vdcNotFoundResponse = "ElementNotFound";
-
-    private String serviceResponse = "serviceResponse";
     private EnvironmentInstanceDao environmentInstanceDao;
+    private NetworkInstanceManager networkInstanceManager;
 
     // private String ovfname = "Case01-01-initial-vapp-creation.xml";
-    private String ovfname = "4caastovfexample.xml";
-    private String ovf = "ovf";
     private PaasManagerUser user;
     private ClaudiaData claudiaData;
     private TierInstanceManager tierInstanceManager;
+    private TierManager tierManager;
     private InfrastructureManagerClaudiaImpl manager;
+    private NetworkManager networkManager;
+    private Tier tier;
+    private VM vm;
 
     @Before
     public void setUp() throws Exception {
@@ -88,150 +78,46 @@ public class InfrastructureManagerImplTest extends TestCase {
         claudiaClient = mock(ClaudiaClient.class);
         claudiaUtil = mock(ClaudiaUtil.class);
         claudiaResponseAnalyser = mock(ClaudiaResponseAnalyser.class);
-        monitoringClient = mock(MonitoringClient.class);
         tierInstanceManager = mock(TierInstanceManager.class);
+        tierManager = mock(TierManager.class);
         ovfUtils = mock(OVFUtils.class);
+        networkManager = mock(NetworkManager.class);
         environmentInstanceDao = mock(EnvironmentInstanceDao.class);
+        networkInstanceManager = mock(NetworkInstanceManager.class);
         manager = new InfrastructureManagerClaudiaImpl();
         manager.setSystemPropertiesProvider(propertiesProvider);
         manager.setClaudiaClient(claudiaClient);
         manager.setClaudiaUtil(claudiaUtil);
         manager.setClaudiaResponseAnalyser(claudiaResponseAnalyser);
-        manager.setMonitoringClient(monitoringClient);
         manager.setOvfUtils(ovfUtils);
         manager.setTierInstanceManager(tierInstanceManager);
         manager.setEnvironmentInstanceDao(environmentInstanceDao);
+        manager.setNetworkInstanceManager(networkInstanceManager);
+        manager.setNetworkManager(networkManager);
+        manager.setTierManager(tierManager);
+
         claudiaData = new ClaudiaData("org", "vdc", "service");
 
-        /*
-		 * vdc = "paasmanagerVDC"; org = "ORG"; number_vms = 2; claudiaData =
-		 * new ClaudiaData(org, vdc);
-		 * 
-		 * //Taking ovf from a file InputStream is =
-		 * ClassLoader.getSystemClassLoader().getResourceAsStream(ovfname);
-		 * BufferedReader reader = new BufferedReader(new
-		 * InputStreamReader(is)); StringBuffer ruleFile = new StringBuffer();
-		 * String actualString;
-		 * 
-		 * while ((actualString = reader.readLine()) != null) {
-		 * ruleFile.append(actualString).append("\n"); }
-		 * 
-		 * // user = new PaasManagerUser("user", "paasword", null);
-		 * //claudiaData.setUser(user);
-		 * 
-		 * // ovf = ruleFile.toString(); // System.out.println("ovf: " + ovf);
-		 * 
-		 * // vdcResponseTask = new Task();
-		 * vdcResponseTask.setState(TaskStates.SUCCESS);
-		 * vdcResponseTask.setResource
-		 * ("http://10.95.171.89:8080/rest-api-management/", "resourceType");
-		 * serviceResponseTask = new Task();
-		 * serviceResponseTask.setState(TaskStates.SUCCESS);
-		 * serviceResponseTask.
-		 * setResource("http://10.95.171.89:8080/rest-api-management/",
-		 * "resourceType");
-		 * 
-		 * vmResponseTask = new Task();
-		 * vmResponseTask.setState(TaskStates.SUCCESS);
-		 * vmResponseTask.setResource
-		 * ("http://10.95.171.89:8080/rest-api-management/", "resourceType");
-		 * 
-		 * propertiesProvider = mock(SystemPropertiesProvider.class);
-		 * when(propertiesProvider
-		 * .getProperty(NEOCLAUDIA_SERVICE)).thenReturn("paasmanagerService");
-		 * when
-		 * (propertiesProvider.getProperty(NEOCLAUDIA_VDC_CPU)).thenReturn("12"
-		 * );
-		 * when(propertiesProvider.getProperty(NEOCLAUDIA_VDC_MEM)).thenReturn
-		 * ("14");
-		 * when(propertiesProvider.getProperty(NEOCLAUDIA_VDC_DISK)).thenReturn
-		 * ("16");
-		 * when(propertiesProvider.getProperty(NEOCLAUDIA_ORG)).thenReturn
-		 * ("EUROPIAAS-VC1");
-		 * when(propertiesProvider.getProperty(NEOCLAUDIA_OVFSERVICE_LOCATION
-		 * )).thenReturn("empty.ovf");
-		 * when(propertiesProvider.getProperty(VM_NAME_PREFIX
-		 * )).thenReturn("paasManagerVM");
-		 * 
-		 * 
-		 * claudiaClient = mock(ClaudiaClient.class);
-		 * //when(claudiaClient.browseVDC(any(String.class), any(String.class),
-		 * user)) //.thenReturn(vdcResponse);
-		 * when(claudiaClient.browseVDC(any(ClaudiaData
-		 * .class))).thenReturn(vdcResponse);
-		 * when(claudiaClient.deployVDC(any(ClaudiaData.class),
-		 * any(String.class), any(String.class),
-		 * any(String.class))).thenReturn("OK");
-		 * when(claudiaClient.browseService
-		 * (any(ClaudiaData.class))).thenReturn(vdcResponse);
-		 * when(claudiaClient.deployService(any(ClaudiaData.class),
-		 * any(String.class))) .thenReturn("OK");
-		 * when(claudiaClient.deployVM(any(String.class), any(String.class),
-		 * any(String.class), any(String.class), user, any(String.class)))
-		 * .thenReturn("OK");
-		 * 
-		 * when(claudiaClient.deployVM(any(ClaudiaData.class),any(Tier.class)))
-		 * .thenReturn(claudiaData);
-		 * 
-		 * when(claudiaClient.obtainIPFromFqn(any(String.class),
-		 * any(String.class), any(String.class),any(String.class), user))
-		 * .thenReturn("10.95.171.34");
-		 * 
-		 * claudiaUtil = mock (ClaudiaUtil.class);
-		 * 
-		 * claudiaResponseAnalyser = mock(ClaudiaResponseAnalyser.class);
-		 * when(claudiaResponseAnalyser.getTaskUrl(any(String.class)))
-		 * .thenReturn("OK");
-		 * when(claudiaResponseAnalyser.getTaskStatus(any(String.class)))
-		 * .thenReturn("success");
-         */
-
-    }
-
-    @Test
-    public void testDeployVMNoFIWARE() throws Exception {
-        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
-                "keypair", "floatingip", "payload");
-        when(propertiesProvider.getProperty(any(String.class))).thenReturn("1");
-        List<String> ips = new ArrayList();
-        ips.add("IP");
-
+        tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
+                "keypair", "false", "payload");
         String hostname = claudiaData.getService() + "-" + tier.getName() + "-" + 1;
         String fqn = claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc() + ".services."
                 + claudiaData.getService() + ".vees." + tier.getName() + ".replicas." + 1;
 
-        VM vm = new VM();
-
+        vm = new VM();
         vm.setFqn(fqn);
         vm.setHostname(hostname);
-
-        when(claudiaClient.getIP(any(ClaudiaData.class), any(String.class), Matchers.anyInt(), any(VM.class)))
-                .thenReturn(ips);
-        Mockito.doNothing().when(claudiaClient)
-                .deployVM(any(ClaudiaData.class), any(Tier.class), Matchers.anyInt(), any(VM.class));
-        when(ovfUtils.changeInitialResources(any(String.class))).thenReturn("ovf");
-        Mockito.doNothing().when(monitoringClient).startMonitoring(any(String.class), any(String.class));
-
-        manager.deployVM(claudiaData, tier, 1, "ovf", vm);
-        assertEquals(vm.getDomain(), "");
-        /*
-         * assertEquals(vm.getFqn(), claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc() +
-         * ".services." + claudiaData.getService() + ".vees." + tier.getName() + ".replicas." + 1);
-         */
-        assertEquals(vm.getHostname(), hostname);
-        assertEquals(vm.getIp(), "IP");
+        vm.setIp("IP");
 
     }
 
     @Test
     public void testCreateInfrasctuctureEnvironmentInstance() throws Exception {
 
-        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
-                "keypair", "floatingip", "payload");
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
 
-        List<Tier> lTier = new ArrayList();
+        Set<Tier> lTier = new HashSet<Tier>();
         lTier.add(tier);
         Environment env = new Environment("name", lTier, "description");
         EnvironmentInstance envInst = new EnvironmentInstance("blue", "des", env);
@@ -259,24 +145,28 @@ public class InfrastructureManagerImplTest extends TestCase {
         tierInstance.setOvf(ovf);
         tierInstance.setVapp("vapp");
 
-        when(claudiaClient.getIP(any(ClaudiaData.class), any(String.class), Matchers.anyInt(), any(VM.class)))
-                .thenReturn(ips);
+        when(
+                claudiaClient.getIP(any(ClaudiaData.class), any(String.class), Matchers.anyInt(), any(VM.class),
+                        anyString())).thenReturn(ips);
         Mockito.doNothing().when(claudiaClient)
-                .deployVM(any(ClaudiaData.class), any(Tier.class), Matchers.anyInt(), any(VM.class));
+                .deployVM(any(ClaudiaData.class), any(TierInstance.class), Matchers.anyInt(), any(VM.class));
         when(ovfUtils.changeInitialResources(any(String.class))).thenReturn(null);
+        when(propertiesProvider.getProperty("openstack-tcloud.cloudSystem")).thenReturn("4caast");
+        when(propertiesProvider.getProperty("vmDeploymentDelay")).thenReturn("1");
         when(ovfUtils.getOvfsSingleVM(any(String.class))).thenReturn(ovfs);
         when(claudiaClient.browseVDC(any(ClaudiaData.class))).thenReturn("vdc");
         when(claudiaClient.browseService(any(ClaudiaData.class))).thenReturn("vapp");
         when(environmentInstanceDao.update(any(EnvironmentInstance.class))).thenReturn(envInst);
-        when(claudiaClient.browseVMReplica(any(ClaudiaData.class), any(String.class), anyInt(), any(VM.class)))
-                .thenReturn("vapp");
+        when(
+                claudiaClient.browseVMReplica(any(ClaudiaData.class), any(String.class), anyInt(), any(VM.class),
+                        anyString())).thenReturn("vapp");
 
         Mockito.doThrow(new EntityNotFoundException(TierInstance.class, "test", tierInstance))
                 .when(tierInstanceManager).load(any(String.class));
         when(tierInstanceManager.create(any(ClaudiaData.class), any(String.class), any(TierInstance.class)))
                 .thenReturn(tierInstance);
-
-        Mockito.doNothing().when(monitoringClient).startMonitoring(any(String.class), any(String.class));
+        when(tierManager.loadTierWithNetworks(any(String.class), any(String.class), any(String.class)))
+                .thenReturn(tier);
 
         EnvironmentInstance envInst2 = manager.createInfrasctuctureEnvironmentInstance(envInst, envInst
                 .getEnvironment().getTiers(), claudiaData);
@@ -293,56 +183,162 @@ public class InfrastructureManagerImplTest extends TestCase {
 
     }
 
-    private String getFile(String file) throws IOException {
-        File f = new File(file);
-        System.out.println(f.isFile() + " " + f.getAbsolutePath());
-        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(file);
-        InputStream dd = new FileInputStream(f);
+    @Test
+    public void testDeleteInfrasctuctureEnvironmentInstance() throws Exception {
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(dd));
-        StringBuffer ruleFile = new StringBuffer();
-        String actualString;
+        Network net = new Network("NET", "vdc");
+        tier.addNetwork(net);
+        TierInstance tierInstance = new TierInstance();
+        tierInstance.setTier(tier);
+        tierInstance.addNetworkInstance(net.toNetworkInstance());
 
-        while ((actualString = reader.readLine()) != null) {
-            ruleFile.append(actualString).append("\n");
-        }
-        return ruleFile.toString();
+        Set<Tier> lTier = new HashSet<Tier>();
+        lTier.add(tier);
+        Environment env = new Environment("name", lTier, "description");
+        EnvironmentInstance envInst = new EnvironmentInstance("blue", "des", env);
+
+        String ovf = null;
+        tierInstance.setOvf(ovf);
+        tierInstance.setVapp("vapp");
+        tierInstance.setVM(vm);
+        envInst.addTierInstance(tierInstance);
+
+        when(
+                claudiaClient.browseVMReplica(any(ClaudiaData.class), any(String.class), anyInt(), any(VM.class),
+                        anyString())).thenReturn("vapp");
+        Mockito.doNothing().when(claudiaClient).undeployVMReplica(any(ClaudiaData.class), any(TierInstance.class));
+        Mockito.doNothing().when(networkInstanceManager)
+                .delete(any(ClaudiaData.class), any(NetworkInstance.class), anyString());
+
+        /*
+         * when(claudiaClient.getIP(any(ClaudiaData.class), any(String.class), Matchers.anyInt(), any(VM.class)))
+         * .thenReturn(ips); Mockito.doNothing().when(claudiaClient) .deployVM(any(ClaudiaData.class),
+         * any(TierInstance.class), Matchers.anyInt(), any(VM.class));
+         * when(ovfUtils.changeInitialResources(any(String.class))).thenReturn(null);
+         * when(ovfUtils.getOvfsSingleVM(any(String.class))).thenReturn(ovfs);
+         * when(claudiaClient.browseVDC(any(ClaudiaData.class))).thenReturn("vdc");
+         * when(claudiaClient.browseService(any(ClaudiaData.class))).thenReturn("vapp");
+         * when(environmentInstanceDao.update(any(EnvironmentInstance.class))).thenReturn(envInst);
+         * when(claudiaClient.browseVMReplica(any(ClaudiaData.class), any(String.class), anyInt(), any(VM.class)))
+         * .thenReturn("vapp"); Mockito.doThrow(new EntityNotFoundException(TierInstance.class, "test", tierInstance))
+         * .when(tierInstanceManager).load(any(String.class)); when(tierInstanceManager.create(any(ClaudiaData.class),
+         * any(String.class), any(TierInstance.class))) .thenReturn(tierInstance);
+         * Mockito.doNothing().when(monitoringClient).startMonitoring(any(String.class), any(String.class));
+         */
+
+        manager.deleteEnvironment(claudiaData, envInst);
 
     }
 
-    /**
-     * @throws Exception
-     */
     @Test
-    public void testGetVMsIsOk() throws Exception {
-        InfrastructureManagerClaudiaImpl manager = new InfrastructureManagerClaudiaImpl();
+    public void testDeployVMNoFIWARE() throws Exception {
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
+                "keypair", "floatingip", "payload");
+        TierInstance tierInstance = new TierInstance();
+        tierInstance.setTier(tier);
+        when(propertiesProvider.getProperty(any(String.class))).thenReturn("1");
+        List<String> ips = new ArrayList();
+        ips.add("IP");
 
-        manager.setSystemPropertiesProvider(propertiesProvider);
-        manager.setClaudiaClient(claudiaClient);
-        manager.setClaudiaUtil(claudiaUtil);
-        manager.setClaudiaResponseAnalyser(claudiaResponseAnalyser);
+        String hostname = claudiaData.getService() + "-" + tier.getName() + "-" + 1;
+        String fqn = claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc() + ".services."
+                + claudiaData.getService() + ".vees." + tier.getName() + ".replicas." + 1;
 
-        // List<VM> vms = manager.getVMs(vdc, number_vms);
-        // assertEquals(number_vms, vms.size());
+        VM vm = new VM();
+
+        vm.setFqn(fqn);
+        vm.setHostname(hostname);
+
+        when(
+                claudiaClient.getIP(any(ClaudiaData.class), any(String.class), Matchers.anyInt(), any(VM.class),
+                        anyString())).thenReturn(ips);
+        Mockito.doNothing().when(claudiaClient)
+                .deployVM(any(ClaudiaData.class), any(TierInstance.class), Matchers.anyInt(), any(VM.class));
+        when(ovfUtils.changeInitialResources(any(String.class))).thenReturn("ovf");
+
+        manager.deployVM(claudiaData, tierInstance, 1, "ovf", vm);
+        assertEquals(vm.getDomain(), "");
+
+        assertEquals(vm.getHostname(), hostname);
+        assertEquals(vm.getIp(), "IP");
+
     }
 
     @Test
-    public void testGetVMsIsOkCreateVDC() throws Exception {
-        InfrastructureManagerClaudiaImpl manager = new InfrastructureManagerClaudiaImpl();
+    public void testDeployNetwrok() throws Exception {
 
-        manager.setSystemPropertiesProvider(propertiesProvider);
-        manager.setClaudiaClient(claudiaClient);
-        manager.setClaudiaUtil(claudiaUtil);
-        manager.setClaudiaResponseAnalyser(claudiaResponseAnalyser);
+        Network net = new Network("NET", "vdc");
+        tier.addNetwork(net);
+        TierInstance tierInstance = new TierInstance();
+        tierInstance.setTier(tier);
 
-        // List<VM> vms = manager.getVMs(vdc, number_vms);
-        // assertEquals(number_vms, vms.size());
+        when(tierInstanceManager.update(any(TierInstance.class))).thenReturn(tierInstance);
+        when(networkInstanceManager.create(any(ClaudiaData.class), any(NetworkInstance.class), anyString()))
+                .thenReturn(net.toNetworkInstance());
+        when(networkManager.load(any(String.class), any(String.class))).thenReturn(net);
+        when(tierManager.loadTierWithNetworks(any(String.class), any(String.class), any(String.class)))
+                .thenReturn(tier);
+
+        Mockito.doThrow(EntityNotFoundException.class).when(networkInstanceManager)
+                .load(any(String.class), any(String.class));
+
+        manager.deployNetworks(claudiaData, tierInstance);
+
+        assertEquals(tierInstance.getNetworkInstances().size(), 1);
+
     }
 
     @Test
-    public void testCreateEnvironment() throws Exception {
+    public void testDeployNetwrokInternet() throws Exception {
 
-        // List<VM> vms = manager.createEnvironment(ovf, org, vdc);
+        Network net = new Network("NET", "vdc");
+        Network net2 = new Network("Internet", "vdc");
+        tier.addNetwork(net);
+        tier.addNetwork(net2);
+        TierInstance tierInstance = new TierInstance();
+        tierInstance.setTier(tier);
+
+        when(tierManager.loadTierWithNetworks(any(String.class), any(String.class), any(String.class)))
+                .thenReturn(tier);
+        when(tierManager.update(any(Tier.class))).thenReturn(tier);
+        when(networkInstanceManager.create(any(ClaudiaData.class), any(NetworkInstance.class), anyString()))
+                .thenReturn(net.toNetworkInstance());
+        when(networkManager.load(any(String.class), any(String.class))).thenReturn(net);
+        Mockito.doThrow(EntityNotFoundException.class).when(networkInstanceManager)
+                .load(any(String.class), any(String.class));
+
+        manager.deployNetworks(claudiaData, tierInstance);
+
+        assertEquals(tierInstance.getNetworkInstances().size(), 1);
+        assertEquals(tierInstance.getTier().getFloatingip(), "true");
+
+    }
+
+    @Test
+    public void testDeleteNetwroksinEnv() throws Exception {
+
+        Network net = new Network("NET", "vdc");
+        Network net2 = new Network("Internet", "vdc");
+        tier.addNetwork(net);
+        tier.addNetwork(net2);
+        TierInstance tierInstance = new TierInstance();
+        tierInstance.setTier(tier);
+        Environment env = new Environment("name", "description", null);
+        env.addTier(tier);
+        EnvironmentInstance envInst = new EnvironmentInstance("blue", "des", env);
+        envInst.addTierInstance(tierInstance);
+        String region = "RegionOne";
+
+        when(tierInstanceManager.update(any(TierInstance.class))).thenReturn(tierInstance);
+        when(networkInstanceManager.create(any(ClaudiaData.class), any(NetworkInstance.class), anyString()))
+                .thenReturn(net.toNetworkInstance());
+
+        Mockito.doThrow(EntityNotFoundException.class).when(networkInstanceManager)
+                .load(any(String.class), any(String.class));
+
+        manager.deleteNetworksInEnv(claudiaData, envInst, region);
+
+        assertEquals(envInst.getTierInstances().get(0).getNetworkInstances().size(), 0);
 
     }
 

@@ -12,14 +12,14 @@ config = {}
 execfile("sdc.conf", config)
 
 g=EnvironmentRequest(config['keystone_url'], config['paasmanager_url'], config['tenant'], config['user'], config['password'],
-                     config['vdc'],config['sdc_url'])
+                     config['vdc'],config['image'],config['sdc_url'])
 
 
 instance_request = EnvironmentInstanceRequest (config['keystone_url'], config['paasmanager_url'], config['tenant'], config['user'], config['password'],
                                                config['vdc'],config['sdc_url'])
 
-environment_name = "context38"
-bluename = "blue34"
+environment_name = "orion3"
+bluename = "blueorion3"
 
 
 
@@ -30,15 +30,15 @@ g.add_environment(environment_name,'description')
 print("  OK")
 
 print('Create createTier: tiermongoconfig')
-g.add_tier_environment(environment_name,"tiermongoconfig", "mongodbconfig=2.2.3")
+g.add_tier_environment(environment_name,"tierconfig", "mongodbconfig=2.2.3")
 print("  OK")
 
 print('Create createTier: tiermongoshard')
-g.add_tier_environment(environment_name,"monsha58", "mongodbshard=2.2.3")
+g.add_tier_environment(environment_name,"tiersha58", "mongodbshard=2.2.3")
 print("  OK")
 
 print('Create createTier: tiercontextbroker')
-g.add_tier_environment(environment_name,"contbrok58", "mongos=2.2.3;contextbroker=1.0.0")
+g.add_tier_environment(environment_name,"tierzcontbrok", "mongos=2.2.3;contextbroker=1.0.0")
 print("  OK")
 
 print('Get Information about the Blueprint: ' + environment_name )

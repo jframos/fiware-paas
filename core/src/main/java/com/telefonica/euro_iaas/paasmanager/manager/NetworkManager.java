@@ -1,0 +1,74 @@
+/**
+ * (c) Copyright 2013 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.<br>
+ * The copyright to the software program(s) is property of Telefonica I+D. The program(s) may be used and or copied only
+ * with the express written consent of Telefonica I+D or in accordance with the terms and conditions stipulated in the
+ * agreement/contract under which the program(s) have been supplied.
+ */
+
+package com.telefonica.euro_iaas.paasmanager.manager;
+
+import java.util.List;
+
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
+
+/**
+ * @author henar
+ */
+public interface NetworkManager {
+    /**
+     * Create a network.
+     * 
+     * @param network
+     * @return the tierInstance created
+     * @throws InfrastructureException
+     * @throws AlreadyExistsEntityException
+     * @throws EntityNotFoundException
+     */
+	Network create(Network network) throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException;
+
+    /**
+     * Delete a Network.
+     * 
+     * @param network
+     * @throws EntityNotFoundException
+     * @throws InvalidEntityException
+     * @throws InfrastructureException
+     */
+    void delete(Network network) throws EntityNotFoundException, InvalidEntityException;
+
+    /**
+     * Retrieve all Network created in the system.
+     * 
+     * @return the existent networks.
+     */
+    List<Network> findAll();
+
+    /**
+     * Load the network.
+     * 
+     * @return the network.
+     */
+    Network load(String networkName, String vdc) throws EntityNotFoundException;
+
+    /**
+     * If the network exists in DB.
+     * 
+     * @return .
+     */
+    boolean exists(String networkName, String vdc);
+
+    /**
+     * Update a network.
+     * 
+     * @param network
+     * @return the tierInstance created
+     */
+    Network update(Network network) throws InvalidEntityException;
+
+
+}
