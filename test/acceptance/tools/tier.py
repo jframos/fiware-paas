@@ -1,6 +1,29 @@
+# -*- coding: utf-8 -*-
+# Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
+#
+# This file is part of FI-WARE project.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+#
+# You may obtain a copy of the License at:
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# For those usages not covered by the Apache version 2.0 License please
+# contact with opensource@tid.es
+
 import json
 from tools.constants import PAAS, TIER_NUM_MIN, TIER_NUM_MAX, TIER_NUM_INITIAL,\
     TIER_FLAVOUR, TIER_KEYPAIR, TIER_FLOATINGIP, TIER_IMAGE
+
 __author__ = 'henar'
 
 from xml.etree.ElementTree import Element, SubElement
@@ -46,17 +69,17 @@ class Tier:
         self.region = "RegionOne"
 
     def __eq__(self, other):
-        return self.name == other.name \
-            and self.tier_num_min == other.tier_num_min \
-            and self.tier_num_max == other.tier_num_max \
-            and self.tier_num_initial == other.tier_num_initial \
-            and self.tier_image == other.tier_image \
-            and self.tier_flavour == other.tier_flavour \
-            and self.tier_keypair == other.tier_keypair \
-            and self.tier_floatingip == other.tier_floatingip \
-            and self.region == other.region \
-            and sorted(self.products) == sorted(other.products) \
-            and sorted(self.networks) == sorted(other.networks)
+        return self.name == other.name\
+               and self.tier_num_min == other.tier_num_min\
+               and self.tier_num_max == other.tier_num_max\
+               and self.tier_num_initial == other.tier_num_initial\
+               and self.tier_image == other.tier_image\
+               and self.tier_flavour == other.tier_flavour\
+               and self.tier_keypair == other.tier_keypair\
+               and self.tier_floatingip == other.tier_floatingip\
+               and self.region == other.region\
+               and sorted(self.products) == sorted(other.products)\
+        and sorted(self.networks) == sorted(other.networks)
 
     def add_product(self, product):
         self.products.append(product)
@@ -111,7 +134,7 @@ class Tier:
                 prod = net.to_xml()
 
                 tier_dtos.append(prod)
-        #print tostring(tier_dtos)
+            #print tostring(tier_dtos)
         return tier_dtos
 
 
@@ -179,10 +202,10 @@ def process_tier(tier):
         if isinstance(product_dtos, list):
             for product_dto in product_dtos:
                 processed_tier.add_product(ProductRelease(product_dto['productName'],
-                                                          product_dto['version']))
+                    product_dto['version']))
         else:
             processed_tier.add_product(ProductRelease(product_dtos['productName'],
-                                                      product_dtos['version']))
+                product_dtos['version']))
     except:
         pass
 
@@ -207,8 +230,8 @@ def check_add_tier_response(response, expected_status_code):
     :param response: Response to be checked.
     :param expected_status_code: Expected status code of the response.
     """
-    assert response.status == expected_status_code, \
-    "Wrong status code received: %d. Expected: %d. Body content: %s" \
+    assert response.status == expected_status_code,\
+    "Wrong status code received: %d. Expected: %d. Body content: %s"\
     % (response.status, expected_status_code, response.read())
 
 
@@ -219,8 +242,8 @@ def check_update_tier_response(response, expected_status_code):
     :param response: Response to be checked.
     :param expected_status_code: Expected status code of the response.
     """
-    assert response.status == expected_status_code, \
-    "Wrong status code received: %d. Expected: %d. Body content: %s" \
+    assert response.status == expected_status_code,\
+    "Wrong status code received: %d. Expected: %d. Body content: %s"\
     % (response.status, expected_status_code, response.read())
 
 
@@ -231,13 +254,13 @@ def check_delete_tier_response(response, expected_status_code):
     :param response: Response to be checked.
     :param expected_status_code: Expected status code of the response.
     """
-    assert response.status == expected_status_code, \
-    "Wrong status code received: %d. Expected: %d. Body content: %s" \
+    assert response.status == expected_status_code,\
+    "Wrong status code received: %d. Expected: %d. Body content: %s"\
     % (response.status, expected_status_code, response.read())
 
 
 def check_get_tiers_response(response, expected_status_code,
-                                   expected_tiers_number=None):
+                             expected_tiers_number=None):
     """
     Checks that the response for a get tiers request is the
     expected one.
@@ -245,8 +268,8 @@ def check_get_tiers_response(response, expected_status_code,
     :param expected_status_code: Expected status code of the response.
     :param expected_tiers_number: Expected number of tiers.
     """
-    assert response.status == expected_status_code, \
-    "Wrong status code received: %d. Expected: %d. Body content: %s" \
+    assert response.status == expected_status_code,\
+    "Wrong status code received: %d. Expected: %d. Body content: %s"\
     % (response.status, expected_status_code, response.read())
 
     if expected_tiers_number is not None:
@@ -259,8 +282,8 @@ def check_get_tiers_response(response, expected_status_code,
             tiers = data["tierDto"]
             world.response.tiers = process_tiers(tiers)
 
-            assert len(world.response.tiers) == expected_tiers_number, \
-            "Wrong number of tiers received: %d. Expected: %d." \
+            assert len(world.response.tiers) == expected_tiers_number,\
+            "Wrong number of tiers received: %d. Expected: %d."\
             % (len(world.response.tiers), expected_tiers_number)
 
 
@@ -274,12 +297,12 @@ def check_tier_in_list(tiers_list, tier_name, products=None, networks=None):
     """
     for tier in tiers_list:
         if tier.name == tier_name:  # Expected tier found
-            assert sorted(tier.products) == sorted(products), \
-            "Wrong products list received for tier %s: %s. Expected: %s." \
+            assert sorted(tier.products) == sorted(products),\
+            "Wrong products list received for tier %s: %s. Expected: %s."\
             % (tier.name, sorted(tier.products), sorted(products))
 
-            assert sorted(tier.networks) == sorted(networks), \
-            "Wrong networks list received for tier %s: %s. Expected: %s." \
+            assert sorted(tier.networks) == sorted(networks),\
+            "Wrong networks list received for tier %s: %s. Expected: %s."\
             % (tier.name, sorted(tier.networks), sorted(networks))
 
             return
@@ -288,9 +311,9 @@ def check_tier_in_list(tiers_list, tier_name, products=None, networks=None):
 
 
 def check_get_tier_response(response, expected_status_code,
-                                      expected_tier_name=None,
-                                      expected_products=None,
-                                      expected_networks=None):
+                            expected_tier_name=None,
+                            expected_products=None,
+                            expected_networks=None):
     """
     Checks that the response for a get tier request is the
     expected one.
@@ -300,38 +323,38 @@ def check_get_tier_response(response, expected_status_code,
     :param expected_products: Expected products of the tier.
     :param expected_networks: Expected networks of the tier.
     """
-    assert response.status == expected_status_code, \
-    "Wrong status code received: %d. Expected: %d. Body content: %s" \
+    assert response.status == expected_status_code,\
+    "Wrong status code received: %d. Expected: %d. Body content: %s"\
     % (response.status, expected_status_code, response.read())
 
     if expected_tier_name is not None:
         data = json.loads(response.read())
         tier = process_tier(data)
 
-        assert tier.name == expected_tier_name, \
-        "Wrong name received: %s. Expected: %s." \
+        assert tier.name == expected_tier_name,\
+        "Wrong name received: %s. Expected: %s."\
         % (tier.name, expected_tier_name)
 
     if expected_products is not None:
-        assert len(tier.products) == len(expected_products), \
-        "Wrong number of products received: %d. Expected: %d." \
+        assert len(tier.products) == len(expected_products),\
+        "Wrong number of products received: %d. Expected: %d."\
         % (len(tier.products), len(expected_products))
 
         for expected_product in expected_products:
             # Find the product that matches each of the expected ones
             product_found = False
             for product in tier.products:
-                if product.product == expected_product.product \
+                if product.product == expected_product.product\
                 and product.version == expected_product.version:
                     product_found = True
                     break
 
-            assert product_found, \
+            assert product_found,\
             "Product not found in response: %s-%s" % (expected_product.product, expected_product.version)
 
     if expected_networks is not None:
-        assert len(tier.networks) == len(expected_networks), \
-        "Wrong number of networks received: %d. Expected: %d." \
+        assert len(tier.networks) == len(expected_networks),\
+        "Wrong number of networks received: %d. Expected: %d."\
         % (len(tier.networks), len(expected_networks))
 
         for expected_network in expected_networks:
@@ -342,5 +365,5 @@ def check_get_tier_response(response, expected_status_code,
                     network_found = True
                     break
 
-            assert network_found, \
+            assert network_found,\
             "Network not found in response: %s" % (expected_network.network_name)
