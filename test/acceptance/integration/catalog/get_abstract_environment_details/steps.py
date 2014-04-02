@@ -1,4 +1,25 @@
 # -*- coding: utf-8 -*-
+# Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
+#
+# This file is part of FI-WARE project.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+#
+# You may obtain a copy of the License at:
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# For those usages not covered by the Apache version 2.0 License please
+# contact with opensource@tid.es
+
 from lettuce import step, world
 from lettuce_tools.dataset_utils.dataset_utils import DatasetUtils
 from tools import http
@@ -54,7 +75,7 @@ def i_receive_a_response_of_type_with_data(step, response_type):
     status_code = http.status_codes[response_type]
     data = dataset_utils.prepare_data(step.hashes[0])
     environment_request.check_get_environment_response(world.response, status_code,
-                                                       data.get(NAME), data.get(DESCRIPTION))
+        data.get(NAME), data.get(DESCRIPTION))
 
 
 @step(u'I receive an? "([^"]*)" response with the previous tiers and data:')
@@ -62,8 +83,8 @@ def i_receive_a_response_of_type_with_the_previous_tiers_and_data(step, response
     status_code = http.status_codes[response_type]
     data = dataset_utils.prepare_data(step.hashes[0])
     environment_request.check_get_environment_response(world.response, status_code,
-                                                       data.get(NAME), data.get(DESCRIPTION),
-                                                       world.tiers)
+        data.get(NAME), data.get(DESCRIPTION),
+        world.tiers)
 
 
 @step(u'I receive an? "([^"]*)" response$')
