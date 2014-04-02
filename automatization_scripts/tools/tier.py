@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
 #
 # This file is part of FI-WARE project.
@@ -18,6 +19,7 @@
 #
 # For those usages not covered by the Apache version 2.0 License please
 # contact with opensource@tid.es
+
 __author__ = 'henar'
 
 from xml.etree.ElementTree import Element, SubElement
@@ -36,16 +38,16 @@ class Network:
 
 class Tier:
     def __init__(self, tier_name, tier_image, tier_num_min='1', tier_num_max='1', tier_num_initial='1',
-                 tier_flavour='2',tier_keypair='',tier_floatingip='false', region ="RegionOne" ):
-        self.name=tier_name
-        self.tier_num_min=tier_num_min
-        self.tier_num_max=tier_num_max
-        self.tier_num_initial=tier_num_initial
-        self.tier_image=tier_image
-        self.tier_flavour=tier_flavour
-        self.tier_keypair=tier_keypair
-        self.tier_floatingip=tier_floatingip
-        self.products=[]
+                 tier_flavour='2', tier_keypair='', tier_floatingip='false', region="RegionOne" ):
+        self.name = tier_name
+        self.tier_num_min = tier_num_min
+        self.tier_num_max = tier_num_max
+        self.tier_num_initial = tier_num_initial
+        self.tier_image = tier_image
+        self.tier_flavour = tier_flavour
+        self.tier_keypair = tier_keypair
+        self.tier_floatingip = tier_floatingip
+        self.products = []
         self.networks = []
         self.region = region
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
 #
 # This file is part of FI-WARE project.
@@ -18,22 +19,23 @@
 #
 # For those usages not covered by the Apache version 2.0 License please
 # contact with opensource@tid.es
+
 __author__ = 'henar'
 
-
-from xml.etree.ElementTree import Element, SubElement,tostring
+from xml.etree.ElementTree import Element, SubElement, tostring
 
 class Attribute:
     def __init__(self, att_name, att_value):
-        self.key=att_name
-        self.value=att_value
+        self.key = att_name
+        self.value = att_value
+
 
 class Product:
     def __init__(self, product_name, product_description=''):
-        self.name=product_name
-        self.description=product_description
-        self.attributes=[]
-        self.metadatas=[]
+        self.name = product_name
+        self.description = product_description
+        self.attributes = []
+        self.metadatas = []
 
     def add_attribute(self, attribute):
         self.attributes.append(attribute)
@@ -47,7 +49,7 @@ class Product:
     def add_metadata(self, metadatas):
         self.metadatas = metadatas
 
-    def to_product_xml (self):
+    def to_product_xml(self):
         product = Element('product')
         name = SubElement(product, 'name')
         name.text = self.name
@@ -69,8 +71,7 @@ class Product:
             value.text = att.value
         return product
 
-    def to_product_xml_env (self):
-
+    def to_product_xml_env(self):
         product = Element('productReleaseDtos')
         name = SubElement(product, 'productName')
         name.text = self.name
@@ -90,52 +91,50 @@ class Product:
 
         return product
 
-    def to_string (self):
-
-        var = self.name+ "\t" +self.description + '\t' + self.version+ '\t'
+    def to_string(self):
+        var = self.name + "\t" + self.description + '\t' + self.version + '\t'
         for att in self.attributes:
             var = var + att.key + ':' + att.value
         print var
 
+
 class ProductRelease:
-    def __init__(self, product,product_version):
-        self.version=product_version
-        self.product=product
+    def __init__(self, product, product_version):
+        self.version = product_version
+        self.product = product
 
 
-    def to_product_xml (self):
+    def to_product_xml(self):
         product_release = Element('productReleaseDto')
         version = SubElement(product_release, 'version')
         version.text = self.version
         return product_release
 
-    def to_product_xml_env (self):
-
+    def to_product_xml_env(self):
         product = Element('productReleaseDtos')
         name = SubElement(product, 'productName')
         name.text = self.product
         version = SubElement(product, 'version')
         version.text = self.version
 
-     #   if self.product.attributes == None:
-     #       return product
-     #   for att in self.product.attributes:
-     #       attribute = SubElement(product, "privateAttributes")
-     #       key = SubElement(attribute, "key")
-     #       key.text = att.key
-     #       value = SubElement(attribute, "value")
-     #       value.text = att.value
+        #   if self.product.attributes == None:
+        #       return product
+        #   for att in self.product.attributes:
+        #       attribute = SubElement(product, "privateAttributes")
+        #       key = SubElement(attribute, "key")
+        #       key.text = att.key
+        #       value = SubElement(attribute, "value")
+        #       value.text = att.value
 
         return product
 
-    def to_string (self):
-
-        var = self.name+ "\t" +self.description + '\t' + self.version+ '\t'
+    def to_string(self):
+        var = self.name + "\t" + self.description + '\t' + self.version + '\t'
         for att in self.attributes:
             var = var + att.key + ':' + att.value
         print var
 
-    ##
-    ## get_images - Obtiene la lista de imagenes --- Detalle images/detail
-    ##
+        ##
+        ## get_images - Obtiene la lista de imagenes --- Detalle images/detail
+        ##
 

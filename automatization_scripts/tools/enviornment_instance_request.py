@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
 #
 # This file is part of FI-WARE project.
@@ -18,6 +19,7 @@
 #
 # For those usages not covered by the Apache version 2.0 License please
 # contact with opensource@tid.es
+
 from tools import http
 
 __author__ = 'henar'
@@ -112,8 +114,8 @@ class EnvironmentInstanceRequest:
 
     def add_application_instance(self, environment_instance_name, application_instance):
         url = "%s/%s/%s/%s/%s/%s" % (
-        self.paasmanager_url, "envInst/org/FIWARE/vdc", self.vdc, "environmentInstance", environment_instance_name,
-        "applicationInstance")
+            self.paasmanager_url, "envInst/org/FIWARE/vdc", self.vdc, "environmentInstance", environment_instance_name,
+            "applicationInstance")
         headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc, 'Content-Type': "application/xml",
                    'Accept': "application/json"}
         print url

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
 #
 # This file is part of FI-WARE project.
@@ -18,15 +19,15 @@
 #
 # For those usages not covered by the Apache version 2.0 License please
 # contact with opensource@tid.es
+
 __author__ = 'henar'
 
-
-from xml.etree.ElementTree import Element, SubElement,tostring
+from xml.etree.ElementTree import Element, SubElement, tostring
 
 class Attribute:
     def __init__(self, att_name, att_value):
-        self.key=att_name
-        self.value=att_value
+        self.key = att_name
+        self.value = att_value
 
 
 class ProductReleaseDto:
@@ -34,7 +35,7 @@ class ProductReleaseDto:
         self.name = name
         self.version = version
 
-    def to_xml (self):
+    def to_xml(self):
         product = Element('product')
         name = SubElement(product, 'name')
         name.text = self.name
@@ -43,14 +44,13 @@ class ProductReleaseDto:
         return product
 
 
-
 class ProductInstanceDto:
-    def __init__(self, ip,product_release, attributes):
-        self.ip=ip
-        self.product_release=product_release
-        self.attributes=attributes
+    def __init__(self, ip, product_release, attributes):
+        self.ip = ip
+        self.product_release = product_release
+        self.attributes = attributes
 
-    def to_xml (self):
+    def to_xml(self):
         product_instance = Element('productInstanceDto')
         product_instance.append(self.product_release.to_xml())
         vm = SubElement(product_instance, 'vm')

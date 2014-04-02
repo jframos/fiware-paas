@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
 #
 # This file is part of FI-WARE project.
@@ -18,6 +19,7 @@
 #
 # For those usages not covered by the Apache version 2.0 License please
 # contact with opensource@tid.es
+
 import http
 
 __author__ = 'henar'
@@ -216,7 +218,7 @@ class EnvironmentRequest:
 
     def add_tier_environment_network(self, environment_name, tier_name, products_information=None, networks=None):
         url = "%s/%s/%s/%s/%s/%s/%s" % (
-        self.paasmanager_url, "catalog/org/FIWARE", "vdc", self.vdc, "environment", environment_name, "tier")
+            self.paasmanager_url, "catalog/org/FIWARE", "vdc", self.vdc, "environment", environment_name, "tier")
         tier = Tier(tier_name, self.image)
 
         if products_information:
@@ -234,7 +236,8 @@ class EnvironmentRequest:
         print payload
         self.__add_tier_environment(url, payload)
 
-    def add_abstract_tier_environment_network(self, environment_name, tier_name, products_information=None, networks=None):
+    def add_abstract_tier_environment_network(self, environment_name, tier_name, products_information=None,
+                                              networks=None):
         url = "%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE/environment", environment_name, "tier")
         tier = Tier(tier_name, self.image)
         if products_information:

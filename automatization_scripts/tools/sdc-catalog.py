@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
 #
 # This file is part of FI-WARE project.
@@ -18,9 +21,9 @@
 #
 # For those usages not covered by the Apache version 2.0 License please
 # contact with opensource@tid.es
-#!/usr/bin/env python
-__author__ = 'henar'
 
+
+__author__ = 'henar'
 
 from productrequest import ProductRequest
 import sys
@@ -50,10 +53,9 @@ def usage():
     sys.exit();
 
 if __name__ == "__main__":
-
-    if(len(sys.argv) < 2 ):	
+    if (len(sys.argv) < 2 ):
         usage();
-    #definimos las opciones
+        #definimos las opciones
     name = ''
     version = ''
     description = ''
@@ -62,13 +64,13 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     #argumento obligatorio
-    parser.add_argument("option", type=str, help = "type of action")
+    parser.add_argument("option", type=str, help="type of action")
     #argumento opcional
-    parser.add_argument("-n", "--name", help= "product name")
-    parser.add_argument("-d", "--description", help= "product description")
-    parser.add_argument("-a", "--arguments", help= "product atributes")
-    parser.add_argument("-m", "--metadata", help= "product metadata")
-    parser.add_argument("-v", "--version", help= "product version")
+    parser.add_argument("-n", "--name", help="product name")
+    parser.add_argument("-d", "--description", help="product description")
+    parser.add_argument("-a", "--arguments", help="product atributes")
+    parser.add_argument("-m", "--metadata", help="product metadata")
+    parser.add_argument("-v", "--version", help="product version")
 
     args = parser.parse_args()
 
@@ -82,33 +84,33 @@ if __name__ == "__main__":
         metadata = args.metadata
     if args.name:
         arguments = args.arguments
-    
+
     config = {}
     execfile("sdc.conf", config)
-    g=ProductRequest(config['keystone_url'], config['sdc_url'], config['tenant'], config['user'], config['password'])
-    
+    g = ProductRequest(config['keystone_url'], config['sdc_url'], config['tenant'], config['user'], config['password'])
+
     if args.option == "product-list":
         g.get_products()
 
     elif args.option == "product-delete":
-        if(name == ''):
+        if (name == ''):
             usage()
-        if(version != ''):
+        if (version != ''):
             g.delete_product_release(name, version)
         else:
             g.delete_product(name)
 
     elif args.option == "product-add":
-        if(name == ''):
+        if (name == ''):
             usage()
-	else:
-	    g.add_product(name, description, arguments, metadata)
-        if(version != ''):    
-            g.add_product_release(name,version)
+        else:
+            g.add_product(name, description, arguments, metadata)
+        if (version != ''):
+            g.add_product_release(name, version)
 
     elif args.option == "show":
-	if((name != '') & (version != '')):
+        if ((name != '') & (version != '')):
             g.get_product_info(name, version)
-	else:
+        else:
             usage();
 

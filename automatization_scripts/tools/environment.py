@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
 #
 # This file is part of FI-WARE project.
@@ -18,18 +19,19 @@
 #
 # For those usages not covered by the Apache version 2.0 License please
 # contact with opensource@tid.es
+
 __author__ = 'henar'
 from xml.etree.ElementTree import Element, SubElement, fromstring
 
 
 class Environment:
-    def __init__(self, environment_name,environment_description):
-        self.name=environment_name
-        self.description=environment_description
-        self.tiers=[]
+    def __init__(self, environment_name, environment_description):
+        self.name = environment_name
+        self.description = environment_description
+        self.tiers = []
 
 
-    def to_env_xml (self):
+    def to_env_xml(self):
         environment_dto = Element('environmentDto')
         name = SubElement(environment_dto, "name")
         name.text = self.name
@@ -42,7 +44,7 @@ class Environment:
 
         return environment_dto
 
-    def to_xml (self):
+    def to_xml(self):
         environment_dto = Element('environmentDto')
         name = SubElement(environment_dto, "name")
         name.text = self.name
@@ -55,10 +57,10 @@ class Environment:
 
         return environment_dto
 
-    def to_string (self):
+    def to_string(self):
         var = str(self.name).upper()
         for tier in self.tiers:
-            var = var+  '\t' + tier.name
+            var = var + '\t' + tier.name
             for product_release in tier.products:
                 var = var + '\t' + product_release.product + '\t' + product_release.version
         print var
