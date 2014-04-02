@@ -329,13 +329,6 @@
     </build>
 
 
-    <
-    <
-    <
-    <
-    <
-    <
-    < HEAD
     <profiles>
 
         <profile>
@@ -1022,8 +1015,6 @@
     </profiles>
 
 
-    =======
-    >>>>>>> release/1.0.0
     <repositories>
         <!-- ci-cpr02 Nexus Repositories -->
         <repository>
