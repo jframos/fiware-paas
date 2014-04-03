@@ -45,6 +45,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -67,6 +68,7 @@ public class OpenStackUtilImplTest {
     private StatusLine statusLine;
     private CloseableHttpResponse httpResponse;
     private PaasManagerUser paasManagerUser;
+    private OpenOperationUtil openOperationUtil;
 
     private OpenStackRegion openStackRegion;
     final int TWICE = 2;
@@ -118,7 +120,7 @@ public class OpenStackUtilImplTest {
     "} ]} " ;
 
     @Before
-    public void setUp() {
+    public void setUp() throws OpenStackException {
         openStackUtil = new OpenStackUtilImplTestable();
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         openStackUtil.setSystemPropertiesProvider(systemPropertiesProvider);
@@ -133,13 +135,22 @@ public class OpenStackUtilImplTest {
 
         httpResponse = mock(CloseableHttpResponse.class);
         statusLine = mock(StatusLine.class);
+        openOperationUtil = mock(OpenOperationUtil.class);
         closeableHttpClientMock = mock(CloseableHttpClient.class);
         openStackRegion = mock(OpenStackRegion.class);
         openStackUtil.setOpenStackRegion(openStackRegion);
+        openStackUtil.setOpenOperationUtil(openOperationUtil);
+        
+        
         
         String responseJSON = "{\"access\": {\"token\": {\"issued_at\": \"2014-01-13T14:00:10.103025\", \"expires\": \"2014-01-14T14:00:09Z\","+
         "\"id\": \"ec3ecab46f0c4830ad2a5837fd0ad0d7\", \"tenant\": { \"description\": null, \"enabled\": true, \"id\": \"08bed031f6c54c9d9b35b42aa06b51c0\","+
         "\"name\": \"admin\" } },         \"serviceCatalog\": []}}}";
+        
+        HttpPost httpPost =  mock(HttpPost.class);
+        
+        when(openOperationUtil.createNovaPostRequest(anyString(), anyString(), anyString(), anyString(),  anyString(),  anyString(), anyString())).
+            thenReturn(httpPost);
         
         
     
@@ -165,6 +176,9 @@ public class OpenStackUtilImplTest {
 
         when(openStackRegion.getNovaEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0");
 
+
+        
+        
         when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
         when(statusLine.getStatusCode()).thenReturn(204);
