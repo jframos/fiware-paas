@@ -6,7 +6,7 @@
     <artifactId>paas-manager-server</artifactId>
     <packaging>pom</packaging>
     <name>paas-manager-server</name>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
 
     <url>${ciURI}/sites/fiware/${project.artifactId}</url>
@@ -22,7 +22,7 @@
 
         <repoName>fiware-paas</repoName>
 
-        <scmURI>git@pdihub.hi.inet:fiware</scmURI>
+        <scmURI>git@github.com:telefonicaid/fiware</scmURI>
         <ciURI>http://ci-fiware-01.hi.inet</ciURI>
         <issueURI>https://jirapdi.tid.es/browse</issueURI>
         <nexusRepositories>${ciURI}/nexus/content/repositories</nexusRepositories>

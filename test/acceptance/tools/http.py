@@ -1,5 +1,28 @@
+# -*- coding: utf-8 -*-
+# Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
+#
+# This file is part of FI-WARE project.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+#
+# You may obtain a copy of the License at:
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# For those usages not covered by the Apache version 2.0 License please
+# contact with opensource@tid.es
+
 import urllib
 import time
+
 __author__ = 'henar'
 import httplib
 from xml.dom.minidom import parseString
@@ -69,6 +92,8 @@ def __do_http_req(method, url, headers, payload):
     ##
     ## Metod que hace el HTTP-GET
     ##
+
+
 def get(url, headers):
     return __do_http_req("GET", url, headers, None)
 
@@ -80,6 +105,8 @@ def delete(url, headers):
     ##
     ## Metod que hace el HTTP-PUT
     ##
+
+
 def put(url, headers, payload=None):
     return __do_http_req("PUT", url, headers, payload)
 
@@ -87,12 +114,13 @@ def put(url, headers, payload=None):
     ##
     ## Metod que hace el HTTP-POST
     ##
+
+
 def post(url, headers, payload=None):
     return __do_http_req("POST", url, headers, payload)
 
 
 def get_token(keystone_url, tenant, user, password):
-
     # url="%s/%s" %(keystone_url,"v2.0/tokens")
     #print keystone_url
     headers = {'Content-Type': 'application/json',
@@ -135,10 +163,9 @@ def wait_for_task(task_data, headers):
 
 
 def get_task_data(url, headers):
-
     response = get(url, headers)
 
-    assert response.status == 200, \
+    assert response.status == 200,\
     'Unexpected status code getting the task data: %d' % (response.status)
 
     return response.read()
