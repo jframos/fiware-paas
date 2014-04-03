@@ -49,6 +49,11 @@
             <version>2.4</version>
             <classifier>jdk15</classifier>
         </dependency>
+        <dependency>
+            <groupId>org.restlet</groupId>
+            <artifactId>org.restlet.ext.json</artifactId>
+            <version>1.1.7</version>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
