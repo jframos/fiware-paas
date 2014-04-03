@@ -253,7 +253,7 @@ public class ITTestOpenStackUtilImpl {
             Thread.sleep(5000);
 
             // Obtaining a freee floatingIP
-            floatingIP = openStackUtil.getFloatingIP("region", "token", "vdc");
+            floatingIP = openStackUtil.getFloatingIP(user, "region");
 
             // Assign the floatingIP to the serverId
             openStackUtil.assignFloatingIP(serverId, floatingIP, "region", "token", "vdc");

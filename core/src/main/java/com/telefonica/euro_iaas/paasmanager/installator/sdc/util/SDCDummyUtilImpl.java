@@ -31,11 +31,9 @@ import com.telefonica.euro_iaas.sdc.model.Task;
 
 public class SDCDummyUtilImpl implements SDCUtil {
 
-<<<<<<< HEAD
-    public void checkTaskStatus(ClaudiaData data, Task task, String vdc) throws ProductInstallatorException {
-=======
+
     public void checkTaskStatus(Task task, String token, String vdc) throws ProductInstallatorException {
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
+
 
     }
 

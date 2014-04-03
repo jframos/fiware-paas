@@ -108,12 +108,7 @@ public class InitDbBootstrap implements ServletContextListener {
 
         ProductReleaseSdcDao productReleaseSdcDao = (ProductReleaseSdcDao) ctx.getBean("productReleaseSdcDao");
 
-        /*
-         * try { Thread.sleep(10000); } catch (InterruptedException ex) { Thread.currentThread().interrupt(); }
-         */
 
-        // Taking the ProductRelease from SDC *******************
-<<<<<<< HEAD
        /* List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
 =======
      /*   List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
@@ -161,10 +156,7 @@ public class InitDbBootstrap implements ServletContextListener {
 <<<<<<< HEAD
         }
 */
-=======
-        }*/
 
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
         try {
             osDao.load("95");
             osDao.load("94");

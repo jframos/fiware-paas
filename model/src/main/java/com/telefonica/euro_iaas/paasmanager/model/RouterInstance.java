@@ -35,6 +35,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * A router.
  * 
@@ -56,8 +60,14 @@ public class RouterInstance {
     private String name;
 
     private String idRouter;
+    
+    private String tenantId;
 
     private String idPublicNetwork;
+    
+    private boolean adminStateUp;
+    
+    private String networkId;
 
     public RouterInstance() {
 
@@ -95,12 +105,44 @@ public class RouterInstance {
     public String getName() {
         return name;
     }
+    
+    /**
+     * @return the tenantId
+     */
+    public String getTenantId() {
+        return tenantId;
+    }
+    
+    /**
+     * @return the tenantId
+     */
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
 
     /**
      * @param id
      */
     public void setIdRouter(String id) {
         this.idRouter = id;
+    }
+    
+    private void setAdminStateUp(boolean adminStateUp) {
+        this.adminStateUp = adminStateUp;
+        
+    }
+    
+    private boolean getAdminStateUp() {
+        return adminStateUp;
+    }
+    
+    private void setNetworkId(String networkId) {
+        this.networkId = networkId;
+        
+    }
+    
+    public String getNetworkId() {
+        return networkId;
     }
 
     /**
@@ -119,6 +161,29 @@ public class RouterInstance {
         "    }" +
         "}";
     }
+    
+    public static RouterInstance fromJson (JSONObject jsonRouter) throws JSONException {
+
+        String name = (String) jsonRouter.get("name");
+        String id = (String) jsonRouter.get("id");
+        boolean adminStateUp = (Boolean) jsonRouter.get("admin_state_up");
+        String tenantId = (String) jsonRouter.get("tenant_id");
+        String networkId = null;
+        JSONArray array = jsonRouter.getJSONArray("external_gateway_info");
+        for (int i = 0; i< array.length(); i++) {
+            JSONObject jsonNet = array.getJSONObject(i);
+            networkId = (String) jsonNet.get("network_id");
+        }
+
+        RouterInstance router = new RouterInstance(name);
+        router.setIdRouter(id);
+        router.setTenantId(tenantId);
+        router.setAdminStateUp(adminStateUp);
+        router.setNetworkId(networkId);
+        return router;
+    }
+
+   
 
 
 }

@@ -103,12 +103,12 @@ public interface SystemPropertiesProvider {
 
 
     /** The Constant SYSTEM_FASTTRACK. */
-    String VALIDATION_TIME_THRESHOLD = "openstack-tcloud.keystone.threshold";
+//    String VALIDATION_TIME_THRESHOLD = "openstack-tcloud.keystone.threshold";
 
     /**
      * default region name.
      */
-    String DEFAULT_REGION_NAME = "openstack-tcloud.region.default";
+  //  String DEFAULT_REGION_NAME = "openstack-tcloud.region.default";
 
     /*** OPENSTACK CONSTANTS */
   //  String URL_PROPERTY = "management.provisioning.openstack.url";
@@ -118,7 +118,7 @@ public interface SystemPropertiesProvider {
 
 //    String URL_OPENSTACK_DISTRIBUTION = "openstack.distribution";
 
-    String OPENSTACK_SYNCHRONIZATION_POLLING_PERIOD = "openstack.sync.polling.period";
+  //  String OPENSTACK_SYNCHRONIZATION_POLLING_PERIOD = "openstack.sync.polling.period";
     
     // For sycronization with keystone
 
@@ -134,9 +134,9 @@ public interface SystemPropertiesProvider {
     String KEYSTONE_TENANT = "openstack-tcloud.keystone.tenant";
     
     
-    String PUBLIC_NETWORK_ID = "openstack.network.public";
-    String PUBLIC_ROUTER_ID = "openstack.router.public";
-    String NOVA_IPFLOATING_POOLNAME = "nova.ipfloating.poolname";
+   // String PUBLIC_NETWORK_ID = "openstack.network.public";
+  //  String PUBLIC_ROUTER_ID = "openstack.router.public";
+   // String NOVA_IPFLOATING_POOLNAME = "nova.ipfloating.poolname";
 
     /**
      * Get the property for a given key.

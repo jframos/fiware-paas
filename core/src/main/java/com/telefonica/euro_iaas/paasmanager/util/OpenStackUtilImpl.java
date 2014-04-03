@@ -38,6 +38,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -53,6 +54,10 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openstack.docs.compute.api.v1.Server;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -115,6 +120,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     private HttpClientConnectionManager connectionManager;
 
     private OpenStackRegion openStackRegion;
+    
+    private OpenOperationUtil openOperationUtil;
 
     /**
      * The constructor.
@@ -140,7 +147,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * @throws OpenStackException
      *             OCCIException
      */
-    private static String convertStreamToString(InputStream is) throws OpenStackException {
+  /*  private static String convertStreamToString(InputStream is) throws OpenStackException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
 
@@ -159,7 +166,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             }
         }
         return sb.toString();
-    }
+    }*/
 
     /**
      * It adds an interface to the router.
@@ -177,7 +184,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             String payload = net.toAddInterfaceJson();
             log.debug(payload);
 
-            HttpUriRequest request = createQuantumPutRequest(RESOURCE_ROUTERS + "/" + idRouter + "/"
+            HttpUriRequest request = openOperationUtil.createQuantumPutRequest(RESOURCE_ROUTERS + "/" + idRouter + "/"
                     + RESOURCE_ADD_INTERFACE, payload, APPLICATION_JSON, region, token, vdc);
 
             response = executeNovaRequest(request);
@@ -196,14 +203,16 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     }
 
+   
+    
     /**
      * It adds an interface to the router.
      */
     public String addInterfaceToPublicRouter(PaasManagerUser user, NetworkInstance net, String region)
             throws OpenStackException {
 
-        String idRouter = systemPropertiesProvider.getProperty(SystemPropertiesProvider.PUBLIC_ROUTER_ID);
-        PaasManagerUser adminUser = this.getAdminUser(user);
+        String idRouter = this.getPublicRouter(user, region).getIdRouter();
+        PaasManagerUser adminUser = openOperationUtil.getAdminUser(user);
 
         log.debug("tenantid " + adminUser.getTenantId());
         log.debug("token " + adminUser.getToken());
@@ -216,7 +225,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             String payload = net.toAddInterfaceJson();
             log.debug(payload);
 
-            HttpUriRequest request = createQuantumPutRequest(RESOURCE_ROUTERS + "/" + idRouter + "/"
+            HttpUriRequest request = openOperationUtil.createQuantumPutRequest(RESOURCE_ROUTERS + "/" + idRouter + "/"
                     + RESOURCE_ADD_INTERFACE, payload, APPLICATION_JSON, region, adminUser.getToken(),
                     adminUser.getTenantId());
             response = executeNovaRequest(request);
@@ -233,6 +242,135 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
         return response;
 
+    }
+    
+    /**
+     * It gets the public admin network
+     */
+    public NetworkInstance getPublicAdminNetwork(PaasManagerUser user,  String region)
+            throws OpenStackException {
+        log.debug("Obtain public admin network");
+
+        PaasManagerUser adminUser = openOperationUtil.getAdminUser(user);
+        
+        HttpUriRequest request = createQuantumGetRequest(RESOURCE_NETWORKS, APPLICATION_XML, region, adminUser.getToken(), adminUser.getTenantId());
+
+        String response = null;
+
+        try {
+            response = executeNovaRequest(request);
+            JSONObject lNetworkString = new JSONObject(response);
+            JSONArray jsonNetworks = lNetworkString.getJSONArray("networks");
+            
+            for (int i = 0; i< jsonNetworks.length(); i++) {
+                
+                JSONObject jsonNet = jsonNetworks.getJSONObject(i);
+                NetworkInstance net = isPublicNetwork (jsonNet, adminUser.getTenantId());
+                if (net != null)
+                {
+                    return net;
+                }
+
+            }
+
+        } catch (OpenStackException e) {
+            String errorMessage = "Error getting networks for obtaining the public network: " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        } catch (Exception e) {
+            String errorMessage = "Error getting networks from OpenStack for obtaining the public network: " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        }
+
+        return null;
+    }
+    
+    /**
+     * It gets the public router network
+     */
+    public RouterInstance getPublicRouter(PaasManagerUser user,  String region)
+            throws OpenStackException {
+        log.debug("Obtain public router for external netwrk ");
+        
+        String publicNetworkId = this.getPublicAdminNetwork(user, region).getIdNetwork();
+
+        PaasManagerUser adminUser = openOperationUtil.getAdminUser(user);
+        
+        HttpUriRequest request = createQuantumGetRequest(RESOURCE_ROUTERS, APPLICATION_XML, region, adminUser.getToken(), adminUser.getTenantId());
+
+        String response = null;
+
+        try {
+            response = executeNovaRequest(request);
+            JSONObject lRouterString = new JSONObject(response);
+            JSONArray jsonRouters = lRouterString.getJSONArray("routers");
+            
+            for (int i = 0; i< jsonRouters.length(); i++) {
+                
+                JSONObject jsonNet = jsonRouters.getJSONObject(i);
+                RouterInstance router = isPublicRouter (jsonNet, adminUser.getTenantId(),publicNetworkId);
+                if (router != null)
+                {
+                    return router;
+                }
+
+            }
+
+        } catch (OpenStackException e) {
+            String errorMessage = "Error getting router for obtaining the public router: " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        } catch (Exception e) {
+            String errorMessage = "Error getting router from OpenStack for obtaining the public router: " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        }
+
+        return null;
+
+
+
+    }
+    
+    private NetworkInstance isPublicNetwork(JSONObject jsonNet, String vdc)  {
+
+        NetworkInstance netInst;
+        try {
+            netInst = NetworkInstance.fromJson(jsonNet);
+        } catch (JSONException e) {
+            log.warn("Error to parser the json for the network");
+            return null;
+        }
+
+        if (!netInst.getExternal()) {
+            return null;
+        }
+        
+        if (!vdc.equals(netInst.getTenantId())) {
+            return null;
+        }
+        return netInst;
+    }
+    
+    private RouterInstance isPublicRouter(JSONObject jsonRouter, String vdc, String networkPublic)  {
+
+        RouterInstance routerInst;
+        try {
+            routerInst = RouterInstance.fromJson(jsonRouter);
+        } catch (JSONException e) {
+            log.warn("Error to parser the json for the router");
+            return null;
+        }
+        if (!vdc.equals(routerInst.getTenantId())) {
+            return null;
+        }
+
+        if (!routerInst.getNetworkId().equals(networkPublic)) {
+            return null;
+        }
+
+        return routerInst;
     }
 
     /**
@@ -252,7 +390,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         try {
             String payload = "{\"subnet_id\": \"" + subNetId + "\"}";
 
-            HttpUriRequest request = createQuantumPutRequest(RESOURCE_ROUTERS + "/" + routerId + "/"
+            HttpUriRequest request = openOperationUtil.createQuantumPutRequest(RESOURCE_ROUTERS + "/" + routerId + "/"
                     + RESOURCE_ADD_INTERFACE, payload, APPLICATION_JSON, region, token, vdc);
             response = executeNovaRequest(request);
 
@@ -282,7 +420,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         String response = null;
 
         try {
-            HttpUriRequest request = createNovaPostRequest("/" + RESOURCE_FLOATINGIP, payload, APPLICATION_XML,
+            HttpUriRequest request = openOperationUtil.createNovaPostRequest("/" + RESOURCE_FLOATINGIP, payload, APPLICATION_XML,
                     APPLICATION_JSON, region, token, vdc);
 
             response = executeNovaRequest(request);
@@ -376,11 +514,11 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * @return
      * @throws OpenStackException
      */
-    public PaasManagerUser getAdminUser(PaasManagerUser user) throws OpenStackException {
+   /* public PaasManagerUser getAdminUser(PaasManagerUser user) throws OpenStackException {
         HttpPost postRequest = createKeystonePostRequest();
         ArrayList<Object> response = executePostRequest(postRequest);
         return extractData(response, user);
-    }
+    }*/
 
     /**
      * It obtains the request for invoking Openstack keystone with admin credentials.
@@ -460,7 +598,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         return message;
     }
 
-    protected PaasManagerUser extractData(ArrayList<Object> response, PaasManagerUser user) {
+  /*  protected PaasManagerUser extractData(ArrayList<Object> response, PaasManagerUser user) {
         String payload = (String) response.get(0);
 
         int i = payload.indexOf("token");
@@ -485,13 +623,13 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
         i = payload.indexOf("tenant");
         j = payload.indexOf(">", i);
-        tenantId = payload.substring(i - 1, j + 1);
+        tenantId = payload.substring(i - 1, j + 1);*/
 
         // Regular Expression (<\s*tenant\s*.*)("\s*id=")(.*?)("\s*.*/*>)
         // as a Java string "(<\\s*tenant\\s*.*)(\"\\s*id=\")(.*?)(\"\\s*.*/*>)"
-        pattern1 = "(<\\s*tenant\\s*.*)(\"\\s*id=\")(.*?)(\"\\s*.*/*>)";
+    //    pattern1 = "(<\\s*tenant\\s*.*)(\"\\s*id=\")(.*?)(\"\\s*.*/*>)";
 
-        if (tenantId.matches(pattern1)) {
+      /*  if (tenantId.matches(pattern1)) {
             tenantId = tenantId.replaceAll(pattern1, "$3");
         } else {
             log.error("Tenant format unknown:\n " + tenantId);
@@ -500,7 +638,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         }
         PaasManagerUser user2 = new PaasManagerUser(tenantId, token, user.getAuthorities());
         return user2;
-    }
+    }*/
 
     public String createNetwork(String payload, String region, String token, String vdc) throws OpenStackException {
 
@@ -1137,19 +1275,19 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         return nodeList;
     }
 
-    public String getFloatingIP(String region, String token, String vdc) throws OpenStackException {
+    public String getFloatingIP(PaasManagerUser user, String region) throws OpenStackException {
         String floatingIP = null;
-        // Get FloatingIPS fron tenant
-        String getFloatingIPsResponse = getFloatingIPs(region, token, vdc);
+        
+        String getFloatingIPsResponse = getFloatingIPs(region, user.getToken(), user.getTenantId());
+        String floatingIpPool = this.getPublicAdminNetwork(user, region).getNetworkName();
 
         if (isAnyFloatingIPFreeToBeAssigned(getFloatingIPsResponse)) {
             floatingIP = getFloatingIPFree(getFloatingIPsResponse);
         } else {
             floatingIP = allocateFloatingIP(
-                    buildAllocateFloatingIPPayload(systemPropertiesProvider
-                            .getProperty(SystemPropertiesProvider.NOVA_IPFLOATING_POOLNAME)),
-                    region, token, vdc);
-            getFloatingIPsResponse = getFloatingIPs(region, token, vdc);
+                    buildAllocateFloatingIPPayload(floatingIpPool),
+                    region, user.getToken(), user.getTenantId());
+            getFloatingIPsResponse = getFloatingIPs(region, user.getToken(), user.getTenantId());
             floatingIP = getFloatingIPFree(getFloatingIPsResponse);
         }
 
@@ -1498,7 +1636,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     public String deleteInterfaceToPublicRouter(PaasManagerUser user, NetworkInstance net, String region)
             throws OpenStackException {
         log.debug("Delete interface in public router");
-        String idRouter = systemPropertiesProvider.getProperty(SystemPropertiesProvider.PUBLIC_ROUTER_ID);
+        String idRouter = this.getPublicRouter(user, region).getIdRouter();
         PaasManagerUser user2 = this.getAdminUser(user);
 
         log.debug("tenantid " + user2.getTenantId());
@@ -1537,4 +1675,10 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     public void setOpenStackRegion(OpenStackRegion openStackRegion) {
         this.openStackRegion = openStackRegion;
     }
+    
+    public void setOpenOperationUtil (OpenOperationUtil openOperationUtil) {
+        this.openOperationUtil = openOperationUtil;
+    }
+
+   
 }

@@ -52,12 +52,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.SDC_SERVER_URL;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -83,11 +80,9 @@ public class ProductInstallatorSdcImplTest {
     private final VM host = new VM("fqn", "ip", "hostname", "domain");
     private Task task;
     private com.telefonica.euro_iaas.sdc.model.ProductInstance pInstanceSDC;
-<<<<<<< HEAD
+    ClaudiaData data;
+
     private static String SDC_SERVER_MEDIATYPE = "application/json";
-=======
-    private ClaudiaData data ;
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
 
     @Before
     public void setUp() throws Exception {
@@ -121,8 +116,7 @@ public class ProductInstallatorSdcImplTest {
         tierInstance.setVM(host);
 
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
-        when(systemPropertiesProvider.getProperty(SDC_SERVER_URL)).thenReturn("url");
-        when(systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE)).thenReturn("MediaType");
+       
 
         tierInstanceManager = mock(TierInstanceManager.class);
 
@@ -179,8 +173,6 @@ public class ProductInstallatorSdcImplTest {
         
         installator.configure(data, productInstance, attributes);
 
-
-        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_URL);
     }
 
     @Test
@@ -198,7 +190,6 @@ public class ProductInstallatorSdcImplTest {
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);
 
-        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_URL);
     }
     
     @Test
@@ -238,8 +229,6 @@ public class ProductInstallatorSdcImplTest {
                 expectedProductInstance.getProductRelease(), new HashSet<Attribute>());
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);
-
-        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_URL);
     }
     
     @Test

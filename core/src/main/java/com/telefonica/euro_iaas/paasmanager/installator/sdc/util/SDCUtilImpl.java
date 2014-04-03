@@ -51,16 +51,13 @@ public class SDCUtilImpl implements SDCUtil {
     private static String VM_PATH = "/rest/vm";
     private int MAX_TIME = 60000;
 
-<<<<<<< HEAD
-    public void checkTaskStatus(ClaudiaData claudiaData, Task task, String vdc) throws ProductInstallatorException {
-=======
+
     public void checkTaskStatus(Task task, String vdc, String token) throws ProductInstallatorException {
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
 
         String msgerror = null;
         String sdcServerUrl;
         try {
-            sdcServerUrl = getSdcUtil (claudiaData.getUser().getToken());
+            sdcServerUrl = getSdcUtil (token);
         } catch (OpenStackException e1) {
             msgerror = "Error to obtain the SDC endpoint or the default region: " + e1.getMessage();
             log.error(msgerror);

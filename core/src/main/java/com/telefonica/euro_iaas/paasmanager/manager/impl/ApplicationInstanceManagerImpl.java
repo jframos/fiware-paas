@@ -37,6 +37,7 @@ import com.telefonica.euro_iaas.paasmanager.dao.ApplicationReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ArtifactDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.exception.ApplicationTypeNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.installator.ProductInstallator;
@@ -55,7 +56,7 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationInst
 /**
  * Application Instance Manager operations: install
  * 
- * @author Henar Mu�oz
+ * @author Henar Munoz
  */
 public class ApplicationInstanceManagerImpl implements ApplicationInstanceManager {
 
@@ -106,7 +107,13 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
             // Obtain the VMs from EnvInstance where productRelease is installed
             ProductInstance productInstance = getProductInstanceFromEnvironment(artifact, environmentInstance);
             log.debug("Installing artifact " + artifact.getName());
-            productInstallator.installArtifact(data, productInstance, artifact);
+            try {
+                productInstallator.installArtifact(data, productInstance, artifact);
+            } catch (OpenStackException e) {
+                String errorMessage = "Error to configure the product " + e.getMessage();
+                new ProductInstallatorException(errorMessage);
+            }
+            
 
         }
 
@@ -158,8 +165,13 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
             // Obtain the VMs from EnvInstance where productRelease is installed
             ProductInstance productInstance = getProductInstanceFromEnvironment(applicationInstance
                     .getApplicationRelease().getArtifacts().get(i), environmentInstance);
-            productInstallator.uninstallArtifact(data, productInstance, applicationInstance.getApplicationRelease()
+            try {
+                productInstallator.uninstallArtifact(data, productInstance, applicationInstance.getApplicationRelease()
                     .getArtifacts().get(i));
+            } catch (OpenStackException e) {
+                String errorMessage = "Error to configure the product " + e.getMessage();
+                new ProductInstallatorException(errorMessage);
+            }
 
         }
 

@@ -80,7 +80,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         } else {
             String responseJSON = callToKeystone(token, tokenadmin);
 
-            String result = parseEndpoint(responseJSON, type, regionName);
+            String result = parseEndpoint(token, responseJSON, type, regionName);
             if (result == null) {
                 throw new OpenStackException("region not found");
             }
@@ -192,7 +192,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         return response;
     }
 
-    private String parseEndpoint(String response, String type, String regionName) {
+    private String parseEndpoint(String token, String response, String type, String regionName) throws OpenStackException {
 
         JSONObject jsonObject = JSONObject.fromObject(response);
 
@@ -261,7 +261,8 @@ public class OpenStackRegionImpl implements OpenStackRegion {
             }
 
         }
-        return urlMap.get(systemPropertiesProvider.getProperty(SystemPropertiesProvider.DEFAULT_REGION_NAME));
+       ;
+        return urlMap.get( this.getDefaultRegion(token));
     }
 
     /**

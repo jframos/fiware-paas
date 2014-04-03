@@ -41,11 +41,10 @@ import org.springframework.stereotype.Component;
 
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-<<<<<<< HEAD
-=======
+
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
->>>>>>> d101b5d5783526bbeb7eed9c9e6d413cba738d9b
+
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsyncManager;
@@ -179,15 +178,10 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
 
         List<EnvironmentInstance> environmentInstances = environmentInstanceManager.findByCriteria(criteria);
 
-<<<<<<< HEAD
-        // List<EnvironmentInstance> environmentInstances = filterEqualTiers(envInstances);
-=======
-    //    List<EnvironmentInstance> environmentInstances = filterEqualTiers(envInstances);
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
 
         List<EnvironmentInstancePDto> envInstancesDto = new ArrayList<EnvironmentInstancePDto>();
-        for (int i = 0; i < envInstances.size(); i++) {
-            envInstancesDto.add(envInstances.get(i).toPDtos());
+        for (int i = 0; i < environmentInstances.size(); i++) {
+            envInstancesDto.add(environmentInstances.get(i).toPDtos());
         }
         return envInstancesDto;
     }
@@ -202,18 +196,13 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
 
         List<EnvironmentInstance> environmentInstances = environmentInstanceManager.findByCriteria(criteria);
 
-<<<<<<< HEAD
-        // List<EnvironmentInstance> environmentInstances = filterEqualTiers(envInstances);
-=======
-   //     List<EnvironmentInstance> environmentInstances = filterEqualTiers(envInstances);
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
 
         if (environmentInstances == null || environmentInstances.size() == 0) {
             throw new WebApplicationException(new EntityNotFoundException(Environment.class, "EnvironmeniInstance "
                     + name + " not found", ""), ERROR_NOT_FOUND);
         } else {
             // EnvironmentInstancePDto envInstanceDto = envInstances.get(0).toPDto();
-            EnvironmentInstancePDto envInstanceDto = envInstances.get(0).toPDto();
+            EnvironmentInstancePDto envInstanceDto = environmentInstances.get(0).toPDto();
             return envInstanceDto;
         }
 

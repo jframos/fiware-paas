@@ -85,6 +85,37 @@ public class OpenStackUtilImplTest {
      * HTTP code for no content response.
      */
     private static int http_code_deleted = 204;
+    
+    String CONTENT_NETWORKS = "{ "+
+    "\"networks\": [ "+ 
+    "{ " + 
+    "\"status\": \"ACTIVE\", "+
+    "\"subnets\": [ " + 
+        "\"81f10269-e0a2-46b0-9583-2c83aa4cc76f\" "+ 
+     " ], " +
+    "\"name\": \"jesuspg-net\", " + 
+    "\"provider:physical_network\": null, "+
+    "\"admin_state_up\": true, "+ 
+    "\"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", " +
+    "\"router:external\": false, " + 
+    "\"shared\": false, " + 
+    "\"id\": \"047e6dd3-3101-434e-af1e-eea571ab57a4\", " +
+    "\"provider:segmentation_id\": 29 " + 
+    "}, " +
+    "{ " + 
+    "\"status\": \"ACTIVE\", "+
+    "\"subnets\": [ " + 
+        "\"e2d10e6b-33c3-400c-88d6-f905d4cd02f2\" "+ 
+     " ], " +
+    "\"name\": \"ext-net\", " + 
+    "\"provider:physical_network\": null, "+
+    "\"admin_state_up\": true, "+ 
+    "\"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\", " +
+    "\"router:external\": true, " + 
+    "\"shared\": false, " + 
+    "\"id\": \"080b5f2a-668f-45e0-be23-361c3a7d11d0\", " +
+    "\"provider:segmentation_id\": 1 " + 
+    "} ]} " ;
 
     @Before
     public void setUp() {
@@ -310,6 +341,45 @@ public class OpenStackUtilImplTest {
         verify(statusLine, times(5)).getStatusCode();
 
     }
+    
+    /**
+     * It deletes a network interface to a public router.
+     * 
+     * @throws OpenStackException
+     * @throws IOException
+     */
+    @Test
+    public void shouldObtainDefaultNetwork() throws OpenStackException, IOException {
+        // given
+        
+        HttpEntity entity = mock(HttpEntity.class);
+        Header header = mock(Header.class);
+       
+
+        String region = "RegionOne";
+
+        // when
+        when(entity.getContent()).thenReturn(new ByteArrayInputStream(CONTENT_NETWORKS.getBytes()));
+        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
+        when(httpResponse.getStatusLine()).thenReturn(statusLine);
+        when(httpResponse.getEntity()).thenReturn(entity);
+        when(httpResponse.getHeaders(any(String.class))).thenReturn(new Header[] { header });
+        when(header.getValue()).thenReturn("value");
+
+        when(statusLine.getStatusCode()).thenReturn(200);
+        when(statusLine.getReasonPhrase()).thenReturn("ok");
+
+        NetworkInstance response = openStackUtil.getPublicAdminNetwork(paasManagerUser, region);
+
+        // then
+        assertNotNull(response);
+
+        verify(systemPropertiesProvider, times(5)).getProperty(anyString());
+        verify(closeableHttpClientMock, times(TWICE)).execute(any(HttpUriRequest.class));
+        verify(httpResponse, times(5)).getStatusLine();
+        verify(statusLine, times(5)).getStatusCode();
+
+    }
 
     /**
      * It deletes a network interface to a public router.
@@ -335,9 +405,6 @@ public class OpenStackUtilImplTest {
         String region = "RegionOne";
 
         // when
-
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.PUBLIC_ROUTER_ID)).thenReturn("ID");
-
         when(entity.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes()));
         when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
         when(httpResponse.getStatusLine()).thenReturn(statusLine);

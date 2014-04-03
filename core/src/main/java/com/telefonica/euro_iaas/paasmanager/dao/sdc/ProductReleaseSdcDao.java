@@ -42,11 +42,9 @@ public interface ProductReleaseSdcDao {
      * @return
      * @throws SdcException
      */
-<<<<<<< HEAD
-    List<ProductRelease> findAll(ClaudiaData data) throws SdcException;
-=======
+
     List<ProductRelease> findAll(String token, String tenant) throws SdcException;
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
+
 
     /**
      * Load a ProductRelease from the SDC by Name.
@@ -55,31 +53,25 @@ public interface ProductReleaseSdcDao {
      * @return
      * @throws EntityNotFoundException
      */
-<<<<<<< HEAD
-    ProductRelease load(ClaudiaData data, String product, String version) throws EntityNotFoundException, SdcException;
-=======
+
     ProductRelease load(String product, String version,  ClaudiaData data) throws EntityNotFoundException, SdcException;
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
+
 
     /**
      * Load all products from SDC.
      * @return a list with the product names present in SDC
      * @throws SdcException
      */
-<<<<<<< HEAD
-    List<String> findAllProducts(ClaudiaData data) throws SdcException;
-=======
+
     List<String> findAllProducts(String token, String tenant) throws SdcException;
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
+
     
     /**
      * Load all productRelease of a product from SDC.
      * @return a list with the product names present in SDC
      * @throws SdcException
      */
-<<<<<<< HEAD
-    List<ProductRelease> findAllProductReleasesOfProduct(ClaudiaData data, String pName) throws SdcException;
-=======
+
     List<ProductRelease> findAllProductReleasesOfProduct(String pName, String token, String tenant) throws SdcException;
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
+
 }

@@ -161,12 +161,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
             productInstance.setTaskId(id);
             tierInstance.setTaskId(id);
             tierInstanceManager.update(claudiaData, envName, tierInstance);
-
-<<<<<<< HEAD
-            sDCUtil.checkTaskStatus(claudiaData, task, tierInstance.getVdc());
-=======
             sDCUtil.checkTaskStatus(task, claudiaData.getUser().getToken(), tierInstance.getVdc() );
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
 
             com.telefonica.euro_iaas.sdc.model.ProductInstance pInstanceSDC = pIService.load(tierInstance.getVdc(),
                     productInstanceDto.getVm().getFqn() + "_" + productInstanceDto.getProduct().getName() + "_"
@@ -195,11 +190,9 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
     }
 
-<<<<<<< HEAD
+
     public void installArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException, OpenStackException {
-=======
-    public void installArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException {
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
+
         log.debug ("Install artifact " + artifact.getName() + " in product " + artifact.getProductRelease().getProduct() + " for productinstance " 
                 + productInstance.getName());
         String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
@@ -237,13 +230,8 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
                 + id + " " + task.getHref());
 
         productInstance.setTaskId(id);
-
-
-<<<<<<< HEAD
-        sDCUtil.checkTaskStatus(claudiaData, task, productInstance.getVdc());
-=======
         sDCUtil.checkTaskStatus(task, claudiaData.getUser().getToken(),productInstance.getVdc());
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
+
 
         /* How to catch an productInstallation error */
         if (task.getStatus() == com.telefonica.euro_iaas.sdc.model.Task.TaskStates.ERROR)
@@ -256,14 +244,9 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
     }
 
     public void uninstallArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact)
-<<<<<<< HEAD
             throws ProductInstallatorException, OpenStackException {
         String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
-=======
-            throws ProductInstallatorException {
-        String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
-        String sdcMediaType = systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
+
 
         // SDCClient client = new SDCClient();
         com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService service = sDCClient
@@ -294,11 +277,9 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
     }
 
-<<<<<<< HEAD
+
     public void uninstall(ClaudiaData claudiaData, ProductInstance productInstance) throws ProductInstallatorException, OpenStackException {
-=======
-    public void uninstall(ClaudiaData claudiaData, ProductInstance productInstance) throws ProductInstallatorException {
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
+
 
         String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
 
@@ -353,22 +334,17 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
             throw new ProductInstallatorException(errorMessage);
         }
 
-<<<<<<< HEAD
-        sDCUtil.checkTaskStatus(claudiaData, task, productInstance.getVdc());
-=======
         sDCUtil.checkTaskStatus(task, claudiaData.getUser().getToken(), productInstance.getVdc());
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
+
 
         return;
 
     }
 
     // Borrado del nodo en el ChefServer
-<<<<<<< HEAD
+
     public void deleteNode(ClaudiaData claudiaData, String vdc, String sdcNodeName) throws ProductInstallatorException, OpenStackException {
-=======
-    public void deleteNode(ClaudiaData claudiaData, String vdc, String sdcNodeName) throws ProductInstallatorException {
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
+
 
         String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
 
@@ -386,23 +362,19 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
             throw new ProductInstallatorException(errorMessage);
         }
 
-<<<<<<< HEAD
-        sDCUtil.checkTaskStatus(claudiaData, task, vdc);
-=======
+
         sDCUtil.checkTaskStatus(task, claudiaData.getUser().getToken(), vdc);
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
+
 
         return;
     }
 
     // Load a node from the nodename
-<<<<<<< HEAD
+
     public ChefClient loadNode(ClaudiaData claudiaData, String vdc, String hostname) throws ProductInstallatorException, EntityNotFoundException, OpenStackException {
 
         String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
-=======
-    public ChefClient loadNode(ClaudiaData data, String vdc, String hostname) throws ProductInstallatorException, EntityNotFoundException {
->>>>>>> 6b6090e4bc049aedcdc17e08d97dc30e5da4729a
+
 
 
         // SDCClient client = new SDCClient();
@@ -413,7 +385,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
         // Borrado del Nodo en el chef Server
         try {
-            return chefClientService.loadByHostname(vdc, hostname, data.getUser().getToken());
+            return chefClientService.loadByHostname(vdc, hostname, claudiaData.getUser().getToken());
         } catch (ResourceNotFoundException rnfe) {
             throw new EntityNotFoundException(ChefClient.class, rnfe.getMessage(), rnfe);
         } catch (Exception e) {
