@@ -36,6 +36,7 @@ public interface Configuration {
     String SDC_SERVER_MEDIATYPE = "application/json";
     
     long OPENSTACK_SYNCHRONIZATION_POLLING_PERIOD = 84000000;
+    String VALIDATION_TIME_THRESHOLD = "84000000";
 
 }
 

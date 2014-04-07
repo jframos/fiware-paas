@@ -207,7 +207,6 @@ public class ITTestOpenStackUtilImpl {
         try {
             // Creates a new VM
 
-            openStackUtil.setSystemPropertiesProvider(systemPropertiesProvider);
 
             String payload = buildCreateServerPayload();
 
@@ -242,9 +241,6 @@ public class ITTestOpenStackUtilImpl {
     public void testCreateServerAssignFloatingIP() throws OpenStackException {
         try {
             // Creates a new VM
-
-            openStackUtil.setSystemPropertiesProvider(systemPropertiesProvider);
-
             String payload = buildCreateServerPayload();
 
             // Create a VM

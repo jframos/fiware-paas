@@ -239,7 +239,7 @@ public interface OpenStackUtil {
      * It removes the interface of the network in the router.
      */
     String removeInterface(RouterInstance router, String net, String region, String token, String vdc)
-            throws OpenStackException;
+       throws OpenStackException;
 
     /**
      * It return all absolute limit values by tenantId.
@@ -261,25 +261,7 @@ public interface OpenStackUtil {
      * It deletes the interface in the public router.
      */
     String deleteInterfaceToPublicRouter(PaasManagerUser user, NetworkInstance netInstance, String region)
-            throws OpenStackException;
-    
-    /**
-     * 
-     * @param user
-     * @param region
-     * @return
-     * @throws OpenStackException
-     */
-    NetworkInstance getPublicAdminNetwork(PaasManagerUser user,  String region)
-        throws OpenStackException ;
+        throws OpenStackException;
 
-    /**
-     * 
-     * @param user
-     * @param region
-     * @return
-     * @throws OpenStackException 
-     */
-    RouterInstance getPublicRouter(PaasManagerUser user,  String region) throws OpenStackException;
 
 }

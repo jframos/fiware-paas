@@ -57,12 +57,14 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
+import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
 public class OpenStackUtilImplTest {
 
     private OpenStackUtilImplTestable openStackUtil;
+    private OpenStackConfigUtil openStackConfig;
     private SystemPropertiesProvider systemPropertiesProvider;
     private CloseableHttpClient closeableHttpClientMock;
     private StatusLine statusLine;
@@ -118,17 +120,31 @@ public class OpenStackUtilImplTest {
     "\"id\": \"080b5f2a-668f-45e0-be23-361c3a7d11d0\", " +
     "\"provider:segmentation_id\": 1 " + 
     "} ]} " ;
+    
+    String ROUTERS  =        "{ "+
+    "\"routers\": [ {"+    "\"status\": \"ACTIVE\", "+
+    " \"external_gateway_info\": { " + 
+       " \"network_id\": \"080b5f2a-668f-45e0-be23-361c3a7d11d0\" "+ 
+    " }, " + 
+    " \"name\": \"test-rt1\", " +
+    "\"admin_state_up\": true, "+ 
+    "\"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\", "+
+    "\"routes\": [], "+
+    "\"id\": \"5af6238b-0e9c-4c20-8981-6e4db6de2e17\"" +
+    "} ]} " ;
 
     @Before
-    public void setUp() throws OpenStackException {
+    public void setUp() throws OpenStackException, ClientProtocolException, IOException {
         openStackUtil = new OpenStackUtilImplTestable();
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
-        openStackUtil.setSystemPropertiesProvider(systemPropertiesProvider);
+        openStackConfig = mock (OpenStackConfigUtil.class);
+        openStackUtil.setOpenStackConfigUtil(openStackConfig);
         GrantedAuthority grantedAuthority = mock(GrantedAuthority.class);
         Collection<GrantedAuthority> authorities = new HashSet();
         authorities.add(grantedAuthority);
         paasManagerUser = new PaasManagerUser("user", "aa", authorities);
         paasManagerUser.setToken("1234567891234567989");
+        paasManagerUser.setTenantId("08bed031f6c54c9d9b35b42aa06b51c0");
 
         HttpClientConnectionManager httpClientConnectionManager = mock(HttpClientConnectionManager.class);
         openStackUtil.setConnectionManager(httpClientConnectionManager);
@@ -149,8 +165,12 @@ public class OpenStackUtilImplTest {
         
         HttpPost httpPost =  mock(HttpPost.class);
         
+        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
+        
         when(openOperationUtil.createNovaPostRequest(anyString(), anyString(), anyString(), anyString(),  anyString(),  anyString(), anyString())).
             thenReturn(httpPost);
+        
+        when(openOperationUtil.createQuantumGetRequest(anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(httpPost);
         
         
     
@@ -160,73 +180,31 @@ public class OpenStackUtilImplTest {
     @Test
     public void shouldGetAbsoluteLimitsWithResponse204() throws OpenStackException, IOException {
 
-        // when
-        
-        String content = " <?xml version=\"1.0\" encoding=\"UTF-8\"?> \n"
-            + "<access xmlns=\"http://docs.openstack.org/identity/api/v2.0\">\n"
-            + "<token expires=\"2013-11-06T12:02:42Z\" id=\"e563937547fd447985db4a9567528393\">\n"
-            + "<tenant enabled=\"true\" name=\"admin\" id=\"6571e3422ad84f7d828ce2f30373b3d4\">\n"
-            + "<description>Default tenant</description>   \n" + "</tenant>   \n" + "</token>   \n"
-            + "</access> \n";
-           HttpEntity entity = mock(HttpEntity.class);
-           Header header = mock(Header.class);
-
     // when
-
-
-        when(openStackRegion.getNovaEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0");
-
-
-        
-        
-        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
-        when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        when(statusLine.getStatusCode()).thenReturn(204);
-        when(statusLine.getReasonPhrase()).thenReturn("ok");
-        
-        when(httpResponse.getEntity()).thenReturn(entity);
-        when(httpResponse.getHeaders(any(String.class))).thenReturn(new Header[] { header });
-        when(header.getValue()).thenReturn("value");
-        when(entity.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes()));
-        when(statusLine.getStatusCode()).thenReturn(200);
-        when(statusLine.getReasonPhrase()).thenReturn("ok");
+        when(openOperationUtil.getAdminUser(any(PaasManagerUser.class))).thenReturn(paasManagerUser);
+        when(openOperationUtil.executeNovaRequest(any(HttpUriRequest.class))).thenReturn("ok");
 
         String response = openStackUtil.getAbsoluteLimits(paasManagerUser, "region");
 
         // then
         assertNotNull(response);
 
-        verify(openStackRegion).getNovaEndPoint(anyString(), anyString());
-        verify(closeableHttpClientMock, times(2)).execute(any(HttpUriRequest.class));
-        verify(httpResponse, times(5)).getStatusLine();
-        verify(statusLine, times(5)).getStatusCode();
-
     }
 
     @Test
     public void shouldLoadSubNetwork() throws OpenStackException, IOException {
 
+        String region = "RegionOne";
         SubNetworkInstance subNet = new SubNetworkInstance("SUBNET", "CIDR");
         subNet.setIdSubNet("ID");
 
         // when
-        when(openStackRegion.getQuantumEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0/");
-        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
-        when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        when(statusLine.getStatusCode()).thenReturn(204);
-        when(statusLine.getReasonPhrase()).thenReturn("ok");
-
-        String response = openStackUtil.getSubNetworkDetails(subNet.getIdSubNet(), "region", "token", "vdc");
+        when(openOperationUtil.executeNovaRequest(any(HttpUriRequest.class))).thenReturn("ok");
+        String response = openStackUtil.getSubNetworkDetails(subNet.getIdSubNet(), region, "token", "vdc");
 
         // then
         assertNotNull(response);
         assertEquals("ok", response);
-
-        verify(openStackRegion).getQuantumEndPoint(anyString(), anyString());
-        verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
-        verify(httpResponse, times(3)).getStatusLine();
-        verify(statusLine, times(2)).getStatusCode();
-        verify(statusLine).getReasonPhrase();
     }
 
     @Test
@@ -234,41 +212,13 @@ public class OpenStackUtilImplTest {
 
         SubNetworkInstance subNet = new SubNetworkInstance("SUBNET", "CIDR");
         subNet.setIdSubNet("ID");
+        
+        String region = "RegionOne";
 
         // when
-        when(openStackRegion.getNovaEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0/");
-        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
-        when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        when(statusLine.getStatusCode()).thenReturn(200);
-        when(statusLine.getReasonPhrase()).thenReturn("ok");
-        when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        when(statusLine.getStatusCode()).thenReturn(204);
-        when(statusLine.getReasonPhrase()).thenReturn("ok");
-        
-        String content = " <?xml version=\"1.0\" encoding=\"UTF-8\"?> \n"
-            + "<access xmlns=\"http://docs.openstack.org/identity/api/v2.0\">\n"
-            + "<token expires=\"2013-11-06T12:02:42Z\" id=\"e563937547fd447985db4a9567528393\">\n"
-            + "<tenant enabled=\"true\" name=\"admin\" id=\"6571e3422ad84f7d828ce2f30373b3d4\">\n"
-            + "<description>Default tenant</description>   \n" + "</tenant>   \n" + "</token>   \n"
-            + "</access> \n";
-        
-        HttpEntity entity = mock(HttpEntity.class);
-        Header header = mock(Header.class);
-        when(httpResponse.getEntity()).thenReturn(entity);
-        when(httpResponse.getHeaders(any(String.class))).thenReturn(new Header[] { header });
-        when(header.getValue()).thenReturn("value");
-        when(entity.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes()));
-        when(statusLine.getStatusCode()).thenReturn(200);
-        when(statusLine.getReasonPhrase()).thenReturn("ok");
-        
+        when(openOperationUtil.executeNovaRequest(any(HttpUriRequest.class))).thenReturn("ok");
+        openStackUtil.deleteSubNetwork(subNet.getIdSubNet(), region, "token", "vdc");
 
-        openStackUtil.deleteSubNetwork(subNet.getIdSubNet(), "region", "token", "vdc");
-
-        verify(openStackRegion).getQuantumEndPoint(anyString(), anyString());
-        verify(closeableHttpClientMock, times(1)).execute(any(HttpUriRequest.class));
-        verify(httpResponse, times(3)).getStatusLine();
-        verify(statusLine, times(3)).getStatusCode();
-;
     }
 
     @Test
@@ -278,35 +228,10 @@ public class OpenStackUtilImplTest {
         net.setIdNetwork("ID");
 
         // when
-        when(openStackRegion.getNovaEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0/");
-        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
-        when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        when(statusLine.getStatusCode()).thenReturn(204);
-        when(statusLine.getReasonPhrase()).thenReturn("ok");
-        
-        String content = " <?xml version=\"1.0\" encoding=\"UTF-8\"?> \n"
-            + "<access xmlns=\"http://docs.openstack.org/identity/api/v2.0\">\n"
-            + "<token expires=\"2013-11-06T12:02:42Z\" id=\"e563937547fd447985db4a9567528393\">\n"
-            + "<tenant enabled=\"true\" name=\"admin\" id=\"6571e3422ad84f7d828ce2f30373b3d4\">\n"
-            + "<description>Default tenant</description>   \n" + "</tenant>   \n" + "</token>   \n"
-            + "</access> \n";
-        
-        HttpEntity entity = mock(HttpEntity.class);
-        Header header = mock(Header.class);
-        when(httpResponse.getEntity()).thenReturn(entity);
-        when(httpResponse.getHeaders(any(String.class))).thenReturn(new Header[] { header });
-        when(header.getValue()).thenReturn("value");
-        when(entity.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes()));
-        when(statusLine.getStatusCode()).thenReturn(200);
-        when(statusLine.getReasonPhrase()).thenReturn("ok");
-        
-
+        when(openOperationUtil.executeNovaRequest(any(HttpUriRequest.class))).thenReturn("ok");
         openStackUtil.deleteSubNetwork(net.getIdNetwork(), "region", "token", "vdc");
 
-        verify(openStackRegion).getQuantumEndPoint(anyString(), anyString());
-        verify(closeableHttpClientMock, times(1)).execute(any(HttpUriRequest.class));
-        verify(httpResponse, times(3)).getStatusLine();
-        verify(statusLine, times(3)).getStatusCode();
+        verify(openOperationUtil).executeNovaRequest(any(HttpUriRequest.class));
        
     }
 
@@ -322,78 +247,20 @@ public class OpenStackUtilImplTest {
         NetworkInstance net = new NetworkInstance("NETWORK", "vdc");
         SubNetworkInstance subNet = new SubNetworkInstance("SUBNET", "CIDR");
         net.addSubNet(subNet);
+        RouterInstance router = new RouterInstance();
+        
 
-        String content = " <?xml version=\"1.0\" encoding=\"UTF-8\"?> \n"
-                + "<access xmlns=\"http://docs.openstack.org/identity/api/v2.0\">\n"
-                + "<token expires=\"2013-11-06T12:02:42Z\" id=\"e563937547fd447985db4a9567528393\">\n"
-                + "<tenant enabled=\"true\" name=\"admin\" id=\"6571e3422ad84f7d828ce2f30373b3d4\">\n"
-                + "<description>Default tenant</description>   \n" + "</tenant>   \n" + "</token>   \n"
-                + "</access> \n";
-        HttpEntity entity = mock(HttpEntity.class);
-        Header header = mock(Header.class);
-
-        // when
-        when(openStackRegion.getQuantumEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0/");
-        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
-        when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        when(httpResponse.getEntity()).thenReturn(entity);
-        when(httpResponse.getHeaders(any(String.class))).thenReturn(new Header[] { header });
-        when(header.getValue()).thenReturn("value");
-        when(entity.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes()));
-        when(statusLine.getStatusCode()).thenReturn(200);
-        when(statusLine.getReasonPhrase()).thenReturn("ok");
+        when(openOperationUtil.getAdminUser(any(PaasManagerUser.class))).thenReturn(paasManagerUser);
+        when(openOperationUtil.executeNovaRequest(any(HttpUriRequest.class))).thenReturn(ROUTERS);
+        when(openStackConfig.getPublicAdminNetwork(any(PaasManagerUser.class), anyString())).thenReturn("NETWORK"); 
+        when(openStackConfig.getPublicRouter(any(PaasManagerUser.class), anyString(),anyString())).thenReturn("router");   
 
         String response = openStackUtil.addInterfaceToPublicRouter(paasManagerUser, net, "token");
 
         // then
         assertNotNull(response);
-
-        verify(openStackRegion).getQuantumEndPoint(anyString(), anyString());
-        verify(systemPropertiesProvider, times(5)).getProperty(anyString());
-        verify(closeableHttpClientMock, times(TWICE)).execute(any(HttpUriRequest.class));
-        verify(httpResponse, times(5)).getStatusLine();
-        verify(statusLine, times(5)).getStatusCode();
-
     }
-    
-    /**
-     * It deletes a network interface to a public router.
-     * 
-     * @throws OpenStackException
-     * @throws IOException
-     */
-    @Test
-    public void shouldObtainDefaultNetwork() throws OpenStackException, IOException {
-        // given
-        
-        HttpEntity entity = mock(HttpEntity.class);
-        Header header = mock(Header.class);
-       
 
-        String region = "RegionOne";
-
-        // when
-        when(entity.getContent()).thenReturn(new ByteArrayInputStream(CONTENT_NETWORKS.getBytes()));
-        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
-        when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        when(httpResponse.getEntity()).thenReturn(entity);
-        when(httpResponse.getHeaders(any(String.class))).thenReturn(new Header[] { header });
-        when(header.getValue()).thenReturn("value");
-
-        when(statusLine.getStatusCode()).thenReturn(200);
-        when(statusLine.getReasonPhrase()).thenReturn("ok");
-
-        NetworkInstance response = openStackUtil.getPublicAdminNetwork(paasManagerUser, region);
-
-        // then
-        assertNotNull(response);
-
-        verify(systemPropertiesProvider, times(5)).getProperty(anyString());
-        verify(closeableHttpClientMock, times(TWICE)).execute(any(HttpUriRequest.class));
-        verify(httpResponse, times(5)).getStatusLine();
-        verify(statusLine, times(5)).getStatusCode();
-
-    }
 
     /**
      * It deletes a network interface to a public router.
@@ -407,37 +274,18 @@ public class OpenStackUtilImplTest {
         NetworkInstance net = new NetworkInstance("NETWORK", "vdc");
         SubNetworkInstance subNet = new SubNetworkInstance("SUBNET", "CIDR");
         net.addSubNet(subNet);
-
-        HttpEntity entity = mock(HttpEntity.class);
-        Header header = mock(Header.class);
-        String content = " <?xml version=\"1.0\" encoding=\"UTF-8\"?> \n"
-                + "<access xmlns=\"http://docs.openstack.org/identity/api/v2.0\">\n"
-                + "<token expires=\"2013-11-06T12:02:42Z\" id=\"e563937547fd447985db4a9567528393\">\n"
-                + "<tenant enabled=\"true\" name=\"admin\" id=\"6571e3422ad84f7d828ce2f30373b3d4\">\n"
-                + "<description>Default tenant</description>   \n" + "</tenant>   \n" + "</token>   \n"
-                + "</access> \n";
         String region = "RegionOne";
+        RouterInstance router = new RouterInstance();
 
-        // when
-        when(entity.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes()));
-        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
-        when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        when(httpResponse.getEntity()).thenReturn(entity);
-        when(httpResponse.getHeaders(any(String.class))).thenReturn(new Header[] { header });
-        when(header.getValue()).thenReturn("value");
-
-        when(statusLine.getStatusCode()).thenReturn(200);
-        when(statusLine.getReasonPhrase()).thenReturn("ok");
+        when(openOperationUtil.getAdminUser(any(PaasManagerUser.class))).thenReturn(paasManagerUser);
+        when(openOperationUtil.executeNovaRequest(any(HttpUriRequest.class))).thenReturn(ROUTERS);
+        when(openStackConfig.getPublicAdminNetwork(any(PaasManagerUser.class), anyString())).thenReturn("NETWORK"); 
+        when(openStackConfig.getPublicRouter(any(PaasManagerUser.class), anyString(),anyString())).thenReturn("router");        
 
         String response = openStackUtil.deleteInterfaceToPublicRouter(paasManagerUser, net, region);
 
         // then
         assertNotNull(response);
-
-        verify(systemPropertiesProvider, times(5)).getProperty(anyString());
-        verify(closeableHttpClientMock, times(TWICE)).execute(any(HttpUriRequest.class));
-        verify(httpResponse, times(5)).getStatusLine();
-        verify(statusLine, times(5)).getStatusCode();
 
     }
 
@@ -450,29 +298,12 @@ public class OpenStackUtilImplTest {
     @Test
     public void shouldDestroyNetwork() throws OpenStackException, IOException {
         // given
-        String content = " header1 \n";
-        HttpEntity entity = mock(HttpEntity.class);
-
-        // when
-        when(openStackRegion.getQuantumEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0/");
-
-        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
-        when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        when(statusLine.getStatusCode()).thenReturn(200);
-        when(statusLine.getReasonPhrase()).thenReturn("ok");
-        when(httpResponse.getEntity()).thenReturn(entity);
-        when(entity.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes()));
+        when(openOperationUtil.executeNovaRequest(any(HttpUriRequest.class))).thenReturn("ok");
 
         String response = openStackUtil.deleteNetwork("networkId", "region", "token", "vdc");
 
         // then
         assertNotNull(response);
-
-        verify(openStackRegion).getQuantumEndPoint(anyString(), anyString());
-        verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
-        verify(httpResponse, times(3)).getStatusLine();
-        verify(statusLine, times(3)).getStatusCode();
-
     }
 
     /**
@@ -483,46 +314,13 @@ public class OpenStackUtilImplTest {
      */
     @Test
     public void shouldListNetworks() throws OpenStackException, IOException {
-        // given
-     /*   String content = "{\"networks\": [{\"status\": \"ACTIVE\", \"subnets\": [\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
-                + " \"dia146\", \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
-                + " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": false, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "
-                + " \"provider:segmentation_id\": 8}, {\"status\": \"ACTIVE\", \"subnets\": [\"e2d10e6b-33c3-400c-88d6-f905d4cd02f2\"], \"name\": \"ext-net\","
-                + " \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\", \"provider:network_type\": "
-                + " \"gre\", \"router:external\": true, \"shared\": false, \"id\": \"080b5f2a-668f-45e0-be23-361c3a7d11d0\", \"provider:segmentation_id\": 1}"
-                + "]}";*/
-        String content = " <?xml version=\"1.0\" encoding=\"UTF-8\"?> \n"
-            + "<access xmlns=\"http://docs.openstack.org/identity/api/v2.0\">\n"
-            + "<token expires=\"2013-11-06T12:02:42Z\" id=\"e563937547fd447985db4a9567528393\">\n"
-            + "<tenant enabled=\"true\" name=\"admin\" id=\"6571e3422ad84f7d828ce2f30373b3d4\">\n"
-            + "<description>Default tenant</description>   \n" + "</tenant>   \n" + "</token>   \n"
-            + "</access> \n";
-        HttpEntity entity = mock(HttpEntity.class);
 
-        Header header = mock(Header.class);
-
-        // when
-        when(openStackRegion.getQuantumEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0/");
-        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
-        when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        when(httpResponse.getEntity()).thenReturn(entity);
-        when(httpResponse.getHeaders(any(String.class))).thenReturn(new Header[] { header });
-        when(header.getValue()).thenReturn("value");
-        when(entity.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes()));
-        when(statusLine.getStatusCode()).thenReturn(200);
-        when(statusLine.getReasonPhrase()).thenReturn("ok");
-
-
+        when(openOperationUtil.getAdminUser(any(PaasManagerUser.class))).thenReturn(paasManagerUser);
+        when(openOperationUtil.executeNovaRequest(any(HttpUriRequest.class))).thenReturn("ok");
         String response = openStackUtil.listNetworks(paasManagerUser, "region");
 
         // then
         assertNotNull(response);
-
-        verify(openStackRegion).getQuantumEndPoint(anyString(), anyString());
-        verify(closeableHttpClientMock, times(2)).execute(any(HttpUriRequest.class));
-        verify(httpResponse, times(5)).getStatusLine();
-        verify(statusLine, times(5)).getStatusCode();
-
     }
     
     /**
@@ -534,44 +332,13 @@ public class OpenStackUtilImplTest {
     @Test
     public void shouldListPorts() throws OpenStackException, IOException {
         // given
-     /*   String content = "{\"networks\": [{\"status\": \"ACTIVE\", \"subnets\": [\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
-                + " \"dia146\", \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
-                + " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": false, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "
-                + " \"provider:segmentation_id\": 8}, {\"status\": \"ACTIVE\", \"subnets\": [\"e2d10e6b-33c3-400c-88d6-f905d4cd02f2\"], \"name\": \"ext-net\","
-                + " \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\", \"provider:network_type\": "
-                + " \"gre\", \"router:external\": true, \"shared\": false, \"id\": \"080b5f2a-668f-45e0-be23-361c3a7d11d0\", \"provider:segmentation_id\": 1}"
-                + "]}";*/
-        String content = " <?xml version=\"1.0\" encoding=\"UTF-8\"?> \n"
-            + "<access xmlns=\"http://docs.openstack.org/identity/api/v2.0\">\n"
-            + "<token expires=\"2013-11-06T12:02:42Z\" id=\"e563937547fd447985db4a9567528393\">\n"
-            + "<tenant enabled=\"true\" name=\"admin\" id=\"6571e3422ad84f7d828ce2f30373b3d4\">\n"
-            + "<description>Default tenant</description>   \n" + "</tenant>   \n" + "</token>   \n"
-            + "</access> \n";
-        HttpEntity entity = mock(HttpEntity.class);
-
-        Header header = mock(Header.class);
-
-        // when
-        when(openStackRegion.getQuantumEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0/");
-        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
-        when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        when(httpResponse.getEntity()).thenReturn(entity);
-        when(httpResponse.getHeaders(any(String.class))).thenReturn(new Header[] { header });
-        when(header.getValue()).thenReturn("value");
-        when(entity.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes()));
-        when(statusLine.getStatusCode()).thenReturn(200);
-        when(statusLine.getReasonPhrase()).thenReturn("ok");
-
+        when(openOperationUtil.executeNovaRequest(any(HttpUriRequest.class))).thenReturn("ok");
+        when(openOperationUtil.getAdminUser(any(PaasManagerUser.class))).thenReturn(paasManagerUser);
 
         String response = openStackUtil.listPorts(paasManagerUser, "region");
 
         // then
         assertNotNull(response);
-
-        verify(openStackRegion).getQuantumEndPoint(anyString(), anyString());
-        verify(closeableHttpClientMock, times(2)).execute(any(HttpUriRequest.class));
-        verify(httpResponse, times(5)).getStatusLine();
-        verify(statusLine, times(5)).getStatusCode();
 
     }
     
@@ -581,28 +348,12 @@ public class OpenStackUtilImplTest {
         String payload ="";
         String content = "<badRequest code=\"400\" xmlns=\"http://docs.openstack.org/compute/api/v1.1\">"+
         "<message>Invalid key_name provided.</message></badRequest>";
-        HttpEntity entity = mock(HttpEntity.class);
-
-        // when
-        when(openStackRegion.getQuantumEndPoint(anyString(), anyString())).thenReturn("http://localhost/v2.0/");
-
-        when(closeableHttpClientMock.execute(any(HttpUriRequest.class))).thenReturn(httpResponse);
-        when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        when(statusLine.getStatusCode()).thenReturn(400);
-        when(statusLine.getReasonPhrase()).thenReturn("ok");
-        when(httpResponse.getEntity()).thenReturn(entity);
-        when(entity.getContent()).thenReturn(new ByteArrayInputStream(content.getBytes()));
-      
+        
+        when(openOperationUtil.executeNovaRequest(any(HttpUriRequest.class))).thenReturn(content);
         String response = openStackUtil.createServer(payload, "region", "token", "vdc");
 
         // then
         assertNotNull(response);
-
-        verify(openStackRegion).getQuantumEndPoint(anyString(), anyString());
-        verify(closeableHttpClientMock).execute(any(HttpUriRequest.class));
-        verify(httpResponse, times(3)).getStatusLine();
-        verify(statusLine, times(3)).getStatusCode();
-
     }
 
     /**
