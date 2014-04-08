@@ -1,0 +1,14 @@
+language: java
+jdk:
+- openjdk6
+
+install:
+ - mvn clean install
+
+env:
+  global:
+  - SONATYPE_USERNAME=deployment
+  - secure: D5wijanZDYa70FBAO7+vC+isedxZ4Zv0b/lXoWBhoVCU5knKQInqTMg5cNkOcR/wZIjC/3lVafIIkwlKUDrD6ym89qFhlAC4iZPR0UbVDwW/pFASyibqV8a4ugFfn1gg0t2zNdEZdaJkjBPFpsVrvc5a47JUpP+bhy/x3tgziRM=
+
+after_success:
+- '[[ $TRAVIS_BRANCH == "master" ]] && { python travis.py; mvn deploy -DskipTests=true --settings ~/.m2/mySettings.xml; };'
