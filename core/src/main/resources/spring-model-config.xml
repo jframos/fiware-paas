@@ -22,9 +22,8 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         </bean>
         <bean id="sDCUtil" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.installator.sdc.util.SDCUtilImpl">
-            <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
             <property name="sDCClient" ref="sDCClient"/>
-            <property name="client" ref="restClient"/>
+            <property name="openStackRegion" ref="openStackRegion"/>
         </bean>
 
 
@@ -224,8 +223,21 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
 
         <bean id="openStackUtil" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.util.OpenStackUtilImpl">
-            <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
+            <property name="openOperationUtil" ref="openOperationUtil"/>
             <property name="openStackRegion" ref="openStackRegion"/>
+            <property name="openStackConfigUtil" ref="openStackConfigUtil"/>
+        </bean>
+        
+        <bean id="openOperationUtil" lazy-init="true"
+              class="com.telefonica.euro_iaas.paasmanager.util.OpenOperationUtilImpl">
+            <property name="openStackRegion" ref="openStackRegion"/>
+            <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
+        </bean>
+        
+        <bean id="openStackConfigUtil" lazy-init="true"
+              class="com.telefonica.euro_iaas.paasmanager.util.OpenStackConfigUtilImpl">
+            <property name="openStackRegion" ref="openStackRegion"/>
+            <property name="openOperationUtil" ref="openOperationUtil"/>
         </bean>
 
         <bean id="infrastructureManager" lazy-init="true"
