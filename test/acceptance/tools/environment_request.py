@@ -1,4 +1,27 @@
+# -*- coding: utf-8 -*-
+# Copyright 2014 Telefonica Investigación y Desarrollo, S.A.U
+#
+# This file is part of FI-WARE project.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+#
+# You may obtain a copy of the License at:
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# For those usages not covered by the Apache version 2.0 License please
+# contact with opensource@tid.es
+
 from tools import tier
+
 __author__ = 'henar'
 
 import http
@@ -113,7 +136,7 @@ class EnvironmentRequest:
 
     def delete_abstract_environment(self, environment_name):
         url = "%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
-                            "environment", environment_name)
+                               "environment", environment_name)
 
         world.response = self.__delete_environment(url)
 
@@ -137,7 +160,7 @@ class EnvironmentRequest:
 
     def update_abstract_environment(self, environment_name, new_name, new_description, new_tiers=None):
         url = "%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
-                            "environment", environment_name)
+                               "environment", environment_name)
 
         env = Environment(new_name, new_description, new_tiers)
 
@@ -153,7 +176,7 @@ class EnvironmentRequest:
         :param new_tiers: New list of tiers of the environment.
         """
         url = "%s/%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
-                                  "vdc", self.vdc, "environment", environment_name)
+                                     "vdc", self.vdc, "environment", environment_name)
 
         env = Environment(new_name, new_description, new_tiers)
 
@@ -177,7 +200,7 @@ class EnvironmentRequest:
 
     def get_abstract_environment(self, environment_name):
         url = "%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
-                                     "environment", environment_name)
+                               "environment", environment_name)
 
         world.response = self.__get_environment(url)
 
@@ -193,7 +216,7 @@ class EnvironmentRequest:
 
     def add_tier_abstract_environment(self, environment_name, tier):
         url = "%s/%s/%s/%s/%s" % (self.paasmanager_url, "catalog/org/FIWARE",
-                               "environment", environment_name, "tier")
+                                  "environment", environment_name, "tier")
 
         payload = tostring(tier.to_tier_xml())
         world.response = self.__add_tier(url, payload)
@@ -394,8 +417,8 @@ def check_add_environment_response(response, expected_status_code):
     :param response: Response to be checked.
     :param expected_status_code: Expected status code of the response.
     """
-    assert response.status == expected_status_code, \
-    "Wrong status code received: %d. Expected: %d. Body content: %s" \
+    assert response.status == expected_status_code,\
+    "Wrong status code received: %d. Expected: %d. Body content: %s"\
     % (response.status, expected_status_code, response.read())
 
 
@@ -406,8 +429,8 @@ def check_update_environment_response(response, expected_status_code):
     :param response: Response to be checked.
     :param expected_status_code: Expected status code of the response.
     """
-    assert response.status == expected_status_code, \
-    "Wrong status code received: %d. Expected: %d. Body content: %s" \
+    assert response.status == expected_status_code,\
+    "Wrong status code received: %d. Expected: %d. Body content: %s"\
     % (response.status, expected_status_code, response.read())
 
 
@@ -418,13 +441,13 @@ def check_delete_environment_response(response, expected_status_code):
     :param response: Response to be checked.
     :param expected_status_code: Expected status code of the response.
     """
-    assert response.status == expected_status_code, \
-    "Wrong status code received: %d. Expected: %d. Body content: %s" \
+    assert response.status == expected_status_code,\
+    "Wrong status code received: %d. Expected: %d. Body content: %s"\
     % (response.status, expected_status_code, response.read())
 
 
 def check_get_environments_response(response, expected_status_code,
-                                   expected_environments_number=None):
+                                    expected_environments_number=None):
     """
     Check that the response for a get environments request is the
     expected one.
@@ -432,8 +455,8 @@ def check_get_environments_response(response, expected_status_code,
     :param expected_status_code: Expected status code of the response.
     :param expected_environments_number: Expected number of environments.
     """
-    assert response.status == expected_status_code, \
-    "Wrong status code received: %d. Expected: %d. Body content: %s" \
+    assert response.status == expected_status_code,\
+    "Wrong status code received: %d. Expected: %d. Body content: %s"\
     % (response.status, expected_status_code, response.read())
 
     if expected_environments_number is not None:
@@ -447,12 +470,12 @@ def check_get_environments_response(response, expected_status_code,
             world.response.environments = process_environments(environments)
 
             if expected_environments_number == "+":  # The "+" wildcard is allowed
-                assert len(world.response.environments) > 0, \
-                "Wrong number of envs received: %d. Expected more than 0." \
+                assert len(world.response.environments) > 0,\
+                "Wrong number of envs received: %d. Expected more than 0."\
                 % (len(world.response.environments))
             else:
-                assert len(world.response.environments) == expected_environments_number, \
-                "Wrong number of envs received: %d. Expected: %d." \
+                assert len(world.response.environments) == expected_environments_number,\
+                "Wrong number of envs received: %d. Expected: %d."\
                 % (len(world.response.environments), expected_environments_number)
 
 
@@ -467,12 +490,12 @@ def check_environment_in_list(environments_list, environment_name,
     """
     for env in environments_list:
         if env.name == environment_name:  # Expected environment found
-            assert env.description == environment_description, \
-            "Wrong description received for environment %s: %s. Expected: %s." \
+            assert env.description == environment_description,\
+            "Wrong description received for environment %s: %s. Expected: %s."\
             % (env.name, env.description, environment_description)
 
-            assert len(env.tiers) == tiers_number, \
-            "Wrong number of tiers received for environment %s: %d. Expected: %d." \
+            assert len(env.tiers) == tiers_number,\
+            "Wrong number of tiers received for environment %s: %d. Expected: %d."\
             % (env.name, len(env.tiers), tiers_number)
 
             return
@@ -493,25 +516,25 @@ def check_get_environment_response(response, expected_status_code,
     :param expected_environment_description: Expected description of the environment.
     :param expected_environment_tiers: Expected tiers of the environment.
     """
-    assert response.status == expected_status_code, \
-    "Wrong status code received: %d. Expected: %d. Body content: %s" \
+    assert response.status == expected_status_code,\
+    "Wrong status code received: %d. Expected: %d. Body content: %s"\
     % (response.status, expected_status_code, response.read())
 
     if expected_environment_name is not None:
         environment = process_environment(json.loads(response.read()))
 
-        assert environment.name == expected_environment_name, \
-        "Wrong name received: %s. Expected: %s." \
+        assert environment.name == expected_environment_name,\
+        "Wrong name received: %s. Expected: %s."\
         % (environment.name, expected_environment_name)
 
     if expected_environment_description is not None:
-        assert environment.description == expected_environment_description, \
-        "Wrong description received: %s. Expected: %s." \
+        assert environment.description == expected_environment_description,\
+        "Wrong description received: %s. Expected: %s."\
         % (environment.description, expected_environment_description)
 
     if expected_environment_tiers is not None:
-        assert len(environment.tiers) == len(expected_environment_tiers), \
-        "Wrong number of tiers received: %d. Expected: %d." \
+        assert len(environment.tiers) == len(expected_environment_tiers),\
+        "Wrong number of tiers received: %d. Expected: %d."\
         % (len(environment.tiers), len(expected_environment_tiers))
 
         for expected_tier in expected_environment_tiers:
@@ -522,9 +545,9 @@ def check_get_environment_response(response, expected_status_code,
                     received_tier = tier
                     break
 
-            assert received_tier is not None, \
+            assert received_tier is not None,\
             "Tier not found in response: %s" % (expected_tier.name)
 
-            assert received_tier == expected_tier, \
-            "The data for tier %s does not match the expected one. Received: %s. Expected: %s." \
+            assert received_tier == expected_tier,\
+            "The data for tier %s does not match the expected one. Received: %s. Expected: %s."\
             % (received_tier.name, tostring(received_tier.to_xml()), tostring(expected_tier.to_xml()))
