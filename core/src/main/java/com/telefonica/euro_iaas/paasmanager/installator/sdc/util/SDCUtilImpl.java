@@ -43,8 +43,6 @@ import com.telefonica.euro_iaas.sdc.model.Task;
 public class SDCUtilImpl implements SDCUtil {
 
     private SDCClient sDCClient;
-    private SystemPropertiesProvider systemPropertiesProvider;
-    private Client client;
     private OpenStackRegion openStackRegion;
 
     private static Logger log = Logger.getLogger(SDCUtilImpl.class);
@@ -52,7 +50,7 @@ public class SDCUtilImpl implements SDCUtil {
     private int MAX_TIME = 60000;
 
 
-    public void checkTaskStatus(Task task, String vdc, String token) throws ProductInstallatorException {
+    public void checkTaskStatus(Task task, String token, String vdc) throws ProductInstallatorException {
 
         String msgerror = null;
         String sdcServerUrl;
@@ -100,6 +98,7 @@ public class SDCUtilImpl implements SDCUtil {
     }
     
     public String getSdcUtil (String token) throws OpenStackException {
+    	log.debug("Get sdc url");
         String regionName = openStackRegion.getDefaultRegion(token);
         return openStackRegion.getSdcEndPoint(regionName, token);
     }
@@ -112,21 +111,6 @@ public class SDCUtilImpl implements SDCUtil {
         this.sDCClient = sDCClient;
     }
 
-    /**
-     * @param systemPropertiesProvider
-     *            the systemPropertiesProvider to set
-     */
-    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
-        this.systemPropertiesProvider = systemPropertiesProvider;
-    }
-
-    /**
-     * @param client
-     *            the client to set
-     */
-    public void setClient(Client client) {
-        this.client = client;
-    }
     
     public void setOpenStackRegion (OpenStackRegion openStackRegion) {
         this.openStackRegion=openStackRegion;

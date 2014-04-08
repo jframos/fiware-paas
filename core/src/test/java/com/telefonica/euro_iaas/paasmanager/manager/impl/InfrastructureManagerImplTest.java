@@ -259,7 +259,7 @@ public class InfrastructureManagerImplTest {
                         anyString())).thenReturn(ips);
         Mockito.doNothing().when(claudiaClient)
                 .deployVM(any(ClaudiaData.class), any(TierInstance.class), Matchers.anyInt(), any(VM.class));
-        manager.deployVM(claudiaData, tierInstance, 1, "ovf", vm);
+        manager.deployVM(claudiaData, tierInstance, 1, vm);
         assertEquals(vm.getDomain(), "");
 
         assertEquals(vm.getHostname(), hostname);

@@ -216,6 +216,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
                 log.debug("Tier instance name " + environmentInstance.getBlueprintName() + "-" + tier.getName() + "-"
                         + numReplica);
+                deployVM(claudiaData, tierInstance, numReplica, vm);
 
                 tierInstance.setVM(vm);
 
@@ -314,17 +315,11 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
 
 
-    public void deployVM(ClaudiaData claudiaData, TierInstance tierInstance, int replica, String vmOVF, VM vm)
+    public void deployVM(ClaudiaData claudiaData, TierInstance tierInstance, int replica, VM vm)
             throws InfrastructureException {
 
         log.debug("Deploy VM for tier " + tierInstance.getTier().getName() + " with networks "
                 + tierInstance.getNetworkInstances() + " and public ip " + tierInstance.getTier().getFloatingip());
-
-        if (vmOVF == null) {
-            String errorMessage = "The VEE OVF could not be procesed, " + "the OVF is null";
-            log.warn(errorMessage);
-            // throw new InfrastructureException(errorMessage);
-        }
 
         claudiaClient.deployVM(claudiaData, tierInstance, replica, vm);
 

@@ -174,7 +174,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         envInstance.setStatus(Status.DEPLOYING);
         environmentInstanceManager.update(envInstance);
 
-        infrastructureManager.deployVM(claudiaData, tierInstance, replicaNumber, tierInstance.getOvf(), vm);
+        infrastructureManager.deployVM(claudiaData, tierInstance, replicaNumber,  vm);
 
         // if (systemPropertiesProvider.getProperty(
         // SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {

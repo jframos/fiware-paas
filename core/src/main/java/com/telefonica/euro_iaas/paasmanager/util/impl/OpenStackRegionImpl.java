@@ -121,7 +121,8 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     }
     
     public String getSdcEndPoint(String regionName, String token) throws OpenStackException  {
-        String url;
+        log.debug ("Get url for sdc in region " + regionName);
+    	String url;
         try {
             url = getEndPointByNameAndRegionName("sdc", regionName, token);
         } catch (OpenStackException e) {
@@ -134,10 +135,12 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     }
     
     public String getDefaultRegion (String token) throws OpenStackException {
+    	log.debug("Get defautl region for token " + token);
         
         List<String> regions = null;
         try {
             regions = getRegionNames (token);
+            log.debug("regions " + regions + " " + regions.size());
         } catch (OpenStackException e) {
             String msn = "It is not possible to obtain the SDC endpoint";
             log.error(msn);
