@@ -38,6 +38,6 @@ public interface SDCUtil {
      * @param task
      * @throws ProductInstallatorException
      */
-    public void checkTaskStatus(Task task, String vdc) throws ProductInstallatorException;
+    public void checkTaskStatus(Task task, String token, String vdc) throws ProductInstallatorException;
 
 }

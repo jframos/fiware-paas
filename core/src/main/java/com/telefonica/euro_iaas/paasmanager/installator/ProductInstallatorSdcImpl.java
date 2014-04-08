@@ -146,7 +146,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
         productInstance.setStatus(Status.INSTALLING);
         try {
-            task = pIService.install(tierInstance.getVdc(), productInstanceDto, null);
+            task = pIService.install(tierInstance.getVdc(), productInstanceDto, null, claudiaData.getUser().getToken());
 
             StringTokenizer tokens = new StringTokenizer(task.getHref(), "/");
             String id = "";
@@ -161,11 +161,11 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
             tierInstance.setTaskId(id);
             tierInstanceManager.update(claudiaData, envName, tierInstance);
 
-            sDCUtil.checkTaskStatus(task, tierInstance.getVdc());
+            sDCUtil.checkTaskStatus(task, claudiaData.getUser().getToken(), tierInstance.getVdc() );
 
             com.telefonica.euro_iaas.sdc.model.ProductInstance pInstanceSDC = pIService.load(tierInstance.getVdc(),
                     productInstanceDto.getVm().getFqn() + "_" + productInstanceDto.getProduct().getName() + "_"
-                            + productInstanceDto.getProduct().getVersion());
+                            + productInstanceDto.getProduct().getVersion(), claudiaData.getUser().getToken());
             // Set the domain
             tierInstance.getVM().setDomain(pInstanceSDC.getVm().getDomain());
             tierInstanceManager.update(claudiaData, envName, tierInstance);
@@ -190,7 +190,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
     }
 
-    public void installArtifact(ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException {
+    public void installArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException {
         log.debug ("Install artifact " + artifact.getName() + " in product " + artifact.getProductRelease().getProduct() + " for productinstance " 
                 + productInstance.getName());
         String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
@@ -215,7 +215,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         productInstance.setStatus(Status.DEPLOYING_ARTEFACT);
         
         com.telefonica.euro_iaas.sdc.model.Task task = service.installArtifact(productInstance.getVdc(),
-                productInstance.getName(), sdcArtifact, null);
+                productInstance.getName(), sdcArtifact, null,claudiaData.getUser().getToken());
         log.debug("Deploying artefact " + artifact.getName() + "with href task " + task.getHref());
 
 
@@ -231,7 +231,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         productInstance.setTaskId(id);
 
 
-        sDCUtil.checkTaskStatus(task, productInstance.getVdc());
+        sDCUtil.checkTaskStatus(task, claudiaData.getUser().getToken(),productInstance.getVdc());
 
         /* How to catch an productInstallation error */
         if (task.getStatus() == com.telefonica.euro_iaas.sdc.model.Task.TaskStates.ERROR)
@@ -243,7 +243,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
     }
 
-    public void uninstallArtifact(ProductInstance productInstance, Artifact artifact)
+    public void uninstallArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact)
             throws ProductInstallatorException {
         String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
         String sdcMediaType = systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
@@ -266,7 +266,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         // Installing product with SDC
         productInstance.setStatus(Status.UNDEPLOYING_ARTEFACT);
         com.telefonica.euro_iaas.sdc.model.Task task = service.uninstallArtifact(productInstance.getVdc(),
-                productInstance.getName(), sdcArtifact, null);
+                productInstance.getName(), sdcArtifact, null, claudiaData.getUser().getToken());
         /* How to catch an productInstallation error */
         if (task.getStatus() == com.telefonica.euro_iaas.sdc.model.Task.TaskStates.ERROR)
             throw new ProductInstallatorException("Error uninstalling artefact " + artifact.getName()
@@ -277,7 +277,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
     }
 
-    public void uninstall(ProductInstance productInstance) throws ProductInstallatorException {
+    public void uninstall(ClaudiaData claudiaData, ProductInstance productInstance) throws ProductInstallatorException {
 
         String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
         String sdcMediaType = systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
@@ -295,7 +295,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
          */
 
         try {
-            productService.uninstall(productInstance.getVdc(), productInstance.getName(), null);
+            productService.uninstall(productInstance.getVdc(), productInstance.getName(), null, claudiaData.getUser().getToken());
         } catch (Exception e) {
             String errorMessage = " Error invokg SDC to UnInstall Product" + productInstance.getName();
             log.error(errorMessage);
@@ -337,7 +337,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         // FIWARE.customers.60b4125450fc4a109f50357894ba2e28.services.deploytm.vees.contextbrokr.replicas.1_mongos_2.2.3
         // deploytm-contextbrokr-1_mongos_2.2.3
         try {
-            task = pIService.configure(productInstance.getVdc(), name, null, arguments);
+            task = pIService.configure(productInstance.getVdc(), name, null, arguments, claudiaData.getUser().getToken());
         } catch (Exception e) {
             String errorMessage = " Error invokg SDC to configure Product" + productInstance.getName() + " "
                     + e.getMessage();
@@ -345,14 +345,14 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
             throw new ProductInstallatorException(errorMessage);
         }
 
-        sDCUtil.checkTaskStatus(task, productInstance.getVdc());
+        sDCUtil.checkTaskStatus(task, claudiaData.getUser().getToken(), productInstance.getVdc());
 
         return;
 
     }
 
     // Borrado del nodo en el ChefServer
-    public void deleteNode(String vdc, String sdcNodeName) throws ProductInstallatorException {
+    public void deleteNode(ClaudiaData claudiaData, String vdc, String sdcNodeName) throws ProductInstallatorException {
 
         String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
         String sdcMediaType = systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
@@ -364,20 +364,20 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
         // Borrado del Nodo en el chef Server
         try {
-            task = chefClientService.delete(vdc, sdcNodeName);
+            task = chefClientService.delete(vdc, sdcNodeName, claudiaData.getUser().getToken());
         } catch (Exception e) {
             String errorMessage = " Error invokg SDC to delete Chef Server Node " + sdcNodeName + " " + e.getMessage();
             log.error(errorMessage);
             throw new ProductInstallatorException(errorMessage);
         }
 
-        sDCUtil.checkTaskStatus(task, vdc);
+        sDCUtil.checkTaskStatus(task, claudiaData.getUser().getToken(), vdc);
 
         return;
     }
 
     // Load a node from the nodename
-    public ChefClient loadNode(String vdc, String hostname) throws ProductInstallatorException, EntityNotFoundException {
+    public ChefClient loadNode(ClaudiaData data, String vdc, String hostname) throws ProductInstallatorException, EntityNotFoundException {
 
         String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
         String sdcMediaType = systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE);
@@ -390,7 +390,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
         // Borrado del Nodo en el chef Server
         try {
-            return chefClientService.loadByHostname(vdc, hostname);
+            return chefClientService.loadByHostname(vdc, hostname, data.getUser().getToken());
         } catch (ResourceNotFoundException rnfe) {
             throw new EntityNotFoundException(ChefClient.class, rnfe.getMessage(), rnfe);
         } catch (Exception e) {

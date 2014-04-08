@@ -48,7 +48,7 @@ public class SDCUtilImpl implements SDCUtil {
     private static String VM_PATH = "/rest/vm";
     private int MAX_TIME = 60000;
 
-    public void checkTaskStatus(Task task, String vdc) throws ProductInstallatorException {
+    public void checkTaskStatus(Task task, String vdc, String token) throws ProductInstallatorException {
 
         String msgerror = null;
         String sdcServerUrl = systemPropertiesProvider.getProperty(SDC_SERVER_URL);
@@ -59,7 +59,7 @@ public class SDCUtilImpl implements SDCUtil {
 
         while (true) {
 
-            task = taskService.load(task.getHref());
+            task = taskService.load(task.getHref(), token, vdc);
 
             if (task.getStatus().equals(com.telefonica.euro_iaas.sdc.model.Task.TaskStates.ERROR)) {
                 msgerror = "SDCException. " + task.getError().getMajorErrorCode() + ": "

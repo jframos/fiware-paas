@@ -279,7 +279,7 @@ public class ProductInstallatorRECManagerImpl implements ProductInstallator {
      * @see com.telefonica.euro_iaas.paasmanager.installator.ProductInstallator#uninstall
      * (com.telefonica.euro_iaas.paasmanager.model.ProductInstance)
      */
-    public void uninstall(ProductInstance productInstance) throws ProductInstallatorException {
+    public void uninstall(ClaudiaData claudiaData, ProductInstance productInstance) throws ProductInstallatorException {
         // TODO Auto-generated method stub
 
     }
@@ -332,12 +332,12 @@ public class ProductInstallatorRECManagerImpl implements ProductInstallator {
         this.ovfUtils = ovfUtils;
     }
 
-    public void installArtifact(ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException {
+    public void installArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException {
         // TODO Auto-generated method stub
 
     }
 
-    public void uninstallArtifact(ProductInstance productInstance, Artifact artifact)
+    public void uninstallArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact)
             throws ProductInstallatorException {
         // TODO Auto-generated method stub
 
@@ -348,7 +348,7 @@ public class ProductInstallatorRECManagerImpl implements ProductInstallator {
      * @seecom.telefonica.euro_iaas.paasmanager.installator.ProductInstallator# deleteNode(java.lang.String,
      * java.lang.String)
      */
-    public void deleteNode(String vdc, String nodeName) throws ProductInstallatorException {
+    public void deleteNode(ClaudiaData claudiaData, String vdc, String nodeName) throws ProductInstallatorException {
         // TODO Auto-generated method stub
 
     }
@@ -358,7 +358,7 @@ public class ProductInstallatorRECManagerImpl implements ProductInstallator {
      * @see com.telefonica.euro_iaas.paasmanager.installator.ProductInstallator#loadNode(java.lang.String,
      * java.lang.String)
      */
-    public ChefClient loadNode(String vdc, String nodeName) throws ProductInstallatorException, EntityNotFoundException {
+    public ChefClient loadNode(ClaudiaData claudiaData, String vdc, String nodeName) throws ProductInstallatorException, EntityNotFoundException {
         // TODO Auto-generated method stub
         return null;
     }

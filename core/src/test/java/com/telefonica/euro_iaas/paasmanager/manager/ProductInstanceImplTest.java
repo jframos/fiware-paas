@@ -38,6 +38,7 @@ import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import junit.framework.TestCase;
 import org.junit.Before;
@@ -63,6 +64,7 @@ public class ProductInstanceImplTest extends TestCase {
 
     private ProductRelease productRelease = null;
     private TierInstance tierInstance = null;
+    private ClaudiaData data;
 
     @Override
     @Before
@@ -92,11 +94,22 @@ public class ProductInstanceImplTest extends TestCase {
         tier.setMinimumNumberInstances(new Integer(1));
         tier.setName("tierName");
         tier.setProductReleases(productReleases);
+        
+        data = mock(ClaudiaData.class);
+        PaasManagerUser user = mock(PaasManagerUser.class);
+        
+    
+
+        when (data.getUser()).thenReturn(user);
+        when (data.getOrg()).thenReturn("FIWARE");
+        when (data.getService()).thenReturn("deploytm");
+        when (data.getVdc()).thenReturn("60b4125450fc4a109f50357894ba2e28");
+        when (user.getToken()).thenReturn("any");
 
         tierInstance = new TierInstance(tier, "tierInsatnce", "nametierInstance", host);
         ProductInstance productInstance = new ProductInstance(productRelease, Status.INSTALLING, "vdc");
 
-        when(productReleaseManager.load(any(String.class))).thenReturn(productRelease);
+        when(productReleaseManager.load(any(String.class),any(ClaudiaData.class))).thenReturn(productRelease);
         when(productInstanceDao.load(any(String.class))).thenReturn(productInstance);
         when(
                 productInstallator.install(any(ClaudiaData.class), any(String.class), any(TierInstance.class),
@@ -107,7 +120,7 @@ public class ProductInstanceImplTest extends TestCase {
     public void testCreateProductInstance() throws Exception {
 
         ProductInstance productInstance = new ProductInstance(productRelease, Status.INSTALLING, "vdc");
-        ProductInstance productInstanceCreated = manager.create(productInstance);
+        ProductInstance productInstanceCreated = manager.create(data, productInstance);
         assertEquals(productInstance.getName(), productInstanceCreated.getName());
 
     }
@@ -116,7 +129,7 @@ public class ProductInstanceImplTest extends TestCase {
     public void testInstallProductInstanceNoAttributes() throws Exception {
 
         ProductInstance productInstance = new ProductInstance(productRelease, Status.INSTALLING, "vdc");
-        ClaudiaData data = new ClaudiaData("ogr", "vdc", "");
+   
         ProductInstance productInstanceCreated = manager.install(tierInstance, data, " ", productRelease, null);
         assertEquals(productInstance.getName(), productInstanceCreated.getName());
 
