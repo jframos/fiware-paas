@@ -61,13 +61,15 @@ public class SDCUtilImpl implements SDCUtil {
             log.error(msgerror);
             throw new ProductInstallatorException(msgerror);
         }
+        
+        log.debug ("sdc url " + sdcServerUrl);
 
         com.telefonica.euro_iaas.sdc.client.services.TaskService taskService = sDCClient.getTaskService(sdcServerUrl,
                 SDC_SERVER_MEDIATYPE);
 
         while (true) {
 
-            task = taskService.load(task.getHref(), token, vdc);
+            task = taskService.load(task.getHref(), vdc, token);
 
             if (task.getStatus().equals(com.telefonica.euro_iaas.sdc.model.Task.TaskStates.ERROR)) {
                 msgerror = "SDCException. " + task.getError().getMajorErrorCode() + ": "
@@ -98,7 +100,6 @@ public class SDCUtilImpl implements SDCUtil {
     }
     
     public String getSdcUtil (String token) throws OpenStackException {
-    	log.debug("Get sdc url");
         String regionName = openStackRegion.getDefaultRegion(token);
         return openStackRegion.getSdcEndPoint(regionName, token);
     }

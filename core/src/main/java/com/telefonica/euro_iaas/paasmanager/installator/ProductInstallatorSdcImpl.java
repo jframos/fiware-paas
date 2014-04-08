@@ -70,9 +70,6 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
             ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException, OpenStackException {
 
     	log.debug("Install software " + productRelease.getProduct() + "-" + productRelease.getVersion());
-    	log.debug (sDCUtil);
-    	log.debug (claudiaData.getUser());
-    	log.debug (claudiaData.getUser().getToken());
     	String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
 
         
@@ -89,7 +86,6 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
             productInstanceDto.setAttributes(attrs);
         }
         
-        log.debug (sDCClient);
         // SDCClient client = new SDCClient();
         com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService pIService = sDCClient
                 .getProductInstanceService(sdcServerUrl, SDC_SERVER_MEDIATYPE);
