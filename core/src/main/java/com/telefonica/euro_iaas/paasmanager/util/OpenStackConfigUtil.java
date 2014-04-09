@@ -38,6 +38,8 @@ public interface OpenStackConfigUtil {
      * name of the xml type.
      */
     String APPLICATION_XML = "application/xml";
+    
+    String APPLICATION_JSON = "application/json";
 
     /**
      * name of the resource Networks.
