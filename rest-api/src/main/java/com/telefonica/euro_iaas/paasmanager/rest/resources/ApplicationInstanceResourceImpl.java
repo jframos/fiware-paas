@@ -44,6 +44,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsy
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
@@ -91,6 +92,7 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
                 + applicationReleaseDto.getVersion() + " on " + " enviornment " + environmentInstance
                 + " with artificats " + applicationReleaseDto.getArtifactsDto().size());
 
+        ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentInstance);
         Task task = null;
         try {
             validator.validateInstall(vdc, environmentInstance, applicationReleaseDto);
@@ -105,7 +107,7 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
                 MessageFormat.format("Deploying application {0} in environment instance {1}",
                         applicationRelease.getName(), environmentInstance), vdc);
 
-        applicationInstanceAsyncManager.install(org, vdc, environmentInstance, applicationRelease, task, callback);
+        applicationInstanceAsyncManager.install(claudiaData, environmentInstance, applicationRelease, task, callback);
 
         return task;
 
@@ -142,13 +144,13 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
 
     public Task uninstall(String org, String vdc, String environmentName, String applicationName, String callback) {
         try {
-
+        	ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
             ApplicationInstance appInstance = applicationInstanceManager.load(vdc, applicationName);
 
             EnvironmentInstance envInstance = environmentInstanceManager.load(vdc, environmentName);
 
             Task task = createTask(MessageFormat.format("Uninstalling application Instance {0} ", applicationName), vdc);
-            applicationInstanceAsyncManager.uninstall(org, vdc, environmentName, applicationName, task, callback);
+            applicationInstanceAsyncManager.uninstall(claudiaData, environmentName, applicationName, task, callback);
             return task;
 
         } catch (EntityNotFoundException e) {

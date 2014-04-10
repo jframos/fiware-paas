@@ -93,10 +93,10 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         }
     }
 
-    public void uninstall(ProductInstance productInstance, Task task, String callback) {
+    public void uninstall(ClaudiaData data, ProductInstance productInstance, Task task, String callback) {
 
         try {
-            productInstanceManager.uninstall(productInstance);
+            productInstanceManager.uninstall(data, productInstance);
             updateSuccessTask(task, productInstance);
             LOGGER.info("Product Release " + productInstance.getProductRelease().getProduct() + "-"
                     + productInstance.getProductRelease().getVersion() + " uninstalled successfully");
