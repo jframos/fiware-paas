@@ -269,6 +269,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         try {
             instance = environmentInstanceDao.load(name, vdc);
         } catch (Exception e) {
+        	log.debug("error to finde enviornmetn instaqnce " + e.getMessage());
             throw new EntityNotFoundException(EnvironmentInstance.class, "vdc", vdc);
         }
         if (!instance.getVdc().equals(vdc)) {

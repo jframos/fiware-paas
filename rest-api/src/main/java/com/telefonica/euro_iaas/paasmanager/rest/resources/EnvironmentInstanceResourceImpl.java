@@ -214,10 +214,12 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
 
     public Task destroy(String org, String vdc, String name, String callback) throws APIException {
 
-        EnvironmentInstance environmentInstance = null;
+        log.debug ("Destroy env isntna " + name + " vdc " + vdc );
+    	EnvironmentInstance environmentInstance = null;
         try {
-            environmentInstance = environmentInstanceManager.loadForDelete(vdc, name);
+            environmentInstance = environmentInstanceManager.load(vdc, name);
         } catch (EntityNotFoundException e) {
+        	log.warn ("Not found " + e.getMessage() );
             throw new APIException(e);
         }
 
