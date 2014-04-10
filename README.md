@@ -1,11 +1,16 @@
 # FI-WARE PaaS Manager
 
+#### Builds:
+develop: [![Build Status](https://travis-ci.org/telefonicaid/fiware-paas.svg?branch=develop)](https://travis-ci.org/telefonicaid/fiware-paas)
+master: [![Build Status](https://travis-ci.org/telefonicaid/fiware-paas.svg?branch=master)](https://travis-ci.org/telefonicaid/fiware-paas)
+
 This is the repository of the PaaS Manager developed in the FI-WARE and 4CaaSt project. The PaaS Manager GE provides a 
 new layer over the IaaS layer (Openstack) in the aim of easing the task of deploying applications on a Cloud infrastructure. 
 Therefore, it orchestrates the provisioning of the required virtual resources at IaaS level, and then, the installation and configuration 
 of the whole software stack of the application by the SDC GE, taking into account the underlying virtual infrastructure. 
 It provides a flexible mechanism to perform the deployment, enabling multiple deployment architectures: 
 everything in a single VM or server, several VMs or servers, or elastic architectures based on load balancers and different software tiers.
+
 
 
 ## Requirements

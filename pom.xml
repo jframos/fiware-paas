@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.telefonica.euro_iaas</groupId>
     <artifactId>paas-manager-server</artifactId>
@@ -21,10 +22,11 @@
 
         <repoName>fiware-paas</repoName>
 
-        <scmURI>git@github.com:telefonicaid/fiware</scmURI>
+        <scmURI>git@github.com:telefonicaid</scmURI>
         <ciURI>http://ci-fiware-01.hi.inet</ciURI>
+        <nexusURI>http://130.206.80.169</nexusURI>
         <issueURI>https://jirapdi.tid.es/browse</issueURI>
-        <nexusRepositories>${ciURI}/nexus/content/repositories</nexusRepositories>
+        <nexusRepositories>${nexusURI}/nexus/content/repositories</nexusRepositories>
         <continousIntegrationSystemUrl>${ciURI}/jenkins</continousIntegrationSystemUrl>
         <continousIntegrationSystemProjectName>${repoName}</continousIntegrationSystemProjectName>
 
@@ -168,7 +170,7 @@
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>commons-dao</artifactId>
-                <version>1.2.1</version>
+                <version>1.2.2</version>
             </dependency>
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
