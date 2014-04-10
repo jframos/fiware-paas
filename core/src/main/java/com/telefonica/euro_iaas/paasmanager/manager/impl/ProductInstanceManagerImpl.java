@@ -67,7 +67,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             productInstance.setVdc(claudiaData.getVdc());
         }
         try {
-            productInstance = create(productInstance);
+            productInstance = create(claudiaData, productInstance);
         } catch (AlreadyExistsEntityException e) {
             log.error("The product instance " + productInstance.getName() + " already exists " + e.getMessage());
             throw new InvalidProductInstanceRequestException("Error to i" + e.getMessage(), e);
@@ -76,9 +76,9 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         return productInstance;
     }
 
-    public void uninstall(ProductInstance productInstance) throws ProductInstallatorException {
+    public void uninstall(ClaudiaData claudiaData, ProductInstance productInstance) throws ProductInstallatorException {
         log.debug("UnInstalling software " + productInstance.getProductRelease().getProduct());
-        productInstallator.uninstall(productInstance);
+        productInstallator.uninstall(claudiaData, productInstance);
 
     }
 
@@ -102,7 +102,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         return productInstanceDao.findByCriteria(criteria);
     }
 
-    public ProductInstance create2(ProductInstance productInstance, TierInstance tierInstance)
+    public ProductInstance create2(ClaudiaData data, ProductInstance productInstance, TierInstance tierInstance)
             throws InvalidEntityException, AlreadyExistsEntityException {
         ProductRelease productRelease = productInstance.getProductRelease();
         if (productInstance.getName() == null) {
@@ -113,7 +113,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         if (productRelease.getId() == null)
             try {
                 productRelease = productReleaseManager.load(productRelease.getProduct() + "-"
-                        + productRelease.getVersion());
+                        + productRelease.getVersion(), data);
             } catch (EntityNotFoundException e) {
                 // TODO Auto-generated catch block
                 throw new InvalidEntityException("Error to load the product release for persist the product Instance "
@@ -165,13 +165,13 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
     }
 
-    public ProductInstance create(ProductInstance productInstance) throws InvalidEntityException,
+    public ProductInstance create(ClaudiaData data, ProductInstance productInstance) throws InvalidEntityException,
             AlreadyExistsEntityException, InvalidProductInstanceRequestException {
         ProductRelease productRelease = null;
         try {
 
             productRelease = productReleaseManager.load(productInstance.getProductRelease().getProduct() + "-"
-                    + productInstance.getProductRelease().getVersion());
+                    + productInstance.getProductRelease().getVersion(), data);
             productInstance.setProductRelease(productRelease);
         } catch (EntityNotFoundException e) {
             String errorMessage = "The Product Release Object " + productRelease.getId() + " is " + "NOT valid";
@@ -207,5 +207,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         productInstallator.configure(claudiaData, productInstance, properties);
 
     }
+
+
 
 }

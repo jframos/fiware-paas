@@ -101,7 +101,7 @@ public class AbstractTierResourceTest extends TestCase {
         Environment environment = new Environment("name", null, "description");
 
         try {
-            when(environmentManager.load(any(String.class))).thenReturn(environment);
+            when(environmentManager.load(any(String.class),any(String.class))).thenReturn(environment);
         } catch (EntityNotFoundException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -129,7 +129,7 @@ public class AbstractTierResourceTest extends TestCase {
         Environment environment = new Environment("name", null, "description");
 
         try {
-            when(environmentManager.load(any(String.class))).thenReturn(environment);
+            when(environmentManager.load(any(String.class),any(String.class))).thenReturn(environment);
         } catch (EntityNotFoundException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();

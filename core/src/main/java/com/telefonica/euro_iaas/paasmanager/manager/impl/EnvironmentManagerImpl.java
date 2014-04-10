@@ -126,10 +126,7 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
         }
     }
 
-    public Environment load(String name) throws EntityNotFoundException {
-        return environmentDao.load(name);
-    }
-
+   
     public List<Environment> findAll() {
         return environmentDao.findAll();
     }

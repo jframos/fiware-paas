@@ -107,7 +107,7 @@ public class TierResourceTest extends TestCase {
         ProductRelease productRelease =new ProductRelease("test", "0.1");
         when(productReleaseDao.load(any(String.class))).thenReturn(productRelease);
 
-        when(environmentManager.load(any(String.class))).thenReturn(environment);
+        when(environmentManager.load(any(String.class),any(String.class))).thenReturn(environment);
 
         
 
@@ -241,7 +241,7 @@ public class TierResourceTest extends TestCase {
         tierDto2.setFlavour("flavour");
         tierDto2.setFloatingip("floatingip");
         tierDto2.setKeypair("keypair");
-        Mockito.doNothing().when(tierManager).updateTier(any(Tier.class), any(Tier.class));
+        Mockito.doNothing().when(tierManager).updateTier(any(ClaudiaData.class), any(Tier.class), any(Tier.class));
         tierResource.update(org, vdc, env, tierDto.getName(), tierDto2);
         
 

@@ -182,7 +182,6 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
 
         List<EnvironmentInstance> environmentInstances = environmentInstanceManager.findByCriteria(criteria);
 
-        // List<EnvironmentInstance> environmentInstances = filterEqualTiers(envInstances);
 
         List<EnvironmentInstancePDto> envInstancesDto = new ArrayList<EnvironmentInstancePDto>();
         for (int i = 0; i < environmentInstances.size(); i++) {
@@ -200,8 +199,6 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
         criteria.setEnviromentName(name);
 
         List<EnvironmentInstance> environmentInstances = environmentInstanceManager.findByCriteria(criteria);
-
-        // List<EnvironmentInstance> environmentInstances = filterEqualTiers(envInstances);
 
         if (environmentInstances == null || environmentInstances.size() == 0) {
             throw new WebApplicationException(new EntityNotFoundException(Environment.class, "EnvironmeniInstance "

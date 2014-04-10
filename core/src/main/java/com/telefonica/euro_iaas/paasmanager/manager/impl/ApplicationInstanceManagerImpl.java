@@ -44,6 +44,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Artifact;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
@@ -83,7 +84,7 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
      *             if artifcat/applicationRelease are already in the paas-manager database
      * @return the installed applicationInstance
      */
-    public ApplicationInstance install(String org, String vdc, EnvironmentInstance environmentInstance,
+    public ApplicationInstance install(ClaudiaData data, EnvironmentInstance environmentInstance,
             ApplicationRelease applicationRelease) throws ProductReleaseNotFoundException, InvalidEntityException,
             AlreadyExistsEntityException, ApplicationTypeNotFoundException, ProductInstallatorException {
 
@@ -105,14 +106,14 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
             // Obtain the VMs from EnvInstance where productRelease is installed
             ProductInstance productInstance = getProductInstanceFromEnvironment(artifact, environmentInstance);
             log.debug("Installing artifact " + artifact.getName());
-            productInstallator.installArtifact(productInstance, artifact);
+            productInstallator.installArtifact(data, productInstance, artifact);
 
         }
 
         // Create the Corresponding ApplicationInstance Object
         ApplicationInstance applicationInstance = new ApplicationInstance(applicationRelease, environmentInstance);
 
-        applicationInstance.setVdc(vdc);
+        applicationInstance.setVdc(data.getVdc());
         applicationInstance.setStatus(Status.ARTEFACT_DEPLOYED);
 
         // Insert ApplicationInstance in DB
@@ -149,7 +150,7 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
         return applicationInstanceDao.findByCriteria(criteria);
     }
 
-    public void uninstall(String org, String vdc, EnvironmentInstance environmentInstance,
+    public void uninstall(ClaudiaData data, EnvironmentInstance environmentInstance,
             ApplicationInstance applicationInstance) throws ProductInstallatorException {
         // Install The applicationRelease=n-Artifacts
         for (int i = 0; i < applicationInstance.getApplicationRelease().getArtifacts().size(); i++) {
@@ -157,7 +158,7 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
             // Obtain the VMs from EnvInstance where productRelease is installed
             ProductInstance productInstance = getProductInstanceFromEnvironment(applicationInstance
                     .getApplicationRelease().getArtifacts().get(i), environmentInstance);
-            productInstallator.uninstallArtifact(productInstance, applicationInstance.getApplicationRelease()
+            productInstallator.uninstallArtifact(data, productInstance, applicationInstance.getApplicationRelease()
                     .getArtifacts().get(i));
 
         }
