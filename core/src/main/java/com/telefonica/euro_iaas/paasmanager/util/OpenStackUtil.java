@@ -26,6 +26,10 @@ package com.telefonica.euro_iaas.paasmanager.util;
 
 // import org.openstack.docs.compute.api.v1.Server;
 
+import org.apache.http.client.methods.HttpUriRequest;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
@@ -203,7 +207,7 @@ public interface OpenStackUtil {
     /**
      * Obtain the floating IP's of a certain tenantID.
      */
-    String getFloatingIP(String region, String token, String vdc) throws OpenStackException;
+    String getFloatingIP(PaasManagerUser user, String region) throws OpenStackException;
 
     /**
      * Method to get a single Network.
@@ -235,7 +239,7 @@ public interface OpenStackUtil {
      * It removes the interface of the network in the router.
      */
     String removeInterface(RouterInstance router, String net, String region, String token, String vdc)
-            throws OpenStackException;
+       throws OpenStackException;
 
     /**
      * It return all absolute limit values by tenantId.
@@ -257,6 +261,7 @@ public interface OpenStackUtil {
      * It deletes the interface in the public router.
      */
     String deleteInterfaceToPublicRouter(PaasManagerUser user, NetworkInstance netInstance, String region)
-            throws OpenStackException;
+        throws OpenStackException;
+
 
 }

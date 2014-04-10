@@ -155,7 +155,7 @@ public interface InfrastructureManager {
      * @return
      * @throws InfrastructureException
      */
-    void deployVM(ClaudiaData claudiaData, TierInstance tier, int replica, String vmOVF, VM vm) throws InfrastructureException;
+    void deployVM(ClaudiaData claudiaData, TierInstance tier, int replica, VM vm) throws InfrastructureException;
 
     /**
      * Delete a Vm replica

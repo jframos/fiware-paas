@@ -134,7 +134,7 @@ public class TierManagerImplTest {
 
         SecurityGroup securityGroup = tierManager.generateSecurityGroup(data, tier);
         assertEquals(securityGroup.getName(), "sg_dd_dd_" + tier.getName());
-        assertEquals(securityGroup.getRules().size(), 3);
+        assertEquals(securityGroup.getRules().size(), 2);
     }
 
     @Test
@@ -149,7 +149,7 @@ public class TierManagerImplTest {
         when(productReleaseManager.loadWithMetadata(any(String.class))).thenReturn(productRelease);
         SecurityGroup securityGroup = tierManager.generateSecurityGroup(data, tier);
         assertEquals(securityGroup.getName(), "sg_dd_dd_" + tier.getName());
-        assertEquals(securityGroup.getRules().size(), 2);
+        assertEquals(securityGroup.getRules().size(), 1);
     }
 
     @Test

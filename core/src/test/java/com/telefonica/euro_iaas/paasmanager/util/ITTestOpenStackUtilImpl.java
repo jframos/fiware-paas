@@ -207,7 +207,6 @@ public class ITTestOpenStackUtilImpl {
         try {
             // Creates a new VM
 
-            openStackUtil.setSystemPropertiesProvider(systemPropertiesProvider);
 
             String payload = buildCreateServerPayload();
 
@@ -242,9 +241,6 @@ public class ITTestOpenStackUtilImpl {
     public void testCreateServerAssignFloatingIP() throws OpenStackException {
         try {
             // Creates a new VM
-
-            openStackUtil.setSystemPropertiesProvider(systemPropertiesProvider);
-
             String payload = buildCreateServerPayload();
 
             // Create a VM
@@ -253,7 +249,7 @@ public class ITTestOpenStackUtilImpl {
             Thread.sleep(5000);
 
             // Obtaining a freee floatingIP
-            floatingIP = openStackUtil.getFloatingIP("region", "token", "vdc");
+            floatingIP = openStackUtil.getFloatingIP(user, "region");
 
             // Assign the floatingIP to the serverId
             openStackUtil.assignFloatingIP(serverId, floatingIP, "region", "token", "vdc");

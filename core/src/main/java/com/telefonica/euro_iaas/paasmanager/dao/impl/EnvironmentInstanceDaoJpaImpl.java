@@ -56,8 +56,8 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
         return super.findAll(EnvironmentInstance.class);
     }
 
-    public EnvironmentInstance loadForDelete(String name) throws EntityNotFoundException {
-        return findByEnvironmentInstanceName(name);
+    public EnvironmentInstance loadForDelete(String name, String vdc) throws EntityNotFoundException {
+        return findByEnvironmentInstanceName(name, vdc);
         // return super.loadByField(EnvironmentInstance.class, "name", name);
     }
 
@@ -66,7 +66,7 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
         // return super.loadByField(EnvironmentInstance.class, "blueprintName",
 
         // name);
-        try {
+      /*  try {
             return findByEnvironmentInstanceName(name);
         } catch (Exception e) {
             try {
@@ -74,7 +74,14 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
             } catch (Exception e2) {
                 throw new EntityNotFoundException(EnvironmentInstance.class, name, e2);
             }
-        }
+        }*/
+    	return null;
+    }
+    
+    public EnvironmentInstance load(String name, String vdc) throws EntityNotFoundException {
+
+            return findByEnvironmentInstanceNameVdc(name, vdc);
+
     }
 
 
@@ -116,12 +123,36 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang .String)
      */
-    private EnvironmentInstance findByEnvironmentInstanceName(String envInstanceName) throws EntityNotFoundException {
+    private EnvironmentInstance findByEnvironmentInstanceName(String envInstanceName, String vdc) throws EntityNotFoundException {
 
         Query query = getEntityManager().createQuery(
                 "select p from EnvironmentInstance"
-                        + " p join fetch p.tierInstances where p.blueprintName = :blueprintName");
+                        + " p join fetch p.tierInstances where p.blueprintName = :blueprintName and p.vdc =:vdc");
         query.setParameter("blueprintName", envInstanceName);
+        query.setParameter("vdc", vdc);
+        EnvironmentInstance environmentInstance = null;
+        try {
+            environmentInstance = (EnvironmentInstance) query.getSingleResult();
+            getEntityManager().flush();
+        } catch (NoResultException e) {
+            String message = " No EnvironmentInstance found in the database with tiers" + "with blueprintName: "
+                    + envInstanceName + " and vdc " + vdc;
+            throw new EntityNotFoundException(EnvironmentInstance.class, message, envInstanceName);
+        }
+        return environmentInstance;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang .String)
+     */
+    private EnvironmentInstance findByEnvironmentInstanceNameVdc(String envInstanceName, String vdc) throws EntityNotFoundException {
+
+        Query query = getEntityManager().createQuery(
+                "select p from EnvironmentInstance"
+                        + " p join fetch p.tierInstances where p.blueprintName = :blueprintName and p.vdc =:vdc");
+        query.setParameter("blueprintName", envInstanceName);
+        query.setParameter("vdc", vdc);
         EnvironmentInstance environmentInstance = null;
         try {
             environmentInstance = (EnvironmentInstance) query.getSingleResult();

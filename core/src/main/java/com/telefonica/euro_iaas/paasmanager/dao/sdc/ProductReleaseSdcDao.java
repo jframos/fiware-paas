@@ -42,7 +42,9 @@ public interface ProductReleaseSdcDao {
      * @return
      * @throws SdcException
      */
+
     List<ProductRelease> findAll(String token, String tenant) throws SdcException;
+
 
     /**
      * Load a ProductRelease from the SDC by Name.
@@ -51,19 +53,25 @@ public interface ProductReleaseSdcDao {
      * @return
      * @throws EntityNotFoundException
      */
+
     ProductRelease load(String product, String version,  ClaudiaData data) throws EntityNotFoundException, SdcException;
+
 
     /**
      * Load all products from SDC.
      * @return a list with the product names present in SDC
      * @throws SdcException
      */
+
     List<String> findAllProducts(String token, String tenant) throws SdcException;
+
     
     /**
      * Load all productRelease of a product from SDC.
      * @return a list with the product names present in SDC
      * @throws SdcException
      */
+
     List<ProductRelease> findAllProductReleasesOfProduct(String pName, String token, String tenant) throws SdcException;
+
 }

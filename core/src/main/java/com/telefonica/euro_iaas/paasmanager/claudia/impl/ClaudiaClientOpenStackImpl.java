@@ -258,7 +258,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             String vdc = tierInstance.getTier().getVdc();
             String serverId = openStackUtil.createServer(payload, region, token, vdc);
             if (tierInstance.getTier().getFloatingip().equals("true")) {
-                String floatingIP = openStackUtil.getFloatingIP(region, token, vdc);
+                String floatingIP = openStackUtil.getFloatingIP(claudiaData.getUser(), region);
                 openStackUtil.assignFloatingIP(serverId, floatingIP, region, token, vdc);
             }
             vm.setVmid(serverId);

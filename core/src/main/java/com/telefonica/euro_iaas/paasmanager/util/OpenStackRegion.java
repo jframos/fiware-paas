@@ -72,4 +72,22 @@ public interface OpenStackRegion {
      * @return
      */
     List<String> getRegionNames(String token) throws OpenStackException;
+    
+    
+    /**
+     * 
+     * @param regionName
+     * @param token
+     * @return
+     * @throws OpenStackException
+     */
+    String getSdcEndPoint(String regionName, String token) throws OpenStackException;
+    
+    /**
+     * 
+     * @param token
+     * @return
+     * @throws OpenStackException
+     */
+    String getDefaultRegion(String token) throws OpenStackException;
 }

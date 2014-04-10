@@ -126,7 +126,6 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
         }
     }
 
-   
     public List<Environment> findAll() {
         return environmentDao.findAll();
     }

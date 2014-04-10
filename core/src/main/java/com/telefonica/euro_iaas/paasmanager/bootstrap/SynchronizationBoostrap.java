@@ -74,10 +74,10 @@ public class SynchronizationBoostrap implements ServletContextListener {
         UserDao userDao = (UserDao) ctx.getBean("userDao");
         TokenDao tokenDao = (TokenDao) ctx.getBean("tokenDao");
 
-        String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_DATABASE_URL);
+   /*     String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_DATABASE_URL);
         String driver = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_DATABASE_DRIVER);
         String userName = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_DATABASE_USERNAME);
-        String password = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_DATABASE_PASSWORD);
+        String password = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_DATABASE_PASSWORD);*/
 
         try {
             // Lineas comentadas por errores al arrancar el paasManager

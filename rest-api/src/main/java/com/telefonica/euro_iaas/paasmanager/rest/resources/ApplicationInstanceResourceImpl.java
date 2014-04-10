@@ -52,7 +52,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
-import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.ApplicationInstanceResourceValidator;
 
 /**
@@ -80,7 +79,7 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
     private EnvironmentInstanceManager environmentInstanceManager;
 
     private ApplicationInstanceResourceValidator validator;
-    private ExtendedOVFUtil extendedOVFUtil;
+
 
     /**
      * 
@@ -190,14 +189,6 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
      */
     public void setValidator(ApplicationInstanceResourceValidator validator) {
         this.validator = validator;
-    }
-
-    /**
-     * @param extendedOVFUtil
-     *            the extendedOVFUtil to set
-     */
-    public void setExtendedOVFUtil(ExtendedOVFUtil extendedOVFUtil) {
-        this.extendedOVFUtil = extendedOVFUtil;
     }
 
     public void setEnvironmentInstanceAsyncManager(EnvironmentInstanceAsyncManager environmentInstanceAsyncManager) {
