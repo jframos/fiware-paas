@@ -24,20 +24,15 @@
 
 package com.telefonica.euro_iaas.paasmanager.model;
 
-import java.util.ArrayList;
+
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -45,8 +40,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import com.telefonica.euro_iaas.paasmanager.model.dto.NetworkDto;
-import com.telefonica.euro_iaas.paasmanager.model.dto.SubNetworkDto;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
 
 /**
  * A network.
@@ -77,6 +75,7 @@ public class NetworkInstance {
     private boolean adminStateUp = false;
     private boolean netDefault = false;
     private String tenantId;
+    private boolean external;
 
 
     private int subNetCount;
@@ -221,6 +220,22 @@ public class NetworkInstance {
     }
     
     /**
+     * @return the shared
+     */
+    public boolean getExternal() {
+        return external;
+    }
+    
+
+    /**
+     * 
+     * @param shared
+     */
+    public void setExternal(boolean external) {
+        this.external = external;
+    }
+    
+    /**
      * @return the netDefault
      */
     public boolean isDefaultNet() {
@@ -297,6 +312,24 @@ public class NetworkInstance {
         return "{" + " \"network\":{" + "    \"name\": \"" + this.name + "\"," + "    \"admin_state_up\": true,"
         + "    \"shared\": false" + "  }" + "}";
 
+    }
+    
+    public static NetworkInstance fromJson (JSONObject jsonNet) throws JSONException {
+        String name = (String) jsonNet.get("name");
+        boolean shared = (Boolean) jsonNet.get("shared");
+        String id = (String) jsonNet.get("id");
+        boolean adminStateUp = (Boolean) jsonNet.get("admin_state_up");
+        String tenantId = (String) jsonNet.get("tenant_id");
+        boolean external = (Boolean) jsonNet.get("router:external");
+
+
+        NetworkInstance netInst = new NetworkInstance(name, tenantId);
+        netInst.setIdNetwork(id);
+        netInst.setShared(shared);
+        netInst.setTenantId(tenantId);
+        netInst.setAdminStateUp(adminStateUp);
+        netInst.setExternal(external);
+        return netInst;
     }
 
 	public void setSubNets(Set<SubNetworkInstance> subNets2) {

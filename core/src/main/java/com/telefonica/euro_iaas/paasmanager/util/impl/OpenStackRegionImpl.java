@@ -80,7 +80,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         } else {
             String responseJSON = callToKeystone(token, tokenadmin);
 
-            String result = parseEndpoint(responseJSON, type, regionName);
+            String result = parseEndpoint(token, responseJSON, type, regionName);
             if (result == null) {
                 throw new OpenStackException("region not found");
             }
@@ -118,6 +118,36 @@ public class OpenStackRegionImpl implements OpenStackRegion {
             url = url + "v2.0/";
         }
         return url;
+    }
+    
+    public String getSdcEndPoint(String regionName, String token) throws OpenStackException  {
+        log.debug ("Get url for sdc in region " + regionName);
+    	String url;
+        try {
+            url = getEndPointByNameAndRegionName("sdc", regionName, token);
+        } catch (OpenStackException e) {
+            String msn = "It is not possible to obtain the SDC endpoint";
+            log.error(msn);
+            throw new OpenStackException (msn);
+            		
+        }
+        return url;
+    }
+    
+    public String getDefaultRegion (String token) throws OpenStackException {
+    	log.debug("Get defautl region for token " + token);
+        
+        List<String> regions = null;
+        try {
+            regions = getRegionNames (token);
+            log.debug("regions " + regions + " " + regions.size());
+        } catch (OpenStackException e) {
+            String msn = "It is not possible to obtain the SDC endpoint";
+            log.error(msn);
+            throw new OpenStackException (msn);
+        }
+        
+        return regions.get(0);
     }
 
     @Override
@@ -165,7 +195,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         return response;
     }
 
-    private String parseEndpoint(String response, String type, String regionName) {
+    private String parseEndpoint(String token, String response, String type, String regionName) throws OpenStackException {
 
         JSONObject jsonObject = JSONObject.fromObject(response);
 
@@ -234,7 +264,8 @@ public class OpenStackRegionImpl implements OpenStackRegion {
             }
 
         }
-        return urlMap.get(systemPropertiesProvider.getProperty(SystemPropertiesProvider.DEFAULT_REGION_NAME));
+       ;
+        return urlMap.get( this.getDefaultRegion(token));
     }
 
     /**

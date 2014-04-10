@@ -24,10 +24,13 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.async.impl;
 
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.APPLICATION_RELEASE_BASE_URL;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.APPLICATION_TYPE_BASE_URL;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.ENVIRONMENT_INSTANCE_BASE_URL;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PRODUCT_RELEASE_BASE_URL;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.APPLICATION_RELEASE_PATH;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.ENVIRONMENT_INSTANCE_PATH;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.PRODUCT_RELEASE_PATH;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.TASK_PATH;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PAAS_MANAGER_URL;
+
+
 
 import java.text.MessageFormat;
 import java.util.Date;
@@ -44,6 +47,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorExceptio
 import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.TaskNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.manager.ApplicationInstanceManager;
+import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.ApplicationInstanceAsyncManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
@@ -70,7 +74,7 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
     private TaskManager taskManager;
     private SystemPropertiesProvider propertiesProvider;
     private TaskNotificator taskNotificator;
-    private EnvironmentInstanceDao environmentInstanceDao;
+    private EnvironmentInstanceManager environmentInstanceManager;
 
     /**
      * Install an applicationRelease on an already existent EnvironmentInstance
@@ -93,7 +97,7 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
                 + " enviornment environmentInstance");
 
         try {
-            EnvironmentInstance environmentInstance = environmentInstanceDao.load(environmentInstanceName);
+            EnvironmentInstance environmentInstance = environmentInstanceManager.load(data.getVdc(), environmentInstanceName);
 
             ApplicationInstance applicationInstance = applicationInstanceManager.install(data, environmentInstance,
                     applicationRelease);
@@ -102,25 +106,25 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
                     + " installed successfully " + " on Environment " + environmentInstanceName);
         } catch (EntityNotFoundException e) {
             String errorMsg = e.getMessage();
-            updateErrorTask(environmentInstanceName, ENVIRONMENT_INSTANCE_BASE_URL, task, errorMsg, e);
+            updateErrorTask(environmentInstanceName, ENVIRONMENT_INSTANCE_PATH, task, errorMsg, e);
         } catch (ProductReleaseNotFoundException prNFE) {
             String errorMsg = prNFE.getMessage();
-            updateErrorTask(prNFE.getProductRelease().getName(), PRODUCT_RELEASE_BASE_URL, task, errorMsg, prNFE);
+            updateErrorTask(prNFE.getProductRelease().getName(), PRODUCT_RELEASE_PATH, task, errorMsg, prNFE);
         } catch (ApplicationTypeNotFoundException atNFE) {
             String errorMsg = atNFE.getMessage();
-            updateErrorTask(atNFE.getApplicationType().getName(), APPLICATION_TYPE_BASE_URL, task, errorMsg, atNFE);
+            updateErrorTask(atNFE.getApplicationType().getName(), APPLICATION_RELEASE_PATH, task, errorMsg, atNFE);
         } catch (InvalidEntityException iee) {
             String errorMsg = iee.getMessage();
-            updateErrorTask(applicationRelease.getName(), APPLICATION_RELEASE_BASE_URL, task, errorMsg, iee);
+            updateErrorTask(applicationRelease.getName(), APPLICATION_RELEASE_PATH, task, errorMsg, iee);
         } catch (AlreadyExistsEntityException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ProductInstallatorException e) {
             String errorMsg = "Error installing an application. Description:" + e.getMessage();
-            updateErrorTask("Error installing an application", PRODUCT_RELEASE_BASE_URL, task, errorMsg, e);
+            updateErrorTask("Error installing an application", PRODUCT_RELEASE_PATH, task, errorMsg, e);
         } catch (TaskNotFoundException e) {
             String errorMsg = "Error installing an application. Description:" + e.getMessage();
-            updateErrorTask("Error installing an application", PRODUCT_RELEASE_BASE_URL, task, errorMsg, e);
+            updateErrorTask("Error installing an application", PRODUCT_RELEASE_PATH, task, errorMsg, e);
         } finally {
             notifyTask(callback, task);
         }
@@ -133,20 +137,20 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
         ApplicationInstance applicationInstance = null;
         try {
             applicationInstance = applicationInstanceManager.load(data.getVdc(), applicationName);
-            EnvironmentInstance environmentInstance = environmentInstanceDao.load(environmentInstanceName);
+            EnvironmentInstance environmentInstance = environmentInstanceManager.load(data.getVdc(), environmentInstanceName);
             applicationInstanceManager.uninstall(data, environmentInstance, applicationInstance);
             updateSuccessTask(task, environmentInstance);
             LOGGER.info("Application " + applicationInstance.getName() + '-' + " uninstalled successfully "
                     + " on Environment " + environmentInstanceName);
         } catch (EntityNotFoundException e) {
             String errorMsg = e.getMessage();
-            updateErrorTask(environmentInstanceName, ENVIRONMENT_INSTANCE_BASE_URL, task, errorMsg, e);
+            updateErrorTask(environmentInstanceName, ENVIRONMENT_INSTANCE_PATH, task, errorMsg, e);
         } catch (ProductInstallatorException e) {
             String errorMsg = e.getMessage();
-            updateErrorTask(environmentInstanceName, ENVIRONMENT_INSTANCE_BASE_URL, task, errorMsg, e);
+            updateErrorTask(environmentInstanceName, ENVIRONMENT_INSTANCE_PATH, task, errorMsg, e);
         } catch (TaskNotFoundException e) {
             String errorMsg = e.getMessage();
-            updateErrorTask(environmentInstanceName, ENVIRONMENT_INSTANCE_BASE_URL, task, errorMsg, e);
+            updateErrorTask(environmentInstanceName, ENVIRONMENT_INSTANCE_PATH, task, errorMsg, e);
         }
 
     }
@@ -154,8 +158,10 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
     private void updateSuccessTask(Task task, EnvironmentInstance environmentInstance) throws TaskNotFoundException {
         InstallableInstance productInstance;
         Task loadedTask;
-        String piResource = MessageFormat.format(propertiesProvider.getProperty(ENVIRONMENT_INSTANCE_BASE_URL),
+        String path = MessageFormat.format(TASK_PATH,
                 environmentInstance.getVdc(), environmentInstance.getName()); // the
+        
+        String psyh = propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
         // vdc
 
         try {
@@ -178,7 +184,7 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
      * in the system.
      */
     private void updateErrorTask(String resourceName, String baseUrl, Task task, String message, Throwable t) {
-        String piResource = MessageFormat.format(propertiesProvider.getProperty(baseUrl), resourceName); // the name
+        String piResource = MessageFormat.format(baseUrl, resourceName); // the name
         task.setResult(new TaskReference(piResource));
         updateErrorTask(task, message, t);
     }
@@ -218,8 +224,8 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
      * @param environmentInstanceDao
      *            the environmentInstanceDao to set
      */
-    public void setEnvironmentInstanceDao(EnvironmentInstanceDao environmentInstanceDao) {
-        this.environmentInstanceDao = environmentInstanceDao;
+    public void setEnvironmentInstanceManager(EnvironmentInstanceManager environmentInstanceManager) {
+        this.environmentInstanceManager = environmentInstanceManager;
     }
 
     /**

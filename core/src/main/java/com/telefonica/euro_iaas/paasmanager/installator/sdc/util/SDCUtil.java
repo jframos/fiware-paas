@@ -24,7 +24,9 @@
 
 package com.telefonica.euro_iaas.paasmanager.installator.sdc.util;
 
+import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.sdc.model.Task;
 
 /**
@@ -38,6 +40,10 @@ public interface SDCUtil {
      * @param task
      * @throws ProductInstallatorException
      */
+
+    String getSdcUtil (String token) throws OpenStackException;
+
     public void checkTaskStatus(Task task, String token, String vdc) throws ProductInstallatorException;
+
 
 }

@@ -24,8 +24,9 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.async.impl;
 
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.ENVIRONMENT_BASE_URL;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.ENVIRONMENT_INSTANCE_BASE_URL;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.ENVIRONMENT_PATH;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.ENVIRONMENT_INSTANCE_PATH;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PAAS_MANAGER_URL;
 
 import java.text.MessageFormat;
 import java.util.Date;
@@ -149,8 +150,11 @@ public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceA
     private void updateSuccessTask(Task task, EnvironmentInstance environmentInstance) throws TaskNotFoundException {
         InstallableInstance productInstance;
         Task loadedTask;
-        String piResource = MessageFormat.format(propertiesProvider.getProperty(ENVIRONMENT_INSTANCE_BASE_URL),
-                environmentInstance.getVdc(), environmentInstance.getName()); // the
+        String path = MessageFormat.format(ENVIRONMENT_INSTANCE_PATH,
+                environmentInstance.getVdc(), environmentInstance.getName());
+
+        String aiResource =  propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
+
         // vdc
 
         try {
@@ -183,8 +187,11 @@ public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceA
     private void updateErrorTask(EnvironmentInstance environmentInstance, String vdc, Task task, String message,
             Throwable t) {
 
-        String aiResource = MessageFormat.format(propertiesProvider.getProperty(ENVIRONMENT_BASE_URL),
+        String path = MessageFormat.format(ENVIRONMENT_PATH,
                 environmentInstance.getBlueprintName());
+
+        String aiResource =  propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
+
         task.setResult(new TaskReference(aiResource));
         updateErrorTask(task, message, t);
     }

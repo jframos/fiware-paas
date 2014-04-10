@@ -11,5 +11,6 @@
           class="com.telefonica.euro_iaas.paasmanager.dao.sdc.impl.ProductReleaseSdcDaoImpl">
         <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
         <property name="client" ref="restClient"></property>
+        <property name="sDCUtil" ref="sDCUtil"></property>
     </bean>
 </beans>

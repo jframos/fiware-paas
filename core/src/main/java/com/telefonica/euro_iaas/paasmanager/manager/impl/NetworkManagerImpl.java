@@ -191,6 +191,7 @@ public class NetworkManagerImpl implements NetworkManager {
 
     }
 
+
     /**
      * To obtain the list of networks.
      * 

@@ -43,8 +43,8 @@ instance_request = EnvironmentInstanceRequest(config['keystone_url'], config['pa
     config['user'], config['password'],
     config['vdc'], config['sdc_url'])
 
-environment_name = 'git26'
-blueprintname = 's47'
+environment_name = 'diez'
+blueprintname = 'diez'
 
 print('Create a blueprint Template No tiers for nodemysql: ')
 g.add_environment(environment_name, 'description')

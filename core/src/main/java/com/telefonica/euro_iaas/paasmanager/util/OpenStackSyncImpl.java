@@ -59,6 +59,8 @@ import com.telefonica.euro_iaas.paasmanager.model.keystone.User;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.OPENSTACK_SYNCHRONIZATION_POLLING_PERIOD;
+
 
 /**
  * @author jesus.movilla
@@ -117,8 +119,7 @@ public class OpenStackSyncImpl extends Thread implements OpenStackSync {
         while (run) {
             try {
                 log.info("synchronize STARTING");
-                Thread.sleep(Integer.parseInt(systemPropertiesProvider
-                        .getProperty(SystemPropertiesProvider.OPENSTACK_SYNCHRONIZATION_POLLING_PERIOD)));
+                Thread.sleep(OPENSTACK_SYNCHRONIZATION_POLLING_PERIOD);
 
                 List<PaasManagerUser> users = getUsersFromKeystoneDataBase(connection);
 

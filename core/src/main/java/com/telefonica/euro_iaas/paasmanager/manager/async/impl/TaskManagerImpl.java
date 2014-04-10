@@ -24,7 +24,8 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.async.impl;
 
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.TASK_BASE_URL;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PAAS_MANAGER_URL;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.TASK_PATH;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -53,13 +54,20 @@ public class TaskManagerImpl implements TaskManager {
      */
     public Task createTask(Task task) {
         try {
-            task = taskDao.create(task);
-            task.setHref(MessageFormat.format(propertiesProvider.getProperty(TASK_BASE_URL), Long.valueOf(task.getId())
-                    .toString(), task.getVdc()));
+            task = taskDao.create(task);            
+            task.setHref(getTaskUrl (task));
             return task;
         } catch (AlreadyExistsEntityException e) {
             throw new PaasManagerServerRuntimeException(e);
         }
+    }
+    
+    private String getTaskUrl (Task task) {
+        String path = MessageFormat.format(TASK_PATH,
+                Long.valueOf(task.getId())
+                .toString(), task.getVdc()); // th
+        
+        return propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
     }
 
     /**
@@ -68,8 +76,7 @@ public class TaskManagerImpl implements TaskManager {
     public Task updateTask(Task task) {
         try {
             task = taskDao.update(task);
-            task.setHref(MessageFormat.format(propertiesProvider.getProperty(TASK_BASE_URL), Long.valueOf(task.getId())
-                    .toString(), task.getVdc()));
+            task.setHref(getTaskUrl (task));
             return task;
         } catch (Exception e) {
             throw new PaasManagerServerRuntimeException(e);
@@ -81,8 +88,7 @@ public class TaskManagerImpl implements TaskManager {
      */
     public Task load(Long id) throws EntityNotFoundException {
         Task task = taskDao.load(id);
-        task.setHref(MessageFormat.format(propertiesProvider.getProperty(TASK_BASE_URL), Long.valueOf(task.getId())
-                .toString(), task.getVdc()));
+        task.setHref(getTaskUrl (task));
         return task;
     }
 
@@ -91,9 +97,8 @@ public class TaskManagerImpl implements TaskManager {
      */
     public List<Task> findByCriteria(TaskSearchCriteria criteria) {
         List<Task> tasks = taskDao.findByCriteria(criteria);
-        String taskUrl = propertiesProvider.getProperty(TASK_BASE_URL);
         for (Task task : tasks) {
-            task.setHref(MessageFormat.format(taskUrl, Long.valueOf(task.getId()).toString(), task.getVdc()));
+            task.setHref(getTaskUrl (task));
         }
         return tasks;
     }

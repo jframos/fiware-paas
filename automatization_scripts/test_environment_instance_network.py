@@ -43,9 +43,17 @@ instance_request = EnvironmentInstanceRequest(config['keystone_url'], config['pa
     config['user'], config['password'],
     config['vdc'], config['sdc_url'])
 
+<<<<<<< HEAD
+environment_name = 'hena2dr'
+blueprintname ="ddd2d"
+network ="mysreds"
+
+
+=======
 environment_name = 'diasss4'
 blueprintname = "diass4"
 network = "diass4"
+>>>>>>> d101b5d5783526bbeb7eed9c9e6d413cba738d9b
 
 print('Create a template for network: ')
 g.add_environment(environment_name, 'description')

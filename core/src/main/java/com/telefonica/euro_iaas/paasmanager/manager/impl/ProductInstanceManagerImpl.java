@@ -35,6 +35,7 @@ import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidProductInstanceRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.NotUniqueResultException;
+import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductReconfigurationException;
 import com.telefonica.euro_iaas.paasmanager.installator.ProductInstallator;
@@ -61,16 +62,20 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         log.debug("Installing software " + productRelease.getProduct() + " in tier Instance " + tierInstance.getName()
                 + " in vdc " + claudiaData.getVdc());
 
-        ProductInstance productInstance = productInstallator.install(claudiaData, envName, tierInstance,
-                productRelease, attributes);
-        if (productInstance.getVdc() == null) {
-            productInstance.setVdc(claudiaData.getVdc());
-        }
+        ProductInstance productInstance = null;
         try {
+            productInstance = productInstallator.install(claudiaData, envName, tierInstance,
+                    productRelease, attributes);
+            if (productInstance.getVdc() == null) {
+                productInstance.setVdc(claudiaData.getVdc());
+            }
             productInstance = create(claudiaData, productInstance);
         } catch (AlreadyExistsEntityException e) {
             log.error("The product instance " + productInstance.getName() + " already exists " + e.getMessage());
             throw new InvalidProductInstanceRequestException("Error to i" + e.getMessage(), e);
+        } catch (OpenStackException e) {
+            String errorMessage = "Error to configure the product " + e.getMessage();
+            new ProductInstallatorException(errorMessage);
         }
 
         return productInstance;
@@ -78,7 +83,12 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
     public void uninstall(ClaudiaData claudiaData, ProductInstance productInstance) throws ProductInstallatorException {
         log.debug("UnInstalling software " + productInstance.getProductRelease().getProduct());
-        productInstallator.uninstall(claudiaData, productInstance);
+        try {
+            productInstallator.uninstall(claudiaData, productInstance);
+        } catch (OpenStackException e) {
+            String errorMessage = "Error to configure the product " + e.getMessage();
+            new ProductInstallatorException(errorMessage);
+        }
 
     }
 
@@ -204,7 +214,12 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             EntityNotFoundException, ProductReconfigurationException {
         log.debug("Configuring software " + productInstance.getProductRelease().getProduct() + " "
                 + productInstance.getName());
-        productInstallator.configure(claudiaData, productInstance, properties);
+        try {
+            productInstallator.configure(claudiaData, productInstance, properties);
+        } catch (OpenStackException e) {
+            String errorMessage = "Error to configure the product " + e.getMessage();
+             new ProductInstallatorException(errorMessage);
+        }
 
     }
 

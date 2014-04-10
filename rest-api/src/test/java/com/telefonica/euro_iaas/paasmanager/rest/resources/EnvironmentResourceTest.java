@@ -52,7 +52,6 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
-import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
@@ -62,24 +61,18 @@ public class EnvironmentResourceTest extends TestCase {
     public EnvironmentManager environmentManager;
     public SystemPropertiesProvider systemPropertiesProvider;
     public EnvironmentResourceValidator validator;
-    public OVFGeneration ovfGeneration;
 
     @Override
     @Before
     public void setUp() throws Exception {
         environmentResource = new EnvironmentResourceImpl();
         environmentManager = mock(EnvironmentManager.class);
-        ovfGeneration = mock(OVFGeneration.class);
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         validator = mock(EnvironmentResourceValidator.class);
         environmentResource.setEnvironmentManager(environmentManager);
 
         environmentResource.setSystemPropertiesProvider(systemPropertiesProvider);
         environmentResource.setEnvironmentResourceValidator(validator);
-        environmentResource.setOvfGeneration(ovfGeneration);
-
-        when(ovfGeneration.createOvf(any(EnvironmentDto.class))).thenReturn("ovf");
-
        
 
         Environment environment = new Environment();

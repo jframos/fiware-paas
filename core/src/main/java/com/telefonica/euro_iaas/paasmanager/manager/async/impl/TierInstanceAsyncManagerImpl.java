@@ -24,7 +24,10 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.async.impl;
 
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.ENVIRONMENT_BASE_URL;
+
+
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PAAS_MANAGER_URL;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.ENVIRONMENT_PATH;
 
 import java.text.MessageFormat;
 import java.util.Date;
@@ -165,10 +168,17 @@ public class TierInstanceAsyncManagerImpl implements TierInstanceAsyncManager {
      */
     private void updateErrorTask(TierInstance tierInstance, String vdc, Task task, String message, Throwable t) {
 
-        String aiResource = MessageFormat.format(propertiesProvider.getProperty(ENVIRONMENT_BASE_URL),
-                tierInstance.getName());
+        String aiResource = getUrl (tierInstance);
         task.setResult(new TaskReference(aiResource));
         updateErrorTask(task, message, t);
+    }
+    
+    private String getUrl (TierInstance tierInstance) {
+        String path = MessageFormat.format(ENVIRONMENT_PATH,
+                tierInstance.getName());
+
+        
+        return propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
     }
 
     /*

@@ -271,3 +271,6 @@ ALTER TABLE environmentinstance alter column blueprintname type  VARCHAR(256) ;
 ALTER TABLE tierinstance DROP COLUMN networks;
 
 ALTER TABLE artifact DROP COLUMN artifacttype_id;
+
+-- changeset henar:5-1 --
+ALTER TABLE networkinstance ADD COLUMN external BOOL NOT NULL;

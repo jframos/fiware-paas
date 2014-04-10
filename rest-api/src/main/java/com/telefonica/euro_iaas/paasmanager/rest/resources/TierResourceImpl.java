@@ -80,7 +80,7 @@ public class TierResourceImpl implements TierResource {
 
     public void delete(String org, String vdc, String envName, String tierName) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
-        log.debug("Deleting tier " + tierName + " from env " + envName);
+        log.debug("Deleting tier " + tierName + " from env " + envName + " vdc " + vdc);
 
         try {
             tierResourceValidator.validateDelete(vdc, envName, tierName);
