@@ -136,7 +136,7 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
             getEntityManager().flush();
         } catch (NoResultException e) {
             String message = " No EnvironmentInstance found in the database with tiers" + "with blueprintName: "
-                    + envInstanceName;
+                    + envInstanceName + " and vdc " + vdc;
             throw new EntityNotFoundException(EnvironmentInstance.class, message, envInstanceName);
         }
         return environmentInstance;

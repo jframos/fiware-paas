@@ -47,6 +47,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorExceptio
 import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.TaskNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.manager.ApplicationInstanceManager;
+import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.ApplicationInstanceAsyncManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
@@ -73,7 +74,7 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
     private TaskManager taskManager;
     private SystemPropertiesProvider propertiesProvider;
     private TaskNotificator taskNotificator;
-    private EnvironmentInstanceDao environmentInstanceDao;
+    private EnvironmentInstanceManager environmentInstanceManager;
 
     /**
      * Install an applicationRelease on an already existent EnvironmentInstance
@@ -96,7 +97,7 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
                 + " enviornment environmentInstance");
 
         try {
-            EnvironmentInstance environmentInstance = environmentInstanceDao.load(environmentInstanceName);
+            EnvironmentInstance environmentInstance = environmentInstanceManager.load(data.getVdc(), environmentInstanceName);
 
             ApplicationInstance applicationInstance = applicationInstanceManager.install(data, environmentInstance,
                     applicationRelease);
@@ -136,7 +137,7 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
         ApplicationInstance applicationInstance = null;
         try {
             applicationInstance = applicationInstanceManager.load(data.getVdc(), applicationName);
-            EnvironmentInstance environmentInstance = environmentInstanceDao.load(environmentInstanceName);
+            EnvironmentInstance environmentInstance = environmentInstanceManager.load(data.getVdc(), environmentInstanceName);
             applicationInstanceManager.uninstall(data, environmentInstance, applicationInstance);
             updateSuccessTask(task, environmentInstance);
             LOGGER.info("Application " + applicationInstance.getName() + '-' + " uninstalled successfully "
@@ -223,8 +224,8 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
      * @param environmentInstanceDao
      *            the environmentInstanceDao to set
      */
-    public void setEnvironmentInstanceDao(EnvironmentInstanceDao environmentInstanceDao) {
-        this.environmentInstanceDao = environmentInstanceDao;
+    public void setEnvironmentInstanceManager(EnvironmentInstanceManager environmentInstanceManager) {
+        this.environmentInstanceManager = environmentInstanceManager;
     }
 
     /**

@@ -612,7 +612,9 @@ public class TierManagerImpl implements TierManager {
         }
 
         for (Network net : nets) {
-            networkManager.delete(net);
+        	if (isAvailableToBeDeleted (net)) {
+                networkManager.delete(net);
+        	}
         }
 
         tierold.setProductReleases(null);
