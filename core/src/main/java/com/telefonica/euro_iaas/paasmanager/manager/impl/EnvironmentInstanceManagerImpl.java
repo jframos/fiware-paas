@@ -267,7 +267,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
     public EnvironmentInstance load(String vdc, String name) throws EntityNotFoundException {
         EnvironmentInstance instance = null;
         try {
-            instance = environmentInstanceDao.load(name);
+            instance = environmentInstanceDao.load(name, vdc);
         } catch (Exception e) {
             throw new EntityNotFoundException(EnvironmentInstance.class, "vdc", vdc);
         }
@@ -280,9 +280,9 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
     public EnvironmentInstance loadForDelete(String vdc, String name) throws EntityNotFoundException {
         EnvironmentInstance instance = null;
         try {
-            instance = environmentInstanceDao.loadForDelete(name);
+            instance = environmentInstanceDao.loadForDelete(name, vdc);
         } catch (EntityNotFoundException e) {
-            instance = environmentInstanceDao.load(name);
+            instance = environmentInstanceDao.load(name, vdc);
             instance.setTierInstances(null);
         }
         return instance;

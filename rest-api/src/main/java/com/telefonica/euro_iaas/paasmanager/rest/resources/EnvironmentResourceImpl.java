@@ -74,21 +74,6 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
 
     private static Logger log = Logger.getLogger(EnvironmentManagerImpl.class);
 
-    /**
-     * Convert a list of tierDtos to a list of Tiers
-     * 
-     * @return
-     */
-    private Set<Tier> convertToTiers(Set<TierDto> tierDtos, String environmentName, String vdc) {
-        Set<Tier> tiers = new HashSet<Tier>();
-        for (TierDto tierDto : tierDtos) {
-            Tier tier = tierDto.fromDto(vdc, environmentName);
-            // tier.setSecurity_group("sg_"
-            // +environmentName+"_"+vdc+"_"+tier.getName());
-            tiers.add(tier);
-        }
-        return tiers;
-    }
 
     public void delete(String org, String vdc, String envName) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
