@@ -91,7 +91,7 @@ public class TierResourceImpl implements TierResource {
 
             Tier tier = tierManager.load(tierName, vdc, envName);
 
-            Environment environment = environmentManager.load(envName);
+            Environment environment = environmentManager.load(envName, vdc);
             environment.deleteTier(tier);
             environmentManager.update(environment);
             tierManager.delete(claudiaData, tier);
@@ -104,11 +104,11 @@ public class TierResourceImpl implements TierResource {
 
     }
 
-    public List<TierDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String environment) {
+    public List<TierDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String vdc, String environment) {
         TierSearchCriteria criteria = new TierSearchCriteria();
         Environment env = null;
         try {
-            env = environmentManager.load(environment);
+            env = environmentManager.load(environment, vdc);
 
         } catch (EntityNotFoundException e) {
             throw new WebApplicationException(e, 404);
@@ -172,7 +172,7 @@ public class TierResourceImpl implements TierResource {
         log.debug("to tier " + tier + "  product " + tier.getProductReleases() + " nets " + tier.getNetworks());
 
         try {
-            Environment environment = environmentManager.load(environmentName);
+            Environment environment = environmentManager.load(environmentName, vdc);
             Tier newTier = tierManager.create(claudiaData, environmentName, tier);
             environment.addTier(newTier);
             environmentManager.update(environment);
@@ -234,7 +234,7 @@ public class TierResourceImpl implements TierResource {
 
             Tier newtier = tierDto.fromDto(vdc, environmentName);
 
-            Environment environment = environmentManager.load(environmentName);
+            Environment environment = environmentManager.load(environmentName, vdc);
             List<Tier> tiers = new ArrayList();
             for (Tier tier : environment.getTiers()) {
                 tiers.add(tier);
@@ -245,7 +245,9 @@ public class TierResourceImpl implements TierResource {
                 if (tier.getName().equals(newtier.getName())) {
                     log.debug("load tier " + tierDto.getName());
                     tier = tierManager.load(tierDto.getName(), vdc, environmentName);
+
                     tierManager.updateTier(claudiaData, tier, newtier);
+
 
                 }
                 environment.addTier(tier);
