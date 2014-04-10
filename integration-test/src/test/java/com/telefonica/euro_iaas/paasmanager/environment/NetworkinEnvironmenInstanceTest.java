@@ -122,7 +122,7 @@ public class NetworkinEnvironmenInstanceTest {
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
 
-        Environment env2 = environmentManager.load("tCEI2");
+        Environment env2 = environmentManager.load("tCEI2",vdc);
 
         EnvironmentInstanceDto envInst = new EnvironmentInstanceDto();
         envInst.setBlueprintName("blueprintname2");
@@ -242,7 +242,7 @@ public class NetworkinEnvironmenInstanceTest {
 
         environmentResource.insert(org, vdc, environmentAlreadyNetwork.toDto());
 
-        Environment env2 = environmentManager.load("testNetworkAlreadyExist2");
+        Environment env2 = environmentManager.load("testNetworkAlreadyExist2",vdc);
         assertNotNull(env2);
         for (Tier tier : env2.getTiers()) {
             assertNotNull(tier.getNetworks());
@@ -302,7 +302,7 @@ public class NetworkinEnvironmenInstanceTest {
 
         environmentResource.insert(org, vdc, environmentAlreadyNetwork.toDto());
 
-        Environment env2 = environmentManager.load("tNAEDS2");
+        Environment env2 = environmentManager.load("tNAEDS2",vdc);
         assertNotNull(env2);
         for (Tier tier : env2.getTiers()) {
             assertNotNull(tier.getNetworks());
@@ -344,7 +344,7 @@ public class NetworkinEnvironmenInstanceTest {
 
         environmentResource.delete(org, vdc, "testCreateWithPublic");
         try {
-            environmentManager.load("testCreateWithPublic");
+            environmentManager.load("testCreateWithPublic",vdc);
         } catch (Exception e) {
             assertNotNull(e);
         }
@@ -382,7 +382,7 @@ public class NetworkinEnvironmenInstanceTest {
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
 
-        Environment env2 = environmentManager.load("testDeleteEnvwitNetwor");
+        Environment env2 = environmentManager.load("testDeleteEnvwitNetwor",vdc);
         assertNotNull(env2);
         for (Tier tier : env2.getTiers()) {
             assertNotNull(tier.getNetworks());
@@ -393,7 +393,7 @@ public class NetworkinEnvironmenInstanceTest {
         }
         environmentResource.delete(org, vdc, "testDeleteEnvwitNetwor");
         try {
-            environmentManager.load("testDeleteEnvwitNetwor");
+            environmentManager.load("testDeleteEnvwitNetwor",vdc);
         } catch (Exception e) {
             assertNotNull(e);
         }

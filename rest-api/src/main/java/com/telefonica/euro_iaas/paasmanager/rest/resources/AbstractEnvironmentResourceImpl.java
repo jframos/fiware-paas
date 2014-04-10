@@ -121,7 +121,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
         log.debug("Inserting env " + environmentDto.getName() + " from org " + org);
         ClaudiaData claudiaData = new ClaudiaData (org, "",environmentDto.getName() );
         try {
-            environmentManager.load(environmentDto.getName());
+            environmentManager.load(environmentDto.getName(), "");
             throw new APIException(new AlreadyExistEntityException("The enviornment " + environmentDto.getName()
                     + " already exists"));
 
@@ -140,7 +140,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
     public EnvironmentDto load(String org, String name) throws APIException {
         log.debug("Loading env " + name + " from org " + org);
         try {
-            Environment envInstance = environmentManager.load(name);
+            Environment envInstance = environmentManager.load(name, "");
             EnvironmentDto envDto = envInstance.toDto();
 
             return envDto;

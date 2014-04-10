@@ -88,7 +88,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
             Tier tier = tierManager.load(tierName, "", envName);
 
-            Environment environment = environmentManager.load(envName);
+            Environment environment = environmentManager.load(envName, "");
             environment.deleteTier(tier);
             environmentManager.update(environment);
             tierManager.delete(claudiaData, tier);
@@ -103,7 +103,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
         TierSearchCriteria criteria = new TierSearchCriteria();
         Environment env = null;
         try {
-            env = environmentManager.load(environment);
+            env = environmentManager.load(environment, "");
 
         } catch (EntityNotFoundException e) {
             throw new APIException(e, 404);
@@ -153,7 +153,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
             Tier tier = tierDto.fromDto("", environmentName);
             log.debug("vdc " + claudiaData.getVdc());
 
-            Environment environment = environmentManager.load(environmentName);
+            Environment environment = environmentManager.load(environmentName, "");
             Tier newTier = tierManager.create(claudiaData, environmentName, tier);
             environment.addTier(newTier);
             environmentManager.update(environment);
@@ -188,7 +188,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
             Tier newtier = tierDto.fromDto("", environmentName);
 
-            Environment environment = environmentManager.load(environmentName);
+            Environment environment = environmentManager.load(environmentName, "");
             List<Tier> tiers = new ArrayList();
             for (Tier tier : environment.getTiers()) {
                 tiers.add(tier);

@@ -93,10 +93,11 @@ public class AbstractEnvironmentResourceTest extends TestCase {
 
         EnvironmentDto environmentDto = new EnvironmentDto();
         environmentDto.setName("Name2");
+        environmentDto.setVdc("");
         environmentDto.setDescription("Description");
 
-        when(environmentManager.load(any(String.class))).thenThrow(
-                new EntityNotFoundException(Environment.class, "", environment));
+  //      when(environmentManager.load(any(String.class),any(String.class))).thenThrow(
+    //            new EntityNotFoundException(Environment.class, "", environment));
 
         List<ProductReleaseDto> productReleaseDto = new ArrayList<ProductReleaseDto>();
         productReleaseDto.add(new ProductReleaseDto("test", "0.1"));
@@ -121,8 +122,8 @@ public class AbstractEnvironmentResourceTest extends TestCase {
         environmentDto.setName("Name2");
         environmentDto.setDescription("Description");
 
-        when(environmentManager.load(any(String.class))).thenThrow(
-                new EntityNotFoundException(Environment.class, "", environment));
+      //  when(environmentManager.load(any(String.class),any(String.class))).thenThrow(
+        //        new EntityNotFoundException(Environment.class, "", environment));
 
         environmentResource.insert("org", environmentDto);
 
