@@ -196,7 +196,6 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
 
         List<EnvironmentInstance> environmentInstances = environmentInstanceManager.findByCriteria(criteria);
 
-
         if (environmentInstances == null || environmentInstances.size() == 0) {
             throw new WebApplicationException(new EntityNotFoundException(Environment.class, "EnvironmeniInstance "
                     + name + " not found", ""), ERROR_NOT_FOUND);
