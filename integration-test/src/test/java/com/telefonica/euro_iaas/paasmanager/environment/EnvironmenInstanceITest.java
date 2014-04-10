@@ -111,7 +111,7 @@ public class EnvironmenInstanceITest {
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
 
-        Environment env2 = environmentManager.load("tCEI");
+        Environment env2 = environmentManager.load("tCEI",vdc);
 
         EnvironmentInstanceDto envInst = new EnvironmentInstanceDto();
         envInst.setBlueprintName("blueprintname");
@@ -222,7 +222,7 @@ public class EnvironmenInstanceITest {
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
 
-        Environment env2 = environmentManager.load("tcETierInstance");
+        Environment env2 = environmentManager.load("tcETierInstance",vdc);
         assertNotNull(env2);
         assertEquals(env2.getName(), "tcETierInstance");
         assertEquals(env2.getDescription(), "Description First environment");

@@ -107,7 +107,7 @@ public class TierResourceTest extends TestCase {
         ProductRelease productRelease =new ProductRelease("test", "0.1");
         when(productReleaseDao.load(any(String.class))).thenReturn(productRelease);
 
-        when(environmentManager.load(any(String.class))).thenReturn(environment);
+        when(environmentManager.load(any(String.class),any(String.class))).thenReturn(environment);
 
         
 

@@ -76,7 +76,7 @@ public interface TierResource {
     @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<TierDto> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
-            @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType,
+            @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType, @PathParam("vdc") String vdc, 
             @PathParam("environment") String environment);
 
     /**
