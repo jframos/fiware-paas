@@ -32,7 +32,7 @@
         <property name="taskManager" ref="taskManager"/>
         <property name="propertiesProvider" ref="systemPropertiesProvider"></property>
         <property name="taskNotificator" ref="taskNotificator"/>
-        <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
+        <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
     </bean>
 
     <bean id="tierInstanceAsyncManager" lazy-init="true"
