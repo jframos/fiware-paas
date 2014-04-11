@@ -80,7 +80,16 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
     
     public EnvironmentInstance load(String name, String vdc) throws EntityNotFoundException {
 
-            return findByEnvironmentInstanceNameVdc(name, vdc);
+
+            try {
+                return findByEnvironmentInstanceName(name, vdc);
+            } catch (Exception e) {
+                try {
+                    return findByEnvironmentInstanceNameNoTierInstances(name, vdc);
+                } catch (Exception e2) {
+                    throw new EntityNotFoundException(EnvironmentInstance.class, name, e2);
+                }
+            }
 
     }
 
@@ -165,12 +174,13 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
         return environmentInstance;
     }
 
-    private EnvironmentInstance findByEnvironmentInstanceNameNoTierInstances(String envInstanceName)
+    private EnvironmentInstance findByEnvironmentInstanceNameNoTierInstances(String envInstanceName, String vdc)
             throws EntityNotFoundException {
 
         Query query = getEntityManager().createQuery(
-                "select p from EnvironmentInstance" + " p where p.blueprintName = :blueprintName");
+                "select p from EnvironmentInstance" + " p where p.blueprintName = :blueprintName and p.vdc =:vdc");
         query.setParameter("blueprintName", envInstanceName);
+        query.setParameter("vdc", vdc);
         EnvironmentInstance environmentInstance = null;
         try {
             environmentInstance = (EnvironmentInstance) query.getSingleResult();
