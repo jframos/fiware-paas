@@ -122,7 +122,7 @@ public class TierManagerImplTest {
     }
 
     @Test
-    public void testcreateSecurityGroup() throws EntityNotFoundException {
+    public void testcreateSecurityGroupTcp() throws EntityNotFoundException {
         productRelease = new ProductRelease("product", "2.0");
         productRelease.addMetadata(new Metadata("open_ports", "8080"));
 
@@ -135,6 +135,23 @@ public class TierManagerImplTest {
         SecurityGroup securityGroup = tierManager.generateSecurityGroup(data, tier);
         assertEquals(securityGroup.getName(), "sg_dd_dd_" + tier.getName());
         assertEquals(securityGroup.getRules().size(), 2);
+    }
+    
+    @Test
+    public void testcreateSecurityGroupTcpUdp() throws EntityNotFoundException {
+        productRelease = new ProductRelease("product", "2.0");
+        productRelease.addMetadata(new Metadata("open_ports", "8080"));
+        productRelease.addMetadata(new Metadata("open_ports_udp", "1212"));
+
+        productReleases = new ArrayList<ProductRelease>();
+        productReleases.add(productRelease);
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
+                "image", "icono", "keypair", "floatingip", "payload");
+        when(productReleaseManager.loadWithMetadata(any(String.class))).thenReturn(productRelease);
+
+        SecurityGroup securityGroup = tierManager.generateSecurityGroup(data, tier);
+        assertEquals(securityGroup.getName(), "sg_dd_dd_" + tier.getName());
+        assertEquals(securityGroup.getRules().size(), 3);
     }
 
     @Test
