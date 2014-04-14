@@ -347,14 +347,19 @@ public class TierManagerImpl implements TierManager {
 
         productRelease = productReleaseManager.loadWithMetadata(productRelease.getProduct() + "-"
                 + productRelease.getVersion());
-        Metadata openPortsAttribute = productRelease.getMetadata("open_ports");
+        getRules (productRelease, rules, "open_ports");
+        getRules (productRelease, rules, "open_ports_udp");
+        
+    }
+    
+    private void getRules (ProductRelease productRelease, List<Rule> rules, String pathrules) {
+    	Metadata openPortsAttribute = productRelease.getMetadata(pathrules);
         if (openPortsAttribute != null) {
             log.debug("Adding product rule " + openPortsAttribute.getValue());
             StringTokenizer st = new StringTokenizer(openPortsAttribute.getValue());
             while (st.hasMoreTokens()) {
                 Rule rule = createRulePort(st.nextToken());
                 if (!rules.contains(rule)) {
-                    log.debug("New rule ");
                     rules.add(rule);
                 }
             }
