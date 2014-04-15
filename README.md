@@ -1,8 +1,5 @@
-# FI-WARE PaaS Manager
+# FI-WARE PaaS Manager [![Build Status](https://travis-ci.org/telefonicaid/fiware-paas.svg)](https://travis-ci.org/telefonicaid/fiware-paas)/fiware-paas) [![Coverage Status](https://coveralls.io/repos/jesuspg/fiware-paas/badge.png)](https://coveralls.io/r/jesuspg/fiware-paas)
 
-#### Builds:
-develop: [![Build Status](https://travis-ci.org/telefonicaid/fiware-paas.svg?branch=develop)](https://travis-ci.org/telefonicaid/fiware-paas)
-master: [![Build Status](https://travis-ci.org/telefonicaid/fiware-paas.svg?branch=master)](https://travis-ci.org/telefonicaid/fiware-paas)
 
 This is the repository of the PaaS Manager developed in the FI-WARE and 4CaaSt project. The PaaS Manager GE provides a 
 new layer over the IaaS layer (Openstack) in the aim of easing the task of deploying applications on a Cloud infrastructure. 
