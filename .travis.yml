@@ -3,8 +3,8 @@ jdk:
 - openjdk6
 before_install:
 - python travis.py --mirrors;
-install:
-- mvn install -DskipTests=true
+
+script: mvn install
 env:
   global:
   - SONATYPE_USERNAME=deployment
