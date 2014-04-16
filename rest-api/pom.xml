@@ -151,6 +151,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin.version}</version>
                 <configuration>
                     <jarName>${project.artifactId}-${project.version}</jarName>
                 </configuration>
@@ -168,6 +169,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
+                <version>${maven-install-plugin.version}</version>
                 <executions>
                     <execution>
                         <phase>install</phase>
@@ -204,22 +206,7 @@
                     <schemaDirectory>${basedir}/src/main/resources/keystone/</schemaDirectory>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-
-                <configuration>
-                    <reportPlugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-project-info-reports-plugin</artifactId>
-
-                        </plugin>
-                    </reportPlugins>
-                </configuration>
-            </plugin>
-
-
+           
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
