@@ -4,6 +4,10 @@ jdk:
 before_install:
 - python travis.py --mirrors;
 
+install:
+- mvn install -DskipTests=true -B -V -q
+test:
+- mvn test -B -q
 env:
   global:
   - SONATYPE_USERNAME=deployment

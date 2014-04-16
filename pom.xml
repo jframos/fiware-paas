@@ -52,6 +52,10 @@
         <sonar-maven-plugin.version>2.0</sonar-maven-plugin.version>
         <cobertura-maven-plugin.version>2.6</cobertura-maven-plugin.version>
 
+        <!-- generic plugins -->
+        <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+        <maven-install-plugin.version>2.3.1</maven-install-plugin.version>
+
         <!-- encoding -->
 
         <encoding>utf-8</encoding>
@@ -165,7 +169,6 @@
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>openstack-tcloud-schemas</artifactId>
                 <version>2.3.3</version>
-                <type>jar</type>
             </dependency>
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
@@ -294,6 +297,17 @@
                     <maxmem>256m</maxmem>
                     <!-- aggregated reports for multi-module projects -->
                     <aggregate>true</aggregate>
+                    <instrumentation>
+                        <ignores>
+                            <ignore>org.openstack.docs.common.api.v1.*</ignore>
+                        </ignores>
+                        <excludes>
+                            <exclude>**/*Test*.class</exclude>
+                            <exclude>**/model/**.class</exclude>
+                            <exclude>org/openstack/**/*</exclude>
+                            <exclude>org/w3/**/*</exclude>
+                        </excludes>
+                    </instrumentation>
                 </configuration>
             </plugin>
             <plugin>
@@ -309,45 +323,6 @@
 
         </plugins>
 
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>cobertura-maven-plugin</artifactId>
-                    <version>${cobertura-maven-plugin.version}</version>
-                    <configuration>
-                        <check>
-                            <haltOnFailure>false</haltOnFailure>
-                        </check>
-                        <instrumentation>
-                            <excludes>
-                                <exclude>**/*Test*.class</exclude>
-                                <exclude>**/model/**.class</exclude>
-                            </excludes>
-                        </instrumentation>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>clean</id>
-                            <phase>pre-site</phase>
-                            <goals>
-                                <goal>clean</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>instrument</id>
-                            <phase>site</phase>
-                            <goals>
-                                <goal>instrument</goal>
-                                <goal>cobertura</goal>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-
-            </plugins>
-        </pluginManagement>
 
     </build>
 
