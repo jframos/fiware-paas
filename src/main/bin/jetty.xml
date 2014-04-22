@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+<Configure class="org.eclipse.jetty.server.Server">
+
+
+    <New id="paasmanager" class="org.eclipse.jetty.webapp.WebAppContext">
+        <Set name="contextPath">/paasmanager</Set>
+
+        <Set name="extractWAR">true</Set>
+        <Set name="copyWebDir">false</Set>
+
+    </New>
+
+    <Set name="handler">
+        <New id="RequestLog" class="org.eclipse.jetty.server.handler.RequestLogHandler">
+            <Set name="requestLog">
+                <New id="RequestLogImpl" class="org.eclipse.jetty.server.NCSARequestLog">
+                    <Set name="filename"><Property name="jetty.logs" default="logs"/>/logs/test-yyyy_mm_dd.request.log
+                    </Set>
+                    <Set name="filenameDateFormat">yyyy_MM_dd</Set>
+                    <Set name="LogTimeZone">GMT</Set>
+                    <Set name="retainDays">90</Set>
+                    <Set name="append">true</Set>
+                </New>
+            </Set>
+        </New>
+    </Set>
+
+
+    <New id="paasmanager" class="org.eclipse.jetty.plus.jndi.Resource">
+        <Arg>jdbc/paasmanager</Arg>
+        <Arg>
+
+            <New class="org.postgresql.ds.PGSimpleDataSource">
+                <Set name="User">postgres</Set>
+                <Set name="Password">postgres</Set>
+                <Set name="DatabaseName">paasmanager</Set>
+                <Set name="ServerName">localhost</Set>
+                <Set name="PortNumber">5432</Set>
+            </New>
+
+        </Arg>
+    </New>
+
+</Configure>
+
