@@ -90,4 +90,12 @@ public interface OpenStackRegion {
      * @throws OpenStackException
      */
     String getDefaultRegion(String token) throws OpenStackException;
+
+    /**
+     * 
+     * @param token
+     * @return
+     * @throws OpenStackException 
+     */
+	String getFederatedQuantumEndPoint(String token) throws OpenStackException;
 }

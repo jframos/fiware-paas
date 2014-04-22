@@ -29,6 +29,7 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -497,5 +498,29 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
     public void setTierManager(TierManager tierManager) {
         this.tierManager = tierManager;
     }
+
+	@Override
+	public void federatedNetworks(EnvironmentInstance environmentInstance) {
+		// Get the networks to be federated
+		
+		Set<String> federatedNetworks = environmentInstance.getEnvironment().getFederatedNetworks();
+		HashMap<String, Set<String>> relation = environmentInstance.getEnvironment().getNetworksRegion ();
+		
+		for (String net: federatedNetworks) {
+			
+			Set<String> regions = relation.get(net);
+			List<NetworkInstance> networkInstances = new ArrayList<NetworkInstance> ();
+			for (String region: regions) {
+				NetworkInstance netInstance = environmentInstance.getNetworkInstanceFromNetwork (net, region);
+				if (netInstance!=null) {
+					networkInstances.add(netInstance);
+				}
+			}
+			
+
+
+		}
+		
+	}
 
 }

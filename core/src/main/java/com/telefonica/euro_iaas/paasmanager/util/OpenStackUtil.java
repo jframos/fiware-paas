@@ -90,6 +90,8 @@ public interface OpenStackUtil {
      * name of the resource Subnets.
      */
     String RESOURCE_ROUTERS = "routers";
+    
+    String RESOURCE_NETWOKS_FEDERATED = "join_networks";
     /**
      * name of the resource Servers.
      */
@@ -262,6 +264,9 @@ public interface OpenStackUtil {
      */
     String deleteInterfaceToPublicRouter(PaasManagerUser user, NetworkInstance netInstance, String region)
         throws OpenStackException;
+
+	String joinNetworks(NetworkInstance networkInstance,
+			NetworkInstance networkInstance2, String token) throws OpenStackException;;
 
 
 }

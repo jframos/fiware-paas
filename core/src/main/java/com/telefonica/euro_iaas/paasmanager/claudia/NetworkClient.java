@@ -182,4 +182,14 @@ public interface NetworkClient {
      */
     NetworkInstance deployDefaultNetwork(ClaudiaData claudiaData, String region) throws InfrastructureException;
 
+    /**
+     * 
+     * @param claudiaData
+     * @param networkInstance
+     * @param networkInstance2
+     * @throws InfrastructureException 
+     */
+	void joinNetworks(ClaudiaData claudiaData, NetworkInstance networkInstance,
+			NetworkInstance networkInstance2) throws InfrastructureException;
+
 }

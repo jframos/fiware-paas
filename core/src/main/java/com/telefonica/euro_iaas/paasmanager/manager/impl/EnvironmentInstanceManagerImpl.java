@@ -165,6 +165,10 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             environmentInstanceDao.update(environmentInstance);
             throw new ProductInstallatorException(e);
         }
+        
+        if (environment.isNetworkFederated ()) {
+        	infrastructureManager.federatedNetworks (environmentInstance);
+        }
 
         environmentInstance.setStatus(Status.INSTALLED);
         environmentInstanceDao.update(environmentInstance);

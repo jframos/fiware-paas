@@ -168,4 +168,10 @@ public interface InfrastructureManager {
      */
     public void deleteVMReplica(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException;
 
+    /**
+     * 
+     * @param environmentInstance
+     */
+	void federatedNetworks(EnvironmentInstance environmentInstance);
+
 }

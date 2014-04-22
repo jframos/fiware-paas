@@ -201,4 +201,11 @@ public class NetworkClientDummyImpl implements NetworkClient {
         return null;
     }
 
+	@Override
+	public void joinNetworks(ClaudiaData claudiaData,
+			NetworkInstance networkInstance, NetworkInstance networkInstance2) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

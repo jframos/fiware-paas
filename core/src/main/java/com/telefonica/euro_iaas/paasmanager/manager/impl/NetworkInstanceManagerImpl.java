@@ -100,6 +100,24 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         return networkInstance;
     }
     
+    /**
+     * 
+     * @param claudiaData
+     * @param networkInstance
+     * @throws InvalidEntityException
+     * @throws AlreadyExistsEntityException
+     * @throws EntityNotFoundException
+     * @throws InfrastructureException
+     */
+    public void createFederatedNetwork(ClaudiaData claudiaData, List<NetworkInstance> networkInstance)
+        throws InvalidEntityException, AlreadyExistsEntityException, EntityNotFoundException,
+        InfrastructureException {
+        log.debug("Create federated network  for vdc " +  claudiaData.getVdc() + " with netwrks " + networkInstance.get(0).getNetworkName() + " and " +
+        		networkInstance.get(1).getNetworkName());
+
+        networkClient.joinNetworks(claudiaData, networkInstance.get(0), networkInstance.get(1));
+    }
+    
     public NetworkInstance createInDB (NetworkInstance networkInstance) throws InvalidEntityException, AlreadyExistsEntityException {
         return networkInstanceDao.create(networkInstance);
         

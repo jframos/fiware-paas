@@ -25,9 +25,12 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import junit.framework.TestCase;
@@ -35,6 +38,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class EnvironmentTest extends TestCase {
+	
+    private static String VDC = "vdc";
 
     @Override
     @Before
@@ -81,5 +86,144 @@ public class EnvironmentTest extends TestCase {
         
 
     }
+    @Test
+    public void testIsDifferentRegions() {
+    	Tier tier = new Tier("name1", new Integer(1), new Integer(5), new Integer(1), null);
+        tier.setRegion("region1");
+        
+        Tier tier2 = new Tier("name2", new Integer(1), new Integer(5), new Integer(1), null);
+        tier.setRegion("region2");    
+
+        Set<Tier> tiers = new HashSet<Tier>();
+        tiers.add(tier);
+        tiers.add(tier2);
+
+        Environment env = new Environment();
+        
+        env.setName("environemntName");
+        env.addTier(tier);
+        env.addTier(tier2);
+        
+        boolean result = env.isDifferentRegions();
+        assertEquals (result, true);
+    }
+    
+    @Test
+    public void testIsNotDifferentRegions() {
+    	Tier tier = new Tier("name1", new Integer(1), new Integer(5), new Integer(1), null);
+        tier.setRegion("region1");
+        
+        Tier tier2 = new Tier("name2", new Integer(1), new Integer(5), new Integer(1), null);
+        tier2.setRegion("region1");    
+
+        Set<Tier> tiers = new HashSet<Tier>();
+        tiers.add(tier);
+        tiers.add(tier2);
+
+        Environment env = new Environment();
+        
+        env.setName("environemntName");
+        env.addTier(tier);
+        env.addTier(tier2);
+        
+        boolean result = env.isDifferentRegions();
+        assertEquals (result, false);
+        
+        
+    }
+    
+    
+    @Test
+    public void testIsNetworkFederated () {
+    	
+    	ProductRelease productRelease = new ProductRelease("product", "2.0");
+        List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
+        productReleases.add(productRelease);
+    	
+    	Tier tier = new Tier("name1", new Integer(1), new Integer(5), new Integer(1), productReleases);
+        tier.setRegion("region1");
+        tier.addNetwork(new Network ("uno", VDC));
+        
+        Tier tier2 = new Tier("name2", new Integer(1), new Integer(5), new Integer(1), productReleases);
+        tier2.setRegion("region2");
+        tier2.addNetwork(new Network ("uno", VDC));
+
+        Set<Tier> tiers = new HashSet<Tier>();
+        tiers.add(tier);
+        tiers.add(tier2);
+
+        Environment envResult = new Environment();
+        envResult.setName("environemntName");
+        envResult.setTiers(tiers);
+        
+        boolean result = envResult.isNetworkFederated();
+        assertEquals (result, true);
+    }
+    
+    @Test
+    public void testNotIsNetworkFederated () {
+    	
+    	ProductRelease productRelease = new ProductRelease("product", "2.0");
+        List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
+        productReleases.add(productRelease);
+    	
+    	Tier tier = new Tier("name1", new Integer(1), new Integer(5), new Integer(1), productReleases);
+        tier.setRegion("region1");
+        tier.addNetwork(new Network ("uno2", VDC));
+        
+        Tier tier2 = new Tier("name2", new Integer(1), new Integer(5), new Integer(1), productReleases);
+        tier.setRegion("region2");
+        tier.addNetwork(new Network ("uno", VDC));
+
+        Set<Tier> tiers = new HashSet<Tier>();
+        tiers.add(tier);
+        tiers.add(tier2);
+
+        Environment envResult = new Environment();
+        envResult.setName("environemntName");
+        envResult.setTiers(tiers);
+        
+        boolean result = envResult.isNetworkFederated();
+        assertEquals (result, false);
+    }
+    
+    @Test
+    public void testgetRegionNetworks () {
+    	
+    	ProductRelease productRelease = new ProductRelease("product", "2.0");
+        List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
+        productReleases.add(productRelease);
+    	
+    	Tier tier = new Tier("name1", new Integer(1), new Integer(5), new Integer(1), productReleases);
+        tier.setRegion("region1");
+        tier.addNetwork(new Network ("uno2", VDC));
+        
+        Tier tier3 = new Tier("name3", new Integer(1), new Integer(5), new Integer(1), productReleases);
+        tier3.setRegion("region3");
+        tier3.addNetwork(new Network ("uno2", VDC));
+        
+        Tier tier2 = new Tier("name2", new Integer(1), new Integer(5), new Integer(1), productReleases);
+        tier2.setRegion("region2");
+        tier2.addNetwork(new Network ("uno", VDC));
+        
+        Tier tier4 = new Tier("name5", new Integer(1), new Integer(5), new Integer(1), productReleases);
+        tier4.setRegion("region2");
+        tier4.addNetwork(new Network ("uno2", VDC));
+
+        Set<Tier> tiers = new HashSet<Tier>();
+        tiers.add(tier);
+        tiers.add(tier2);
+        tiers.add(tier3);
+        tiers.add(tier4);
+
+        Environment envResult = new Environment();
+        envResult.setName("environemntName");
+        envResult.setTiers(tiers);
+        
+        Set<String> nets= envResult.getFederatedNetworks  ();
+        assertEquals (nets.size(), 1);
+
+    }
+
 
 }

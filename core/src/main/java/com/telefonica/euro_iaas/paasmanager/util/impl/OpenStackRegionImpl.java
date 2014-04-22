@@ -406,4 +406,9 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         this.client = client;
     }
 
+	public String getFederatedQuantumEndPoint(String token) throws OpenStackException {
+		 String url = getEndPointByNameAndRegionName("federatednetwork", getDefaultRegion(token), token);
+	     return url;
+	}
+
 }
