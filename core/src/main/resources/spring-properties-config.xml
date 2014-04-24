@@ -18,7 +18,7 @@
     <bean id="systemPropertiesProvider"
           class="com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProviderImpl">
         <property name="propertiesProvider" ref="propertiesProvider"/>
-        <property name="namespace" value="/SystemConfiguration.properties"/>
+        <property name="namespace" value="/config.CONFIG"/>
     </bean>
 
 </beans>

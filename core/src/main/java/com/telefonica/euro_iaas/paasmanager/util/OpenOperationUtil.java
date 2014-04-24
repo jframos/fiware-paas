@@ -247,5 +247,8 @@ public interface OpenOperationUtil {
      * @throws OpenStackException
      */
     String executeNovaRequest(HttpUriRequest request) throws OpenStackException ;
+	HttpUriRequest createJoinQuantumPostRequestRequest(
+			String resourceNetwoksFederated, String payload,
+			String applicationJson, String token) throws OpenStackException;
 
 }

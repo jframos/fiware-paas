@@ -504,4 +504,21 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
     }
 
 
+	public void joinNetworks(ClaudiaData claudiaData,
+			NetworkInstance networkInstance, NetworkInstance networkInstance2) throws InfrastructureException {
+		log.info("Join federated networks " + networkInstance.getNetworkName() + " with ids " + networkInstance.getIdNetwork() + " " +
+				networkInstance2.getIdNetwork());
+
+        try {
+            String response = openStackUtil.joinNetworks(networkInstance, networkInstance2, claudiaData.getUser().getToken());
+            log.debug(response);
+        } catch (OpenStackException e) {
+            String msm = "Error to join the federated network  " + networkInstance.getNetworkName() ;
+            log.error(msm);
+            throw new InfrastructureException(msm, e);
+        }
+		
+	}
+
+
 }
