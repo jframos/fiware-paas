@@ -4,27 +4,9 @@
 
 
     <New id="paasmanager" class="org.eclipse.jetty.webapp.WebAppContext">
-        <Set name="contextPath">/paasmanager</Set>
-
         <Set name="extractWAR">true</Set>
         <Set name="copyWebDir">false</Set>
-
     </New>
-
-    <Set name="handler">
-        <New id="RequestLog" class="org.eclipse.jetty.server.handler.RequestLogHandler">
-            <Set name="requestLog">
-                <New id="RequestLogImpl" class="org.eclipse.jetty.server.NCSARequestLog">
-                    <Set name="filename"><Property name="jetty.logs" default="logs"/>/logs/test-yyyy_mm_dd.request.log
-                    </Set>
-                    <Set name="filenameDateFormat">yyyy_MM_dd</Set>
-                    <Set name="LogTimeZone">GMT</Set>
-                    <Set name="retainDays">90</Set>
-                    <Set name="append">true</Set>
-                </New>
-            </Set>
-        </New>
-    </Set>
 
 
     <New id="paasmanager" class="org.eclipse.jetty.plus.jndi.Resource">
@@ -41,6 +23,42 @@
 
         </Arg>
     </New>
+
+    <!-- =========================================================== -->
+    <!-- Set handler Collection Structure -->
+    <!-- =========================================================== -->
+    <Set name="handler">
+        <!-- the collection of handlers that will handle the request -->
+        <New id="Handlers" class="org.eclipse.jetty.server.handler.HandlerCollection">
+            <Set name="handlers">
+                <Array type="org.eclipse.jetty.server.Handler">
+                    <!-- primarily handles the request and maps the request to a ContextHandler -->
+                    <Item>
+                        <New id="Contexts" class="org.eclipse.jetty.server.handler.ContextHandlerCollection"/>
+                    </Item>
+
+                    <!-- The default handler ... handles the request if not yet handled -->
+                    <Item>
+                        <New id="DefaultHandler" class="org.eclipse.jetty.server.handler.DefaultHandler"/>
+                    </Item>
+
+                    <!-- The handler for your request logs -->
+                    <Item>
+                        <New id="RequestLog" class="org.eclipse.jetty.server.handler.RequestLogHandler"/>
+                    </Item>
+                </Array>
+            </Set>
+        </New>
+    </Set>
+
+    <!-- ===================== -->
+    <!-- DefaultHandler config -->
+    <!-- ===================== -->
+
+    <Ref id="DefaultHandler">
+        <Set name="showContexts">false</Set>
+    </Ref>
+
 
 </Configure>
 

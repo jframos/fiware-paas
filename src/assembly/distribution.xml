@@ -36,9 +36,24 @@
                 <include>*.war</include>
             </includes>
         </fileSet>
+
+        <!-- create emtpy directories -->
         <fileSet>
-            <directory>${project.build.directory}/site</directory>
-            <outputDirectory>docs</outputDirectory>
+            <directory>./</directory>
+            <outputDirectory>/logs</outputDirectory>
+            <excludes>
+                <exclude>*/**</exclude>
+            </excludes>
         </fileSet>
+
+        <fileSet>
+            <directory>./</directory>
+            <outputDirectory>/work</outputDirectory>
+            <excludes>
+                <exclude>*/**</exclude>
+            </excludes>
+        </fileSet>
+
+
     </fileSets>
 </assembly>
