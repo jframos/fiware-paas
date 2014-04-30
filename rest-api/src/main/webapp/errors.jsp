@@ -1,6 +1,5 @@
 <%@ page import="com.telefonica.euro_iaas.paasmanager.rest.exception.APIException" %>
 <%@ page import="com.telefonica.euro_iaas.paasmanager.rest.exception.ErrorCode" %>
-<%@ page import="javax.ws.rs.WebApplicationException" %>
 <%@ page contentType="application/json" pageEncoding="UTF-8" %>
 {"errors":
 [

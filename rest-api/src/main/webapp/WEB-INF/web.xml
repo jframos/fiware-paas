@@ -140,30 +140,23 @@
     </servlet-mapping>
 
     <!--  ERROR PAGES -->
-    <servlet>
-        <servlet-name>errorJSP</servlet-name>
-        <jsp-file>/errors.jsp</jsp-file>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>errorJSP</servlet-name>
-        <url-pattern>/error</url-pattern>
-    </servlet-mapping>
 
     <error-page>
         <error-code>401</error-code>
-        <location>/error</location>
+        <location>/errors.jsp</location>
     </error-page>
     <error-page>
         <error-code>404</error-code>
-        <location>/error</location>
+        <location>/errors.jsp</location>
     </error-page>
     <error-page>
         <error-code>400</error-code>
-        <location>/error</location>
+        <location>/errors.jsp</location>
     </error-page>
     <error-page>
         <error-code>500</error-code>
-        <location>/error</location>
+        <location>/errors.jsp</location>
     </error-page>
+
 
 </web-app>

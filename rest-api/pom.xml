@@ -143,10 +143,32 @@
             <version>1.2</version>
         </dependency>
 
+        <!-- jetty -->
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-runner</artifactId>
+            <version>9.1.4.v20140401</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>javax.servlet.jsp.jstl</artifactId>
+                    <groupId>org.eclipse.jetty.orbit</groupId>
+                </exclusion>
+
+            </exclusions>
+        </dependency>
+
+        <!--
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-jsp</artifactId>
+            <version>9.1.4.v20140401</version>
+        </dependency> -->
 
     </dependencies>
 
     <build>
+        <finalName>paasmanager</finalName>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

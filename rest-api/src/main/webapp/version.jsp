@@ -6,6 +6,7 @@
 
     prop.load(getServletContext().getResourceAsStream("/META-INF/MANIFEST.MF"));
 
+    String applVersion = prop.getProperty("Implementation-Version");
     String buildNumber = prop.getProperty("Implementation-Build");
 
 %>
