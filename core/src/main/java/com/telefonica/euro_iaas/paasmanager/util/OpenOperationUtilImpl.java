@@ -726,5 +726,33 @@ public class OpenOperationUtilImpl implements OpenOperationUtil {
         this.openStackRegion = openStackRegion;
     }
 
+	public HttpUriRequest createJoinQuantumPostRequestRequest(
+			String resource, String payload,
+			String applicationJson, String token) throws OpenStackException {
+		log.debug("createJoinQuantumPostRequestRequest " + resource);
+        HttpPost request;
+
+        log.info("Payload " + payload);
+
+        String quantumUrl = openStackRegion.getFederatedQuantumEndPoint(token);
+        request = new HttpPost(quantumUrl + resource);
+
+        try {
+
+            request.setEntity(new StringEntity(payload));
+
+        } catch (NullPointerException e) {
+            log.warn(e.getMessage());
+        } catch (UnsupportedEncodingException ex) {
+            throw new OpenStackException(ex.getMessage());
+        }
+
+        request.setHeader(ACCEPT, APPLICATION_JSON);
+        request.setHeader(X_AUTH_TOKEN, token);
+        log.debug("user.getToken() " + token);
+
+        return request;
+	}
+
    
 }

@@ -1046,5 +1046,27 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         this.openStackConfigUtil = openStackConfigUtil;
     }
 
+	public String joinNetworks(NetworkInstance networkInstance,
+			NetworkInstance networkInstance2, String token) throws OpenStackException {
+		
+		String payload = "{\"net_id_1\":" + networkInstance.getIdNetwork()+" , \"net_id_2\":"+ networkInstance.getIdNetwork() + " }";				
+        HttpUriRequest request = openOperationUtil.createJoinQuantumPostRequestRequest(RESOURCE_NETWOKS_FEDERATED, payload, APPLICATION_JSON, token);
+       
+
+        String response = null;
+
+        try {
+            response = openOperationUtil.executeNovaRequest(request);
+            log.debug("Join networks");
+            log.debug(response);
+
+        } catch (Exception e) {
+            String errorMessage = "Error to join the two networks: " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        }
+        return response;
+	}
+
    
 }

@@ -367,4 +367,22 @@ public class EnvironmentInstance extends InstallableInstance {
 
         return envInstanceDto;
     }
+    
+    public NetworkInstance getNetworkInstanceFromNetwork (String networkName, String region) {
+
+    	for (TierInstance tierInstance: this.getTierInstances()) {
+    		if (!tierInstance.getTier().getRegion().equals (region)) {
+    			continue;
+    		}
+    		for (NetworkInstance net2: tierInstance.getNetworkInstances()) {
+				net2.getNetworkName().equals(networkName);
+					return net2;
+			}
+    		
+    	}
+        return null;
+
+    }
+
+	
 }
