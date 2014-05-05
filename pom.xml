@@ -9,8 +9,6 @@
     <version>1.1.0-SNAPSHOT</version>
 
 
-    <url>${ciURI}/sites/fiware/${project.artifactId}</url>
-
     <properties>
 
         <!-- TDigital PROPERTIES -->
@@ -25,11 +23,9 @@
         <repoName>fiware-paas</repoName>
 
         <scmURI>git@github.com:telefonicaid</scmURI>
-        <ciURI>http://ci-fiware-01.hi.inet</ciURI>
         <nexusURI>http://130.206.80.169</nexusURI>
         <issueURI>https://jirapdi.tid.es/browse</issueURI>
         <nexusRepositories>${nexusURI}/nexus/content/repositories</nexusRepositories>
-        <continousIntegrationSystemUrl>${ciURI}/jenkins</continousIntegrationSystemUrl>
         <continousIntegrationSystemProjectName>${repoName}</continousIntegrationSystemProjectName>
 
         <!-- repositories for distribution -->
@@ -48,10 +44,8 @@
         <!-- site -->
         <repoSiteId>nexus-site-repository</repoSiteId>
         <repoSiteName>repo-site</repoSiteName>
-        <repoSiteUrl>${ciURI}</repoSiteUrl>
 
         <!-- Quality -->
-        <sonar-maven-plugin.version>2.0</sonar-maven-plugin.version>
         <cobertura-maven-plugin.version>2.6</cobertura-maven-plugin.version>
 
         <!-- generic plugins -->
@@ -66,18 +60,19 @@
         <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 
-        <sonar.jacoco.itReportPath>${project.build.directory}/../integration-test/jacoco.exec
-        </sonar.jacoco.itReportPath>
 
         <!-- dependencies-->
 
-        <jersey.version>1.17.1</jersey.version>
+        <jersey.version>1.18.1</jersey.version>
 
 
         <!-- <spring.version>3.0.5.RELEASE</spring.version>-->
         <spring.version>3.1.0.RELEASE</spring.version>
         <!-- hibernate -->
         <hibernate.version>4.1.7.Final</hibernate.version>
+
+        <!-- javax.servlet -->
+        <javax.servlet.version>3.1.0</javax.servlet.version>
 
         <!-- ehcache -->
         <ehcache.version>2.7.4</ehcache.version>
@@ -87,12 +82,9 @@
         <copyright.year>2012</copyright.year>
         <junit.version>4.11</junit.version>
         <jmock.version>2.5.1</jmock.version>
-        <jvm.version>1.6</jvm.version>
-        <tomcat.version>6</tomcat.version>
+        <jvm.version>1.7</jvm.version>
         <maven-surefire-plugin.version>2.12.2</maven-surefire-plugin.version>
-        <tomcat.home>/usr/share/tomcat${tomcat.version}</tomcat.home>
 
-        <sonar.host.url>http://ci-cpr02.hi.inet:9000</sonar.host.url>
 
         <!-- Release generation -->
         <maven-jgitflow-plugin.version>1.0-alpha21.1</maven-jgitflow-plugin.version>
@@ -293,11 +285,161 @@
                 </configuration>
             </plugin>
 
-
         </plugins>
 
 
     </build>
+
+    <profiles>
+        <profile>
+            <id>rpm</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>rpm-maven-plugin</artifactId>
+                            <version>2.1-alpha-4</version>
+                            <executions>
+                                <execution>
+                                    <id>generate-rpm</id>
+                                    <goals>
+                                        <goal>rpm</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                            <configuration>
+                                <license>GPL (c) 2005, SWWDC</license>
+                                <distribution>Trash 2005</distribution>
+                                <group>Application/Collectors</group>
+                                <prefix>/usr/local</prefix>
+                                <defineStatements>
+                                    <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
+                                </defineStatements>
+                                <mappings>
+                                    <mapping>
+                                        <directory>/usr/local/bin/landfill</directory>
+                                        <filemode>440</filemode>
+                                        <username>dumper</username>
+                                        <groupname>dumpgroup</groupname>
+                                        <sources>
+                                            <source>
+                                                <location>target/classes</location>
+                                            </source>
+                                        </sources>
+                                    </mapping>
+                                    <mapping>
+                                        <directory>/usr/local/doc/landfill</directory>
+                                        <documentation>true</documentation>
+                                        <filemode>444</filemode>
+                                        <username>dumper</username>
+                                        <groupname>dumpgroup</groupname>
+                                        <sources>
+                                            <source>
+                                                <location>target/site</location>
+                                            </source>
+                                        </sources>
+                                    </mapping>
+                                    <mapping>
+                                        <directory>/usr/local/lib</directory>
+                                        <filemode>750</filemode>
+                                        <username>dumper</username>
+                                        <groupname>dumpgroup</groupname>
+                                        <dependency>
+                                            <includes>
+                                                <include>jmock:jmock</include>
+                                                <include>javax.servlet:servlet-api:2.4</include>
+                                            </includes>
+                                            <excludes>
+                                                <exclude>junit:junit</exclude>
+                                            </excludes>
+                                        </dependency>
+                                    </mapping>
+                                    <mapping>
+                                        <directory>/usr/local/bin</directory>
+                                        <filemode>750</filemode>
+                                        <username>dumper</username>
+                                        <groupname>dumpgroup</groupname>
+                                        <sources>
+                                            <source>
+                                                <location>src/main/bin</location>
+                                            </source>
+                                            <softlinkSource>
+                                                <location>/usr/local/bin/new.sh</location>
+                                                <destination>old.sh</destination>
+                                            </softlinkSource>
+                                        </sources>
+                                    </mapping>
+                                    <mapping>
+                                        <directory>/usr/local/oldbin</directory>
+                                        <filemode>750</filemode>
+                                        <username>dumper</username>
+                                        <groupname>dumpgroup</groupname>
+                                        <sources>
+                                            <softlinkSource>
+                                                <location>/usr/local/bin</location>
+                                            </softlinkSource>
+                                        </sources>
+                                    </mapping>
+                                    <mapping>
+                                        <directory>/usr/local/conf/landfill</directory>
+                                        <configuration>true</configuration>
+                                        <filemode>640</filemode>
+                                        <username>dumper</username>
+                                        <groupname>dumpgroup</groupname>
+                                        <sources>
+                                            <source>
+                                                <location>src/main/conf</location>
+                                            </source>
+                                        </sources>
+                                    </mapping>
+                                    <mapping>
+                                        <directory>/usr/local/log/landfill</directory>
+                                        <filemode>750</filemode>
+                                        <username>dumper</username>
+                                        <groupname>dumpgroup</groupname>
+                                    </mapping>
+                                </mappings>
+                                <preinstallScriptlet>
+                                    <script>echo "installing now"</script>
+                                </preinstallScriptlet>
+                                <postinstallScriptlet>
+                                    <scriptFile>src/main/scripts/postinstall</scriptFile>
+                                    <fileEncoding>utf-8</fileEncoding>
+                                </postinstallScriptlet>
+                                <preremoveScriptlet>
+                                    <scriptFile>src/main/scripts/preremove</scriptFile>
+                                    <fileEncoding>utf-8</fileEncoding>
+                                </preremoveScriptlet>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+
+        <profile>
+            <id>deb</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>net.sf.debian-maven</groupId>
+                            <artifactId>debian-maven-plugin</artifactId>
+                            <version>1.0.6</version>
+                            <configuration>
+                                <!--
+                                <packageName>my-package</packageName>
+                                <packageVersion>1.0.0</packageVersion>
+                                ...
+                                -->
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
 
 
     <repositories>
@@ -393,7 +535,7 @@
 
     <distributionManagement>
 
-        <!-- RPM Releases Repository -->
+        <!-- Releases Repository -->
         <repository>
             <id>${repoMavenId}</id>
             <name>${repoMavenName}</name>
@@ -401,7 +543,7 @@
             <uniqueVersion>false</uniqueVersion>
         </repository>
 
-        <!-- RPM Snapshots Repository -->
+        <!-- Snapshots Repository -->
         <snapshotRepository>
             <id>${repoMavenSnapshotId}</id>
             <name>${repoMavenSnapshotName}</name>
@@ -409,12 +551,6 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
 
-        <!-- Project Site -->
-        <site>
-            <id>${repoSiteId}</id>
-            <name>${repoSiteName}</name>
-            <url>${repoSiteUrl}/fiware/${project.artifactId}</url>
-        </site>
 
     </distributionManagement>
 

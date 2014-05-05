@@ -30,12 +30,4 @@
     </New>
 
 
-    <!-- by Code Range -->
-    <Get name="errorHandler">
-        <Call name="addErrorPage">
-            <Arg type="int">500</Arg>
-            <Arg type="String">/errors.jsp</Arg>
-        </Call>
-    </Get>
-
 </Configure>
