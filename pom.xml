@@ -294,156 +294,156 @@
         <profile>
             <id>rpm</id>
             <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>rpm-maven-plugin</artifactId>
-                            <version>2.1-alpha-4</version>
-                            <executions>
-                                <execution>
-                                    <id>generate-rpm</id>
-                                    <goals>
-                                        <goal>rpm</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                            <configuration>
-                                <license>GPL (c) 2005, SWWDC</license>
-                                <distribution>Trash 2005</distribution>
-                                <group>Application/Collectors</group>
-                                <prefix>/usr/local</prefix>
-                                <defineStatements>
-                                    <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
-                                </defineStatements>
-                                <mappings>
-                                    <mapping>
-                                        <directory>/usr/local/bin/landfill</directory>
-                                        <filemode>440</filemode>
-                                        <username>dumper</username>
-                                        <groupname>dumpgroup</groupname>
-                                        <sources>
-                                            <source>
-                                                <location>target/classes</location>
-                                            </source>
-                                        </sources>
-                                    </mapping>
-                                    <mapping>
-                                        <directory>/usr/local/doc/landfill</directory>
-                                        <documentation>true</documentation>
-                                        <filemode>444</filemode>
-                                        <username>dumper</username>
-                                        <groupname>dumpgroup</groupname>
-                                        <sources>
-                                            <source>
-                                                <location>target/site</location>
-                                            </source>
-                                        </sources>
-                                    </mapping>
-                                    <mapping>
-                                        <directory>/usr/local/lib</directory>
-                                        <filemode>750</filemode>
-                                        <username>dumper</username>
-                                        <groupname>dumpgroup</groupname>
-                                        <dependency>
-                                            <includes>
-                                                <include>jmock:jmock</include>
-                                                <include>javax.servlet:servlet-api:2.4</include>
-                                            </includes>
-                                            <excludes>
-                                                <exclude>junit:junit</exclude>
-                                            </excludes>
-                                        </dependency>
-                                    </mapping>
-                                    <mapping>
-                                        <directory>/usr/local/bin</directory>
-                                        <filemode>750</filemode>
-                                        <username>dumper</username>
-                                        <groupname>dumpgroup</groupname>
-                                        <sources>
-                                            <source>
-                                                <location>src/main/bin</location>
-                                            </source>
-                                            <softlinkSource>
-                                                <location>/usr/local/bin/new.sh</location>
-                                                <destination>old.sh</destination>
-                                            </softlinkSource>
-                                        </sources>
-                                    </mapping>
-                                    <mapping>
-                                        <directory>/usr/local/oldbin</directory>
-                                        <filemode>750</filemode>
-                                        <username>dumper</username>
-                                        <groupname>dumpgroup</groupname>
-                                        <sources>
-                                            <softlinkSource>
-                                                <location>/usr/local/bin</location>
-                                            </softlinkSource>
-                                        </sources>
-                                    </mapping>
-                                    <mapping>
-                                        <directory>/usr/local/conf/landfill</directory>
-                                        <configuration>true</configuration>
-                                        <filemode>640</filemode>
-                                        <username>dumper</username>
-                                        <groupname>dumpgroup</groupname>
-                                        <sources>
-                                            <source>
-                                                <location>src/main/conf</location>
-                                            </source>
-                                        </sources>
-                                    </mapping>
-                                    <mapping>
-                                        <directory>/usr/local/log/landfill</directory>
-                                        <filemode>750</filemode>
-                                        <username>dumper</username>
-                                        <groupname>dumpgroup</groupname>
-                                    </mapping>
-                                </mappings>
-                                <preinstallScriptlet>
-                                    <script>echo "installing now"</script>
-                                </preinstallScriptlet>
-                                <postinstallScriptlet>
-                                    <scriptFile>src/main/scripts/postinstall</scriptFile>
-                                    <fileEncoding>utf-8</fileEncoding>
-                                </postinstallScriptlet>
-                                <preremoveScriptlet>
-                                    <scriptFile>src/main/scripts/preremove</scriptFile>
-                                    <fileEncoding>utf-8</fileEncoding>
-                                </preremoveScriptlet>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>rpm-maven-plugin</artifactId>
+                        <version>2.1-alpha-4</version>
+                        <inherited>false</inherited>
+                        <executions>
+                            <execution>
+                                <inherited>false</inherited>
+                                <id>generate-rpm</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>rpm</goal>
+                                </goals>
+                            </execution>
+
+                        </executions>
+                        <configuration>
+                            <distribution>FIWARE 2014</distribution>
+                            <group>FIWARE</group>
+                            <prefix>paasmanager</prefix>
+
+                            <!-- Basics -->
+                            <name>paasmanager</name>
+                            <version>${project.version}</version>
+
+                            <copyright>copyright 2014</copyright>
+                            <packager>fiware</packager>
+
+                            <group>None</group>
+                            <needarch>noarch</needarch>
+
+                            <defineStatements>
+                                <!-- escamez: To speed up rpm creation, no jar re-compression -->
+                                <defineStatement>_binaries_in_noarch_packages_terminate_build 0</defineStatement>
+                                <defineStatement>_prefix /usr/local/paasmanager</defineStatement>
+                            </defineStatements>
+
+                            <requires>
+                                <require>java-1.7.0-openjdk</require>
+                            </requires>
+                            <mappings>
+                                <mapping>
+                                    <directory>/usr/local/paasmanager</directory>
+                                    <sources>
+                                        <source>
+                                            <location>${project.build.directory}/paas-manager-server-dist</location>
+                                        </source>
+                                    </sources>
+                                </mapping>
+                            </mappings>
+                            <preinstallScriptlet>
+                                <script>echo "installing now"</script>
+                            </preinstallScriptlet>
+                            <postinstallScriptlet>
+                                <script>echo "installed in /usr/local/paasmanager"</script>
+                            </postinstallScriptlet>
+                            <!--                        <preremoveScriptlet>
+
+                                                    </preremoveScriptlet>
+                                                    -->
+                        </configuration>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
 
         <profile>
-            <id>deb</id>
+            <id>debian</id>
             <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>net.sf.debian-maven</groupId>
-                            <artifactId>debian-maven-plugin</artifactId>
-                            <version>1.0.6</version>
-                            <configuration>
-                                <!--
-                                <packageName>my-package</packageName>
-                                <packageVersion>1.0.0</packageVersion>
-                                ...
-                                -->
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
+                <plugins>
+                    <plugin>
+                        <artifactId>jdeb</artifactId>
+                        <groupId>org.vafer</groupId>
+                        <version>1.1.1</version>
+                        <inherited>false</inherited>
+                        <executions>
+                            <execution>
+                                <inherited>false</inherited>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jdeb</goal>
+                                </goals>
+                                <configuration>
+                                    <verbose>true</verbose>
+                                    <snapshotExpand>true</snapshotExpand>
+                                    <!-- expand "SNAPSHOT" to what is in the "USER" env variable -->
+                                    <snapshotEnv>USER</snapshotEnv>
+                                    <verbose>true</verbose>
+                                    <controlDir>${basedir}/src/deb/control</controlDir>
+                                    <dataSet>
+
+                                        <data>
+                                            <src>/target/*.zip</src>
+                                            <type>file</type>
+                                            <mapper>
+                                                <type>perm</type>
+                                                <prefix>/usr/share/jdeb/lib</prefix>
+                                                <user>loader</user>
+                                                <group>loader</group>
+                                            </mapper>
+                                        </data>
+
+                                        <data>
+                                            <type>link</type>
+                                            <symlink>true</symlink>
+                                            <linkName>/usr/share/java/jdeb.jar</linkName>
+                                            <linkTarget>/usr/share/jdeb/lib/${project.build.finalName}.jar
+                                            </linkTarget>
+                                        </data>
+
+                                        <data>
+                                            <src>${basedir}/src/deb/init.d</src>
+                                            <type>directory</type>
+                                            <mapper>
+                                                <type>perm</type>
+                                                <prefix>/etc/init.d</prefix>
+                                                <user>loader</user>
+                                                <group>loader</group>
+                                            </mapper>
+                                        </data>
+                                        <!--
+                                           <data>
+                                               <type>template</type>
+                                               <paths>
+                                                   <path>etc/${project.artifactId}</path>
+                                                   <path>var/lib/${project.artifactId}</path>
+                                                   <path>var/log/${project.artifactId}</path>
+                                                   <path>var/run/${project.artifactId}</path>
+                                               </paths>
+                                               <mapper>
+                                                   <type>perm</type>
+                                                   <user>loader</user>
+                                                   <group>loader</group>
+                                               </mapper>
+                                           </data>
+                                           -->
+
+                                    </dataSet>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
     </profiles>
 
 
     <repositories>
-        <!-- ci-cpr02 Nexus Repositories -->
         <repository>
             <id>${repoMavenSnapshotId}</id>
             <name>${repoMavenSnapshotName}</name>
@@ -459,6 +459,7 @@
             <name>${repoMavenThirdpartyName}</name>
             <url>${repoMavenThirdpartyUrl}</url>
         </repository>
+
 
         <!-- Remote Repositories -->
         <repository>
