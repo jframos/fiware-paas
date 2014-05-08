@@ -135,11 +135,14 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
             throws IOException, ServletException {
 
         final boolean debug = logger.isDebugEnabled();
+        logger.debug ("doFilter");
         final HttpServletRequest request = (HttpServletRequest) req;
         final HttpServletResponse response = (HttpServletResponse) res;
 
         String header = request.getHeader(OPENSTACK_HEADER_TOKEN);
         String pathInfo = request.getPathInfo();
+        logger.debug (header);
+        logger.debug (pathInfo);
 
         if (pathInfo.equals("/") || pathInfo.equals("/extensions")) {
             /**
@@ -155,6 +158,8 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
             try {
                 String token = header;
                 String tenantId = request.getHeader(OPENSTACK_HEADER_TENANTID);
+                logger.debug(tenantId);
+                logger.debug(token);
                 // String tenantId = request.getPathInfo().split("/")[3];
 
                 if (debug) {
