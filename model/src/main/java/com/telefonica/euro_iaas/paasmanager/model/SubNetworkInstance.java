@@ -61,6 +61,10 @@ public class SubNetworkInstance {
     private String idSubNet;
 
     private String idNetwork;
+    
+    private String region;
+    
+    private String vdc;
 
     private String cidr;
 
@@ -77,17 +81,21 @@ public class SubNetworkInstance {
     /**
      * @param networkName
      */
-    public SubNetworkInstance(String name) {
+    public SubNetworkInstance(String name, String vdc, String region) {
         this.name = name;
         this.cidr = "10.100." + 1 + ".0/24";
+        this.region = region;
+        this.vdc=vdc;
     }
 
     /**
      * @param networkName
      */
-    public SubNetworkInstance(String name, String id) {
+    public SubNetworkInstance(String name, String vdc, String region, String id) {
         this.name = name;
         this.cidr = "10.100." + id + ".0/24";
+        this.region = region;
+        this.vdc = vdc;
     }
     
     public void setId (Long id) {
@@ -122,6 +130,10 @@ public class SubNetworkInstance {
      */
     public String getName() {
         return name;
+    }
+    
+    public String getRegion() {
+        return region;
     }
 
     /**

@@ -65,6 +65,8 @@ public class Network {
 
     private String name;
     
+    private String region;
+    
     private String vdc;
     
 
@@ -81,9 +83,10 @@ public class Network {
     /**
      * @param networkName
      */
-    public Network(String name, String vdc) {
+    public Network(String name, String vdc, String region) {
         this.name = name;
         this.vdc = vdc;
+        this.region = region;
         subNets = new HashSet<SubNetwork>();
     }
 
@@ -155,6 +158,10 @@ public class Network {
         return name;
     }
     
+    public String getRegion() {
+        return region;
+    }
+    
 
     public void setNetworkName(String name) {
         this.name=name;
@@ -207,9 +214,9 @@ public class Network {
     * @return
     */
     public NetworkInstance toNetworkInstance() {
-        NetworkInstance networkInstance = new NetworkInstance(this.name, vdc);
+        NetworkInstance networkInstance = new NetworkInstance(this.name, vdc, region);
         for (SubNetwork subnet: this.getSubNets()) {
-            SubNetworkInstance subNetInstance = subnet.toInstance();
+            SubNetworkInstance subNetInstance = subnet.toInstance(vdc, region);
             networkInstance.addSubNet(subNetInstance);
         }
         return networkInstance;

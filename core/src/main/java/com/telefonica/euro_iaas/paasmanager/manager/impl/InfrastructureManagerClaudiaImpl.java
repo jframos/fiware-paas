@@ -380,7 +380,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         Tier tier = tierInstance.getTier();
         tier = tierManager.loadTierWithNetworks(tier.getName(), data.getVdc(), tier.getEnviromentName());
         // Creating networks...
-        log.debug("Deploying network for tier instance " + tierInstance.getName() + " " + tier.getNetworks());
+        log.debug("Deploying network for tier instance " + tierInstance.getName() + " " + tier.getNetworks() + " region " + tier.getRegion());
         List<Network> networkToBeDeployed = new ArrayList<Network>();
         for (Network network : tier.getNetworks()) {
             log.debug("Network to be added " + network.getNetworkName());
@@ -396,13 +396,13 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         }
 
         for (Network network : networkToBeDeployed) {
-            log.debug("Network instance to be deployed: " + network.getNetworkName() + " vdc " + data.getVdc());
-            network = networkManager.load(network.getNetworkName(), data.getVdc());
+            log.debug("Network instance to be deployed: " + network.getNetworkName() + " vdc " + data.getVdc() + " " + network.getRegion());
+            network = networkManager.load(network.getNetworkName(), data.getVdc(), network.getRegion());
             NetworkInstance networkInst = network.toNetworkInstance();
-            log.debug("Network instance to be deployed: " + network.getNetworkName() + " vdc " + data.getVdc());
+            log.debug("Network instance to be deployed: " + network.getNetworkName() + " vdc " + data.getVdc() + " region " + networkInst.getRegionName());
 
             try {
-                networkInst = networkInstanceManager.load(networkInst.getNetworkName(), data.getVdc());
+                networkInst = networkInstanceManager.load(networkInst.getNetworkName(), data.getVdc(), tier.getRegion());
                 log.debug("the network inst" + networkInst.getNetworkName() + " already exists");
             } catch (EntityNotFoundException e1) {
                 try {

@@ -73,9 +73,9 @@ public class NetworkManagerImpl implements NetworkManager {
         if (network.getVdc()== null ){
             network.setVdc("");
         }
-        if (exists(network.getNetworkName(), network.getVdc())) {
+        if (exists(network.getNetworkName(), network.getVdc(),network.getRegion())) {
             
-            networkDB = networkDao.load(network.getNetworkName(), network.getVdc());
+            networkDB = networkDao.load(network.getNetworkName(), network.getVdc(), network.getRegion());
             log.debug("The network " + network.getNetworkName() + " already exists with subnets  " + networkDB.getSubNets());
             
             if (networkDB.getSubNets().isEmpty()) {
@@ -129,7 +129,7 @@ public class NetworkManagerImpl implements NetworkManager {
         try {
             subNetwork = subNetworkManager.create(subNetwork);
         } catch (AlreadyExistsEntityException e) {
-            subNetwork = subNetworkManager.load(subNetwork.getName());
+            subNetwork = subNetworkManager.load(subNetwork.getName(), subNetwork.getVdc(), subNetwork.getRegion());
         }
         network.updateSubNet(subNetwork);
         log.debug("SubNetwork " + subNetwork.getName() + " in network  " + network.getNetworkName() + " deployed");
@@ -149,7 +149,7 @@ public class NetworkManagerImpl implements NetworkManager {
      * @throws InfrastructureException
      */
     private void createDefaultSubNetwork(Network network) throws InvalidEntityException, AlreadyExistsEntityException, EntityNotFoundException {
-        SubNetwork subNet = new SubNetwork("sub-net-" + network.getNetworkName());
+        SubNetwork subNet = new SubNetwork("sub-net-" + network.getNetworkName(), network.getVdc(), network.getRegion());
         createSubNetwork(network, subNet);
     }
 
@@ -207,8 +207,8 @@ public class NetworkManagerImpl implements NetworkManager {
      * @param networkName
      * @return the network
      */
-    public Network load(String networkName, String vdc) throws EntityNotFoundException {
-        return networkDao.load(networkName, vdc);
+    public Network load(String networkName, String vdc, String region) throws EntityNotFoundException {
+        return networkDao.load(networkName, vdc, region);
     }
 
     public void setNetworkDao(NetworkDao networkDao) {
@@ -242,9 +242,9 @@ public class NetworkManagerImpl implements NetworkManager {
     /**
      * It checks if the network already exists.
      */
-    public boolean exists(String networkName, String vdc) {
+    public boolean exists(String networkName, String vdc, String region) {
         try {
-            networkDao.load(networkName, vdc);
+            networkDao.load(networkName, vdc, region);
             return true;
         } catch (EntityNotFoundException e) {
             return false;

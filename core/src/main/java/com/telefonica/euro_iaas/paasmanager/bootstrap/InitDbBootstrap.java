@@ -157,7 +157,7 @@ public class InitDbBootstrap implements ServletContextListener {
         }
 */
 
-        try {
+     /*   try {
             osDao.load("95");
             osDao.load("94");
         } catch (EntityNotFoundException e) {
@@ -269,7 +269,7 @@ public class InitDbBootstrap implements ServletContextListener {
                  * tomcat7Tier = tierDao.create(tomcat7Tier);
                  */
 
-                Tier tomcat6Tier = new Tier("tomcat6Tier", 1, 1, 1, productReleasesTomcat6);
+       /*         Tier tomcat6Tier = new Tier("tomcat6Tier", 1, 1, 1, productReleasesTomcat6);
                 tomcat6Tier.setImage("44dcdba3-a75d-46a3-b209-5e9035d2435e");
                 tomcat6Tier.setIcono("icono");
                 tomcat6Tier.setFlavour("1");
@@ -296,7 +296,7 @@ public class InitDbBootstrap implements ServletContextListener {
                  * tierDao.create(mysql51Tier);
                  */
 
-                Tier haproxy10Tier = new Tier("haproxy10Tier", 1, 1, 1, productReleasesHaproxy10);
+    /*            Tier haproxy10Tier = new Tier("haproxy10Tier", 1, 1, 1, productReleasesHaproxy10);
                 haproxy10Tier.setImage("sdc-template-paas");
                 haproxy10Tier.setIcono("icono");
                 haproxy10Tier.setFlavour("1");
@@ -498,7 +498,7 @@ public class InitDbBootstrap implements ServletContextListener {
             } catch (AlreadyExistsEntityException e1) {
                 log.error("alread exists " + e1);
             }
-        }
+        }*/
 
         log.trace("InitDbBootstrap. END");
     }

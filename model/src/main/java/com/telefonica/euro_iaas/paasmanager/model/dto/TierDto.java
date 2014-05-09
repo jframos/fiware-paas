@@ -232,9 +232,9 @@ public class TierDto {
         for (NetworkDto networkDto : this.getNetworksDto()) {
             Network network ;
             if (vdc == null) {
-                network = networkDto.fromDto("");
+                network = networkDto.fromDto("", this.getRegion());
             } else {
-                network = networkDto.fromDto(vdc);
+                network = networkDto.fromDto(vdc, this.getRegion());
             }
             tier.addNetwork(network);
         }

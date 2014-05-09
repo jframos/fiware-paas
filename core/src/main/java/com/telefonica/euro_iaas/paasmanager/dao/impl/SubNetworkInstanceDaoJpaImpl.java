@@ -26,12 +26,16 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.SubNetworkInstanceDao;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 
 /**
@@ -53,8 +57,8 @@ public class SubNetworkInstanceDaoJpaImpl extends AbstractBaseDao<SubNetworkInst
     /**
      * Loads the subnet.
      */
-    public SubNetworkInstance load(String arg0) throws EntityNotFoundException {
-        return super.loadByField(SubNetworkInstance.class, "name", arg0);
+    public SubNetworkInstance load(String name, String vdc, String region) throws EntityNotFoundException {
+        return findByNetworkInstanceName(name, vdc, region);
     }
 
     public boolean exists(String key) {
@@ -65,5 +69,28 @@ public class SubNetworkInstanceDaoJpaImpl extends AbstractBaseDao<SubNetworkInst
             return false;
         }
     }
+    
+    private SubNetworkInstance findByNetworkInstanceName(String name, String vdc, String region) throws EntityNotFoundException {
+        Query query = getEntityManager().createQuery(
+                "select p from SubNetworkInstance p where p.name = :name and p.vdc = :vdc and p.region = :region");
+        query.setParameter("name", name);
+        query.setParameter("vdc", vdc);
+        query.setParameter("region", region);
+        SubNetworkInstance subNetworkInstance = null;
+        try {
+        	subNetworkInstance = (SubNetworkInstance) query.getSingleResult();
+        } catch (NoResultException e) {
+            String message = " No subNetworkInstance found in the database with id: " + name + " Exception: "
+                    + e.getMessage();
+            throw new EntityNotFoundException(NetworkInstance.class, "name", name);
+        }
+        return subNetworkInstance;
+    }
+
+	@Override
+	public SubNetworkInstance load(String arg0) throws EntityNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

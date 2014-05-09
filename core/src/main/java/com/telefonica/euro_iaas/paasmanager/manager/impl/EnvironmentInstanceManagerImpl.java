@@ -119,6 +119,12 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         environmentInstance.setStatus(Status.INIT);
 
         environmentInstance = insertEnvironmentInstanceInDatabase(environmentInstance);
+        
+        log.info("Is the environmetn federated ? ");
+        if (environment.isNetworkFederated ()) {
+        	log.info(" yes Is the environmetn federated ");
+        	
+        }
 
         log.info("Creating the infrastructure");
         environmentInstance.setStatus(Status.DEPLOYING);
@@ -166,7 +172,9 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             throw new ProductInstallatorException(e);
         }
         
+        log.info("Is the environmetn federated ? ");
         if (environment.isNetworkFederated ()) {
+        	log.info(" yes Is the environmetn federated ");
         	infrastructureManager.federatedNetworks (environmentInstance);
         }
 

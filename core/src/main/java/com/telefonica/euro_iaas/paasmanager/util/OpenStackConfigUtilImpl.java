@@ -135,7 +135,7 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
             for (int i = 0; i< jsonNetworks.length(); i++) {
                 
                 JSONObject jsonNet = jsonNetworks.getJSONObject(i);
-                NetworkInstance net = isPublicNetwork (jsonNet, adminUser.getUserName());
+                NetworkInstance net = isPublicNetwork (jsonNet, adminUser.getUserName(), region);
                 
                 if (net != null)
                 {
@@ -182,7 +182,7 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
 	    	for (int i = 0; i< jsonNetworks.length(); i++) {
         
 	    		JSONObject jsonNet = jsonNetworks.getJSONObject(i);
-	    		NetworkInstance net = isPublicNetwork (jsonNet, adminUser.getUserName());
+	    		NetworkInstance net = isPublicNetwork (jsonNet, adminUser.getUserName(), region);
 	    		if (net != null)
 	    		{
 	    			regionCache.putUrl("floating", "net", net.getNetworkName());
@@ -258,12 +258,12 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
 
     }
     
-    private NetworkInstance isPublicNetwork(JSONObject jsonNet, String vdc)  {
+    private NetworkInstance isPublicNetwork(JSONObject jsonNet, String vdc, String region)  {
     	log.debug ("looking for vdc " + vdc);
 
         NetworkInstance netInst;
         try {
-            netInst = NetworkInstance.fromJson(jsonNet);
+            netInst = NetworkInstance.fromJson(jsonNet, region);
         } catch (JSONException e) {
             log.warn("Error to parser the json for the network");
             return null;
@@ -278,7 +278,7 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
             return null;
         }
         
-        if (!vdc.equals(netInst.getTenantId())) {
+        if (!vdc.contains(netInst.getTenantId())) {
         	log.debug("vdc " + vdc + " tenant id " + netInst.getTenantId());
             return null;
         }
@@ -295,7 +295,7 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
             return null;
         }
         log.debug ("router " + routerInst.getName() + " " + routerInst.getTenantId() + " " + routerInst.getNetworkId() + " " + vdc);
-        if (!vdc.equals(routerInst.getTenantId())) {
+        if (!vdc.contains(routerInst.getTenantId())) {
             return null;
         }
 

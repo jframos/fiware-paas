@@ -117,8 +117,8 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
     /**
      * To obtain the subnetwork.
      */
-    public SubNetworkInstance load(String name) throws EntityNotFoundException {
-        return subNetworkInstanceDao.load(name);
+    public SubNetworkInstance load(String name, String vdc, String region) throws EntityNotFoundException {
+        return subNetworkInstanceDao.load(name, vdc, region);
     }
 
     public void setNetworkClient(NetworkClient networkClient) {

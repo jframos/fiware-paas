@@ -209,9 +209,9 @@ public class TierManagerImpl implements TierManager {
         }
 
         for (Network network : networkToBeDeployed) {
-            if (networkManager.exists(network.getNetworkName(), network.getVdc())) {
+            if (networkManager.exists(network.getNetworkName(), network.getVdc(), tier.getRegion())) {
                 log.debug("the network " + network.getNetworkName() + " already exists");
-                network = networkManager.load(network.getNetworkName(), network.getVdc());
+                network = networkManager.load(network.getNetworkName(), network.getVdc(), tier.getRegion());
 
             } else {
                 network = networkManager.create(network);
@@ -511,7 +511,7 @@ public class TierManagerImpl implements TierManager {
         for (Network net : networskout) {
 
             try {
-                net = networkManager.load(net.getNetworkName(), net.getVdc());
+                net = networkManager.load(net.getNetworkName(), net.getVdc(), net.getRegion());
                 log.debug("Adding network " + net.getNetworkName() + "-" + " to tier " + tier.getName());
                 tier.addNetwork(net);
                 update(tier);
@@ -610,7 +610,7 @@ public class TierManagerImpl implements TierManager {
             try {
                 net = networkManager.create(net);
             } catch (AlreadyExistsEntityException e) {
-                net = networkManager.load(net.getNetworkName(), net.getVdc());
+                net = networkManager.load(net.getNetworkName(), net.getVdc(), net.getRegion());
             }
             tierold.addNetwork(net);
             update(tierold);

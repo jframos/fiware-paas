@@ -36,6 +36,6 @@ import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
  */
 public interface NetworkInstanceDao extends BaseDAO<NetworkInstance, String> {
     
-    NetworkInstance load(String name, String vdc) throws EntityNotFoundException ;
+    NetworkInstance load(String name, String vdc, String region) throws EntityNotFoundException ;
 
 }

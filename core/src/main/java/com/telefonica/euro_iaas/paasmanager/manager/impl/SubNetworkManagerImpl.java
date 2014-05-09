@@ -59,7 +59,7 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
         log.debug("Create subnetwork " + subNetwork.getName());
 
         try {
-        	subNetwork = subNetworkDao.load(subNetwork.getName());
+        	subNetwork = subNetworkDao.load(subNetwork.getName(), subNetwork.getVdc(), subNetwork.getRegion());
             throw new AlreadyExistsEntityException(subNetwork);
 
         } catch (EntityNotFoundException e1) {
@@ -108,8 +108,8 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
      * @param networkName
      * @return the network
      */
-    public SubNetwork load(String name) throws EntityNotFoundException {
-        return subNetworkDao.load(name);
+    public SubNetwork load(String name, String vdc, String region) throws EntityNotFoundException {
+        return subNetworkDao.load(name, vdc, region);
     }
 
     public void setSubNetworkDao(SubNetworkDao subNetworkDao) {
@@ -125,5 +125,6 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
     public SubNetwork update(SubNetwork subNetwork) throws InvalidEntityException {
     	return subNetworkDao.update(subNetwork);
     }
+
 
 }

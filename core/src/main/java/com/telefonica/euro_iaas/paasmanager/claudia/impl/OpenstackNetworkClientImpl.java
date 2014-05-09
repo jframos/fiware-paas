@@ -147,7 +147,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             log.debug(response);
             // "network-" + claudiaData.getUser().getTenantName()
             JSONObject jsonNetworks = new JSONObject(response).getJSONObject("network");
-            networkInstance = NetworkInstance.fromJson(jsonNetworks);
+            networkInstance = NetworkInstance.fromJson(jsonNetworks, region);
             log.debug("Network id " + networkInstance.getIdNetwork() + " for network name " + networkInstance.getNetworkName());
         } catch (OpenStackException e) {
             String msm = "Error to deploy the defaul network " + e.getMessage();
@@ -343,7 +343,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             for (int i = 0; i< jsonNetworks.length(); i++) {
             	
             	JSONObject jsonNet = jsonNetworks.getJSONObject(i);
-            	NetworkInstance netInst = NetworkInstance.fromJson(jsonNet);
+            	NetworkInstance netInst = NetworkInstance.fromJson(jsonNet, region);
             	networks.add(netInst);
 
             }

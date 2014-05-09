@@ -78,8 +78,8 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         log.debug("Create network instance " + networkInstance.getNetworkName() + " vdc " +  claudiaData.getVdc());
         
 
-        if (exists(networkInstance.getNetworkName(), claudiaData.getVdc())) {
-            networkInstance = networkInstanceDao.load(networkInstance.getNetworkName(), claudiaData.getVdc());
+        if (exists(networkInstance.getNetworkName(), claudiaData.getVdc(), region)) {
+            networkInstance = networkInstanceDao.load(networkInstance.getNetworkName(), claudiaData.getVdc(), region);
             log.debug("The network already exists");
         } else {
             networkClient.deployNetwork(claudiaData, networkInstance, region);
@@ -185,7 +185,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         }
 
         log.debug("Deleting the public interface interfaces");
-        networkInstance = networkInstanceDao.load(networkInstance.getNetworkName(), claudiaData.getVdc());
+        networkInstance = networkInstanceDao.load(networkInstance.getNetworkName(), claudiaData.getVdc(), region);
         networkClient.deleteNetworkToPublicRouter(claudiaData, networkInstance, region);
         log.debug("Deleting the subnets");
         Set<SubNetworkInstance> subNetAux = networkInstance.cloneSubNets();
@@ -240,9 +240,9 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
      * 
      * @return the network list
      */
-    public boolean exists(String networkInstance, String vdc) {
+    public boolean exists(String networkInstance, String vdc, String region) {
         try {
-            networkInstanceDao.load(networkInstance, vdc);
+            networkInstanceDao.load(networkInstance, vdc, region);
             return true;
         } catch (Exception e) {
             return false;
@@ -261,8 +261,8 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
      * @param networkName
      * @return the network
      */
-    public NetworkInstance load(String networkName, String vdc) throws EntityNotFoundException {
-        return networkInstanceDao.load(networkName, vdc);
+    public NetworkInstance load(String networkName, String vdc, String region) throws EntityNotFoundException {
+        return networkInstanceDao.load(networkName, vdc, region);
     }
 
     public void setNetworkClient(NetworkClient networkClient) {

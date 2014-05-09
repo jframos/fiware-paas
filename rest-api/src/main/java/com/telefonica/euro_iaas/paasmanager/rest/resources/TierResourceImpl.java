@@ -177,6 +177,7 @@ public class TierResourceImpl implements TierResource {
             environment.addTier(newTier);
             environmentManager.update(environment);
         } catch (Exception ex) {
+        	log.debug (ex.getMessage());
             throw new APIException(ex);
         }
     }

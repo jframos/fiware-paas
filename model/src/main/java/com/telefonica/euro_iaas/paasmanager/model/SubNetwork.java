@@ -57,6 +57,10 @@ public class SubNetwork {
 
     // the network name //
     private String name;
+    
+    private String region;
+    
+    private String vdc;
 
     private String cidr;
 
@@ -70,8 +74,10 @@ public class SubNetwork {
     /**
      * @param networkName
      */
-    public SubNetwork(String name) {
+    public SubNetwork(String name, String vdc, String region) {
         this.name = name;
+        this.vdc = vdc;
+        this.region = region;
     }
 
     /**
@@ -79,6 +85,14 @@ public class SubNetwork {
      */
     public String getName() {
         return name;
+    }
+    
+    public String getRegion() {
+        return region;
+    }
+    
+    public String getVdc() {
+        return vdc;
     }
     
     @Override
@@ -136,8 +150,8 @@ public class SubNetwork {
      * To the subnetwork Dto.
      * @return
      */
-    public SubNetworkInstance toInstance() {
-    	SubNetworkInstance subNetworkInstance = new SubNetworkInstance(this.getName());
+    public SubNetworkInstance toInstance(String vdc, String region) {
+    	SubNetworkInstance subNetworkInstance = new SubNetworkInstance(this.getName(), vdc, region);
         return subNetworkInstance;
 
     }

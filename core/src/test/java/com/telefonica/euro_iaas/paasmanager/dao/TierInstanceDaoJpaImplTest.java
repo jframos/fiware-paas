@@ -76,6 +76,7 @@ public class TierInstanceDaoJpaImplTest {
     public final static Integer MAXIMUM_INSTANCES = 8;
     public final static Integer MINIMUM_INSTANCES = 1;
     public final static Integer INITIAL_INSTANCES = 1;
+    public static String REGION = "region";
 
     /**
      * Test the create method
@@ -86,7 +87,7 @@ public class TierInstanceDaoJpaImplTest {
         Integer initial = new Integer(2);
         Integer maximum = new Integer(1);
 
-        NetworkInstance networkInstance = new NetworkInstance ("net", "vdc");
+        NetworkInstance networkInstance = new NetworkInstance ("net", "vdc",REGION);
         networkInstance.setIdNetwork("ID");
         networkInstance = networkInstanceDao.create(networkInstance);
 
@@ -113,7 +114,7 @@ public class TierInstanceDaoJpaImplTest {
         Integer initial = new Integer(2);
         Integer maximum = new Integer(1);
 
-        NetworkInstance networkInstance = new NetworkInstance ("net","vdc");
+        NetworkInstance networkInstance = new NetworkInstance ("net","vdc",REGION);
         networkInstance.setIdNetwork("ID");
         networkInstance = networkInstanceDao.create(networkInstance);
 
@@ -143,7 +144,7 @@ public class TierInstanceDaoJpaImplTest {
         Integer initial = new Integer(2);
         Integer maximum = new Integer(1);
 
-        NetworkInstance networkInstance = new NetworkInstance ("net","vdc");
+        NetworkInstance networkInstance = new NetworkInstance ("net","vdc",REGION);
         networkInstance.setIdNetwork("ID");
         networkInstance = networkInstanceDao.create(networkInstance);
 

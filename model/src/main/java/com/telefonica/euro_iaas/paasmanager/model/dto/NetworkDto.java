@@ -73,12 +73,12 @@ public class NetworkDto {
      * 
      * @return the network
      */
-    public Network fromDto(String vdc) {
+    public Network fromDto(String vdc, String region) {
 
-        Network net = new Network(this.getNetworkName(), vdc);
+        Network net = new Network(this.getNetworkName(), vdc, region);
 
         for (SubNetworkDto subNetworkDto: this.getSubNetworkDto()) {
-            SubNetwork subnet = new SubNetwork(subNetworkDto.getSubNetName());
+            SubNetwork subnet = new SubNetwork(subNetworkDto.getSubNetName(), vdc, region);
             subnet.setCidr(subNetworkDto.getCidr());
             net.addSubNet(subnet);
         }
