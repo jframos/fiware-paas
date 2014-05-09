@@ -309,7 +309,6 @@
                                     <goal>rpm</goal>
                                 </goals>
                             </execution>
-
                         </executions>
                         <configuration>
                             <distribution>FIWARE 2014</distribution>
@@ -334,6 +333,7 @@
 
                             <requires>
                                 <require>java-1.7.0-openjdk</require>
+                                <require>postgresql-server</require>
                             </requires>
                             <mappings>
                                 <mapping>
@@ -366,74 +366,33 @@
             <build>
                 <plugins>
                     <plugin>
-                        <artifactId>jdeb</artifactId>
-                        <groupId>org.vafer</groupId>
-                        <version>1.1.1</version>
-                        <inherited>false</inherited>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>unix-maven-plugin</artifactId>
+                        <version>1.0-alpha-5</version>
+
+                        <extensions>true</extensions>
+                        <configuration>
+                            <contact>jesuspg</contact>
+                            <contactEmail>jesuspg@tid.es</contactEmail>
+                            <deb>
+                                <section>devel</section>
+                            </deb>
+                            <assembly>
+
+                                <extractArtifact>
+
+                                    <archive>/target/paasmanager-server-dist.zip</archive>
+                                    <to>/usr/local/paasmanager</to>
+                                </extractArtifact>
+
+                            </assembly>
+                        </configuration>
                         <executions>
                             <execution>
-                                <inherited>false</inherited>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>jdeb</goal>
+                                    <goal>package-deb</goal>
                                 </goals>
-                                <configuration>
-                                    <verbose>true</verbose>
-                                    <snapshotExpand>true</snapshotExpand>
-                                    <!-- expand "SNAPSHOT" to what is in the "USER" env variable -->
-                                    <snapshotEnv>USER</snapshotEnv>
-                                    <verbose>true</verbose>
-                                    <controlDir>${basedir}/src/deb/control</controlDir>
-                                    <dataSet>
-
-                                        <data>
-                                            <src>/target/*.zip</src>
-                                            <type>file</type>
-                                            <mapper>
-                                                <type>perm</type>
-                                                <prefix>/usr/share/jdeb/lib</prefix>
-                                                <user>loader</user>
-                                                <group>loader</group>
-                                            </mapper>
-                                        </data>
-
-                                        <data>
-                                            <type>link</type>
-                                            <symlink>true</symlink>
-                                            <linkName>/usr/share/java/jdeb.jar</linkName>
-                                            <linkTarget>/usr/share/jdeb/lib/${project.build.finalName}.jar
-                                            </linkTarget>
-                                        </data>
-
-                                        <data>
-                                            <src>${basedir}/src/deb/init.d</src>
-                                            <type>directory</type>
-                                            <mapper>
-                                                <type>perm</type>
-                                                <prefix>/etc/init.d</prefix>
-                                                <user>loader</user>
-                                                <group>loader</group>
-                                            </mapper>
-                                        </data>
-                                        <!--
-                                           <data>
-                                               <type>template</type>
-                                               <paths>
-                                                   <path>etc/${project.artifactId}</path>
-                                                   <path>var/lib/${project.artifactId}</path>
-                                                   <path>var/log/${project.artifactId}</path>
-                                                   <path>var/run/${project.artifactId}</path>
-                                               </paths>
-                                               <mapper>
-                                                   <type>perm</type>
-                                                   <user>loader</user>
-                                                   <group>loader</group>
-                                               </mapper>
-                                           </data>
-                                           -->
-
-                                    </dataSet>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
