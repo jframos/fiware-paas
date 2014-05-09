@@ -1049,7 +1049,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 	public String joinNetworks(NetworkInstance networkInstance,
 			NetworkInstance networkInstance2, String token) throws OpenStackException {
 		
-		String payload = "{\"net_id_1\":" + networkInstance.getIdNetwork()+" , \"net_id_2\":"+ networkInstance.getIdNetwork() + " }";				
+		String payload = "{\"net_id_1\":" + networkInstance.getIdNetwork()+" , \"net_id_2\":"+ networkInstance2.getIdNetwork() + " }";				
         HttpUriRequest request = openOperationUtil.createJoinQuantumPostRequestRequest(RESOURCE_NETWOKS_FEDERATED, payload, APPLICATION_JSON, token);
        
 
