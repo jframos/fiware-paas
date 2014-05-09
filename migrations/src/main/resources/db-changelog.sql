@@ -273,4 +273,13 @@ ALTER TABLE tierinstance DROP COLUMN networks;
 ALTER TABLE artifact DROP COLUMN artifacttype_id;
 
 -- changeset henar:5-1 --
-ALTER TABLE networkinstance ADD COLUMN external BOOL NOT NULL;
+ALTER TABLE networkinstance ADD COLUMN external BOOL NOT NULL
+
+
+-- changeset henar:5-2 --
+ALTER TABLE networkinstance ADD COLUMN region VARCHAR(255);
+ALTER TABLE network ADD COLUMN region VARCHAR(255);
+ALTER TABLE subnetwork ADD COLUMN region VARCHAR(255);
+ALTER TABLE subnetwork ADD COLUMN vdc VARCHAR(255);
+ALTER TABLE subnetworkinstance ADD COLUMN region VARCHAR(255);
+ALTER TABLE subnetworkinstance ADD COLUMN vdc VARCHAR(255);
