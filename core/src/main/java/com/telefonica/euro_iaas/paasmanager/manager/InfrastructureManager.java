@@ -171,7 +171,8 @@ public interface InfrastructureManager {
     /**
      * 
      * @param environmentInstance
+     * @throws InfrastructureException 
      */
-	void federatedNetworks(EnvironmentInstance environmentInstance);
+	void federatedNetworks(ClaudiaData claudiaData, EnvironmentInstance environmentInstance) throws InfrastructureException;
 
 }

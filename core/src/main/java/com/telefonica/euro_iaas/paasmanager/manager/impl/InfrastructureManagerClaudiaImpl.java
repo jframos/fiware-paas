@@ -499,19 +499,24 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         this.tierManager = tierManager;
     }
 
-	@Override
-	public void federatedNetworks(EnvironmentInstance environmentInstance) {
+
+	public void federatedNetworks(ClaudiaData data, EnvironmentInstance environmentInstance) throws InfrastructureException {
+		log.debug ("Federate networks in the enviornment");
 		// Get the networks to be federated
 		
 		Set<String> federatedNetworks = environmentInstance.getEnvironment().getFederatedNetworks();
 		HashMap<String, Set<String>> relation = environmentInstance.getEnvironment().getNetworksRegion ();
+		List<NetworkInstance> networkInstances = new ArrayList<NetworkInstance> ();
 		
 		for (String net: federatedNetworks) {
-			
+			log.debug ("Network in the federated network " + net );
 			Set<String> regions = relation.get(net);
-			List<NetworkInstance> networkInstances = new ArrayList<NetworkInstance> ();
+			log.debug ("regions " + regions);
+			
 			for (String region: regions) {
+				log.debug ("region " + region);
 				NetworkInstance netInstance = environmentInstance.getNetworkInstanceFromNetwork (net, region);
+				log.debug ("net  " +netInstance.getNetworkName() + " " + netInstance.getIdNetwork()+ " for region " + region);
 				if (netInstance!=null) {
 					networkInstances.add(netInstance);
 				}
@@ -520,6 +525,15 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
 
 		}
+		try {
+			networkInstanceManager.joinNetwork(data, networkInstances.get(0), networkInstances.get(1));
+		}
+		
+		catch (Exception e) {
+            String mens = "Error federating networks  :" + e.getMessage();
+            throw new InfrastructureException(mens);
+        }
+		
 		
 	}
 

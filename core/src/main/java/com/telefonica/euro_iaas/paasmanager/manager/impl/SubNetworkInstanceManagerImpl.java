@@ -58,7 +58,7 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
     public SubNetworkInstance create(ClaudiaData claudiaData, SubNetworkInstance subNetwork, String region)
             throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
         log.debug("Create subnetwork instance " + subNetwork.getName());
-        if (!subNetworkInstanceDao.exists(subNetwork.getName())) {
+        if (!subNetworkInstanceDao.exists(subNetwork.getName(), claudiaData.getVdc(), region)) {
             networkClient.deploySubNetwork(claudiaData, subNetwork, region);
             log.debug("SubNetwork " + subNetwork.getName() + " in network " + subNetwork.getIdNetwork()
                     + " deployed with id " + subNetwork.getIdSubNet());

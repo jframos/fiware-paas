@@ -202,7 +202,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
                     throw new InfrastructureException(errorMessage);
                 }
                 String response = openStackUtil.getServer(tierInstance.getVM().getVmid(), tierInstance.getTier()
-                        .getRegion(), claudiaData.getUser().getToken(), claudiaData.getUser().getToken());
+                        .getRegion(), claudiaData.getUser().getToken(), claudiaData.getUser().getTenantId());
             } catch (OpenStackException e) {
                 String errorMessage = "Error obtaining info from Server " + tierInstance.getVM().getVmid();
                 log.error(errorMessage);

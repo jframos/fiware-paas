@@ -61,9 +61,9 @@ public class SubNetworkInstanceDaoJpaImpl extends AbstractBaseDao<SubNetworkInst
         return findByNetworkInstanceName(name, vdc, region);
     }
 
-    public boolean exists(String key) {
+    public boolean exists(String name, String vdc, String region) {
         try {
-            loadByField(SubNetworkInstance.class, "name", key);
+        	findByNetworkInstanceName (name, vdc, region);
             return true;
         } catch (EntityNotFoundException e) {
             return false;

@@ -112,8 +112,9 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
     public String getPublicAdminNetwork(PaasManagerUser user,  String region)
             throws OpenStackException {
         log.debug("Obtain public admin network ");
+        String type ="net";
         RegionCache regionCache = new RegionCache();
-        String networkId = regionCache.getUrl("network", "net");
+        String networkId = regionCache.getUrl(region, type);
         if (networkId != null) {
         	log.debug("in cache "+networkId  );
         	return networkId;
@@ -140,7 +141,7 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
                 if (net != null)
                 {
                 	log.debug("net "+net.getNetworkName() + " " + net.getIdNetwork()  );
-                	regionCache.putUrl("network", "net", net.getIdNetwork());
+                	regionCache.putUrl(region, type, net.getNetworkName());
                 	return net.getIdNetwork();
                 }
 
@@ -161,9 +162,10 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
     
     public String getPublicFloatingPool(PaasManagerUser user,  String region)
     	throws OpenStackException {
+    	String type = "floating";
         log.debug("Obtain public admin network");
         RegionCache regionCache = new RegionCache();
-        String networkId = regionCache.getUrl("floating", "net");
+        String networkId = regionCache.getUrl(region, type);
         if (networkId != null) {
         	return networkId;
         }
@@ -185,7 +187,8 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
 	    		NetworkInstance net = isPublicNetwork (jsonNet, adminUser.getUserName(), region);
 	    		if (net != null)
 	    		{
-	    			regionCache.putUrl("floating", "net", net.getNetworkName());
+	    			
+	    			regionCache.putUrl(region, type, net.getNetworkName());
 	    			return net.getNetworkName();
 	    		}
 
@@ -210,8 +213,9 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
     public String getPublicRouter(PaasManagerUser user,  String region, String publicNetworkId)
             throws OpenStackException {
         log.debug("Obtain public router for external netwrk " + publicNetworkId);
+        String type = "router";
         RegionCache regionCache = new RegionCache();
-        String routerId = regionCache.getUrl("router", "net");
+        String routerId = regionCache.getUrl(region, type);
         if (routerId != null) {
         	return routerId;
         }
@@ -236,7 +240,7 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
                 log.debug (router);
                 if (router != null)
                 {
-                	regionCache.putUrl("router", "net", router.getIdRouter());
+                	regionCache.putUrl(region, type, router.getIdRouter());
                 	return router.getIdRouter();
                 }
 

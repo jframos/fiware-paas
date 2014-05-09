@@ -225,6 +225,14 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
             
         }
     }
+    
+    public void joinNetwork(ClaudiaData claudiaData, NetworkInstance networkInstance, NetworkInstance networkInstance2)
+    	throws EntityNotFoundException, InvalidEntityException, InfrastructureException {
+        log.debug("joining netowrk " + networkInstance.getNetworkName() + " " + networkInstance2.getNetworkName());
+        networkClient.joinNetworks(claudiaData, networkInstance, networkInstance2);
+      
+}
+    
 
     /**
      * To obtain the list of networks.

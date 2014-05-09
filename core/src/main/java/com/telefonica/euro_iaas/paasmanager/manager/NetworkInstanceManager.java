@@ -105,5 +105,7 @@ public interface NetworkInstanceManager {
     List<NetworkInstance> listNetworks (ClaudiaData claudiaData, String region) throws InfrastructureException;
 
     int getNumberDeployedNetwork(ClaudiaData claudiaData, String region) throws InfrastructureException;
+    
+    void joinNetwork(ClaudiaData claudiaData, NetworkInstance networkInstance, NetworkInstance networkInstance2) throws EntityNotFoundException, InvalidEntityException, InfrastructureException;
 
 }

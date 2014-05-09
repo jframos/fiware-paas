@@ -330,6 +330,7 @@ public class OpenOperationUtilImpl implements OpenOperationUtil {
         }
 
         String novaUrl = openStackRegion.getNovaEndPoint(region, token);
+        log.debug("novaUrl" + novaUrl);
         request = new HttpDelete(novaUrl + vdc + "/" + resource);
 
         // request.setHeader(OpenStackConstants.CONTENT_TYPE,

@@ -175,7 +175,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         log.info("Is the environmetn federated ? ");
         if (environment.isNetworkFederated ()) {
         	log.info(" yes Is the environmetn federated ");
-        	infrastructureManager.federatedNetworks (environmentInstance);
+        	infrastructureManager.federatedNetworks (claudiaData, environmentInstance);
         }
 
         environmentInstance.setStatus(Status.INSTALLED);
