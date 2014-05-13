@@ -27,7 +27,6 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.commons.lang.StringUtils;
@@ -66,7 +65,6 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
         }
     }
 
-
     public Tier load(String name, String vdc, String environmentName) throws EntityNotFoundException {
         try {
             return this.findByNameAndVdcAndEnvironment(name, vdc, environmentName);
@@ -76,26 +74,24 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
 
     }
 
-
     private Tier findByName(String name) throws EntityNotFoundException {
         Query query = getEntityManager().createQuery(
                 "select p from Tier p join " + "fetch p.productReleases where p.name = :name");
         query.setParameter("name", name);
         Tier tier = null;
         try {
-            tier = (Tier) query.getSingleResult();
-        } catch (NoResultException e) {
+            tier = (Tier) query.getResultList().get(0);
+        } catch (Exception e) {
             String message = " No Tier found in the database with name: " + name;
             throw new EntityNotFoundException(Tier.class, message, name);
         }
         return tier;
     }
 
-
     private Tier findByNameAndVdcAndEnvironment(String name, String vdc, String environmentname)
             throws EntityNotFoundException {
-        if (vdc == null ){
-            vdc ="";
+        if (vdc == null) {
+            vdc = "";
         }
         Query query = getEntityManager().createQuery(
                 "select p from Tier p left join " + "fetch p.productReleases where p.name = :name and p.vdc =:vdc "
@@ -105,8 +101,8 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
         query.setParameter("environmentname", environmentname);
         Tier tier = null;
         try {
-            tier = (Tier) query.getSingleResult();
-        } catch (NoResultException e) {
+            tier = (Tier) query.getResultList().get(0);
+        } catch (Exception e) {
             String message = " No Tier found in the database with name: " + name + " vdc " + vdc
                     + " and environmentname " + environmentname;
             throw new EntityNotFoundException(Tier.class, message, name);
@@ -114,7 +110,6 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
 
         return tier;
     }
-
 
     private Tier findByNameAndVdcAndEnvironmentNoProduct(String name, String vdc, String environmentname)
             throws EntityNotFoundException {
@@ -125,8 +120,8 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
         query.setParameter("environmentname", environmentname);
         Tier tier = null;
         try {
-            tier = (Tier) query.getSingleResult();
-        } catch (NoResultException e) {
+            tier = (Tier) query.getResultList().get(0);
+        } catch (Exception e) {
             String message = " No Tier found in the database with name: " + name + " vdc " + vdc
                     + " no products and environmentname " + environmentname;
             throw new EntityNotFoundException(Tier.class, message, name);
@@ -183,26 +178,25 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
 
         return tier;
     }
-    
+
     @Override
-    public Tier loadTierWithNetworks(String name, String vdc, String environmentname)
-            throws EntityNotFoundException {
-        Query query = getEntityManager().createQuery(
-            "select p from Tier p left join fetch p.networks where p.name = :name and p.vdc =:vdc and p.environmentname= :environmentname");
+    public Tier loadTierWithNetworks(String name, String vdc, String environmentname) throws EntityNotFoundException {
+        Query query = getEntityManager()
+                .createQuery(
+                        "select p from Tier p left join fetch p.networks where p.name = :name and p.vdc =:vdc and p.environmentname= :environmentname");
         query.setParameter("name", name);
         query.setParameter("vdc", vdc);
         query.setParameter("environmentname", environmentname);
         Tier tier = null;
         try {
-            tier = (Tier) query.getSingleResult();
-        } catch (NoResultException e) {
+            tier = (Tier) query.getResultList().get(0);
+        } catch (Exception e) {
             String message = " No Tier found in the database with name: " + name + " vdc " + vdc
-            + " no products and environmentname " + environmentname;
+                    + " no products and environmentname " + environmentname;
             throw new EntityNotFoundException(Tier.class, message, name);
         }
         return tier;
     }
-    
 
     @Override
     public String findRegionBySecurityGroup(String idSecurityGroup) throws EntityNotFoundException {
@@ -211,8 +205,8 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
         query.setParameter("securityGroupId", idSecurityGroup);
         Tier tier = null;
         try {
-            tier = (Tier) query.getSingleResult();
-        } catch (NoResultException e) {
+            tier = (Tier) query.getResultList().get(0);
+        } catch (Exception e) {
             String message = " No Tier found in the database with security group id: " + idSecurityGroup;
             throw new EntityNotFoundException(Tier.class, message, idSecurityGroup);
         }
@@ -220,12 +214,12 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
 
     }
 
-
-	public List<Tier> findAllWithNetwork(String networkName)  {
-		Query query = getEntityManager().createQuery("select tier from Tier tier left join fetch tier.networks nets where nets.name=:net");
+    public List<Tier> findAllWithNetwork(String networkName) {
+        Query query = getEntityManager().createQuery(
+                "select tier from Tier tier left join fetch tier.networks nets where nets.name=:net");
         query.setParameter("net", networkName);
         List<Tier> tiers = (List<Tier>) query.getResultList();
         return tiers;
-	}
+    }
 
 }

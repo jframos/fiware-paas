@@ -25,11 +25,8 @@
 package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.hibernate.Criteria;
@@ -100,7 +97,6 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
         return environments;
     }
 
-
     private List<Environment> filterByOrgAndVdc(List<Environment> environments, String org, String vdc) {
         List<Environment> result = new ArrayList<Environment>();
         for (Environment environment : environments) {
@@ -116,7 +112,7 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
     private List<Environment> filterByOrg(List<Environment> environments, String org) {
         List<Environment> result = new ArrayList<Environment>();
         for (Environment environment : environments) {
-         
+
             if (environment.getOrg().equals(org) && (environment.getVdc() == null || environment.getVdc().isEmpty())) {
                 result.add(environment);
             }
@@ -147,9 +143,9 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
         query.setParameter("name", envName);
         Environment environment = null;
         try {
-            environment = (Environment) query.getSingleResult();
+            environment = (Environment) query.getResultList().get(0);
             getEntityManager().flush();
-        } catch (NoResultException e) {
+        } catch (Exception e) {
             throw new EntityNotFoundException(Environment.class, "name", envName);
         }
         return environment;
@@ -161,9 +157,9 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
         query.setParameter("name", envName);
         Environment environment = null;
         try {
-            environment = (Environment) query.getSingleResult();
+            environment = (Environment) query.getResultList().get(0);
             getEntityManager().flush();
-        } catch (NoResultException e) {
+        } catch (Exception e) {
             throw new EntityNotFoundException(Environment.class, "name", envName);
         }
         return environment;
@@ -176,14 +172,13 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
         query.setParameter("vdc", vdc);
         Environment environment = null;
         try {
-            environment = (Environment) query.getSingleResult();
-        } catch (NoResultException e) {
+            environment = (Environment) query.getResultList().get(0);
+        } catch (Exception e) {
             throw new EntityNotFoundException(Environment.class, "name", envName);
         }
         // return filterEqualTiers(environment);
         return environment;
     }
-
 
     /**
      * Filter the result by tier
