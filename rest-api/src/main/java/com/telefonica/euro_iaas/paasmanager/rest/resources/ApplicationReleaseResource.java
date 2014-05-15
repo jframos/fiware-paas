@@ -42,7 +42,6 @@ import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
 public interface ApplicationReleaseResource {
 
     @GET
-    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ApplicationRelease> findAll(@QueryParam("artifactName") String artifactName, @QueryParam("page") Integer page,
             @QueryParam("pageSize") Integer pageSize, @QueryParam("orderBy") String orderBy,
