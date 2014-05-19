@@ -54,7 +54,6 @@ public interface ApplicationInstanceResource {
      * Install a list of application in a given host running on the selected products.
      */
     @POST
-    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     Task install(@PathParam("org") String org, @PathParam("vdc") String vdc,
@@ -65,7 +64,6 @@ public interface ApplicationInstanceResource {
      * Find the applications according to the criteria specified in the request.
      */
     @GET
-    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ApplicationInstance> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
             @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType,

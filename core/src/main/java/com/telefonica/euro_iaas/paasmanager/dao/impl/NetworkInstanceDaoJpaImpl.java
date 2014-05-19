@@ -26,7 +26,6 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.List;
 
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Propagation;
@@ -59,17 +58,18 @@ public class NetworkInstanceDaoJpaImpl extends AbstractBaseDao<NetworkInstance, 
      *            of the network instance
      */
     public NetworkInstance load(String name) throws EntityNotFoundException {
-       return findByNetworkInstanceName(name);
+        return findByNetworkInstanceName(name);
 
     }
-    
+
     public NetworkInstance load(String name, String vdc) throws EntityNotFoundException {
         return findByNetworkInstanceName(name, vdc);
 
-     }
+    }
 
     /**
      * (non-Javadoc)
+     * 
      * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang .String)
      */
     private NetworkInstance findByNetworkInstanceName(String name) throws EntityNotFoundException {
@@ -78,17 +78,18 @@ public class NetworkInstanceDaoJpaImpl extends AbstractBaseDao<NetworkInstance, 
         query.setParameter("name", name);
         NetworkInstance networkInstance = null;
         try {
-            networkInstance = (NetworkInstance) query.getSingleResult();
-        } catch (NoResultException e) {
+            networkInstance = (NetworkInstance) query.getResultList().get(0);
+        } catch (Exception e) {
             String message = " No NetworkInstance found in the database with id: " + name + " Exception: "
                     + e.getMessage();
             throw new EntityNotFoundException(NetworkInstance.class, "name", name);
         }
         return networkInstance;
     }
-    
+
     /**
      * (non-Javadoc)
+     * 
      * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang .String)
      */
     private NetworkInstance findByNetworkInstanceName(String name, String vdc) throws EntityNotFoundException {
@@ -98,8 +99,8 @@ public class NetworkInstanceDaoJpaImpl extends AbstractBaseDao<NetworkInstance, 
         query.setParameter("vdc", vdc);
         NetworkInstance networkInstance = null;
         try {
-            networkInstance = (NetworkInstance) query.getSingleResult();
-        } catch (NoResultException e) {
+            networkInstance = (NetworkInstance) query.getResultList().get(0);
+        } catch (Exception e) {
             String message = " No NetworkInstance found in the database with id: " + name + " Exception: "
                     + e.getMessage();
             throw new EntityNotFoundException(NetworkInstance.class, "name", name);
