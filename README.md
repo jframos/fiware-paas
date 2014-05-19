@@ -42,6 +42,13 @@ Connect as postgres user to the PostgreSQL server and set the password for user 
     Create the database
     postgres=# create database paasmanager;
     postgres=# grant all privileges on database paasmanager to postgres;
+    
+Create tables:
+Download sql files from [here](/migrations/src/main/resources)
+
+    postgres=# \i db-initial.sql
+    postgres=# \i db-changelog.sql
+    
     exit quit "\q" and then "exit"
 
 Edit file /var/lib/pgsql/data/pg_hba.conf and set authentication method to md5:
@@ -87,7 +94,7 @@ Once the prerequisites are satisfied, you shall create the context file as $CATA
        maxActive="20" maxIdle="10" maxWait="-1"/> 
     </Context>
     
-Include the library postgresql-8.4-702.jdbc4.jar in $CATALINA_HOME/lib
+Include the library [postgresql-8.4-702.jdbc4.jar](http://130.206.80.169/nexus/content/repositories/public/postgresql/postgresql/8.4-702.jdbc4/) in $CATALINA_HOME/lib
 Configure the profile fiware in the catalina.properties. So that, open the file $CATALINA_HOME/conf/catalina.properties and write at the end
  spring.profiles.active=fiware
 
@@ -100,8 +107,8 @@ Start tomcat
 #### Usage
 
 * References
-http://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/FIWARE.OpenSpecification.Cloud.PaaS
-http://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/PaaS_Open_RESTful_API_Specification_(PRELIMINARY)
-http://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/PaaS_Manager_-_Installation_and_Administration_Guide
+* [FIWARE.OpenSpecification.Cloud.PaaS](http://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/FIWARE.OpenSpecification.Cloud.PaaS)
+* [PaaS_Open_RESTful_API_Specification_(PRELIMINARY)](http://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/PaaS_Open_RESTful_API_Specification_(PRELIMINARY))
+* [PaaS_Manager_-_Installation_and_Administration_Guide](http://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/PaaS_Manager_-_Installation_and_Administration_Guide)
 
 
