@@ -78,7 +78,7 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
         List<NetworkInstance> networks = networkInstanceDao.findAll();
         assertNotNull(networks);
 
-        NetworkInstance networkOut = networkInstanceDao.load(NETWORK_NAME+1);
+        NetworkInstance networkOut = networkInstanceDao.load(NETWORK_NAME+1,VDC, REGION);
         assertNotNull(networkOut);
         assertEquals(networkOut.getNetworkName(), NETWORK_NAME+1);
         assertEquals(networkOut.getSubNets().size(), 0);
@@ -111,7 +111,7 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
         assertNotNull(networks);
         assertEquals(networks.size(), number + 1);
 
-        NetworkInstance networkOut = networkInstanceDao.load(NETWORK_NAME+2);
+        NetworkInstance networkOut = networkInstanceDao.load(NETWORK_NAME+2,VDC, REGION);
         assertNotNull(networkOut);
         assertEquals(networkOut.getNetworkName(), NETWORK_NAME+2);
         assertEquals(networkOut.getSubNets().size(), 1);
@@ -129,7 +129,7 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
         network = networkInstanceDao.create(network);
         networkInstanceDao.remove(network);
         try {
-            networkInstanceDao.load(NETWORK_NAME+3);
+            networkInstanceDao.load(NETWORK_NAME+3,VDC, REGION);
             fail("Should have thrown an EntityNotFoundException because the subnetwork instance does not exit!");
         } catch (EntityNotFoundException e) {
             assertNotNull(e);
@@ -156,7 +156,7 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
         for (SubNetworkInstance subNet2 : subNetOut) {
             subNetworkInstanceDao.remove(subNet2);
         }
-        networkInstanceDao.load(NETWORK_NAME + 4);
+        networkInstanceDao.load(NETWORK_NAME + 4,VDC, REGION);
 
     }
 
@@ -198,7 +198,7 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
         }
         
         
-        network = networkInstanceDao.load(NETWORK_NAME+5);
+        network = networkInstanceDao.load(NETWORK_NAME+5,VDC, REGION);
         assertEquals(network.getSubNets().size(), 1);
         for (SubNetworkInstance subNet: network.getSubNets()) {
             assertEquals(subNet.getName(), SUB_NETWORK_NAME+4);

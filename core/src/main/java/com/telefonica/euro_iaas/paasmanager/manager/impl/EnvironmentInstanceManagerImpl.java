@@ -174,8 +174,15 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         
         log.info("Is the environmetn federated ? ");
         if (environment.isNetworkFederated ()) {
-        	log.info(" yes Is the environmetn federated ");
+        	try {
+        	log.info(" Federating networks ");
         	infrastructureManager.federatedNetworks (claudiaData, environmentInstance);
+        	} catch (Exception e) {
+                environmentInstance.setStatus(Status.ERROR);
+                environmentInstanceDao.update(environmentInstance);
+                log.error("Error federating the networks " + e.getMessage());
+                throw new InfrastructureException(e);
+            }
         }
 
         environmentInstance.setStatus(Status.INSTALLED);
@@ -364,11 +371,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                     log.error("It is not possible to delete the environment " + envInstance.getName() + " : "
                             + e.getMessage());
                     throw new InvalidEntityException(EnvironmentInstance.class, e);
-                } catch (EntityNotFoundException e) {
-                    log.error("It is not possible to delete the environment " + envInstance.getName() + " : "
-                            + e.getMessage());
-                    throw new InvalidEntityException(EnvironmentInstance.class, e);
-                }
+                } 
 
                 envInstance.setStatus(Status.UNDEPLOYED);
             }

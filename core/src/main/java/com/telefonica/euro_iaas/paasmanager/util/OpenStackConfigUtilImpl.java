@@ -230,21 +230,14 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
 
         try {
             response = openOperationUtil.executeNovaRequest(request);
-            JSONObject lRouterString = new JSONObject(response);
-            JSONArray jsonRouters = lRouterString.getJSONArray("routers");
-            
-            for (int i = 0; i< jsonRouters.length(); i++) {
-                
-                JSONObject jsonNet = jsonRouters.getJSONObject(i);
-                RouterInstance router = isPublicRouter (jsonNet, adminUser.getUserName(),publicNetworkId);
-                log.debug (router);
-                if (router != null)
-                {
-                	regionCache.putUrl(region, type, router.getIdRouter());
-                	return router.getIdRouter();
-                }
-
+            routerId = getPublicRouterId (response, adminUser.getUserName(),publicNetworkId);
+            if (routerId == null) {
+            	String errorMessage = "It is not possible to find a public router for network " + publicNetworkId + ": ";
+                log.error(errorMessage);
+                throw new OpenStackException(errorMessage);
             }
+            regionCache.putUrl(region, type, routerId);
+            return routerId;
 
         } catch (OpenStackException e) {
             String errorMessage = "Error getting router for obtaining the public router: " + e;
@@ -256,11 +249,27 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
             throw new OpenStackException(errorMessage);
         }
 
+    }
+    
+    public String getPublicRouterId (String response, String vdc, String publicNetworkId) throws JSONException {
+    	JSONObject lRouterString = new JSONObject(response);
+        JSONArray jsonRouters = lRouterString.getJSONArray("routers");
+        
+        for (int i = 0; i< jsonRouters.length(); i++) {
+            
+            JSONObject jsonNet = jsonRouters.getJSONObject(i);
+            RouterInstance router = isPublicRouter (jsonNet, vdc,publicNetworkId);
+            log.debug (router);
+            if (router != null)
+            {
+            	
+            	return router.getIdRouter();
+            }
+
+        }
         return null;
 
-
-
-    }
+    } 
     
     private NetworkInstance isPublicNetwork(JSONObject jsonNet, String vdc, String region)  {
     	log.debug ("looking for vdc " + vdc);

@@ -77,7 +77,7 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
      * @params subNetwork
      */
     public void delete(ClaudiaData claudiaData, SubNetworkInstance subNetworkInstance, String region)
-            throws EntityNotFoundException, InvalidEntityException, InfrastructureException {
+            throws InvalidEntityException, InfrastructureException {
         log.debug("Destroying the subnetwork " + subNetworkInstance.getName());
         try {
             networkClient.destroySubNetwork(claudiaData, subNetworkInstance, region);

@@ -458,5 +458,7 @@ public class NetworkTest extends TestCase {
         assertEquals(network.equals(network2), false);
         assertEquals(network.equals(network3), true);
     }
+    
+    
 
 }

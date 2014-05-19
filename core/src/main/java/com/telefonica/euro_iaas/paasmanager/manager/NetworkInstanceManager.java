@@ -60,8 +60,7 @@ public interface NetworkInstanceManager {
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    void delete(ClaudiaData claudiaData, NetworkInstance network, String region) throws EntityNotFoundException,
-            InvalidEntityException, InfrastructureException;
+    void delete(ClaudiaData claudiaData, NetworkInstance network, String region) throws InvalidEntityException, InfrastructureException;
     
     /**
      * 

@@ -91,7 +91,7 @@ public interface InfrastructureManager {
      * @throws InvalidEntityException 
      * @throws EntityNotFoundException 
      */
-    void deleteEnvironment(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws InfrastructureException, EntityNotFoundException, InvalidEntityException;
+    void deleteEnvironment(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws InfrastructureException,  InvalidEntityException;
 
     /**
      * Clone the template to a VM with products installed (Element of TierInstance)

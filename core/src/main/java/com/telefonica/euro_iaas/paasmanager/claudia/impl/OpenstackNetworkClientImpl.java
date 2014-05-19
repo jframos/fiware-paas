@@ -384,6 +384,8 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
                 if (network_id.equals(networkId) && tenant_id.equals(vdc)&& device_owner.equals("compute:None")) {
                     Port port = new  Port((String) jsonPorts.getJSONObject(i).get("name"), network_id, tenant_id, device_owner, 
                             (String) jsonPorts.getJSONObject(i).get("id")) ;
+                    log.debug ("adding prot " + port);
+                   
                     ports.add(port);
                 }
             }

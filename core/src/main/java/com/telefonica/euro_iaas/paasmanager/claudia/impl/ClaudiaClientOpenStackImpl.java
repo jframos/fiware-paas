@@ -426,12 +426,13 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     }
 
     public void undeployVMReplica(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
-
+    	log.debug ("Undeploy VM replica " + tierInstance.getName());
         try {
 
             String region = tierInstance.getTier().getRegion();
             String token = claudiaData.getUser().getToken();
             String vdc = tierInstance.getTier().getVdc();
+           
             openStackUtil.deleteServer(tierInstance.getVM().getVmid(), region, token, vdc);
             checkDeleteServerTaskStatus(tierInstance, claudiaData);
         } catch (OpenStackException oes) {

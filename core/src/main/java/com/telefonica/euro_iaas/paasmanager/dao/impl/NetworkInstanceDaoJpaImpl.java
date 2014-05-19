@@ -29,6 +29,7 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,7 @@ import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.NetworkInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
+import com.telefonica.euro_iaas.paasmanager.util.OpenStackUtilImpl;
 
 /**
  * @author Henar Munoz
@@ -43,6 +45,7 @@ import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 @Transactional(propagation = Propagation.REQUIRED)
 public class NetworkInstanceDaoJpaImpl extends AbstractBaseDao<NetworkInstance, String> implements NetworkInstanceDao {
 
+	private static Logger log = Logger.getLogger(NetworkInstanceDaoJpaImpl.class);
     /**
      * k7 find all networks.
      * 
@@ -59,7 +62,7 @@ public class NetworkInstanceDaoJpaImpl extends AbstractBaseDao<NetworkInstance, 
      *            of the network instance
      */
     public NetworkInstance load(String name) throws EntityNotFoundException {
-       return findByNetworkInstanceName(name);
+       return null;
 
     }
     
@@ -82,6 +85,7 @@ public class NetworkInstanceDaoJpaImpl extends AbstractBaseDao<NetworkInstance, 
         } catch (NoResultException e) {
             String message = " No NetworkInstance found in the database with id: " + name + " Exception: "
                     + e.getMessage();
+            log.debug (message);
             throw new EntityNotFoundException(NetworkInstance.class, "name", name);
         }
         return networkInstance;
@@ -101,8 +105,9 @@ public class NetworkInstanceDaoJpaImpl extends AbstractBaseDao<NetworkInstance, 
         try {
             networkInstance = (NetworkInstance) query.getSingleResult();
         } catch (NoResultException e) {
-            String message = " No NetworkInstance found in the database with id: " + name + " Exception: "
+            String message = " No NetworkInstance found in the database with id: " + name + " vdc " + vdc + " region " + region + " Exception: "
                     + e.getMessage();
+            log.debug (message);
             throw new EntityNotFoundException(NetworkInstance.class, "name", name);
         }
         return networkInstance;

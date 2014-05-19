@@ -177,16 +177,24 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
      * @params network
      */
     public void delete(ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
-            throws EntityNotFoundException, InvalidEntityException, InfrastructureException {
+            throws  InvalidEntityException, InfrastructureException {
         log.debug("Destroying network " + networkInstance.getNetworkName());
         
         if (!canBeDeleted (claudiaData, networkInstance, region )) {
+        	log.debug ("The network cannot be deleted due to existing ports");
             return;
         }
 
-        log.debug("Deleting the public interface interfaces");
-        networkInstance = networkInstanceDao.load(networkInstance.getNetworkName(), claudiaData.getVdc(), region);
+        log.debug("Deleting the public interface");
+        try {
+        	log.debug ("Loading newtwokr " + networkInstance.getNetworkName() + "  " + claudiaData.getVdc()+ " " + region);
+        	networkInstance = networkInstanceDao.load(networkInstance.getNetworkName(), claudiaData.getVdc(), region);
+        }catch (Exception e) {
+            log.error("It is not possible to find the network " + e.getMessage());
+            throw new InvalidEntityException(networkInstance);
+        }
         networkClient.deleteNetworkToPublicRouter(claudiaData, networkInstance, region);
+        
         log.debug("Deleting the subnets");
         Set<SubNetworkInstance> subNetAux = networkInstance.cloneSubNets();
         networkInstance.getSubNets().clear();
@@ -212,10 +220,11 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
      * @params network
      */
     public boolean canBeDeleted(ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
-            throws EntityNotFoundException, InvalidEntityException, InfrastructureException {
+            throws InvalidEntityException, InfrastructureException {
         log.debug("Obtaining ports from network" + networkInstance.getNetworkName());
 
         List<Port> ports = networkClient.listPortsFromNetwork(claudiaData, region, networkInstance.getIdNetwork());
+        log.debug ("List ports " + ports.size ());
         if (ports.size()==0) {
             return true;
         }

@@ -256,8 +256,8 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
      * (com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance)
      */
     public void deleteEnvironment(ClaudiaData claudiaData, EnvironmentInstance envInstance)
-            throws InfrastructureException, EntityNotFoundException, InvalidEntityException {
-
+            throws InfrastructureException,  InvalidEntityException {
+        log.debug ("Delete environment " + envInstance.getBlueprintName());
         List<TierInstance> tierInstances = envInstance.getTierInstances();
 
         if (tierInstances == null)
@@ -271,18 +271,20 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 break;
             }
             claudiaClient.undeployVMReplica(claudiaData, tierInstance);
-            deleteNetworksInEnv(claudiaData, envInstance, tierInstance.getTier().getRegion());
+            deleteNetworksInEnv(claudiaData, envInstance);
         }
 
     }
 
-    private List<NetworkInstance> getNetworkInstInEnv(EnvironmentInstance envInstance) throws EntityNotFoundException,
-            InvalidEntityException {
+    private List<NetworkInstance> getNetworkInstInEnv(EnvironmentInstance envInstance) throws 
+            InvalidEntityException, EntityNotFoundException {
         List<NetworkInstance> netInst = new ArrayList<NetworkInstance>();
         for (TierInstance tierInstance : envInstance.getTierInstances()) {
             Set<NetworkInstance> netInts = tierInstance.cloneNetworkInt();
             tierInstance.getNetworkInstances().clear();
+            log.debug ("Updating tier instance" + tierInstance );
             tierInstanceManager.update(tierInstance);
+            log.debug ("With netowkrs... " );
             for (NetworkInstance net : netInts) {
                 if (!netInst.contains(net)) {
                     netInst.add(net);
@@ -292,14 +294,21 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         return netInst;
     }
 
-    public void deleteNetworksInEnv(ClaudiaData claudiaData, EnvironmentInstance envInstance, String region)
-            throws EntityNotFoundException, InvalidEntityException, InfrastructureException {
+    public void deleteNetworksInEnv(ClaudiaData claudiaData, EnvironmentInstance envInstance)
+            throws  InvalidEntityException, InfrastructureException {
         log.debug("Delete the networks in env if there are not being used");
-        List<NetworkInstance> netInsts = getNetworkInstInEnv(envInstance);
+        
+        List<NetworkInstance> netInsts = null;
+		try {
+			netInsts = getNetworkInstInEnv(envInstance);
+		} catch (EntityNotFoundException e) {
+			throw new InfrastructureException ("It is not possible to find the network " + e.getMessage());
+		}
         for (NetworkInstance network : netInsts) {
             log.debug("Is network default? " + network.isDefaultNet());
             if (!network.isDefaultNet()) {
-                networkInstanceManager.delete(claudiaData, network, region);
+  			    networkInstanceManager.delete(claudiaData, network, network.getRegionName());
+
             }
         }
     }

@@ -971,10 +971,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         log.debug("List ports from user " + user.getUserName());
         PaasManagerUser user2 = openOperationUtil.getAdminUser(user);
 
-        log.debug("tenantid " + user2.getTenantId());
-        log.debug("token " + user2.getToken());
-        log.debug("user name " + user2.getUserName());
-
         HttpUriRequest request = openOperationUtil.createQuantumGetRequest(RESOURCE_PORTS, APPLICATION_JSON, region, user2.getToken(),
                 user2.getUserName());
 
@@ -982,8 +978,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
         try {
             response = openOperationUtil.executeNovaRequest(request);
-            log.debug("List port response");
-            log.debug(response);
+
 
         } catch (Exception e) {
             String errorMessage = "Error getting list of networks from OpenStack: " + e;

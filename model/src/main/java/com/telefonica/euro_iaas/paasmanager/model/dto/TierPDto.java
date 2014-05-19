@@ -55,6 +55,7 @@ public class TierPDto {
     private String security_group;
     private String keypair;
     private String floatingip;
+    private String region;
 
     private List<TierInstancePDto> tierInstancePDto;
 
@@ -70,7 +71,7 @@ public class TierPDto {
 
     public TierPDto(String name, Integer maximumNumberInstances, Integer minimumNumberInstances,
             Integer initialNumberInstances, List<ProductReleaseDto> productReleaseDtos, String flavour, String image,
-            String icono, String security_group, String keypair, String floatingip) {
+            String icono, String security_group, String keypair, String floatingip, String region) {
         this.name = name;
         this.maximumNumberInstances = maximumNumberInstances;
         this.minimumNumberInstances = minimumNumberInstances;
@@ -82,6 +83,7 @@ public class TierPDto {
         this.security_group = security_group;
         this.keypair = keypair;
         this.floatingip = floatingip;
+        this.region = region;
     }
 
     /**
