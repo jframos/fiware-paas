@@ -208,7 +208,23 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
                 }
 
                 return;
+            } catch (Exception ex) {
+                SecurityContextHolder.clearContext();
+
+                if (debug) {
+                    logger.debug("Authentication exception: " + ex);
+                }
+
+                rememberMeServices.loginFail(request, response);
+
+                if (ignoreFailure) {
+                    chain.doFilter(request, response);
+                } else {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                }
+                return;
             }
+
             String keystoneURL = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_URL);
 
             response.addHeader("Www-Authenticate", "Keystone uri='" + keystoneURL + "'");
