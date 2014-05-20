@@ -339,7 +339,7 @@ public class InfrastructureManagerImplTest {
         Mockito.doThrow(EntityNotFoundException.class).when(networkInstanceManager)
                 .load(any(String.class), any(String.class), any(String.class));
 
-        manager.deleteNetworksInEnv(claudiaData, envInst);
+        manager.deleteNetworksInTierInstance(claudiaData, tierInstance);
 
         assertEquals(envInst.getTierInstances().get(0).getNetworkInstances().size(), 0);
 

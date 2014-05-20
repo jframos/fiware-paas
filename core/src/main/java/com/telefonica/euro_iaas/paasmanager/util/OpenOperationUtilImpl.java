@@ -599,11 +599,11 @@ public class OpenOperationUtilImpl implements OpenOperationUtil {
                     newHeaders = result.split("\n");
                 } else {
                     log.debug(" HttpResponse " + response.getStatusLine().getStatusCode());
-                    if (result.indexOf("badRequest") != -1) {
-                        String error = result.substring(result.indexOf("<message>") + 9, result.indexOf("</message>"));
+                    if (result.indexOf("badRequest") != -1 ||result.indexOf("itemNotFound")!=-1 ) {
+                        String error = result.substring(result.indexOf("message") + "message".length()+ 3, result.indexOf("code")-3);
                         log.debug("Error in the request " + error);
                         throw new OpenStackException(error);
-                    }
+                    } 
 
                     throw new OpenStackException(result);
                 }

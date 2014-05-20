@@ -178,7 +178,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
      */
     public void delete(ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
             throws  InvalidEntityException, InfrastructureException {
-        log.debug("Destroying network " + networkInstance.getNetworkName());
+        log.debug("Destroying network " + networkInstance.getNetworkName() + " region " + region);
         
         if (!canBeDeleted (claudiaData, networkInstance, region )) {
         	log.debug ("The network cannot be deleted due to existing ports");
@@ -229,7 +229,11 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
             return true;
         }
         else {
-            log.debug ("It is not possible to undeply the network since there are VMs associated to it");
+        	String strPorts = "";
+        	for (Port port: ports) {
+        		strPorts = strPorts + " " + port.getNetworkId();
+        	}
+            log.debug ("It is not possible to undeply the network since there are VMs associated to it " + strPorts);
             return false;
             
         }

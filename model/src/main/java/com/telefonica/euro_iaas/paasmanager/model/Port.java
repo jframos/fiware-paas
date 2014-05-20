@@ -87,6 +87,14 @@ public class Port {
         this.deviceOwner = deviceOwner;
         this.portId = portId;
     }
+    
+    public String getName () {
+    	return this.name;
+    }
+    
+    public String getNetworkId () {
+    	return this.networkId;
+    }
 
 
    

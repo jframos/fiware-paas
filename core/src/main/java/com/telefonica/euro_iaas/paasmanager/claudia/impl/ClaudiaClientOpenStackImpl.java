@@ -204,13 +204,14 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
                 String response = openStackUtil.getServer(tierInstance.getVM().getVmid(), tierInstance.getTier()
                         .getRegion(), claudiaData.getUser().getToken(), claudiaData.getUser().getTenantId());
             } catch (OpenStackException e) {
-                String errorMessage = "Error obtaining info from Server " + tierInstance.getVM().getVmid();
-                log.error(errorMessage);
+                String errorMessage = "Error obtaining info from Server " + tierInstance.getVM().getVmid() + " " + e.getMessage();
+                log.warn(errorMessage);
+                return ;
 
-                if (e.getMessage().contains("Malformed request url") || e.getMessage().contains("itemNotFound")
+              /*  if (e.getMessage().contains("Malformed request url") || e.getMessage().contains("itemNotFound")
                         || e.getMessage().contains("badRequest")) {
                     break;
-                }
+                }*/
 
                 // throw new InfrastructureException(errorMessage);
             }
@@ -426,7 +427,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     }
 
     public void undeployVMReplica(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
-    	log.debug ("Undeploy VM replica " + tierInstance.getName());
+    	log.debug ("Undeploy VM replica " + tierInstance.getName() + " for region " + tierInstance.getTier().getRegion() + " and user " + tierInstance.getTier().getVdc() );
         try {
 
             String region = tierInstance.getTier().getRegion();
@@ -435,6 +436,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
            
             openStackUtil.deleteServer(tierInstance.getVM().getVmid(), region, token, vdc);
             checkDeleteServerTaskStatus(tierInstance, claudiaData);
+            log.debug("Undeployed VM replica " + tierInstance.getName() + " for region " + tierInstance.getTier().getRegion() + " and user " + tierInstance.getTier().getVdc() );
         } catch (OpenStackException oes) {
             String errorMessage = "Error deleting serverId: " + tierInstance.getVM().getVmid();
             log.error(errorMessage);

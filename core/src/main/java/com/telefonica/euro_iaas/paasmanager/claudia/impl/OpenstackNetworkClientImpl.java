@@ -368,7 +368,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
     public List<Port> listPortsFromNetwork(ClaudiaData claudiaData, String region, String networkId) throws InfrastructureException {
         String token = claudiaData.getUser().getToken();
         String vdc = claudiaData.getVdc();
-        log.info("GEt ports  for user with token " +  token + " and vdc " + vdc);
+        log.info("Get ports  for user with token " +  token + " and vdc " + vdc + " and region " + region);
         List<Port> ports = new ArrayList<Port>();
         try {
            
@@ -383,9 +383,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
                 
                 if (network_id.equals(networkId) && tenant_id.equals(vdc)&& device_owner.equals("compute:None")) {
                     Port port = new  Port((String) jsonPorts.getJSONObject(i).get("name"), network_id, tenant_id, device_owner, 
-                            (String) jsonPorts.getJSONObject(i).get("id")) ;
-                    log.debug ("adding prot " + port);
-                   
+                            (String) jsonPorts.getJSONObject(i).get("id")) ;                   
                     ports.add(port);
                 }
             }
@@ -399,6 +397,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             log.error(msm);
             throw new InfrastructureException(msm, e);
         }
+        log.info("Results Get ports  for user with token " +  token + " and vdc " + vdc + " and region " + region + ": " + ports.size ());
         return ports;
     }
     
@@ -475,11 +474,11 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      */
     public void deleteNetworkToPublicRouter(ClaudiaData claudiaData, NetworkInstance netInstance, String region)
             throws InfrastructureException {
-        log.info("Delete Interfact from net " + netInstance.getNetworkName() + " to public router ");
+        log.info("Delete Interfact from net " + netInstance.getNetworkName() + " to public router in region " + region);
 
         try {
-            String response = openStackUtil.deleteInterfaceToPublicRouter(claudiaData.getUser(), netInstance, region);
-            log.debug(response);
+            openStackUtil.deleteInterfaceToPublicRouter(claudiaData.getUser(), netInstance, region);
+          
         } catch (OpenStackException e) {
             String msm = "Error to delete the network " + netInstance.getNetworkName() + " to the public router :"
                     + e.getMessage();

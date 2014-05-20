@@ -268,33 +268,33 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 claudiaClient.browseVMReplica(claudiaData, tierInstance.getName(), 1, tierInstance.getVM(),
                         tierInstance.getTier().getRegion());
             } catch (ClaudiaResourceNotFoundException e) {
+            	deleteNetworksInTierInstance(claudiaData, tierInstance);
                 break;
             }
             claudiaClient.undeployVMReplica(claudiaData, tierInstance);
-            deleteNetworksInEnv(claudiaData, envInstance);
+            deleteNetworksInTierInstance(claudiaData, tierInstance);
         }
 
     }
 
-    private List<NetworkInstance> getNetworkInstInEnv(EnvironmentInstance envInstance) throws 
+    private List<NetworkInstance> getNetworkInstInEnv(TierInstance tierInstance) throws 
             InvalidEntityException, EntityNotFoundException {
         List<NetworkInstance> netInst = new ArrayList<NetworkInstance>();
-        for (TierInstance tierInstance : envInstance.getTierInstances()) {
+     //   for (TierInstance tierInstance : envInstance.getTierInstances()) {
             Set<NetworkInstance> netInts = tierInstance.cloneNetworkInt();
             tierInstance.getNetworkInstances().clear();
-            log.debug ("Updating tier instance" + tierInstance );
             tierInstanceManager.update(tierInstance);
-            log.debug ("With netowkrs... " );
             for (NetworkInstance net : netInts) {
+            	log.debug (net + " " + net.getNetworkName() );
                 if (!netInst.contains(net)) {
                     netInst.add(net);
                 }
             }
-        }
+      //  }
         return netInst;
     }
 
-    public void deleteNetworksInEnv(ClaudiaData claudiaData, EnvironmentInstance envInstance)
+    public void deleteNetworksInTierInstance(ClaudiaData claudiaData, TierInstance envInstance)
             throws  InvalidEntityException, InfrastructureException {
         log.debug("Delete the networks in env if there are not being used");
         
