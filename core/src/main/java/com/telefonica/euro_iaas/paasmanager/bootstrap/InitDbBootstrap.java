@@ -269,38 +269,7 @@ public class InitDbBootstrap implements ServletContextListener {
                  * tomcat7Tier = tierDao.create(tomcat7Tier);
                  */
 
-<<<<<<< HEAD
-       /*         Tier tomcat6Tier = new Tier("tomcat6Tier", 1, 1, 1, productReleasesTomcat6);
-=======
-           /*     Tier tomcat6Tier = new Tier("tomcat6Tier", 1, 1, 1, productReleasesTomcat6);
->>>>>>> 90495dd6adc66f2362f8d29f35ff54bcc449bfd3
-                tomcat6Tier.setImage("44dcdba3-a75d-46a3-b209-5e9035d2435e");
-                tomcat6Tier.setIcono("icono");
-                tomcat6Tier.setFlavour("1");
-                tomcat6Tier.setFloatingip("yes");
-                tomcat6Tier.setKeypair("testpaas");
 
-                tomcat6Tier = tierDao.create(tomcat6Tier);
-
-                Set<Tier> tiersProduction = new HashSet<Tier>();
-                // tiersProduction.add(tomcat7Tier);
-                tiersProduction.add(tomcat6Tier);
-
-                Tier postgres8Tier = new Tier("postgres8Tier", 1, 1, 1, productReleasesPostgres8);
-                postgres8Tier = tierDao.create(postgres8Tier);
-                Set<Tier> tiersProduction2vms = new HashSet<Tier>();
-                // tiersProduction2vms.add(tomcat7Tier);
-                // tiersProduction2vms.add(tomcat7Tier);
-                tiersProduction2vms.add(tomcat6Tier);
-                tiersProduction2vms.add(tomcat6Tier);
-
-                // 4CaastTiers
-                /*
-                 * Tier mysql51Tier = new Tier("mysql51Tier", 1, 1, 1, productReleasesMysql51); mysql51Tier =
-                 * tierDao.create(mysql51Tier);
-                 */
-
-<<<<<<< HEAD
     /*            Tier haproxy10Tier = new Tier("haproxy10Tier", 1, 1, 1, productReleasesHaproxy10);
 =======
       /*          Tier haproxy10Tier = new Tier("haproxy10Tier", 1, 1, 1, productReleasesHaproxy10);

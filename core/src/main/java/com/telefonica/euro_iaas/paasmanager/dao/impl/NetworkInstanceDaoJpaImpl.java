@@ -26,6 +26,7 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
@@ -61,23 +62,18 @@ public class NetworkInstanceDaoJpaImpl extends AbstractBaseDao<NetworkInstance, 
      *            of the network instance
      */
     public NetworkInstance load(String name) throws EntityNotFoundException {
-<<<<<<< HEAD
+
        return null;
 
     }
     
     public NetworkInstance load(String name, String vdc, String region) throws EntityNotFoundException {
         return findByNetworkInstanceName(name, vdc, region);
-=======
-        return findByNetworkInstanceName(name);
+
 
     }
 
-    public NetworkInstance load(String name, String vdc) throws EntityNotFoundException {
-        return findByNetworkInstanceName(name, vdc);
->>>>>>> 90495dd6adc66f2362f8d29f35ff54bcc449bfd3
 
-    }
 
     /**
      * (non-Javadoc)
@@ -113,15 +109,10 @@ public class NetworkInstanceDaoJpaImpl extends AbstractBaseDao<NetworkInstance, 
         query.setParameter("region", region);
         NetworkInstance networkInstance = null;
         try {
-<<<<<<< HEAD
             networkInstance = (NetworkInstance) query.getSingleResult();
         } catch (NoResultException e) {
             String message = " No NetworkInstance found in the database with id: " + name + " vdc " + vdc + " region " + region + " Exception: "
-=======
-            networkInstance = (NetworkInstance) query.getResultList().get(0);
-        } catch (Exception e) {
-            String message = " No NetworkInstance found in the database with id: " + name + " Exception: "
->>>>>>> 90495dd6adc66f2362f8d29f35ff54bcc449bfd3
+
                     + e.getMessage();
             log.debug (message);
             throw new EntityNotFoundException(NetworkInstance.class, "name", name);

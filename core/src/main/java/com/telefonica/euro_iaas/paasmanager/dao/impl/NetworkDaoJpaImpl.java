@@ -26,6 +26,7 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Propagation;
@@ -56,42 +57,28 @@ public class NetworkDaoJpaImpl extends AbstractBaseDao<Network, String> implemen
      */
     public Network load(String networkName, String vdc, String region) throws EntityNotFoundException {
 
-<<<<<<< HEAD
-            return findNetworkWithSubNet(networkName, vdc, region);
-        
-=======
-        return findNetworkWithSubNet(networkName, vdc);
 
->>>>>>> 90495dd6adc66f2362f8d29f35ff54bcc449bfd3
+            return findNetworkWithSubNet(networkName, vdc, region);
+
     }
 
     private Network findNetworkWithSubNet(String name, String vdc, String region ) throws EntityNotFoundException {
         Query query = getEntityManager().createQuery(
                 "select p from Network p left join " + " fetch p.subNets where p.name = :name and p.vdc = :vdc and p.region =:region");
         query.setParameter("name", name);
-<<<<<<< HEAD
+
         query.setParameter("region", region);
         if (vdc == null ){
-=======
-        if (vdc == null) {
->>>>>>> 90495dd6adc66f2362f8d29f35ff54bcc449bfd3
+
             query.setParameter("vdc", "");
         } else {
             query.setParameter("vdc", vdc);
         }
         Network network = null;
         try {
-<<<<<<< HEAD
             network = (Network) query.getSingleResult();
         } catch (NoResultException e) {
             String message = " No network found in the database with id: " + name + " and vdc " + vdc + " region " + region + " Exception: " + e.getMessage();
-    
-=======
-            network = (Network) query.getResultList().get(0);
-        } catch (Exception e) {
-            String message = " No network found in the database with id: " + name + " Exception: " + e.getMessage();
-
->>>>>>> 90495dd6adc66f2362f8d29f35ff54bcc449bfd3
             throw new EntityNotFoundException(Network.class, "name", name);
         }
         return network;
