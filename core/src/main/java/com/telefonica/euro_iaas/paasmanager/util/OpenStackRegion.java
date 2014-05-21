@@ -98,4 +98,6 @@ public interface OpenStackRegion {
      * @throws OpenStackException 
      */
 	String getFederatedQuantumEndPoint(String token) throws OpenStackException;
+
+	String getChefServerEndPoint(String region, String token) throws OpenStackException;
 }

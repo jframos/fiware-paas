@@ -53,6 +53,9 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
+import com.telefonica.euro_iaas.paasmanager.util.FileUtils;
+import com.telefonica.euro_iaas.paasmanager.util.FileUtilsImpl;
+import com.telefonica.euro_iaas.paasmanager.util.OpenStackRegion;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackUtil;
 
 
@@ -64,6 +67,8 @@ public class ClaudiaClientOpenStackImplTest {
     private Tier tier;
     private ClaudiaData claudiaData;
     private OpenStackUtil openStackUtil;
+    private FileUtilsImpl fileUtils;
+    private OpenStackRegion openStackRegion;
     private NetworkInstanceManager networkInstanceManager;
     private ClaudiaClientOpenStackImpl claudiaClientOpenStack;
 
@@ -113,8 +118,12 @@ public class ClaudiaClientOpenStackImplTest {
 
         openStackUtil = mock(OpenStackUtil.class);
         networkInstanceManager = mock (NetworkInstanceManager.class);
+        openStackRegion = mock (OpenStackRegion.class);
+        fileUtils = new FileUtilsImpl();
         claudiaClientOpenStack.setNetworkInstanceManager(networkInstanceManager);
         claudiaClientOpenStack.setOpenStackUtil(openStackUtil);
+        claudiaClientOpenStack.setFileUtils(fileUtils);
+        claudiaClientOpenStack.setOpenStackRegion(openStackRegion);
 
 
         when(openStackUtil.createServer(any(String.class), anyString(), anyString(), anyString())).thenReturn(
@@ -131,6 +140,7 @@ public class ClaudiaClientOpenStackImplTest {
         when(openStackUtil.getNetworks(anyString(), anyString(), anyString())).thenReturn(expectedNetworks);
     }
 
+
     @Test
     public void testDeployVMEssex() throws Exception {
 
@@ -138,6 +148,11 @@ public class ClaudiaClientOpenStackImplTest {
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
         VM vm = new VM();
+        vm.setHostname("hotname");
+        tierInstance.setVM(vm);
+        
+        when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
+        when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
 
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         verify(openStackUtil).createServer(any(String.class), anyString(), anyString(), anyString());
@@ -154,6 +169,9 @@ public class ClaudiaClientOpenStackImplTest {
         tierInstance.addNetworkInstance(network.toNetworkInstance());
         
         VM vm = new VM();
+        vm.setHostname("hotname");
+        tierInstance.setVM(vm);
+        when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         verify(openStackUtil).createServer(any(String.class), any(String.class), any(String.class), any(String.class));
 
@@ -174,7 +192,9 @@ public class ClaudiaClientOpenStackImplTest {
         networkInstances.add(netInst);
 
         VM vm = new VM();
-
+        vm.setHostname("hotname");
+        tierInstance.setVM(vm);
+        when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
         when(networkInstanceManager.listNetworks(any(ClaudiaData.class), any(String.class))).thenReturn(networkInstances);
         when(networkInstanceManager.load(any(String.class),any(String.class),any(String.class))).thenReturn(netInst);
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
@@ -197,9 +217,12 @@ public class ClaudiaClientOpenStackImplTest {
         networkInstances.add(netInst);
 
         VM vm = new VM();
+        vm.setHostname("hotname");
+        tierInstance.setVM(vm);
         NetworkInstance netInst2 = network.toNetworkInstance();
         netInst2.setShared(false);
         netInst2.setDefaultNet(true);
+        when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
         when(networkInstanceManager.listNetworks(any(ClaudiaData.class), any(String.class))).thenReturn(networkInstances);
         when(networkInstanceManager.create(any(ClaudiaData.class), any(NetworkInstance.class),any(String.class))).thenReturn(netInst2);
         

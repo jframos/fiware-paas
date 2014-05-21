@@ -326,7 +326,7 @@ public class TierInstance extends InstallableInstance {
      * 
      * @return
      */
-    public String toJson() {
+    public String toJson(String userData) {
         String payload = "{\"server\": " + "{\"key_name\": \"" + getTier().getKeypair() + "\", ";
         if (getTier().getSecurityGroup() != null) {
             payload = payload + "\"security_groups\": [{ \"name\": \"" + getTier().getSecurityGroup().getName()
@@ -353,12 +353,16 @@ public class TierInstance extends InstallableInstance {
 
             payload += "\"metadata\": {\"region\": \"" + this.getTier().getRegion() + "\"},";
         }
+        if (userData != null) {
+            payload += "\"userdata\": " + userData +",";
+        }
         payload += "\"flavorRef\": \"" + getTier().getFlavour() + "\", " + "\"imageRef\": \"" + getTier().getImage()
                 + "\", " + "\"name\": \"" + name + "\"}}";
 
         return payload;
 
     }
+
 
     public void update(Tier tier2) {
         tier = tier2;

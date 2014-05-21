@@ -37,6 +37,7 @@ import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
 import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaResourceNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaRetrieveInfoException;
+import com.telefonica.euro_iaas.paasmanager.exception.FileUtilsException;
 import com.telefonica.euro_iaas.paasmanager.exception.IPNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.NetworkNotRetrievedException;
@@ -52,6 +53,8 @@ import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
+import com.telefonica.euro_iaas.paasmanager.util.FileUtils;
+import com.telefonica.euro_iaas.paasmanager.util.OpenStackRegion;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackUtil;
 
 /**
@@ -66,6 +69,8 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     private static Logger log = Logger.getLogger(ClaudiaClientOpenStackImpl.class);
 
     private OpenStackUtil openStackUtil = null;
+    private OpenStackRegion openStackRegion =null;
+    private FileUtils fileUtils;
     private NetworkInstanceManager networkInstanceManager = null;
     private final int POLLING_INTERVAL = 10000;
 
@@ -105,11 +110,41 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             throw new InfrastructureException(errorMsg);
         }
 
-        String payload = tierInstance.toJson();
+        String payload = tierInstance.toJson(getUserData (claudiaData,  tierInstance));
         log.debug("Payload " + payload);
         log.debug("Floating ip " + tierInstance.getTier().getFloatingip());
 
         return payload;
+    }
+    
+    public String getUserData (ClaudiaData claudiaData, TierInstance tierInstance) {
+    	String file = null;
+    	String hostname = tierInstance.getVM().getHostname();
+    	String chefServerUrl;
+		try {
+			chefServerUrl = openStackRegion.getChefServerEndPoint(tierInstance.getTier().getRegion(), claudiaData.getUser().getToken());
+		} catch (OpenStackException e1) {
+			log.warn ("Error to obtain the chef-server url" + e1.getMessage());
+			return file;
+		}
+    	String chefValidationKey = "";
+		try {
+			chefValidationKey = fileUtils.readFile("validation", "/etc/");
+		} catch (FileUtilsException e1) {
+			log.warn ("Error to find the validation key file" + e1.getMessage());
+			//return file;
+		}
+    	
+		try {
+			file = fileUtils.readFile("userdata", "./src/main/resources/");
+		} catch (FileUtilsException e) {
+			log.warn ("Error to find the file" + e.getMessage());
+			return file;
+		}
+    	file = file.replace("{node_name}", hostname).replace( "{server_url}" ,chefServerUrl).replace("{validation_key}", chefValidationKey);
+    	return file;	
+    	
+    	 
     }
 
     private void addNetworkToTierInstance(ClaudiaData claudiaData, TierInstance tierInstance)
@@ -448,5 +483,13 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     public String deployVDC(ClaudiaData claudiaData, String cpu, String mem, String disk)
             throws InfrastructureException {
         return null;  // To change body of implemented methods use File | Settings | File Templates.
+    }
+    
+    public void setFileUtils (FileUtils fileUtils) {
+    	this.fileUtils = fileUtils;
+    }
+    
+    public void setOpenStackRegion (OpenStackRegion openStackRegion) {
+    	this.openStackRegion = openStackRegion;
     }
 }
