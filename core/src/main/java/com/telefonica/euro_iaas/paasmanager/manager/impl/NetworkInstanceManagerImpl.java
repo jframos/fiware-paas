@@ -78,8 +78,8 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         log.debug("Create network instance " + networkInstance.getNetworkName() + " vdc " +  claudiaData.getVdc());
         
 
-        if (exists(networkInstance.getNetworkName(), claudiaData.getVdc())) {
-            networkInstance = networkInstanceDao.load(networkInstance.getNetworkName(), claudiaData.getVdc());
+        if (exists(networkInstance.getNetworkName(), claudiaData.getVdc(), region)) {
+            networkInstance = networkInstanceDao.load(networkInstance.getNetworkName(), claudiaData.getVdc(), region);
             log.debug("The network already exists");
         } else {
             networkClient.deployNetwork(claudiaData, networkInstance, region);
@@ -177,16 +177,24 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
      * @params network
      */
     public void delete(ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
-            throws EntityNotFoundException, InvalidEntityException, InfrastructureException {
-        log.debug("Destroying network " + networkInstance.getNetworkName());
+            throws  InvalidEntityException, InfrastructureException {
+        log.debug("Destroying network " + networkInstance.getNetworkName() + " region " + region);
         
         if (!canBeDeleted (claudiaData, networkInstance, region )) {
+        	log.debug ("The network cannot be deleted due to existing ports");
             return;
         }
 
-        log.debug("Deleting the public interface interfaces");
-        networkInstance = networkInstanceDao.load(networkInstance.getNetworkName(), claudiaData.getVdc());
+        log.debug("Deleting the public interface");
+        try {
+        	log.debug ("Loading newtwokr " + networkInstance.getNetworkName() + "  " + claudiaData.getVdc()+ " " + region);
+        	networkInstance = networkInstanceDao.load(networkInstance.getNetworkName(), claudiaData.getVdc(), region);
+        }catch (Exception e) {
+            log.error("It is not possible to find the network " + e.getMessage());
+            throw new InvalidEntityException(networkInstance);
+        }
         networkClient.deleteNetworkToPublicRouter(claudiaData, networkInstance, region);
+        
         log.debug("Deleting the subnets");
         Set<SubNetworkInstance> subNetAux = networkInstance.cloneSubNets();
         networkInstance.getSubNets().clear();
@@ -212,19 +220,32 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
      * @params network
      */
     public boolean canBeDeleted(ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
-            throws EntityNotFoundException, InvalidEntityException, InfrastructureException {
+            throws InvalidEntityException, InfrastructureException {
         log.debug("Obtaining ports from network" + networkInstance.getNetworkName());
 
         List<Port> ports = networkClient.listPortsFromNetwork(claudiaData, region, networkInstance.getIdNetwork());
+        log.debug ("List ports " + ports.size ());
         if (ports.size()==0) {
             return true;
         }
         else {
-            log.debug ("It is not possible to undeply the network since there are VMs associated to it");
+        	String strPorts = "";
+        	for (Port port: ports) {
+        		strPorts = strPorts + " " + port.getNetworkId();
+        	}
+            log.debug ("It is not possible to undeply the network since there are VMs associated to it " + strPorts);
             return false;
             
         }
     }
+    
+    public void joinNetwork(ClaudiaData claudiaData, NetworkInstance networkInstance, NetworkInstance networkInstance2)
+    	throws EntityNotFoundException, InvalidEntityException, InfrastructureException {
+        log.debug("joining netowrk " + networkInstance.getNetworkName() + " " + networkInstance2.getNetworkName());
+        networkClient.joinNetworks(claudiaData, networkInstance, networkInstance2);
+      
+}
+    
 
     /**
      * To obtain the list of networks.
@@ -240,9 +261,9 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
      * 
      * @return the network list
      */
-    public boolean exists(String networkInstance, String vdc) {
+    public boolean exists(String networkInstance, String vdc, String region) {
         try {
-            networkInstanceDao.load(networkInstance, vdc);
+            networkInstanceDao.load(networkInstance, vdc, region);
             return true;
         } catch (Exception e) {
             return false;
@@ -261,8 +282,8 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
      * @param networkName
      * @return the network
      */
-    public NetworkInstance load(String networkName, String vdc) throws EntityNotFoundException {
-        return networkInstanceDao.load(networkName, vdc);
+    public NetworkInstance load(String networkName, String vdc, String region) throws EntityNotFoundException {
+        return networkInstanceDao.load(networkName, vdc, region);
     }
 
     public void setNetworkClient(NetworkClient networkClient) {

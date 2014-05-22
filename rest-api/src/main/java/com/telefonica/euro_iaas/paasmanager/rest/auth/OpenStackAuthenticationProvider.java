@@ -136,7 +136,9 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
      *            the tenantId
      * @return the open stack user
      */
+
     public PaasManagerUser authenticationFiware(String token, String tenantId) {
+
 
         String keystoneURL = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_URL);
 
@@ -155,8 +157,8 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
 
         String[] credential = oSAuthToken.getCredentials();
 
-        log.debug("Keystone URL : " + keystoneURL);
-        log.debug("adminToken : " + credential[0]);
+        logger.debug("Keystone URL : " + keystoneURL);
+        logger.debug("adminToken : " + credential[0]);
 
         WebResource webResource = client.resource(keystoneURL);
         try {

@@ -166,7 +166,8 @@ public class EnvironmentInstance extends InstallableInstance {
         TierPDto tierPDto = new TierPDto(tier.getName(), tier.getMaximumNumberInstances(),
                 tier.getMinimumNumberInstances(), tier.getInitialNumberInstances(), productReleasedto,
                 tier.getFlavour(), tier.getImage(), tier.getIcono(), securitygroup, tier.getKeypair(),
-                tier.getFloatingip());
+                tier.getFloatingip(), tier.getRegion ());
+      
         if (lTierInstance != null && lTierInstance.size() != 0) {
             for (TierInstance tierInstance : lTierInstance) {
 

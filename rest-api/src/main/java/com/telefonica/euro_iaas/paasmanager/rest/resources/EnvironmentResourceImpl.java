@@ -145,8 +145,9 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
      * @param claudiaData
      */
     public void addCredentialsToClaudiaData(ClaudiaData claudiaData) {
+    	log.debug (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM));
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-
+        	log.debug ("addCredentialsToClaudiaData to claudia ");
             claudiaData.setUser(getCredentials());
             claudiaData.getUser().setTenantId(claudiaData.getVdc());
         }
@@ -166,6 +167,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
             // try {
             environmentManager.create(claudiaData, environmentDto.fromDto(org, vdc));
         } catch (Exception e) {
+        	log.debug (e.getMessage());
             throw new APIException(e);
         }
     }

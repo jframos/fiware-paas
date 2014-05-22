@@ -138,6 +138,7 @@ public class OpenStackAuthenticationToken {
     }
 
     private void generateValidToken() {
+    	System.out.println ("generateValidToken");
         HttpPost postRequest = createKeystonePostRequest();
         ArrayList<Object> response = executePostRequest(postRequest);
         extractData(response);
@@ -216,8 +217,10 @@ public class OpenStackAuthenticationToken {
         // -H "Accept: application/xml"�
         // http://10.95.171.115:35357/v2.0/tokens
 
+    	System.out.println ("createKeystonePostRequest");
         HttpEntity entity = null;
         HttpPost postRequest = new HttpPost(url + "tokens");
+        System.out.println (url);
 
         postRequest.setHeader("Content-Type", "application/json");
         postRequest.setHeader("Accept", "application/xml");
@@ -239,6 +242,7 @@ public class OpenStackAuthenticationToken {
     }
 
     private ArrayList<Object> executePostRequest(HttpPost postRequest) {
+    	System.out.println ("executePostRequest");
         HttpResponse response;
         httpClient = new DefaultHttpClient();
 
@@ -253,6 +257,7 @@ public class OpenStackAuthenticationToken {
 
             localDate = new Date();
 
+            System.out.println (response.getStatusLine().getStatusCode());
             if ((response.getStatusLine().getStatusCode() != 201) && (response.getStatusLine().getStatusCode() != 200)) {
 
                 String exceptionMessage = "Failed : HTTP error code : (" + postRequest.getURI().toString() + ")"

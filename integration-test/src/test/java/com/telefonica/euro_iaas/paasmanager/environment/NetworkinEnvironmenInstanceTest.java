@@ -115,7 +115,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network_creation1", vdc);
+        Network net = new Network("network_creation1", vdc, "region");
         tierbk.addNetwork(net);
 
         environmentBk.addTier(tierbk);
@@ -177,7 +177,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network_deletion2", vdc);
+        Network net = new Network("network_deletion2", vdc, "region");
         tierbk.addNetwork(net);
 
         environmentBk.addTier(tierbk);
@@ -228,7 +228,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network2", vdc);
+        Network net = new Network("network2", vdc, "region");
         tierbk.addNetwork(net);
 
         environmentBk.addTier(tierbk);
@@ -279,7 +279,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network3", vdc);
+        Network net = new Network("network3", vdc, "region");
 
         tierbk.addNetwork(net);
 
@@ -291,7 +291,7 @@ public class NetworkinEnvironmenInstanceTest {
         environmentAlreadyNetwork.setName("tNAEDS2");
         environmentAlreadyNetwork.setDescription("Description First environment");
 
-        SubNetwork subNet = new SubNetwork("subnet");
+        SubNetwork subNet = new SubNetwork("subnet",vdc, "region");
         subNet.setCidr("10.0.4.6/24");
         for (Network netOut: tierbk.getNetworks()) {
             netOut.addSubNet(subNet);; 
@@ -333,8 +333,8 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network5", vdc);
-        Network net2 = new Network("Internet", vdc);
+        Network net = new Network("network5", vdc, "region");
+        Network net2 = new Network("Internet", vdc, "region");
         tierbk.addNetwork(net);
         tierbk.addNetwork(net2);
 
@@ -374,7 +374,7 @@ public class NetworkinEnvironmenInstanceTest {
         tierbk.setKeypair("keypair");
         tierbk.addProductRelease(product);
 
-        Network net = new Network("network4", vdc);
+        Network net = new Network("network4", vdc, "region");
 
         tierbk.addNetwork(net);
 

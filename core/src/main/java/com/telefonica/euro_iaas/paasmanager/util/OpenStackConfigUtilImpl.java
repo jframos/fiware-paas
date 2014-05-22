@@ -112,8 +112,9 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
     public String getPublicAdminNetwork(PaasManagerUser user,  String region)
             throws OpenStackException {
         log.debug("Obtain public admin network ");
+        String type ="net";
         RegionCache regionCache = new RegionCache();
-        String networkId = regionCache.getUrl("network", "net");
+        String networkId = regionCache.getUrl(region, type);
         if (networkId != null) {
         	log.debug("in cache "+networkId  );
         	return networkId;
@@ -135,12 +136,12 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
             for (int i = 0; i< jsonNetworks.length(); i++) {
                 
                 JSONObject jsonNet = jsonNetworks.getJSONObject(i);
-                NetworkInstance net = isPublicNetwork (jsonNet, adminUser.getUserName());
+                NetworkInstance net = isPublicNetwork (jsonNet, adminUser.getUserName(), region);
                 
                 if (net != null)
                 {
                 	log.debug("net "+net.getNetworkName() + " " + net.getIdNetwork()  );
-                	regionCache.putUrl("network", "net", net.getIdNetwork());
+                	regionCache.putUrl(region, type, net.getNetworkName());
                 	return net.getIdNetwork();
                 }
 
@@ -161,9 +162,10 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
     
     public String getPublicFloatingPool(PaasManagerUser user,  String region)
     	throws OpenStackException {
+    	String type = "floating";
         log.debug("Obtain public admin network");
         RegionCache regionCache = new RegionCache();
-        String networkId = regionCache.getUrl("floating", "net");
+        String networkId = regionCache.getUrl(region, type);
         if (networkId != null) {
         	return networkId;
         }
@@ -182,10 +184,11 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
 	    	for (int i = 0; i< jsonNetworks.length(); i++) {
         
 	    		JSONObject jsonNet = jsonNetworks.getJSONObject(i);
-	    		NetworkInstance net = isPublicNetwork (jsonNet, adminUser.getUserName());
+	    		NetworkInstance net = isPublicNetwork (jsonNet, adminUser.getUserName(), region);
 	    		if (net != null)
 	    		{
-	    			regionCache.putUrl("floating", "net", net.getNetworkName());
+	    			
+	    			regionCache.putUrl(region, type, net.getNetworkName());
 	    			return net.getNetworkName();
 	    		}
 
@@ -210,8 +213,9 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
     public String getPublicRouter(PaasManagerUser user,  String region, String publicNetworkId)
             throws OpenStackException {
         log.debug("Obtain public router for external netwrk " + publicNetworkId);
+        String type = "router";
         RegionCache regionCache = new RegionCache();
-        String routerId = regionCache.getUrl("router", "net");
+        String routerId = regionCache.getUrl(region, type);
         if (routerId != null) {
         	return routerId;
         }
@@ -226,21 +230,14 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
 
         try {
             response = openOperationUtil.executeNovaRequest(request);
-            JSONObject lRouterString = new JSONObject(response);
-            JSONArray jsonRouters = lRouterString.getJSONArray("routers");
-            
-            for (int i = 0; i< jsonRouters.length(); i++) {
-                
-                JSONObject jsonNet = jsonRouters.getJSONObject(i);
-                RouterInstance router = isPublicRouter (jsonNet, adminUser.getUserName(),publicNetworkId);
-                log.debug (router);
-                if (router != null)
-                {
-                	regionCache.putUrl("router", "net", router.getIdRouter());
-                	return router.getIdRouter();
-                }
-
+            routerId = getPublicRouterId (response, adminUser.getUserName(),publicNetworkId);
+            if (routerId == null) {
+            	String errorMessage = "It is not possible to find a public router for network " + publicNetworkId + ": ";
+                log.error(errorMessage);
+                throw new OpenStackException(errorMessage);
             }
+            regionCache.putUrl(region, type, routerId);
+            return routerId;
 
         } catch (OpenStackException e) {
             String errorMessage = "Error getting router for obtaining the public router: " + e;
@@ -252,18 +249,34 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
             throw new OpenStackException(errorMessage);
         }
 
-        return null;
-
-
-
     }
     
-    private NetworkInstance isPublicNetwork(JSONObject jsonNet, String vdc)  {
+    public String getPublicRouterId (String response, String vdc, String publicNetworkId) throws JSONException {
+    	JSONObject lRouterString = new JSONObject(response);
+        JSONArray jsonRouters = lRouterString.getJSONArray("routers");
+        
+        for (int i = 0; i< jsonRouters.length(); i++) {
+            
+            JSONObject jsonNet = jsonRouters.getJSONObject(i);
+            RouterInstance router = isPublicRouter (jsonNet, vdc,publicNetworkId);
+            log.debug (router);
+            if (router != null)
+            {
+            	
+            	return router.getIdRouter();
+            }
+
+        }
+        return null;
+
+    } 
+    
+    private NetworkInstance isPublicNetwork(JSONObject jsonNet, String vdc, String region)  {
     	log.debug ("looking for vdc " + vdc);
 
         NetworkInstance netInst;
         try {
-            netInst = NetworkInstance.fromJson(jsonNet);
+            netInst = NetworkInstance.fromJson(jsonNet, region);
         } catch (JSONException e) {
             log.warn("Error to parser the json for the network");
             return null;
@@ -278,7 +291,7 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
             return null;
         }
         
-        if (!vdc.equals(netInst.getTenantId())) {
+        if (!vdc.contains(netInst.getTenantId())) {
         	log.debug("vdc " + vdc + " tenant id " + netInst.getTenantId());
             return null;
         }
@@ -295,7 +308,7 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
             return null;
         }
         log.debug ("router " + routerInst.getName() + " " + routerInst.getTenantId() + " " + routerInst.getNetworkId() + " " + vdc);
-        if (!vdc.equals(routerInst.getTenantId())) {
+        if (!vdc.contains(routerInst.getTenantId())) {
             return null;
         }
 

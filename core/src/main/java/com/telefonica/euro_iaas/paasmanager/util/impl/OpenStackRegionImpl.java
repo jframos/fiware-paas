@@ -76,6 +76,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
 
         String tokenadmin = this.getTokenAdmin();
         if (url != null) {
+        	log.debug ("Get url for sdc in region " + url);
             return url;
         } else {
             String responseJSON = callToKeystone(token, tokenadmin);
@@ -121,7 +122,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     }
     
     public String getSdcEndPoint(String regionName, String token) throws OpenStackException  {
-        log.debug ("Get url for sdc in region " + regionName);
+    	log.debug ("Get url for sdc in region " + regionName);
     	String url;
         try {
             url = getEndPointByNameAndRegionName("sdc", regionName, token);

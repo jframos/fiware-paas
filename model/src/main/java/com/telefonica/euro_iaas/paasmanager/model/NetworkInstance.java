@@ -70,6 +70,8 @@ public class NetworkInstance {
 
     private String idNetwork;
     
+    private String region;
+    
     private boolean shared;
     
     private boolean adminStateUp = false;
@@ -99,9 +101,10 @@ public class NetworkInstance {
     /**
      * @param networkName
      */
-    public NetworkInstance(String name, String vdc) {
+    public NetworkInstance(String name, String vdc, String region) {
         this.name = name;
         this.vdc = vdc;
+        this.region = region;
         subNets = new HashSet<SubNetworkInstance>();
         routers = new HashSet<RouterInstance>();
         subNetCount = 1;
@@ -291,6 +294,10 @@ public class NetworkInstance {
     public void setIdNetwork(String id) {
         this.idNetwork = id;
     }
+    
+    public String getRegionName () {
+    	return this.region;
+    }
 
     /**
      * It obtains the json for adding this subnet into a router.
@@ -314,7 +321,7 @@ public class NetworkInstance {
 
     }
     
-    public static NetworkInstance fromJson (JSONObject jsonNet) throws JSONException {
+    public static NetworkInstance fromJson (JSONObject jsonNet, String region) throws JSONException {
         String name = (String) jsonNet.get("name");
         boolean shared = (Boolean) jsonNet.get("shared");
         String id = (String) jsonNet.get("id");
@@ -323,7 +330,7 @@ public class NetworkInstance {
         boolean external = (Boolean) jsonNet.get("router:external");
 
 
-        NetworkInstance netInst = new NetworkInstance(name, tenantId);
+        NetworkInstance netInst = new NetworkInstance(name, tenantId, region);
         netInst.setIdNetwork(id);
         netInst.setShared(shared);
         netInst.setTenantId(tenantId);

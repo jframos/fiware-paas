@@ -971,10 +971,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         log.debug("List ports from user " + user.getUserName());
         PaasManagerUser user2 = openOperationUtil.getAdminUser(user);
 
-        log.debug("tenantid " + user2.getTenantId());
-        log.debug("token " + user2.getToken());
-        log.debug("user name " + user2.getUserName());
-
         HttpUriRequest request = openOperationUtil.createQuantumGetRequest(RESOURCE_PORTS, APPLICATION_JSON, region, user2.getToken(),
                 user2.getUserName());
 
@@ -982,8 +978,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
         try {
             response = openOperationUtil.executeNovaRequest(request);
-            log.debug("List port response");
-            log.debug(response);
+
 
         } catch (Exception e) {
             String errorMessage = "Error getting list of networks from OpenStack: " + e;
@@ -1049,8 +1044,14 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 	public String joinNetworks(NetworkInstance networkInstance,
 			NetworkInstance networkInstance2, String token) throws OpenStackException {
 		
-		String payload = "{\"net_id_1\":" + networkInstance.getIdNetwork()+" , \"net_id_2\":"+ networkInstance.getIdNetwork() + " }";				
-        HttpUriRequest request = openOperationUtil.createJoinQuantumPostRequestRequest(RESOURCE_NETWOKS_FEDERATED, payload, APPLICATION_JSON, token);
+		String payload = "{\"net_id_1\":" + networkInstance.getIdNetwork()+" , \"net_id_2\":"+ networkInstance2.getIdNetwork() + " }";	
+		HttpUriRequest request = null;
+		try {
+            request = openOperationUtil.createJoinQuantumPostRequestRequest(RESOURCE_NETWOKS_FEDERATED, payload, APPLICATION_JSON, token);
+		} catch (Exception e) {
+			log.warn("Errot to obtain the federated url ");
+			return null;
+		}
        
 
         String response = null;

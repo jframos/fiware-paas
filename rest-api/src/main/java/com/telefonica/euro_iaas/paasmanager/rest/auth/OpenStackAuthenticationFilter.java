@@ -135,17 +135,20 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
             throws IOException, ServletException {
 
         final boolean debug = logger.isDebugEnabled();
+
         final HttpServletRequest request = (HttpServletRequest) req;
         final HttpServletResponse response = (HttpServletResponse) res;
 
         String header = request.getHeader(OPENSTACK_HEADER_TOKEN);
         String pathInfo = request.getPathInfo();
+        logger.debug (header);
+        logger.debug(pathInfo);
 
-        if (pathInfo.equals("/") || pathInfo.equals("/extensions")) {
+        if (pathInfo != null && (pathInfo.equals("/") || pathInfo.equals("/extensions"))) {
             /**
              * It is not needed to authenticate these operations
              */
-            logger.info("Operation does not need to Authenticate");
+            logger.debug("Operation does not need to Authenticate");
         } else {
 
             if (header == null) {
@@ -155,6 +158,8 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
             try {
                 String token = header;
                 String tenantId = request.getHeader(OPENSTACK_HEADER_TENANTID);
+                logger.debug(tenantId);
+                logger.debug(token);
                 // String tenantId = request.getPathInfo().split("/")[3];
 
                 if (debug) {
@@ -165,6 +170,7 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
                 UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(token,
                         tenantId);
                 authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
+                logger.debug (authenticationManager);
                 Authentication authResult = authenticationManager.authenticate(authRequest);
 
                 if (debug) {
@@ -173,10 +179,10 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
 
                 PaasManagerUser user = (PaasManagerUser) authResult.getPrincipal();
 
-                logger.info("User: " + user.getUsername());
-                logger.info("Token: " + user.getToken());
-                logger.info("Tenant: " + user.getTenantId());
-                logger.info("TenantName - Org: " + user.getTenantName());
+                logger.debug("User: " + user.getUsername());
+                logger.debug("Token: " + user.getToken());
+                logger.debug("Tenant: " + user.getTenantId());
+                logger.debug("TenantName - Org: " + user.getTenantName());
 
                 SecurityContextHolder.getContext().setAuthentication(authResult);
                 // SecurityContextHolder.setStrategyName("MODE_INHERITABLETHREADLOCAL");

@@ -70,6 +70,7 @@ public class TierDaoJpaImplTest {
     public final static Integer MAXIMUM_INSTANCES = 8;
     public final static Integer MINIMUM_INSTANCES = 1;
     public final static Integer INITIAL_INSTANCES = 1;
+    public static String REGION = "region";
 
     /**
      * Test the create method
@@ -174,10 +175,10 @@ public class TierDaoJpaImplTest {
         productReleases.add(prodRelease);
         
         Set<Network> networks = new HashSet<Network>();
-        Network network = new Network(NETWORK_NAME, "VDC");
+        Network network = new Network(NETWORK_NAME, "VDC", REGION);
         network = networkDao.create(network);
         networks.add(network);
-        Network network2 = new Network(NETWORK_NAME+2, "VDC");
+        Network network2 = new Network(NETWORK_NAME+2, "VDC", REGION);
         network2 = networkDao.create(network2);
         networks.add(network2);
 
@@ -207,7 +208,7 @@ public class TierDaoJpaImplTest {
         prodRelease = productReleaseDao.create(prodRelease);
         productReleases.add(prodRelease);
     	String net ="NETFIND";
-    	Network network = new Network(net, "VDC");
+    	Network network = new Network(net, "VDC", REGION);
         network = networkDao.create(network);
         
         assertEquals(tierDao.findAllWithNetwork(net).size(),0);

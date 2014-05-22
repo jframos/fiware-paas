@@ -26,6 +26,7 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Propagation;
@@ -54,27 +55,30 @@ public class NetworkDaoJpaImpl extends AbstractBaseDao<Network, String> implemen
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.commons.dao.BaseDAO#load(java.io.Serializable)
      */
-    public Network load(String networkName, String vdc) throws EntityNotFoundException {
+    public Network load(String networkName, String vdc, String region) throws EntityNotFoundException {
 
-        return findNetworkWithSubNet(networkName, vdc);
+
+            return findNetworkWithSubNet(networkName, vdc, region);
 
     }
 
-    private Network findNetworkWithSubNet(String name, String vdc) throws EntityNotFoundException {
+    private Network findNetworkWithSubNet(String name, String vdc, String region ) throws EntityNotFoundException {
         Query query = getEntityManager().createQuery(
-                "select p from Network p left join " + " fetch p.subNets where p.name = :name and p.vdc = :vdc");
+                "select p from Network p left join " + " fetch p.subNets where p.name = :name and p.vdc = :vdc and p.region =:region");
         query.setParameter("name", name);
-        if (vdc == null) {
+
+        query.setParameter("region", region);
+        if (vdc == null ){
+
             query.setParameter("vdc", "");
         } else {
             query.setParameter("vdc", vdc);
         }
         Network network = null;
         try {
-            network = (Network) query.getResultList().get(0);
-        } catch (Exception e) {
-            String message = " No network found in the database with id: " + name + " Exception: " + e.getMessage();
-
+            network = (Network) query.getSingleResult();
+        } catch (NoResultException e) {
+            String message = " No network found in the database with id: " + name + " and vdc " + vdc + " region " + region + " Exception: " + e.getMessage();
             throw new EntityNotFoundException(Network.class, "name", name);
         }
         return network;

@@ -123,11 +123,11 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 
         }
         List<NetworkInstance> networkNoSharedInstances = loadNotSharedNetworksUser(networkInstances,
-                claudiaData.getVdc());
+                claudiaData.getVdc(), region);
         if (networkNoSharedInstances.isEmpty()) {
             log.debug("There is not any network associated to the user");
-            Network net = new Network(claudiaData.getUser().getTenantName(), claudiaData.getVdc());
-            SubNetwork subNet = new SubNetwork("default" + claudiaData.getVdc());
+            Network net = new Network(claudiaData.getUser().getTenantName(), claudiaData.getVdc(), region);
+            SubNetwork subNet = new SubNetwork("default" + claudiaData.getVdc(),claudiaData.getVdc(), region);
             net.addSubNet(subNet);
             NetworkInstance netinstance = net.toNetworkInstance();
             NetworkInstance networkInstance = networkInstanceManager.create(claudiaData, netinstance, region);
@@ -139,7 +139,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             if (defaulNet == null) {
                 log.debug("There is not a default network. Getting the first one");
                 tierInstance.addNetworkInstance(networkInstanceManager.load(networkNoSharedInstances.get(0)
-                        .getNetworkName(), claudiaData.getVdc()));
+                        .getNetworkName(), claudiaData.getVdc(), region));
             }
 
         }
@@ -155,13 +155,13 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         return null;
     }
 
-    private List<NetworkInstance> loadNotSharedNetworksUser(List<NetworkInstance> networks, String tenantId)
+    private List<NetworkInstance> loadNotSharedNetworksUser(List<NetworkInstance> networks, String tenantId, String region)
             throws InfrastructureException {
         List<NetworkInstance> networksNotShared = new ArrayList<NetworkInstance>();
         for (NetworkInstance net : networks) {
             if (!net.getShared() && net.getTenantId().equals(tenantId)) {
                 try {
-                    networksNotShared.add(loadNetworkInstance(net, tenantId));
+                    networksNotShared.add(loadNetworkInstance(net, tenantId, region));
                 } catch (Exception e) {
                     log.error("The network " + net.getNetworkName() + " cannot be added");
 
@@ -172,10 +172,10 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         return networksNotShared;
     }
 
-    private NetworkInstance loadNetworkInstance(NetworkInstance networkInstance, String tenantId)
+    private NetworkInstance loadNetworkInstance(NetworkInstance networkInstance, String tenantId, String region)
             throws InvalidEntityException, AlreadyExistsEntityException {
         try {
-            networkInstance = networkInstanceManager.load(networkInstance.getNetworkName(), tenantId);
+            networkInstance = networkInstanceManager.load(networkInstance.getNetworkName(), tenantId, region);
         } catch (Exception e) {
             log.warn("The network " + networkInstance.getNetworkName() + " is in Openstack but not in DB");
             networkInstanceManager.createInDB(networkInstance);
@@ -202,15 +202,16 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
                     throw new InfrastructureException(errorMessage);
                 }
                 String response = openStackUtil.getServer(tierInstance.getVM().getVmid(), tierInstance.getTier()
-                        .getRegion(), claudiaData.getUser().getToken(), claudiaData.getUser().getToken());
+                        .getRegion(), claudiaData.getUser().getToken(), claudiaData.getUser().getTenantId());
             } catch (OpenStackException e) {
-                String errorMessage = "Error obtaining info from Server " + tierInstance.getVM().getVmid();
-                log.error(errorMessage);
+                String errorMessage = "Error obtaining info from Server " + tierInstance.getVM().getVmid() + " " + e.getMessage();
+                log.warn(errorMessage);
+                return ;
 
-                if (e.getMessage().contains("Malformed request url") || e.getMessage().contains("itemNotFound")
+              /*  if (e.getMessage().contains("Malformed request url") || e.getMessage().contains("itemNotFound")
                         || e.getMessage().contains("badRequest")) {
                     break;
-                }
+                }*/
 
                 // throw new InfrastructureException(errorMessage);
             }
@@ -426,14 +427,16 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     }
 
     public void undeployVMReplica(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
-
+    	log.debug ("Undeploy VM replica " + tierInstance.getName() + " for region " + tierInstance.getTier().getRegion() + " and user " + tierInstance.getTier().getVdc() );
         try {
 
             String region = tierInstance.getTier().getRegion();
             String token = claudiaData.getUser().getToken();
             String vdc = tierInstance.getTier().getVdc();
+           
             openStackUtil.deleteServer(tierInstance.getVM().getVmid(), region, token, vdc);
             checkDeleteServerTaskStatus(tierInstance, claudiaData);
+            log.debug("Undeployed VM replica " + tierInstance.getName() + " for region " + tierInstance.getTier().getRegion() + " and user " + tierInstance.getTier().getVdc() );
         } catch (OpenStackException oes) {
             String errorMessage = "Error deleting serverId: " + tierInstance.getVM().getVmid();
             log.error(errorMessage);

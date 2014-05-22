@@ -82,6 +82,7 @@ public class TierManagerImplTest {
     public static String TIER_NAME = "TIER_NAME";
     public static String VDC = "VDC";
     public static String ENV = "ENV";
+    public static String REGION = "region";
 
 
     @Before
@@ -317,7 +318,7 @@ public class TierManagerImplTest {
 
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
                 "keypair", "floatingip", "payload");
-        Network net = new Network("NETWORK_NAME", "vd");
+        Network net = new Network("NETWORK_NAME", "vd",REGION);
         tier.addNetwork(net);
         tier.setVdc(VDC);
         tier.setEnviromentName(ENV);
@@ -326,9 +327,9 @@ public class TierManagerImplTest {
 
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
         when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
-        when(networkManager.exists(any(String.class), any(String.class))).thenReturn(false);
+        when(networkManager.exists(any(String.class), any(String.class), any(String.class))).thenReturn(false);
         when(networkManager.create(any(Network.class))).thenReturn(net);
-        when(networkManager.load(any(String.class), any(String.class))).thenReturn(net);
+        when(networkManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(net);
 
         Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
                 .load(any(String.class), any(String.class), any(String.class));
@@ -346,7 +347,7 @@ public class TierManagerImplTest {
 
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
                 "keypair", "floatingip", "payload");
-        Network net = new Network("NETWORK_NAME", "vd");
+        Network net = new Network("NETWORK_NAME", "vd",REGION);
         tier.addNetwork(net);
         tier.setVdc(null);
         tier.setEnviromentName(ENV);
@@ -356,9 +357,9 @@ public class TierManagerImplTest {
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
         when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
 
-        when(networkManager.exists(any(String.class), any(String.class))).thenReturn(false);
+        when(networkManager.exists(any(String.class), any(String.class), any(String.class))).thenReturn(false);
         when(networkManager.create(any(Network.class))).thenReturn(net);
-        when(networkManager.load(any(String.class), any(String.class))).thenReturn(net);
+        when(networkManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(net);
 
         Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
                 .load(any(String.class), any(String.class), any(String.class));
@@ -376,7 +377,7 @@ public class TierManagerImplTest {
 
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
                 "keypair", "floatingip", "payload");
-        Network net = new Network("NETWORK_NAME", "vdc");
+        Network net = new Network("NETWORK_NAME", "vdc",REGION);
         tier.addNetwork(net);
         tier.setVdc(VDC);
         tier.setEnviromentName(ENV);
@@ -385,8 +386,8 @@ public class TierManagerImplTest {
 
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
         when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
-        when(networkManager.exists(any(String.class), any(String.class))).thenReturn(true);
-        when(networkManager.load(any(String.class), any(String.class))).thenReturn(net);
+        when(networkManager.exists(any(String.class), any(String.class), any(String.class))).thenReturn(true);
+        when(networkManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(net);
 
         Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
                 .load(any(String.class), any(String.class), any(String.class));
@@ -449,7 +450,7 @@ public class TierManagerImplTest {
         securityGroup.addRule(new Rule());
         tier.setSecurityGroup(securityGroup);
         
-        Network net = new Network("NETWORK_NAME", "vdc");
+        Network net = new Network("NETWORK_NAME", "vdc",REGION);
         tier.addNetwork(net);
         
         when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);

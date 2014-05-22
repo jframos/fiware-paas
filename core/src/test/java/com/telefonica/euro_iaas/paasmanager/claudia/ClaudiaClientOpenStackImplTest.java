@@ -148,7 +148,7 @@ public class ClaudiaClientOpenStackImplTest {
     public void testDeployVMEGrizzlyNetwork() throws Exception {
 
         TierInstance tierInstance = new TierInstance();
-        Network network = new Network("NETWORK", "VDC");
+        Network network = new Network("NETWORK", "VDC", "REGION");
         tier.addNetwork(network);
         tierInstance.setTier(tier);
         tierInstance.addNetworkInstance(network.toNetworkInstance());
@@ -165,7 +165,7 @@ public class ClaudiaClientOpenStackImplTest {
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
         
-        Network network = new Network("NETWORK", "VDC");
+        Network network = new Network("NETWORK", "VDC", "REGION");
         NetworkInstance netInst = network.toNetworkInstance();
         netInst.setShared(false);
         netInst.setTenantId(claudiaData.getVdc());
@@ -176,7 +176,7 @@ public class ClaudiaClientOpenStackImplTest {
         VM vm = new VM();
 
         when(networkInstanceManager.listNetworks(any(ClaudiaData.class), any(String.class))).thenReturn(networkInstances);
-        when(networkInstanceManager.load(any(String.class),any(String.class))).thenReturn(netInst);
+        when(networkInstanceManager.load(any(String.class),any(String.class),any(String.class))).thenReturn(netInst);
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         
         verify(openStackUtil).createServer(any(String.class), any(String.class), any(String.class), any(String.class));
@@ -190,7 +190,7 @@ public class ClaudiaClientOpenStackImplTest {
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
         
-        Network network = new Network("NETWORK", "VDC");
+        Network network = new Network("NETWORK", "VDC", "REGION");
         NetworkInstance netInst = network.toNetworkInstance();
         netInst.setShared(true);
         List<NetworkInstance> networkInstances = new ArrayList<NetworkInstance> ();

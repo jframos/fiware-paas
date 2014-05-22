@@ -202,7 +202,7 @@ public class OpenStackNetworkImplTest {
         " \"network\", \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "+
         " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": false, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "+
         " \"provider:segmentation_id\": 8}}" ;
-        NetworkInstance net = new NetworkInstance ("network", "vdc");
+        NetworkInstance net = new NetworkInstance ("network", "vdc", "region");
         when(openStackUtil.createNetwork(any(String.class),anyString(),anyString(),anyString())).thenReturn(response);
 
         NetworkInstance net2 = openStackNetworkImpl.deployDefaultNetwork(claudiaData, REGION);
@@ -222,7 +222,7 @@ public class OpenStackNetworkImplTest {
         " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": false, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "+
         " \"provider:segmentation_id\": 8}}" ;
          
-        NetworkInstance net = new NetworkInstance ("network", "vdc");
+        NetworkInstance net = new NetworkInstance ("network", "vdc", "region");
         when(openStackUtil.createNetwork(any(String.class),anyString(),anyString(),anyString())).thenReturn(response);
 
         openStackNetworkImpl.deployNetwork(claudiaData, net, REGION);
@@ -238,7 +238,7 @@ public class OpenStackNetworkImplTest {
 
         // when
         String response = "ok";
-        NetworkInstance net = new NetworkInstance ("network", "vdc");
+        NetworkInstance net = new NetworkInstance ("network", "vdc", "region");
         when(openStackUtil.deleteNetwork(any(String.class),anyString(),anyString(),anyString())).thenReturn(response);
 
         openStackNetworkImpl.destroyNetwork(claudiaData, net, REGION);
@@ -264,7 +264,7 @@ public class OpenStackNetworkImplTest {
 
         // when
         String response = "ok";
-        NetworkInstance net = new NetworkInstance ("router", "vdc");
+        NetworkInstance net = new NetworkInstance ("router", "vdc", "region");
         when(openStackUtil.deleteInterfaceToPublicRouter(any(PaasManagerUser.class),any(NetworkInstance.class),anyString())).thenReturn(response);
         openStackNetworkImpl.deleteNetworkToPublicRouter(claudiaData, net, REGION);
 

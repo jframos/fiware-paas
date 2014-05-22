@@ -40,6 +40,7 @@ import org.junit.Test;
 public class EnvironmentTest extends TestCase {
 	
     private static String VDC = "vdc";
+    private static String REGION ="region";
 
     @Override
     @Before
@@ -142,11 +143,11 @@ public class EnvironmentTest extends TestCase {
     	
     	Tier tier = new Tier("name1", new Integer(1), new Integer(5), new Integer(1), productReleases);
         tier.setRegion("region1");
-        tier.addNetwork(new Network ("uno", VDC));
+        tier.addNetwork(new Network ("uno", VDC, REGION));
         
         Tier tier2 = new Tier("name2", new Integer(1), new Integer(5), new Integer(1), productReleases);
         tier2.setRegion("region2");
-        tier2.addNetwork(new Network ("uno", VDC));
+        tier2.addNetwork(new Network ("uno", VDC, REGION));
 
         Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tier);
@@ -169,11 +170,11 @@ public class EnvironmentTest extends TestCase {
     	
     	Tier tier = new Tier("name1", new Integer(1), new Integer(5), new Integer(1), productReleases);
         tier.setRegion("region1");
-        tier.addNetwork(new Network ("uno2", VDC));
+        tier.addNetwork(new Network ("uno2", VDC, REGION));
         
         Tier tier2 = new Tier("name2", new Integer(1), new Integer(5), new Integer(1), productReleases);
         tier.setRegion("region2");
-        tier.addNetwork(new Network ("uno", VDC));
+        tier.addNetwork(new Network ("uno", VDC, REGION));
 
         Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tier);
@@ -196,19 +197,19 @@ public class EnvironmentTest extends TestCase {
     	
     	Tier tier = new Tier("name1", new Integer(1), new Integer(5), new Integer(1), productReleases);
         tier.setRegion("region1");
-        tier.addNetwork(new Network ("uno2", VDC));
+        tier.addNetwork(new Network ("uno2", VDC, REGION));
         
         Tier tier3 = new Tier("name3", new Integer(1), new Integer(5), new Integer(1), productReleases);
         tier3.setRegion("region3");
-        tier3.addNetwork(new Network ("uno2", VDC));
+        tier3.addNetwork(new Network ("uno2", VDC, REGION));
         
         Tier tier2 = new Tier("name2", new Integer(1), new Integer(5), new Integer(1), productReleases);
         tier2.setRegion("region2");
-        tier2.addNetwork(new Network ("uno", VDC));
+        tier2.addNetwork(new Network ("uno", VDC, REGION));
         
         Tier tier4 = new Tier("name5", new Integer(1), new Integer(5), new Integer(1), productReleases);
         tier4.setRegion("region2");
-        tier4.addNetwork(new Network ("uno2", VDC));
+        tier4.addNetwork(new Network ("uno2", VDC, REGION));
 
         Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tier);

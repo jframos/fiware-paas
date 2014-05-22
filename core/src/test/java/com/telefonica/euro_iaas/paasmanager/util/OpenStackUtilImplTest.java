@@ -195,7 +195,7 @@ public class OpenStackUtilImplTest {
     public void shouldLoadSubNetwork() throws OpenStackException, IOException {
 
         String region = "RegionOne";
-        SubNetworkInstance subNet = new SubNetworkInstance("SUBNET", "CIDR");
+        SubNetworkInstance subNet = new SubNetworkInstance("SUBNET", "vdc", "region", "CIDR");
         subNet.setIdSubNet("ID");
 
         // when
@@ -210,7 +210,7 @@ public class OpenStackUtilImplTest {
     @Test
     public void shouldDeleteSubNetwork() throws OpenStackException, IOException {
 
-        SubNetworkInstance subNet = new SubNetworkInstance("SUBNET", "CIDR");
+        SubNetworkInstance subNet = new SubNetworkInstance("SUBNET","vdc", "region", "CIDR");
         subNet.setIdSubNet("ID");
         
         String region = "RegionOne";
@@ -224,7 +224,7 @@ public class OpenStackUtilImplTest {
     @Test
     public void shouldDeleteNetwork() throws OpenStackException, IOException {
 
-        NetworkInstance net = new NetworkInstance("NETWORK", "vdc");
+        NetworkInstance net = new NetworkInstance("NETWORK", "vdc", "region");
         net.setIdNetwork("ID");
 
         // when
@@ -244,8 +244,8 @@ public class OpenStackUtilImplTest {
     @Test
     public void shouldAddNetworkInterfacetoPublicRouter() throws OpenStackException, IOException {
         // given
-        NetworkInstance net = new NetworkInstance("NETWORK", "vdc");
-        SubNetworkInstance subNet = new SubNetworkInstance("SUBNET", "CIDR");
+        NetworkInstance net = new NetworkInstance("NETWORK", "vdc", "region");
+        SubNetworkInstance subNet = new SubNetworkInstance("SUBNET","vdc", "region", "CIDR");
         net.addSubNet(subNet);
         RouterInstance router = new RouterInstance();
         
@@ -271,8 +271,8 @@ public class OpenStackUtilImplTest {
     @Test
     public void shouldDeleteNetworkInterfacetoPublicRouter() throws OpenStackException, IOException {
         // given
-        NetworkInstance net = new NetworkInstance("NETWORK", "vdc");
-        SubNetworkInstance subNet = new SubNetworkInstance("SUBNET", "CIDR");
+        NetworkInstance net = new NetworkInstance("NETWORK", "vdc", "region");
+        SubNetworkInstance subNet = new SubNetworkInstance("SUBNET","vdc", "region", "CIDR");
         net.addSubNet(subNet);
         String region = "RegionOne";
         RouterInstance router = new RouterInstance();

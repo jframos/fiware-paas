@@ -256,8 +256,8 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
      * (com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance)
      */
     public void deleteEnvironment(ClaudiaData claudiaData, EnvironmentInstance envInstance)
-            throws InfrastructureException, EntityNotFoundException, InvalidEntityException {
-
+            throws InfrastructureException,  InvalidEntityException {
+        log.debug ("Delete environment " + envInstance.getBlueprintName());
         List<TierInstance> tierInstances = envInstance.getTierInstances();
 
         if (tierInstances == null)
@@ -268,38 +268,47 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 claudiaClient.browseVMReplica(claudiaData, tierInstance.getName(), 1, tierInstance.getVM(),
                         tierInstance.getTier().getRegion());
             } catch (ClaudiaResourceNotFoundException e) {
+            	deleteNetworksInTierInstance(claudiaData, tierInstance);
                 break;
             }
             claudiaClient.undeployVMReplica(claudiaData, tierInstance);
-            deleteNetworksInEnv(claudiaData, envInstance, tierInstance.getTier().getRegion());
+            deleteNetworksInTierInstance(claudiaData, tierInstance);
         }
 
     }
 
-    private List<NetworkInstance> getNetworkInstInEnv(EnvironmentInstance envInstance) throws EntityNotFoundException,
-            InvalidEntityException {
+    private List<NetworkInstance> getNetworkInstInEnv(TierInstance tierInstance) throws 
+            InvalidEntityException, EntityNotFoundException {
         List<NetworkInstance> netInst = new ArrayList<NetworkInstance>();
-        for (TierInstance tierInstance : envInstance.getTierInstances()) {
+     //   for (TierInstance tierInstance : envInstance.getTierInstances()) {
             Set<NetworkInstance> netInts = tierInstance.cloneNetworkInt();
             tierInstance.getNetworkInstances().clear();
             tierInstanceManager.update(tierInstance);
             for (NetworkInstance net : netInts) {
+            	log.debug (net + " " + net.getNetworkName() );
                 if (!netInst.contains(net)) {
                     netInst.add(net);
                 }
             }
-        }
+      //  }
         return netInst;
     }
 
-    public void deleteNetworksInEnv(ClaudiaData claudiaData, EnvironmentInstance envInstance, String region)
-            throws EntityNotFoundException, InvalidEntityException, InfrastructureException {
+    public void deleteNetworksInTierInstance(ClaudiaData claudiaData, TierInstance envInstance)
+            throws  InvalidEntityException, InfrastructureException {
         log.debug("Delete the networks in env if there are not being used");
-        List<NetworkInstance> netInsts = getNetworkInstInEnv(envInstance);
+        
+        List<NetworkInstance> netInsts = null;
+		try {
+			netInsts = getNetworkInstInEnv(envInstance);
+		} catch (EntityNotFoundException e) {
+			throw new InfrastructureException ("It is not possible to find the network " + e.getMessage());
+		}
         for (NetworkInstance network : netInsts) {
             log.debug("Is network default? " + network.isDefaultNet());
             if (!network.isDefaultNet()) {
-                networkInstanceManager.delete(claudiaData, network, region);
+  			    networkInstanceManager.delete(claudiaData, network, network.getRegionName());
+
             }
         }
     }
@@ -380,7 +389,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         Tier tier = tierInstance.getTier();
         tier = tierManager.loadTierWithNetworks(tier.getName(), data.getVdc(), tier.getEnviromentName());
         // Creating networks...
-        log.debug("Deploying network for tier instance " + tierInstance.getName() + " " + tier.getNetworks());
+        log.debug("Deploying network for tier instance " + tierInstance.getName() + " " + tier.getNetworks() + " region " + tier.getRegion());
         List<Network> networkToBeDeployed = new ArrayList<Network>();
         for (Network network : tier.getNetworks()) {
             log.debug("Network to be added " + network.getNetworkName());
@@ -396,13 +405,13 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         }
 
         for (Network network : networkToBeDeployed) {
-            log.debug("Network instance to be deployed: " + network.getNetworkName() + " vdc " + data.getVdc());
-            network = networkManager.load(network.getNetworkName(), data.getVdc());
+            log.debug("Network instance to be deployed: " + network.getNetworkName() + " vdc " + data.getVdc() + " " + network.getRegion());
+            network = networkManager.load(network.getNetworkName(), data.getVdc(), network.getRegion());
             NetworkInstance networkInst = network.toNetworkInstance();
-            log.debug("Network instance to be deployed: " + network.getNetworkName() + " vdc " + data.getVdc());
+            log.debug("Network instance to be deployed: " + network.getNetworkName() + " vdc " + data.getVdc() + " region " + networkInst.getRegionName());
 
             try {
-                networkInst = networkInstanceManager.load(networkInst.getNetworkName(), data.getVdc());
+                networkInst = networkInstanceManager.load(networkInst.getNetworkName(), data.getVdc(), tier.getRegion());
                 log.debug("the network inst" + networkInst.getNetworkName() + " already exists");
             } catch (EntityNotFoundException e1) {
                 try {
@@ -499,19 +508,24 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         this.tierManager = tierManager;
     }
 
-	@Override
-	public void federatedNetworks(EnvironmentInstance environmentInstance) {
+
+	public void federatedNetworks(ClaudiaData data, EnvironmentInstance environmentInstance) throws InfrastructureException {
+		log.debug ("Federate networks in the enviornment");
 		// Get the networks to be federated
 		
 		Set<String> federatedNetworks = environmentInstance.getEnvironment().getFederatedNetworks();
 		HashMap<String, Set<String>> relation = environmentInstance.getEnvironment().getNetworksRegion ();
+		List<NetworkInstance> networkInstances = new ArrayList<NetworkInstance> ();
 		
 		for (String net: federatedNetworks) {
-			
+			log.debug ("Network in the federated network " + net );
 			Set<String> regions = relation.get(net);
-			List<NetworkInstance> networkInstances = new ArrayList<NetworkInstance> ();
+			log.debug ("regions " + regions);
+			
 			for (String region: regions) {
+				log.debug ("region " + region);
 				NetworkInstance netInstance = environmentInstance.getNetworkInstanceFromNetwork (net, region);
+				log.debug ("net  " +netInstance.getNetworkName() + " " + netInstance.getIdNetwork()+ " for region " + region);
 				if (netInstance!=null) {
 					networkInstances.add(netInstance);
 				}
@@ -520,6 +534,15 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
 
 		}
+		try {
+			networkInstanceManager.joinNetwork(data, networkInstances.get(0), networkInstances.get(1));
+		}
+		
+		catch (Exception e) {
+            String mens = "Error federating networks  :" + e.getMessage();
+            throw new InfrastructureException(mens);
+        }
+		
 		
 	}
 

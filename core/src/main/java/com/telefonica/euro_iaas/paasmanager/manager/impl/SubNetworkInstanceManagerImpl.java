@@ -58,7 +58,7 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
     public SubNetworkInstance create(ClaudiaData claudiaData, SubNetworkInstance subNetwork, String region)
             throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
         log.debug("Create subnetwork instance " + subNetwork.getName());
-        if (!subNetworkInstanceDao.exists(subNetwork.getName())) {
+        if (!subNetworkInstanceDao.exists(subNetwork.getName(), claudiaData.getVdc(), region)) {
             networkClient.deploySubNetwork(claudiaData, subNetwork, region);
             log.debug("SubNetwork " + subNetwork.getName() + " in network " + subNetwork.getIdNetwork()
                     + " deployed with id " + subNetwork.getIdSubNet());
@@ -77,7 +77,7 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
      * @params subNetwork
      */
     public void delete(ClaudiaData claudiaData, SubNetworkInstance subNetworkInstance, String region)
-            throws EntityNotFoundException, InvalidEntityException, InfrastructureException {
+            throws InvalidEntityException, InfrastructureException {
         log.debug("Destroying the subnetwork " + subNetworkInstance.getName());
         try {
             networkClient.destroySubNetwork(claudiaData, subNetworkInstance, region);
@@ -117,8 +117,8 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
     /**
      * To obtain the subnetwork.
      */
-    public SubNetworkInstance load(String name) throws EntityNotFoundException {
-        return subNetworkInstanceDao.load(name);
+    public SubNetworkInstance load(String name, String vdc, String region) throws EntityNotFoundException {
+        return subNetworkInstanceDao.load(name, vdc, region);
     }
 
     public void setNetworkClient(NetworkClient networkClient) {
