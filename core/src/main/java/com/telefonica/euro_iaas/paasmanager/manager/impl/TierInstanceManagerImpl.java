@@ -162,7 +162,9 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         VM vm = new VM();
         String fqn = claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc() + ".services."
                 + claudiaData.getService() + ".vees." + tierInstance.getTier().getName() + ".replicas." + replicaNumber;
-        String hostname = claudiaData.getService() + "-" + tierInstance.getTier().getName() + "-" + replicaNumber;
+
+        String hostname = infrastructureManager.generateVMName(claudiaData.getService(),
+                tierInstance.getTier().getName(), replicaNumber, tierInstance.getVdc()).toLowerCase();
 
         vm.setFqn(fqn);
         vm.setHostname(hostname);
@@ -174,7 +176,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         envInstance.setStatus(Status.DEPLOYING);
         environmentInstanceManager.update(envInstance);
 
-        infrastructureManager.deployVM(claudiaData, tierInstance, replicaNumber,  vm);
+        infrastructureManager.deployVM(claudiaData, tierInstance, replicaNumber, vm);
 
         // if (systemPropertiesProvider.getProperty(
         // SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {

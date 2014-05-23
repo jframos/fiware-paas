@@ -24,8 +24,8 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.async.impl;
 
-import static com.telefonica.euro_iaas.paasmanager.util.Configuration.ENVIRONMENT_PATH;
 import static com.telefonica.euro_iaas.paasmanager.util.Configuration.ENVIRONMENT_INSTANCE_PATH;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.ENVIRONMENT_PATH;
 import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PAAS_MANAGER_URL;
 
 import java.text.MessageFormat;
@@ -48,7 +48,6 @@ import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsy
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
-import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.TaskError;
@@ -148,12 +147,11 @@ public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceA
      * Update the task with necessary information when the task is success.
      */
     private void updateSuccessTask(Task task, EnvironmentInstance environmentInstance) throws TaskNotFoundException {
-        InstallableInstance productInstance;
         Task loadedTask;
-        String path = MessageFormat.format(ENVIRONMENT_INSTANCE_PATH,
-                environmentInstance.getVdc(), environmentInstance.getName());
+        String path = MessageFormat.format(ENVIRONMENT_INSTANCE_PATH, environmentInstance.getVdc(),
+                environmentInstance.getName());
 
-        String aiResource =  propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
+        String aiResource = propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
 
         // vdc
 
@@ -187,10 +185,9 @@ public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceA
     private void updateErrorTask(EnvironmentInstance environmentInstance, String vdc, Task task, String message,
             Throwable t) {
 
-        String path = MessageFormat.format(ENVIRONMENT_PATH,
-                environmentInstance.getBlueprintName());
+        String path = MessageFormat.format(ENVIRONMENT_PATH, environmentInstance.getBlueprintName());
 
-        String aiResource =  propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
+        String aiResource = propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
 
         task.setResult(new TaskReference(aiResource));
         updateErrorTask(task, message, t);

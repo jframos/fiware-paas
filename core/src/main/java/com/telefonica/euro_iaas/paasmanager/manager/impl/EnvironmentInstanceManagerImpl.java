@@ -106,7 +106,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             throws AlreadyExistsEntityException, InvalidEntityException, EntityNotFoundException, InvalidVappException,
             InvalidOVFException, InfrastructureException, ProductInstallatorException {
 
-        Environment environment = insertEnvironemntInDatabase(claudiaData, environmentInstance.getEnvironment());
+        Environment environment = insertEnvironmentInDatabase(claudiaData, environmentInstance.getEnvironment());
 
         if (environmentInstance.getEnvironment().getOvf() != null)
             environment.setOvf(environmentInstance.getEnvironment().getOvf());
@@ -119,11 +119,11 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         environmentInstance.setStatus(Status.INIT);
 
         environmentInstance = insertEnvironmentInstanceInDatabase(environmentInstance);
-        
+
         log.info("Is the environmetn federated ? ");
-        if (environment.isNetworkFederated ()) {
-        	log.info(" yes Is the environmetn federated ");
-        	
+        if (environment.isNetworkFederated()) {
+            log.info(" yes Is the environmetn federated ");
+
         }
 
         log.info("Creating the infrastructure");
@@ -171,13 +171,13 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             environmentInstanceDao.update(environmentInstance);
             throw new ProductInstallatorException(e);
         }
-        
+
         log.info("Is the environmetn federated ? ");
-        if (environment.isNetworkFederated ()) {
-        	try {
-        	log.info(" Federating networks ");
-        	infrastructureManager.federatedNetworks (claudiaData, environmentInstance);
-        	} catch (Exception e) {
+        if (environment.isNetworkFederated()) {
+            try {
+                log.info(" Federating networks ");
+                infrastructureManager.federatedNetworks(claudiaData, environmentInstance);
+            } catch (Exception e) {
                 environmentInstance.setStatus(Status.ERROR);
                 environmentInstanceDao.update(environmentInstance);
                 log.error("Error federating the networks " + e.getMessage());
@@ -222,13 +222,14 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             Tier tier = tierManager.loadTierWithProductReleaseAndMetadata(tierInstance.getTier().getName(),
                     tierInstance.getTier().getEnviromentName(), tierInstance.getTier().getVdc());
             log.debug("The tier " + tier.getName() + " is in bd");
-            log.debug (tier.getProductReleases());
+            log.debug(tier.getProductReleases());
             if ((tier.getProductReleases() != null) && !(tier.getProductReleases().isEmpty())) {
 
                 for (ProductRelease productRelease : tier.getProductReleases()) {
-                    
-                    log.info("Install software " + productRelease.getProduct() + " " + productRelease.getVersion() + " " + productRelease.getName() );
-                 
+
+                    log.info("Install software " + productRelease.getProduct() + " " + productRelease.getVersion()
+                            + " " + productRelease.getName());
+
                     productRelease = productReleaseManager.load(productRelease.getName(), claudiaData);
 
                     log.info("Install software " + productRelease.getProduct() + " " + productRelease.getVersion());
@@ -288,7 +289,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         try {
             instance = environmentInstanceDao.load(name, vdc);
         } catch (Exception e) {
-        	log.debug("error to finde enviornmetn instaqnce " + e.getMessage());
+            log.debug("error to finde enviornmetn instaqnce " + e.getMessage());
             throw new EntityNotFoundException(EnvironmentInstance.class, "vdc", vdc);
         }
         if (!instance.getVdc().equals(vdc)) {
@@ -338,8 +339,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                 tierInstance.setStatus(Status.UNINSTALLING);
                 tierInstanceDao.update(tierInstance);
                 try {
-                    ChefClient chefClient = productInstallator.loadNode(claudiaData, tierInstance.getVdc(), tierInstance.getVM()
-                            .getHostname() );
+                    ChefClient chefClient = productInstallator.loadNode(claudiaData, tierInstance.getVdc(),
+                            tierInstance.getVM().getHostname());
 
                     productInstallator.deleteNode(claudiaData, tierInstance.getVdc(), chefClient.getName());
 
@@ -371,7 +372,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                     log.error("It is not possible to delete the environment " + envInstance.getName() + " : "
                             + e.getMessage());
                     throw new InvalidEntityException(EnvironmentInstance.class, e);
-                } 
+                }
 
                 envInstance.setStatus(Status.UNDEPLOYED);
             }
@@ -405,7 +406,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
     // PRVATE METHODS
 
-    private Environment insertEnvironemntInDatabase(ClaudiaData claudiaData, Environment env)
+    private Environment insertEnvironmentInDatabase(ClaudiaData claudiaData, Environment env)
             throws InvalidEntityException, EntityNotFoundException {
         log.info("Insert Environment from User into the database");
         Environment environment = null;
@@ -433,8 +434,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                     List<ProductRelease> pReleases = new ArrayList<ProductRelease>();
                     List<ProductRelease> productReleases = tier.getProductReleases();
                     for (ProductRelease pRelease : productReleases) {
-                        ProductRelease pReleaseDB = productReleaseManager.load(pRelease.getProduct() + "-"
-                                + pRelease.getVersion(), claudiaData);
+                        ProductRelease pReleaseDB = productReleaseManager.load(
+                                pRelease.getProduct() + "-" + pRelease.getVersion(), claudiaData);
                         pReleaseDB = updateProductReleaseDB(pReleaseDB, pRelease);
                         pReleaseDB = productReleaseManager.update(pReleaseDB);
 
