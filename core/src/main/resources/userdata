@@ -35,7 +35,7 @@ chef:
 
  # Default validation name is chef-validator
  validation_key: |
- {validation_key}
+{validation_key}
  
  # Capture all subprocess output into a logfile
 # Useful for troubleshooting cloud-init issues
