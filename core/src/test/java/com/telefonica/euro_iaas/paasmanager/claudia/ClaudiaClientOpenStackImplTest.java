@@ -28,6 +28,7 @@ package com.telefonica.euro_iaas.paasmanager.claudia;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -152,10 +153,28 @@ public class ClaudiaClientOpenStackImplTest {
         tierInstance.setVM(vm);
         
         when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
-        when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
+
 
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         verify(openStackUtil).createServer(any(String.class), anyString(), anyString(), anyString());
+
+    }
+    
+    @Test
+    public void testUserData() throws Exception {
+
+        
+        TierInstance tierInstance = new TierInstance();
+        tierInstance.setTier(tier);
+        VM vm = new VM();
+        vm.setHostname("hotname");
+        tierInstance.setVM(vm);
+        
+        when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
+
+
+        String result = claudiaClientOpenStack.getUserData(claudiaData, tierInstance);
+        assertNotNull (result);
 
     }
     

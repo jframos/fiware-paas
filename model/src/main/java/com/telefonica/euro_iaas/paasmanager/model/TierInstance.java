@@ -354,7 +354,7 @@ public class TierInstance extends InstallableInstance {
             payload += "\"metadata\": {\"region\": \"" + this.getTier().getRegion() + "\"},";
         }
         if (userData != null) {
-            payload += "\"userdata\": " + userData +",";
+            payload += "\"user_data\": \"" + userData +"\",";
         }
         payload += "\"flavorRef\": \"" + getTier().getFlavour() + "\", " + "\"imageRef\": \"" + getTier().getImage()
                 + "\", " + "\"name\": \"" + name + "\"}}";

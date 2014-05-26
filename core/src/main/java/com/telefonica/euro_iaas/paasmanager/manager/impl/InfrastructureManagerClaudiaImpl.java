@@ -307,7 +307,12 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         for (NetworkInstance network : netInsts) {
             log.debug("Is network default? " + network.isDefaultNet());
             if (!network.isDefaultNet()) {
-  			    networkInstanceManager.delete(claudiaData, network, network.getRegionName());
+            	try {
+  			    networkInstanceManager.delete(claudiaData, network, network.getRegionName()); 
+            	} catch (Exception e) {
+  				    throw new InfrastructureException ("It is not delete  the network " +network.getNetworkName() + " " + 
+  				        network.getRegionName() + " " +  e.getMessage());
+  			     }
 
             }
         }
