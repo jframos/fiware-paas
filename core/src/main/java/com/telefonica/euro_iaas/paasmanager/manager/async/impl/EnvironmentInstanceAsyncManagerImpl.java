@@ -49,7 +49,6 @@ import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsy
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
-import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.TaskError;
@@ -148,7 +147,6 @@ public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceA
      * Update the task with necessary information when the task is success.
      */
     private void updateSuccessTask(Task task, EnvironmentInstance environmentInstance) throws TaskNotFoundException {
-        InstallableInstance productInstance;
         Task loadedTask;
         String path = MessageFormat.format(ENVIRONMENT_INSTANCE_PATH, environmentInstance.getVdc(),
                 environmentInstance.getName());

@@ -163,7 +163,9 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         VM vm = new VM();
         String fqn = claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc() + ".services."
                 + claudiaData.getService() + ".vees." + tierInstance.getTier().getName() + ".replicas." + replicaNumber;
-        String hostname = claudiaData.getService() + "-" + tierInstance.getTier().getName() + "-" + replicaNumber;
+
+        String hostname = infrastructureManager.generateVMName(claudiaData.getService(),
+                tierInstance.getTier().getName(), replicaNumber, tierInstance.getVdc()).toLowerCase();
 
         vm.setFqn(fqn);
         vm.setHostname(hostname);

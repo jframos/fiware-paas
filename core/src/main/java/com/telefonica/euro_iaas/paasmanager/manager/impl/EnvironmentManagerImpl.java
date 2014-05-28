@@ -54,7 +54,7 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
     public Environment create(ClaudiaData claudiaData, Environment environment)
             throws InvalidEnvironmentRequestException {
 
-        log.debug("Creating environment " + environment.getName() + " with escription " + environment.getDescription()
+        log.debug("Creating environment " + environment.getName() + " with description " + environment.getDescription()
                 + " org " + environment.getOrg() + " vdc " + environment.getVdc() + " tiers  " + environment.getTiers());
 
         Environment environmentDB = new Environment();

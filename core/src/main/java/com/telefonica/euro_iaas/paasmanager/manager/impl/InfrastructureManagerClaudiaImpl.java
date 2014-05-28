@@ -111,7 +111,9 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 log.debug("Deploying tier instance for tier " + tier.getName());
 
                 TierInstance tierInstance = new TierInstance();
-                tierInstance.setName(environmentInstance.getBlueprintName() + "-" + tier.getName() + "-" + numReplica);
+                String name = generateVMName(environmentInstance.getBlueprintName(), tier.getName(), numReplica,
+                        claudiaData.getVdc());
+                tierInstance.setName(name);
                 tierInstance.setNumberReplica(numReplica);
                 tierInstance.setVdc(claudiaData.getVdc());
                 tierInstance.setStatus(Status.DEPLOYING);
@@ -120,7 +122,9 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 String fqn = claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc()
                         + ".services." + claudiaData.getService() + ".vees." + tier.getName() + ".replicas."
                         + numReplica;
-                String hostname = (claudiaData.getService() + "-" + tier.getName() + "-" + numReplica).toLowerCase();
+
+                String hostname = generateVMName(claudiaData.getService(), tier.getName(), numReplica,
+                        claudiaData.getVdc()).toLowerCase();
                 log.debug("fqn " + fqn + " hostname " + hostname);
                 vm.setFqn(fqn);
                 vm.setHostname(hostname);
@@ -186,6 +190,23 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
             numberTier++;
         }
         return environmentInstance;
+    }
+
+    /**
+     * Generates a instance tier name or hostname.
+     */
+    public String generateVMName(String service, String tierName, int numReplica, String vdc) {
+
+        int lengthVdc = vdc.length();
+        String name = service + "-" + tierName + "-" + numReplica + "-";
+        if (lengthVdc > 6) {
+
+            name += vdc.substring(lengthVdc - 6);
+        } else {
+
+            name += vdc;
+        }
+        return name;
     }
 
     @Async

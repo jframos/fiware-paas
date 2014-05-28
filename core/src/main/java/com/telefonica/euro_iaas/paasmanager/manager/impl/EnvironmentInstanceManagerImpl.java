@@ -107,7 +107,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             throws AlreadyExistsEntityException, InvalidEntityException, EntityNotFoundException, InvalidVappException,
             InvalidOVFException, InfrastructureException, ProductInstallatorException {
 
-        Environment environment = insertEnvironemntInDatabase(claudiaData, environmentInstance.getEnvironment());
+        Environment environment = insertEnvironmentInDatabase(claudiaData, environmentInstance.getEnvironment());
 
         if (environmentInstance.getEnvironment().getOvf() != null)
             environment.setOvf(environmentInstance.getEnvironment().getOvf());
@@ -407,7 +407,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
     // PRVATE METHODS
 
-    private Environment insertEnvironemntInDatabase(ClaudiaData claudiaData, Environment env)
+    private Environment insertEnvironmentInDatabase(ClaudiaData claudiaData, Environment env)
             throws InvalidEntityException, EntityNotFoundException {
         log.info("Insert Environment from User into the database");
         Environment environment = null;

@@ -52,7 +52,6 @@ import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
-import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.TaskError;
@@ -153,7 +152,6 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
     }
 
     private void updateSuccessTask(Task task, EnvironmentInstance environmentInstance) throws TaskNotFoundException {
-        InstallableInstance productInstance;
         Task loadedTask;
         String path = MessageFormat.format(TASK_PATH, environmentInstance.getVdc(), environmentInstance.getName()); // the
 

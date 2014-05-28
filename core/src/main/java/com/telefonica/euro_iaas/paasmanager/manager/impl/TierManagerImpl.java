@@ -105,7 +105,7 @@ public class TierManagerImpl implements TierManager {
         log.debug("Create tier name " + tier.getName() + " image " + tier.getImage() + " flavour " + tier.getFlavour()
                 + " initial_number_instances " + tier.getInitialNumberInstances() + " maximum_number_instances "
                 + tier.getMaximumNumberInstances() + " minimum_number_instances " + tier.getMinimumNumberInstances()
-                + " floatingip " + tier.getFloatingip() + " keypair " + tier.getKeypair() + " icono " + tier.getIcono()
+                + " floatingIp " + tier.getFloatingip() + " keyPair " + tier.getKeypair() + " icon " + tier.getIcono()
                 + " product releases " + tier.getProductReleases() + "  vdc " + claudiaData.getVdc() + " networks "
                 + tier.getNetworks());
 
@@ -483,7 +483,7 @@ public class TierManagerImpl implements TierManager {
                 throw new InvalidEntityException(errorMessage);
             }
 
-            if (productReleases != null && productReleases.size() != 0) {
+            if (productReleases.size() != 0) {
                 for (ProductRelease product : productReleases) {
 
                     try {
