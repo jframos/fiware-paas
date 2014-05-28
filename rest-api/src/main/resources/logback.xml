@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+    <appender name="paasAppender" class="ch.qos.logback.core.FileAppender">
+        <file>${catalina.base}/logs/paasmanager.log</file>
+        <encoder>
+            <pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %-5p %C{1} - %m%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="authAppender" class="ch.qos.logback.core.FileAppender">
+        <file>${catalina.base}/logs/authentication.log</file>
+        <encoder>
+            <pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %-5p %C{1} - %m%n
+            </pattern>
+        </encoder>
+    </appender>
+
+
+    <logger name="com.telefonica.euro_iaas.paasmanager.rest.auth" additivity="true" value="DEBUG">
+        <appender-ref ref="authAppender"/>
+    </logger>
+
+    <logger name="com.telefonica.euro_iaas.paasmanager.rest" additivity="true" value="DEBUG">
+        <appender-ref ref="paasAppender"/>
+    </logger>
+
+    <!-- SpringFramework logger -->
+    <logger name="org.springframework" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="paasAppender"/>
+    </logger>
+
+    <!-- SpringFramework logger -->
+    <logger name="org.hibernate" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="paasAppender"/>
+    </logger>
+
+    <root value="WARN">
+        <appender-ref ref="paasAppender"/>
+    </root>
+
+</configuration>

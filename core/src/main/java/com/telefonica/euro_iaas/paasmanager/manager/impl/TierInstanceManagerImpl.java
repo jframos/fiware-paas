@@ -27,7 +27,8 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -70,7 +71,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     private EnvironmentManager environmentManager;
     private NetworkInstanceManager networkInstanceManager;
 
-    private static Logger log = Logger.getLogger(TierInstanceManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(TierInstanceManagerImpl.class);
 
     public TierInstance create(ClaudiaData data, String envName, TierInstance tierInstance)
             throws InvalidEntityException, InfrastructureException {
@@ -174,7 +175,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         envInstance.setStatus(Status.DEPLOYING);
         environmentInstanceManager.update(envInstance);
 
-        infrastructureManager.deployVM(claudiaData, tierInstance, replicaNumber,  vm);
+        infrastructureManager.deployVM(claudiaData, tierInstance, replicaNumber, vm);
 
         // if (systemPropertiesProvider.getProperty(
         // SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {

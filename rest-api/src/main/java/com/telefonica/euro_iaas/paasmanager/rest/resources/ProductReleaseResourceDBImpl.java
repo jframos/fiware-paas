@@ -30,7 +30,8 @@ import java.util.Set;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -59,7 +60,7 @@ public class ProductReleaseResourceDBImpl implements ProductReleaseDBResource {
     private ProductReleaseManager productReleaseManager;
 
     private SystemPropertiesProvider systemPropertiesProvider;
-    private static Logger log = Logger.getLogger(ProductReleaseResourceDBImpl.class);
+    private static Logger log = LoggerFactory.getLogger(ProductReleaseResourceDBImpl.class);
 
     public void insert(ProductReleaseDto productReleaseDto) {
         log.debug("Create product release " + productReleaseDto.getProductName() + " " + productReleaseDto.getVersion());

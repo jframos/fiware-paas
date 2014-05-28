@@ -26,9 +26,9 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -49,7 +49,7 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
     private TierManager tierManager;
 
     /** The log. */
-    private static Logger log = Logger.getLogger(EnvironmentManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(EnvironmentManagerImpl.class);
 
     public Environment create(ClaudiaData claudiaData, Environment environment)
             throws InvalidEnvironmentRequestException {
@@ -103,13 +103,13 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
     public void destroy(ClaudiaData data, Environment environment) throws InvalidEntityException,
             InfrastructureException, EntityNotFoundException {
 
-    	List<Tier> tiers = new ArrayList<Tier> ();
-    	for (Tier tier: environment.getTiers()) {
-    		log.debug ("Adding tier " + tier.getName() + " " + tier.getNetworks());
-    		tiers.add(tier);
-    	}
-        
-        for (Tier tier: tiers) {
+        List<Tier> tiers = new ArrayList<Tier>();
+        for (Tier tier : environment.getTiers()) {
+            log.debug("Adding tier " + tier.getName() + " " + tier.getNetworks());
+            tiers.add(tier);
+        }
+
+        for (Tier tier : tiers) {
             environment.deleteTier(tier);
             update(environment);
             tierManager.delete(data, tier);

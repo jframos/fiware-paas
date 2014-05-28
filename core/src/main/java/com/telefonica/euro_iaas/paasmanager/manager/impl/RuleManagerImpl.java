@@ -26,7 +26,8 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -41,7 +42,7 @@ public class RuleManagerImpl implements RuleManager {
 
     private RuleDao ruleDao = null;
     private FirewallingClient firewallingClient = null;
-    private static Logger log = Logger.getLogger(RuleManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(RuleManagerImpl.class);
 
     public Rule create(String region, String token, String vdc, Rule rule) throws InvalidEntityException,
             AlreadyExistsEntityException, InfrastructureException {
@@ -56,7 +57,7 @@ public class RuleManagerImpl implements RuleManager {
     public void destroy(String region, String token, String vdc, Rule rule) throws InvalidEntityException,
             InfrastructureException {
         log.debug("Destroying rule " + rule.getFromPort() + " from security group " + rule.getIdParent());
-        
+
         firewallingClient.destroyRule(region, token, vdc, rule);
         try {
             ruleDao.remove(rule);

@@ -24,7 +24,8 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.ApplicationInstanceNotFoundException;
@@ -37,7 +38,7 @@ public class ApplicationInstanceResourceValidatorImpl implements ApplicationInst
 
     private ApplicationInstanceManager applicationInstanceManager;
     /** The log. */
-    private static Logger log = Logger.getLogger(ApplicationInstanceResourceValidatorImpl.class);
+    private static Logger log = LoggerFactory.getLogger(ApplicationInstanceResourceValidatorImpl.class);
 
     public void validateInstall(String vdc, String environmentInstance, ApplicationReleaseDto applicationReleaseDto)
             throws InvalidApplicationReleaseException, ApplicationInstanceNotFoundException {
@@ -68,8 +69,6 @@ public class ApplicationInstanceResourceValidatorImpl implements ApplicationInst
         // Validate if the extendedovf includes an application/product
         // specification
     }
-
-
 
     public void setApplicationInstanceManager(ApplicationInstanceManager applicationInstanceManager) {
         this.applicationInstanceManager = applicationInstanceManager;

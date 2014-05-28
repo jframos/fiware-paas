@@ -24,12 +24,11 @@
 
 package com.telefonica.euro_iaas.paasmanager.bootstrap;
 
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.log4j.Logger;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Populates data base with synthetic data to emulate the preconditions of paas manager
@@ -40,7 +39,7 @@ import org.apache.log4j.Logger;
 // TODO delete this class when the preconditions are done.
 public class InitDbBootstrap implements ServletContextListener {
 
-    private static Logger log = Logger.getLogger(InitDbBootstrap.class);
+    private static Logger log = LoggerFactory.getLogger(InitDbBootstrap.class);
 
     /** {@inheritDoc} */
     public void contextDestroyed(ServletContextEvent event) {
@@ -50,7 +49,7 @@ public class InitDbBootstrap implements ServletContextListener {
     /** {@inheritDoc} */
     public void contextInitialized(ServletContextEvent event) {
         log.debug("InitDbBootstrap. START");
-        
+
         log.trace("InitDbBootstrap. END");
     }
 }

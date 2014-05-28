@@ -35,13 +35,16 @@ import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author fernandolopezaguilar
  */
 public class CompareDates {
 
     private Long limit;
-    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(CompareDates.class);
+    private static Logger log = LoggerFactory.getLogger(CompareDates.class);
     private long offset;
 
     public CompareDates(Long limit) {
@@ -148,7 +151,8 @@ public class CompareDates {
         long timeDiff = dateLong1 - dateLong2;
 
         if (timeDiff != date) {
-            log.error("Date format incorrect between token.expires " + "and Header field in the HTTP message " +timeDiff + " " + date);
+            log.error("Date format incorrect between token.expires " + "and Header field in the HTTP message "
+                    + timeDiff + " " + date);
 
             dateLong1 += (date - timeDiff);
         }

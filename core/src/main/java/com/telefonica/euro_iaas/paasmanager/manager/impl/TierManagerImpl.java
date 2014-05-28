@@ -30,7 +30,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -71,7 +72,7 @@ public class TierManagerImpl implements TierManager {
 
     private SystemPropertiesProvider systemPropertiesProvider;
 
-    private static Logger log = Logger.getLogger(TierManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(TierManagerImpl.class);
 
     /**
      * It add teh security groups related the products.
@@ -347,13 +348,13 @@ public class TierManagerImpl implements TierManager {
 
         productRelease = productReleaseManager.loadWithMetadata(productRelease.getProduct() + "-"
                 + productRelease.getVersion());
-        getRules (productRelease, rules, "open_ports");
-        getRules (productRelease, rules, "open_ports_udp");
-        
+        getRules(productRelease, rules, "open_ports");
+        getRules(productRelease, rules, "open_ports_udp");
+
     }
-    
-    private void getRules (ProductRelease productRelease, List<Rule> rules, String pathrules) {
-    	Metadata openPortsAttribute = productRelease.getMetadata(pathrules);
+
+    private void getRules(ProductRelease productRelease, List<Rule> rules, String pathrules) {
+        Metadata openPortsAttribute = productRelease.getMetadata(pathrules);
         if (openPortsAttribute != null) {
             log.debug("Adding product rule " + openPortsAttribute.getValue());
             StringTokenizer st = new StringTokenizer(openPortsAttribute.getValue());
@@ -580,8 +581,8 @@ public class TierManagerImpl implements TierManager {
 
     }
 
-    public void updateTier(ClaudiaData data, Tier tierold, Tier tiernew) throws InvalidEntityException, EntityNotFoundException,
-            AlreadyExistsEntityException {
+    public void updateTier(ClaudiaData data, Tier tierold, Tier tiernew) throws InvalidEntityException,
+            EntityNotFoundException, AlreadyExistsEntityException {
 
         tierold.setFlavour(tiernew.getFlavour());
         tierold.setFloatingip(tiernew.getFloatingip());
@@ -617,9 +618,9 @@ public class TierManagerImpl implements TierManager {
         }
 
         for (Network net : nets) {
-        	if (isAvailableToBeDeleted (net)) {
+            if (isAvailableToBeDeleted(net)) {
                 networkManager.delete(net);
-        	}
+            }
         }
 
         tierold.setProductReleases(null);
@@ -630,8 +631,8 @@ public class TierManagerImpl implements TierManager {
 
         for (ProductRelease productRelease : tiernew.getProductReleases()) {
             try {
-                productRelease = productReleaseManager.load(productRelease.getProduct() + "-"
-                        + productRelease.getVersion(), data);
+                productRelease = productReleaseManager.load(
+                        productRelease.getProduct() + "-" + productRelease.getVersion(), data);
             } catch (EntityNotFoundException e) {
                 log.error("The new software " + productRelease.getProduct() + "-" + productRelease.getVersion()
                         + " is not found");
@@ -642,6 +643,5 @@ public class TierManagerImpl implements TierManager {
         }
 
     }
-
 
 }

@@ -31,7 +31,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -64,7 +65,7 @@ import com.telefonica.euro_iaas.paasmanager.rest.validation.ApplicationInstanceR
 @Scope("request")
 public class ApplicationInstanceResourceImpl implements ApplicationInstanceResource {
 
-    private static Logger log = Logger.getLogger(ApplicationInstanceResourceImpl.class.getName());
+    private static Logger log = LoggerFactory.getLogger(ApplicationInstanceResourceImpl.class.getName());
 
     private ApplicationInstanceAsyncManager applicationInstanceAsyncManager;
 
@@ -79,7 +80,6 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
     private EnvironmentInstanceManager environmentInstanceManager;
 
     private ApplicationInstanceResourceValidator validator;
-
 
     /**
      * 
@@ -143,7 +143,7 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
 
     public Task uninstall(String org, String vdc, String environmentName, String applicationName, String callback) {
         try {
-        	ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
+            ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
             ApplicationInstance appInstance = applicationInstanceManager.load(vdc, applicationName);
 
             EnvironmentInstance envInstance = environmentInstanceManager.load(vdc, environmentName);

@@ -26,16 +26,14 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.claudia.NetworkClient;
 import com.telefonica.euro_iaas.paasmanager.dao.SubNetworkDao;
-import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.manager.SubNetworkManager;
-import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 
 /**
@@ -44,7 +42,7 @@ import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 public class SubNetworkManagerImpl implements SubNetworkManager {
 
     private SubNetworkDao subNetworkDao = null;
-    private static Logger log = Logger.getLogger(SubNetworkManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(SubNetworkManagerImpl.class);
 
     /**
      * To create a network.
@@ -54,12 +52,11 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
      * @params claudiaData
      * @params network
      */
-    public SubNetwork create(SubNetwork subNetwork) throws InvalidEntityException,
-        AlreadyExistsEntityException {
+    public SubNetwork create(SubNetwork subNetwork) throws InvalidEntityException, AlreadyExistsEntityException {
         log.debug("Create subnetwork " + subNetwork.getName());
 
         try {
-        	subNetwork = subNetworkDao.load(subNetwork.getName(), subNetwork.getVdc(), subNetwork.getRegion());
+            subNetwork = subNetworkDao.load(subNetwork.getName(), subNetwork.getVdc(), subNetwork.getRegion());
             throw new AlreadyExistsEntityException(subNetwork);
 
         } catch (EntityNotFoundException e1) {
@@ -79,8 +76,7 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
      * @params claudiaData
      * @params subNetwork
      */
-    public void delete(SubNetwork subNetwork) throws EntityNotFoundException,
-    InvalidEntityException {
+    public void delete(SubNetwork subNetwork) throws EntityNotFoundException, InvalidEntityException {
         log.debug("Destroying the subnetwork " + subNetwork.getName());
         try {
             subNetworkDao.remove(subNetwork);
@@ -123,8 +119,7 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
      * @return the subNetwork
      */
     public SubNetwork update(SubNetwork subNetwork) throws InvalidEntityException {
-    	return subNetworkDao.update(subNetwork);
+        return subNetworkDao.update(subNetwork);
     }
-
 
 }

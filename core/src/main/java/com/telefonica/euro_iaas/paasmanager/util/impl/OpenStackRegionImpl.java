@@ -35,7 +35,8 @@ import javax.ws.rs.core.MediaType;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -53,7 +54,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
 
     private Client client;
 
-    private static Logger log = Logger.getLogger(OpenStackRegionImpl.class);
+    private static Logger log = LoggerFactory.getLogger(OpenStackRegionImpl.class);
 
     /**
      * Default constructor. It creates a jersey client.
@@ -76,7 +77,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
 
         String tokenadmin = this.getTokenAdmin();
         if (url != null) {
-        	log.debug ("Get url for sdc in region " + url);
+            log.debug("Get url for sdc in region " + url);
             return url;
         } else {
             String responseJSON = callToKeystone(token, tokenadmin);
@@ -120,34 +121,34 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         }
         return url;
     }
-    
-    public String getSdcEndPoint(String regionName, String token) throws OpenStackException  {
-    	log.debug ("Get url for sdc in region " + regionName);
-    	String url;
+
+    public String getSdcEndPoint(String regionName, String token) throws OpenStackException {
+        log.debug("Get url for sdc in region " + regionName);
+        String url;
         try {
             url = getEndPointByNameAndRegionName("sdc", regionName, token);
         } catch (OpenStackException e) {
             String msn = "It is not possible to obtain the SDC endpoint";
             log.error(msn);
-            throw new OpenStackException (msn);
-            		
+            throw new OpenStackException(msn);
+
         }
         return url;
     }
-    
-    public String getDefaultRegion (String token) throws OpenStackException {
-    	log.debug("Get defautl region for token " + token);
-        
+
+    public String getDefaultRegion(String token) throws OpenStackException {
+        log.debug("Get defautl region for token " + token);
+
         List<String> regions = null;
         try {
-            regions = getRegionNames (token);
+            regions = getRegionNames(token);
             log.debug("regions " + regions + " " + regions.size());
         } catch (OpenStackException e) {
             String msn = "It is not possible to obtain the SDC endpoint";
             log.error(msn);
-            throw new OpenStackException (msn);
+            throw new OpenStackException(msn);
         }
-        
+
         return regions.get(0);
     }
 
@@ -196,7 +197,8 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         return response;
     }
 
-    private String parseEndpoint(String token, String response, String type, String regionName) throws OpenStackException {
+    private String parseEndpoint(String token, String response, String type, String regionName)
+            throws OpenStackException {
 
         JSONObject jsonObject = JSONObject.fromObject(response);
 
@@ -265,8 +267,8 @@ public class OpenStackRegionImpl implements OpenStackRegion {
             }
 
         }
-       ;
-        return urlMap.get( this.getDefaultRegion(token));
+        ;
+        return urlMap.get(this.getDefaultRegion(token));
     }
 
     /**
@@ -407,9 +409,9 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         this.client = client;
     }
 
-	public String getFederatedQuantumEndPoint(String token) throws OpenStackException {
-		 String url = getEndPointByNameAndRegionName("federatednetwork", getDefaultRegion(token), token);
-	     return url;
-	}
+    public String getFederatedQuantumEndPoint(String token) throws OpenStackException {
+        String url = getEndPointByNameAndRegionName("federatednetwork", getDefaultRegion(token), token);
+        return url;
+    }
 
 }

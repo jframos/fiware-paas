@@ -31,21 +31,19 @@ import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
-import com.telefonica.euro_iaas.paasmanager.model.Network;
-import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
@@ -65,7 +63,7 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 public class TierResourceImpl implements TierResource {
 
     private TierManager tierManager;
-    
+
     private NetworkManager networkManager;
 
     private EnvironmentManager environmentManager;
@@ -76,7 +74,7 @@ public class TierResourceImpl implements TierResource {
 
     private ProductReleaseDao productReleaseDao;
 
-    private static Logger log = Logger.getLogger(TierResourceImpl.class);
+    private static Logger log = LoggerFactory.getLogger(TierResourceImpl.class);
 
     public void delete(String org, String vdc, String envName, String tierName) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
@@ -104,7 +102,8 @@ public class TierResourceImpl implements TierResource {
 
     }
 
-    public List<TierDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String vdc, String environment) {
+    public List<TierDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String vdc,
+            String environment) {
         TierSearchCriteria criteria = new TierSearchCriteria();
         Environment env = null;
         try {
@@ -177,7 +176,7 @@ public class TierResourceImpl implements TierResource {
             environment.addTier(newTier);
             environmentManager.update(environment);
         } catch (Exception ex) {
-        	log.debug (ex.getMessage());
+            log.debug(ex.getMessage());
             throw new APIException(ex);
         }
     }
@@ -216,17 +215,18 @@ public class TierResourceImpl implements TierResource {
     public void setTierResourceValidator(TierResourceValidator tierResourceValidator) {
         this.tierResourceValidator = tierResourceValidator;
     }
-    
+
     public void setNetworkManager(NetworkManager networkManager) {
         this.networkManager = networkManager;
     }
 
-    public void update(String org, String vdc, String environmentName, String tierName, TierDto tierDto) throws APIException {
+    public void update(String org, String vdc, String environmentName, String tierName, TierDto tierDto)
+            throws APIException {
         log.debug("Update tier " + tierName + " from env " + environmentName);
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
 
         try {
-            tierResourceValidator.validateUpdate(vdc, environmentName,tierName, tierDto);
+            tierResourceValidator.validateUpdate(vdc, environmentName, tierName, tierDto);
             log.debug("Validated tier " + tierDto.getName() + " from env " + environmentName);
 
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
@@ -249,7 +249,6 @@ public class TierResourceImpl implements TierResource {
 
                     tierManager.updateTier(claudiaData, tier, newtier);
 
-
                 }
                 environment.addTier(tier);
                 environmentManager.update(environment);
@@ -263,7 +262,5 @@ public class TierResourceImpl implements TierResource {
             throw new APIException(e);
         }
     }
-
-    
 
 }

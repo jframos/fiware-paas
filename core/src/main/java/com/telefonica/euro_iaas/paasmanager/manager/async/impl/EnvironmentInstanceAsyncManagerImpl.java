@@ -24,15 +24,16 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.async.impl;
 
-import static com.telefonica.euro_iaas.paasmanager.util.Configuration.ENVIRONMENT_PATH;
 import static com.telefonica.euro_iaas.paasmanager.util.Configuration.ENVIRONMENT_INSTANCE_PATH;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.ENVIRONMENT_PATH;
 import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PAAS_MANAGER_URL;
 
 import java.text.MessageFormat;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
@@ -58,7 +59,7 @@ import com.telefonica.euro_iaas.paasmanager.util.TaskNotificator;
 
 public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceAsyncManager {
 
-    private static Logger LOGGER = Logger.getLogger(EnvironmentInstanceAsyncManagerImpl.class.getName());
+    private static Logger log = LoggerFactory.getLogger(EnvironmentInstanceAsyncManagerImpl.class.getName());
 
     private EnvironmentInstanceManager environmentInstanceManager;
     private TaskManager taskManager;
@@ -71,8 +72,7 @@ public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceA
         try {
             environmentInstance = environmentInstanceManager.load(claudiaData.getVdc(), claudiaData.getService());
             updateSuccessTask(task, environmentInstance);
-            LOGGER.info("The Environment Instance " + environmentInstance.getBlueprintName()
-                    + " is ALREADY in the system");
+            log.info("The Environment Instance " + environmentInstance.getBlueprintName() + " is ALREADY in the system");
         } catch (TaskNotFoundException tnfe) {
             String errorMsg = "Unable to update task: " + tnfe.getTask().getHref() + ". Description: "
                     + tnfe.getMessage();
@@ -81,7 +81,7 @@ public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceA
             try {
                 environmentInstance = environmentInstanceManager.create(claudiaData, environmentInstance);
                 updateSuccessTask(task, environmentInstance);
-                LOGGER.info("The Environment Instance " + environmentInstance.getName()
+                log.info("The Environment Instance " + environmentInstance.getName()
                         + " has been CORRECTLY provisioned");
             } catch (EntityNotFoundException enf) {
                 String errorMsg = "The Environment " + environmentInstance.getBlueprintName() + " is not in the System";
@@ -130,7 +130,7 @@ public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceA
         try {
             environmentInstanceManager.destroy(claudiaData, environmentInstance);
             updateSuccessTask(task, environmentInstance);
-            LOGGER.info("The Environment Instance " + environmentInstance.getName() + " has been CORRECTLY destroyed");
+            log.info("The Environment Instance " + environmentInstance.getName() + " has been CORRECTLY destroyed");
         } catch (InvalidEntityException e) {
             String errorMsg = "InvalidEntity at destroying  environmentInstance: " + environmentInstance.getName()
                     + ". Description:" + e.getMessage();
@@ -150,10 +150,10 @@ public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceA
     private void updateSuccessTask(Task task, EnvironmentInstance environmentInstance) throws TaskNotFoundException {
         InstallableInstance productInstance;
         Task loadedTask;
-        String path = MessageFormat.format(ENVIRONMENT_INSTANCE_PATH,
-                environmentInstance.getVdc(), environmentInstance.getName());
+        String path = MessageFormat.format(ENVIRONMENT_INSTANCE_PATH, environmentInstance.getVdc(),
+                environmentInstance.getName());
 
-        String aiResource =  propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
+        String aiResource = propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
 
         // vdc
 
@@ -187,10 +187,9 @@ public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceA
     private void updateErrorTask(EnvironmentInstance environmentInstance, String vdc, Task task, String message,
             Throwable t) {
 
-        String path = MessageFormat.format(ENVIRONMENT_PATH,
-                environmentInstance.getBlueprintName());
+        String path = MessageFormat.format(ENVIRONMENT_PATH, environmentInstance.getBlueprintName());
 
-        String aiResource =  propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
+        String aiResource = propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
 
         task.setResult(new TaskReference(aiResource));
         updateErrorTask(task, message, t);
@@ -207,7 +206,7 @@ public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceA
         task.setStatus(TaskStates.ERROR);
         task.setError(error);
         taskManager.updateTask(task);
-        LOGGER.error("An error occurs while executing an environment action. See task " + task.getHref()
+        log.error("An error occurs while executing an environment action. See task " + task.getHref()
                 + " for more information " + t.getMessage());
     }
 
