@@ -30,8 +30,6 @@ import static com.telefonica.euro_iaas.paasmanager.util.Configuration.PRODUCT_RE
 import static com.telefonica.euro_iaas.paasmanager.util.Configuration.TASK_PATH;
 import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PAAS_MANAGER_URL;
 
-
-
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.logging.Logger;
@@ -41,7 +39,6 @@ import org.apache.commons.lang.StringUtils;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.ApplicationTypeNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
@@ -54,7 +51,6 @@ import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
-import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.TaskError;
@@ -90,14 +86,14 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
      * @param callback
      *            if not empty, contains the url where the result of the execution will be sent
      */
-    public void install(ClaudiaData data,  String environmentInstanceName, ApplicationRelease applicationRelease,
+    public void install(ClaudiaData data, String environmentInstanceName, ApplicationRelease applicationRelease,
             Task task, String callback) {
-        LOGGER.info("Install aplication " + applicationRelease.getName() + " " +
-                applicationRelease.getVersion() + " on "
-                + " enviornment environmentInstance");
+        LOGGER.info("Install aplication " + applicationRelease.getName() + " " + applicationRelease.getVersion()
+                + " on " + " enviornment environmentInstance");
 
         try {
-            EnvironmentInstance environmentInstance = environmentInstanceManager.load(data.getVdc(), environmentInstanceName);
+            EnvironmentInstance environmentInstance = environmentInstanceManager.load(data.getVdc(),
+                    environmentInstanceName);
 
             ApplicationInstance applicationInstance = applicationInstanceManager.install(data, environmentInstance,
                     applicationRelease);
@@ -137,7 +133,8 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
         ApplicationInstance applicationInstance = null;
         try {
             applicationInstance = applicationInstanceManager.load(data.getVdc(), applicationName);
-            EnvironmentInstance environmentInstance = environmentInstanceManager.load(data.getVdc(), environmentInstanceName);
+            EnvironmentInstance environmentInstance = environmentInstanceManager.load(data.getVdc(),
+                    environmentInstanceName);
             applicationInstanceManager.uninstall(data, environmentInstance, applicationInstance);
             updateSuccessTask(task, environmentInstance);
             LOGGER.info("Application " + applicationInstance.getName() + '-' + " uninstalled successfully "
@@ -156,11 +153,9 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
     }
 
     private void updateSuccessTask(Task task, EnvironmentInstance environmentInstance) throws TaskNotFoundException {
-        InstallableInstance productInstance;
         Task loadedTask;
-        String path = MessageFormat.format(TASK_PATH,
-                environmentInstance.getVdc(), environmentInstance.getName()); // the
-        
+        String path = MessageFormat.format(TASK_PATH, environmentInstance.getVdc(), environmentInstance.getName()); // the
+
         String psyh = propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
         // vdc
 

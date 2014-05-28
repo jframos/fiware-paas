@@ -122,7 +122,7 @@ public class NetworkinEnvironmenInstanceTest {
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
 
-        Environment env2 = environmentManager.load("tCEI2",vdc);
+        Environment env2 = environmentManager.load("tCEI2", vdc);
 
         EnvironmentInstanceDto envInst = new EnvironmentInstanceDto();
         envInst.setBlueprintName("blueprintname2");
@@ -141,8 +141,8 @@ public class NetworkinEnvironmenInstanceTest {
         assertEquals(envInstResult.getEnvironment().getName(), "tCEI2");
         assertEquals(envInstResult.getTierInstances().size(), 1);
 
-        TierInstance tierInstance = tierInstanceManager.load("blueprintname2-tierdtotest-1");
-        assertEquals(tierInstance.getName(), "blueprintname2-tierdtotest-1");
+        TierInstance tierInstance = tierInstanceManager.load("blueprintname2-tierdtotest-1-73b3d4");
+        assertEquals(tierInstance.getName(), "blueprintname2-tierdtotest-1-73b3d4");
         assertEquals(tierInstance.getNumberReplica(), 1);
         assertEquals(tierInstance.getTier().getName(), "tierdtotest");
         assertEquals(tierInstance.getNetworkInstances().size(), 1);
@@ -242,14 +242,14 @@ public class NetworkinEnvironmenInstanceTest {
 
         environmentResource.insert(org, vdc, environmentAlreadyNetwork.toDto());
 
-        Environment env2 = environmentManager.load("testNetworkAlreadyExist2",vdc);
+        Environment env2 = environmentManager.load("testNetworkAlreadyExist2", vdc);
         assertNotNull(env2);
         for (Tier tier : env2.getTiers()) {
             assertNotNull(tier.getNetworks());
-            for (Network netOut: tier.getNetworks()) {
+            for (Network netOut : tier.getNetworks()) {
                 assertEquals(tier.getNetworks().size(), 1);
                 assertEquals(netOut.getNetworkName(), "network2");
-                assertEquals(netOut.getSubNets().size(), 1); 
+                assertEquals(netOut.getSubNets().size(), 1);
             }
 
         }
@@ -291,22 +291,22 @@ public class NetworkinEnvironmenInstanceTest {
         environmentAlreadyNetwork.setName("tNAEDS2");
         environmentAlreadyNetwork.setDescription("Description First environment");
 
-        SubNetwork subNet = new SubNetwork("subnet",vdc, "region");
+        SubNetwork subNet = new SubNetwork("subnet", vdc, "region");
         subNet.setCidr("10.0.4.6/24");
-        for (Network netOut: tierbk.getNetworks()) {
-            netOut.addSubNet(subNet);; 
+        for (Network netOut : tierbk.getNetworks()) {
+            netOut.addSubNet(subNet);
+            ;
         }
-        
 
         environmentAlreadyNetwork.addTier(tierbk);
 
         environmentResource.insert(org, vdc, environmentAlreadyNetwork.toDto());
 
-        Environment env2 = environmentManager.load("tNAEDS2",vdc);
+        Environment env2 = environmentManager.load("tNAEDS2", vdc);
         assertNotNull(env2);
         for (Tier tier : env2.getTiers()) {
             assertNotNull(tier.getNetworks());
-            for (Network netOut: tier.getNetworks()) {
+            for (Network netOut : tier.getNetworks()) {
                 assertEquals(tier.getNetworks().size(), 1);
                 assertEquals(netOut.getNetworkName(), "network3");
             }
@@ -344,7 +344,7 @@ public class NetworkinEnvironmenInstanceTest {
 
         environmentResource.delete(org, vdc, "testCreateWithPublic");
         try {
-            environmentManager.load("testCreateWithPublic",vdc);
+            environmentManager.load("testCreateWithPublic", vdc);
         } catch (Exception e) {
             assertNotNull(e);
         }
@@ -382,18 +382,18 @@ public class NetworkinEnvironmenInstanceTest {
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
 
-        Environment env2 = environmentManager.load("testDeleteEnvwitNetwor",vdc);
+        Environment env2 = environmentManager.load("testDeleteEnvwitNetwor", vdc);
         assertNotNull(env2);
         for (Tier tier : env2.getTiers()) {
             assertNotNull(tier.getNetworks());
-            for (Network netOut: tier.getNetworks()) {
+            for (Network netOut : tier.getNetworks()) {
                 assertEquals(tier.getNetworks().size(), 1);
                 assertEquals(netOut.getNetworkName(), "network4");
             }
         }
         environmentResource.delete(org, vdc, "testDeleteEnvwitNetwor");
         try {
-            environmentManager.load("testDeleteEnvwitNetwor",vdc);
+            environmentManager.load("testDeleteEnvwitNetwor", vdc);
         } catch (Exception e) {
             assertNotNull(e);
         }

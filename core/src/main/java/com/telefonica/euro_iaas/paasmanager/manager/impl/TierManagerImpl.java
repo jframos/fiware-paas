@@ -104,7 +104,7 @@ public class TierManagerImpl implements TierManager {
         log.debug("Create tier name " + tier.getName() + " image " + tier.getImage() + " flavour " + tier.getFlavour()
                 + " initial_number_instances " + tier.getInitialNumberInstances() + " maximum_number_instances "
                 + tier.getMaximumNumberInstances() + " minimum_number_instances " + tier.getMinimumNumberInstances()
-                + " floatingip " + tier.getFloatingip() + " keypair " + tier.getKeypair() + " icono " + tier.getIcono()
+                + " floatingIp " + tier.getFloatingip() + " keyPair " + tier.getKeypair() + " icon " + tier.getIcono()
                 + " product releases " + tier.getProductReleases() + "  vdc " + claudiaData.getVdc() + " networks "
                 + tier.getNetworks());
 
@@ -347,13 +347,13 @@ public class TierManagerImpl implements TierManager {
 
         productRelease = productReleaseManager.loadWithMetadata(productRelease.getProduct() + "-"
                 + productRelease.getVersion());
-        getRules (productRelease, rules, "open_ports");
-        getRules (productRelease, rules, "open_ports_udp");
-        
+        getRules(productRelease, rules, "open_ports");
+        getRules(productRelease, rules, "open_ports_udp");
+
     }
-    
-    private void getRules (ProductRelease productRelease, List<Rule> rules, String pathrules) {
-    	Metadata openPortsAttribute = productRelease.getMetadata(pathrules);
+
+    private void getRules(ProductRelease productRelease, List<Rule> rules, String pathrules) {
+        Metadata openPortsAttribute = productRelease.getMetadata(pathrules);
         if (openPortsAttribute != null) {
             log.debug("Adding product rule " + openPortsAttribute.getValue());
             StringTokenizer st = new StringTokenizer(openPortsAttribute.getValue());
@@ -482,7 +482,7 @@ public class TierManagerImpl implements TierManager {
                 throw new InvalidEntityException(errorMessage);
             }
 
-            if (productReleases != null && productReleases.size() != 0) {
+            if (productReleases.size() != 0) {
                 for (ProductRelease product : productReleases) {
 
                     try {
@@ -580,8 +580,8 @@ public class TierManagerImpl implements TierManager {
 
     }
 
-    public void updateTier(ClaudiaData data, Tier tierold, Tier tiernew) throws InvalidEntityException, EntityNotFoundException,
-            AlreadyExistsEntityException {
+    public void updateTier(ClaudiaData data, Tier tierold, Tier tiernew) throws InvalidEntityException,
+            EntityNotFoundException, AlreadyExistsEntityException {
 
         tierold.setFlavour(tiernew.getFlavour());
         tierold.setFloatingip(tiernew.getFloatingip());
@@ -617,9 +617,9 @@ public class TierManagerImpl implements TierManager {
         }
 
         for (Network net : nets) {
-        	if (isAvailableToBeDeleted (net)) {
+            if (isAvailableToBeDeleted(net)) {
                 networkManager.delete(net);
-        	}
+            }
         }
 
         tierold.setProductReleases(null);
@@ -630,8 +630,8 @@ public class TierManagerImpl implements TierManager {
 
         for (ProductRelease productRelease : tiernew.getProductReleases()) {
             try {
-                productRelease = productReleaseManager.load(productRelease.getProduct() + "-"
-                        + productRelease.getVersion(), data);
+                productRelease = productReleaseManager.load(
+                        productRelease.getProduct() + "-" + productRelease.getVersion(), data);
             } catch (EntityNotFoundException e) {
                 log.error("The new software " + productRelease.getProduct() + "-" + productRelease.getVersion()
                         + " is not found");
@@ -642,6 +642,5 @@ public class TierManagerImpl implements TierManager {
         }
 
     }
-
 
 }
