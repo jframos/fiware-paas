@@ -18,6 +18,42 @@
         </encoder>
     </appender>
 
+    <appender name="installAppender" class="ch.qos.logback.core.FileAppender">
+        <file>${catalina.base}/logs/install.log</file>
+        <encoder>
+            <pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %-5p %C{1} - %m%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="utilAppender" class="ch.qos.logback.core.FileAppender">
+        <file>${catalina.base}/logs/util.log</file>
+        <encoder>
+            <pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %-5p %C{1} - %m%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="infrastructureAppender" class="ch.qos.logback.core.FileAppender">
+        <file>${catalina.base}/logs/infrastructure.log</file>
+        <encoder>
+            <pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %-5p %C{1} - %m%n
+            </pattern>
+        </encoder>
+    </appender>
+
+
+    <logger name="com.telefonica.euro_iaas.paasmanager.claudia" additivity="true" value="DEBUG">
+        <appender-ref ref="infrastructureAppender"/>
+    </logger>
+
+    <logger name="com.telefonica.euro_iaas.paasmanager.installator" additivity="true" value="DEBUG">
+        <appender-ref ref="installAppender"/>
+    </logger>
+
+    <logger name="com.telefonica.euro_iaas.paasmanager.util" additivity="true" value="DEBUG">
+        <appender-ref ref="utilAppender"/>
+    </logger>
 
     <logger name="com.telefonica.euro_iaas.paasmanager.rest.auth" additivity="true" value="DEBUG">
         <appender-ref ref="authAppender"/>
