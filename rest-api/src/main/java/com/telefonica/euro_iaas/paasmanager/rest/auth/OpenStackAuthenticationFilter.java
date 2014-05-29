@@ -33,6 +33,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -54,6 +56,8 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
  * @author jesus movilla
  */
 public class OpenStackAuthenticationFilter extends GenericFilterBean {
+
+    private static Logger logger = LoggerFactory.getLogger(OpenStackAuthenticationFilter.class);
 
     /**
      * The authentication details source.
@@ -116,9 +120,7 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
      * @param pAuthenticationManager
      *            the bean to submit authentication requests to
      * @param pAuthenticationEntryPoint
-     *            will be invoked when authentication fails. Typically an instance of
-     *            {@link BasicAuthenticationEntryPoint}. {@code AuthenticationManager} and use the supplied
-     *            {@code AuthenticationEntryPoint} to handle authentication failures.
+     *            will be invoked when authentication fails.
      */
     public OpenStackAuthenticationFilter(final AuthenticationManager pAuthenticationManager,
             final AuthenticationEntryPoint pAuthenticationEntryPoint) {
@@ -141,7 +143,7 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
 
         String header = request.getHeader(OPENSTACK_HEADER_TOKEN);
         String pathInfo = request.getPathInfo();
-        logger.debug (header);
+        logger.debug(header);
         logger.debug(pathInfo);
 
         if (pathInfo != null && (pathInfo.equals("/") || pathInfo.equals("/extensions"))) {
@@ -170,7 +172,6 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
                 UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(token,
                         tenantId);
                 authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
-                logger.debug (authenticationManager);
                 Authentication authResult = authenticationManager.authenticate(authRequest);
 
                 if (debug) {

@@ -24,12 +24,12 @@
 
 package com.telefonica.euro_iaas.paasmanager.bootstrap;
 
-import java.util.logging.Logger;
-
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -45,7 +45,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.PaasManagerServerRuntimeEx
  * @author Jesus M. Movilla
  */
 public class PropertiesMBeanRegisterBootstrap implements ServletContextListener {
-    private static final Logger LOGGER = Logger.getAnonymousLogger();
+    private static Logger log = LoggerFactory.getLogger(PropertiesLoaderBootstrapTest.class);
 
     /**
      * Unregister the mbean.
@@ -56,7 +56,7 @@ public class PropertiesMBeanRegisterBootstrap implements ServletContextListener 
                 .createPropertiesProvider((EntityManagerFactory) ctx.getBean("entityManagerFactory"));
         try {
             for (String namespace : propertiesUtil.getNamespaces()) {
-                LOGGER.info("Unregistering mbean " + namespace);
+                log.info("Unregistering mbean " + namespace);
                 MBeanUtils.unregister(event.getServletContext().getContextPath() + ":service=SystemConfiguration-"
                         + namespace);
             }
@@ -78,7 +78,7 @@ public class PropertiesMBeanRegisterBootstrap implements ServletContextListener 
         try {
             for (String namespace : propertiesUtil.getNamespaces()) {
                 PropertiesProviderMBean mbean = new PropertiesProviderMBean(namespace, propertiesUtil);
-                LOGGER.info("Registering mbean " + namespace);
+                log.info("Registering mbean " + namespace);
                 MBeanUtils.register(mbean, event.getServletContext().getContextPath() + ":service=SystemConfiguration-"
                         + namespace);
             }

@@ -31,9 +31,10 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.log4j.Logger;
 import org.openstack.docs.identity.api.v2.AuthenticateResponse;
 import org.openstack.docs.identity.api.v2.Role;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -85,7 +86,7 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
     /**
      * The log.
      */
-    private static Logger log = Logger.getLogger(OpenStackAuthenticationProvider.class);
+    private static Logger log = LoggerFactory.getLogger(OpenStackAuthenticationProvider.class);
     /**
      * Thread to recover a valid X-Auth-Token each 24 hour.
      */
@@ -139,7 +140,6 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
 
     public PaasManagerUser authenticationFiware(String token, String tenantId) {
 
-
         String keystoneURL = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_URL);
 
         String adminUser = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_USER);
@@ -157,8 +157,8 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
 
         String[] credential = oSAuthToken.getCredentials();
 
-        logger.debug("Keystone URL : " + keystoneURL);
-        logger.debug("adminToken : " + credential[0]);
+        log.debug("Keystone URL : " + keystoneURL);
+        log.debug("adminToken : " + credential[0]);
 
         WebResource webResource = client.resource(keystoneURL);
         try {

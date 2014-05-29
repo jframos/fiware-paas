@@ -27,7 +27,8 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -65,14 +66,12 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
     private ProductReleaseDao productReleaseDao;
     private ArtifactDao artifactDao;
     private ProductInstallator productInstallator;
-    private static Logger log = Logger.getLogger(ApplicationInstanceManagerImpl.class.getName());
+    private static Logger log = LoggerFactory.getLogger(ApplicationInstanceManagerImpl.class.getName());
 
     /**
      * Install the applicationIntance on a EnvironmetInstance Precondition: 1) The EnvironmentInstance is already
      * installed 2) The ApplicationRelease is described in the request
      * 
-     * @param vdc
-     *            the vdc where the instance will be installed
      * @param environmentInstance
      *            the environmentInstance on which the application is going to be installed
      * @throws ProductReleaseNotFoundException
@@ -113,7 +112,6 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
                 String errorMessage = "Error to configure the product " + e.getMessage();
                 new ProductInstallatorException(errorMessage);
             }
-            
 
         }
 
@@ -167,7 +165,7 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
                     .getApplicationRelease().getArtifacts().get(i), environmentInstance);
             try {
                 productInstallator.uninstallArtifact(data, productInstance, applicationInstance.getApplicationRelease()
-                    .getArtifacts().get(i));
+                        .getArtifacts().get(i));
             } catch (OpenStackException e) {
                 String errorMessage = "Error to configure the product " + e.getMessage();
                 new ProductInstallatorException(errorMessage);

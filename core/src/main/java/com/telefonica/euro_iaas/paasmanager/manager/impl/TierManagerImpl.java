@@ -30,7 +30,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -71,7 +72,7 @@ public class TierManagerImpl implements TierManager {
 
     private SystemPropertiesProvider systemPropertiesProvider;
 
-    private static Logger log = Logger.getLogger(TierManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(TierManagerImpl.class);
 
     /**
      * It add teh security groups related the products.

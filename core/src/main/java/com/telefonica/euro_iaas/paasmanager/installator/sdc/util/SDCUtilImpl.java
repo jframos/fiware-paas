@@ -26,14 +26,12 @@ package com.telefonica.euro_iaas.paasmanager.installator.sdc.util;
 
 import static com.telefonica.euro_iaas.paasmanager.util.Configuration.SDC_SERVER_MEDIATYPE;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.sun.jersey.api.client.Client;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
-import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackRegion;
-import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.client.SDCClient;
 import com.telefonica.euro_iaas.sdc.model.Task;
 
@@ -45,24 +43,23 @@ public class SDCUtilImpl implements SDCUtil {
     private SDCClient sDCClient;
     private OpenStackRegion openStackRegion;
 
-    private static Logger log = Logger.getLogger(SDCUtilImpl.class);
+    private static Logger log = LoggerFactory.getLogger(SDCUtilImpl.class);
     private static String VM_PATH = "/rest/vm";
     private int MAX_TIME = 60000;
-
 
     public void checkTaskStatus(Task task, String token, String vdc) throws ProductInstallatorException {
 
         String msgerror = null;
         String sdcServerUrl;
         try {
-            sdcServerUrl = getSdcUtil (token);
+            sdcServerUrl = getSdcUtil(token);
         } catch (OpenStackException e1) {
             msgerror = "Error to obtain the SDC endpoint or the default region: " + e1.getMessage();
             log.error(msgerror);
             throw new ProductInstallatorException(msgerror);
         }
-        
-        log.debug ("sdc url " + sdcServerUrl);
+
+        log.debug("sdc url " + sdcServerUrl);
 
         com.telefonica.euro_iaas.sdc.client.services.TaskService taskService = sDCClient.getTaskService(sdcServerUrl,
                 SDC_SERVER_MEDIATYPE);
@@ -98,8 +95,8 @@ public class SDCUtilImpl implements SDCUtil {
             }
         }
     }
-    
-    public String getSdcUtil (String token) throws OpenStackException {
+
+    public String getSdcUtil(String token) throws OpenStackException {
         String regionName = openStackRegion.getDefaultRegion(token);
         return openStackRegion.getSdcEndPoint(regionName, token);
     }
@@ -112,9 +109,8 @@ public class SDCUtilImpl implements SDCUtil {
         this.sDCClient = sDCClient;
     }
 
-    
-    public void setOpenStackRegion (OpenStackRegion openStackRegion) {
-        this.openStackRegion=openStackRegion;
+    public void setOpenStackRegion(OpenStackRegion openStackRegion) {
+        this.openStackRegion = openStackRegion;
     }
 
 }

@@ -27,7 +27,8 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -48,7 +49,7 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
     private TierManager tierManager;
 
     /** The log. */
-    private static Logger log = Logger.getLogger(EnvironmentManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(EnvironmentManagerImpl.class);
 
     public Environment create(ClaudiaData claudiaData, Environment environment)
             throws InvalidEnvironmentRequestException {
