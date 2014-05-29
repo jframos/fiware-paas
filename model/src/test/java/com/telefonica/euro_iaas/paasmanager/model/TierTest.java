@@ -106,7 +106,7 @@ public class TierTest extends TestCase {
         tier.setRegion("RegionOne");
 
         // When
-        JSONObject jsonObject = JSONObject.fromObject(tierInst.toJson());
+        JSONObject jsonObject = JSONObject.fromObject(tierInst.toJson(null));
 
         // Then
         assertEquals("keypair", JSONObject.fromObject(jsonObject.get("server")).get("key_name"));
