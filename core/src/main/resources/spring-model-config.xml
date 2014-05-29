@@ -202,6 +202,9 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
               class="com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaClientOpenStackImpl">
             <property name="openStackUtil" ref="openStackUtil"/>
             <property name="networkInstanceManager" ref="networkInstanceManager"/>
+            <property name="openStackRegion" ref="openStackRegion"/>
+            <property name="fileUtils" ref="fileUtils"/>
+            
         </bean>
 
         <bean id="productInstallator" lazy-init="true"

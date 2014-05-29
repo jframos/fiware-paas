@@ -24,46 +24,12 @@
 
 package com.telefonica.euro_iaas.paasmanager.bootstrap;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
-import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.dao.ApplicationReleaseDao;
-import com.telefonica.euro_iaas.paasmanager.dao.ApplicationTypeDao;
-import com.telefonica.euro_iaas.paasmanager.dao.ArtifactDao;
-import com.telefonica.euro_iaas.paasmanager.dao.ArtifactTypeDao;
-import com.telefonica.euro_iaas.paasmanager.dao.AttributeDao;
-import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentDao;
-import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
-import com.telefonica.euro_iaas.paasmanager.dao.OSDao;
-import com.telefonica.euro_iaas.paasmanager.dao.ProductInstanceDao;
-import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.paasmanager.dao.ProductTypeDao;
-import com.telefonica.euro_iaas.paasmanager.dao.ServiceDao;
-import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
-import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
-import com.telefonica.euro_iaas.paasmanager.dao.sdc.ProductReleaseSdcDao;
-import com.telefonica.euro_iaas.paasmanager.exception.SdcException;
-import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
-import com.telefonica.euro_iaas.paasmanager.model.ApplicationType;
-import com.telefonica.euro_iaas.paasmanager.model.Artifact;
-import com.telefonica.euro_iaas.paasmanager.model.ArtifactType;
-import com.telefonica.euro_iaas.paasmanager.model.Environment;
-import com.telefonica.euro_iaas.paasmanager.model.OS;
-import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
-import com.telefonica.euro_iaas.paasmanager.model.ProductType;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
 
 /**
  * Populates data base with synthetic data to emulate the preconditions of paas manager
@@ -84,9 +50,13 @@ public class InitDbBootstrap implements ServletContextListener {
     /** {@inheritDoc} */
     public void contextInitialized(ServletContextEvent event) {
         log.debug("InitDbBootstrap. START");
+<<<<<<< HEAD
 
 
 
+=======
+        
+>>>>>>> 17710f464c42713739f424275a57ea8eed2a9c3a
         log.trace("InitDbBootstrap. END");
     }
 }

@@ -55,11 +55,11 @@ public class OpenStackAuthenticationToken {
     /**
      * The token ID.
      */
-    private static String token;
+    private String token;
     /**
      * The tenant ID.
      */
-    private static String tenantId;
+    private String tenantId;
     /**
      * The expiration date of the token.
      */
@@ -96,6 +96,10 @@ public class OpenStackAuthenticationToken {
     private static long offset;
 
     OpenStackAuthenticationToken(ArrayList<Object> params) {
+        initialize(params);
+    }
+
+    public void initialize(ArrayList<Object> params) {
         this.token = "";
         this.tenantId = "";
         this.url = (String) params.get(0);
@@ -134,7 +138,7 @@ public class OpenStackAuthenticationToken {
     }
 
     private void generateValidToken() {
-    	System.out.println ("generateValidToken");
+        log.debug("generateValidToken");
         HttpPost postRequest = createKeystonePostRequest();
         ArrayList<Object> response = executePostRequest(postRequest);
         extractData(response);
@@ -213,10 +217,9 @@ public class OpenStackAuthenticationToken {
         // -H "Accept: application/xml"�
         // http://10.95.171.115:35357/v2.0/tokens
 
-    	System.out.println ("createKeystonePostRequest");
+        log.debug("createKeystonePostRequest " + url);
         HttpEntity entity = null;
         HttpPost postRequest = new HttpPost(url + "tokens");
-        System.out.println (url);
 
         postRequest.setHeader("Content-Type", "application/json");
         postRequest.setHeader("Accept", "application/xml");
@@ -238,7 +241,6 @@ public class OpenStackAuthenticationToken {
     }
 
     private ArrayList<Object> executePostRequest(HttpPost postRequest) {
-    	System.out.println ("executePostRequest");
         HttpResponse response;
         httpClient = new DefaultHttpClient();
 
@@ -253,7 +255,6 @@ public class OpenStackAuthenticationToken {
 
             localDate = new Date();
 
-            System.out.println (response.getStatusLine().getStatusCode());
             if ((response.getStatusLine().getStatusCode() != 201) && (response.getStatusLine().getStatusCode() != 200)) {
 
                 String exceptionMessage = "Failed : HTTP error code : (" + postRequest.getURI().toString() + ")"
