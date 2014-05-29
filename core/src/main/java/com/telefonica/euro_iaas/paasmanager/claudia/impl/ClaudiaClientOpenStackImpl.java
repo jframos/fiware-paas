@@ -24,6 +24,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.claudia.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,7 @@ import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.ClaudiaClient;
 import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaResourceNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.ClaudiaRetrieveInfoException;
+import com.telefonica.euro_iaas.paasmanager.exception.FileUtilsException;
 import com.telefonica.euro_iaas.paasmanager.exception.IPNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.NetworkNotRetrievedException;
@@ -53,7 +55,10 @@ import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
+import com.telefonica.euro_iaas.paasmanager.util.FileUtils;
+import com.telefonica.euro_iaas.paasmanager.util.OpenStackRegion;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackUtil;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * @author jesus.movilla
@@ -67,6 +72,8 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     private static Logger log = LoggerFactory.getLogger(ClaudiaClientOpenStackImpl.class);
 
     private OpenStackUtil openStackUtil = null;
+    private OpenStackRegion openStackRegion =null;
+    private FileUtils fileUtils;
     private NetworkInstanceManager networkInstanceManager = null;
     private final int POLLING_INTERVAL = 10000;
 
@@ -97,7 +104,8 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     private String buildCreateServerPayload(ClaudiaData claudiaData, TierInstance tierInstance, int replica)
             throws InfrastructureException {
 
-        if ((tierInstance.getTier().getImage() == null) || (tierInstance.getTier().getFlavour() == null)
+        
+    	if ((tierInstance.getTier().getImage() == null) || (tierInstance.getTier().getFlavour() == null)
                 || (tierInstance.getTier().getKeypair() == null)) {
             String errorMsg = " The tier does not include a not-null information: " + "Image: "
                     + tierInstance.getTier().getImage() + "Flavour: " + tierInstance.getTier().getFlavour()
@@ -105,12 +113,125 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             log.error(errorMsg);
             throw new InfrastructureException(errorMsg);
         }
+    	String userData = getUserData (claudiaData,  tierInstance);
 
-        String payload = tierInstance.toJson();
-        log.debug("Payload " + payload);
+        String payload = tierInstance.toJson(encode (userData));
+        log.debug("Payload with base decoded " + payload);
         log.debug("Floating ip " + tierInstance.getTier().getFloatingip());
 
         return payload;
+    }
+    
+    private String base64Decode(String str) {
+    	if (str == null) {
+    		return null;
+    	}
+    	byte[] bytes;
+		try {
+			byte[] decoded = Base64.decodeBase64(str);
+			return new String(decoded, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			log.warn("Error to encode the user data " + e.getMessage());
+			return null;
+		}
+    	
+    }
+    private static String radixBase64=
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      + "abcdefghijklmnopqrstuvwxyz"
+      + "0123456789"
+      + "+/";
+    
+    public static String encode(String string){
+        String whole_binary = "";
+        for(char c:string.toCharArray()){
+            String char_to_binary = Integer.toBinaryString(c);
+            while(char_to_binary.length()<8)
+                char_to_binary="0"+char_to_binary;
+            whole_binary+=char_to_binary;
+        }
+        string="";
+        String suffix="";
+        for(int i=0;i<whole_binary.length();i+=6){
+            String six_binary_digits = null;
+            try{
+                six_binary_digits = whole_binary.substring(i, i+6);
+            }
+            catch(StringIndexOutOfBoundsException sioobe){
+                six_binary_digits = whole_binary.substring(i);
+                while(six_binary_digits.length()<6){
+                    six_binary_digits+="00";
+                    suffix+="=";
+                }
+            }
+            string+=radixBase64.charAt(Integer.parseInt(six_binary_digits,2));
+        }
+        return string+suffix;
+    }
+
+    /**
+     * Decodes an base64-encoded UTF-8/ASCII string to it's Base64 value.
+     * Gives anomalous result for string with any other encoding.
+     * Output is similar to output of this command on Linux:
+     * printf "<string>" | base64 -d
+     * @param string
+     * @return Base64 Decoding of parameter string
+     */
+    public static String decode(String string){
+        String binary_string="";
+        for(char c:string.toCharArray()){
+            if(c=='=')
+                break;
+            String char_to_binary = Integer.toBinaryString(radixBase64.indexOf(c));
+            while(char_to_binary.length()<6)
+                char_to_binary="0"+char_to_binary;
+            binary_string+=char_to_binary;
+        }
+        if(string.endsWith("=="))
+            binary_string=binary_string.substring(0, binary_string.length()-4);
+        else if(string.endsWith("="))
+            binary_string=binary_string.substring(0, binary_string.length()-2);
+        string="";
+        for(int i=0;i<binary_string.length();i+=8){
+            String eight_binary_digits = binary_string.substring(i, i+8);
+            string+=(char)Integer.parseInt(eight_binary_digits,2);
+        }
+        return string;
+    }
+    
+    public String getUserData (ClaudiaData claudiaData, TierInstance tierInstance) {
+    	log.debug ("Creating user data");
+    	String file = null;
+    	String hostname = tierInstance.getVM().getHostname();
+    	String chefServerUrl;
+    	try {
+			file = fileUtils.readFile("userdata");
+			log.debug ("File userdata read");
+		} catch (Exception e) {
+			log.warn ("Error to find the file" + e.getMessage());
+			return file;
+		}
+		
+		try {
+			chefServerUrl = openStackRegion.getChefServerEndPoint(tierInstance.getTier().getRegion(), claudiaData.getUser().getToken());
+		} catch (Exception e1) {
+			log.warn ("Error to obtain the chef-server url" + e1.getMessage());
+			return file;
+		}
+    	String chefValidationKey = "";
+		try {
+			chefValidationKey = fileUtils.readFile("validation.pem", "/etc/chef/");
+		} catch (Exception e1) {
+			log.warn ("Error to find the validation key file" + e1.getMessage());
+			//return file;
+		}
+    	
+		
+    	file = file.replace("{node_name}", hostname).replace( "{server_url}" ,chefServerUrl).replace("{validation_key}", chefValidationKey);
+    	log.debug ("payload " + file);
+    	return file;	
+    	
+    	 
     }
 
     private void addNetworkToTierInstance(ClaudiaData claudiaData, TierInstance tierInstance)
@@ -452,5 +573,13 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     public String deployVDC(ClaudiaData claudiaData, String cpu, String mem, String disk)
             throws InfrastructureException {
         return null;  // To change body of implemented methods use File | Settings | File Templates.
+    }
+    
+    public void setFileUtils (FileUtils fileUtils) {
+    	this.fileUtils = fileUtils;
+    }
+    
+    public void setOpenStackRegion (OpenStackRegion openStackRegion) {
+    	this.openStackRegion = openStackRegion;
     }
 }

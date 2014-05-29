@@ -414,4 +414,19 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         return url;
     }
 
+	public String getChefServerEndPoint(String regionName, String token)
+			throws OpenStackException {
+    	String url;
+        try {
+            url = getEndPointByNameAndRegionName("chef-server", regionName, token);
+        } catch (OpenStackException e) {
+            String msn = "It is not possible to obtain the chef-server endpoint";
+            log.error(msn);
+            throw new OpenStackException (msn);
+            		
+        }
+        log.debug ("Obtained chef-server endpoint " + url);
+        return url;
+	}
+
 }

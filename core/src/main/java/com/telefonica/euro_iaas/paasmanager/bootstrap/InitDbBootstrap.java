@@ -49,7 +49,6 @@ public class InitDbBootstrap implements ServletContextListener {
     /** {@inheritDoc} */
     public void contextInitialized(ServletContextEvent event) {
         log.debug("InitDbBootstrap. START");
-
-        log.trace("InitDbBootstrap. END");
+        log.debug("InitDbBootstrap. END");
     }
 }
