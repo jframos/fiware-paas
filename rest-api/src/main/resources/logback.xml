@@ -77,7 +77,7 @@
         <appender-ref ref="utilAppender"/>
     </logger>
 
-    <logger name="com.telefonica.euro_iaas.paasmanager.rest.auth" additivity="true" value="DEBUG">
+    <logger name="com.telefonica.euro_iaas.paasmanager.rest.auth" additivity="false" value="DEBUG">
         <appender-ref ref="authAppender"/>
     </logger>
 
@@ -91,8 +91,14 @@
         <appender-ref ref="paasAppender"/>
     </logger>
 
-    <!-- SpringFramework logger -->
+    <!-- hibernate logger -->
     <logger name="org.hibernate" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="paasAppender"/>
+    </logger>
+
+    <!-- httpclient logger -->
+    <logger name="org.apache.http" additivity="false">
         <level value="WARN"/>
         <appender-ref ref="paasAppender"/>
     </logger>
