@@ -51,7 +51,6 @@ public interface EnvironmentResource {
      */
 
     @POST
-    @Path("/")
     // @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void insert(@PathParam("org") String org, @PathParam("vdc") String vdc, EnvironmentDto environmentDto)
@@ -72,7 +71,6 @@ public interface EnvironmentResource {
      */
 
     @GET
-    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<EnvironmentDto> findAll(@PathParam("org") String org, @PathParam("vdc") String vdc,
             @QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,

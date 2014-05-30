@@ -405,7 +405,7 @@ public class AbstractEnvironmenTest {
         tier.setFlavour("flavour");
         tier.setFloatingip("floatingip");
         tier.setKeypair("keypair");
-        Network net1 = new Network("one1", "dd");
+        Network net1 = new Network("one1", "dd", "region");
         tier.addNetwork(net1);
        
         environment1.addTier(tier);
@@ -421,7 +421,7 @@ public class AbstractEnvironmenTest {
         tier2.setFloatingip("floatingip");
         tier2.setKeypair("keypair");
         tier2.addNetwork(net1);
-        Network net2 = new Network("one2", "dd");
+        Network net2 = new Network("one2", "dd", "region");
         tier2.addNetwork(net2);
 
         abstractTierResource.insert(org, environment1.getName(), tier2.toDto());
@@ -434,7 +434,7 @@ public class AbstractEnvironmenTest {
         tier3.setFlavour("flavour");
         tier3.setFloatingip("floatingip");
         tier3.setKeypair("keypair");
-        Network net3 = new Network("llala2", "dd");
+        Network net3 = new Network("llala2", "dd", "region");
         tier3.addNetwork(net2);
         tier3.addNetwork(net3);
         

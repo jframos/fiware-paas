@@ -50,7 +50,6 @@ public interface ProductReleaseDBResource {
      */
 
     @POST
-    @Path("/")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void insert(ProductReleaseDto ProductReleaseDto);
 

@@ -33,6 +33,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -54,6 +56,8 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
  * @author jesus movilla
  */
 public class OpenStackAuthenticationFilter extends GenericFilterBean {
+
+    private static Logger logger = LoggerFactory.getLogger(OpenStackAuthenticationFilter.class);
 
     /**
      * The authentication details source.
@@ -116,9 +120,7 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
      * @param pAuthenticationManager
      *            the bean to submit authentication requests to
      * @param pAuthenticationEntryPoint
-     *            will be invoked when authentication fails. Typically an instance of
-     *            {@link BasicAuthenticationEntryPoint}. {@code AuthenticationManager} and use the supplied
-     *            {@code AuthenticationEntryPoint} to handle authentication failures.
+     *            will be invoked when authentication fails.
      */
     public OpenStackAuthenticationFilter(final AuthenticationManager pAuthenticationManager,
             final AuthenticationEntryPoint pAuthenticationEntryPoint) {
@@ -135,17 +137,20 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
             throws IOException, ServletException {
 
         final boolean debug = logger.isDebugEnabled();
+
         final HttpServletRequest request = (HttpServletRequest) req;
         final HttpServletResponse response = (HttpServletResponse) res;
 
         String header = request.getHeader(OPENSTACK_HEADER_TOKEN);
         String pathInfo = request.getPathInfo();
+        logger.debug(header);
+        logger.debug(pathInfo);
 
-        if (pathInfo.equals("/") || pathInfo.equals("/extensions")) {
+        if (pathInfo != null && (pathInfo.equals("/") || pathInfo.equals("/extensions"))) {
             /**
              * It is not needed to authenticate these operations
              */
-            logger.info("Operation does not need to Authenticate");
+            logger.debug("Operation does not need to Authenticate");
         } else {
 
             if (header == null) {
@@ -155,6 +160,8 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
             try {
                 String token = header;
                 String tenantId = request.getHeader(OPENSTACK_HEADER_TENANTID);
+                logger.debug(tenantId);
+                logger.debug(token);
                 // String tenantId = request.getPathInfo().split("/")[3];
 
                 if (debug) {
@@ -173,10 +180,10 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
 
                 PaasManagerUser user = (PaasManagerUser) authResult.getPrincipal();
 
-                logger.info("User: " + user.getUsername());
-                logger.info("Token: " + user.getToken());
-                logger.info("Tenant: " + user.getTenantId());
-                logger.info("TenantName - Org: " + user.getTenantName());
+                logger.debug("User: " + user.getUsername());
+                logger.debug("Token: " + user.getToken());
+                logger.debug("Tenant: " + user.getTenantId());
+                logger.debug("TenantName - Org: " + user.getTenantName());
 
                 SecurityContextHolder.getContext().setAuthentication(authResult);
                 // SecurityContextHolder.setStrategyName("MODE_INHERITABLETHREADLOCAL");
@@ -202,7 +209,23 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
                 }
 
                 return;
+            } catch (Exception ex) {
+                SecurityContextHolder.clearContext();
+
+                if (debug) {
+                    logger.debug("Authentication exception: " + ex);
+                }
+
+                rememberMeServices.loginFail(request, response);
+
+                if (ignoreFailure) {
+                    chain.doFilter(request, response);
+                } else {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                }
+                return;
             }
+
             String keystoneURL = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_URL);
 
             response.addHeader("Www-Authenticate", "Keystone uri='" + keystoneURL + "'");

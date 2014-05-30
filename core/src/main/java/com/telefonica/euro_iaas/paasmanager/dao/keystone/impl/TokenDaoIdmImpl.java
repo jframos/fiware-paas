@@ -25,7 +25,11 @@
 package com.telefonica.euro_iaas.paasmanager.dao.keystone.impl;
 
 import java.sql.Connection;
+
 import javax.ws.rs.core.MediaType;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -36,14 +40,13 @@ import com.telefonica.euro_iaas.paasmanager.dao.keystone.TokenDao;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.keystone.Token;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import org.apache.log4j.Logger;
 
 /**
  * @author jesus.movilla
  */
 public class TokenDaoIdmImpl implements TokenDao {
 
-    private static Logger log = Logger.getLogger(TokenDaoIdmImpl.class);
+    private static Logger log = LoggerFactory.getLogger(TokenDaoIdmImpl.class);
     private SystemPropertiesProvider systemPropertiesProvider;
 
     /*

@@ -25,7 +25,6 @@
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.ws.rs.Path;
 
@@ -54,8 +53,6 @@ public class ApplicationReleaseResourceImpl implements ApplicationReleaseResourc
     private ApplicationReleaseManager applicationReleaseManager;
     @InjectParam("artifactManager")
     private ArtifactManager artifactManager;
-
-    private static Logger LOGGER = Logger.getLogger("ApplicationReleaseResourceImpl");
 
     /*
      * (non-Javadoc)

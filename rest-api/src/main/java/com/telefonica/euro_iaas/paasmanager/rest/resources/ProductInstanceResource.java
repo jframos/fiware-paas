@@ -59,7 +59,6 @@ public interface ProductInstanceResource {
      * @return the installed product.
      */
     @POST
-    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     Task install(@PathParam("org") String org, @PathParam("vdc") String vdc,
@@ -89,7 +88,6 @@ public interface ProductInstanceResource {
      * @return the product instances that match with the criteria.
      */
     @GET
-    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ProductInstanceDto> findAll(@QueryParam("hostname") String hostname, @QueryParam("domain") String domain,
             @QueryParam("ip") String ip, @QueryParam("fqn") String fqn, @QueryParam("page") Integer page,

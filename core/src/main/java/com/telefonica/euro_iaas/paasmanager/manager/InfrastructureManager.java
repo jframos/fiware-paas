@@ -24,7 +24,6 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
-import java.util.List;
 import java.util.Set;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -75,12 +74,12 @@ public interface InfrastructureManager {
      * @return
      * @throws InfrastructureException
      * @throws InvalidVappException
-     * @throws InvalidEntityException 
-     * @throws EntityNotFoundException 
+     * @throws InvalidEntityException
+     * @throws EntityNotFoundException
      */
-    EnvironmentInstance createInfrasctuctureEnvironmentInstance(EnvironmentInstance environmentInstance,
-            Set<Tier> set, ClaudiaData claudiaData) throws InfrastructureException, InvalidVappException,
-            InvalidOVFException, InvalidEntityException, EntityNotFoundException;
+    EnvironmentInstance createInfrasctuctureEnvironmentInstance(EnvironmentInstance environmentInstance, Set<Tier> set,
+            ClaudiaData claudiaData) throws InfrastructureException, InvalidVappException, InvalidOVFException,
+            InvalidEntityException, EntityNotFoundException;
 
     /**
      * Delete the environemnt (vms associated to the environmentInstance)
@@ -88,10 +87,11 @@ public interface InfrastructureManager {
      * @param envInstance
      * @param vdc
      * @throws InfrastructureException
-     * @throws InvalidEntityException 
-     * @throws EntityNotFoundException 
+     * @throws InvalidEntityException
+     * @throws EntityNotFoundException
      */
-    void deleteEnvironment(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws InfrastructureException, EntityNotFoundException, InvalidEntityException;
+    void deleteEnvironment(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws InfrastructureException,
+            InvalidEntityException;
 
     /**
      * Clone the template to a VM with products installed (Element of TierInstance)
@@ -169,9 +169,15 @@ public interface InfrastructureManager {
     public void deleteVMReplica(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException;
 
     /**
-     * 
      * @param environmentInstance
+     * @throws InfrastructureException
      */
-	void federatedNetworks(EnvironmentInstance environmentInstance);
+    void federatedNetworks(ClaudiaData claudiaData, EnvironmentInstance environmentInstance)
+            throws InfrastructureException;
+
+    /**
+     * Generates a instance name or hostname.
+     */
+    String generateVMName(String bluePrintName, String tierName, int numReplica, String vdc);
 
 }

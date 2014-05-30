@@ -24,6 +24,8 @@
 
 package com.telefonica.euro_iaas.paasmanager.util;
 
+import org.json.JSONException;
+
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
@@ -80,5 +82,7 @@ public interface OpenStackConfigUtil {
      * @throws OpenStackException 
      */
     String getPublicFloatingPool(PaasManagerUser user,  String region) throws OpenStackException;
+    
+    String getPublicRouterId (String response, String vdc, String publicNetworkId) throws JSONException;
 
 }

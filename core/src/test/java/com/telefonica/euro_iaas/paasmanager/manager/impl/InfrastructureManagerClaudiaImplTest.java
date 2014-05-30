@@ -25,6 +25,7 @@
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -65,7 +66,7 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 /**
  * @author jesus.movilla
  */
-public class InfrastructureManagerImplTest {
+public class InfrastructureManagerClaudiaImplTest {
 
     private SystemPropertiesProvider propertiesProvider;
     private ClaudiaClient claudiaClient;
@@ -137,7 +138,7 @@ public class InfrastructureManagerImplTest {
         List<String> ovfs = new ArrayList<String>();
         ovfs.add(null);
 
-        String hostname = claudiaData.getService() + "-" + tier.getName() + "-" + 1;
+        String hostname = claudiaData.getService() + "-" + tier.getName() + "-" + 1 + "-vdc";
         String fqn = claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc() + ".services."
                 + claudiaData.getService() + ".vees." + tier.getName() + ".replicas." + 1;
 
@@ -146,8 +147,6 @@ public class InfrastructureManagerImplTest {
         vm.setFqn(fqn);
         vm.setHostname(hostname);
         vm.setIp("IP");
-        
-        
 
         tierInstance.setVM(vm);
 
@@ -159,14 +158,13 @@ public class InfrastructureManagerImplTest {
         when(propertiesProvider.getProperty("openstack-tcloud.cloudSystem")).thenReturn("4caast");
         when(propertiesProvider.getProperty("vmDeploymentDelay")).thenReturn("1");
         when(claudiaClient.browseVDC(any(ClaudiaData.class))).thenReturn("vdc");
-        when(claudiaClient.getIP(any(ClaudiaData.class), any(String.class), anyInt(), any(VM.class), any(String.class))).thenReturn(ips);
+        when(claudiaClient.getIP(any(ClaudiaData.class), any(String.class), anyInt(), any(VM.class), any(String.class)))
+                .thenReturn(ips);
         when(claudiaClient.browseService(any(ClaudiaData.class))).thenReturn("vapp");
         when(environmentInstanceDao.update(any(EnvironmentInstance.class))).thenReturn(envInst);
         when(
                 claudiaClient.browseVMReplica(any(ClaudiaData.class), any(String.class), anyInt(), any(VM.class),
                         anyString())).thenReturn("vapp");
-
-        
 
         Mockito.doThrow(new EntityNotFoundException(TierInstance.class, "test", tierInstance))
                 .when(tierInstanceManager).load(any(String.class));
@@ -191,7 +189,7 @@ public class InfrastructureManagerImplTest {
     @Test
     public void testDeleteInfrasctuctureEnvironmentInstance() throws Exception {
 
-        Network net = new Network("NET", "vdc");
+        Network net = new Network("NET", "vdc", "region");
         tier.addNetwork(net);
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
@@ -270,7 +268,7 @@ public class InfrastructureManagerImplTest {
     @Test
     public void testDeployNetwrok() throws Exception {
 
-        Network net = new Network("NET", "vdc");
+        Network net = new Network("NET", "vdc", "region");
         tier.addNetwork(net);
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
@@ -278,12 +276,12 @@ public class InfrastructureManagerImplTest {
         when(tierInstanceManager.update(any(TierInstance.class))).thenReturn(tierInstance);
         when(networkInstanceManager.create(any(ClaudiaData.class), any(NetworkInstance.class), anyString()))
                 .thenReturn(net.toNetworkInstance());
-        when(networkManager.load(any(String.class), any(String.class))).thenReturn(net);
+        when(networkManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(net);
         when(tierManager.loadTierWithNetworks(any(String.class), any(String.class), any(String.class)))
                 .thenReturn(tier);
 
         Mockito.doThrow(EntityNotFoundException.class).when(networkInstanceManager)
-                .load(any(String.class), any(String.class));
+                .load(any(String.class), any(String.class), any(String.class));
 
         manager.deployNetworks(claudiaData, tierInstance);
 
@@ -294,8 +292,8 @@ public class InfrastructureManagerImplTest {
     @Test
     public void testDeployNetwrokInternet() throws Exception {
 
-        Network net = new Network("NET", "vdc");
-        Network net2 = new Network("Internet", "vdc");
+        Network net = new Network("NET", "vdc", "region");
+        Network net2 = new Network("Internet", "vdc", "region");
         tier.addNetwork(net);
         tier.addNetwork(net2);
         TierInstance tierInstance = new TierInstance();
@@ -306,9 +304,9 @@ public class InfrastructureManagerImplTest {
         when(tierManager.update(any(Tier.class))).thenReturn(tier);
         when(networkInstanceManager.create(any(ClaudiaData.class), any(NetworkInstance.class), anyString()))
                 .thenReturn(net.toNetworkInstance());
-        when(networkManager.load(any(String.class), any(String.class))).thenReturn(net);
+        when(networkManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(net);
         Mockito.doThrow(EntityNotFoundException.class).when(networkInstanceManager)
-                .load(any(String.class), any(String.class));
+                .load(any(String.class), any(String.class), any(String.class));
 
         manager.deployNetworks(claudiaData, tierInstance);
 
@@ -320,8 +318,8 @@ public class InfrastructureManagerImplTest {
     @Test
     public void testDeleteNetwroksinEnv() throws Exception {
 
-        Network net = new Network("NET", "vdc");
-        Network net2 = new Network("Internet", "vdc");
+        Network net = new Network("NET", "vdc", "region");
+        Network net2 = new Network("Internet", "vdc", "region");
         tier.addNetwork(net);
         tier.addNetwork(net2);
         TierInstance tierInstance = new TierInstance();
@@ -337,12 +335,36 @@ public class InfrastructureManagerImplTest {
                 .thenReturn(net.toNetworkInstance());
 
         Mockito.doThrow(EntityNotFoundException.class).when(networkInstanceManager)
-                .load(any(String.class), any(String.class));
+                .load(any(String.class), any(String.class), any(String.class));
 
-        manager.deleteNetworksInEnv(claudiaData, envInst, region);
+        manager.deleteNetworksInTierInstance(claudiaData, tierInstance);
 
         assertEquals(envInst.getTierInstances().get(0).getNetworkInstances().size(), 0);
 
+    }
+
+    @Test
+    public void shouldGenerateValidTierInstanceName() {
+        // given
+
+        // when
+        String name = manager.generateVMName("bpName", "tierName", 1, "00000000000000vdc");
+
+        // then
+        assertNotNull(name);
+        assertEquals("bpName-tierName-1-000vdc", name);
+    }
+
+    @Test
+    public void shouldGenerateValidTierInstanceNameWithShortVdc() {
+        // given
+
+        // when
+        String name = manager.generateVMName("bpName", "tierName", 1, "vdc");
+
+        // then
+        assertNotNull(name);
+        assertEquals("bpName-tierName-1-vdc", name);
     }
 
 }

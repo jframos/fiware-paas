@@ -27,7 +27,6 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.commons.lang.StringUtils;
@@ -144,8 +143,8 @@ public class TierInstanceDaoJpaImpl extends AbstractBaseDao<TierInstance, String
         query.setParameter("id", tierInstanceId);
         TierInstance tierInstance = null;
         try {
-            tierInstance = (TierInstance) query.getSingleResult();
-        } catch (NoResultException e) {
+            tierInstance = (TierInstance) query.getResultList().get(0);
+        } catch (Exception e) {
             String message = " No TierInstance found in the database with name: " + Long.toString(tierInstanceId);
             throw new EntityNotFoundException(null, e.getMessage(), message);
         }
@@ -158,8 +157,8 @@ public class TierInstanceDaoJpaImpl extends AbstractBaseDao<TierInstance, String
         query.setParameter("name", tierInstanceName);
         TierInstance tierInstance = null;
         try {
-            tierInstance = (TierInstance) query.getSingleResult();
-        } catch (NoResultException e) {
+            tierInstance = (TierInstance) query.getResultList().get(0);
+        } catch (Exception e) {
             throw new EntityNotFoundException(TierInstance.class, "name", tierInstanceName);
 
         }

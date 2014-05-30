@@ -32,7 +32,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -85,7 +86,7 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
 
     private TierInstanceResourceValidator validatorTierInstance;
 
-    private static Logger log = Logger.getLogger(TierInstanceResourceImpl.class);
+    private static Logger log = LoggerFactory.getLogger(TierInstanceResourceImpl.class);
 
     /**
      * @throws EntityNotFoundException
@@ -333,7 +334,6 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
         this.validatorTierInstance = validatorTierInstance;
     }
 
-
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
@@ -397,12 +397,10 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
         }
         return rTierInstance;
     }
-    
+
     public PaasManagerUser getCredentials() {
-        if (systemPropertiesProvider.getProperty(
-                SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            return (PaasManagerUser) SecurityContextHolder.getContext()
-                    .getAuthentication().getPrincipal();
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         } else {
             return null;
         }

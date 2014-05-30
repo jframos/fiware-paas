@@ -111,7 +111,7 @@ public class EnvironmenInstanceITest {
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
 
-        Environment env2 = environmentManager.load("tCEI",vdc);
+        Environment env2 = environmentManager.load("tCEI", vdc);
 
         EnvironmentInstanceDto envInst = new EnvironmentInstanceDto();
         envInst.setBlueprintName("blueprintname");
@@ -137,8 +137,8 @@ public class EnvironmenInstanceITest {
         assertEquals(envInstResult.getBlueprintName(), "blueprintname");
         assertEquals(envInstResult.getEnvironment().getName(), "tCEI");
 
-        TierInstance tierInstance = tierInstanceManager.load("blueprintname-tierdtotest-1");
-        assertEquals(tierInstance.getName(), "blueprintname-tierdtotest-1");
+        TierInstance tierInstance = tierInstanceManager.load("blueprintname-tierdtotest-1-73b3d4");
+        assertEquals(tierInstance.getName(), "blueprintname-tierdtotest-1-73b3d4");
         assertEquals(tierInstance.getNumberReplica(), 1);
         assertEquals(tierInstance.getTier().getName(), "tierdtotest");
 
@@ -222,7 +222,7 @@ public class EnvironmenInstanceITest {
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
 
-        Environment env2 = environmentManager.load("tcETierInstance",vdc);
+        Environment env2 = environmentManager.load("tcETierInstance", vdc);
         assertNotNull(env2);
         assertEquals(env2.getName(), "tcETierInstance");
         assertEquals(env2.getDescription(), "Description First environment");
@@ -253,16 +253,16 @@ public class EnvironmenInstanceITest {
         assertEquals(envInstResult.getEnvironment().getName(), "tcETierInstance");
         assertEquals(envInstResult.getTierInstances().size(), 1);
 
-        TierInstance tierInstance = tierInstanceManager.load("blueprintnameTierInstance-tierdAddTierInstancr-1");
-        assertEquals(tierInstance.getName(), "blueprintnameTierInstance-tierdAddTierInstancr-1");
+        TierInstance tierInstance = tierInstanceManager.load("blueprintnameTierInstance-tierdAddTierInstancr-1-73b3d4");
+        assertEquals(tierInstance.getName(), "blueprintnameTierInstance-tierdAddTierInstancr-1-73b3d4");
         assertEquals(tierInstance.getNumberReplica(), 1);
 
         task = tierInstanceResource.insert(org, vdc, "blueprintnameTierInstance", tierbk.toDto(), "");
         Thread.sleep(5000);
         assertEquals(task.getStatus(), Task.TaskStates.RUNNING);
-        tierInstance = tierInstanceManager.load("blueprintnameTierInstance-tierdAddTierInstancr-2");
-        assertEquals(tierInstance.getName(), "blueprintnameTierInstance-tierdAddTierInstancr-2");
-        assertEquals(tierInstance.getNumberReplica(), 2);
+        TierInstance tierInstance2 = tierInstanceManager.load("blueprintnameTierInstance-tierdAddTierInstancr-2");
+        assertEquals(tierInstance2.getName(), "blueprintnameTierInstance-tierdAddTierInstancr-2");
+        assertEquals(tierInstance2.getNumberReplica(), 2);
 
     }
 

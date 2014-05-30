@@ -55,14 +55,12 @@ public interface ProductReleaseResource {
      */
 
     @POST
-    @Path("/")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void insert(@PathParam("org") String org, @PathParam("vdc") String vdc,
             @PathParam("environment") String environment, @PathParam("tier") String tier,
             ProductReleaseDto ProductReleaseDto);
 
     @GET
-    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ProductReleaseDto> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
             @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType,

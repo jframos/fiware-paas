@@ -34,7 +34,8 @@ import javax.ws.rs.core.MediaType;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -56,7 +57,7 @@ public class OpenstackFirewallingClientImpl implements FirewallingClient {
 
     private SystemPropertiesProvider systemPropertiesProvider;
 
-    private static Logger log = Logger.getLogger(OpenstackFirewallingClientImpl.class);
+    private static Logger log = LoggerFactory.getLogger(OpenstackFirewallingClientImpl.class);
 
     private OpenStackRegion openStackRegion;
 

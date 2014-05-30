@@ -60,8 +60,7 @@ public interface NetworkInstanceManager {
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    void delete(ClaudiaData claudiaData, NetworkInstance network, String region) throws EntityNotFoundException,
-            InvalidEntityException, InfrastructureException;
+    void delete(ClaudiaData claudiaData, NetworkInstance network, String region) throws InvalidEntityException, InfrastructureException;
     
     /**
      * 
@@ -85,7 +84,7 @@ public interface NetworkInstanceManager {
      * 
      * @return the network.
      */
-    NetworkInstance load(String networkName, String vdc) throws EntityNotFoundException;
+    NetworkInstance load(String networkName, String vdc, String region) throws EntityNotFoundException;
 
     /**
      * Update a network.
@@ -105,5 +104,7 @@ public interface NetworkInstanceManager {
     List<NetworkInstance> listNetworks (ClaudiaData claudiaData, String region) throws InfrastructureException;
 
     int getNumberDeployedNetwork(ClaudiaData claudiaData, String region) throws InfrastructureException;
+    
+    void joinNetwork(ClaudiaData claudiaData, NetworkInstance networkInstance, NetworkInstance networkInstance2) throws EntityNotFoundException, InvalidEntityException, InfrastructureException;
 
 }

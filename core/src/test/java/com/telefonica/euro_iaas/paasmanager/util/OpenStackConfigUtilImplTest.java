@@ -49,6 +49,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.core.GrantedAuthority;
@@ -230,6 +231,18 @@ public class OpenStackConfigUtilImplTest {
      
 
     }
+    @Test
+    public void shouldGetPublicRouterId () throws JSONException {
+    	String response = "{\"routers\": [{\"status\": \"ACTIVE\", \"external_gateway_info\": null, \"name\": \"router-1137229409\", \"admin_state_up\": false, "+
+    	"\"tenant_id\": \"00000000000000000000000000000017\", \"routes\": [], \"id\": \"2fe38e4d-a4cb-4c0a-b1b9-e87e0d147f9c\"}, {\"status\": \"ACTIVE\", "+
+    	"\"external_gateway_info\": {\"network_id\": \"e5892de7-38f9-4002-90f9-eedf0e72f5fc\", \"enable_snat\": true}, \"name\": \"ext-rt\", \"admin_state_up\": "+
+    	" true, \"tenant_id\": \"00000000000000000000000000000001\", \"routes\": [], \"id\": \"35da5189-03f8-4167-868d-932637d83105\"}]}";
+    	
+    	String routerId = openStackUtil.getPublicRouterId (response, "00000000000000000000000000000001", "e5892de7-38f9-4002-90f9-eedf0e72f5fc");
+    	assertEquals (routerId, "35da5189-03f8-4167-868d-932637d83105");
+    	
+    }
+
    
 
     /**

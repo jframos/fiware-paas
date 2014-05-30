@@ -24,10 +24,10 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -46,7 +46,7 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
     private RuleManager ruleManager = null;
     private FirewallingClient firewallingClient = null;
 
-    private static Logger log = Logger.getLogger(SecurityGroupManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(SecurityGroupManagerImpl.class);
 
     public SecurityGroup create(String region, String token, String vdc, SecurityGroup securityGroup)
             throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
@@ -107,24 +107,24 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
 
         return securityGroupDB;
     }
-    
+
     /**
      * It destroy a security group.
      */
 
     public void destroy(String region, String token, String vdc, SecurityGroup securityGroup)
             throws InvalidEntityException, InfrastructureException {
-        
+
         if (securityGroup.getRules().isEmpty()) {
-            log.warn ("There is not any rule associated to the security group");
+            log.warn("There is not any rule associated to the security group");
         } else {
-            List<Rule> rules = securityGroup.cloneRules ();
+            List<Rule> rules = securityGroup.cloneRules();
             securityGroup.setRules(null);
             securityGroupDao.update(securityGroup);
-            
+
             for (Rule rule : rules) {
                 try {
-                    ruleManager.destroy(region, token, vdc, rule); 
+                    ruleManager.destroy(region, token, vdc, rule);
                 } catch (Exception e) {
                     log.warn("Error to destroy the rule " + e.getMessage());
                 }
@@ -136,7 +136,7 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
         } catch (Exception e) {
             log.warn("There is not any rule associated to the security group");
         }
-        
+
         securityGroupDao.remove(securityGroup);
 
     }

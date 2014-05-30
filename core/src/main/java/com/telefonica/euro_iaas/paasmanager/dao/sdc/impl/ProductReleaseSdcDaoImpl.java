@@ -24,8 +24,6 @@
 
 package com.telefonica.euro_iaas.paasmanager.dao.sdc.impl;
 
-
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -39,7 +37,8 @@ import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -50,9 +49,7 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.sdc.ProductReleaseSdcDao;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.exception.SdcException;
-
 import com.telefonica.euro_iaas.paasmanager.installator.sdc.util.SDCUtil;
-
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
@@ -63,16 +60,14 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
 
     private SystemPropertiesProvider systemPropertiesProvider;
-    private static Logger log = Logger.getLogger(ProductReleaseSdcDaoImpl.class);
+    private static Logger log = LoggerFactory.getLogger(ProductReleaseSdcDaoImpl.class);
     Client client;
     private SDCUtil sDCUtil;
-
 
     public List<ProductRelease> findAll(String token, String tenant) throws SdcException {
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
 
         List<String> pNames = findAllProducts(token, tenant);
-
 
         for (int i = 0; i < pNames.size(); i++) {
             final String pName = pNames.get(i);
@@ -89,8 +84,8 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
         return productReleases;
     }
 
-
-    public ProductRelease load(String product, String version, ClaudiaData data) throws EntityNotFoundException, SdcException {
+    public ProductRelease load(String product, String version, ClaudiaData data) throws EntityNotFoundException,
+            SdcException {
         ProductRelease productRelease = new ProductRelease();
         String productReleaseString = loadByName(product, version, data.getUser().getToken(), data.getVdc());
         productRelease.fromSdcJson(JSONObject.fromObject(productReleaseString));
@@ -98,13 +93,12 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
         return productRelease;
     }
 
-
     public List<String> findAllProducts(String token, String tenant) throws SdcException {
         try {
             String url = sDCUtil.getSdcUtil(token) + "/catalog/product";
             log.debug("url: " + url);
 
-            Builder builder = createWebResource (url, token ,tenant);
+            Builder builder = createWebResource(url, token, tenant);
             builder = builder.type(MediaType.APPLICATION_JSON);
             InputStream inputStream = builder.get(InputStream.class);
             String response;
@@ -120,17 +114,15 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
             throw new SdcException(message);
         }
 
-        
     }
 
-
-    public List<ProductRelease> findAllProductReleasesOfProduct(String pName, String token, String tenant) throws SdcException {
+    public List<ProductRelease> findAllProductReleasesOfProduct(String pName, String token, String tenant)
+            throws SdcException {
         try {
-            String url = sDCUtil.getSdcUtil(token) 
-                + "/catalog/product/" + pName + "/release";
+            String url = sDCUtil.getSdcUtil(token) + "/catalog/product/" + pName + "/release";
             log.debug("url: " + url);
 
-            Builder builder = createWebResource (url, token ,tenant);
+            Builder builder = createWebResource(url, token, tenant);
             builder = builder.type(MediaType.APPLICATION_JSON);
             InputStream inputStream = builder.get(InputStream.class);
             String response = IOUtils.toString(inputStream);
@@ -144,27 +136,25 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
             log.error(message);
             throw new SdcException(message);
         }
-        
+
     }
 
-
-    private String loadByName(String product, String version, String token, String tenant) throws EntityNotFoundException, SdcException {
-        log.debug ("Load by name " + product + " " + version );
+    private String loadByName(String product, String version, String token, String tenant)
+            throws EntityNotFoundException, SdcException {
+        log.debug("Load by name " + product + " " + version);
         ClientResponse response = null;
         try {
-            String url =  sDCUtil.getSdcUtil(token) 
-                + "/catalog/product/" + product + "/release/" + version;
+            String url = sDCUtil.getSdcUtil(token) + "/catalog/product/" + product + "/release/" + version;
             log.debug("the url: " + url);
 
-            Builder builder = createWebResource (url, token ,tenant);
+            Builder builder = createWebResource(url, token, tenant);
 
             response = builder.get(ClientResponse.class);
-        }catch (OpenStackException e) {
+        } catch (OpenStackException e) {
             String message = "Error calling SDC to obtain the products " + e.getMessage();
             log.error(message);
             throw new SdcException(message);
         }
-
 
         if (response.getStatus() == 404) {
             String message = "The Product Release " + product + "-" + version + " is not present in SDC DataBase ";
@@ -173,19 +163,19 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
         }
 
         if (response.getStatus() != 200) {
-        	
+
             InputStream input = response.getEntityInputStream();
             StringWriter writer = new StringWriter();
             try {
-				IOUtils.copy(input, writer, "UTF-8");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+                IOUtils.copy(input, writer, "UTF-8");
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             String theString = writer.toString();
-          
-            
-            String message = "Error calling SDC to recover all product Releases. " + "Status " + response.getStatus() + " " + theString;
+
+            String message = "Error calling SDC to recover all product Releases. " + "Status " + response.getStatus()
+                    + " " + theString;
             throw new SdcException(message);
         }
 
@@ -213,9 +203,8 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
     }
 
     /**
-     * Converting from a string (list of secGrous in json) to a list of SecurityGroups
+     * Converting from a string (list of secGroups in json) to a list of SecurityGroups.
      * 
-     * @param jsonProductReleases
      * @return List of ProductReleases
      */
     public List<ProductRelease> fromStringToProductReleases(String sdcproductReleases) {
@@ -252,23 +241,21 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
     public void setClient(Client client) {
         this.client = client;
     }
-    
 
-    public void setSDCUtil (SDCUtil sDCUtil) {
-        this.sDCUtil=sDCUtil;
+    public void setSDCUtil(SDCUtil sDCUtil) {
+        this.sDCUtil = sDCUtil;
     }
-    
 
-    private Builder createWebResource (String url, String token, String tenant) {
-    	client.addFilter(new LoggingFilter(System.out));
-    
-    	WebResource webResource = client.resource(url);
-    	Builder builder = webResource.accept(MediaType.APPLICATION_JSON);
- 
-    	builder.header("X-Auth-Token", token);
-    	builder.header("Tenant-Id", tenant);
- 
-    	return builder;
+    private Builder createWebResource(String url, String token, String tenant) {
+        client.addFilter(new LoggingFilter(System.out));
+
+        WebResource webResource = client.resource(url);
+        Builder builder = webResource.accept(MediaType.APPLICATION_JSON);
+
+        builder.header("X-Auth-Token", token);
+        builder.header("Tenant-Id", tenant);
+
+        return builder;
 
     }
 

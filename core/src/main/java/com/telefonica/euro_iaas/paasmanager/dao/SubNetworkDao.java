@@ -25,6 +25,7 @@
 package com.telefonica.euro_iaas.paasmanager.dao;
 
 import com.telefonica.euro_iaas.commons.dao.BaseDAO;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 
 /**
@@ -33,5 +34,6 @@ import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
  * @author Henar Munoz
  */
 public interface SubNetworkDao extends BaseDAO<SubNetwork, String> {
+	SubNetwork load(String name, String vdc, String region) throws EntityNotFoundException;
 
 }

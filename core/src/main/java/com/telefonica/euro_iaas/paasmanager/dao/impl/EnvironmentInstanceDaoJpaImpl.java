@@ -27,7 +27,6 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.commons.lang.StringUtils;
@@ -66,33 +65,27 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
         // return super.loadByField(EnvironmentInstance.class, "blueprintName",
 
         // name);
-      /*  try {
-            return findByEnvironmentInstanceName(name);
+        /*
+         * try { return findByEnvironmentInstanceName(name); } catch (Exception e) { try { return
+         * findByEnvironmentInstanceNameNoTierInstances(name); } catch (Exception e2) { throw new
+         * EntityNotFoundException(EnvironmentInstance.class, name, e2); } }
+         */
+        return null;
+    }
+
+    public EnvironmentInstance load(String name, String vdc) throws EntityNotFoundException {
+
+        try {
+            return findByEnvironmentInstanceName(name, vdc);
         } catch (Exception e) {
             try {
-                return findByEnvironmentInstanceNameNoTierInstances(name);
+                return findByEnvironmentInstanceNameNoTierInstances(name, vdc);
             } catch (Exception e2) {
                 throw new EntityNotFoundException(EnvironmentInstance.class, name, e2);
             }
-        }*/
-    	return null;
-    }
-    
-    public EnvironmentInstance load(String name, String vdc) throws EntityNotFoundException {
-
-
-            try {
-                return findByEnvironmentInstanceName(name, vdc);
-            } catch (Exception e) {
-                try {
-                    return findByEnvironmentInstanceNameNoTierInstances(name, vdc);
-                } catch (Exception e2) {
-                    throw new EntityNotFoundException(EnvironmentInstance.class, name, e2);
-                }
-            }
+        }
 
     }
-
 
     public List<EnvironmentInstance> findByCriteria(EnvironmentInstanceSearchCriteria criteria) {
         Session session = (Session) getEntityManager().getDelegate();
@@ -132,7 +125,8 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang .String)
      */
-    private EnvironmentInstance findByEnvironmentInstanceName(String envInstanceName, String vdc) throws EntityNotFoundException {
+    private EnvironmentInstance findByEnvironmentInstanceName(String envInstanceName, String vdc)
+            throws EntityNotFoundException {
 
         Query query = getEntityManager().createQuery(
                 "select p from EnvironmentInstance"
@@ -141,21 +135,22 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
         query.setParameter("vdc", vdc);
         EnvironmentInstance environmentInstance = null;
         try {
-            environmentInstance = (EnvironmentInstance) query.getSingleResult();
+            environmentInstance = (EnvironmentInstance) query.getResultList().get(0);
             getEntityManager().flush();
-        } catch (NoResultException e) {
+        } catch (Exception e) {
             String message = " No EnvironmentInstance found in the database with tiers" + "with blueprintName: "
                     + envInstanceName + " and vdc " + vdc;
             throw new EntityNotFoundException(EnvironmentInstance.class, message, envInstanceName);
         }
         return environmentInstance;
     }
-    
+
     /*
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang .String)
      */
-    private EnvironmentInstance findByEnvironmentInstanceNameVdc(String envInstanceName, String vdc) throws EntityNotFoundException {
+    private EnvironmentInstance findByEnvironmentInstanceNameVdc(String envInstanceName, String vdc)
+            throws EntityNotFoundException {
 
         Query query = getEntityManager().createQuery(
                 "select p from EnvironmentInstance"
@@ -164,9 +159,9 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
         query.setParameter("vdc", vdc);
         EnvironmentInstance environmentInstance = null;
         try {
-            environmentInstance = (EnvironmentInstance) query.getSingleResult();
+            environmentInstance = (EnvironmentInstance) query.getResultList().get(0);
             getEntityManager().flush();
-        } catch (NoResultException e) {
+        } catch (Exception e) {
             String message = " No EnvironmentInstance found in the database with tiers" + "with blueprintName: "
                     + envInstanceName;
             throw new EntityNotFoundException(EnvironmentInstance.class, message, envInstanceName);
@@ -183,9 +178,9 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
         query.setParameter("vdc", vdc);
         EnvironmentInstance environmentInstance = null;
         try {
-            environmentInstance = (EnvironmentInstance) query.getSingleResult();
+            environmentInstance = (EnvironmentInstance) query.getResultList().get(0);
             getEntityManager().flush();
-        } catch (NoResultException e) {
+        } catch (Exception e) {
             String message = " No EnvironmentInstance found in the database no tiers " + "with blueprintName: "
                     + envInstanceName;
             throw new EntityNotFoundException(EnvironmentInstance.class, message, envInstanceName);

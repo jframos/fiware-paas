@@ -50,7 +50,6 @@ public interface AbstractEnvironmentResource {
      */
 
     @POST
-    @Path("/")
     // @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void insert(@PathParam("org") String org, EnvironmentDto environmentDto) throws APIException;
@@ -70,7 +69,6 @@ public interface AbstractEnvironmentResource {
      */
 
     @GET
-    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<EnvironmentDto> findAll(@PathParam("org") String org, @QueryParam("page") Integer page,
             @QueryParam("pageSize") Integer pageSize, @QueryParam("orderBy") String orderBy,

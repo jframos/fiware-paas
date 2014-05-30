@@ -24,14 +24,13 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
@@ -46,7 +45,6 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
-
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
@@ -62,22 +60,19 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
     private ResourceValidator resourceValidator;
 
     /** The log. */
-    private static Logger log = Logger.getLogger(EnvironmentInstanceResourceValidatorImpl.class);
-
-    
+    private static Logger log = LoggerFactory.getLogger(EnvironmentInstanceResourceValidatorImpl.class);
 
     /**
      * It validate the creation of an environment instance.
      */
     public void validateCreate(EnvironmentInstanceDto environmentInstanceDto,
-        SystemPropertiesProvider systemPropertiesProvider, ClaudiaData claudiaData)
-        throws InvalidEntityException, QuotaExceededException {
+            SystemPropertiesProvider systemPropertiesProvider, ClaudiaData claudiaData) throws InvalidEntityException,
+            QuotaExceededException {
 
         if (environmentInstanceDto.getEnvironmentDto() == null) {
             log.error("The environment to be deployed is null ");
             throw new InvalidEntityException("The environment to be deployed is null ");
         }
-
 
         resourceValidator.validateName(environmentInstanceDto.getBlueprintName());
         resourceValidator.validateDescription(environmentInstanceDto.getDescription());
@@ -94,8 +89,8 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
         List<EnvironmentInstance> envInstances = environmentInstanceDao.findByCriteria(criteria);
 
         if (envInstances.size() != 0) {
-            throw new InvalidEntityException("The environment instance "
-                    + environmentInstanceDto.getBlueprintName() + " already exists");
+            throw new InvalidEntityException("The environment instance " + environmentInstanceDto.getBlueprintName()
+                    + " already exists");
         }
 
         if (environmentInstanceDto.getEnvironmentDto().getTierDtos() == null) {
@@ -131,6 +126,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
 
     /**
      * It validates the tier.
+     * 
      * @param tierDto
      * @throws InvalidEntityException
      */
@@ -161,7 +157,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
      * It validates the quota.
      */
     public void validateQuota(ClaudiaData claudiaData, EnvironmentInstanceDto environmentInstanceDto)
-        throws QuotaExceededException, InvalidEntityException {
+            throws QuotaExceededException, InvalidEntityException {
 
         Map<String, Limits> limits = new HashMap<String, Limits>();
 
@@ -221,7 +217,6 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
         }
     }
 
-
     public void setEnvironmentInstanceDao(EnvironmentInstanceDao environmentInstanceDao) {
         this.environmentInstanceDao = environmentInstanceDao;
     }
@@ -237,10 +232,9 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
     public void setQuotaClient(QuotaClient quotaClient) {
         this.quotaClient = quotaClient;
     }
-    
+
     public void setResourceValidator(ResourceValidator resourceValidator) {
         this.resourceValidator = resourceValidator;
     }
-
 
 }

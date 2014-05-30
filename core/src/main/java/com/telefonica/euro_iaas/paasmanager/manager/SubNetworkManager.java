@@ -69,7 +69,7 @@ public interface SubNetworkManager {
      * 
      * @return the subnetwork.
      */
-    SubNetwork load(String name) throws EntityNotFoundException;
+    SubNetwork load(String name, String vdc, String region) throws EntityNotFoundException;
 
     /**
      * Update a subNetwork.

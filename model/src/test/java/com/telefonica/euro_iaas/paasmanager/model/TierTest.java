@@ -77,7 +77,7 @@ public class TierTest extends TestCase {
 
         Tier tier = new Tier("tier", maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes", null);
 
-        Network net = new Network("net", "vdc");
+        Network net = new Network("net", "vdc", "region");
         tier.addNetwork(net);
 
         for (Network netOut : tier.getNetworks()) {
@@ -94,7 +94,7 @@ public class TierTest extends TestCase {
         Integer initial = new Integer(2);
         Integer maximum = new Integer(1);
 
-        NetworkInstance networkInstance = new NetworkInstance("net", "vdc");
+        NetworkInstance networkInstance = new NetworkInstance("net", "vdc", "region");
         networkInstance.setIdNetwork("ID");
 
         Tier tier = new Tier("tier", maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes", null);
@@ -106,7 +106,7 @@ public class TierTest extends TestCase {
         tier.setRegion("RegionOne");
 
         // When
-        JSONObject jsonObject = JSONObject.fromObject(tierInst.toJson());
+        JSONObject jsonObject = JSONObject.fromObject(tierInst.toJson(null));
 
         // Then
         assertEquals("keypair", JSONObject.fromObject(jsonObject.get("server")).get("key_name"));

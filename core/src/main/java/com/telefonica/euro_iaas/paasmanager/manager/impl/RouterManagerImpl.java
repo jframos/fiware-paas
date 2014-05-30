@@ -26,7 +26,8 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -46,7 +47,7 @@ public class RouterManagerImpl implements RouterManager {
 
     private RouterDao routerDao = null;
     private NetworkClient networkClient = null;
-    private static Logger log = Logger.getLogger(RouterManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(RouterManagerImpl.class);
 
     /**
      * It adds a network to the router.

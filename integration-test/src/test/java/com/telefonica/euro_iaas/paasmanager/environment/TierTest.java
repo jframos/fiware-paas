@@ -260,7 +260,7 @@ public class TierTest {
         tierbk.setFloatingip("floatingip");
         tierbk.setPayload("");
         tierbk.setKeypair("keypair");
-        tierbk.addNetwork(new Network("dddd", "dd"));
+        tierbk.addNetwork(new Network("dddd", "dd", "region"));
         environmentBk.addTier(tierbk);
 
         environmentResource.insert(org, vdc, environmentBk.toDto());
@@ -272,7 +272,7 @@ public class TierTest {
         tierbk2.setFloatingip("floatingip");
         tierbk2.setPayload("");
         tierbk2.setKeypair("keypair");
-        tierbk2.addNetwork(new Network("aaaa", "dd"));
+        tierbk2.addNetwork(new Network("aaaa", "dd", "region"));
 
         tierResource.update(org, vdc, environmentBk.getName(), tierbk.getName(), tierbk2.toDto());
         TierDto tierOut = tierResource.load(vdc, environmentBk.getName(), tierbk.getName());
@@ -382,7 +382,7 @@ public class TierTest {
         tierbk.setPayload("");
         tierbk.setKeypair("keypair");
 
-        Network net = new Network("network3", vdc);
+        Network net = new Network("network3", vdc, "region");
         tierbk.addNetwork(net);
 
         tierResource.insert(org, vdc, environmentBk.getName(), tierbk.toDto());

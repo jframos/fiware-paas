@@ -30,7 +30,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -71,7 +72,7 @@ public class TierManagerImpl implements TierManager {
 
     private SystemPropertiesProvider systemPropertiesProvider;
 
-    private static Logger log = Logger.getLogger(TierManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(TierManagerImpl.class);
 
     /**
      * It add teh security groups related the products.
@@ -104,7 +105,7 @@ public class TierManagerImpl implements TierManager {
         log.debug("Create tier name " + tier.getName() + " image " + tier.getImage() + " flavour " + tier.getFlavour()
                 + " initial_number_instances " + tier.getInitialNumberInstances() + " maximum_number_instances "
                 + tier.getMaximumNumberInstances() + " minimum_number_instances " + tier.getMinimumNumberInstances()
-                + " floatingip " + tier.getFloatingip() + " keypair " + tier.getKeypair() + " icono " + tier.getIcono()
+                + " floatingIp " + tier.getFloatingip() + " keyPair " + tier.getKeypair() + " icon " + tier.getIcono()
                 + " product releases " + tier.getProductReleases() + "  vdc " + claudiaData.getVdc() + " networks "
                 + tier.getNetworks());
 
@@ -209,9 +210,9 @@ public class TierManagerImpl implements TierManager {
         }
 
         for (Network network : networkToBeDeployed) {
-            if (networkManager.exists(network.getNetworkName(), network.getVdc())) {
+            if (networkManager.exists(network.getNetworkName(), network.getVdc(), tier.getRegion())) {
                 log.debug("the network " + network.getNetworkName() + " already exists");
-                network = networkManager.load(network.getNetworkName(), network.getVdc());
+                network = networkManager.load(network.getNetworkName(), network.getVdc(), tier.getRegion());
 
             } else {
                 network = networkManager.create(network);
@@ -347,13 +348,13 @@ public class TierManagerImpl implements TierManager {
 
         productRelease = productReleaseManager.loadWithMetadata(productRelease.getProduct() + "-"
                 + productRelease.getVersion());
-        getRules (productRelease, rules, "open_ports");
-        getRules (productRelease, rules, "open_ports_udp");
-        
+        getRules(productRelease, rules, "open_ports");
+        getRules(productRelease, rules, "open_ports_udp");
+
     }
-    
-    private void getRules (ProductRelease productRelease, List<Rule> rules, String pathrules) {
-    	Metadata openPortsAttribute = productRelease.getMetadata(pathrules);
+
+    private void getRules(ProductRelease productRelease, List<Rule> rules, String pathrules) {
+        Metadata openPortsAttribute = productRelease.getMetadata(pathrules);
         if (openPortsAttribute != null) {
             log.debug("Adding product rule " + openPortsAttribute.getValue());
             StringTokenizer st = new StringTokenizer(openPortsAttribute.getValue());
@@ -482,7 +483,7 @@ public class TierManagerImpl implements TierManager {
                 throw new InvalidEntityException(errorMessage);
             }
 
-            if (productReleases != null && productReleases.size() != 0) {
+            if (productReleases.size() != 0) {
                 for (ProductRelease product : productReleases) {
 
                     try {
@@ -511,7 +512,7 @@ public class TierManagerImpl implements TierManager {
         for (Network net : networskout) {
 
             try {
-                net = networkManager.load(net.getNetworkName(), net.getVdc());
+                net = networkManager.load(net.getNetworkName(), net.getVdc(), net.getRegion());
                 log.debug("Adding network " + net.getNetworkName() + "-" + " to tier " + tier.getName());
                 tier.addNetwork(net);
                 update(tier);
@@ -580,8 +581,8 @@ public class TierManagerImpl implements TierManager {
 
     }
 
-    public void updateTier(ClaudiaData data, Tier tierold, Tier tiernew) throws InvalidEntityException, EntityNotFoundException,
-            AlreadyExistsEntityException {
+    public void updateTier(ClaudiaData data, Tier tierold, Tier tiernew) throws InvalidEntityException,
+            EntityNotFoundException, AlreadyExistsEntityException {
 
         tierold.setFlavour(tiernew.getFlavour());
         tierold.setFloatingip(tiernew.getFloatingip());
@@ -610,16 +611,16 @@ public class TierManagerImpl implements TierManager {
             try {
                 net = networkManager.create(net);
             } catch (AlreadyExistsEntityException e) {
-                net = networkManager.load(net.getNetworkName(), net.getVdc());
+                net = networkManager.load(net.getNetworkName(), net.getVdc(), net.getRegion());
             }
             tierold.addNetwork(net);
             update(tierold);
         }
 
         for (Network net : nets) {
-        	if (isAvailableToBeDeleted (net)) {
+            if (isAvailableToBeDeleted(net)) {
                 networkManager.delete(net);
-        	}
+            }
         }
 
         tierold.setProductReleases(null);
@@ -630,8 +631,8 @@ public class TierManagerImpl implements TierManager {
 
         for (ProductRelease productRelease : tiernew.getProductReleases()) {
             try {
-                productRelease = productReleaseManager.load(productRelease.getProduct() + "-"
-                        + productRelease.getVersion(), data);
+                productRelease = productReleaseManager.load(
+                        productRelease.getProduct() + "-" + productRelease.getVersion(), data);
             } catch (EntityNotFoundException e) {
                 log.error("The new software " + productRelease.getProduct() + "-" + productRelease.getVersion()
                         + " is not found");
@@ -642,6 +643,5 @@ public class TierManagerImpl implements TierManager {
         }
 
     }
-
 
 }

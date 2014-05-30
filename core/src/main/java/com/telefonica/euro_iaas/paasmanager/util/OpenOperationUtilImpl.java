@@ -38,7 +38,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -53,9 +52,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
-
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -63,9 +61,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
-import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
-import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
-import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
 /**
@@ -77,7 +72,7 @@ public class OpenOperationUtilImpl implements OpenOperationUtil {
      * The log.
      */
 
-    private static Logger log = Logger.getLogger(OpenOperationUtilImpl.class);
+    private static Logger log = LoggerFactory.getLogger(OpenOperationUtilImpl.class);
     /**
      * the properties configuration.
      */
@@ -132,8 +127,6 @@ public class OpenOperationUtilImpl implements OpenOperationUtil {
         this.connectionManager = connectionManager;
     }
 
-
-
     /**
      * Returns an InputStream as String.
      * 
@@ -163,10 +156,6 @@ public class OpenOperationUtilImpl implements OpenOperationUtil {
         }
         return sb.toString();
     }
-   
-    
-    
-  
 
     /**
      * Checks if metadatas (authToken and tenant) were initialized.
@@ -311,7 +300,6 @@ public class OpenOperationUtilImpl implements OpenOperationUtil {
         return user2;
     }
 
-
     /**
      * Returns a request for a NOVA DELETE petition.
      * 
@@ -330,6 +318,7 @@ public class OpenOperationUtilImpl implements OpenOperationUtil {
         }
 
         String novaUrl = openStackRegion.getNovaEndPoint(region, token);
+        log.debug("novaUrl" + novaUrl);
         request = new HttpDelete(novaUrl + vdc + "/" + resource);
 
         // request.setHeader(OpenStackConstants.CONTENT_TYPE,
@@ -555,8 +544,6 @@ public class OpenOperationUtilImpl implements OpenOperationUtil {
         return request;
     }
 
-   
-
     /**
      * Method to execute a request and get the response from NOVA.
      * 
@@ -598,8 +585,9 @@ public class OpenOperationUtilImpl implements OpenOperationUtil {
                     newHeaders = result.split("\n");
                 } else {
                     log.debug(" HttpResponse " + response.getStatusLine().getStatusCode());
-                    if (result.indexOf("badRequest") != -1) {
-                        String error = result.substring(result.indexOf("<message>") + 9, result.indexOf("</message>"));
+                    if (result.indexOf("badRequest") != -1 || result.indexOf("itemNotFound") != -1) {
+                        String error = result.substring(result.indexOf("message") + "message".length() + 3,
+                                result.indexOf("code") - 3);
                         log.debug("Error in the request " + error);
                         throw new OpenStackException(error);
                     }
@@ -681,11 +669,6 @@ public class OpenOperationUtilImpl implements OpenOperationUtil {
         return nodeList;
     }
 
-
-  
-
-
-
     /**
      * Return a string with absolute limits values by tenantId.
      * 
@@ -726,10 +709,9 @@ public class OpenOperationUtilImpl implements OpenOperationUtil {
         this.openStackRegion = openStackRegion;
     }
 
-	public HttpUriRequest createJoinQuantumPostRequestRequest(
-			String resource, String payload,
-			String applicationJson, String token) throws OpenStackException {
-		log.debug("createJoinQuantumPostRequestRequest " + resource);
+    public HttpUriRequest createJoinQuantumPostRequestRequest(String resource, String payload, String applicationJson,
+            String token) throws OpenStackException {
+        log.debug("createJoinQuantumPostRequestRequest " + resource);
         HttpPost request;
 
         log.info("Payload " + payload);
@@ -752,7 +734,6 @@ public class OpenOperationUtilImpl implements OpenOperationUtil {
         log.debug("user.getToken() " + token);
 
         return request;
-	}
+    }
 
-   
 }

@@ -28,6 +28,7 @@ package com.telefonica.euro_iaas.paasmanager.claudia;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -53,6 +54,9 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
+import com.telefonica.euro_iaas.paasmanager.util.FileUtils;
+import com.telefonica.euro_iaas.paasmanager.util.FileUtilsImpl;
+import com.telefonica.euro_iaas.paasmanager.util.OpenStackRegion;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackUtil;
 
 
@@ -64,6 +68,8 @@ public class ClaudiaClientOpenStackImplTest {
     private Tier tier;
     private ClaudiaData claudiaData;
     private OpenStackUtil openStackUtil;
+    private FileUtilsImpl fileUtils;
+    private OpenStackRegion openStackRegion;
     private NetworkInstanceManager networkInstanceManager;
     private ClaudiaClientOpenStackImpl claudiaClientOpenStack;
 
@@ -113,8 +119,12 @@ public class ClaudiaClientOpenStackImplTest {
 
         openStackUtil = mock(OpenStackUtil.class);
         networkInstanceManager = mock (NetworkInstanceManager.class);
+        openStackRegion = mock (OpenStackRegion.class);
+        fileUtils = new FileUtilsImpl();
         claudiaClientOpenStack.setNetworkInstanceManager(networkInstanceManager);
         claudiaClientOpenStack.setOpenStackUtil(openStackUtil);
+        claudiaClientOpenStack.setFileUtils(fileUtils);
+        claudiaClientOpenStack.setOpenStackRegion(openStackRegion);
 
 
         when(openStackUtil.createServer(any(String.class), anyString(), anyString(), anyString())).thenReturn(
@@ -131,6 +141,7 @@ public class ClaudiaClientOpenStackImplTest {
         when(openStackUtil.getNetworks(anyString(), anyString(), anyString())).thenReturn(expectedNetworks);
     }
 
+
     @Test
     public void testDeployVMEssex() throws Exception {
 
@@ -138,6 +149,11 @@ public class ClaudiaClientOpenStackImplTest {
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
         VM vm = new VM();
+        vm.setHostname("hotname");
+        tierInstance.setVM(vm);
+        
+        when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
+
 
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         verify(openStackUtil).createServer(any(String.class), anyString(), anyString(), anyString());
@@ -145,15 +161,36 @@ public class ClaudiaClientOpenStackImplTest {
     }
     
     @Test
+    public void testUserData() throws Exception {
+
+        
+        TierInstance tierInstance = new TierInstance();
+        tierInstance.setTier(tier);
+        VM vm = new VM();
+        vm.setHostname("hotname");
+        tierInstance.setVM(vm);
+        
+        when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
+
+
+        String result = claudiaClientOpenStack.getUserData(claudiaData, tierInstance);
+        assertNotNull (result);
+
+    }
+    
+    @Test
     public void testDeployVMEGrizzlyNetwork() throws Exception {
 
         TierInstance tierInstance = new TierInstance();
-        Network network = new Network("NETWORK", "VDC");
+        Network network = new Network("NETWORK", "VDC", "REGION");
         tier.addNetwork(network);
         tierInstance.setTier(tier);
         tierInstance.addNetworkInstance(network.toNetworkInstance());
         
         VM vm = new VM();
+        vm.setHostname("hotname");
+        tierInstance.setVM(vm);
+        when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         verify(openStackUtil).createServer(any(String.class), any(String.class), any(String.class), any(String.class));
 
@@ -165,7 +202,7 @@ public class ClaudiaClientOpenStackImplTest {
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
         
-        Network network = new Network("NETWORK", "VDC");
+        Network network = new Network("NETWORK", "VDC", "REGION");
         NetworkInstance netInst = network.toNetworkInstance();
         netInst.setShared(false);
         netInst.setTenantId(claudiaData.getVdc());
@@ -174,9 +211,11 @@ public class ClaudiaClientOpenStackImplTest {
         networkInstances.add(netInst);
 
         VM vm = new VM();
-
+        vm.setHostname("hotname");
+        tierInstance.setVM(vm);
+        when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
         when(networkInstanceManager.listNetworks(any(ClaudiaData.class), any(String.class))).thenReturn(networkInstances);
-        when(networkInstanceManager.load(any(String.class),any(String.class))).thenReturn(netInst);
+        when(networkInstanceManager.load(any(String.class),any(String.class),any(String.class))).thenReturn(netInst);
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         
         verify(openStackUtil).createServer(any(String.class), any(String.class), any(String.class), any(String.class));
@@ -190,16 +229,19 @@ public class ClaudiaClientOpenStackImplTest {
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
         
-        Network network = new Network("NETWORK", "VDC");
+        Network network = new Network("NETWORK", "VDC", "REGION");
         NetworkInstance netInst = network.toNetworkInstance();
         netInst.setShared(true);
         List<NetworkInstance> networkInstances = new ArrayList<NetworkInstance> ();
         networkInstances.add(netInst);
 
         VM vm = new VM();
+        vm.setHostname("hotname");
+        tierInstance.setVM(vm);
         NetworkInstance netInst2 = network.toNetworkInstance();
         netInst2.setShared(false);
         netInst2.setDefaultNet(true);
+        when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
         when(networkInstanceManager.listNetworks(any(ClaudiaData.class), any(String.class))).thenReturn(networkInstances);
         when(networkInstanceManager.create(any(ClaudiaData.class), any(NetworkInstance.class),any(String.class))).thenReturn(netInst2);
         
