@@ -254,7 +254,7 @@ ALTER TABLE environment DROP COLUMN environmenttype_id;
 --changeset jesuspg:1-61
 ALTER TABLE installableinstance ALTER COLUMN date TYPE TIMESTAMP WITHOUT TIME ZONE;
 
---chavmngeset jesuspg:1-62
+--changeset jesuspg:1-62
 ALTER TABLE task ALTER COLUMN endtime TYPE TIMESTAMP WITHOUT TIME ZONE;
 
 -- Change that corrresponds to bug/CLAUDIA-3652 Managing user attributes -->
