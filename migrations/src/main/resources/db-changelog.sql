@@ -283,3 +283,8 @@ ALTER TABLE subnetwork ADD COLUMN region VARCHAR(255);
 ALTER TABLE subnetwork ADD COLUMN vdc VARCHAR(255);
 ALTER TABLE subnetworkinstance ADD COLUMN region VARCHAR(255);
 ALTER TABLE subnetworkinstance ADD COLUMN vdc VARCHAR(255);
+
+-- changeset henar:5-3 --
+ALTER TABLE tierinstance ADD COLUMN floatingip VARCHAR(128);
+
+
