@@ -305,6 +305,31 @@ public class OpenStackUtilImplTest {
         // then
         assertNotNull(response);
     }
+    
+    @Test
+    public void shouldAllocateFloatingIp() throws OpenStackException, IOException {
+        // given
+        when(openOperationUtil.executeNovaRequest(any(HttpUriRequest.class))).thenReturn("ok");
+
+        String response = openStackUtil.allocateFloatingIP("payload", "region", "token", "vdc");
+
+        // then
+        assertNotNull(response);
+    }
+    
+    @Test
+    public void shouldDisallocateFloatingIp() throws OpenStackException, IOException {
+        // given
+    	String ipsXML = " <floating_ips> <floating_ip instance_id=\"None\" ip=\"130.206.81.152\" fixed_ip=\"None\" "+
+    	" id=\"9c215e37-763a-43d9-b3e2-0e1339d9e238\" pool=\"ext-net\" />"+
+    	" <floating_ip instance_id=\"4b4aa9a8-67e1-4880-86ec-d4b05b45b3db\" ip=\"130.206.81.148\" fixed_ip=\"11.0.0.6\" "+
+    	 " id=\"b0795d3d-d0b6-4568-8328-9961ac1a14c0\" pool=\"ext-net\" />  </floating_ips>";
+        when(openOperationUtil.executeNovaRequest(any(HttpUriRequest.class))).thenReturn(ipsXML);
+
+
+        openStackUtil.disAllocateFloatingIP( "region", "token", "vdc", "130.206.81.152");
+
+    }
 
     /**
      * It adds a network interface to a public router.

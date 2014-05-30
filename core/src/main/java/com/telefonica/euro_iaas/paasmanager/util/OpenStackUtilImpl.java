@@ -241,6 +241,54 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
         return response;
     }
+    
+   public String getFloatingIPs(String region, String token, String vdc, String dd) throws OpenStackException {
+        String response = null;
+
+        try {
+            HttpUriRequest request = openOperationUtil.createNovaGetRequest("/" + RESOURCE_FLOATINGIP, 
+                    APPLICATION_JSON, region, token, vdc);
+
+            response = openOperationUtil.executeNovaRequest(request);
+            // deletion.setMessage(response);
+
+        } catch (OpenStackException e) {
+            String errorMessage = "Error Getting Floating IPs " + " from tenant " + tenant + ": " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        } catch (Exception e) {
+            String errorMessage = "Error Getting Floating IPs " + " from tenant " + tenant + ": " + " from OpenStack: "
+                    + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        }
+
+        return response;
+    }
+    
+    public void disAllocateFloatingIP(String region, String token, String vdc, String floatingIp) throws OpenStackException {
+    	log.debug ("disAllocateFloatingIP " +floatingIp );
+    	
+    	String floatingIpsXML = this.getFloatingIPs(region, token, vdc);
+        String idFloatingIp = this.getFloatingIpId(floatingIpsXML, floatingIp);
+
+        try {
+            HttpUriRequest request = openOperationUtil.createNovaDeleteRequest("/" + RESOURCE_FLOATINGIP+"/"+idFloatingIp, 
+                     region, token, vdc);
+
+            openOperationUtil.executeNovaRequest(request);
+
+        } catch (OpenStackException e) {
+            String errorMessage = "Error disallocating the ip with id" + " from tenant " + tenant + ": " + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        } catch (Exception e) {
+            String errorMessage = "Error Getting Floating IPs " + " from tenant " + tenant + ": " + " from OpenStack: "
+                    + e;
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        }
+    }
 
     /**
      * Assign certain floatingIP to a serverId.
@@ -849,6 +897,18 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             }
         }
         return false;
+    }
+    
+    private String getFloatingIpId(String xmlDoc, String ip) throws OpenStackException {
+
+        NodeList floatingIPs = findNodeList(xmlDoc, "floating_ip");
+        for (int i = 0; i < floatingIPs.getLength(); i++) {
+            Node floatingIPNode = floatingIPs.item(i);
+            if (findAttributeValueInNode(floatingIPNode, "ip").equals(ip)) {
+                return findAttributeValueInNode(floatingIPNode, "id"); 
+            }
+        }
+        return null;
     }
 
     public String listServers(String region, String token, String vdc) throws OpenStackException {

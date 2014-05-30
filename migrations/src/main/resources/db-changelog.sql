@@ -254,7 +254,7 @@ ALTER TABLE environment DROP COLUMN environmenttype_id;
 --changeset jesuspg:1-61
 ALTER TABLE installableinstance ALTER COLUMN date TYPE TIMESTAMP WITHOUT TIME ZONE;
 
---changeset jesuspg:1-62
+--chavmngeset jesuspg:1-62
 ALTER TABLE task ALTER COLUMN endtime TYPE TIMESTAMP WITHOUT TIME ZONE;
 
 -- Change that corrresponds to bug/CLAUDIA-3652 Managing user attributes -->
@@ -283,3 +283,8 @@ ALTER TABLE subnetwork ADD COLUMN region VARCHAR(255);
 ALTER TABLE subnetwork ADD COLUMN vdc VARCHAR(255);
 ALTER TABLE subnetworkinstance ADD COLUMN region VARCHAR(255);
 ALTER TABLE subnetworkinstance ADD COLUMN vdc VARCHAR(255);
+
+-- changeset henar:5-3 --
+ALTER TABLE tierinstance ADD COLUMN floatingip VARCHAR(128);
+
+

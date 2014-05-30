@@ -266,7 +266,9 @@ public interface OpenStackUtil {
         throws OpenStackException;
 
 	String joinNetworks(NetworkInstance networkInstance,
-			NetworkInstance networkInstance2, String token) throws OpenStackException;;
+			NetworkInstance networkInstance2, String token) throws OpenStackException;
+	
+	void disAllocateFloatingIP(String region, String token, String vdc, String floatingIp) throws OpenStackException;
 
 
 }
