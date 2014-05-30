@@ -31,7 +31,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -73,7 +74,7 @@ public class TierResourceImpl implements TierResource {
 
     private ProductReleaseDao productReleaseDao;
 
-    private static Logger log = Logger.getLogger(TierResourceImpl.class);
+    private static Logger log = LoggerFactory.getLogger(TierResourceImpl.class);
 
     public void delete(String org, String vdc, String envName, String tierName) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);

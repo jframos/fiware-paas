@@ -24,33 +24,26 @@
 
 package com.telefonica.euro_iaas.paasmanager.util;
 
-
 import java.io.IOException;
-
 import java.io.StringReader;
-
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
-
 
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.log4j.Logger;
-
-
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
 
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
@@ -67,8 +60,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * The log.
      */
 
-    private static Logger log = Logger.getLogger(OpenStackUtilImpl.class);
-   
+    private static Logger log = LoggerFactory.getLogger(OpenStackUtilImpl.class);
+
     /**
      * tenant to be used.
      */
@@ -77,9 +70,9 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     private HttpClientConnectionManager connectionManager;
 
     private OpenStackRegion openStackRegion;
-    
+
     private OpenOperationUtil openOperationUtil;
-    
+
     private OpenStackConfigUtil openStackConfigUtil;
 
     /**
@@ -132,8 +125,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     }
 
-   
-    
     /**
      * It adds an interface to the router.
      */
@@ -173,8 +164,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         return response;
 
     }
-    
-   
+
     /**
      * It add a network interface to the router.
      */
@@ -222,8 +212,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         String response = null;
 
         try {
-            HttpUriRequest request = openOperationUtil.createNovaPostRequest("/" + RESOURCE_FLOATINGIP, payload, APPLICATION_XML,
-                    APPLICATION_JSON, region, token, vdc);
+            HttpUriRequest request = openOperationUtil.createNovaPostRequest("/" + RESOURCE_FLOATINGIP, payload,
+                    APPLICATION_XML, APPLICATION_JSON, region, token, vdc);
 
             response = openOperationUtil.executeNovaRequest(request);
             // deletion.setMessage(response);
@@ -312,8 +302,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // TaskResult deletion = new TaskResult();
         String payload = buildPayloadFloatingIP(floatingIP);
         try {
-            HttpUriRequest request = openOperationUtil.createNovaPostRequest(RESOURCE_SERVERS + "/" + serverId + "/" + RESOURCE_ACTION,
-                    payload, APPLICATION_XML, APPLICATION_JSON, region, token, vdc);
+            HttpUriRequest request = openOperationUtil.createNovaPostRequest(RESOURCE_SERVERS + "/" + serverId + "/"
+                    + RESOURCE_ACTION, payload, APPLICATION_XML, APPLICATION_JSON, region, token, vdc);
 
             response = openOperationUtil.executeNovaRequest(request);
             // deletion.setMessage(response);
@@ -358,10 +348,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         }
     }
 
-   
-
-
-
     public String createNetwork(String payload, String region, String token, String vdc) throws OpenStackException {
 
         // throw new UnsupportedOperationException("Not supported yet.");
@@ -376,8 +362,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
             log.debug("Payload " + payload);
 
-            HttpUriRequest request = openOperationUtil.createQuantumPostRequest(RESOURCE_NETWORKS, payload, APPLICATION_JSON, region,
-                    token, vdc);
+            HttpUriRequest request = openOperationUtil.createQuantumPostRequest(RESOURCE_NETWORKS, payload,
+                    APPLICATION_JSON, region, token, vdc);
             response = openOperationUtil.executeNovaRequest(request);
 
         } catch (OpenStackException e) {
@@ -393,8 +379,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         return response;
     }
 
-
-  
     /*
      * (non-Javadoc)
      * @see com.telefonica.claudia.smi.OpenStackClient#createRouter(java.lang.String,
@@ -417,8 +401,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             String payload = router.toJson();
             log.debug(payload);
 
-            HttpUriRequest request = openOperationUtil.createQuantumPostRequest(RESOURCE_ROUTERS, payload, APPLICATION_JSON, region,
-                    token, vdc);
+            HttpUriRequest request = openOperationUtil.createQuantumPostRequest(RESOURCE_ROUTERS, payload,
+                    APPLICATION_JSON, region, token, vdc);
             response = openOperationUtil.executeNovaRequest(request);
 
         } catch (OpenStackException e) {
@@ -447,25 +431,25 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         log.debug("create server " + token + " vdc " + vdc);
         HttpUriRequest request;
         String response = null;
-     //   Server server = null;
+        // Server server = null;
         String getResponse = "";
-        String id ="";
+        String id = "";
 
         try {
-            request = openOperationUtil.createNovaPostRequest(RESOURCE_SERVERS, payload, APPLICATION_JSON, APPLICATION_JSON, region,
-                    token, vdc);
+            request = openOperationUtil.createNovaPostRequest(RESOURCE_SERVERS, payload, APPLICATION_JSON,
+                    APPLICATION_JSON, region, token, vdc);
         } catch (OpenStackException ex) {
             throw new OpenStackException(ex.getMessage());
         }
 
         try {
             response = openOperationUtil.executeNovaRequest(request);
-            log.debug (response);
+            log.debug(response);
             JSONObject serverJson = new JSONObject(response);
             id = serverJson.getJSONObject("server").getString("id");
             // String id = response.split(",")[1];
-            
-         //   server = JAXBUtils.unmarshall(response, false, Server.class);
+
+            // server = JAXBUtils.unmarshall(response, false, Server.class);
 
             // Mecanismo de sondeo.
             while (!(getResponse.contains("ACTIVE") || getResponse.contains("ERROR"))) {
@@ -479,20 +463,17 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         }
 
         if (getResponse.contains("ERROR")) {
-            log.debug (getResponse);
+            log.debug(getResponse);
             throw new OpenStackException("Error in parse response after deploy the VM " + id + " " + getResponse);
 
             // parse error
-         /*   try {
-                JSONObject networkString = new JSONObject(response);
-                String id = networkString.getJSONObject("network").getString("id");
-                log.debug("Network id " + id);
-                //server = JAXBUtils.unmarshall(getResponse, false, Server.class);
-            } catch (IOException e) {
-                throw new OpenStackException("Error in parse response after deploy the VM " + id);
-            }
-            throw new OpenStackException("Fault (" + server.getFault().getCode() + "):"
-                    + server.getFault().getMessage());*/
+            /*
+             * try { JSONObject networkString = new JSONObject(response); String id =
+             * networkString.getJSONObject("network").getString("id"); log.debug("Network id " + id); //server =
+             * JAXBUtils.unmarshall(getResponse, false, Server.class); } catch (IOException e) { throw new
+             * OpenStackException("Error in parse response after deploy the VM " + id); } throw new
+             * OpenStackException("Fault (" + server.getFault().getCode() + "):" + server.getFault().getMessage());
+             */
 
         }
         return id;
@@ -517,8 +498,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             String payload = subNet.toJson();
             log.info("Payload " + payload);
 
-            HttpUriRequest request = openOperationUtil.createQuantumPostRequest(RESOURCE_SUBNETS, payload, APPLICATION_JSON, region,
-                    token, vdc);
+            HttpUriRequest request = openOperationUtil.createQuantumPostRequest(RESOURCE_SUBNETS, payload,
+                    APPLICATION_JSON, region, token, vdc);
             response = openOperationUtil.executeNovaRequest(request);
 
         } catch (OpenStackException e) {
@@ -542,7 +523,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // -H "Accept: application/json"
         // -X DELETE "http://10.95.171.115:9696/v2/networks/5867b6bd-ba18-4ae3-a34f-dd0f2e189eb6"
 
-        HttpUriRequest request = openOperationUtil.createQuantumDeleteRequest(RESOURCE_NETWORKS + "/" + networkId, region, vdc, token);
+        HttpUriRequest request = openOperationUtil.createQuantumDeleteRequest(RESOURCE_NETWORKS + "/" + networkId,
+                region, vdc, token);
 
         String response = null;
 
@@ -567,7 +549,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757...'
         // -H "Accept: application/json"
         // -X DELETE "http://10.95.171.115:9696/v2/networks/5867b6bd-ba18-4ae3-a34f-dd0f2e189eb6"
-        HttpUriRequest request = openOperationUtil.createQuantumDeleteRequest(RESOURCE_ROUTERS + "/" + routerId, region, token, vdc);
+        HttpUriRequest request = openOperationUtil.createQuantumDeleteRequest(RESOURCE_ROUTERS + "/" + routerId,
+                region, token, vdc);
 
         String response = null;
 
@@ -605,7 +588,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         String response = null;
 
         try {
-            HttpUriRequest request = openOperationUtil.createNovaDeleteRequest(RESOURCE_SERVERS + "/" + serverId, region, token, vdc);
+            HttpUriRequest request = openOperationUtil.createNovaDeleteRequest(RESOURCE_SERVERS + "/" + serverId,
+                    region, token, vdc);
 
             response = openOperationUtil.executeNovaRequest(request);
 
@@ -626,7 +610,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         String response = null;
 
         try {
-            HttpUriRequest request = openOperationUtil.createQuantumDeleteRequest(RESOURCE_SUBNETS + "/" + idSubNet, region, vdc, token);
+            HttpUriRequest request = openOperationUtil.createQuantumDeleteRequest(RESOURCE_SUBNETS + "/" + idSubNet,
+                    region, vdc, token);
 
             response = openOperationUtil.executeNovaRequest(request);
 
@@ -641,8 +626,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         }
 
     }
-
-    
 
     protected CloseableHttpClient getHttpClient() {
         return HttpClients.custom().setConnectionManager(connectionManager).build();
@@ -696,16 +679,15 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     public String getFloatingIP(PaasManagerUser user, String region) throws OpenStackException {
         String floatingIP = null;
-        
+
         String getFloatingIPsResponse = getFloatingIPs(region, user.getToken(), user.getTenantId());
         String floatingIpPool = openStackConfigUtil.getPublicFloatingPool(user, region);
 
         if (isAnyFloatingIPFreeToBeAssigned(getFloatingIPsResponse)) {
             floatingIP = getFloatingIPFree(getFloatingIPsResponse);
         } else {
-            floatingIP = allocateFloatingIP(
-                    buildAllocateFloatingIPPayload(floatingIpPool),
-                    region, user.getToken(), user.getTenantId());
+            floatingIP = allocateFloatingIP(buildAllocateFloatingIPPayload(floatingIpPool), region, user.getToken(),
+                    user.getTenantId());
             getFloatingIPsResponse = getFloatingIPs(region, user.getToken(), user.getTenantId());
             floatingIP = getFloatingIPFree(getFloatingIPsResponse);
         }
@@ -742,8 +724,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         String response = null;
 
         try {
-            HttpUriRequest request = openOperationUtil.createNovaGetRequest("/" + RESOURCE_FLOATINGIP, APPLICATION_XML, region, token,
-                    vdc);
+            HttpUriRequest request = openOperationUtil.createNovaGetRequest("/" + RESOURCE_FLOATINGIP, APPLICATION_XML,
+                    region, token, vdc);
 
             response = openOperationUtil.executeNovaRequest(request);
 
@@ -769,8 +751,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
         // -H "Accept: application/xml"
         // -X GET "http://10.95.171.115:9696/v2/networks/5867b6bd-ba18-4ae3-a34f-dd0f2e189eb6"
-        HttpUriRequest request = openOperationUtil.createQuantumGetRequest(RESOURCE_NETWORKS + "/" + networkId, APPLICATION_XML, region,
-                token, vdc);
+        HttpUriRequest request = openOperationUtil.createQuantumGetRequest(RESOURCE_NETWORKS + "/" + networkId,
+                APPLICATION_XML, region, token, vdc);
 
         String response = null;
 
@@ -799,8 +781,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
         // -H "Accept: application/xml"
         // -X GET "http://10.95.171.115:9696/v2/networks/5867b6bd-ba18-4ae3-a34f-dd0f2e189eb6"
-        HttpUriRequest request = openOperationUtil.createQuantumGetRequest(RESOURCE_SUBNETS + "/" + subNetworkId, APPLICATION_XML,
-                region, token, vdc);
+        HttpUriRequest request = openOperationUtil.createQuantumGetRequest(RESOURCE_SUBNETS + "/" + subNetworkId,
+                APPLICATION_XML, region, token, vdc);
 
         String response;
 
@@ -834,7 +816,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // curl -v -H 'X-Auth-Token: a92287ea7c2243d78a7180ef3f7a5757'
         // -H "Content-Type: application/xml" -H "Accept: application/json"
         // -X GET "http://10.95.171.115:9696/v2/networks"
-        HttpUriRequest request = openOperationUtil.createQuantumGetRequest(RESOURCE_NETWORKS, APPLICATION_XML, region, token, vdc);
+        HttpUriRequest request = openOperationUtil.createQuantumGetRequest(RESOURCE_NETWORKS, APPLICATION_XML, region,
+                token, vdc);
 
         String response = null;
 
@@ -863,8 +846,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // -X GET
         // "http://10.95.171.115:8774/v2/30c60771b6d144d2861b21e442f0bef9/servers/88y6ga216ad4s33ra6asd5fgrg7"
 
-        HttpUriRequest request = openOperationUtil.createNovaGetRequest(RESOURCE_SERVERS + "/" + serverId, APPLICATION_XML, region,
-                token, vdc);
+        HttpUriRequest request = openOperationUtil.createNovaGetRequest(RESOURCE_SERVERS + "/" + serverId,
+                APPLICATION_XML, region, token, vdc);
 
         String response = null;
 
@@ -919,7 +902,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // -X GET
         // "http://10.95.171.115:8774/v2/30c60771b6d144d2861b21e442f0bef9/servers"
 
-        HttpUriRequest request = openOperationUtil.createNovaGetRequest(RESOURCE_SERVERS, APPLICATION_JSON, region, token, vdc);
+        HttpUriRequest request = openOperationUtil.createNovaGetRequest(RESOURCE_SERVERS, APPLICATION_JSON, region,
+                token, vdc);
 
         String response = null;
         // TaskResult server = new TaskResult();
@@ -956,8 +940,9 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             String payload = "{\"subnet_id\": \"" + net + "\"}";
             log.debug(payload);
 
-            HttpUriRequest request = openOperationUtil.createQuantumPutRequest(RESOURCE_ROUTERS + "/" + router.getIdRouter() + "/"
-                    + RESOURCE_REMOVE_INTERFACE, payload, APPLICATION_JSON, region, token, vdc);
+            HttpUriRequest request = openOperationUtil.createQuantumPutRequest(
+                    RESOURCE_ROUTERS + "/" + router.getIdRouter() + "/" + RESOURCE_REMOVE_INTERFACE, payload,
+                    APPLICATION_JSON, region, token, vdc);
             response = openOperationUtil.executeNovaRequest(request);
 
         } catch (OpenStackException e) {
@@ -990,14 +975,13 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         log.debug("token " + user2.getToken());
         log.debug("user name " + user2.getUserName());
 
-        HttpUriRequest request = openOperationUtil.createNovaGetRequest("limits", APPLICATION_JSON, region, user.getToken(),
-                user.getTenantId());
+        HttpUriRequest request = openOperationUtil.createNovaGetRequest("limits", APPLICATION_JSON, region,
+                user.getToken(), user.getTenantId());
 
         String response = openOperationUtil.executeNovaRequest(request);
 
         return response;
     }
-
 
     public String listNetworks(PaasManagerUser user, String region) throws OpenStackException {
         log.debug("List networks from user " + user.getUserName());
@@ -1008,8 +992,8 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         log.debug("token " + user2.getToken());
         log.debug("user name " + user2.getUserName());
 
-        HttpUriRequest request = openOperationUtil.createQuantumGetRequest(RESOURCE_NETWORKS, APPLICATION_JSON, region, user2.getToken(),
-                user2.getUserName());
+        HttpUriRequest request = openOperationUtil.createQuantumGetRequest(RESOURCE_NETWORKS, APPLICATION_JSON, region,
+                user2.getToken(), user2.getUserName());
 
         String response = null;
 
@@ -1031,14 +1015,13 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         log.debug("List ports from user " + user.getUserName());
         PaasManagerUser user2 = openOperationUtil.getAdminUser(user);
 
-        HttpUriRequest request = openOperationUtil.createQuantumGetRequest(RESOURCE_PORTS, APPLICATION_JSON, region, user2.getToken(),
-                user2.getUserName());
+        HttpUriRequest request = openOperationUtil.createQuantumGetRequest(RESOURCE_PORTS, APPLICATION_JSON, region,
+                user2.getToken(), user2.getUserName());
 
         String response = null;
 
         try {
             response = openOperationUtil.executeNovaRequest(request);
-
 
         } catch (Exception e) {
             String errorMessage = "Error getting list of networks from OpenStack: " + e;
@@ -1092,27 +1075,28 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     public void setOpenStackRegion(OpenStackRegion openStackRegion) {
         this.openStackRegion = openStackRegion;
     }
-    
+
     public void setOpenOperationUtil(OpenOperationUtil openOperationUtil) {
         this.openOperationUtil = openOperationUtil;
     }
-    
-    public void setOpenStackConfigUtil (OpenStackConfigUtil openStackConfigUtil) {
+
+    public void setOpenStackConfigUtil(OpenStackConfigUtil openStackConfigUtil) {
         this.openStackConfigUtil = openStackConfigUtil;
     }
 
-	public String joinNetworks(NetworkInstance networkInstance,
-			NetworkInstance networkInstance2, String token) throws OpenStackException {
-		
-		String payload = "{\"net_id_1\":" + networkInstance.getIdNetwork()+" , \"net_id_2\":"+ networkInstance2.getIdNetwork() + " }";	
-		HttpUriRequest request = null;
-		try {
-            request = openOperationUtil.createJoinQuantumPostRequestRequest(RESOURCE_NETWOKS_FEDERATED, payload, APPLICATION_JSON, token);
-		} catch (Exception e) {
-			log.warn("Errot to obtain the federated url ");
-			return null;
-		}
-       
+    public String joinNetworks(NetworkInstance networkInstance, NetworkInstance networkInstance2, String token)
+            throws OpenStackException {
+
+        String payload = "{\"net_id_1\":" + networkInstance.getIdNetwork() + " , \"net_id_2\":"
+                + networkInstance2.getIdNetwork() + " }";
+        HttpUriRequest request = null;
+        try {
+            request = openOperationUtil.createJoinQuantumPostRequestRequest(RESOURCE_NETWOKS_FEDERATED, payload,
+                    APPLICATION_JSON, token);
+        } catch (Exception e) {
+            log.warn("Errot to obtain the federated url ");
+            return null;
+        }
 
         String response = null;
 
@@ -1127,7 +1111,6 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             throw new OpenStackException(errorMessage);
         }
         return response;
-	}
+    }
 
-   
 }

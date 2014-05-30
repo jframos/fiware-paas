@@ -32,9 +32,10 @@ import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider
 
 import java.text.MessageFormat;
 import java.util.Date;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -65,7 +66,7 @@ import com.telefonica.euro_iaas.paasmanager.util.TaskNotificator;
  */
 public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceAsyncManager {
 
-    private static Logger LOGGER = Logger.getLogger(ProductInstanceAsyncManagerImpl.class.getName());
+    private static Logger log = LoggerFactory.getLogger(ApplicationInstanceAsyncManagerImpl.class);
     private ApplicationInstanceManager applicationInstanceManager;
     private TaskManager taskManager;
     private SystemPropertiesProvider propertiesProvider;
@@ -75,8 +76,6 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
     /**
      * Install an applicationRelease on an already existent EnvironmentInstance
      * 
-     * @param vdc
-     *            the vdc where the instance will be installed
      * @param environmentInstanceName
      *            on which applicationRelease is going to be deployed
      * @param applicationRelease
@@ -88,8 +87,8 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
      */
     public void install(ClaudiaData data, String environmentInstanceName, ApplicationRelease applicationRelease,
             Task task, String callback) {
-        LOGGER.info("Install aplication " + applicationRelease.getName() + " " + applicationRelease.getVersion()
-                + " on " + " enviornment environmentInstance");
+        log.info("Install aplication " + applicationRelease.getName() + " " + applicationRelease.getVersion() + " on "
+                + " enviornment environmentInstance");
 
         try {
             EnvironmentInstance environmentInstance = environmentInstanceManager.load(data.getVdc(),
@@ -98,7 +97,7 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
             ApplicationInstance applicationInstance = applicationInstanceManager.install(data, environmentInstance,
                     applicationRelease);
             updateSuccessTask(task, environmentInstance);
-            LOGGER.info("Application " + applicationRelease.getName() + '-' + applicationRelease.getVersion()
+            log.info("Application " + applicationRelease.getName() + '-' + applicationRelease.getVersion()
                     + " installed successfully " + " on Environment " + environmentInstanceName);
         } catch (EntityNotFoundException e) {
             String errorMsg = e.getMessage();
@@ -137,7 +136,7 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
                     environmentInstanceName);
             applicationInstanceManager.uninstall(data, environmentInstance, applicationInstance);
             updateSuccessTask(task, environmentInstance);
-            LOGGER.info("Application " + applicationInstance.getName() + '-' + " uninstalled successfully "
+            log.info("Application " + applicationInstance.getName() + '-' + " uninstalled successfully "
                     + " on Environment " + environmentInstanceName);
         } catch (EntityNotFoundException e) {
             String errorMsg = e.getMessage();
@@ -195,7 +194,7 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
         task.setStatus(TaskStates.ERROR);
         task.setError(error);
         taskManager.updateTask(task);
-        LOGGER.info("An error occurs while installing an application release on a" + " environment. See task "
+        log.info("An error occurs while installing an application release on a" + " environment. See task "
                 + task.getHref() + " for more information");
     }
 
@@ -216,8 +215,8 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
     }
 
     /**
-     * @param environmentInstanceDao
-     *            the environmentInstanceDao to set
+     * @param environmentInstanceManager
+     *            the environmentInstanceManager to set
      */
     public void setEnvironmentInstanceManager(EnvironmentInstanceManager environmentInstanceManager) {
         this.environmentInstanceManager = environmentInstanceManager;

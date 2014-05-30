@@ -26,7 +26,8 @@ package com.telefonica.euro_iaas.paasmanager.claudia.impl;
 
 import javax.ws.rs.core.MediaType;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -42,7 +43,7 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 public class KeystoneImpl implements KeystoneClient {
 
     private SystemPropertiesProvider systemPropertiesProvider;
-    private static Logger log = Logger.getLogger(KeystoneImpl.class);
+    private static Logger log = LoggerFactory.getLogger(KeystoneImpl.class);
 
     public String obtainToken(String tenantId) throws OpenStackException {
         String url = systemPropertiesProvider.getProperty("keystone.nova.url")

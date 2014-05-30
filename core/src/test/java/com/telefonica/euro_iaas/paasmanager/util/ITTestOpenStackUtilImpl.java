@@ -24,13 +24,10 @@
 
 package com.telefonica.euro_iaas.paasmanager.util;
 
-// import org.apache.log4j.Logger;
-
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -207,7 +204,6 @@ public class ITTestOpenStackUtilImpl {
         try {
             // Creates a new VM
 
-
             String payload = buildCreateServerPayload();
 
             // Create a VM
@@ -226,7 +222,7 @@ public class ITTestOpenStackUtilImpl {
             String deleteResponse = openStackUtil.deleteServer(serverId, "region", "token", "vdc");
 
         } catch (Exception ex) {
-            Logger.getLogger(ITTestOpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
+            fail(ex.getMessage());
         }
     }
 
@@ -258,7 +254,7 @@ public class ITTestOpenStackUtilImpl {
             String deleteResponse = openStackUtil.deleteServer(serverId, "region", "token", "vdc");
 
         } catch (Exception ex) {
-            Logger.getLogger(ITTestOpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
+            fail(ex.getMessage());
         }
     }
 }

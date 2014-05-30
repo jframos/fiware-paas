@@ -34,17 +34,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
-
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsyncManager;
@@ -86,7 +84,7 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
 
     private SystemPropertiesProvider systemPropertiesProvider;
 
-    private static Logger log = Logger.getLogger(EnvironmentInstanceResourceImpl.class);
+    private static Logger log = LoggerFactory.getLogger(EnvironmentInstanceResourceImpl.class);
 
     /**
      * Add PaasManagerUser to claudiaData.
@@ -178,7 +176,6 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
 
         List<EnvironmentInstance> environmentInstances = environmentInstanceManager.findByCriteria(criteria);
 
-
         List<EnvironmentInstancePDto> envInstancesDto = new ArrayList<EnvironmentInstancePDto>();
         for (int i = 0; i < environmentInstances.size(); i++) {
             envInstancesDto.add(environmentInstances.get(i).toPDtos());
@@ -214,12 +211,12 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
 
     public Task destroy(String org, String vdc, String name, String callback) throws APIException {
 
-        log.debug ("Destroy env isntna " + name + " vdc " + vdc );
-    	EnvironmentInstance environmentInstance = null;
+        log.debug("Destroy env isntna " + name + " vdc " + vdc);
+        EnvironmentInstance environmentInstance = null;
         try {
             environmentInstance = environmentInstanceManager.load(vdc, name);
         } catch (EntityNotFoundException e) {
-        	log.warn ("Not found " + e.getMessage() );
+            log.warn("Not found " + e.getMessage());
             throw new APIException(e);
         }
 
@@ -309,7 +306,7 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
         }
         return result;
     }
-    
+
     public PaasManagerUser getCredentials() {
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
             return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

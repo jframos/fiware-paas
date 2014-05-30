@@ -31,7 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
@@ -76,7 +77,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
     private NetworkManager networkManager;
 
     /** The log. */
-    private static Logger log = Logger.getLogger(InfrastructureManagerClaudiaImpl.class);
+    private static Logger log = LoggerFactory.getLogger(InfrastructureManagerClaudiaImpl.class);
     /** Max lenght of an OVF */
     private static final Integer tam_max = 90000;
 

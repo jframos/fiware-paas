@@ -25,15 +25,14 @@
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -43,10 +42,8 @@ import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
-import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
@@ -71,9 +68,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
 
     private EnvironmentResourceValidator environmentResourceValidator;
 
-
-    private static Logger log = Logger.getLogger(EnvironmentManagerImpl.class);
-
+    private static Logger log = LoggerFactory.getLogger(EnvironmentManagerImpl.class);
 
     public void delete(String org, String vdc, String envName) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
@@ -145,9 +140,9 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
      * @param claudiaData
      */
     public void addCredentialsToClaudiaData(ClaudiaData claudiaData) {
-    	log.debug (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM));
+        log.debug(systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM));
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-        	log.debug ("addCredentialsToClaudiaData to claudia ");
+            log.debug("addCredentialsToClaudiaData to claudia ");
             claudiaData.setUser(getCredentials());
             claudiaData.getUser().setTenantId(claudiaData.getVdc());
         }
@@ -167,7 +162,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
             // try {
             environmentManager.create(claudiaData, environmentDto.fromDto(org, vdc));
         } catch (Exception e) {
-        	log.debug (e.getMessage());
+            log.debug(e.getMessage());
             throw new APIException(e);
         }
     }
@@ -210,7 +205,5 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
-
-
 
 }

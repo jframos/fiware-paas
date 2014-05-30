@@ -29,7 +29,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -79,7 +80,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
     private ProductInstallator productInstallator;
 
     /** The log. */
-    private static Logger log = Logger.getLogger(EnvironmentInstanceManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(EnvironmentInstanceManagerImpl.class);
 
     /** Max lenght of an OVF */
     private static final Integer tam_max = 90000;
@@ -222,7 +223,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             Tier tier = tierManager.loadTierWithProductReleaseAndMetadata(tierInstance.getTier().getName(),
                     tierInstance.getTier().getEnviromentName(), tierInstance.getTier().getVdc());
             log.debug("The tier " + tier.getName() + " is in bd");
-            log.debug(tier.getProductReleases());
+            log.debug(tier.getProductReleases().toString());
             if ((tier.getProductReleases() != null) && !(tier.getProductReleases().isEmpty())) {
 
                 for (ProductRelease productRelease : tier.getProductReleases()) {

@@ -27,7 +27,8 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -54,7 +55,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
     private ProductInstallator productInstallator;
     private ProductReleaseManager productReleaseManager;
 
-    private static Logger log = Logger.getLogger(ProductInstanceManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(ProductInstanceManagerImpl.class);
 
     public ProductInstance install(TierInstance tierInstance, ClaudiaData claudiaData, String envName,
             ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException,
@@ -64,8 +65,8 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
         ProductInstance productInstance = null;
         try {
-            productInstance = productInstallator.install(claudiaData, envName, tierInstance,
-                    productRelease, attributes);
+            productInstance = productInstallator
+                    .install(claudiaData, envName, tierInstance, productRelease, attributes);
             if (productInstance.getVdc() == null) {
                 productInstance.setVdc(claudiaData.getVdc());
             }
@@ -122,8 +123,8 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
         if (productRelease.getId() == null)
             try {
-                productRelease = productReleaseManager.load(productRelease.getProduct() + "-"
-                        + productRelease.getVersion(), data);
+                productRelease = productReleaseManager.load(
+                        productRelease.getProduct() + "-" + productRelease.getVersion(), data);
             } catch (EntityNotFoundException e) {
                 // TODO Auto-generated catch block
                 throw new InvalidEntityException("Error to load the product release for persist the product Instance "
@@ -218,11 +219,9 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
             productInstallator.configure(claudiaData, productInstance, properties);
         } catch (OpenStackException e) {
             String errorMessage = "Error to configure the product " + e.getMessage();
-             new ProductInstallatorException(errorMessage);
+            new ProductInstallatorException(errorMessage);
         }
 
     }
-
-
 
 }

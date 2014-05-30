@@ -80,7 +80,7 @@ public class NetworkandSubNetDaoJpaImplTest {
         assertEquals(networkOut.getSubNets().size(), 0);
 
     }
-    
+
     @Test
     public void testNetworkVDCNull() throws Exception {
 
@@ -94,7 +94,7 @@ public class NetworkandSubNetDaoJpaImplTest {
         List<Network> networks = networkDao.findAll();
         assertNotNull(networks);
 
-        Network networkOut = networkDao.load(NETWORK_NAME, "",REGION);
+        Network networkOut = networkDao.load(NETWORK_NAME, "", REGION);
         assertNotNull(networkOut);
         assertEquals(networkOut.getNetworkName(), NETWORK_NAME);
         assertEquals(networkOut.getSubNets().size(), 0);
@@ -114,7 +114,6 @@ public class NetworkandSubNetDaoJpaImplTest {
         } catch (EntityNotFoundException e) {
             assertNotNull(e);
         } catch (Exception e) {
-            System.out.println (e.getMessage());
         }
 
     }
@@ -127,7 +126,7 @@ public class NetworkandSubNetDaoJpaImplTest {
         subNetworkDao.remove(subNet);
 
         try {
-            subNetworkDao.load(SUB_NETWORK_NAME,  VDC, REGION);
+            subNetworkDao.load(SUB_NETWORK_NAME, VDC, REGION);
             fail("Should have thrown an EntityNotFoundException because the subnet does not exit!");
         } catch (EntityNotFoundException e) {
             assertNotNull(e);
@@ -142,7 +141,7 @@ public class NetworkandSubNetDaoJpaImplTest {
         assertNotNull(networks);
 
         int number = networks.size();
-        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME,VDC, REGION);
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, VDC, REGION);
         subNet = subNetworkDao.create(subNet);
 
         Set<SubNetwork> subNets = new HashSet<SubNetwork>();

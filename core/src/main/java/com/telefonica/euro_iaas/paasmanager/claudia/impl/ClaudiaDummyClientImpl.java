@@ -41,26 +41,22 @@ import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.util.FileUtils;
-import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * @author jesus.movilla
  */
 public class ClaudiaDummyClientImpl implements ClaudiaClient {
 
-
     private FileUtils fileUtils = null;
-    
-   /* ovfTemplateLocation = ./src/main/resources/
-    neoclaudiaOvfServiceLocation = empty.ovf
-    neoclaudiaVDCTemplateLocation = InstantiateVDCTemplate.xml
-    neoclaudiaOvfVMLocation = paasmanagerOVF.ovf*/
+
+    /*
+     * ovfTemplateLocation = ./src/main/resources/ neoclaudiaOvfServiceLocation = empty.ovf
+     * neoclaudiaVDCTemplateLocation = InstantiateVDCTemplate.xml neoclaudiaOvfVMLocation = paasmanagerOVF.ovf
+     */
     public static String neoclaudiaOvfVMLocation = "paasmanagerOVF.ovf";
     public static String vappTestServiceLocation = "VappDummyService.xml";
     public static String iP_VM_DummyClaudia = "IP_VM_DummyClaudia";
     public static String neoclaudiaVappVMLocation = "VappTemplate.xml";
-    
-    
 
     public String onOffScalability(ClaudiaData claudiaData, String environmentName, boolean b)
             throws InfrastructureException {
@@ -95,10 +91,9 @@ public class ClaudiaDummyClientImpl implements ClaudiaClient {
         String ip = iP_VM_DummyClaudia;
 
         try {
-            payload = fileUtils.readFile(neoclaudiaVappVMLocation)
-                    .replace("{org}", claudiaData.getOrg()).replace("{vdc}", claudiaData.getVdc())
-                    .replace("{service}", claudiaData.getService()).replace("{vm}", tierName).replace("{replica}", "1")
-                    .replace("{IP}", ip);
+            payload = fileUtils.readFile(neoclaudiaVappVMLocation).replace("{org}", claudiaData.getOrg())
+                    .replace("{vdc}", claudiaData.getVdc()).replace("{service}", claudiaData.getService())
+                    .replace("{vm}", tierName).replace("{replica}", "1").replace("{IP}", ip);
 
         } catch (FileUtilsException e) {
             throw new ClaudiaResourceNotFoundException("Error in the Claudia Dummy Utils " + e.getMessage());
@@ -183,8 +178,6 @@ public class ClaudiaDummyClientImpl implements ClaudiaClient {
         return;
 
     }
-
-
 
     public void setFileUtils(FileUtils fileUtils) {
         this.fileUtils = fileUtils;

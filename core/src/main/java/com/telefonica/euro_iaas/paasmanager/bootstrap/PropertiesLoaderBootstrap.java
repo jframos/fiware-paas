@@ -25,12 +25,13 @@
 package com.telefonica.euro_iaas.paasmanager.bootstrap;
 
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -45,7 +46,8 @@ import com.telefonica.euro_iaas.paasmanager.exception.PaasManagerServerRuntimeEx
  */
 public class PropertiesLoaderBootstrap implements ServletContextListener {
 
-    private static final Logger LOGGER = Logger.getAnonymousLogger();
+    private static Logger log = LoggerFactory.getLogger(PropertiesLoaderBootstrap.class);
+
     private static final String NAMESPACE = "/SystemConfiguration.properties";
 
     /**
@@ -65,7 +67,7 @@ public class PropertiesLoaderBootstrap implements ServletContextListener {
         PropertiesProvider propertiesProvider = new PropertiesProviderFactoryImpl().createPropertiesProvider(emf);
         Properties properties = propertiesProvider.load(NAMESPACE);
         try {
-            LOGGER.info("store namespace: " + NAMESPACE);
+            log.info("store namespace: " + NAMESPACE);
             propertiesProvider.store(properties, NAMESPACE);
         } catch (Exception e) {
             throw new PaasManagerServerRuntimeException(e);

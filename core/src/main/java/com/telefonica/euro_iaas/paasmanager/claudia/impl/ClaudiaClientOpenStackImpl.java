@@ -30,7 +30,8 @@ import java.util.List;
 
 import net.sf.json.JSONArray;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -68,7 +69,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
      * The log.
      */
 
-    private static Logger log = Logger.getLogger(ClaudiaClientOpenStackImpl.class);
+    private static Logger log = LoggerFactory.getLogger(ClaudiaClientOpenStackImpl.class);
 
     private OpenStackUtil openStackUtil = null;
     private OpenStackRegion openStackRegion =null;
@@ -248,7 +249,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         if (networkNoSharedInstances.isEmpty()) {
             log.debug("There is not any network associated to the user");
             Network net = new Network(claudiaData.getUser().getTenantName(), claudiaData.getVdc(), region);
-            SubNetwork subNet = new SubNetwork("default" + claudiaData.getVdc(),claudiaData.getVdc(), region);
+            SubNetwork subNet = new SubNetwork("default" + claudiaData.getVdc(), claudiaData.getVdc(), region);
             net.addSubNet(subNet);
             NetworkInstance netinstance = net.toNetworkInstance();
             NetworkInstance networkInstance = networkInstanceManager.create(claudiaData, netinstance, region);
@@ -276,8 +277,8 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         return null;
     }
 
-    private List<NetworkInstance> loadNotSharedNetworksUser(List<NetworkInstance> networks, String tenantId, String region)
-            throws InfrastructureException {
+    private List<NetworkInstance> loadNotSharedNetworksUser(List<NetworkInstance> networks, String tenantId,
+            String region) throws InfrastructureException {
         List<NetworkInstance> networksNotShared = new ArrayList<NetworkInstance>();
         for (NetworkInstance net : networks) {
             if (!net.getShared() && net.getTenantId().equals(tenantId)) {
@@ -325,14 +326,15 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
                 String response = openStackUtil.getServer(tierInstance.getVM().getVmid(), tierInstance.getTier()
                         .getRegion(), claudiaData.getUser().getToken(), claudiaData.getUser().getTenantId());
             } catch (OpenStackException e) {
-                String errorMessage = "Error obtaining info from Server " + tierInstance.getVM().getVmid() + " " + e.getMessage();
+                String errorMessage = "Error obtaining info from Server " + tierInstance.getVM().getVmid() + " "
+                        + e.getMessage();
                 log.warn(errorMessage);
-                return ;
+                return;
 
-              /*  if (e.getMessage().contains("Malformed request url") || e.getMessage().contains("itemNotFound")
-                        || e.getMessage().contains("badRequest")) {
-                    break;
-                }*/
+                /*
+                 * if (e.getMessage().contains("Malformed request url") || e.getMessage().contains("itemNotFound") ||
+                 * e.getMessage().contains("badRequest")) { break; }
+                 */
 
                 // throw new InfrastructureException(errorMessage);
             }
@@ -549,14 +551,16 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     }
 
     public void undeployVMReplica(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
-    	log.debug ("Undeploy VM replica " + tierInstance.getName() + " for region " + tierInstance.getTier().getRegion() + " and user " + tierInstance.getTier().getVdc() );
+        log.debug("Undeploy VM replica " + tierInstance.getName() + " for region " + tierInstance.getTier().getRegion()
+                + " and user " + tierInstance.getTier().getVdc());
         try {
 
             String region = tierInstance.getTier().getRegion();
             String token = claudiaData.getUser().getToken();
             String vdc = tierInstance.getTier().getVdc();
-           
+
             openStackUtil.deleteServer(tierInstance.getVM().getVmid(), region, token, vdc);
+<<<<<<< HEAD
             checkDeleteServerTaskStatus(tierInstance, claudiaData);
             log.debug("Undeployed VM replica " + tierInstance.getName() + " for region " + tierInstance.getTier().getRegion() + " and user " + tierInstance.getTier().getVdc() );
             
@@ -564,6 +568,11 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             	log.debug("Delete floating ip ");
             	openStackUtil.disAllocateFloatingIP(region, token, vdc, tierInstance.getVM().getFloatingIp());
             }
+=======
+            checkDeleteServerTaskStatus(tierInstance, claudiaData);
+            log.debug("Undeployed VM replica " + tierInstance.getName() + " for region "
+                    + tierInstance.getTier().getRegion() + " and user " + tierInstance.getTier().getVdc());
+>>>>>>> 8c3a1cb05ce150f1fe0e027fb036a363fe5bcf28
         } catch (OpenStackException oes) {
             String errorMessage = "Error deleting serverId: " + tierInstance.getVM().getVmid();
             log.error(errorMessage);
