@@ -560,7 +560,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             String vdc = tierInstance.getTier().getVdc();
 
             openStackUtil.deleteServer(tierInstance.getVM().getVmid(), region, token, vdc);
-<<<<<<< HEAD
+
             checkDeleteServerTaskStatus(tierInstance, claudiaData);
             log.debug("Undeployed VM replica " + tierInstance.getName() + " for region " + tierInstance.getTier().getRegion() + " and user " + tierInstance.getTier().getVdc() );
             
@@ -568,11 +568,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             	log.debug("Delete floating ip ");
             	openStackUtil.disAllocateFloatingIP(region, token, vdc, tierInstance.getVM().getFloatingIp());
             }
-=======
-            checkDeleteServerTaskStatus(tierInstance, claudiaData);
-            log.debug("Undeployed VM replica " + tierInstance.getName() + " for region "
-                    + tierInstance.getTier().getRegion() + " and user " + tierInstance.getTier().getVdc());
->>>>>>> 8c3a1cb05ce150f1fe0e027fb036a363fe5bcf28
+
         } catch (OpenStackException oes) {
             String errorMessage = "Error deleting serverId: " + tierInstance.getVM().getVmid();
             log.error(errorMessage);
