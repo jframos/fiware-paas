@@ -30,6 +30,7 @@ import net.sf.json.JSONObject;
 import org.junit.Test;
 
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 
 /**
  * Test for Tier entity.
@@ -86,6 +87,7 @@ public class TierTest extends TestCase {
 
     }
     
+    @Test
     public void testTierFromDtoNoAffinity() throws Exception {
 
         Integer minimum = new Integer(1);
@@ -107,6 +109,7 @@ public class TierTest extends TestCase {
         assertEquals(tier.getAffinity(),"None");
     }
     
+    @Test
     public void testTierFromDtoAffinity() throws Exception {
 
         Integer minimumNumberInstances = new Integer(1);
@@ -152,12 +155,15 @@ public class TierTest extends TestCase {
         networkInstance.setIdNetwork("ID");
 
         Tier tier = new Tier("tier", maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes", null);
-
+        VM vm = new VM ();
+        vm.setFqn ("services.vees.fqn");
         TierInstance tierInst = new TierInstance();
         tierInst.setName("tier");
         tierInst.addNetworkInstance(networkInstance);
         tierInst.setTier(tier);
         tier.setRegion("RegionOne");
+        tier.setAffinity("affinity");
+        tierInst.setVM(vm);
 
         // When
         JSONObject jsonObject = JSONObject.fromObject(tierInst.toJson(null));

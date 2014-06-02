@@ -352,7 +352,7 @@ public class TierInstance extends InstallableInstance {
         if (this.getTier().getAffinity()!="None") {
         	String id = this.getVM().getFqn().substring(0, this.getVM().getFqn().indexOf(".vee"));
         	String group = null;
-        	if (this.getTier().equals("'anti-affinity' ")) {
+        	if (this.getTier().getAffinity().equals("anti-affinity")) {
         		   
         		group = "\"group\": \""+ id + "\""; 
         		
