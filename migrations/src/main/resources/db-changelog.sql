@@ -283,3 +283,15 @@ ALTER TABLE subnetwork ADD COLUMN region VARCHAR(255);
 ALTER TABLE subnetwork ADD COLUMN vdc VARCHAR(255);
 ALTER TABLE subnetworkinstance ADD COLUMN region VARCHAR(255);
 ALTER TABLE subnetworkinstance ADD COLUMN vdc VARCHAR(255);
+
+
+
+-- changeset henar:5-42 --
+ALTER TABLE tier ADD COLUMN affinity VARCHAR(128);
+DROP TABLE artifacttype;
+DROP TABLE configuration;
+DROP TABLE service;
+DROP TABLE applicationtype;
+ALTER TABLE productrelease DELETE COLUMN productType;
+ALTER TABLE applicationrelease DELETE COLUMN applicationType;
+DROP TABLE productype;
