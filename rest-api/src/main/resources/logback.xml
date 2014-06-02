@@ -15,6 +15,33 @@
         </encoder>
     </appender>
 
+    <appender name="restAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.base}/logs/rest-api.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${catalina.base}/logs/rest-api.%d{yyyy-MM-dd}.gz</fileNamePattern>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %-5p %C{1} - %m%n
+            </pattern>
+        </encoder>
+    </appender>
+
+
+    <appender name="managerAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.base}/logs/manager.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${catalina.base}/logs/manager.%d{yyyy-MM-dd}.gz</fileNamePattern>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{dd MMM yyyy HH:mm:ss,SSS} %-5p %C{1} - %m%n
+            </pattern>
+        </encoder>
+    </appender>
+
 
     <appender name="authAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${catalina.base}/logs/authentication.log</file>
@@ -81,9 +108,14 @@
         <appender-ref ref="authAppender"/>
     </logger>
 
-    <logger name="com.telefonica.euro_iaas.paasmanager.rest" additivity="true" value="DEBUG">
-        <appender-ref ref="paasAppender"/>
+    <logger name="com.telefonica.euro_iaas.paasmanager.manager" additivity="true" value="DEBUG">
+        <appender-ref ref="managerAppender"/>
     </logger>
+
+    <logger name="com.telefonica.euro_iaas.paasmanager.rest.resources" additivity="true" value="DEBUG">
+        <appender-ref ref="restAppender"/>
+    </logger>
+
 
     <!-- SpringFramework logger -->
     <logger name="org.springframework" additivity="false">
