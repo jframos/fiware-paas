@@ -348,6 +348,19 @@ public class TierInstance extends InstallableInstance {
             payload = payload + "], ";
 
         }
+        
+        if (this.getTier().getAffinity()!="None") {
+        	String id = this.getVM().getFqn().substring(0, this.getVM().getFqn().indexOf(".vee"));
+        	String group = null;
+        	if (this.getTier().equals("'anti-affinity' ")) {
+        		   
+        		group = "\"group\": \""+ id + "\""; 
+        		
+        	} else {
+        		group = "\"group\": \"affinity:"+ id+ "\""; 
+        	}
+        	payload = payload + "\"os:scheduler_hints\": { "+ group + "},";
+        }
 
         if (this.getTier().getRegion() != null) {
 

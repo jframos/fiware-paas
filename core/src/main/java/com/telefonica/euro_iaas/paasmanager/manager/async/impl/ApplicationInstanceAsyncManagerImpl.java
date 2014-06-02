@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.ApplicationTypeNotFoundException;
+
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.TaskNotFoundException;
@@ -105,9 +105,6 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
         } catch (ProductReleaseNotFoundException prNFE) {
             String errorMsg = prNFE.getMessage();
             updateErrorTask(prNFE.getProductRelease().getName(), PRODUCT_RELEASE_PATH, task, errorMsg, prNFE);
-        } catch (ApplicationTypeNotFoundException atNFE) {
-            String errorMsg = atNFE.getMessage();
-            updateErrorTask(atNFE.getApplicationType().getName(), APPLICATION_RELEASE_PATH, task, errorMsg, atNFE);
         } catch (InvalidEntityException iee) {
             String errorMsg = iee.getMessage();
             updateErrorTask(applicationRelease.getName(), APPLICATION_RELEASE_PATH, task, errorMsg, iee);

@@ -41,7 +41,6 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
-import com.telefonica.euro_iaas.paasmanager.model.Service;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierInstanceSearchCriteria;
@@ -72,9 +71,6 @@ public class TierInstanceDaoJpaImpl extends AbstractBaseDao<TierInstance, String
             tierInstances = filterByProductInstance(tierInstances, criteria.getProductInstance());
         }
 
-        if (criteria.getService() != null) {
-            tierInstances = filterByService(tierInstances, criteria.getService());
-        }
         if (criteria.getEnvironmentInstance() != null && criteria.getVdc() != null) {
             tierInstances = filterByEnvironmentInstanceVDC(tierInstances, criteria.getEnvironmentInstance(),
                     criteria.getVdc());
@@ -120,17 +116,6 @@ public class TierInstanceDaoJpaImpl extends AbstractBaseDao<TierInstance, String
         return result;
     }
 
-    /**
-     * Filter the result by service.
-     */
-    private List<TierInstance> filterByService(List<TierInstance> tierInstances, Service serviceInput) {
-        List<TierInstance> result = new ArrayList<TierInstance>();
-        /*
-         * for (TierInstance tierInstance : tierInstances) { List<Service> services = tierInstance.getServices(); for
-         * (Service serv : services) { if (serv.getName().equals(serviceInput.getName())) result.add(tierInstance); } }
-         */
-        return result;
-    }
 
     /*
      * (non-Javadoc)

@@ -85,6 +85,60 @@ public class TierTest extends TestCase {
         }
 
     }
+    
+    public void testTierFromDtoNoAffinity() throws Exception {
+
+        Integer minimum = new Integer(1);
+        Integer initial = new Integer(2);
+        Integer maximum = new Integer(3);
+
+        TierDto tierDto = new TierDto("tier", maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes");
+        Tier tier = tierDto.fromDto("vdc", "envName");
+        
+        assertEquals(tier.getName(), "tier");
+        assertEquals(tier.getMaximumNumberInstances().intValue(), 3);
+        assertEquals(tier.getMinimumNumberInstances().intValue(), 1);
+        assertEquals(tier.getInitialNumberInstances().intValue(), 2);
+        assertEquals(tier.getFlavour(),"2");
+        assertEquals(tier.getImage(),"image");
+        assertEquals(tier.getIcono(),"icono");
+        assertEquals(tier.getKeypair(),"keypair");
+        assertEquals(tier.getFloatingip(),"yes");
+        assertEquals(tier.getAffinity(),"None");
+    }
+    
+    public void testTierFromDtoAffinity() throws Exception {
+
+        Integer minimumNumberInstances = new Integer(1);
+        Integer initialNumberInstances = new Integer(2);
+        Integer maximumNumberInstances = new Integer(3);
+
+        TierDto tierDto = new TierDto();
+        tierDto.setAffinity("affinity");
+        tierDto.setName("tier");
+        tierDto.setMaximumNumberInstances(maximumNumberInstances);
+        tierDto.setMinimumNumberInstances(minimumNumberInstances);
+        tierDto.setInitialNumberInstances(initialNumberInstances);
+        tierDto.setFlavour("2");
+        tierDto.setIcono("icono");
+        tierDto.setImage("image");
+        tierDto.setKeypair("keypair");
+        tierDto.setFloatingip("true");
+        
+        Tier tier = tierDto.fromDto("vdc", "envName");
+   
+        
+        assertEquals(tier.getName(), "tier");
+        assertEquals(tier.getMaximumNumberInstances().intValue(), 3);
+        assertEquals(tier.getMinimumNumberInstances().intValue(), 1);
+        assertEquals(tier.getInitialNumberInstances().intValue(), 2);
+        assertEquals(tier.getFlavour(),"2");
+        assertEquals(tier.getImage(),"image");
+        assertEquals(tier.getIcono(),"icono");
+        assertEquals(tier.getKeypair(),"keypair");
+        assertEquals(tier.getFloatingip(),"true");
+        assertEquals(tier.getAffinity(),"affinity");
+    }
 
     @Test
     public void testTierInstance() throws Exception {

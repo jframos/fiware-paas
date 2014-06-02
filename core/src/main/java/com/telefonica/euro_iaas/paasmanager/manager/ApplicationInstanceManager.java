@@ -29,7 +29,6 @@ import java.util.List;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.ApplicationTypeNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
@@ -58,7 +57,7 @@ public interface ApplicationInstanceManager {
      */
     ApplicationInstance install(ClaudiaData data,  EnvironmentInstance environmentInstance,
             ApplicationRelease application) throws ProductReleaseNotFoundException, InvalidEntityException,
-            AlreadyExistsEntityException, ApplicationTypeNotFoundException, ProductInstallatorException;
+            AlreadyExistsEntityException,  ProductInstallatorException;
 
     /**
      * Find all ApplicationInstances

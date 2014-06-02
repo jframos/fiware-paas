@@ -108,8 +108,6 @@ public class ProductRelease {
     @Column(nullable = true)
     private Boolean withArtifact = false;
 
-    @ManyToOne
-    private ProductType productType = null;
 
     /**
      * Constructor.
@@ -165,8 +163,7 @@ public class ProductRelease {
      * @param productType
      */
     public ProductRelease(String product, String version, String description, Set<Attribute> attributes,
-            List<ProductRelease> transitableReleases, List<OS> supportedOOSS, Boolean withArtifact,
-            ProductType productType) {
+            List<ProductRelease> transitableReleases, List<OS> supportedOOSS, Boolean withArtifact) {
         this.name = product + "-" + version;
         this.product = product;
         this.version = version;
@@ -175,7 +172,6 @@ public class ProductRelease {
         this.transitableReleases = transitableReleases;
         this.supportedOOSS = supportedOOSS;
         this.withArtifact = withArtifact;
-        this.productType = productType;
         metadatas = new HashSet<Metadata>();
     }
 
@@ -399,13 +395,6 @@ public class ProductRelease {
     }
 
     /**
-     * @return the productType
-     */
-    public ProductType getProductType() {
-        return productType;
-    }
-
-    /**
      * @return the supportedOOSS
      */
     public List<OS> getSupportedOOSS() {
@@ -498,13 +487,6 @@ public class ProductRelease {
         this.product = product;
     }
 
-    /**
-     * @param productType
-     *            the productType to set
-     */
-    public void setProductType(ProductType productType) {
-        this.productType = productType;
-    }
 
     /**
      * @param supportedOOSS

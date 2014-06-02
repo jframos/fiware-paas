@@ -44,7 +44,6 @@ import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.OS;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
-import com.telefonica.euro_iaas.paasmanager.model.ProductType;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
@@ -110,8 +109,6 @@ public class EnvironmentInstanceManagerImplTest {
 
         // Environment
         productRelease = new ProductRelease("product", "2.0");
-        ProductType productType = new ProductType("Generic", "Generic");
-        productRelease.setProductType(productType);
         OS os = new OS("94", "ip", "hostname", "domain");
         List<OS> oss = new ArrayList<OS>();
         oss.add(os);

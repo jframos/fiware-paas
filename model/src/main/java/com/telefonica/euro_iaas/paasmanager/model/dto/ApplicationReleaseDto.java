@@ -32,7 +32,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
-import com.telefonica.euro_iaas.paasmanager.model.ApplicationType;
 import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 
 /**
@@ -149,11 +148,6 @@ public class ApplicationReleaseDto {
         if (this.getVersion() != null)
             applicationRelease.setVersion(this.getVersion());
 
-        if (this.getApplicationType() != null) {
-            ApplicationType appType = new ApplicationType();
-            appType.setName(this.getApplicationType());
-            applicationRelease.setApplicationType(appType);
-        }
         return applicationRelease;
     }
     
