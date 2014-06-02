@@ -39,6 +39,9 @@ public class VM {
     /** The ip where the host is located. */
     @Column(length = 128)
     private String ip = "";
+    
+    @Column(length = 128)
+    private String floatingip = "";
 
     /** The computer's hostname. */
     @Column(length = 128)
@@ -201,6 +204,13 @@ public class VM {
     public String getIp() {
         return ip;
     }
+    
+    /**
+     * @return the ip
+     */
+    public String getFloatingIp() {
+        return this.floatingip;
+    }
 
     /**
      * @return the osType
@@ -261,6 +271,14 @@ public class VM {
      */
     public void setIp(String ip) {
         this.ip = ip;
+    }
+    
+    /**
+     * @param ip
+     *            the ip to set
+     */
+    public void setFloatingIp(String floatingip) {
+        this.floatingip = floatingip;
     }
 
     /**
