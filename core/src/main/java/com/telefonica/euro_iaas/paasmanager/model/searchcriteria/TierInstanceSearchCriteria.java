@@ -27,7 +27,7 @@ package com.telefonica.euro_iaas.paasmanager.model.searchcriteria;
 import com.telefonica.euro_iaas.commons.dao.AbstractSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
-import com.telefonica.euro_iaas.paasmanager.model.Service;
+
 
 /**
  * Provides some criteria to search TierInstance entities.
@@ -37,7 +37,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Service;
 public class TierInstanceSearchCriteria extends AbstractSearchCriteria {
 
     private ProductInstance productInstance;
-    private Service service;
     private String vdc;
     private EnvironmentInstance environmentInstance;
 
@@ -56,10 +55,9 @@ public class TierInstanceSearchCriteria extends AbstractSearchCriteria {
      * @param environment
      */
     public TierInstanceSearchCriteria(Integer page, Integer pageSize, String orderBy, String orderType,
-            ProductInstance productInstance, Service service, EnvironmentInstance environmentInstance, String vdc) {
+            ProductInstance productInstance, EnvironmentInstance environmentInstance, String vdc) {
         super(page, pageSize, orderBy, orderType);
         this.productInstance = productInstance;
-        this.service = service;
         this.environmentInstance = environmentInstance;
         this.vdc = vdc;
     }
@@ -70,10 +68,10 @@ public class TierInstanceSearchCriteria extends AbstractSearchCriteria {
      * @param productInstance
      * @param environment
      */
-    public TierInstanceSearchCriteria(String orderBy, String orderType, ProductInstance productInstance, Service service) {
+    public TierInstanceSearchCriteria(String orderBy, String orderType, ProductInstance productInstance) {
         super(orderBy, orderType);
         this.productInstance = productInstance;
-        this.service = service;
+
     }
 
     /**
@@ -82,19 +80,17 @@ public class TierInstanceSearchCriteria extends AbstractSearchCriteria {
      * @param productInstance
      * @param environment
      */
-    public TierInstanceSearchCriteria(Integer page, Integer pageSize, ProductInstance productInstance, Service service) {
+    public TierInstanceSearchCriteria(Integer page, Integer pageSize, ProductInstance productInstance) {
         super(page, pageSize);
         this.productInstance = productInstance;
-        this.service = service;
     }
 
     /**
      * @param instance
      * @param environment
      */
-    public TierInstanceSearchCriteria(ProductInstance productInstance, Service service) {
+    public TierInstanceSearchCriteria(ProductInstance productInstance) {
         this.productInstance = productInstance;
-        this.service = service;
     }
 
     /**
@@ -110,21 +106,6 @@ public class TierInstanceSearchCriteria extends AbstractSearchCriteria {
      */
     public void setProductInstance(ProductInstance productInstance) {
         this.productInstance = productInstance;
-    }
-
-    /**
-     * @return the service
-     */
-    public Service getService() {
-        return service;
-    }
-
-    /**
-     * @param service
-     *            the service to set
-     */
-    public void setService(Service service) {
-        this.service = service;
     }
 
     public String getVdc() {

@@ -30,6 +30,7 @@ import net.sf.json.JSONObject;
 import org.junit.Test;
 
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 
 /**
  * Test for Tier entity.
@@ -85,6 +86,62 @@ public class TierTest extends TestCase {
         }
 
     }
+    
+    @Test
+    public void testTierFromDtoNoAffinity() throws Exception {
+
+        Integer minimum = new Integer(1);
+        Integer initial = new Integer(2);
+        Integer maximum = new Integer(3);
+
+        TierDto tierDto = new TierDto("tier", maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes");
+        Tier tier = tierDto.fromDto("vdc", "envName");
+        
+        assertEquals(tier.getName(), "tier");
+        assertEquals(tier.getMaximumNumberInstances().intValue(), 3);
+        assertEquals(tier.getMinimumNumberInstances().intValue(), 1);
+        assertEquals(tier.getInitialNumberInstances().intValue(), 2);
+        assertEquals(tier.getFlavour(),"2");
+        assertEquals(tier.getImage(),"image");
+        assertEquals(tier.getIcono(),"icono");
+        assertEquals(tier.getKeypair(),"keypair");
+        assertEquals(tier.getFloatingip(),"yes");
+        assertEquals(tier.getAffinity(),"None");
+    }
+    
+    @Test
+    public void testTierFromDtoAffinity() throws Exception {
+
+        Integer minimumNumberInstances = new Integer(1);
+        Integer initialNumberInstances = new Integer(2);
+        Integer maximumNumberInstances = new Integer(3);
+
+        TierDto tierDto = new TierDto();
+        tierDto.setAffinity("affinity");
+        tierDto.setName("tier");
+        tierDto.setMaximumNumberInstances(maximumNumberInstances);
+        tierDto.setMinimumNumberInstances(minimumNumberInstances);
+        tierDto.setInitialNumberInstances(initialNumberInstances);
+        tierDto.setFlavour("2");
+        tierDto.setIcono("icono");
+        tierDto.setImage("image");
+        tierDto.setKeypair("keypair");
+        tierDto.setFloatingip("true");
+        
+        Tier tier = tierDto.fromDto("vdc", "envName");
+   
+        
+        assertEquals(tier.getName(), "tier");
+        assertEquals(tier.getMaximumNumberInstances().intValue(), 3);
+        assertEquals(tier.getMinimumNumberInstances().intValue(), 1);
+        assertEquals(tier.getInitialNumberInstances().intValue(), 2);
+        assertEquals(tier.getFlavour(),"2");
+        assertEquals(tier.getImage(),"image");
+        assertEquals(tier.getIcono(),"icono");
+        assertEquals(tier.getKeypair(),"keypair");
+        assertEquals(tier.getFloatingip(),"true");
+        assertEquals(tier.getAffinity(),"affinity");
+    }
 
     @Test
     public void testTierInstance() throws Exception {
@@ -98,12 +155,15 @@ public class TierTest extends TestCase {
         networkInstance.setIdNetwork("ID");
 
         Tier tier = new Tier("tier", maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes", null);
-
+        VM vm = new VM ();
+        vm.setFqn ("services.vees.fqn");
         TierInstance tierInst = new TierInstance();
         tierInst.setName("tier");
         tierInst.addNetworkInstance(networkInstance);
         tierInst.setTier(tier);
         tier.setRegion("RegionOne");
+        tier.setAffinity("affinity");
+        tierInst.setVM(vm);
 
         // When
         JSONObject jsonObject = JSONObject.fromObject(tierInst.toJson(null));

@@ -39,7 +39,7 @@ import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.OS;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
-import com.telefonica.euro_iaas.paasmanager.model.ProductType;
+
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
@@ -94,7 +94,6 @@ public class ProductInstallatorSdcImplTest {
         attribute = new Attribute("key", "value");
         lAttributes.add(attribute);
 
-        ProductType productType = new ProductType("type A", "Type A desc");
         tierInstance = new TierInstance();
         //productRelease = new ProductRelease("productPrueba", "1.0", "Product Prueba desc", Arrays.asList(attribute),
           //      null, Arrays.asList(os), true, productType);
@@ -106,7 +105,6 @@ public class ProductInstallatorSdcImplTest {
         productRelease.addAttribute(new Attribute("id_web_server","id_web_server"));
         productRelease.setDescription("Product Prueba desc");
         productRelease.setSupportedOOSS(Arrays.asList(os));
-        productRelease.setProductType(productType);
         productRelease.setWithArtifact(true);
 
         expectedProductInstance = new ProductInstance(productRelease, Status.INSTALLED, "vdc");
@@ -205,7 +203,6 @@ public class ProductInstallatorSdcImplTest {
         
         productReleaseWithoutAttrs.setDescription("Product Prueba desc");
         productReleaseWithoutAttrs.setSupportedOOSS(Arrays.asList(os));
-        productReleaseWithoutAttrs.setProductType(new ProductType("type A", "Type A desc"));
         productReleaseWithoutAttrs.setWithArtifact(true);
         
       

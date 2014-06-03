@@ -9,17 +9,12 @@
 
 
         <class>com.telefonica.euro_iaas.commons.properties.PersistentProperty</class>
-        <class>com.telefonica.euro_iaas.paasmanager.model.Configuration</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.OS</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.Attribute</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.Metadata</class>
-        <class>com.telefonica.euro_iaas.paasmanager.model.ProductType</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.ProductRelease</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.Artifact</class>
-        <class>com.telefonica.euro_iaas.paasmanager.model.ArtifactType</class>
-        <class>com.telefonica.euro_iaas.paasmanager.model.ApplicationType</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease</class>
-        <class>com.telefonica.euro_iaas.paasmanager.model.Service</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.Tier</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.Environment</class>
         <class>com.telefonica.euro_iaas.paasmanager.model.InstallableInstance</class>

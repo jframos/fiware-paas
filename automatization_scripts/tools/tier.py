@@ -38,7 +38,7 @@ class Network:
 
 class Tier:
     def __init__(self, tier_name, tier_image, tier_num_min='1', tier_num_max='1', tier_num_initial='1',
-                 tier_flavour='2', tier_keypair='', tier_floatingip='false', region="RegionOne" ):
+                 tier_flavour='2', tier_keypair='', tier_floatingip='false', region="Trento", affinity="anti-affinity" ):
         self.name = tier_name
         self.tier_num_min = tier_num_min
         self.tier_num_max = tier_num_max
@@ -50,6 +50,7 @@ class Tier:
         self.products = []
         self.networks = []
         self.region = region
+        self.affinity = affinity
 
     def add_product(self, product):
         self.products.append(product)
@@ -79,6 +80,8 @@ class Tier:
         keypair.text = self.tier_keypair
         floating_ip = SubElement(tier_dtos, "floatingip")
         floating_ip.text = self.tier_floatingip
+        affinity = SubElement(tier_dtos, "affinity")
+        affinity.text = self.affinity
 
         region = SubElement(tier_dtos, "region")
         region.text = self.region
