@@ -12,10 +12,13 @@
 
 # Key from http://apt.opscode.com/packages@opscode.com.gpg.key
 runcmd:
- - mkdir /etc/chef
- - curl -L https://www.opscode.com/chef/install.sh | bash
- - sed -i 's/ohai_time Time.now.to_f/ohai_time Time.now/' ./opt/chef/embedded/lib/ruby/gems/1.9.1/gems/ohai-7.0.4/lib/ohai/plugins/ohai_time.rb
- - chef-client -i 60 -s 6
+     - mkdir /etc/chef
+     - curl -L https://www.opscode.com/chef/install.sh | bash
+     - sed -i 's/ohai_time Time.now.to_f/ohai_time Time.now/' ./opt/chef/embedded/lib/ruby/gems/1.9.1/gems/ohai-7.0.4/lib/ohai/plugins/ohai_time.rb
+     - mkdir -p /var/log/chef
+     - chef-client -i 60 -s 6 -L /var/log/chef/client.log
+     - echo 130.206.82.190 puppet-master.novalocal > /etc/hosts
+
 
 chef:
 
@@ -37,7 +40,27 @@ chef:
  # Default validation name is chef-validator
  validation_key: |
 {validation_key}
- 
+
+puppet:
+ # Every key present in the conf object will be added to puppet.conf:
+ # [name]
+ # subkey=value
+ #
+ # For example the configuration below will have the following section
+ # added to puppet.conf:
+ # [puppetd]
+ # server=puppetmaster.example.org
+ # certname=i-0123456.ip-X-Y-Z.cloud.internal
+ #
+ # The puppmaster ca certificate will be available in
+ # /var/lib/puppet/ssl/certs/ca.pem
+ conf:
+   agent:
+     server: "puppet-master.novalocal"
+     runinterval: "60"
+
+
+
  # Capture all subprocess output into a logfile
 # Useful for troubleshooting cloud-init issues
 output: {all: '| tee -a /var/log/cloud-init-output.log'}
