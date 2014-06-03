@@ -28,6 +28,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.HashSet;
 
+import net.sf.json.JSONObject;
+
 import org.junit.Test;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -82,4 +84,37 @@ public class Others {
         assertEquals(taskError.getMessage(), "error");
 
     }
+    
+    @Test
+    public void testLimitFromJson() throws Exception {
+        
+    	String limits ="  { maxServerMeta: 128, maxPersonality: 5, maxImageMeta: 128, maxPersonalitySize: 10240, maxSecurityGroupRules: 20, "+
+                       " maxTotalKeypairs: 100, totalRAMUsed: 2560, totalInstancesUsed: 2, maxSecurityGroups: 10, totalFloatingIpsUsed: 0, maxTotalCores: 20, "+
+                       " totalSecurityGroupsUsed: 0, maxTotalFloatingIps: 10, maxTotalInstances: 10, totalCoresUsed: 2, maxTotalRAMSize: 51200 }  ";
+        
+        Limits limit = new Limits();
+        JSONObject json = new JSONObject ().fromObject(limits);
+        limit.fromJson(json);
+        
+        assertEquals (limit.getTotalSecurityGroups(), new Integer(0));
+        assertEquals (limit.getMaxTotalFloatingIps(), new Integer(10));
+        assertEquals (limit.getMaxTotalInstances(), new Integer(10));
+        assertEquals (limit.getTotalFloatingIpsUsed(), new Integer(0));
+        assertEquals (limit.getTotalInstancesUsed(), new Integer(2));
+        assertEquals (limit.getTotalSecurityGroups(), new Integer(0));
+
+    }
+    
+    @Test
+    public void testTemplate () throws Exception {
+    	TierInstance tierInstance = new TierInstance ();
+    	tierInstance.setName("tiername");
+    	Template template = new Template ();
+    	template.setName("name");
+    	template.setTierInstance(tierInstance);
+    	
+    	assertEquals(template.getName(), "name");
+    	assertEquals(template.getTierInstance().getName(), "tiername");
+   }
+
 }

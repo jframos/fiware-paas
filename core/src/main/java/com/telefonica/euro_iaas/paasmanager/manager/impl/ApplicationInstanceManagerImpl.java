@@ -37,7 +37,6 @@ import com.telefonica.euro_iaas.paasmanager.dao.ApplicationInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ApplicationReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ArtifactDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.paasmanager.exception.ApplicationTypeNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
@@ -86,7 +85,7 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
      */
     public ApplicationInstance install(ClaudiaData data, EnvironmentInstance environmentInstance,
             ApplicationRelease applicationRelease) throws ProductReleaseNotFoundException, InvalidEntityException,
-            AlreadyExistsEntityException, ApplicationTypeNotFoundException, ProductInstallatorException {
+            AlreadyExistsEntityException, ProductInstallatorException {
 
         log.info("Install aplication " + applicationRelease.getName() + " " + applicationRelease.getVersion() + " on "
                 + " enviornment " + environmentInstance + " with number of artifacts "
@@ -188,7 +187,7 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
      * @throws AlreadyExistsEntityException
      */
     private ApplicationInstance insertApplicationInstanceDB(ApplicationInstance application)
-            throws ProductReleaseNotFoundException, ApplicationTypeNotFoundException, InvalidEntityException,
+            throws ProductReleaseNotFoundException,  InvalidEntityException,
             AlreadyExistsEntityException {
         log.debug("Inser application " + application.getName() + " in DB");
 
@@ -238,7 +237,7 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
             try {
                 applicationRelease = applicationReleaseDao.create(new ApplicationRelease(application
                         .getApplicationRelease().getName(), application.getApplicationRelease().getVersion(),
-                        application.getApplicationRelease().getDescription(), null,
+                        application.getApplicationRelease().getDescription(), 
 
                         application.getApplicationRelease().getTransitableReleases(), artifactsDB));
             } catch (AlreadyExistsEntityException e3) {

@@ -57,8 +57,6 @@ public class ApplicationRelease {
     @Column(length = 2048)
     private String description;
 
-    @ManyToOne
-    private ApplicationType applicationType;
 
     @XmlTransient
     @ManyToMany
@@ -95,13 +93,12 @@ public class ApplicationRelease {
      * @param transitableReleases
      * @param artifacts
      */
-    public ApplicationRelease(String name, String version, String description, ApplicationType applicationType,
+    public ApplicationRelease(String name, String version, String description,
             List<ApplicationRelease> transitableReleases, List<Artifact> artifacts) {
         this.id = name + "-" + version;
         this.name = name;
         this.version = version;
         this.description = description;
-        this.applicationType = applicationType;
         this.artifacts = artifacts;
         this.transitableReleases = transitableReleases;
     }
@@ -132,12 +129,6 @@ public class ApplicationRelease {
         return true;
     }
 
-    /**
-     * @return the applicationType
-     */
-    public ApplicationType getApplicationType() {
-        return applicationType;
-    }
 
     /**
      * @return the artifacts
@@ -193,13 +184,6 @@ public class ApplicationRelease {
         return result;
     }
 
-    /**
-     * @param applicationType
-     *            the applicationType to set
-     */
-    public void setApplicationType(ApplicationType applicationType) {
-        this.applicationType = applicationType;
-    }
 
     /**
      * @param artifacts

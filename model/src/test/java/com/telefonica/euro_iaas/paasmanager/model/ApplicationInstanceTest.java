@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ArtifactDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
@@ -147,6 +148,29 @@ public class ApplicationInstanceTest extends TestCase {
         assertEquals(artifact.getProductRelease().getProduct(), PRODUCT_NAME);
         assertEquals(artifact.getProductRelease().getVersion(), PRODUCT_VERSION);
     }
+    
+    @Test
+    public void testApplicationInstance() throws Exception {
+        ProductRelease productRelease = new ProductRelease (PRODUCT_NAME, PRODUCT_VERSION);
+        Artifact artifactDto = new Artifact(ARTIFACT_NAME, ARTIFACT_PATH, productRelease);
+        ArrayList<Artifact> artifacts= new ArrayList<Artifact> ();
+        artifacts.add(artifactDto);
+
+        ApplicationRelease applicationRelease = new ApplicationRelease (APP_NAME, APP_VERSION);
+        applicationRelease.setArtifacts(artifacts);
+        
+
+        EnvironmentInstance environmentInstance = new EnvironmentInstance ();
+        environmentInstance.setBlueprintName("blueprintName");
+
+        ApplicationInstance applicationInstance = new ApplicationInstance (applicationRelease, environmentInstance);
+      
+        
+        assertEquals(applicationInstance.getName(), APP_NAME+ "-"+"blueprintName");
+        assertEquals(applicationInstance.getApplicationRelease().getVersion(), APP_VERSION);
+      
+    }
+
 
    
 

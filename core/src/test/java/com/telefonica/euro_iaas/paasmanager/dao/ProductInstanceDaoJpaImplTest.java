@@ -45,7 +45,6 @@ public class ProductInstanceDaoJpaImplTest {
     private ProductInstanceDao productInstanceDao;
     private OSDao osDao;
     private ProductReleaseDao productReleaseDao;
-    private ProductTypeDao productTypeDao;
     private ProductRelease productRelease;
 
     public final static String PINSTANCE_NAME = "instanceName";
@@ -146,14 +145,6 @@ public class ProductInstanceDaoJpaImplTest {
      */
     public void setProductReleaseDao(ProductReleaseDao productReleaseDao) {
         this.productReleaseDao = productReleaseDao;
-    }
-
-    /**
-     * @param productTypeDao
-     *            the productTypeDao to set
-     */
-    public void setProductTypeDao(ProductTypeDao productTypeDao) {
-        this.productTypeDao = productTypeDao;
     }
 
     @Before

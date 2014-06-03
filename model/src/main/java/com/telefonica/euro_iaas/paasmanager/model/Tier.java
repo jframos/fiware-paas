@@ -71,6 +71,8 @@ public class Tier {
 
     private String keypair = "";
     private String floatingip = "false";
+    
+    private String affinity = "None";
 
     private Integer maximumNumberInstances = new Integer(0);
     private Integer minimumNumberInstances = new Integer(0);
@@ -580,4 +582,14 @@ public class Tier {
     public void setRegion(String region) {
         this.region = region;
     }
+    
+    public String getAffinity() {
+        return affinity;
+    }
+
+    public void setAffinity(String affinity) {
+        this.affinity = affinity;
+    }
+    
+    
 }
