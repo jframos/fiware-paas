@@ -377,12 +377,13 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
             log.debug("Network instance to be deployed: " + network.getNetworkName() + " vdc " + data.getVdc()
                     + " region " + networkInst.getRegionName());
 
-            try {
-                networkInst = networkInstanceManager
-                        .load(networkInst.getNetworkName(), data.getVdc(), tier.getRegion());
-                log.debug("the network inst" + networkInst.getNetworkName() + " already exists");
-            } catch (EntityNotFoundException e1) {
-                try {
+            if (networkInstanceManager.exists(data, networkInst, tier.getRegion())) {
+            	log.debug("the network inst " + networkInst.getNetworkName() + " already exists");
+            	networkInst = networkInstanceManager
+                .load(networkInst.getNetworkName(), data.getVdc(), tier.getRegion());
+            } else {
+            	try {
+            		log.debug("the network inst " + networkInst.getNetworkName() + " do not exists");
                     networkInst = networkInstanceManager.create(data, networkInst, tierInstance.getTier().getRegion());
                 } catch (AlreadyExistsEntityException e2) {
                     throw new InvalidEntityException(network);
