@@ -351,6 +351,18 @@ public class Environment {
 
         return nets;
     }
+    
+    public void  setFederatedNetworks() {
+    	Set<String> networkFederated = getFederatedNetworks ();
+    	 for (Tier tier : this.getTiers()) {
+             for (Network net : tier.getNetworks()) {
+                 if (networkFederated.contains(net.getNetworkName())) {
+                	 net.setFederatedNetwork(true);
+                 }
+             }
+
+         }
+    }
 
     private boolean isNetworkInTwoRegions() {
         HashMap<String, String> map = getRegionNetworks();

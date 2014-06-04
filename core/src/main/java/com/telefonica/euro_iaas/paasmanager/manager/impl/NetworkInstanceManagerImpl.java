@@ -158,7 +158,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         for (SubNetworkInstance subNet : subNetAxu) {
 
             log.debug("SubNetwork " + subNet.getName() + " id net " + subNet.getIdNetwork());
-            String cidr = getDefaultCidr(claudiaData, region);
+            String cidr = getDefaultCidr(claudiaData, region, networkInstance.getfederatedNetwork());
             subNet.setIdNetwork(networkInstance.getIdNetwork());
             subNet.setCidr(cidr);
             networkInstance.updateSubNet(subNet);
@@ -316,7 +316,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         return networkClient.loadAllNetwork(claudiaData, region).size();
     }
 
-    private String getDefaultCidr(ClaudiaData claudiaData, String region) throws InvalidEntityException,
+    private String getDefaultCidr(ClaudiaData claudiaData, String region, boolean federated) throws InvalidEntityException,
             AlreadyExistsEntityException, InfrastructureException {
         int cidrOpenstack = 1;
         if (!(claudiaData.getVdc() == null || claudiaData.getVdc().isEmpty())) {
@@ -325,7 +325,9 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
 
         int cidrdb = this.findAll().size();
         int cidrCount = cidrdb + cidrOpenstack;
-
+        if (federated) {
+        	return "155.0." + cidrCount + ".0/24";
+        }
         return "10.0." + cidrCount + ".0/24";
     }
 

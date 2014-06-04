@@ -49,16 +49,7 @@ public interface ProductReleaseDao extends BaseDAO<ProductRelease, String> {
      * @throws InvalidEntityException
      */
     ProductRelease load(String product, String version, String tierName) throws EntityNotFoundException;
-
-    /**
-     * Find the product releases that match with the given criteria.
-     * 
-     * @param criteria
-     *            the search criteria
-     * @return the list of elements that match with the criteria.
-     */
-    List<ProductRelease> findByCriteria(ProductReleaseSearchCriteria criteria);
-    
+   
     /**
      * 
      * @param name
