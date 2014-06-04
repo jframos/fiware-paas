@@ -204,6 +204,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     	String file = null;
     	String hostname = tierInstance.getVM().getHostname();
     	String chefServerUrl;
+    	String puppetUrl;
     	try {
 			file = fileUtils.readFile("userdata");
 			log.debug ("File userdata read");
@@ -218,6 +219,14 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 			log.warn ("Error to obtain the chef-server url" + e1.getMessage());
 			return file;
 		}
+		
+		try {
+            puppetUrl = openStackRegion.getPuppetMasterEndPoint(tierInstance.getTier().getRegion(), claudiaData.getUser().getToken());
+        } catch (Exception e1) {
+            log.warn ("Error to obtain the puppetmaster url" + e1.getMessage());
+            return file;
+        }
+        
     	String chefValidationKey = "";
 		try {
 			chefValidationKey = fileUtils.readFile("validation.pem", "/etc/chef/");
@@ -227,7 +236,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 		}
     	
 		
-    	file = file.replace("{node_name}", hostname).replace( "{server_url}" ,chefServerUrl).replace("{validation_key}", chefValidationKey);
+    	file = file.replace("{node_name}", hostname).replace( "{server_url}" ,chefServerUrl).replace("{validation_key}", chefValidationKey).replace("{puppet_master}", puppetUrl);
     	log.debug ("payload " + file);
     	return file;	
     	
