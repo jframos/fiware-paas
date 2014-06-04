@@ -404,15 +404,6 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         return ports;
     }
 
-    /*
-     * private NetworkInstance fromJsonToNetworkInstance(JSONObject jsonNet, String vdc) throws JSONException { String
-     * name = (String) jsonNet.get("name"); boolean shared = (Boolean) jsonNet.get("shared"); String id = (String)
-     * jsonNet.get("id"); boolean adminStateUp = (Boolean) jsonNet.get("admin_state_up"); String tenantId = (String)
-     * jsonNet.get("tenant_id"); NetworkInstance netInst = new NetworkInstance(name, vdc); netInst.setIdNetwork(id);
-     * netInst.setShared(shared); netInst.setTenantId(tenantId); netInst.setAdminStateUp(adminStateUp); return netInst;
-     * }
-     */
-
     /**
      * It obtains information about the network.
      * 
