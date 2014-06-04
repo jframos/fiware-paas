@@ -60,6 +60,12 @@ public interface SubNetworkInstanceManager {
      */
     void delete(ClaudiaData claudiaData, SubNetworkInstance subNetworkInstance, String region)
             throws InvalidEntityException, InfrastructureException;
+    
+    /**
+     * 
+     * @param subNetworkInstance
+     */
+    void deleteInBD( SubNetworkInstance subNetworkInstance) ;
 
     /**
      * Retrieve all Network created in the system.

@@ -160,6 +160,8 @@ public class ITTestOpenStackUtilImpl {
     OpenStackUtilImpl openStackUtil = null;
     SystemPropertiesProvider systemPropertiesProvider = null;
     PaasManagerUser user = null;
+    
+  
 
     /**
      * Build the payload to deploy a VM (createServer)
@@ -192,6 +194,13 @@ public class ITTestOpenStackUtilImpl {
         user.setToken(authToken);
         user.setTenantId(tenant);
         user.setUsername(username);
+        OpenOperationUtil openOperationUtil = mock (OpenOperationUtil.class);
+        OpenStackConfigUtil openStackConfigUtil = mock (OpenStackConfigUtil.class);
+        OpenStackRegion openStackRegion  = mock (OpenStackRegion.class);
+        openStackUtil = new OpenStackUtilImpl ();
+        openStackUtil.setOpenOperationUtil(openOperationUtil);
+        openStackUtil.setOpenStackConfigUtil(openStackConfigUtil);
+        openStackUtil.setOpenStackRegion(openStackRegion);
 
         // http://130.206.80.63:8774/
 
