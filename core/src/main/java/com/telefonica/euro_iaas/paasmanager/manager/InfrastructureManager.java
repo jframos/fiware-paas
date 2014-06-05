@@ -40,31 +40,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 
 public interface InfrastructureManager {
 
-    /**
-     * Obtain a List of VMs
-     * 
-     * @param number_vms
-     * @return lists of VMs.
-     */
-    // List<VM> getVMs(String vdc, Integer number_vms) throws
-    // InfrastructureException,
-    // IPNotRetrievedException;
-
-    /**
-     * Create a List of VMs from an ovf
-     * 
-     * @param envInstance
-     * @param ovf
-     * @param vdc
-     * @param org
-     * @return list of VMS created
-     * @throws InfrastructureException
-     */
-    // List<VM> createEnvironment(EnvironmentInstance envInstance, Tier
-    // tierInstance, String ovf,
-    // ClaudiaData claudiaData) throws InfrastructureException,
-    // InvalidVappException;
-
+    
     /**
      * Create an EnvironmentInstance
      * 
@@ -179,5 +155,7 @@ public interface InfrastructureManager {
      * Generates a instance name or hostname.
      */
     String generateVMName(String bluePrintName, String tierName, int numReplica, String vdc);
+    
+    public String getFederatedRange (ClaudiaData data, String region) throws InfrastructureException ; 
 
 }

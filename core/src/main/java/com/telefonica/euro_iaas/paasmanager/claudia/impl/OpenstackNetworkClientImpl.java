@@ -360,6 +360,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         }
         return networks;
     }
+    
 
     /**
      * It loads all networks.

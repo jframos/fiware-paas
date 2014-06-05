@@ -50,16 +50,6 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
         return super.findAll(Environment.class);
     }
 
-    public Environment load(String envName) throws EntityNotFoundException {
-
-        try {
-            // return filterEqualTiers(findByEnvironmentName(envName));
-            return findByEnvironmentName(envName);
-        } catch (Exception e) {
-            // return filterEqualTiers(findByEnvironmentNameNoTiers (envName));
-            return findByEnvironmentNameNoTiers(envName);
-        }
-    }
 
     public Environment load(String envName, String vdc) throws EntityNotFoundException {
         return findByEnvironmentNameVdc(envName, vdc);
@@ -133,38 +123,6 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang .String)
-     */
-    private Environment findByEnvironmentName(String envName) throws EntityNotFoundException {
-        Query query = getEntityManager().createQuery(
-                "select p from Environment p left join " + "fetch p.tiers where p.name = :name");
-        query.setParameter("name", envName);
-        Environment environment = null;
-        try {
-            environment = (Environment) query.getResultList().get(0);
-            getEntityManager().flush();
-        } catch (Exception e) {
-            throw new EntityNotFoundException(Environment.class, "name", envName);
-        }
-        return environment;
-    }
-
-    private Environment findByEnvironmentNameNoTiers(String envName) throws EntityNotFoundException {
-        Query query = getEntityManager().createQuery(
-                "select p from Environment p join " + "fetch p.tiers where p.name = :name");
-        query.setParameter("name", envName);
-        Environment environment = null;
-        try {
-            environment = (Environment) query.getResultList().get(0);
-            getEntityManager().flush();
-        } catch (Exception e) {
-            throw new EntityNotFoundException(Environment.class, "name", envName);
-        }
-        return environment;
-    }
-
     private Environment findByEnvironmentNameVdc(String envName, String vdc) throws EntityNotFoundException {
         Query query = getEntityManager().createQuery(
                 "select p from Environment p left join " + "fetch p.tiers where p.name = :name and p.vdc = :vdc");
@@ -198,4 +156,11 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
         }
         return result;
     }
+
+
+	@Override
+	public Environment load(String arg0) throws EntityNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

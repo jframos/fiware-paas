@@ -24,9 +24,11 @@
 
 package com.telefonica.euro_iaas.paasmanager.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -285,7 +287,7 @@ public class Environment {
         return envDto;
     }
 
-    private HashMap getTierRegions() {
+  /*  private HashMap getTierRegions() {
         HashMap<String, String> map = new HashMap<String, String>();
         for (Tier tier : this.getTiers()) {
             map.put(tier.getName(), tier.getRegion());
@@ -299,9 +301,9 @@ public class Environment {
             map.put(tier.getName(), tier.getNetworks());
         }
         return map;
-    }
+    }*/
 
-    public HashMap getRegionNetworks() {
+   /* public HashMap getRegionNetworks() {
         HashMap<String, Set<String>> map = new HashMap<String, Set<String>>();
         Set<String> nets;
         for (Tier tier : this.getTiers()) {
@@ -318,7 +320,7 @@ public class Environment {
 
         }
         return map;
-    }
+    }*/
 
     public HashMap<String, Set<String>> getNetworksRegion() {
         HashMap<String, Set<String>> map = new HashMap<String, Set<String>>();
@@ -351,23 +353,7 @@ public class Environment {
 
         return nets;
     }
-    
-    public void  setFederatedNetworks() {
-    	Set<String> networkFederated = getFederatedNetworks ();
-    	 for (Tier tier : this.getTiers()) {
-             for (Network net : tier.getNetworks()) {
-                 if (networkFederated.contains(net.getNetworkName())) {
-                	 net.setFederatedNetwork(true);
-                 }
-             }
-
-         }
-    }
-
-    private boolean isNetworkInTwoRegions() {
-        HashMap<String, String> map = getRegionNetworks();
-        return false;
-    }
+ 
 
     private int getNumberRegions() {
         Set<String> map = new HashSet<String>();
@@ -397,5 +383,20 @@ public class Environment {
         }
         return false;
     }
+    
+    public Network getNetworkWithRegionAndName (String region, String networkName) {
+    	
+    	for (Tier tier: this.getTiers()) {
+    		if (tier.getRegion().equals(region)) {
+    			for (Network net: tier.getNetworks()) {
+    				if (net.getNetworkName().equals(networkName)) {
+    					return net;
+    				}
+    			}
+    		}
+    	}
+    	return null;
+    } 
+
 
 }

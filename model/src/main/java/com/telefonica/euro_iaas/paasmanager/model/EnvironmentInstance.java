@@ -25,6 +25,7 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -71,6 +72,7 @@ public class EnvironmentInstance extends InstallableInstance {
     @Column(length = 256)
     private String blueprintName = "";
     private String taskId = "";
+
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "environmentInstance_has_tierInstances", joinColumns = { @JoinColumn(name = "environmentinstance_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) })

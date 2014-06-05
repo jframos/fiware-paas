@@ -25,6 +25,7 @@
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,6 +57,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
@@ -124,7 +126,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         log.info("Is the environmetn federated ? ");
         if (environment.isNetworkFederated()) {
             log.info(" yes Is the environmetn federated ");
-
+            updateFederatedNetworks (claudiaData,environment);
         }
 
         log.info("Creating the infrastructure");
@@ -200,6 +202,38 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         // insertEnvironmentInstanceDB( claudiaData, environmentInstance);
 
         return environmentInstance;
+    }
+    
+    public void updateFederatedNetworks (ClaudiaData claudiaData, Environment environment ) throws InfrastructureException {
+    	log.info(" Update the federated network ");
+        Set<String> fedeNetwork = environment.getFederatedNetworks();
+        String range = "";
+        
+        HashMap<String,String> regionRange = new HashMap<String,String> ();
+        HashMap<String, Set<String>> map = environment.getNetworksRegion();
+        int i =0;
+        for (String net: fedeNetwork) {
+        	log.debug ("Updating tier for net " + net);
+        	Set<String> regions = map.get(net);
+        	for (String region: regions) {
+        		log.debug ("Updating tier for net " + net + " a region " + region);
+        		range = infrastructureManager.getFederatedRange(claudiaData, region);
+        		log.debug ("Updating tier for net " + net + " a region " + region + " " + range);
+        		Network network = environment.getNetworkWithRegionAndName(region, net);
+        		network.setFederatedNetwork(true);
+        		
+        		if (i ==0) {
+        			
+        			network.setFederatedRange(range+".0.0/25");
+        			log.debug (" Federate range " + range+"0.0/25");
+        		    i++;
+        		} else {
+        			network.setFederatedRange(range+".0.128/25");
+        			log.debug (" Federate range " + range+"0.128/25");
+        		}
+        	}
+
+        }
     }
 
     public boolean installSoftwareInEnvironmentInstance(ClaudiaData claudiaData, EnvironmentInstance environmentInstance)

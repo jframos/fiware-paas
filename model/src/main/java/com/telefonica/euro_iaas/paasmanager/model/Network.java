@@ -71,6 +71,8 @@ public class Network {
     
     private boolean federatedNetwork = false;
     
+    private String federatedRange = "0";
+    
 
     @OneToMany
     private Set<SubNetwork> subNets;
@@ -184,6 +186,14 @@ public class Network {
     public boolean getfederatedNetwork () {
     	return this.federatedNetwork;
     }
+    
+    public void setFederatedRange(String range) {
+    	this.federatedRange = range;
+    }
+    
+    public String getFederatedRange() {
+    	return this.federatedRange;
+    }
 
 
     /**
@@ -226,6 +236,7 @@ public class Network {
     public NetworkInstance toNetworkInstance() {
         NetworkInstance networkInstance = new NetworkInstance(this.name, vdc, region);
         networkInstance.setFederatedNetwork(this.getfederatedNetwork());
+        networkInstance.setFederatedRange(this.getFederatedRange());
         for (SubNetwork subnet: this.getSubNets()) {
             SubNetworkInstance subNetInstance = subnet.toInstance(vdc, region);
             networkInstance.addSubNet(subNetInstance);

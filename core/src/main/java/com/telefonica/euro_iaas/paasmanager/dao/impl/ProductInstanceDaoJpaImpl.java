@@ -87,12 +87,6 @@ public class ProductInstanceDaoJpaImpl extends AbstractBaseDao<ProductInstance, 
         return result;
     }
 
-    private List<ProductInstance> filterByEnvironment(List<ProductInstance> productInstance,
-            EnvironmentInstance environmentInstance) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public Criterion getVMCriteria(Criteria baseCriteria, VM vm) {
         if (!StringUtils.isEmpty(vm.getFqn()) && !StringUtils.isEmpty(vm.getIp())
                 && !StringUtils.isEmpty(vm.getDomain()) && !StringUtils.isEmpty(vm.getHostname())) {
@@ -120,14 +114,5 @@ public class ProductInstanceDaoJpaImpl extends AbstractBaseDao<ProductInstance, 
         return instances.iterator().next();
     }
 
-    private Criterion addStatus(Criterion statusCr, Status status) {
-        SimpleExpression expression = Restrictions.eq("status", status);
-        if (statusCr == null) {
-            statusCr = expression;
-        } else {
-            statusCr = Restrictions.or(statusCr, expression);
-        }
-        return statusCr;
-    }
 
 }

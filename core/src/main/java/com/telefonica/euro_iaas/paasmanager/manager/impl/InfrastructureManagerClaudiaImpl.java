@@ -53,6 +53,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Template;
@@ -129,8 +130,9 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 vm.setFqn(fqn);
                 vm.setHostname(hostname);
                 tierInstance.setVM(vm);
-
+  
                 log.debug("Deploy networks if required");
+                
                 this.deployNetworks(claudiaData, tierInstance);
                 log.debug("Number of networks " + tierInstance.getNetworkInstances().size() + " floatin ip "
                         + tierInstance.getTier().getFloatingip());
@@ -473,6 +475,15 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
     public void setTierManager(TierManager tierManager) {
         this.tierManager = tierManager;
+    }
+    
+    public String getFederatedRange (ClaudiaData data, String region)
+        throws InfrastructureException { 
+    	
+        int cidrdb = networkInstanceManager.findAll().size();
+        int cidrOpenstack = networkInstanceManager.getNumberDeployedNetwork (data, region);
+        int cidrCount = cidrdb + cidrOpenstack;
+        return "155.0."+cidrCount;
     }
 
     public void federatedNetworks(ClaudiaData data, EnvironmentInstance environmentInstance)

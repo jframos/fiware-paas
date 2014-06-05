@@ -76,6 +76,7 @@ public class NetworkInstance {
     private boolean external;
     
     private boolean federatedNetwork = false;
+    private String federatedRange = "0";
 
     private int subNetCount;
 
@@ -292,8 +293,16 @@ public class NetworkInstance {
     	this.federatedNetwork = federatedNetwork;
     }
     
+    public void setFederatedRange (String range) {
+    	this.federatedRange = range;
+    }
+    
     public boolean getfederatedNetwork () {
     	return this.federatedNetwork;
+    }
+    
+    public String getFederatedRange () {
+    	return this.federatedRange;
     }
 
     /**
