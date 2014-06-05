@@ -17,8 +17,7 @@ runcmd:
      - sed -i 's/ohai_time Time.now.to_f/ohai_time Time.now/' ./opt/chef/embedded/lib/ruby/gems/1.9.1/gems/ohai-7.0.4/lib/ohai/plugins/ohai_time.rb
      - mkdir -p /var/log/chef
      - chef-client -i 60 -s 6 -L /var/log/chef/client.log
-     - echo {puppet_master} puppet-master.novalocal >> /etc/hosts
-     
+
 chef:
 
  # Valid values are 'gems' and 'packages' and 'omnibus'
