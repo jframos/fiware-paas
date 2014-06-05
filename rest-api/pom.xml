@@ -108,6 +108,12 @@
             <groupId>com.thetransactioncompany</groupId>
             <artifactId>java-property-utils</artifactId>
             <version>1.6</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
@@ -143,8 +149,8 @@
 
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
-            <artifactId>jsp-api</artifactId>
-            <version>2.2</version>
+            <artifactId>javax.servlet.jsp-api</artifactId>
+            <version>2.3.1</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -166,6 +172,7 @@
                 </exclusion>
 
             </exclusions>
+            <scope>test</scope>
         </dependency>
 
         <!--

@@ -48,11 +48,21 @@ public class ErrorHandler extends HttpServlet {
     // Method to handle GET method request.
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String responseMessage = "{\"errors\":[ ";
-
         response.setContentType("application/json; charset=UTF-8");
 
-        PrintWriter out = new PrintWriter(new OutputStreamWriter(response.getOutputStream(), "UTF8"), true);
+        PrintWriter out = getOutputStream(response);
+
+        String responseMessage = createResponseMessage(request, response);
+        log.info("response message: " + responseMessage);
+
+        out.println(responseMessage);
+        out.flush();
+
+    }
+
+    public String createResponseMessage(HttpServletRequest request, HttpServletResponse response) {
+
+        String responseMessage = "{\"errors\":[ ";
 
         String message = (String) request.getAttribute("javax.servlet.error.message");
         Integer code = (Integer) request.getAttribute("javax.servlet.error.status_code");
@@ -99,11 +109,11 @@ public class ErrorHandler extends HttpServlet {
         }
 
         responseMessage += "{\"message\":\"" + message + "\",\"code\":" + code + "}]}";
-        log.info("response message: " + responseMessage);
+        return responseMessage;
+    }
 
-        out.println(responseMessage);
-        out.flush();
-
+    private PrintWriter getOutputStream(HttpServletResponse response) throws IOException {
+        return new PrintWriter(new OutputStreamWriter(response.getOutputStream(), "UTF8"), true);
     }
 
     // Method to handle POST method request.

@@ -38,6 +38,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -80,7 +81,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
             Environment env = environmentManager.load(envName, vdc);
             environmentManager.destroy(claudiaData, env);
         } catch (Exception e) {
-            throw new APIException(e);
+            throw new APIException(new InvalidEntityException(e.getMessage()));
         }
 
     }
