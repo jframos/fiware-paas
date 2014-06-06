@@ -85,7 +85,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
     public NetworkInstance create (ClaudiaData claudiaData, NetworkInstance networkInstance, String region) throws InfrastructureException, EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
     	networkClient.deployNetwork(claudiaData, networkInstance, region);
         log.debug("Network isntance " + networkInstance.getNetworkName() + " with vdc " + claudiaData.getVdc()
-                + ": " + networkInstance.getIdNetwork() + " deployed");
+                + ": " + networkInstance.getIdNetwork() + " and federated " + networkInstance.getFederatedRange() + " " + networkInstance.getfederatedNetwork()+  " deployed");
         try {
             createSubNetworksInstance(claudiaData,networkInstance, region);
             networkClient.addNetworkToPublicRouter(claudiaData, networkInstance, region);
@@ -160,7 +160,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         	String cidr = null;
             log.debug("SubNetwork " + subNet.getName() + " id net " + subNet.getIdNetwork());
             if (networkInstance.getfederatedNetwork()) {
-            	cidr = networkInstance.getRegionName();
+            	cidr = networkInstance.getFederatedRange();
             }
             else {
                 cidr = getDefaultCidr(claudiaData, region );

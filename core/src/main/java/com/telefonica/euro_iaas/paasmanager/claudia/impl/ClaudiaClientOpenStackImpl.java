@@ -361,7 +361,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         // openStackUtilImpl = new OpenStackUtilImpl(claudiaData.getUser());
 
         log.debug("Deploy server " + claudiaData.getService() + " tier instance " + tierInstance.getName()
-                + " replica " + replica + " with networks " + tierInstance.getNetworkInstances());
+                + " replica " + replica + " with networks " + tierInstance.getNetworkInstances() + " and region " + tierInstance.getTier().getRegion());
 
         if (tierInstance.getNetworkInstances().isEmpty()) {
             try {
@@ -553,7 +553,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 
     public void undeployVMReplica(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
         log.debug("Undeploy VM replica " + tierInstance.getName() + " for region " + tierInstance.getTier().getRegion()
-                + " and user " + tierInstance.getTier().getVdc());
+                + " and user " + tierInstance.getTier().getVdc() );
         try {
 
             String region = tierInstance.getTier().getRegion();

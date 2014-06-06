@@ -24,11 +24,10 @@
 
 package com.telefonica.euro_iaas.paasmanager.model;
 
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -40,6 +39,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+
 
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
@@ -55,6 +55,7 @@ public class Environment {
     public static final String ORG_FIELD = "org";
     public static final String VDC_FIELD = "vdc";
     public static final String ENVIRONMENT_NAME_FIELD = "name";
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -359,7 +360,9 @@ public class Environment {
         Set<String> map = new HashSet<String>();
         for (Tier tier : this.getTiers()) {
             map.add(tier.getRegion());
+            System.out.println ("adding " + tier.getRegion() );
         }
+        System.out.println ("Number of regions " + map.size());
         return map.size();
     }
 

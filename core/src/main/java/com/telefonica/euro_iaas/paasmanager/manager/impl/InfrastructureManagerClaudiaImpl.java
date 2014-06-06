@@ -109,7 +109,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         for (Tier tier : tiers) {
             for (int numReplica = 1; numReplica <= tier.getInitialNumberInstances(); numReplica++) {
                 // claudiaData.setVm(tier.getName());
-                log.debug("Deploying tier instance for tier " + tier.getName());
+                log.debug("Deploying tier instance for tier " + tier.getName() + " " + tier.getRegion());
 
                 TierInstance tierInstance = new TierInstance();
                 String name = generateVMName(environmentInstance.getBlueprintName(), tier.getName(), numReplica,
@@ -133,6 +133,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
   
                 log.debug("Deploy networks if required");
                 
+                log.debug("Deploying tier instance for tier " + tier.getName() + " " + tier.getRegion());
                 this.deployNetworks(claudiaData, tierInstance);
                 log.debug("Number of networks " + tierInstance.getNetworkInstances().size() + " floatin ip "
                         + tierInstance.getTier().getFloatingip());
@@ -373,11 +374,11 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
         for (Network network : networkToBeDeployed) {
             log.debug("Network instance to be deployed: " + network.getNetworkName() + " vdc " + data.getVdc() + " "
-                    + network.getRegion());
+                    + network.getRegion() + " and federated " + network.getfederatedNetwork() );
             network = networkManager.load(network.getNetworkName(), data.getVdc(), network.getRegion());
             NetworkInstance networkInst = network.toNetworkInstance();
             log.debug("Network instance to be deployed: " + network.getNetworkName() + " vdc " + data.getVdc()
-                    + " region " + networkInst.getRegionName());
+                    + " region " + networkInst.getRegionName() +  " and networkInst " + network.getfederatedNetwork());
 
             if (networkInstanceManager.exists(data, networkInst, tier.getRegion())) {
             	log.debug("the network inst " + networkInst.getNetworkName() + " already exists");

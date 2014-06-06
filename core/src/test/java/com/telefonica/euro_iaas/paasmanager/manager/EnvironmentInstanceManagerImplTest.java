@@ -32,7 +32,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import static org.mockito.Mockito.verify;
 
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentDao;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
@@ -79,6 +82,7 @@ public class EnvironmentInstanceManagerImplTest {
     private ProductInstance productInstance;
     private TierInstance tierInstance;
     private EnvironmentInstance environmentInstance;
+    private NetworkManager networkManager;
 
     private EnvironmentManager environmentManager;
     private InfrastructureManager infrastructureManager;
@@ -195,21 +199,20 @@ public class EnvironmentInstanceManagerImplTest {
         
         environmentInstanceManager = new EnvironmentInstanceManagerImpl();
         infrastructureManager = mock (InfrastructureManager.class);
+        networkManager = mock (NetworkManager.class);
         environmentInstanceManager.setInfrastructureManager(infrastructureManager);
+        environmentInstanceManager.setNetworkManager(networkManager);
     }
     
     @Test
-    public void testUpdateFederatedNetworks () throws InfrastructureException {
+    public void testUpdateFederatedNetworks () throws InfrastructureException, EntityNotFoundException, InvalidEntityException {
     	when (infrastructureManager.getFederatedRange(any(ClaudiaData.class), any(String.class))).thenReturn("12");
+    	Network net2 = new Network ("uno", "VDC", "region2");
+    	when (networkManager.load( any(String.class), any(String.class), any(String.class))).thenReturn(net2);
+
     	environmentInstanceManager.updateFederatedNetworks(claudiaData, environment);
-    	
-    	for (Tier tier: environment.getTiers()) {
-    		for (Network net: tier.getNetworks()) {
-    			assertEquals (net.getfederatedNetwork(), true);
-    		}
-    	}
-    
-       
+    //	verify (networkManager.update(any(Network.class)));
+
     }
 
     /*
