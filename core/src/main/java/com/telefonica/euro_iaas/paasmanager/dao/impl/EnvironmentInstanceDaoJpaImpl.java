@@ -61,15 +61,6 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
     }
 
     public EnvironmentInstance load(String name) throws EntityNotFoundException {
-
-        // return super.loadByField(EnvironmentInstance.class, "blueprintName",
-
-        // name);
-        /*
-         * try { return findByEnvironmentInstanceName(name); } catch (Exception e) { try { return
-         * findByEnvironmentInstanceNameNoTierInstances(name); } catch (Exception e2) { throw new
-         * EntityNotFoundException(EnvironmentInstance.class, name, e2); } }
-         */
         return null;
     }
 
@@ -111,16 +102,6 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
         return environments;
     }
 
-    private Criterion addStatus(Criterion statusCr, Status status) {
-        SimpleExpression expression = Restrictions.eq("status", status);
-        if (statusCr == null) {
-            statusCr = expression;
-        } else {
-            statusCr = Restrictions.or(statusCr, expression);
-        }
-        return statusCr;
-    }
-
     /*
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang .String)
@@ -140,30 +121,6 @@ public class EnvironmentInstanceDaoJpaImpl extends AbstractBaseDao<EnvironmentIn
         } catch (Exception e) {
             String message = " No EnvironmentInstance found in the database with tiers" + "with blueprintName: "
                     + envInstanceName + " and vdc " + vdc;
-            throw new EntityNotFoundException(EnvironmentInstance.class, message, envInstanceName);
-        }
-        return environmentInstance;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang .String)
-     */
-    private EnvironmentInstance findByEnvironmentInstanceNameVdc(String envInstanceName, String vdc)
-            throws EntityNotFoundException {
-
-        Query query = getEntityManager().createQuery(
-                "select p from EnvironmentInstance"
-                        + " p join fetch p.tierInstances where p.blueprintName = :blueprintName and p.vdc =:vdc");
-        query.setParameter("blueprintName", envInstanceName);
-        query.setParameter("vdc", vdc);
-        EnvironmentInstance environmentInstance = null;
-        try {
-            environmentInstance = (EnvironmentInstance) query.getResultList().get(0);
-            getEntityManager().flush();
-        } catch (Exception e) {
-            String message = " No EnvironmentInstance found in the database with tiers" + "with blueprintName: "
-                    + envInstanceName;
             throw new EntityNotFoundException(EnvironmentInstance.class, message, envInstanceName);
         }
         return environmentInstance;

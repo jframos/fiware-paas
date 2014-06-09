@@ -481,6 +481,7 @@ public class NetworkTest extends TestCase {
         assertEquals(network.equals(network3), true);
     }
     
+<<<<<<< HEAD
     @Test
     public void testPort() throws Exception {
 
@@ -490,6 +491,17 @@ public class NetworkTest extends TestCase {
         assertEquals(port.getNetworkId(), "networkId");
         assertEquals(port.equals(port2), false);
     }
+=======
+    @Test 
+    public void testToInstance () throws Exception  {
+    	 Network network = new Network(NETWORK_NAME, VDC,REGION);
+    	 NetworkInstance netInst = network.toNetworkInstance();
+    	 assertEquals (netInst.getfederatedNetwork(), false);
+    	 assertEquals (netInst.getFederatedRange(), "0");
+    	 
+    }
+
+>>>>>>> 20521df731913717737ffe312b40e9eb71be9b3f
     
     
 

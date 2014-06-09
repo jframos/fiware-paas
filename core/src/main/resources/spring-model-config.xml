@@ -5,7 +5,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
     <beans profile="fiware,dummy">
-        <bean id="restClient" class="com.sun.jersey.api.client.Client" factory-method="create"/>
+       <bean id="restClient" class="com.sun.jersey.api.client.Client" factory-method="create"/>
 
         <bean id="openStackRegion" class="com.telefonica.euro_iaas.paasmanager.util.impl.OpenStackRegionImpl">
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
@@ -95,6 +95,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="tierInstanceDao" ref="tierInstanceDao"/>
             <property name="tierManager" ref="tierManager"/>
             <property name="productReleaseManager" ref="productReleaseManager"/>
+            <property name="networkManager" ref="networkManager"/>
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
             <property name="productInstanceManager" ref="productInstanceManager"/>
             <property name="environmentManager" ref="environmentManager"/>

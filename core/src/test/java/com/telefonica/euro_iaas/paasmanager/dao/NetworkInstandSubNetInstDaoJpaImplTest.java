@@ -122,20 +122,13 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
 
     }
 
-    @Test
+    @Test(expected = EntityNotFoundException.class)
     public void testDestroyNetworkInstNoSubNetInst() throws Exception {
 
         NetworkInstance network = new NetworkInstance(NETWORK_NAME+3, "vdc", REGION);
         network = networkInstanceDao.create(network);
         networkInstanceDao.remove(network);
-        try {
-            networkInstanceDao.load(NETWORK_NAME+3,VDC, REGION);
-            fail("Should have thrown an EntityNotFoundException because the subnetwork instance does not exit!");
-        } catch (EntityNotFoundException e) {
-            assertNotNull(e);
-        }
-        
-
+        networkInstanceDao.load(NETWORK_NAME+3,VDC, REGION);
     }
 
     @Test(expected = EntityNotFoundException.class)
@@ -160,19 +153,23 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
 
     }
 
-    @Test()
-    public void testDeleteSubNet() throws InvalidEntityException, AlreadyExistsEntityException {
+    @Test(expected = EntityNotFoundException.class)
+    public void testDeleteSubNet() throws InvalidEntityException, AlreadyExistsEntityException, EntityNotFoundException {
 
         SubNetworkInstance subNet = new SubNetworkInstance(SUB_NETWORK_NAME+3, VDC, REGION);
         subNet = subNetworkInstanceDao.create(subNet);
         subNetworkInstanceDao.remove(subNet); 
-        try {
-            subNetworkInstanceDao.load(SUB_NETWORK_NAME+3, VDC, REGION);
-            fail("Should have thrown an EntityNotFoundException because the subnetwork instance does not exit!");
-        } catch (EntityNotFoundException e) {
-            assertNotNull(e);
-        }
-       
+        subNetworkInstanceDao.load(SUB_NETWORK_NAME+3, VDC, REGION);
+    }
+    
+    @Test
+    public void testExistsSubNet() throws InvalidEntityException, AlreadyExistsEntityException {
+
+        SubNetworkInstance subNet = new SubNetworkInstance(SUB_NETWORK_NAME+3, VDC, REGION);
+        subNet = subNetworkInstanceDao.create(subNet);
+        boolean result = subNetworkInstanceDao.exists(SUB_NETWORK_NAME+3, VDC, REGION);
+        assertEquals (result, true);
+     
        
     }
     

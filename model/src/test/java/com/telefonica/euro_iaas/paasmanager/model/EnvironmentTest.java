@@ -148,7 +148,11 @@ public class EnvironmentTest extends TestCase {
         tiers.add(tier);
         tiers.add(tier2);
 
+<<<<<<< HEAD
         Environment envResult = new Environment("environemntName", tiers, "description", "org", VDC);
+=======
+        Environment envResult = new Environment("environemntName", tiers, "description","ORG",  VDC );
+>>>>>>> 20521df731913717737ffe312b40e9eb71be9b3f
         envResult.setName("environemntName");
         envResult.setTiers(tiers);
 
@@ -178,7 +182,11 @@ public class EnvironmentTest extends TestCase {
         tiers.add(tier);
         tiers.add(tier2);
 
+<<<<<<< HEAD
         Environment envResult = new Environment("environemntName", "description", tiers);
+=======
+        Environment envResult = new Environment("environemntName", tiers,"description");
+>>>>>>> 20521df731913717737ffe312b40e9eb71be9b3f
 
         boolean result = envResult.isNetworkFederated();
         assertEquals(result, false);
@@ -214,7 +222,10 @@ public class EnvironmentTest extends TestCase {
         tiers.add(tier4);
 
         Environment envResult = new Environment("environemntName", tiers);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 20521df731913717737ffe312b40e9eb71be9b3f
 
         Set<String> nets = envResult.getFederatedNetworks();
         assertEquals(nets.size(), 1);
@@ -222,6 +233,7 @@ public class EnvironmentTest extends TestCase {
     }
     
     @Test
+<<<<<<< HEAD
     public void testEnvironmentII () {
     	
     	 Tier tier = new Tier("name1", new Integer(1), new Integer(5), new Integer(1), null);
@@ -248,5 +260,29 @@ public class EnvironmentTest extends TestCase {
          envResult.updateTier(tier2, tier3);
     	
     }
+=======
+    public void testGetNetworkWithRegionAndName () {
+    	 Tier tier = new Tier("name1", new Integer(1), new Integer(5), new Integer(1), null);
+         tier.setRegion(REGION);
+         tier.addNetwork(new Network("uno2", VDC, REGION));
+         
+         Tier tier3 = new Tier("name3", new Integer(1), new Integer(5), new Integer(1), null);
+         tier3.setRegion("region3");
+         tier3.addNetwork(new Network("uno3", VDC, REGION+3));
+         
+         Set<Tier> tiers = new HashSet<Tier>();
+         tiers.add(tier);
+         tiers.add(tier3);
+         
+         Environment envResult = new Environment("environemntName", tiers);
+         
+         Network net = envResult.getNetworkWithRegionAndName(REGION, "uno2");
+         Network net2 = envResult.getNetworkWithRegionAndName(REGION+3, "uno3");
+         assertEquals (net.getNetworkName(), "uno2");
+         assertEquals (net2.getNetworkName(), "uno3");
+         assertNull (envResult.getNetworkWithRegionAndName(REGION+3, "noexists"));
+    }
+    
+>>>>>>> 20521df731913717737ffe312b40e9eb71be9b3f
 
 }

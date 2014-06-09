@@ -131,7 +131,7 @@ public class TierInstanceDaoJpaImpl extends AbstractBaseDao<TierInstance, String
             tierInstance = (TierInstance) query.getResultList().get(0);
         } catch (Exception e) {
             String message = " No TierInstance found in the database with name: " + Long.toString(tierInstanceId);
-            throw new EntityNotFoundException(null, e.getMessage(), message);
+            throw new EntityNotFoundException(TierInstance.class, e.getMessage(), message);
         }
         return tierInstance;
     }

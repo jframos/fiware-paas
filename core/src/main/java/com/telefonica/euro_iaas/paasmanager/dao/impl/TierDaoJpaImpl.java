@@ -58,11 +58,7 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
      */
 
     public Tier load(String name) throws EntityNotFoundException {
-        try {
-            return findByName(name);
-        } catch (Exception e) {
-            return super.loadByField(Tier.class, "name", name);
-        }
+        return null;
     }
 
     public Tier load(String name, String vdc, String environmentName) throws EntityNotFoundException {
@@ -74,19 +70,6 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
 
     }
 
-    private Tier findByName(String name) throws EntityNotFoundException {
-        Query query = getEntityManager().createQuery(
-                "select p from Tier p join " + "fetch p.productReleases where p.name = :name");
-        query.setParameter("name", name);
-        Tier tier = null;
-        try {
-            tier = (Tier) query.getResultList().get(0);
-        } catch (Exception e) {
-            String message = " No Tier found in the database with name: " + name;
-            throw new EntityNotFoundException(Tier.class, message, name);
-        }
-        return tier;
-    }
 
     private Tier findByNameAndVdcAndEnvironment(String name, String vdc, String environmentname)
             throws EntityNotFoundException {
@@ -201,7 +184,7 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
     @Override
     public String findRegionBySecurityGroup(String idSecurityGroup) throws EntityNotFoundException {
 
-        Query query = getEntityManager().createQuery("select p from Tier p where p.securityGroup=:securityGroupId");
+        Query query = getEntityManager().createQuery("select p from Tier p where p.securityGroup= :securityGroupId");
         query.setParameter("securityGroupId", idSecurityGroup);
         Tier tier = null;
         try {
