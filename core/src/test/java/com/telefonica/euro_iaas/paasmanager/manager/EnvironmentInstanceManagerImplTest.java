@@ -32,15 +32,21 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import static org.mockito.Mockito.verify;
 
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentDao;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
+import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentInstanceManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.OS;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
@@ -49,10 +55,12 @@ import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.security.core.GrantedAuthority;
 
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anySet;
@@ -65,6 +73,7 @@ import static org.mockito.Mockito.when;
 public class EnvironmentInstanceManagerImplTest {
 
     private EnvironmentInstanceDao environmentInstanceDao;
+    private EnvironmentInstanceManagerImpl environmentInstanceManager;
     private EnvironmentDao environmentDao;
     private TierDao tierDao;
     private ProductReleaseDao productReleaseDao;
@@ -73,6 +82,7 @@ public class EnvironmentInstanceManagerImplTest {
     private ProductInstance productInstance;
     private TierInstance tierInstance;
     private EnvironmentInstance environmentInstance;
+    private NetworkManager networkManager;
 
     private EnvironmentManager environmentManager;
     private InfrastructureManager infrastructureManager;
@@ -91,20 +101,11 @@ public class EnvironmentInstanceManagerImplTest {
     @Before
     public void setUp() throws Exception {
         // OVF
-        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("4caastovfexample_attributes.xml");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuffer ruleFile = new StringBuffer();
-        String actualString;
-
-        while ((actualString = reader.readLine()) != null) {
-            ruleFile.append(actualString).append("\n");
-        }
+       
 
         claudiaData = new ClaudiaData("org", "vdc", "service");
         // Collection<GrantedAuthority> authorities = null;
-        authorities = Mockito.anyCollection();
-
-        user = new PaasManagerUser("user", "paasword", authorities);
+        user = new PaasManagerUser("user", "password", new ArrayList<GrantedAuthority>());
         claudiaData.setUser(user);
 
         // Environment
@@ -123,10 +124,21 @@ public class EnvironmentInstanceManagerImplTest {
         tier.setMinimumNumberInstances(new Integer(1));
         tier.setName("tierName");
         tier.setProductReleases(productReleases);
+        tier.setRegion("region1");
+        tier.addNetwork(new Network ("uno", "VDC", "region1"));
+        
+        Tier tier2 = new Tier();
+        tier2.setInitialNumberInstances(new Integer(1));
+        tier2.setMaximumNumberInstances(new Integer(5));
+        tier2.setMinimumNumberInstances(new Integer(1));
+        tier2.setName("tierName2");
+        tier2.setProductReleases(productReleases);
+        tier2.setRegion("region2");
+        tier2.addNetwork(new Network ("uno", "VDC", "region2"));
 
         Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tier);
-        tiers.add(tier);
+        tiers.add(tier2);
 
         productReleaseDao = mock(ProductReleaseDao.class);
         when(productReleaseDao.load(any(String.class))).thenReturn(productRelease);
@@ -184,6 +196,23 @@ public class EnvironmentInstanceManagerImplTest {
 
         environmentInstanceDao = mock(EnvironmentInstanceDao.class);
         when(environmentInstanceDao.load(any(String.class))).thenReturn(environmentInstance);
+        
+        environmentInstanceManager = new EnvironmentInstanceManagerImpl();
+        infrastructureManager = mock (InfrastructureManager.class);
+        networkManager = mock (NetworkManager.class);
+        environmentInstanceManager.setInfrastructureManager(infrastructureManager);
+        environmentInstanceManager.setNetworkManager(networkManager);
+    }
+    
+    @Test
+    public void testUpdateFederatedNetworks () throws InfrastructureException, EntityNotFoundException, InvalidEntityException {
+    	when (infrastructureManager.getFederatedRange(any(ClaudiaData.class), any(String.class))).thenReturn("12");
+    	Network net2 = new Network ("uno", "VDC", "region2");
+    	when (networkManager.load( any(String.class), any(String.class), any(String.class))).thenReturn(net2);
+
+    	environmentInstanceManager.updateFederatedNetworks(claudiaData, environment);
+    //	verify (networkManager.update(any(Network.class)));
+
     }
 
     /*

@@ -300,4 +300,14 @@ DROP TABLE productype;
 -- changeset henar:5-3 --
 ALTER TABLE tierinstance ADD COLUMN floatingip VARCHAR(128);
 
+-- changeset henar:5-4 --
+ALTER TABLE network ADD COLUMN federatednetwork VARCHAR(128);
+ALTER TABLE network ADD COLUMN federatedRange VARCHAR(128);
+ALTER TABLE networkinstance ADD COLUMN federatednetwork VARCHAR(128);
+ALTER TABLE networkinstance ADD COLUMN federatedRange VARCHAR(128);
+UPDATE network set federatednetwork=false where federatednetwork is NULL
+UPDATE networkinstance set federatednetwork=false where federatednetwork is NULL
+UPDATE networkinstance set federatedRange='' where federatedRange is NULL
+UPDATE network set federatedRange='' where federatedRange is NULL
+
 

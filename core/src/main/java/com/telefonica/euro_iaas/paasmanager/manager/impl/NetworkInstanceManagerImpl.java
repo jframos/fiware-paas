@@ -24,6 +24,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -40,6 +41,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.NetworkInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.RouterManager;
 import com.telefonica.euro_iaas.paasmanager.manager.SubNetworkInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Port;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
@@ -83,9 +85,9 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
     public NetworkInstance create (ClaudiaData claudiaData, NetworkInstance networkInstance, String region) throws InfrastructureException, EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
     	networkClient.deployNetwork(claudiaData, networkInstance, region);
         log.debug("Network isntance " + networkInstance.getNetworkName() + " with vdc " + claudiaData.getVdc()
-                + ": " + networkInstance.getIdNetwork() + " deployed");
+                + ": " + networkInstance.getIdNetwork() + " and federated " + networkInstance.getFederatedRange() + " " + networkInstance.getfederatedNetwork()+  " deployed");
         try {
-            createSubNetworksInstance(claudiaData, networkInstance, region);
+            createSubNetworksInstance(claudiaData,networkInstance, region);
             networkClient.addNetworkToPublicRouter(claudiaData, networkInstance, region);
             log.debug("Storing network instance " + networkInstance.getNetworkName() + " vdc "
                     + claudiaData.getVdc());
@@ -155,9 +157,14 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
     {
         Set<SubNetworkInstance> subNetAxu = networkInstance.cloneSubNets();
         for (SubNetworkInstance subNet : subNetAxu) {
-
+        	String cidr = null;
             log.debug("SubNetwork " + subNet.getName() + " id net " + subNet.getIdNetwork());
-            String cidr = getDefaultCidr(claudiaData, region);
+            if (networkInstance.getfederatedNetwork()) {
+            	cidr = networkInstance.getFederatedRange();
+            }
+            else {
+                cidr = getDefaultCidr(claudiaData, region );
+            }
             subNet.setIdNetwork(networkInstance.getIdNetwork());
             subNet.setCidr(cidr);
             networkInstance.updateSubNet(subNet);
@@ -346,7 +353,8 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
     public int getNumberDeployedNetwork(ClaudiaData claudiaData, String region) throws InfrastructureException {
         return networkClient.loadAllNetwork(claudiaData, region).size();
     }
-
+    
+ 
     private String getDefaultCidr(ClaudiaData claudiaData, String region) throws InvalidEntityException,
             AlreadyExistsEntityException, InfrastructureException {
         int cidrOpenstack = 1;
@@ -356,8 +364,8 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
 
         int cidrdb = this.findAll().size();
         int cidrCount = cidrdb + cidrOpenstack;
-
         return "10.0." + cidrCount + ".0/24";
     }
+
 
 }

@@ -360,6 +360,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
         }
         return networks;
     }
+    
 
     /**
      * It loads all networks.
@@ -413,6 +414,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      */
     public String loadNetwork(ClaudiaData claudiaData, NetworkInstance network, String region)
             throws EntityNotFoundException {
+    	log.debug("Load network " + network.getIdNetwork() +  " in region " + region + " vdc " + claudiaData.getVdc());
         String response = "";
         try {
             String token = claudiaData.getUser().getToken();

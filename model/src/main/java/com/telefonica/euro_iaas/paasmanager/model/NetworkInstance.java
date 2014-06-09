@@ -74,6 +74,9 @@ public class NetworkInstance {
     private boolean netDefault = false;
     private String tenantId;
     private boolean external;
+    
+    private boolean federatedNetwork = false;
+    private String federatedRange = "0";
 
     private int subNetCount;
 
@@ -284,6 +287,22 @@ public class NetworkInstance {
 
     public String getRegionName() {
         return this.region;
+    }
+    
+    public void setFederatedNetwork (boolean federatedNetwork) {
+    	this.federatedNetwork = federatedNetwork;
+    }
+    
+    public void setFederatedRange (String range) {
+    	this.federatedRange = range;
+    }
+    
+    public boolean getfederatedNetwork () {
+    	return this.federatedNetwork;
+    }
+    
+    public String getFederatedRange () {
+    	return this.federatedRange;
     }
 
     /**

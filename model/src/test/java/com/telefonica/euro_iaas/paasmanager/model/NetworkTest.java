@@ -459,6 +459,16 @@ public class NetworkTest extends TestCase {
         assertEquals(network.equals(network3), true);
     }
     
+    @Test 
+    public void testToInstance () throws Exception  {
+    	 Network network = new Network(NETWORK_NAME, VDC,REGION);
+    	 NetworkInstance netInst = network.toNetworkInstance();
+    	 assertEquals (netInst.getfederatedNetwork(), false);
+    	 assertEquals (netInst.getFederatedRange(), "0");
+    	 
+    }
+
+    
     
 
 }

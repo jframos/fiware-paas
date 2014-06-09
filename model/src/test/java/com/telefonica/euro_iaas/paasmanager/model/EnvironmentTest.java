@@ -148,7 +148,7 @@ public class EnvironmentTest extends TestCase {
         tiers.add(tier);
         tiers.add(tier2);
 
-        Environment envResult = new Environment();
+        Environment envResult = new Environment("environemntName", tiers, "description","ORG",  VDC );
         envResult.setName("environemntName");
         envResult.setTiers(tiers);
 
@@ -175,9 +175,7 @@ public class EnvironmentTest extends TestCase {
         tiers.add(tier);
         tiers.add(tier2);
 
-        Environment envResult = new Environment();
-        envResult.setName("environemntName");
-        envResult.setTiers(tiers);
+        Environment envResult = new Environment("environemntName", tiers,"description");
 
         boolean result = envResult.isNetworkFederated();
         assertEquals(result, false);
@@ -212,13 +210,35 @@ public class EnvironmentTest extends TestCase {
         tiers.add(tier3);
         tiers.add(tier4);
 
-        Environment envResult = new Environment();
-        envResult.setName("environemntName");
-        envResult.setTiers(tiers);
+        Environment envResult = new Environment("environemntName", tiers);
 
         Set<String> nets = envResult.getFederatedNetworks();
         assertEquals(nets.size(), 1);
 
     }
+    
+    @Test
+    public void testGetNetworkWithRegionAndName () {
+    	 Tier tier = new Tier("name1", new Integer(1), new Integer(5), new Integer(1), null);
+         tier.setRegion(REGION);
+         tier.addNetwork(new Network("uno2", VDC, REGION));
+         
+         Tier tier3 = new Tier("name3", new Integer(1), new Integer(5), new Integer(1), null);
+         tier3.setRegion("region3");
+         tier3.addNetwork(new Network("uno3", VDC, REGION+3));
+         
+         Set<Tier> tiers = new HashSet<Tier>();
+         tiers.add(tier);
+         tiers.add(tier3);
+         
+         Environment envResult = new Environment("environemntName", tiers);
+         
+         Network net = envResult.getNetworkWithRegionAndName(REGION, "uno2");
+         Network net2 = envResult.getNetworkWithRegionAndName(REGION+3, "uno3");
+         assertEquals (net.getNetworkName(), "uno2");
+         assertEquals (net2.getNetworkName(), "uno3");
+         assertNull (envResult.getNetworkWithRegionAndName(REGION+3, "noexists"));
+    }
+    
 
 }
