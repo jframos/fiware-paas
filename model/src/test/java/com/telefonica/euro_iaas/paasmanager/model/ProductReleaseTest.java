@@ -24,6 +24,9 @@
 
 package com.telefonica.euro_iaas.paasmanager.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.sf.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -166,5 +169,52 @@ public class ProductReleaseTest {
         assertEquals(productRelease.getVersion(), "1.0");
         assertEquals(productRelease.getProduct(), "henar10");
         assertEquals(productRelease.getName(), "henar10-1.0");
+    }
+    
+    @Test
+    public void testProductRelease() throws Exception {
+    	
+    	Set<Attribute> atts = new HashSet<Attribute> ();
+    	Attribute att = new Attribute ();
+    	att.setKey("att");
+    	att.setValue("value");
+    	att.setDescription("description");
+    	atts.add(att);
+        ProductRelease product = new ProductRelease ("name", "version", "description", atts);
+        product.addAttribute(new Attribute ("att2", "value", "description"));
+        product.setTierName("tierName");
+        product.setId(new Long(1));
+        assertEquals (product.getName(), "name-version");
+        assertEquals (product.getTierName(), "tierName");
+        assertEquals (product.getVersion(), "version" );
+        assertEquals (product.getId().intValue(),1);
+        assertEquals (product.getDescription(), "description");
+        assertEquals (product.getAttributes().size (), 2);
+        assertEquals (product.getAttribute("att").getValue(), "value");
+        assertEquals (product.getMetadatas().size(), 0);
+        
+        Metadata meta = new Metadata ("key", "value", "description");
+        product.addMetadata(meta);
+        
+        Metadata meta2 = new Metadata ();
+        meta2.setKey("meta");
+        meta2.setValue("value");
+        meta2.setDescription("description");
+        assertEquals(meta.equals(meta2), false);
+        
+        product.addMetadata(meta2);
+        
+        assertEquals (product.getMetadata("key").getKey(), "key");
+        assertEquals (product.getMetadata("key").getValue(), "value");
+        assertEquals (product.getMetadata("key").getDescription(), "description");
+        assertEquals (product.getAttribute("att2").getKey(), "att2");
+        assertEquals (product.getAttribute("att2").getValue(), "value");
+        assertEquals (product.getAttribute("att2").getDescription(), "description");
+        
+        ProductRelease product2 = new ProductRelease ("name2", "version", "description", atts);
+        product.setId(new Long(2));
+        assertEquals(product2.equals(product), false);
+        
+        
     }
 }

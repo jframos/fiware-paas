@@ -100,20 +100,6 @@ public class Environment {
      * @param name
      * @param tiers
      * @param description
-     */
-    public Environment(String name, Set<Tier> tiers, String description) {
-        this.name = name;
-        this.description = description;
-        this.tiers = tiers;
-
-    }
-
-    /**
-     * Constructor.
-     * 
-     * @param name
-     * @param tiers
-     * @param description
      * @param org
      * @param vdc
      */
@@ -285,41 +271,6 @@ public class Environment {
         return envDto;
     }
 
-    private HashMap getTierRegions() {
-        HashMap<String, String> map = new HashMap<String, String>();
-        for (Tier tier : this.getTiers()) {
-            map.put(tier.getName(), tier.getRegion());
-        }
-        return map;
-    }
-
-    private HashMap getTierNetworks() {
-        HashMap<String, Set<Network>> map = new HashMap<String, Set<Network>>();
-        for (Tier tier : this.getTiers()) {
-            map.put(tier.getName(), tier.getNetworks());
-        }
-        return map;
-    }
-
-    public HashMap getRegionNetworks() {
-        HashMap<String, Set<String>> map = new HashMap<String, Set<String>>();
-        Set<String> nets;
-        for (Tier tier : this.getTiers()) {
-            if (map.get(tier.getRegion()) != null) {
-                nets = map.get(tier.getRegion());
-            } else {
-                nets = new HashSet<String>();
-                map.put(tier.getRegion(), nets);
-            }
-
-            for (Network net : tier.getNetworks()) {
-                nets.add(net.getNetworkName());
-            }
-
-        }
-        return map;
-    }
-
     public HashMap<String, Set<String>> getNetworksRegion() {
         HashMap<String, Set<String>> map = new HashMap<String, Set<String>>();
         Set<String> regions;
@@ -350,11 +301,6 @@ public class Environment {
         }
 
         return nets;
-    }
-
-    private boolean isNetworkInTwoRegions() {
-        HashMap<String, String> map = getRegionNetworks();
-        return false;
     }
 
     private int getNumberRegions() {

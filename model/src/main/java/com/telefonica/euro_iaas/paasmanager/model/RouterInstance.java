@@ -179,13 +179,19 @@ public class RouterInstance {
         	
         }
 
-        RouterInstance router = new RouterInstance(name);
+        RouterInstance router = new RouterInstance();
         router.setIdRouter(id);
         router.setTenantId(tenantId);
         router.setAdminStateUp(adminStateUp);
         router.setNetworkId(networkId);
+        router.setName (name);
         return router;
     }
+
+	public void setName(String name2) {
+		this.name=name2;
+		
+	}
 
    
 

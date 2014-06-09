@@ -24,7 +24,9 @@
 
 package com.telefonica.euro_iaas.paasmanager.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -203,11 +205,31 @@ public class NetworkTest extends TestCase {
 
         Network network = new Network();
         network.setNetworkName(NETWORK_NAME);
+        Set<SubNetwork> subNets = new HashSet<SubNetwork>();
         SubNetwork subnet = new SubNetwork(SUBNETWORK_NAME, VDC, REGION);
-        network.addSubNet(subnet);
+        subNets.add(subnet);
+        network.setSubNets(subNets);
+        SubNetwork subnet2 = new SubNetwork(SUBNETWORK_NAME+2, VDC, REGION);
+        network.addSubNet(subnet2);
         NetworkDto netDto = network.toDto();
         assertEquals(netDto.getNetworkName(), NETWORK_NAME);
-        assertEquals(netDto.getSubNetworkDto().size(), 1);
+        assertEquals(netDto.getSubNetworkDto().size(), 2);
+    }
+    
+    @Test
+    public void testFromDto() throws Exception {
+
+        NetworkDto network = new NetworkDto();
+        network.setNetworkName(NETWORK_NAME);
+        List<SubNetworkDto> subNets = new ArrayList<SubNetworkDto>();
+        SubNetworkDto subnet = new SubNetworkDto(SUBNETWORK_NAME);
+        subNets.add(subnet);
+        network.setSubNetworkDto(subNets);
+        SubNetworkDto subnet2 = new SubNetworkDto(SUBNETWORK_NAME+2);
+        network.addSubNetworkDto(subnet2);
+        Network netDto = network.fromDto(VDC, REGION);
+        assertEquals(netDto.getNetworkName(), NETWORK_NAME);
+        assertEquals(netDto.getSubNets().size(), 2);
     }
     
     /**
@@ -223,7 +245,7 @@ public class NetworkTest extends TestCase {
         Network network2 = new Network(NETWORK_NAME+2,VDC, REGION);   
         Network network3 = new Network(NETWORK_NAME,VDC,REGION);    
         assertEquals(network.equals(network2), false);
-        assertEquals(network.equals(network3), true);
+        assertEquals(network.toDto().equals(network2.toDto()), false);
     }
 
     /**
@@ -304,8 +326,8 @@ public class NetworkTest extends TestCase {
    }
   
    @Test
-   public void fromJsonToRouter () throws JSONException {
-       String payload  =           "\"status\": \"ACTIVE\", "+
+   public void testFromJsonToRouter () throws JSONException {
+       String payload  =           "{\"status\": \"ACTIVE\", "+
            " \"external_gateway_info\": { " + 
               " \"network_id\": \"080b5f2a-668f-45e0-be23-361c3a7d11d0\" "+ 
            " }, " + 
@@ -327,7 +349,7 @@ public class NetworkTest extends TestCase {
      * @throws Exception
      */
     @Test
-    public void testFromDto() throws Exception {
+    public void testFromDtoII() throws Exception {
         NetworkDto networkDto = new NetworkDto(NETWORK_NAME);
         SubNetworkDto subNetworkDto = new SubNetworkDto(SUBNETWORK_NAME, CIDR);
         networkDto.addSubNetworkDto(subNetworkDto);
@@ -457,6 +479,16 @@ public class NetworkTest extends TestCase {
         NetworkInstance network3 = new NetworkInstance(NETWORK_NAME, VDC,REGION);    
         assertEquals(network.equals(network2), false);
         assertEquals(network.equals(network3), true);
+    }
+    
+    @Test
+    public void testPort() throws Exception {
+
+        Port port = new Port ("name", "networkId", "tenantId", "deviceOwner", "portId");
+        Port port2 = new Port ("name2", "networkId", "tenantId", "deviceOwner", "2");  
+        assertEquals(port.getName(), "name");
+        assertEquals(port.getNetworkId(), "networkId");
+        assertEquals(port.equals(port2), false);
     }
     
     
