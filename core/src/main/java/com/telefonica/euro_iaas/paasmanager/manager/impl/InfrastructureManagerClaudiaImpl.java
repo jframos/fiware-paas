@@ -53,6 +53,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Template;
@@ -108,7 +109,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         for (Tier tier : tiers) {
             for (int numReplica = 1; numReplica <= tier.getInitialNumberInstances(); numReplica++) {
                 // claudiaData.setVm(tier.getName());
-                log.debug("Deploying tier instance for tier " + tier.getName());
+                log.debug("Deploying tier instance for tier " + tier.getName() + " " + tier.getRegion());
 
                 TierInstance tierInstance = new TierInstance();
                 String name = generateVMName(environmentInstance.getBlueprintName(), tier.getName(), numReplica,
@@ -129,8 +130,10 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 vm.setFqn(fqn);
                 vm.setHostname(hostname);
                 tierInstance.setVM(vm);
-
+  
                 log.debug("Deploy networks if required");
+                
+                log.debug("Deploying tier instance for tier " + tier.getName() + " " + tier.getRegion());
                 this.deployNetworks(claudiaData, tierInstance);
                 log.debug("Number of networks " + tierInstance.getNetworkInstances().size() + " floatin ip "
                         + tierInstance.getTier().getFloatingip());
@@ -371,18 +374,19 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
         for (Network network : networkToBeDeployed) {
             log.debug("Network instance to be deployed: " + network.getNetworkName() + " vdc " + data.getVdc() + " "
-                    + network.getRegion());
+                    + network.getRegion() + " and federated " + network.getfederatedNetwork() );
             network = networkManager.load(network.getNetworkName(), data.getVdc(), network.getRegion());
             NetworkInstance networkInst = network.toNetworkInstance();
             log.debug("Network instance to be deployed: " + network.getNetworkName() + " vdc " + data.getVdc()
-                    + " region " + networkInst.getRegionName());
+                    + " region " + networkInst.getRegionName() +  " and networkInst " + network.getfederatedNetwork());
 
-            try {
-                networkInst = networkInstanceManager
-                        .load(networkInst.getNetworkName(), data.getVdc(), tier.getRegion());
-                log.debug("the network inst" + networkInst.getNetworkName() + " already exists");
-            } catch (EntityNotFoundException e1) {
-                try {
+            if (networkInstanceManager.exists(data, networkInst, tier.getRegion())) {
+            	log.debug("the network inst " + networkInst.getNetworkName() + " already exists");
+            	networkInst = networkInstanceManager
+                .load(networkInst.getNetworkName(), data.getVdc(), tier.getRegion());
+            } else {
+            	try {
+            		log.debug("the network inst " + networkInst.getNetworkName() + " do not exists");
                     networkInst = networkInstanceManager.create(data, networkInst, tierInstance.getTier().getRegion());
                 } catch (AlreadyExistsEntityException e2) {
                     throw new InvalidEntityException(network);
@@ -472,6 +476,15 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
     public void setTierManager(TierManager tierManager) {
         this.tierManager = tierManager;
+    }
+    
+    public String getFederatedRange (ClaudiaData data, String region)
+        throws InfrastructureException { 
+    	
+        int cidrdb = networkInstanceManager.findAll().size();
+        int cidrOpenstack = networkInstanceManager.getNumberDeployedNetwork (data, region);
+        int cidrCount = cidrdb + cidrOpenstack;
+        return "155.0."+cidrCount;
     }
 
     public void federatedNetworks(ClaudiaData data, EnvironmentInstance environmentInstance)

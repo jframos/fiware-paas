@@ -111,6 +111,22 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         return url;
 
     }
+    
+    @Override
+    public String getPuppetMasterEndPoint(String regionName, String token) throws OpenStackException  {
+        String defaulRegion = this.getDefaultRegion(token);
+        log.info ("Get url for puppet for default region " + defaulRegion);
+        String url;
+        try {
+            url = getEndPointByNameAndRegionName("puppetmaster", defaulRegion, token);
+        } catch (OpenStackException e) {
+            String msn = "It is not possible to obtain the Puppet Master endpoint";
+            log.info(msn);
+            throw new OpenStackException (msn);
+                    
+        }
+        return url;
+    }
 
     @Override
     public String getQuantumEndPoint(String regionName, String token) throws OpenStackException {

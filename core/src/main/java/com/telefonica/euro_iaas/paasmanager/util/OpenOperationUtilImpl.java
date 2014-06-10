@@ -449,6 +449,7 @@ public class OpenOperationUtilImpl implements OpenOperationUtil {
             java.util.logging.Logger.getLogger(OpenOperationUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         String quantumUrl = openStackRegion.getQuantumEndPoint(region, token);
+        log.debug ("quantumUrl for region " + region + " " + quantumUrl);
         request = new HttpGet(quantumUrl + resource);
 
         request.setHeader(ACCEPT, accept);

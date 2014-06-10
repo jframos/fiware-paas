@@ -51,15 +51,8 @@ public class NetworkDaoJpaImpl extends AbstractBaseDao<Network, String> implemen
         return super.findAll(Network.class);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.commons.dao.BaseDAO#load(java.io.Serializable)
-     */
     public Network load(String networkName, String vdc, String region) throws EntityNotFoundException {
-
-
-            return findNetworkWithSubNet(networkName, vdc, region);
-
+        return findNetworkWithSubNet(networkName, vdc, region);
     }
 
     private Network findNetworkWithSubNet(String name, String vdc, String region ) throws EntityNotFoundException {

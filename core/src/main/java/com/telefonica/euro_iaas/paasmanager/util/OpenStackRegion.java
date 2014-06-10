@@ -100,4 +100,6 @@ public interface OpenStackRegion {
 	String getFederatedQuantumEndPoint(String token) throws OpenStackException;
 
 	String getChefServerEndPoint(String region, String token) throws OpenStackException;
+
+    String getPuppetMasterEndPoint(String regionName,String token) throws OpenStackException;
 }

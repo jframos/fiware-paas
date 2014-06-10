@@ -31,13 +31,26 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 
 /**
  * @author henar
  */
 public interface NetworkInstanceManager {
-    /**
+    
+	
+	/**
+	 * 
+	 * @param claudiaData
+	 * @param networkInstance
+	 * @param region
+	 * @return
+	 * @throws InvalidEntityException
+	 * @throws EntityNotFoundException 
+	 */
+	boolean exists (ClaudiaData claudiaData, NetworkInstance networkInstance, String region) throws InvalidEntityException, EntityNotFoundException;
+	/**
      * Create a network.
      * 
      * @param claudiaData

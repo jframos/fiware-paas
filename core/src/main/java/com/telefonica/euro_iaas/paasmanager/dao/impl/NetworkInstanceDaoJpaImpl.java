@@ -63,35 +63,12 @@ public class NetworkInstanceDaoJpaImpl extends AbstractBaseDao<NetworkInstance, 
      *            of the network instance
      */
     public NetworkInstance load(String name) throws EntityNotFoundException {
-
         return null;
-
     }
 
     public NetworkInstance load(String name, String vdc, String region) throws EntityNotFoundException {
         return findByNetworkInstanceName(name, vdc, region);
 
-    }
-
-    /**
-     * (non-Javadoc)
-     * 
-     * @see com.telefonica.euro_iaas.paasmanager.dao.TierDao#findByTierId(java.lang .String)
-     */
-    private NetworkInstance findByNetworkInstanceName(String name) throws EntityNotFoundException {
-        Query query = getEntityManager().createQuery(
-                "select p from NetworkInstance p left join " + "fetch p.subNets where p.name = :name");
-        query.setParameter("name", name);
-        NetworkInstance networkInstance = null;
-        try {
-            networkInstance = (NetworkInstance) query.getResultList().get(0);
-        } catch (Exception e) {
-            String message = " No NetworkInstance found in the database with id: " + name + " Exception: "
-                    + e.getMessage();
-            log.debug(message);
-            throw new EntityNotFoundException(NetworkInstance.class, "name", name);
-        }
-        return networkInstance;
     }
 
     /**

@@ -82,12 +82,17 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
         log.debug("Destroying the subnetwork " + subNetworkInstance.getName());
         try {
             networkClient.destroySubNetwork(claudiaData, subNetworkInstance, region);
-            subNetworkInstanceDao.remove(subNetworkInstance);
+            deleteInBD( subNetworkInstance);
         } catch (Exception e) {
             log.error("Error to remove the subnetwork in BD " + e.getMessage());
             throw new InvalidEntityException(subNetworkInstance);
         }
 
+    }
+    
+    public void deleteInBD( SubNetworkInstance subNetworkInstance) {
+    	log.debug("Destroying in bd the subnetwork " + subNetworkInstance.getName());
+        subNetworkInstanceDao.remove(subNetworkInstance);
     }
 
     /**

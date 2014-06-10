@@ -48,6 +48,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.exception.VMStatusNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.manager.NetworkInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
@@ -204,6 +205,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     	String file = null;
     	String hostname = tierInstance.getVM().getHostname();
     	String chefServerUrl;
+    	String puppetUrl;
     	try {
 			file = fileUtils.readFile("userdata");
 			log.debug ("File userdata read");
@@ -218,6 +220,14 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 			log.warn ("Error to obtain the chef-server url" + e1.getMessage());
 			return file;
 		}
+		
+		try {
+            puppetUrl = openStackRegion.getPuppetMasterEndPoint(tierInstance.getTier().getRegion(), claudiaData.getUser().getToken());
+        } catch (Exception e1) {
+            log.warn ("Error to obtain the puppetmaster url" + e1.getMessage());
+            return file;
+        }
+        
     	String chefValidationKey = "";
 		try {
 			chefValidationKey = fileUtils.readFile("validation.pem", "/etc/chef/");
@@ -227,7 +237,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 		}
     	
 		
-    	file = file.replace("{node_name}", hostname).replace( "{server_url}" ,chefServerUrl).replace("{validation_key}", chefValidationKey);
+    	file = file.replace("{node_name}", hostname).replace( "{server_url}" ,chefServerUrl).replace("{validation_key}", chefValidationKey).replace("{puppet_master}", puppetUrl);
     	log.debug ("payload " + file);
     	return file;	
     	
@@ -360,7 +370,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         // openStackUtilImpl = new OpenStackUtilImpl(claudiaData.getUser());
 
         log.debug("Deploy server " + claudiaData.getService() + " tier instance " + tierInstance.getName()
-                + " replica " + replica + " with networks " + tierInstance.getNetworkInstances());
+                + " replica " + replica + " with networks " + tierInstance.getNetworkInstances() + " and region " + tierInstance.getTier().getRegion());
 
         if (tierInstance.getNetworkInstances().isEmpty()) {
             try {
@@ -552,7 +562,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 
     public void undeployVMReplica(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
         log.debug("Undeploy VM replica " + tierInstance.getName() + " for region " + tierInstance.getTier().getRegion()
-                + " and user " + tierInstance.getTier().getVdc());
+                + " and user " + tierInstance.getTier().getVdc() );
         try {
 
             String region = tierInstance.getTier().getRegion();

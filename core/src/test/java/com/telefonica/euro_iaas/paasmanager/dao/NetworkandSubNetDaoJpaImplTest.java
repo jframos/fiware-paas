@@ -80,6 +80,11 @@ public class NetworkandSubNetDaoJpaImplTest {
         assertEquals(networkOut.getSubNets().size(), 0);
 
     }
+    
+    @Test(expected=com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
+    public void testNetworkLoadError() throws Exception {
+        networkDao.load("other",VDC, REGION);
+    }
 
     @Test
     public void testNetworkVDCNull() throws Exception {
@@ -94,7 +99,7 @@ public class NetworkandSubNetDaoJpaImplTest {
         List<Network> networks = networkDao.findAll();
         assertNotNull(networks);
 
-        Network networkOut = networkDao.load(NETWORK_NAME, "", REGION);
+        Network networkOut = networkDao.load(NETWORK_NAME, null, REGION);
         assertNotNull(networkOut);
         assertEquals(networkOut.getNetworkName(), NETWORK_NAME);
         assertEquals(networkOut.getSubNets().size(), 0);
@@ -132,6 +137,11 @@ public class NetworkandSubNetDaoJpaImplTest {
             assertNotNull(e);
         }
 
+    }
+    
+    @Test(expected=com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
+    public void testSubNetworkLoadError2() throws Exception {
+    	subNetworkDao.load("other", VDC, REGION);
     }
 
     @Test

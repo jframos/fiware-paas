@@ -156,6 +156,10 @@ public class SecurityGroup {
         this.rules = rules;
     }
     
+    public Long getId () {
+    	return id;
+    }
+    
     public List<Rule> cloneRules (){
         List<Rule> rules = new ArrayList<Rule>();
         for (Rule rule : this.getRules()) {
