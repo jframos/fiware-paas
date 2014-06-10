@@ -15,8 +15,27 @@ In order to execute the PaaS Manager, it is needed to have previously installed 
 - Tomcat 7.X.X
 - PostgreSQL
 
-#### Building Requirements
-It is a a maven application, it is just need to execute mvn clean install
+## Building instructions
+It is a a maven application:
+
+- Compile, launch test and build all modules
+
+      $ mvn clean install
+- Create a zip with distribution int target/paas-manager-server-dist.zip
+
+      $ mvn assembly:assembly -DskipTests
+
+- You can generate a rpm o debian packages (using profiles in pom)
+
+   for debian/ubuntu:
+
+      $ mvn install -Pdebian -DskipTests
+      (created target/paas-manager-server-XXXXX.deb)
+
+   for centOS:
+
+      $ mvn install -Prpm -DskipTests
+
 
 ## Installation instruction (for CentOS)
 ### Database configuration
