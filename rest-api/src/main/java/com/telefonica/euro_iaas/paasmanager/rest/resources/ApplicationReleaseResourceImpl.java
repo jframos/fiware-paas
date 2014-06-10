@@ -29,10 +29,10 @@ import java.util.List;
 import javax.ws.rs.Path;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.PaasManagerServerRuntimeException;
 import com.telefonica.euro_iaas.paasmanager.manager.ApplicationReleaseManager;
@@ -49,9 +49,9 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationRele
 @Scope("request")
 public class ApplicationReleaseResourceImpl implements ApplicationReleaseResource {
 
-    @InjectParam("applicationReleaseManager")
+    @Autowired
     private ApplicationReleaseManager applicationReleaseManager;
-    @InjectParam("artifactManager")
+    @Autowired
     private ArtifactManager artifactManager;
 
     /*

@@ -33,6 +33,7 @@ import javax.ws.rs.WebApplicationException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -63,10 +64,13 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
     public static final int ERROR_NOT_FOUND = 404;
     public static final int ERROR_REQUEST = 500;
 
+    @Autowired
     private EnvironmentManager environmentManager;
 
+    @Autowired
     private SystemPropertiesProvider systemPropertiesProvider;
 
+    @Autowired
     private EnvironmentResourceValidator environmentResourceValidator;
 
     private static Logger log = LoggerFactory.getLogger(EnvironmentManagerImpl.class);

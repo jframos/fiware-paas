@@ -32,10 +32,10 @@ import javax.ws.rs.Path;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
@@ -56,7 +56,7 @@ import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceV
 @Scope("request")
 public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResource {
 
-    @InjectParam("environmentManager")
+    @Autowired
     private EnvironmentManager environmentManager;
 
     private EnvironmentResourceValidator environmentResourceValidator;

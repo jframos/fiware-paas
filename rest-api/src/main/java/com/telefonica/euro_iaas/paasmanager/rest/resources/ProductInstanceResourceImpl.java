@@ -32,10 +32,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
@@ -62,13 +62,13 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductInstance
 @Scope("request")
 public class ProductInstanceResourceImpl implements ProductInstanceResource {
 
-    @InjectParam("productInstanceAsyncManager")
+    @Autowired
     private ProductInstanceAsyncManager productInstanceAsyncManager;
-    @InjectParam("tierInstanceManager")
+    @Autowired
     private TierInstanceManager tierInstanceManager;
-    @InjectParam("taskManager")
+    @Autowired
     private TaskManager taskManager;
-    @InjectParam("productInstanceManager")
+    @Autowired
     private ProductInstanceManager productInstanceManager;
 
     public Task install(String org, String vdc, String environmentInstanceName, String tierInstanceName,

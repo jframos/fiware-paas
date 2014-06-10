@@ -33,6 +33,7 @@ import javax.ws.rs.WebApplicationException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -62,16 +63,22 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 @Scope("request")
 public class TierResourceImpl implements TierResource {
 
+    @Autowired
     private TierManager tierManager;
 
+    @Autowired
     private NetworkManager networkManager;
 
+    @Autowired
     private EnvironmentManager environmentManager;
 
+    @Autowired
     private SystemPropertiesProvider systemPropertiesProvider;
 
+    @Autowired
     private TierResourceValidator tierResourceValidator;
 
+    @Autowired
     private ProductReleaseDao productReleaseDao;
 
     private static Logger log = LoggerFactory.getLogger(TierResourceImpl.class);

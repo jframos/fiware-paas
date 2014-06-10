@@ -32,10 +32,10 @@ import javax.ws.rs.WebApplicationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -56,7 +56,7 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 @Scope("request")
 public class ProductReleaseResourceDBImpl implements ProductReleaseDBResource {
 
-    @InjectParam("productReleaseManager")
+    @Autowired
     private ProductReleaseManager productReleaseManager;
 
     private SystemPropertiesProvider systemPropertiesProvider;

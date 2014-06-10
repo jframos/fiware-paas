@@ -40,7 +40,6 @@ import com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.ErrorCode;
 
-// Extend HttpServlet class
 public class ErrorHandler extends HttpServlet {
 
     private static Logger log = LoggerFactory.getLogger(EnvironmentManagerImpl.class);
