@@ -36,43 +36,38 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import java.util.Set;
-
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.security.core.GrantedAuthority;
+
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.TaskDao;
-import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
+import com.telefonica.euro_iaas.paasmanager.exception.IPNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidProductInstanceRequestException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidVappException;
 import com.telefonica.euro_iaas.paasmanager.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductReconfigurationException;
+import com.telefonica.euro_iaas.paasmanager.manager.async.impl.EnvironmentInstanceAsyncManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.manager.async.impl.ProductInstanceAsyncManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.manager.async.impl.TaskManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.manager.async.impl.TierInstanceAsyncManagerImpl;
-import com.telefonica.euro_iaas.paasmanager.manager.impl.TierManagerImpl;
-import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
-import com.telefonica.euro_iaas.paasmanager.model.Metadata;
-import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
-import com.telefonica.euro_iaas.paasmanager.model.Rule;
-import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
-import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
@@ -86,7 +81,9 @@ public class AsynManagerImplTest {
     private TaskManagerImpl taskManager;
     private TierInstanceAsyncManagerImpl tierInstanceAsyncManagerImpl;
     private ProductInstanceAsyncManagerImpl productInstanceAsyncManagerImpl;
+    private EnvironmentInstanceAsyncManagerImpl environmentInstanceAsyncManagerImpl;
     private TierInstanceManager tierInstanceManager;
+    private EnvironmentInstanceManager environmentInstanceManager;
     private ProductInstanceManager productInstanceManager;
     private SystemPropertiesProvider systemPropertiesProvider;
     private TaskDao taskDao;
@@ -119,6 +116,12 @@ public class AsynManagerImplTest {
     	productInstanceAsyncManagerImpl.setProductInstanceManager(productInstanceManager);
     	productInstanceAsyncManagerImpl.setPropertiesProvider(systemPropertiesProvider);
     	productInstanceAsyncManagerImpl.setTaskManager(taskManager);
+    	
+    	environmentInstanceAsyncManagerImpl = mock (EnvironmentInstanceAsyncManagerImpl.class);
+    	environmentInstanceManager = mock (EnvironmentInstanceManager.class);
+    	environmentInstanceAsyncManagerImpl.setEnvironmentInstanceManager(environmentInstanceManager);
+    	environmentInstanceAsyncManagerImpl.setPropertiesProvider(systemPropertiesProvider);
+    	environmentInstanceAsyncManagerImpl.setTaskManager(taskManager);
     	
     	productReleaseShard = new ProductRelease("shard", "2.0");
     	List<ProductRelease> productReleasesShards = new ArrayList<ProductRelease>();
@@ -281,6 +284,39 @@ public class AsynManagerImplTest {
 
         Mockito.doNothing().when (productInstanceManager).uninstall(any(ClaudiaData.class),  any(ProductInstance.class));
         productInstanceAsyncManagerImpl.uninstall(claudiaData,productInstance, task, callback);
+
+    }
+    
+    @Test
+    public void testCreateEnvInstanceManager () throws AlreadyExistsEntityException, InvalidEntityException, InfrastructureException, EntityNotFoundException, NotUniqueResultException, InvalidProductInstanceRequestException, ProductInstallatorException, IPNotRetrievedException, InvalidEnvironmentRequestException, InvalidOVFException, InvalidVappException {
+    	ClaudiaData claudiaData = new ClaudiaData("org", "vdc", "service");
+        String callback ="";
+        Task task = new Task ();
+        when (environmentInstanceManager.load(any(String.class), any(String.class))).thenThrow(new EntityNotFoundException (EnvironmentInstance.class, callback, task));
+        when (environmentInstanceManager.create(any(ClaudiaData.class), any(EnvironmentInstance.class))).thenReturn(environmentInstance);
+        environmentInstanceAsyncManagerImpl.create(claudiaData, environmentInstance, task, callback);
+
+    }
+
+    @Test
+    public void testCreateEnvInstanceManagerError () throws AlreadyExistsEntityException, InvalidEntityException, InfrastructureException, EntityNotFoundException, NotUniqueResultException, InvalidProductInstanceRequestException, ProductInstallatorException, IPNotRetrievedException, InvalidEnvironmentRequestException, InvalidOVFException, InvalidVappException {
+    	ClaudiaData claudiaData = new ClaudiaData("org", "vdc", "service");
+        String callback ="";
+        Task task = new Task ();
+        when (environmentInstanceManager.load(any(String.class), any(String.class))).thenThrow(new EntityNotFoundException (EnvironmentInstance.class, callback, task));
+        when (environmentInstanceManager.create(any(ClaudiaData.class), any(EnvironmentInstance.class))).thenThrow(new InfrastructureException( "test"));
+        environmentInstanceAsyncManagerImpl.create(claudiaData, environmentInstance, task, callback);
+
+    }
+    
+    @Test
+    public void testDeleteEnvInstanceManager () throws AlreadyExistsEntityException, InvalidEntityException, InfrastructureException, EntityNotFoundException {
+    	ClaudiaData claudiaData = new ClaudiaData("org", "vdc", "service");
+        String callback ="";
+        Task task = new Task ();
+
+        Mockito.doNothing().when (environmentInstanceManager).destroy(any(ClaudiaData.class),  any(EnvironmentInstance.class));
+        environmentInstanceAsyncManagerImpl.destroy(claudiaData, environmentInstance, task, callback);
 
     }
 
