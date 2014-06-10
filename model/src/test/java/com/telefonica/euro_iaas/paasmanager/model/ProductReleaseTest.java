@@ -31,6 +31,9 @@ import net.sf.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.telefonica.euro_iaas.paasmanager.model.dto.ProductInstanceDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
+
 
 import static org.junit.Assert.assertEquals;
 
@@ -216,5 +219,27 @@ public class ProductReleaseTest {
         assertEquals(product2.equals(product), false);
         
         
+    }
+    
+    @Test 
+    public void testProductReleaseAndInstDto () {
+    	
+    	ProductReleaseDto productDto = new ProductReleaseDto ("product", "description", "version");
+    	ProductReleaseDto productDto2 = new ProductReleaseDto ("product", "version");
+    	productDto2.setProductDescription("description");
+    	
+    	ProductInstanceDto productInstanceDto = new ProductInstanceDto (productDto);
+    	productInstanceDto.setName("product");
+    	Set<Attribute> atts = new HashSet<Attribute> ();
+    	atts.add(new Attribute("key","value"));
+    	productInstanceDto.setAttributes(atts);
+    	productInstanceDto.setVdc("vdc");
+    	
+    	
+    	assertEquals (productInstanceDto.getAttributes().size(), 1);
+    	assertEquals (productInstanceDto.getProductReleaseDto().getProductName(), "product");
+    	assertEquals (productInstanceDto.getName(), "product");
+    	assertEquals (productInstanceDto.getVdc(), "vdc");
+
     }
 }

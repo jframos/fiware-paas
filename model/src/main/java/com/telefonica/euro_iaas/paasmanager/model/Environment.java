@@ -274,44 +274,7 @@ public class Environment {
         return envDto;
     }
 
-<<<<<<< HEAD
-=======
-  /*  private HashMap getTierRegions() {
-        HashMap<String, String> map = new HashMap<String, String>();
-        for (Tier tier : this.getTiers()) {
-            map.put(tier.getName(), tier.getRegion());
-        }
-        return map;
-    }
 
-    private HashMap getTierNetworks() {
-        HashMap<String, Set<Network>> map = new HashMap<String, Set<Network>>();
-        for (Tier tier : this.getTiers()) {
-            map.put(tier.getName(), tier.getNetworks());
-        }
-        return map;
-    }*/
-
-   /* public HashMap getRegionNetworks() {
-        HashMap<String, Set<String>> map = new HashMap<String, Set<String>>();
-        Set<String> nets;
-        for (Tier tier : this.getTiers()) {
-            if (map.get(tier.getRegion()) != null) {
-                nets = map.get(tier.getRegion());
-            } else {
-                nets = new HashSet<String>();
-                map.put(tier.getRegion(), nets);
-            }
-
-            for (Network net : tier.getNetworks()) {
-                nets.add(net.getNetworkName());
-            }
-
-        }
-        return map;
-    }*/
-
->>>>>>> 20521df731913717737ffe312b40e9eb71be9b3f
     public HashMap<String, Set<String>> getNetworksRegion() {
         HashMap<String, Set<String>> map = new HashMap<String, Set<String>>();
         Set<String> regions;
@@ -343,10 +306,7 @@ public class Environment {
 
         return nets;
     }
-<<<<<<< HEAD
-=======
- 
->>>>>>> 20521df731913717737ffe312b40e9eb71be9b3f
+
 
     private int getNumberRegions() {
         Set<String> map = new HashSet<String>();

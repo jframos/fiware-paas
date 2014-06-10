@@ -351,17 +351,5 @@ public class ProductReleaseDaoJpaImplTest {
         assertEquals(productRelease.getMetadatas().size(), 1);
 
     }
-    
-    
-    /**
-     * @param productReleaseDao
-     *            the productReleaseDao to set
-     */
-    public void setProductReleaseDao(ProductReleaseDao productReleaseDao) {
-        this.productReleaseDao = productReleaseDao;
-    }
 
-    public void setAttributeDao(AttributeDao attributeDao) {
-        this.attributeDao = attributeDao;
-    }
 }

@@ -208,12 +208,5 @@ public class EnvironmenDaoTest {
 
     }
 
-    public void setEnvironmentDao(EnvironmentDao environmentDao) {
-        this.environmentDao = environmentDao;
-    }
-    
-    public void setEnvironmentInstanceDao (EnvironmentInstanceDao environmentInstanceDao) {
-    	this.environmentInstanceDao = environmentInstanceDao;
-    } 
 
 }

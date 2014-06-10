@@ -83,7 +83,7 @@ public class AbstractTierResourceTest extends TestCase {
         tier.setFloatingip("floatingip");
         tier.setKeypair("keypair");
 
-        Environment environment = new Environment("name", null, "description");
+        Environment environment = new Environment("name", "description", null);
 
         when(tierManager.create(any(ClaudiaData.class), any(String.class), any(Tier.class))).thenReturn(tier);
         when(environmentManager.load(any(String.class), any(String.class))).thenReturn(environment);
@@ -98,7 +98,7 @@ public class AbstractTierResourceTest extends TestCase {
     @Test
     public void testInsertTier() throws Exception {
 
-        Environment environment = new Environment("name", null, "description");
+        Environment environment = new Environment("name", "description", null);
 
         try {
             when(environmentManager.load(any(String.class),any(String.class))).thenReturn(environment);
@@ -126,7 +126,7 @@ public class AbstractTierResourceTest extends TestCase {
     @Test
     public void testInsertTierNoProducts() throws Exception {
 
-        Environment environment = new Environment("name", null, "description");
+        Environment environment = new Environment("name", "description", null);
 
         try {
             when(environmentManager.load(any(String.class),any(String.class))).thenReturn(environment);

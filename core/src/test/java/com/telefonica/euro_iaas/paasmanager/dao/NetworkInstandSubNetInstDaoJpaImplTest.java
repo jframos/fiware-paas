@@ -153,7 +153,7 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
 
     }
 
-    @Test(expected = EntityNotFoundException.class)
+    @Test(expected=EntityNotFoundException.class)
     public void testDeleteSubNet() throws InvalidEntityException, AlreadyExistsEntityException, EntityNotFoundException {
 
         SubNetworkInstance subNet = new SubNetworkInstance(SUB_NETWORK_NAME+3, VDC, REGION);
@@ -201,19 +201,5 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
             assertEquals(subNet.getName(), SUB_NETWORK_NAME+4);
             assertEquals(subNet.getCidr(), CIDR2);
         }
-        
-        
-    }
-
-    /**
-     * @param productReleaseDao
-     *            the productReleaseDao to set
-     */
-    public void setNetworkInstanceDao(NetworkInstanceDao networkInstanceDao) {
-        this.networkInstanceDao = networkInstanceDao;
-    }
-
-    public void setSubNetworkInstanceDao(SubNetworkInstanceDao subNetworkInstanceDao) {
-        this.subNetworkInstanceDao = subNetworkInstanceDao;
     }
 }

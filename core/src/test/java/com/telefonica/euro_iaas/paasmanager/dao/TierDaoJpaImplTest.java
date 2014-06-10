@@ -276,7 +276,7 @@ public class TierDaoJpaImplTest {
     /**
      * Test the create and load method
      */
-    @Test(expected = EntityNotFoundException.class)
+    @Test
     public void testDeleted() throws Exception {
 
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
@@ -290,9 +290,6 @@ public class TierDaoJpaImplTest {
 
         tier = tierDao.create(tier);
         tierDao.remove(tier);
-
-        tier = tierDao.load(TIER_NAME, "vdc", "environmentName");
-
     }
     
     /**
@@ -366,17 +363,5 @@ public class TierDaoJpaImplTest {
         assertEquals(tierDao.findAllWithNetwork(net).size(),2);
     }
 
-
-    public void setProductReleaseDao(ProductReleaseDao productReleaseDao) {
-        this.productReleaseDao = productReleaseDao;
-    }
-
-    public void setTierDao(TierDao tierDao) {
-        this.tierDao = tierDao;
-    }
-    
-    public void setSecurityGroupDao (SecurityGroupDao securityGroupDao) {
-    	this.securityGroupDao = securityGroupDao;
-    }
 
 }
