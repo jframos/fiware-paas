@@ -34,7 +34,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.NetworkDao;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.NetworkManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -127,6 +129,30 @@ public class NetworkManagerImplTest extends TestCase {
         }
 
     }
+    
+    @Test
+    public void testCreateNetworkSubNetempty () throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
+    	 Network net = new Network(NETWORK_NAME+"empty", null, "region");
+    	 SubNetwork subNet = new SubNetwork (SUB_NETWORK_NAME,  "vdc", "region");
+    	 when(subNetworkManager.create(any(SubNetwork.class))).thenReturn(subNet);
+    	 when(networkDao.load(any(String.class),any(String.class), any(String.class))).thenReturn(net);
+    	 networkManager.create(net);
+    }
+    
+    @Test
+    public void testCreateNetworkAnotherSubNetempty () throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
+    	 Network net = new Network(NETWORK_NAME+"empty", null, "region");
+    	 
+    	 SubNetwork subNet = new SubNetwork (SUB_NETWORK_NAME,  "vdc", "region");
+    	 net.addSubNet(subNet);
+    	 SubNetwork subNet2 = new SubNetwork (SUB_NETWORK_NAME+2,  "vdc", "region");
+    	 when(subNetworkManager.create(any(SubNetwork.class))).thenReturn(subNet);
+    	 when(networkDao.load(any(String.class),any(String.class), any(String.class))).thenReturn(net);
+    	 Network net2 = new Network(NETWORK_NAME+"empty", null, "region");
+    	 net2.addSubNet(subNet2);
+    	 networkManager.create(net2);
+    }
+    
 
     /**
      * It tests the creation of a network.
@@ -165,6 +191,8 @@ public class NetworkManagerImplTest extends TestCase {
     public void testDestroyNetwork() throws Exception {
         // Given
         Network net = new Network(NETWORK_NAME, "vdc", "region");
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, "vdc", "region");
+        net.addSubNet(subNet);
 
         // When
         when(networkDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
