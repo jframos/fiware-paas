@@ -63,7 +63,7 @@ public class SecurityGroupTest extends TestCase {
     }
     
     @Test
-    public void equalRules() throws Exception {
+    public void testEqualRules() throws Exception {
         Rule rule = new Rule("TCP", "80", "80", "", "0.0.0.0/0");
         Rule rule2 = new Rule("TCP", "80", "80", "", "0.0.0.0/0");
         assertEquals(rule.equals(rule2), true);
