@@ -238,7 +238,7 @@ public class TierManagerImpl implements TierManager {
 
             String mens = "It is not possible to delete the tier " + tier.getName() + " since it is not exist";
             log.error(mens);
-            throw new EntityNotFoundException(Tier.class, mens, tier);
+            throw new com.telefonica.euro_iaas.commons.dao.EntityNotFoundException(Tier.class, mens, tier);
         }
 
         if (tier.getSecurityGroup() != null && !tier.getVdc().isEmpty()) {

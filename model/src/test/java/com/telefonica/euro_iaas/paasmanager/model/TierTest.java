@@ -24,12 +24,22 @@
 
 package com.telefonica.euro_iaas.paasmanager.model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import junit.framework.TestCase;
 import net.sf.json.JSONObject;
 
 import org.junit.Test;
 
+import com.telefonica.euro_iaas.paasmanager.model.dto.NetworkDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.ProductInstanceDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.TierPDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 
 /**
@@ -127,8 +137,13 @@ public class TierTest extends TestCase {
         tierDto.setImage("image");
         tierDto.setKeypair("keypair");
         tierDto.setFloatingip("true");
-        
+        ProductReleaseDto product = new ProductReleaseDto ("product", "version");
+        Set<Attribute> atts = new HashSet<Attribute> ();
+        atts.add(new Attribute("key", "value"));
+        product.setPrivateAttributes(atts);
+        tierDto.addProductRelease(product);
         Tier tier = tierDto.fromDto("vdc", "envName");
+        
    
         
         assertEquals(tier.getName(), "tier");
@@ -141,6 +156,18 @@ public class TierTest extends TestCase {
         assertEquals(tier.getKeypair(),"keypair");
         assertEquals(tier.getFloatingip(),"true");
         assertEquals(tier.getAffinity(),"affinity");
+        assertEquals(tier.getProductReleases().get(0).getAttributes().size(), 1);
+        
+        
+        TierDto tierDto2 = new TierDto("tier", maximumNumberInstances, minimumNumberInstances, initialNumberInstances, null, "2", "image", "icono", "keypair", "yes", "affinity");
+        tierDto2.addProductRelease(new ProductReleaseDto ());
+        tierDto2.addNetworkDto(new NetworkDto ());
+        
+        assertEquals(tierDto2.getAffinity(),"affinity");
+        assertEquals(tierDto2.getProductReleaseDtos().size(),1);
+        assertEquals(tierDto2.getNetworksDto().size(), 1);
+       
+        
     }
 
     @Test
@@ -180,5 +207,48 @@ public class TierTest extends TestCase {
                         .get("uuid"));
 
     }
+ 
+    
+    @Test
+    public void testTierInstanceDtoII () {
+    	List<ProductInstanceDto> productInstanceDtos = new ArrayList ();
+    	TierInstanceDto tierInstanceDto = new TierInstanceDto ("tiername", 1, productInstanceDtos);
+    	tierInstanceDto.addProductInstanceDto(new ProductInstanceDto ());
+    	tierInstanceDto.setAttributes(new HashSet<Attribute> ());
+    	assertEquals (tierInstanceDto.getReplicaNumber(), 1);
+    	assertEquals (tierInstanceDto.getTierInstanceName(), "tiername");
+    	assertEquals (tierInstanceDto.getProductInstanceDtos().size(),1);
+    }
+    
+    
+    @Test
+    public void testTierPDto () {
+    	TierPDto tierDto = new TierPDto ("tier");
+    	Integer minimumNumberInstances = new Integer(1);
+        Integer initialNumberInstances = new Integer(2);
+        Integer maximumNumberInstances = new Integer(3);
+
+        tierDto.setMaximumNumberInstances(maximumNumberInstances);
+        tierDto.setMinimumNumberInstances(minimumNumberInstances);
+        tierDto.setInitialNumberInstances(initialNumberInstances);
+        tierDto.setFlavour("2");
+        tierDto.setIcono("icono");
+        tierDto.setImage("image");
+        tierDto.setKeypair("keypair");
+        tierDto.setFloatingip("true");
+        
+        assertEquals(tierDto.getName(), "tier");
+        assertEquals(tierDto.getMaximumNumberInstances().intValue(), 3);
+        assertEquals(tierDto.getMinimumNumberInstances().intValue(), 1);
+        assertEquals(tierDto.getInitialNumberInstances().intValue(), 2);
+        assertEquals(tierDto.getFlavour(),"2");
+        assertEquals(tierDto.getImage(),"image");
+        assertEquals(tierDto.getIcono(),"icono");
+        assertEquals(tierDto.getKeypair(),"keypair");
+        assertEquals(tierDto.getFloatingip(),"true");
+    }
+    
+    
+
 
 }

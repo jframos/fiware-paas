@@ -48,12 +48,8 @@ public class ProductReleaseDto {
     private String productName;
     private String productDescription;
     private String version;
-
-    // private String releaseNotes;
     private Set<Attribute> attributes;
 
-    // private List<OS> supportedOS;
-    // private List<ProductRelease> transitableReleases;
 
     /**
      */
@@ -68,8 +64,7 @@ public class ProductReleaseDto {
      * @param supportedOS
      * @param transitableReleases
      */
-    public ProductReleaseDto(String productName, String productDescription, String version, String releaseNotes,
-            Set<Attribute> privateAttributes, List<OS> supportedOS, List<ProductRelease> transitableReleases) {
+    public ProductReleaseDto(String productName, String productDescription, String version) {
         this.productName = productName;
         this.productDescription = productDescription;
         this.version = version;

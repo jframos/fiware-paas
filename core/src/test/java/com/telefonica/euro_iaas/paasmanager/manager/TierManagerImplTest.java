@@ -25,6 +25,7 @@
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import static org.junit.Assert.assertEquals;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -418,7 +419,7 @@ public class TierManagerImplTest {
     }
     
     @Test(expected=EntityNotFoundException.class)
-    public void testTierDeletionNotFound() throws EntityNotFoundException, InvalidEntityException, InfrastructureException  {
+    public void testTierDeletionNotFound() throws InvalidEntityException, InfrastructureException, EntityNotFoundException  {
 
         productRelease = new ProductRelease("product", "2.0");
         productRelease.addAttribute(new Attribute("open_ports", "8080"));
@@ -429,10 +430,9 @@ public class TierManagerImplTest {
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
                 "image", "icono", "keypair", "floatingip", "payload");
         when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).
-          thenThrow(new EntityNotFoundException (Tier.class, "error", tier));
+          thenThrow(new com.telefonica.euro_iaas.commons.dao.EntityNotFoundException  (Tier.class, "error", tier));
 
         tierManager.delete(data, tier);
-
     }
     
     @Test

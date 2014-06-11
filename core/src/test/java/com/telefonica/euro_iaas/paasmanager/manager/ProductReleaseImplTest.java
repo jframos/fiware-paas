@@ -24,12 +24,19 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
+import com.telefonica.euro_iaas.paasmanager.dao.sdc.ProductReleaseSdcDao;
+import com.telefonica.euro_iaas.paasmanager.exception.SdcException;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.ProductReleaseManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
+
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +44,7 @@ import org.junit.Test;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla
@@ -44,7 +52,7 @@ import static org.mockito.Mockito.mock;
 public class ProductReleaseImplTest extends TestCase {
 
     private ProductReleaseManagerImpl productReleaseManager;
-
+    private ProductReleaseSdcDao productReleaseSdcDao;
     private ProductReleaseDao productReleaseDao;
 
     @Override
@@ -53,17 +61,54 @@ public class ProductReleaseImplTest extends TestCase {
 
         productReleaseManager = new ProductReleaseManagerImpl();
         productReleaseDao = mock(ProductReleaseDao.class);
-
+       
         productReleaseManager.setProductReleaseDao(productReleaseDao);
+        productReleaseSdcDao = mock (ProductReleaseSdcDao.class);
+        productReleaseManager.setProductReleaseSdcDao(productReleaseSdcDao);
 
     }
 
     @Test
-    public void testCreateProductRelease() throws EntityNotFoundException {
+    public void testCreateProductRelease() throws EntityNotFoundException, AlreadyExistsEntityException, InvalidEntityException {
         ProductRelease productRelease2 = new ProductRelease("product", "2.0");
         productRelease2.addAttribute(new Attribute("openports", "8080"));
-
-     //   productReleaseManager.load("test-0.1", "token", "tenant");
+        when(productReleaseDao.load(any(String.class), any(String.class), any(String.class))).thenThrow(new EntityNotFoundException(ProductRelease.class, "test", productRelease2));
+        when (productReleaseDao.create(any(ProductRelease.class))).thenReturn(productRelease2);
+     
+        productRelease2 = productReleaseManager.create(productRelease2);
+        assertEquals(productRelease2.getName(), "product-2.0");
+       
+    }
+    
+    @Test
+    public void testCreateProductReleaseError() throws EntityNotFoundException, AlreadyExistsEntityException, InvalidEntityException {
+        ProductRelease productRelease2 = new ProductRelease("product", "2.0");
+        productRelease2.addAttribute(new Attribute("openports", "8080"));
+        when(productReleaseDao.load(any(String.class), any(String.class), any(String.class))).thenReturn(productRelease2);
+        productRelease2 = productReleaseManager.create(productRelease2);
+       
+    }
+    
+    @Test
+    public void testLoadProductRelease() throws EntityNotFoundException, AlreadyExistsEntityException, InvalidEntityException {
+        ProductRelease productRelease2 = new ProductRelease("product", "2.0");
+        productRelease2.addAttribute(new Attribute("openports", "8080"));
+        when(productReleaseDao.load(any(String.class))).thenReturn(productRelease2);
+        productRelease2 = productReleaseManager.load("product", "2.0");
+        assertEquals(productRelease2.getName(), "product-2.0");      
+    }
+    
+    @Test
+    public void testLoadProductReleaseII() throws EntityNotFoundException, AlreadyExistsEntityException, InvalidEntityException, SdcException {
+        ProductRelease productRelease2 = new ProductRelease("product", "2.0");
+        productRelease2.addAttribute(new Attribute("openports", "8080"));
+        when(productReleaseDao.load(any(String.class))).thenThrow(new EntityNotFoundException(ProductRelease.class, "test", productRelease2));
+        when(productReleaseSdcDao.load(any(String.class), any(String.class), any(ClaudiaData.class))).thenReturn(productRelease2);
+        when (productReleaseDao.create(any(ProductRelease.class))).thenReturn(productRelease2);
+        ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
+        productRelease2 = productReleaseManager.load("product-2.0", claudiaData);
+        assertEquals(productRelease2.getName(), "product-2.0");
+        
     }
 
 }
