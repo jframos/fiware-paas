@@ -53,7 +53,16 @@ public class ApplicationInstanceDaoJpaImpl extends AbstractBaseDao<ApplicationIn
     }
 
     public ApplicationInstance load(String arg0) throws EntityNotFoundException {
-        return super.loadByField(ApplicationInstance.class, "name", arg0);
+        //return super.loadByField(ApplicationInstance.class, "name", arg0);
+    	return null;
+    }
+    
+    public ApplicationInstance load(String name, String vdc, String environmentInstance ) throws EntityNotFoundException {
+    	ApplicationInstanceSearchCriteria criteria = new ApplicationInstanceSearchCriteria ();
+    	criteria.setVdc(vdc);
+    	criteria.setApplicationName(name);
+    	criteria.setEnvironmentInstance(environmentInstance);
+    	return findByCriteria(criteria).get(0);
     }
 
     public List<ApplicationInstance> findByCriteria(ApplicationInstanceSearchCriteria criteria) {
@@ -71,10 +80,12 @@ public class ApplicationInstanceDaoJpaImpl extends AbstractBaseDao<ApplicationIn
         if (!StringUtils.isEmpty(criteria.getVdc())) {
             baseCriteria.add(Restrictions.eq(ApplicationInstance.VDC_FIELD, criteria.getVdc()));
         }
-        /*
-         * if (!StringUtils.isEmpty(criteria.getEnvironmentInstance())) { baseCriteria
-         * .add(Restrictions.eq(ApplicationInstance.ENVIRONMENT_INSTANCE_FIELD, criteria.getEnvironmentInstance())); }
-         */
+ 
+        
+        if (!StringUtils.isEmpty(criteria.getApplicationName())) {
+            baseCriteria.add(Restrictions.eq(ApplicationInstance.APP_FIELD, criteria.getApplicationName()));
+        }
+
 
         List<ApplicationInstance> applicationInstances = setOptionalPagination(criteria, baseCriteria).list();
 

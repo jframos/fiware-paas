@@ -78,7 +78,7 @@ public interface ApplicationInstanceResource {
     @GET
     @Path("/{name}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ApplicationInstance load(@PathParam("vdc") String vdc, @PathParam("name") String name);
+    ApplicationInstance load(@PathParam("vdc") String vdc,  @PathParam("environmentInstance") String environmentInstance, @PathParam("name") String name);
 
     /**
      * Uninstall a previously installed instance.

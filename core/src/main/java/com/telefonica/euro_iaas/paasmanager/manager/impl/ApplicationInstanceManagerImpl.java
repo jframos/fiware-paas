@@ -135,8 +135,8 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
         return applicationInstance;
     }
 
-    public ApplicationInstance load(String vdc, String name) throws EntityNotFoundException {
-        ApplicationInstance instance = applicationInstanceDao.load(name);
+    public ApplicationInstance load(String vdc, String environment, String name) throws EntityNotFoundException {
+        ApplicationInstance instance = applicationInstanceDao.load(name, vdc, environment);
         if (!instance.getVdc().equals(vdc)) {
             throw new EntityNotFoundException(EnvironmentInstance.class, "vdc", vdc);
         }

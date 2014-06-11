@@ -166,9 +166,9 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
      *            , the applicationInstanceName
      * @return the applicationInstance
      */
-    public ApplicationInstance load(String vdc, String name) {
+    public ApplicationInstance load(String vdc, String enviroment, String name) {
         try {
-            ApplicationInstance appInstance = applicationInstanceManager.load(vdc, name);
+            ApplicationInstance appInstance = applicationInstanceManager.load(vdc, enviroment, name);
             return appInstance;
 
         } catch (EntityNotFoundException e) {
