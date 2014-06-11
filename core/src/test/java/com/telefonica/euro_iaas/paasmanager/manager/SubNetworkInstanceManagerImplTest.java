@@ -29,6 +29,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -110,6 +111,9 @@ public class SubNetworkInstanceManagerImplTest {
       
         // Verify
         subNetworkInstanceManager.create(claudiaData, subnetInst, "region");
+        verify (subNetworkInstanceDao.exists(any(String.class),any(String.class),any(String.class)));
+        verify (subNetworkInstanceDao.create(any(SubNetworkInstance.class)));
+        
     }
     
     @Test
@@ -121,9 +125,15 @@ public class SubNetworkInstanceManagerImplTest {
         ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
 
         // When
-        when(subNetworkInstanceDao.load(any(String.class),any(String.class),any(String.class))).thenReturn(subnetInst);
+        Mockito.doNothing().when(networkClient).destroySubNetwork(any(ClaudiaData.class), any(SubNetworkInstance.class), anyString());
+        Mockito.doNothing().when(subNetworkInstanceDao).remove(any(SubNetworkInstance.class));
+        
         // Verify
         subNetworkInstanceManager.delete(claudiaData, subnetInst, "region");
+        verify (subNetworkInstanceDao).remove(any(SubNetworkInstance.class));
+        verify(networkClient).destroySubNetwork(any(ClaudiaData.class), any(SubNetworkInstance.class), anyString());
+       
+     
     }
     
 

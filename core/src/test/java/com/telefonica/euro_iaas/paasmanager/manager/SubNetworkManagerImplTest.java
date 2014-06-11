@@ -28,6 +28,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 import junit.framework.TestCase;
 
 import org.junit.Before;
@@ -85,6 +86,8 @@ public class SubNetworkManagerImplTest extends TestCase {
         // Verity
         subNet = subNetworkManager.create(subNet);
         assertEquals(subNet.getName(), SUB_NETWORK_NAME);
+        verify (subnetworkDao).create(any(SubNetwork.class));
+        verify (subnetworkDao).load(any(String.class), any(String.class), any(String.class));
 
 
     }
@@ -100,13 +103,12 @@ public class SubNetworkManagerImplTest extends TestCase {
         // Given
      
         SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, "vdc", "region");
-
         // When
-        when(subnetworkDao.load(any(String.class))).thenReturn(subNet);
-
-
-        // Verity
+    
         subNetworkManager.delete(subNet);
+        
+        verify (subnetworkDao).remove(subNet);
+        
 
     }
 

@@ -32,6 +32,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 import javax.ws.rs.core.Response.Status;
 
@@ -74,6 +75,8 @@ public class SDCUtilImplTest {
     	when(sDCClient.getTaskService(anyString(),anyString())).thenReturn(taskService);
     	
     	sdcUtilImpl.checkTaskStatus(task, "token", "vdc");
+    	verify (sDCClient.getTaskService(anyString(),anyString()));
+    
         
     }
     
@@ -94,6 +97,9 @@ public class SDCUtilImplTest {
     	when(sDCClient.getTaskService(anyString(),anyString())).thenReturn(taskService);
     	
     	sdcUtilImpl.checkTaskStatus(task, "token", "vdc");
+    	
+    	verify (sDCClient.getTaskService(anyString(),anyString()));
+    	verify (openStackRegion.getSdcEndPoint(anyString(), anyString()));
         
     }
     
@@ -111,6 +117,9 @@ public class SDCUtilImplTest {
     	when(sDCClient.getTaskService(anyString(),anyString())).thenReturn(taskService);
     	
     	sdcUtilImpl.checkTaskStatus(task, "token", "vdc");
+    	
+    	verify (sDCClient.getTaskService(anyString(),anyString()));
+    	verify (openStackRegion.getSdcEndPoint(anyString(), anyString()));
         
     }
 

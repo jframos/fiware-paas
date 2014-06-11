@@ -241,10 +241,19 @@ public class EnvironmentTest extends TestCase {
 
          Environment envResult = new Environment("environemntName", tiers);
          assertEquals (envResult.getTiers().size(), 1);
+         
          envResult.addTier(tier2);
          assertEquals (envResult.getTiers().size(), 2);
+         
          envResult.deleteTier(tier);
+         assertEquals (envResult.getTiers().size(), 1);
+         
          envResult.updateTier(tier2, tier3);
+         
+         for (Tier t: envResult.getTiers() ) {
+        	 assertEquals (t.getName(), "name3");
+         }
+
     	
     }
 
