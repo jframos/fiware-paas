@@ -75,7 +75,7 @@ public class SDCUtilImplTest {
     	when(sDCClient.getTaskService(anyString(),anyString())).thenReturn(taskService);
     	
     	sdcUtilImpl.checkTaskStatus(task, "token", "vdc");
-    	verify (sDCClient.getTaskService(anyString(),anyString()));
+    	verify (sDCClient).getTaskService(anyString(),anyString());
     
         
     }
@@ -98,8 +98,8 @@ public class SDCUtilImplTest {
     	
     	sdcUtilImpl.checkTaskStatus(task, "token", "vdc");
     	
-    	verify (sDCClient.getTaskService(anyString(),anyString()));
-    	verify (openStackRegion.getSdcEndPoint(anyString(), anyString()));
+    	verify (sDCClient).getTaskService(anyString(),anyString());
+    	verify (openStackRegion).getSdcEndPoint(anyString(), anyString());
         
     }
     
@@ -118,8 +118,8 @@ public class SDCUtilImplTest {
     	
     	sdcUtilImpl.checkTaskStatus(task, "token", "vdc");
     	
-    	verify (sDCClient.getTaskService(anyString(),anyString()));
-    	verify (openStackRegion.getSdcEndPoint(anyString(), anyString()));
+    	verify (sDCClient).getTaskService(anyString(),anyString());
+    	verify (openStackRegion).getSdcEndPoint(anyString(), anyString());
         
     }
 
