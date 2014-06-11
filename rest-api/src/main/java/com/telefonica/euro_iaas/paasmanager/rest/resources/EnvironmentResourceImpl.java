@@ -33,11 +33,13 @@ import javax.ws.rs.WebApplicationException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -62,10 +64,13 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
     public static final int ERROR_NOT_FOUND = 404;
     public static final int ERROR_REQUEST = 500;
 
+    @Autowired
     private EnvironmentManager environmentManager;
 
+    @Autowired
     private SystemPropertiesProvider systemPropertiesProvider;
 
+    @Autowired
     private EnvironmentResourceValidator environmentResourceValidator;
 
     private static Logger log = LoggerFactory.getLogger(EnvironmentManagerImpl.class);
@@ -80,7 +85,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
             Environment env = environmentManager.load(envName, vdc);
             environmentManager.destroy(claudiaData, env);
         } catch (Exception e) {
-            throw new APIException(e);
+            throw new APIException(new InvalidEntityException(e.getMessage()));
         }
 
     }

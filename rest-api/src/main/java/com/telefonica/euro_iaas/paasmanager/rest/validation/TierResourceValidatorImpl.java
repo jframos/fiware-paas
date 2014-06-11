@@ -242,7 +242,7 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
         List<EnvironmentInstance> envInstances = environmentInstanceManager.findByCriteria(criteria);
 
         if (envInstances != null && envInstances.size() != 0) {
-            throw new InvalidEntityException("The enviornmetn is being used by an env instance");
+            throw new InvalidEntityException("The environment is being used by an env instance");
         }
 
     }

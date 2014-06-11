@@ -29,11 +29,11 @@ import java.util.List;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
@@ -56,9 +56,9 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 @Scope("request")
 public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
-    @InjectParam("productReleaseManager")
+    @Autowired
     private ProductReleaseManager productReleaseManager;
-    @InjectParam("tierManager")
+    @Autowired
     private TierManager tierManager;
 
     private SystemPropertiesProvider systemPropertiesProvider;
@@ -73,7 +73,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
         try {
 
-            ProductRelease productRelease = productReleaseManager.load(productReleaseName,claudiaData);
+            ProductRelease productRelease = productReleaseManager.load(productReleaseName, claudiaData);
 
             Tier tier = tierManager.load(tierName, vdc, envName);
             tier.removeProductRelease(productRelease);
@@ -96,8 +96,8 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         }
 
         try {
-            productRelease = productReleaseManager.load(productReleaseDto.getProductName() + "-"
-                    + productReleaseDto.getVersion(), claudiaData);
+            productRelease = productReleaseManager.load(
+                    productReleaseDto.getProductName() + "-" + productReleaseDto.getVersion(), claudiaData);
         } catch (EntityNotFoundException e1) {
 
             throw new WebApplicationException(e1, 500);
@@ -123,7 +123,7 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
     public ProductReleaseDto load(String org, String vdc, String environment, String tier, String name)
             throws APIException {
         try {
-        	ClaudiaData claudiaData = new ClaudiaData(org, vdc, environment);
+            ClaudiaData claudiaData = new ClaudiaData(org, vdc, environment);
 
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                 claudiaData.setUser(getCredentials());
