@@ -37,7 +37,6 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.ArtifactDao;
 import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
-import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ArtifactSearchCriteria;
 
 /**
  * Defines the methods needed to persist/to manage Artifact objects.
@@ -65,21 +64,5 @@ public class ArtifactDaoJpaImpl extends AbstractBaseDao<Artifact, String> implem
         return super.loadByField(Artifact.class, "name", name);
     }
 
-    /*
-     * Find a list of Artifacts from the paas-manager database
-     * @param crteria, the criteria to perform the search
-     * @return artifacts, the list of artifacts
-     */
-    public List<Artifact> findByCriteria(ArtifactSearchCriteria criteria) {
-        Session session = (Session) getEntityManager().getDelegate();
-        Criteria baseCriteria = session.createCriteria(ProductRelease.class);
-
-        if (criteria.getProductRelease() != null) {
-            baseCriteria.add(Restrictions.eq("tier", criteria.getProductRelease()));
-        }
-
-        List<Artifact> artifacts = setOptionalPagination(criteria, baseCriteria).list();
-
-        return artifacts;
-    }
+  
 }

@@ -151,6 +151,25 @@ public class ApplicationInstnaceDaoJpaImplTest {
         assertEquals (lAppInt.size(), num+1);  
     }
     
+    @Test
+    public void testFindByCriteria2() throws Exception {
+    	ApplicationRelease applicationRelease = new ApplicationRelease ("product5", "version");
+    	applicationRelease = applicationReleaseDao.create(applicationRelease);
+    	ApplicationInstanceSearchCriteria criteria = new ApplicationInstanceSearchCriteria ();
+    	criteria.setVdc(VDC);
+    	criteria.setEnvironmentInstance(environmentInstance.getName());
+    	criteria.setApplicatonRelease(applicationRelease);
+    	
+    	
+    	
+        ApplicationInstance appIn = new ApplicationInstance (applicationRelease,environmentInstance);
+        appIn = applicationInstanceDao.create(appIn);
+        List<ApplicationInstance> lAppInt = applicationInstanceDao.findByCriteria(criteria); 	
+    
+        assertNotNull(lAppInt);
+        assertEquals (lAppInt.size(), 1);  
+    }
+    
 
     
     

@@ -52,10 +52,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         </bean>
 
         <!--  MANAGERS -->
-        <bean id="artifactManager" lazy-init="true"
-              class="com.telefonica.euro_iaas.paasmanager.manager.impl.ArtifactManagerImpl">
-            <property name="artifactDao" ref="artifactDao"/>
-        </bean>
+       
         <bean id="productReleaseManager" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.manager.impl.ProductReleaseManagerImpl">
             <property name="productReleaseDao" ref="productReleaseDao"/>
@@ -70,10 +67,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="securityGroupManager" ref="securityGroupManager"/>
            
         </bean>
-        <bean id="applicationReleaseManager" lazy-init="true"
-              class="com.telefonica.euro_iaas.paasmanager.manager.impl.ApplicationReleaseManagerImpl">
-            <property name="applicationReleaseDao" ref="applicationReleaseDao"/>
-        </bean>
+   
         <bean id="productInstanceManager" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.manager.impl.ProductInstanceManagerImpl">
             <property name="productInstanceDao" ref="productInstanceDao"/>

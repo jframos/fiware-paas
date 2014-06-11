@@ -144,7 +144,7 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
     public Task uninstall(String org, String vdc, String environmentName, String applicationName, String callback) {
         try {
             ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
-            ApplicationInstance appInstance = applicationInstanceManager.load(vdc, applicationName);
+            ApplicationInstance appInstance = applicationInstanceManager.load(vdc, environmentName, applicationName);
 
             EnvironmentInstance envInstance = environmentInstanceManager.load(vdc, environmentName);
 

@@ -128,7 +128,7 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
 
         ApplicationInstance applicationInstance = null;
         try {
-            applicationInstance = applicationInstanceManager.load(data.getVdc(), applicationName);
+            applicationInstance = applicationInstanceManager.load(data.getVdc(),environmentInstanceName, applicationName);
             EnvironmentInstance environmentInstance = environmentInstanceManager.load(data.getVdc(),
                     environmentInstanceName);
             applicationInstanceManager.uninstall(data, environmentInstance, applicationInstance);

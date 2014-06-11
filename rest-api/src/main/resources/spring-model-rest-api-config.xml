@@ -15,7 +15,7 @@
         <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
         <property name="applicationInstanceAsyncManager" ref="applicationInstanceAsyncManager"/>
         <property name="applicationInstanceManager" ref="applicationInstanceManager"/>
-        <property name="applicationReleaseManager" ref="applicationReleaseManager"/>
+      
     </bean>
 
     <bean id="environmentInstanceResource" lazy-init="true"

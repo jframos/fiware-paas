@@ -49,7 +49,7 @@ public class ApplicationInstanceResourceValidatorImpl implements ApplicationInst
         // Check that the application is not installed already
         try {
             applicationInstanceManager
-                    .load(vdc, applicationReleaseDto.getApplicationName() + "-" + environmentInstance);
+                    .load(vdc, environmentInstance, applicationReleaseDto.getApplicationName() + "-" + environmentInstance);
             throw new InvalidApplicationReleaseException("Application already installed");
         } catch (EntityNotFoundException e) {
             // TODO Auto-generated catch block

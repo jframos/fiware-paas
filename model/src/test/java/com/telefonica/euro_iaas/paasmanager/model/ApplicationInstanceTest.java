@@ -121,6 +121,17 @@ public class ApplicationInstanceTest extends TestCase {
     }
     
     @Test
+    public void testEqualArtifact() throws Exception {
+        ProductRelease productRelease = new ProductRelease (PRODUCT_NAME, PRODUCT_VERSION);
+        Artifact artifact = new Artifact (ARTIFACT_NAME, ARTIFACT_PATH, productRelease);
+        Artifact artifact2 = new Artifact (ARTIFACT_NAME, ARTIFACT_PATH, productRelease);
+        Artifact artifact3 = new Artifact (ARTIFACT_NAME+2, ARTIFACT_PATH, productRelease);
+        assertTrue(artifact.equals(artifact2));
+        assertFalse(artifact.equals(artifact3));
+
+    }
+    
+    @Test
     public void testConvertArtifactFromDto() throws Exception {
         ProductRelease productRelease = new ProductRelease (PRODUCT_NAME, PRODUCT_VERSION);
         ArtifactDto artifactDto = new ArtifactDto (ARTIFACT_NAME, ARTIFACT_PATH, productRelease.toDto());

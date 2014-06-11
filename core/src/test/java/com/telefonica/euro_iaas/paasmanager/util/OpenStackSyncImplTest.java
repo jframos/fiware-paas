@@ -85,7 +85,7 @@ public class OpenStackSyncImplTest {
     private Connection connection;
 
     @Before
-    public void setup() throws Exception {
+    public void Setup() throws Exception {
         List<Tier> tiers = new ArrayList<Tier>();
         List<ProductRelease> pReleases = new ArrayList<ProductRelease>();
 

@@ -54,10 +54,12 @@ import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
+import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ArtifactDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
@@ -151,7 +153,16 @@ public class ApplicationInstanceITest {
         ApplicationReleaseDto applicationReleaseDto = new ApplicationReleaseDto (APP_NAME, APP_VERSION, artifactsDto);
         ApplicationRelease appRelease = applicationReleaseDto.fromDto();
         
-        applicationInstanceResource.install(org, vdc, BLUEPRINT_NAME, applicationReleaseDto, "");
+        task = applicationInstanceResource.install(org, vdc, BLUEPRINT_NAME, applicationReleaseDto, "");
+        
+        Thread.sleep(5000);
+
+        assertEquals(Task.TaskStates.RUNNING, task.getStatus());
+        
+        
+        ApplicationInstance app = applicationInstanceResource.load(vdc, BLUEPRINT_NAME, appRelease.getName()+"-"+BLUEPRINT_NAME);
+        
+        assertEquals (app.getName(), appRelease.getName()+"-"+BLUEPRINT_NAME);
 
         
 

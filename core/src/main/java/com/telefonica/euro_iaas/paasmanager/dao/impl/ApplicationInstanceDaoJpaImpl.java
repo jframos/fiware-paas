@@ -62,7 +62,12 @@ public class ApplicationInstanceDaoJpaImpl extends AbstractBaseDao<ApplicationIn
     	criteria.setVdc(vdc);
     	criteria.setApplicationName(name);
     	criteria.setEnvironmentInstance(environmentInstance);
-    	return findByCriteria(criteria).get(0);
+    	List<ApplicationInstance> apps = findByCriteria(criteria);
+    	if (apps.size() ==0) {
+    		throw new EntityNotFoundException (ApplicationInstance.class, environmentInstance, apps);
+    	} else {
+    	    return findByCriteria(criteria).get(0);
+    	}
     }
 
     public List<ApplicationInstance> findByCriteria(ApplicationInstanceSearchCriteria criteria) {
