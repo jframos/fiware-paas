@@ -30,10 +30,10 @@ import java.util.List;
 import javax.ws.rs.Path;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
@@ -50,7 +50,7 @@ import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 @Scope("request")
 public class TaskResourceImpl implements TaskResource {
 
-    @InjectParam("taskManager")
+    @Autowired
     private TaskManager taskManager;
 
     public Task load(Long id) throws APIException {

@@ -1,27 +1,45 @@
-# FI-WARE PaaS Manager [![Build Status](https://travis-ci.org/telefonicaid/fiware-paas.svg)](https://travis-ci.org/telefonicaid/fiware-paas) [![Coverage Status](https://coveralls.io/repos/jesuspg/fiware-paas/badge.png?branch=develop)](https://coveralls.io/r/jesuspg/fiware-paas?branch=develop) [![help stackoverflow](http://b.repl.ca/v1/help-stackoverflow-orange.png)](http://www.stackoverflow.com)
+# FI-WARE PaaS Manager [![Build Status](https://travis-ci.org/telefonicaid/fiware-paas.svg)](https://travis-ci.org/telefonicaid/fiware-paas) [![Coverage Status](https://coveralls.io/repos/jesuspg/fiware-paas/badge.png)](https://coveralls.io/r/jesuspg/fiware-paas) [![help stackoverflow](http://b.repl.ca/v1/help-stackoverflow-orange.png)](http://www.stackoverflow.com)
 
 
-
-This is the repository of the PaaS Manager developed in the FI-WARE and 4CaaSt project. The PaaS Manager GE provides a 
-new layer over the IaaS layer (Openstack) in the aim of easing the task of deploying applications on a Cloud infrastructure. 
-Therefore, it orchestrates the provisioning of the required virtual resources at IaaS level, and then, the installation and configuration 
-of the whole software stack of the application by the SDC GE, taking into account the underlying virtual infrastructure. 
-It provides a flexible mechanism to perform the deployment, enabling multiple deployment architectures: 
+This is the repository of the PaaS Manager developed in the FI-WARE and 4CaaSt project. The PaaS Manager GE provides a
+new layer over the IaaS layer (Openstack) in the aim of easing the task of deploying applications on a Cloud infrastructure.
+Therefore, it orchestrates the provisioning of the required virtual resources at IaaS level, and then, the installation and configuration
+of the whole software stack of the application by the SDC GE, taking into account the underlying virtual infrastructure.
+It provides a flexible mechanism to perform the deployment, enabling multiple deployment architectures:
 everything in a single VM or server, several VMs or servers, or elastic architectures based on load balancers and different software tiers.
 
 
 
 ## Requirements
 In order to execute the PaaS Manager, it is needed to have previously installed the following software:
-- Tomcat 7.X.X 
-- PostgreSQL 
+- Tomcat 7.X.X
+- PostgreSQL
 
-#### Building Requirements
-It is a a maven application, it is just need to execute mvn clean install
+## Building instructions
+It is a a maven application:
+
+- Compile, launch test and build all modules
+
+      $ mvn clean install
+- Create a zip with distribution int target/paas-manager-server-dist.zip
+
+      $ mvn assembly:assembly -DskipTests
+
+- You can generate a rpm o debian packages (using profiles in pom)
+
+   for debian/ubuntu:
+
+      $ mvn install -Pdebian -DskipTests
+      (created target/paas-manager-server-XXXXX.deb)
+
+   for centOS:
+
+      $ mvn install -Prpm -DskipTests
+
 
 ## Installation instruction (for CentOS)
 ### Database configuration
-    
+
     $ yum install postgresql postgresql-server postgresql-contrib
 
 
@@ -43,13 +61,13 @@ Connect as postgres user to the PostgreSQL server and set the password for user 
     Create the database
     postgres=# create database paasmanager;
     postgres=# grant all privileges on database paasmanager to postgres;
-    
+
 Create tables:
 Download sql files from [here](/migrations/src/main/resources)
 
     postgres=# \i db-initial.sql
     postgres=# \i db-changelog.sql
-    
+
     exit quit "\q" and then "exit"
 
 Edit file /var/lib/pgsql/data/pg_hba.conf and set authentication method to md5:
@@ -73,7 +91,7 @@ Install Tomcat 7 together with standard Tomcat samples, documentation, and manag
 
     $ yum install tomcat7-webapps tomcat7-docs-webapp tomcat7-admin-webapps
 Start/Stop/Restart Tomcat 7 as a service. startp:
-    
+
     $ sudo service tomcat7 start
 stop:
 
@@ -92,10 +110,12 @@ Once the prerequisites are satisfied, you shall create the context file as $CATA
       <Resource name="jdbc/paasmanager" auth="Container" type="javax.sql.DataSource" driverClassName="org.postgresql.Driver"
        url="jdbc:postgresql://localhost:5432/paasmanager"
        username="postgres" password="postgres"
-       maxActive="20" maxIdle="10" maxWait="-1"/> 
+       maxActive="20" maxIdle="10" maxWait="-1"/>
     </Context>
-    
+
+
 Include the library [postgresql-8.4-702.jdbc4.jar](http://130.206.80.169/nexus/content/repositories/public/postgresql/postgresql/8.4-702.jdbc4/) in $CATALINA_HOME/lib
+
 Configure the profile fiware in the catalina.properties. So that, open the file $CATALINA_HOME/conf/catalina.properties and write at the end
  spring.profiles.active=fiware
 
@@ -107,9 +127,7 @@ Start tomcat
 
 #### Usage
 
-* References
+#### References
 * [FIWARE.OpenSpecification.Cloud.PaaS](http://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/FIWARE.OpenSpecification.Cloud.PaaS)
-* [PaaS_Open_RESTful_API_Specification_(PRELIMINARY)](http://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/PaaS_Open_RESTful_API_Specification_(PRELIMINARY))
+* [PaaS_Open_RESTful_API_Specification_(PRELIMINARY)](http://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/PaaS_Open_RESTful_API_Specification_(PRELIMINARY)
 * [PaaS_Manager_-_Installation_and_Administration_Guide](http://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/PaaS_Manager_-_Installation_and_Administration_Guide)
-
-

@@ -51,7 +51,6 @@ public interface EnvironmentResource {
      */
 
     @POST
-    // @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void insert(@PathParam("org") String org, @PathParam("vdc") String vdc, EnvironmentDto environmentDto)
             throws APIException;
@@ -92,7 +91,6 @@ public interface EnvironmentResource {
 
     @DELETE
     @Path("/{envName}")
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void delete(@PathParam("org") String org, @PathParam("vdc") String vdc, @PathParam("envName") String envName)
             throws APIException;
 

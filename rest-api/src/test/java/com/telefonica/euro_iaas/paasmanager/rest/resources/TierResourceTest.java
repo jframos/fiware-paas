@@ -100,7 +100,7 @@ public class TierResourceTest extends TestCase {
         tier.setFloatingip("floatingip");
         tier.setKeypair("keypair");
 
-        Environment environment = new Environment("name", null, "description");
+        Environment environment = new Environment("name","description", null);
         environment.addTier(tier);
         
         

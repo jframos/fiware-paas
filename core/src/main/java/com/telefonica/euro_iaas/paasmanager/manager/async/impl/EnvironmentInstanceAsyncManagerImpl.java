@@ -67,7 +67,7 @@ public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceA
 
     @Async
     public void create(ClaudiaData claudiaData, EnvironmentInstance environmentInstance, Task task, String callback) {
-
+        log.debug ("Create enviornment instance");
         try {
             environmentInstance = environmentInstanceManager.load(claudiaData.getVdc(), claudiaData.getService());
             updateSuccessTask(task, environmentInstance);

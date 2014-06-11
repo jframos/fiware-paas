@@ -72,4 +72,24 @@ public class SecurityGroupTest extends TestCase {
         rule.setIdParent("2");
         assertEquals(rule.equals(rule2), false);
     }
+    
+    @Test
+    public void testRule() throws Exception {
+        Rule rule = new Rule();
+        rule.setCidr("cidr");
+        rule.setFromPort("fromport");
+        rule.setIdParent("idparent");
+        rule.setIdRule("idrule");
+        rule.setSourceGroup("sourcegroup");
+        rule.setToPort("toPort");
+        rule.setIpProtocol("ipProtocol");
+    
+        assertEquals(rule.getCidr(), "cidr");
+        assertEquals(rule.getFromPort(), "fromport");
+        assertEquals(rule.getIdParent(), "idparent");
+        assertEquals(rule.getIdRule(), "idrule");
+        assertEquals(rule.getSourceGroup(), "sourcegroup");
+        assertNotNull (rule.toJSON());
+        
+    }
 }
