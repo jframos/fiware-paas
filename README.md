@@ -35,6 +35,7 @@ It is a a maven application:
    for centOS:
 
       $ mvn install -Prpm -DskipTests
+      (created target/rpm/paasmanager/RPMS/noarch/paasmanager-XXXX.noarch.rpm)
 
 
 ## Installation instruction (for CentOS)
