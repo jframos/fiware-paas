@@ -147,7 +147,7 @@ public class ApplicationInstanceResourceImplTest {
     @Test
     public void testLoad () throws EntityNotFoundException {
     	ApplicationInstance app = new ApplicationInstance ();
-    	when(applicationInstanceManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(app);
+    	when(applicationInstanceManager.load( any(String.class), any(String.class))).thenReturn(app);
     	ApplicationInstance apps= applicationInstanceResource.load(vdc, "environment", "APP");
     	assertNotNull (apps);
     	
@@ -158,7 +158,7 @@ public class ApplicationInstanceResourceImplTest {
     	EnvironmentInstance env = new EnvironmentInstance ();
     	ApplicationInstance app = new ApplicationInstance ();
     	when(environmentInstanceManager.load(any(String.class), any(String.class))).thenReturn(env);
-    	when(applicationInstanceManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(app);
+    	when(applicationInstanceManager.load( any(String.class), any(String.class))).thenReturn(app);
     	Mockito.doNothing().when(applicationInstanceAsyncManager).uninstall(any(ClaudiaData.class), any(String.class), 
     			any(String.class), any(Task.class), any(String.class));
         Task tasks = new Task();

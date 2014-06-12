@@ -180,7 +180,7 @@ public class ApplicationInstanceImplTest extends TestCase {
     public void testCreateApplicationInstance() throws Exception {
         ApplicationInstance appInst = new ApplicationInstance (appRelease, environmentInstance);
     	when (applicationInstanceDao.create(any(ApplicationInstance.class))).thenReturn(appInst);
-    	when (applicationInstanceDao.load(any(String.class),any(String.class),any(String.class))).thenThrow( EntityNotFoundException.class);
+    	when (applicationInstanceDao.load(any(String.class),any(String.class))).thenThrow( EntityNotFoundException.class);
     	Mockito.doNothing().when ( productInstallator).installArtifact(any(ClaudiaData.class), any(ProductInstance.class), any(Artifact.class));
     	
         ApplicationInstance appInstanceCreated = manager.install(data, environmentInstance, appRelease);
@@ -194,7 +194,7 @@ public class ApplicationInstanceImplTest extends TestCase {
         ApplicationInstance appInst = new ApplicationInstance (appRelease, environmentInstance);
         
     	when (applicationInstanceDao.create(any(ApplicationInstance.class))).thenReturn(appInst);
-    	when (applicationInstanceDao.load(any(String.class),any(String.class),any(String.class))).thenThrow( EntityNotFoundException.class);
+    	when (applicationInstanceDao.load(any(String.class),any(String.class))).thenThrow( EntityNotFoundException.class);
     	Mockito.doNothing().when ( productInstallator).installArtifact(any(ClaudiaData.class), any(ProductInstance.class), any(Artifact.class));
     	
         manager.uninstall(data, environmentInstance, appInst);
@@ -206,10 +206,10 @@ public class ApplicationInstanceImplTest extends TestCase {
     public void testLoadApplicationInstance() throws Exception {
         ApplicationInstance appInst = new ApplicationInstance (appRelease, environmentInstance);
     	when (applicationInstanceDao.create(any(ApplicationInstance.class))).thenReturn(appInst);
-    	when (applicationInstanceDao.load(any(String.class),any(String.class),any(String.class))).thenReturn(appInst);
+    	when (applicationInstanceDao.load(any(String.class),any(String.class))).thenReturn(appInst);
     	Mockito.doNothing().when ( productInstallator).installArtifact(any(ClaudiaData.class), any(ProductInstance.class), any(Artifact.class));
     	
-    	appInst = manager.load( data.getVdc(),  environmentInstance.getName(),appInst.getName());
+    	appInst = manager.load( data.getVdc(), appInst.getName());
     	assertNotNull (appInst);
         assertEquals(appInst.getName(), appRelease.getName()+"-"+ environmentInstance.getBlueprintName());  
         

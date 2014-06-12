@@ -46,6 +46,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
+import com.telefonica.euro_iaas.paasmanager.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
@@ -92,6 +93,9 @@ public class ApplicationInstanceITest {
     
     @Autowired
     private ApplicationInstanceResource applicationInstanceResource;
+    
+    @Autowired
+    private ApplicationInstanceManager applicationInstanceManager;
     
     
     
@@ -145,6 +149,8 @@ public class ApplicationInstanceITest {
 
         assertEquals(Task.TaskStates.RUNNING, task.getStatus());
         
+        EnvironmentInstance env = environmentInstanceManager.load(vdc, BLUEPRINT_NAME);
+        
         ProductRelease productRelease = new ProductRelease (PRODUCT_NAME, PRODUCT_VERSION);
         ArtifactDto artifactDto = new ArtifactDto (ARTIFACT_NAME, ARTIFACT_PATH, productRelease.toDto());
         ArrayList<ArtifactDto> artifactsDto = new ArrayList<ArtifactDto> ();
@@ -160,9 +166,13 @@ public class ApplicationInstanceITest {
         assertEquals(Task.TaskStates.RUNNING, task.getStatus());
         
         
-        ApplicationInstance app = applicationInstanceResource.load(vdc, BLUEPRINT_NAME, appRelease.getName()+"-"+BLUEPRINT_NAME);
+        ApplicationInstance app = applicationInstanceResource.load(vdc, env.getName(), appRelease.getName()+"-"+BLUEPRINT_NAME);
+        
+        applicationInstanceManager.load(vdc, appRelease.getName()+"-"+BLUEPRINT_NAME);
         
         assertEquals (app.getName(), appRelease.getName()+"-"+BLUEPRINT_NAME);
+        
+        applicationInstanceResource.uninstall(org, vdc, BLUEPRINT_NAME, appRelease.getName()+"-"+BLUEPRINT_NAME, "");
 
         
 

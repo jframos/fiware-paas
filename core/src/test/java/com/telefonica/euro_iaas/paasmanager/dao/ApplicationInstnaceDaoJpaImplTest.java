@@ -126,7 +126,7 @@ public class ApplicationInstnaceDaoJpaImplTest {
         ApplicationInstance appIn = new ApplicationInstance (applicationRelease,environmentInstance);
     	int num = applicationInstanceDao.findAll().size();
         appIn = applicationInstanceDao.create(appIn);
-        appIn = applicationInstanceDao.load(applicationRelease.getName()+"-"+ environmentInstance.getBlueprintName(), VDC,environmentInstance.getName() );
+        appIn = applicationInstanceDao.load(applicationRelease.getName()+"-"+ environmentInstance.getBlueprintName(), VDC );
         assertNotNull(appIn);
         assertNotNull(appIn.getId());
         assertEquals(applicationInstanceDao.findAll().size(), num+ 1);

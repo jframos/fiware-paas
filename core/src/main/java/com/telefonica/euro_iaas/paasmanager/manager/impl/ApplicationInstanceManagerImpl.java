@@ -105,11 +105,13 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
             // Install the artifact in the product instance associated
             // Obtain the VMs from EnvInstance where productRelease is installed
             ProductInstance productInstance = getProductInstanceFromEnvironment(artifact, environmentInstance);
-            log.debug("Installing artifact " + artifact.getName());
-            try {
+            log.debug("Installing artifact " + artifact.getName() + " in product instance " + productInstance.getName());
+            try { 
                 productInstallator.installArtifact(data, productInstance, artifact);
+                log.debug("Artifact installed" + artifact.getName() + " in product instance " + productInstance.getName());
             } catch (OpenStackException e) {
-                String errorMessage = "Error to configure the product " + e.getMessage();
+                String errorMessage = "Error to install the product " + e.getMessage();
+                log.warn(errorMessage);
                 new ProductInstallatorException(errorMessage);
             }
 
@@ -136,8 +138,8 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
         return applicationInstance;
     }
 
-    public ApplicationInstance load(String vdc, String environment, String name) throws EntityNotFoundException {
-        ApplicationInstance instance = applicationInstanceDao.load(name, vdc, environment);
+    public ApplicationInstance load(String vdc,  String name) throws EntityNotFoundException {
+        ApplicationInstance instance = applicationInstanceDao.load(name, vdc);
         if (!instance.getVdc().equals(vdc)) {
             throw new EntityNotFoundException(EnvironmentInstance.class, "vdc", vdc);
         }
@@ -201,7 +203,7 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
         List<Artifact> artifactsIn = new ArrayList<Artifact>();
 
         try {
-            applicationInstance = applicationInstanceDao.load(application.getName(), env, vdc);
+            applicationInstance = applicationInstanceDao.load(application.getName(), vdc);
         } catch (EntityNotFoundException e) {
             artifactsIn = application.getApplicationRelease().getArtifacts();
 

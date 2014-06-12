@@ -55,5 +55,5 @@ public interface ApplicationInstanceDao extends BaseDAO<ApplicationInstance, Str
      * @return
      * @throws EntityNotFoundException 
      */
-    ApplicationInstance load(String name, String vdc, String enviroment) throws EntityNotFoundException;
+    ApplicationInstance load(String name, String vdc) throws EntityNotFoundException;
 }

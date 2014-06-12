@@ -231,10 +231,13 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         sDCUtil.checkTaskStatus(task, claudiaData.getUser().getToken(), productInstance.getVdc());
 
         /* How to catch an productInstallation error */
-        if (task.getStatus() == com.telefonica.euro_iaas.sdc.model.Task.TaskStates.ERROR)
-            throw new ProductInstallatorException("Error installing artefact " + artifact.getName()
-                    + " in product instance " + productInstance.getProductRelease().getProduct() + ". Description: "
-                    + task.getError());
+        if (task.getStatus() == com.telefonica.euro_iaas.sdc.model.Task.TaskStates.ERROR) {
+        	String mens= "Error installing artefact " + artifact.getName()
+            + " in product instance " + productInstance.getProductRelease().getProduct() + ". Description: "
+            + task.getError();
+        	log.warn (mens);
+            throw new ProductInstallatorException(mens);
+        }
 
         productInstance.setStatus(Status.ARTEFACT_DEPLOYED);
 

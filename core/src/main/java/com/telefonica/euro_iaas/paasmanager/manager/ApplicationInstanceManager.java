@@ -82,7 +82,7 @@ public interface ApplicationInstanceManager {
      * @param name
      * @return the applicationInstance
      */
-    ApplicationInstance load(String vdc, String environment, String name) throws EntityNotFoundException;
+    ApplicationInstance load(String vdc, String name) throws EntityNotFoundException;
 
     /**
      * UnInstall an list in a given environment

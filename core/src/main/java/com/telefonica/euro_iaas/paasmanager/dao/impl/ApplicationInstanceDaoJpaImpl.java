@@ -27,6 +27,9 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -41,6 +44,7 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.ApplicationInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationInstanceSearchCriteria;
 
@@ -57,17 +61,26 @@ public class ApplicationInstanceDaoJpaImpl extends AbstractBaseDao<ApplicationIn
     	return null;
     }
     
-    public ApplicationInstance load(String name, String vdc, String environmentInstance ) throws EntityNotFoundException {
-    	ApplicationInstanceSearchCriteria criteria = new ApplicationInstanceSearchCriteria ();
-    	criteria.setVdc(vdc);
-    	criteria.setApplicationName(name);
-    	criteria.setEnvironmentInstance(environmentInstance);
-    	List<ApplicationInstance> apps = findByCriteria(criteria);
-    	if (apps.size() ==0) {
-    		throw new EntityNotFoundException (ApplicationInstance.class, environmentInstance, apps);
-    	} else {
-    	    return findByCriteria(criteria).get(0);
-    	}
+    public ApplicationInstance load(String name, String vdc ) throws EntityNotFoundException {
+    	Query query = getEntityManager().createQuery(
+                "select p from ApplicationInstance p where p.name = :name and p.vdc = :vdc");
+        query.setParameter("name", name);
+
+        query.setParameter("vdc", vdc);
+        if (vdc == null ){
+
+            query.setParameter("vdc", "");
+        } else {
+            query.setParameter("vdc", vdc);
+        }
+        ApplicationInstance app = null;
+        try {
+            app = (ApplicationInstance) query.getSingleResult();
+        } catch (NoResultException e) {
+            String message = " No app found in the database with id: " + name + " and vdc " + vdc +  " Exception: " + e.getMessage();
+            throw new EntityNotFoundException(Network.class, "name", name);
+        }
+        return app;
     }
 
     public List<ApplicationInstance> findByCriteria(ApplicationInstanceSearchCriteria criteria) {
