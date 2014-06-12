@@ -129,7 +129,7 @@ public class InfrastructureManagerClaudiaImplTest {
 
         Set<Tier> lTier = new HashSet<Tier>();
         lTier.add(tier);
-        Environment env = new Environment("name", lTier, "description");
+        Environment env = new Environment("name", "description", lTier);
         EnvironmentInstance envInst = new EnvironmentInstance("blue", "des", env);
         when(propertiesProvider.getProperty("openstack-tcloud.cloudSystem")).thenReturn("4caast");
         when(propertiesProvider.getProperty("vmDeploymentDelay")).thenReturn("1");
@@ -197,7 +197,7 @@ public class InfrastructureManagerClaudiaImplTest {
 
         Set<Tier> lTier = new HashSet<Tier>();
         lTier.add(tier);
-        Environment env = new Environment("name", lTier, "description");
+        Environment env = new Environment("name",  "description", lTier);
         EnvironmentInstance envInst = new EnvironmentInstance("blue", "des", env);
 
         String ovf = null;

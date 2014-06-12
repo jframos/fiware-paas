@@ -205,14 +205,4 @@ public class NetworkandSubNetDaoJpaImplTest {
 
     }
 
-    /**
-     * the productReleaseDao to set
-     */
-    public void setNetworkDao(NetworkDao networkDao) {
-        this.networkDao = networkDao;
-    }
-
-    public void setSubNetworkDao(SubNetworkDao subNetworkDao) {
-        this.subNetworkDao = subNetworkDao;
-    }
 }

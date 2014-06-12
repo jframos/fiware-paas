@@ -27,8 +27,10 @@ package com.telefonica.euro_iaas.paasmanager.model;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ArtifactDto;
@@ -55,6 +57,7 @@ public class ApplicationInstanceTest extends TestCase {
 
     private EnvironmentInstance envIns = null;
     private Environment envResult;
+
 
     @Override
     @Before
@@ -102,6 +105,7 @@ public class ApplicationInstanceTest extends TestCase {
         tieInstances.add(tierInstance);
 
         envIns.setTierInstances(tieInstances);
+        envIns.setBlueprintName("blueprint");
     }
 
     @Test
@@ -168,8 +172,94 @@ public class ApplicationInstanceTest extends TestCase {
         
         assertEquals(applicationInstance.getName(), APP_NAME+ "-"+"blueprintName");
         assertEquals(applicationInstance.getApplicationRelease().getVersion(), APP_VERSION);
+        
+        
       
     }
+    
+    @Test
+    public void testApplicationInstanceDto() {
+    	ApplicationInstanceDto applicationInstance = new ApplicationInstanceDto ();
+    	applicationInstance.setApplicationName("applicationName");
+    	applicationInstance.setEnvironmentInstanceName("environmentInstanceName");
+    	applicationInstance.setVersion("version");
+    	
+    	assertEquals (applicationInstance.getApplicationName(), "applicationName");
+    	assertEquals (applicationInstance.getVersion(),"version");
+    	assertEquals (applicationInstance.getEnvironmentInstanceName(),"environmentInstanceName");
+    }
+    
+    @Test
+    public void testApplicationReleaseII() throws Exception {
+    	ApplicationRelease applRele = new ApplicationRelease(APP_NAME, APP_VERSION, "description", null, null); 
+    	applRele.setId("id");
+    	ApplicationRelease applRele2 = new ApplicationRelease(APP_NAME+ "2", APP_VERSION, "description", null, null); 
+    	applRele2.setId("id2");
+    	
+    	assertEquals(applRele.getName(), APP_NAME);
+    	assertEquals(applRele.getDescription(), "description");
+    	assertEquals(applRele.getVersion(), APP_VERSION);
+    	assertNull (applRele.getTransitableReleases());
+    	assertNull (applRele.getArtifacts());
+    	assertEquals(applRele.getId(), "id");
+    	assertEquals(applRele.equals(applRele2),false);
+  
+
+    	 
+    }
+    
+    @Test
+    public void testApplicationInstanceII() throws Exception {
+    	ApplicationRelease applRele = new ApplicationRelease(APP_NAME, APP_VERSION, "description", null, null); 
+    	ApplicationInstance applInst = new ApplicationInstance(applRele, envIns, "vdc"); 
+
+    	assertEquals(applInst.getName(), APP_NAME+"-blueprint");
+    	assertEquals(applInst.getVdc(), "vdc");
+    	assertEquals(applInst.getApplicationRelease(), applRele);
+    	assertEquals(applInst.getEnvironmentInstance(), envIns);  
+    	 
+    }
+    
+    @Test
+    public void testApplicationInstanceIII() throws Exception {
+    	ApplicationRelease applRele = new ApplicationRelease(APP_NAME, APP_VERSION, "description", null, null); 
+    	ApplicationInstance applInst = new ApplicationInstance();
+    	applInst.setApplicationRelease(applRele);
+    	applInst.setEnvironmentInstance(envIns);
+    	applInst.setName(APP_NAME+"-blueprint");
+
+    	assertEquals(applInst.getName(), APP_NAME+"-blueprint");
+    	assertEquals(applInst.getApplicationRelease(), applRele);
+    	assertEquals(applInst.getEnvironmentInstance(), envIns);  
+    	 
+    }
+    
+    @Test
+    public void testApplicationInstanceIV() throws Exception {
+    	ApplicationRelease applRele = new ApplicationRelease(APP_NAME, APP_VERSION, "description", null, null); 
+    	ApplicationInstance applInst = new ApplicationInstance(applRele, envIns, "vdc", Status.INSTALLING);
+
+    	assertEquals(applInst.getName(), APP_NAME+"-blueprint");
+    	assertEquals(applInst.getApplicationRelease(), applRele);
+    	assertEquals(applInst.getEnvironmentInstance(), envIns);  
+    	 
+    }
+    
+    @Test
+    public void testArtifactAtt() throws Exception {
+    	Artifact artifact = new Artifact ();
+    	artifact.addAttribute(new Attribute ("key", "value"));
+    	assertEquals(artifact.getAttributes().get(0).getKey(), "key");
+    	
+    	List<Attribute> atts = new ArrayList<Attribute> ();
+    	atts.add(new Attribute ("key", "value"));
+    	artifact.setAttributes(atts);
+    	assertEquals(artifact.getAttributes().get(0).getKey(), "key");
+    	
+    	assertNotNull (artifact.getMapAttributes());
+    	 
+    }
+   
 
 
    

@@ -25,7 +25,9 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+import java.util.Date;
 import java.util.HashSet;
 
 import net.sf.json.JSONObject;
@@ -35,6 +37,9 @@ import org.springframework.security.core.GrantedAuthority;
 
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
+import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
+import com.telefonica.euro_iaas.paasmanager.model.keystone.Token;
+import com.telefonica.euro_iaas.paasmanager.model.keystone.User;
 
 /**
  * Test other model classes.
@@ -67,10 +72,38 @@ public class Others {
         Task task = new Task(TaskStates.RUNNING);
         task.setHref("href");
         task.setDescription("description");
+        task.setEndTime(new Date());
+        task.setEnvironment("env");
+        TaskError taskError = new TaskError ();
+        taskError.setMessage("error");
+        task.setError(taskError);
+        task.setVdc("vdc");
+
 
         assertEquals(task.getStatus(), TaskStates.RUNNING);
         assertEquals(task.getHref(), "href");
         assertEquals(task.getDescription(), "description");
+        assertEquals(task.getEnvironment(), "env");
+        assertEquals(task.getVdc(), "vdc");
+        assertEquals(task.getError().getMessage(),"error");
+        assertNotNull (task.getEndTime());
+        assertNotNull (task.getStartTime());
+
+    }
+    
+    @Test
+    public void testTasksII() throws Exception {
+        
+        Task task = new Task();
+        task.setStatus(TaskStates.RUNNING);
+        task.setTier("tier");
+        task.setExpireTime(new Long(1000));
+        task.setOwner(new TaskReference());
+
+        assertEquals(task.getStatus(), TaskStates.RUNNING);
+        assertEquals(task.getExpireTime().intValue(), 1000);
+        assertNotNull (task.getOwner());
+        
 
     }
     
@@ -80,10 +113,49 @@ public class Others {
         
         TaskError taskError = new TaskError ();
         taskError.setMessage("error");
+        taskError.setMajorErrorCode("majorErrorCode");
+        taskError.setMinorErrorCode("minorErrorCode");
+        taskError.setVenodrSpecificErrorCode("venodrSpecificErrorCode");
         
         assertEquals(taskError.getMessage(), "error");
+        assertEquals(taskError.getMajorErrorCode(), "majorErrorCode");
+        assertEquals(taskError.getMinorErrorCode(), "minorErrorCode");
+        assertEquals(taskError.getVenodrSpecificErrorCode(), "venodrSpecificErrorCode");
 
     }
+    
+    @Test
+    public void testTaskReference() throws Exception {
+        
+        
+    	TaskReference taskError = new  TaskReference ();
+        taskError.setName("error");
+        taskError.setHref("http");
+        taskError.setType("errortype");
+        
+        assertEquals(taskError.getName(), "error");
+        assertEquals(taskError.getHref(), "http");
+        assertEquals(taskError.getType(), "errortype");
+
+    }
+    
+    @Test
+    public void testTaskReferenceII() throws Exception {
+        
+        
+    	TaskReference taskError = new  TaskReference ("http");
+        taskError.setName("error");
+        taskError.setType("errortype");
+        
+        assertEquals(taskError.getName(), "error");
+        assertEquals(taskError.getHref(), "http");
+        assertEquals(taskError.getType(), "errortype");
+
+    }
+    
+    
+    
+   
     
     @Test
     public void testLimitFromJson() throws Exception {
@@ -112,9 +184,127 @@ public class Others {
     	Template template = new Template ();
     	template.setName("name");
     	template.setTierInstance(tierInstance);
+    	template.setId(new Long(5));
+    	
+    	assertEquals(template.getName(), "name");
+    	assertEquals(template.getTierInstance().getName(), "tiername");
+    	assertEquals(template.getId().intValue(), 5);
+   }
+    
+    @Test
+    public void testTemplateII () throws Exception {
+    	TierInstance tierInstance = new TierInstance ();
+    	tierInstance.setName("tiername");
+    	Template template = new Template ("name", tierInstance);
     	
     	assertEquals(template.getName(), "name");
     	assertEquals(template.getTierInstance().getName(), "tiername");
    }
+    
+    @Test
+    public void testUser () throws Exception {
+    	User user = new User () ; 
+    	user.setExtra("extra");
+    	user.setId("id");
+    	user.setName("name");
+    	
+    	assertEquals(user.getName(), "name");
+    	assertEquals(user.getId(), "id");
+    	assertEquals(user.getExtra(), "extra");
+   }
+    
+    @Test
+    public void testUserII () throws Exception {
+    	User user = new User ("id", "name", "extra") ; 
+    	
+    	assertEquals(user.getName(), "name");
+    	assertEquals(user.getId(), "id");
+    	assertEquals(user.getExtra(), "extra");
+   }
+    @Test
+    public void testUserIII () throws Exception {
+    	User user = new User ("id") ; 
+
+    	assertEquals(user.getId(), "id");
+   }
+    
+    @Test
+    public void testToken () throws Exception {
+    	Token token = new Token () ; 
+    	token.setExpires("expires");
+    	token.setExtra("extra");
+    	token.setId("id");
+    	token.setTenantId("tenantId");
+    	
+    	assertEquals(token.getExpires(), "expires");
+    	assertEquals(token.getId(), "id");
+    	assertEquals(token.getExtra(), "extra");
+    	assertEquals(token.getTenantId(), "tenantId");
+   }
+    
+    @Test
+    public void testTokenII () throws Exception {
+    	Token token = new Token ("id", "expires", "extra") ; 
+    	assertEquals(token.getExpires(), "expires");
+    	assertEquals(token.getId(), "id");
+    	assertEquals(token.getExtra(), "extra");
+   }
+    
+    @Test
+    public void testTokenIII () throws Exception {
+    	Token token = new Token ("id") ;
+    	JSONObject json = new JSONObject ().fromObject("{\"tenantId\": \"tenantId\"}");
+   
+    	token.setTenantId(json);
+    	assertEquals(token.getId(), "id");
+    	assertEquals(token.getTenantId(), "tenantId");
+   }
+    
+    @Test
+    public void testOS () throws Exception {    	
+        OS os = new OS ();
+        os.setDescription("description");
+        os.setName("name");
+        os.setOsType("type");
+        os.setVersion("version");
+     
+    	
+        OS os2 = new OS ("type");
+        os2.setDescription("description");
+        os2.setName("name2");
+     
+        
+    	assertEquals(os.getName(), "name");
+    	assertEquals(os.getOsType(), "type");
+    	assertEquals(os.getVersion(), "version");
+    	assertEquals(os.getDescription(), "description");
+    	assertEquals (os.equals(os2), false);
+   }
+    
+   @Test
+   public void testVM () {
+	   VM vm = new VM ();
+	   vm.setDomain("domain");
+	   vm.setFloatingIp("flaotinip");
+	   vm.setFqn("fqn");
+	   vm.setHostname("hostname");
+	   vm.setIp("ip");
+	   vm.setOsType("osType");
+	   vm.setVmid("vmid");
+	   
+	   assertEquals (vm.getDomain(), "domain");
+	   assertEquals (vm.getFloatingIp(), "flaotinip");
+	   assertEquals (vm.getFqn(), "fqn");
+	   assertEquals (vm.getHostname(), "hostname");
+	   assertEquals (vm.getIp(), "ip");
+	   assertEquals (vm.getOsType(), "osType");
+	   assertEquals (vm.getVmid(), "vmid");
+	   assertNotNull (vm.toString());
+	   
+	   VM vm2 = new VM ("fqn2", "domain", "hostname");
+	   assertEquals (vm.equals(vm2), false);
+	   
+   }
+
 
 }

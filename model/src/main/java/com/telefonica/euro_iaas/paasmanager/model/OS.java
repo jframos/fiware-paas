@@ -226,6 +226,8 @@ public class OS {
                 return false;
         } else if (!osType.equals(other.osType))
             return false;
+        else if (!name.equals(other.name))
+            return false;
         return true;
     }
 

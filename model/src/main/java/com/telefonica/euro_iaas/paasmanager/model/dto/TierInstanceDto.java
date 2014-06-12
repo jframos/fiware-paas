@@ -63,46 +63,13 @@ public class TierInstanceDto {
      * @param productInstanceDtos
      * @param fqn
      */
-    public TierInstanceDto(String tierInstanceName, int replicaNumber, List<ProductInstanceDto> productInstanceDtos,
-            String fqn) {
+    public TierInstanceDto(String tierInstanceName, int replicaNumber, List<ProductInstanceDto> productInstanceDtos) {
 
         this.tierInstanceName = tierInstanceName;
         this.productInstanceDtos = productInstanceDtos;
         this.replicaNumber = replicaNumber;
-        this.productInstanceDtos = new ArrayList<ProductInstanceDto>();
     }
 
-    /**
-     * @param tierInstanceName
-     * @param replicaNumber
-     * @param productInstanceDtos
-     * @param vm
-     */
-    public TierInstanceDto(String tierInstanceName, int replicaNumber, List<ProductInstanceDto> productInstanceDtos,
-            VMDto vm) {
-
-        this.tierInstanceName = tierInstanceName;
-        this.productInstanceDtos = productInstanceDtos;
-        this.replicaNumber = replicaNumber;
-        this.vm = vm;
-        this.productInstanceDtos = new ArrayList<ProductInstanceDto>();
-    }
-
-    /**
-     * @param tierInstanceName
-     * @param tierDto
-     * @param replicaNumber
-     * @param productInstanceDtos
-     * @param fqn
-     */
-    public TierInstanceDto(String tierInstanceName, TierDto tierDto, int replicaNumber,
-            List<ProductInstanceDto> productInstanceDtos, String fqn) {
-        this.tierInstanceName = tierInstanceName;
-        this.tierDto = tierDto;
-        this.productInstanceDtos = productInstanceDtos;
-        this.replicaNumber = replicaNumber;
-        this.productInstanceDtos = new ArrayList<ProductInstanceDto>();
-    }
 
     /**
      * Add the product instance dto object.

@@ -63,7 +63,7 @@ public class SecurityGroupTest extends TestCase {
     }
     
     @Test
-    public void equalRules() throws Exception {
+    public void testEqualRules() throws Exception {
         Rule rule = new Rule("TCP", "80", "80", "", "0.0.0.0/0");
         Rule rule2 = new Rule("TCP", "80", "80", "", "0.0.0.0/0");
         assertEquals(rule.equals(rule2), true);
@@ -71,5 +71,25 @@ public class SecurityGroupTest extends TestCase {
         rule.setIdParent("1");
         rule.setIdParent("2");
         assertEquals(rule.equals(rule2), false);
+    }
+    
+    @Test
+    public void testRule() throws Exception {
+        Rule rule = new Rule();
+        rule.setCidr("cidr");
+        rule.setFromPort("fromport");
+        rule.setIdParent("idparent");
+        rule.setIdRule("idrule");
+        rule.setSourceGroup("sourcegroup");
+        rule.setToPort("toPort");
+        rule.setIpProtocol("ipProtocol");
+    
+        assertEquals(rule.getCidr(), "cidr");
+        assertEquals(rule.getFromPort(), "fromport");
+        assertEquals(rule.getIdParent(), "idparent");
+        assertEquals(rule.getIdRule(), "idrule");
+        assertEquals(rule.getSourceGroup(), "sourcegroup");
+        assertNotNull (rule.toJSON());
+        
     }
 }

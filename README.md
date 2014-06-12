@@ -1,4 +1,5 @@
-# FI-WARE PaaS Manager [![Build Status](https://travis-ci.org/telefonicaid/fiware-paas.svg)](https://travis-ci.org/telefonicaid/fiware-paas) [![Coverage Status](https://coveralls.io/repos/jesuspg/fiware-paas/badge.png)](https://coveralls.io/r/jesuspg/fiware-paas) [![help stackoverflow](http://b.repl.ca/v1/help-stackoverflow-orange.png)](http://www.stackoverflow.com)
+# FI-WARE PaaS Manager [![Build Status](https://travis-ci.org/telefonicaid/fiware-paas.svg)](https://travis-ci.org/telefonicaid/fiware-paas) [![Coverage Status](https://coveralls.io/repos/jesuspg/fiware-paas/badge.png?branch=develop)](https://coveralls.io/r/jesuspg/fiware-paas?branch=develop) [![help stackoverflow](http://b.repl.ca/v1/help-stackoverflow-orange.png)](http://www.stackoverflow.com)
+
 
 
 This is the repository of the PaaS Manager developed in the FI-WARE and 4CaaSt project. The PaaS Manager GE provides a
@@ -20,19 +21,19 @@ It is a a maven application:
 
 - Compile, launch test and build all modules
 
-      $ mvn clean install
+        $ mvn clean install
 - Create a zip with distribution int target/paas-manager-server-dist.zip
 
-      $ mvn assembly:assembly -DskipTests
+        $ mvn assembly:assembly -DskipTests
 
 - You can generate a rpm o debian packages (using profiles in pom)
 
-   for debian/ubuntu:
+    for debian/ubuntu:
 
-      $ mvn install -Pdebian -DskipTests
-      (created target/paas-manager-server-XXXXX.deb)
+        $ mvn install -Pdebian -DskipTests
+        (created target/paas-manager-server-XXXXX.deb)
 
-   for centOS:
+    for centOS:
 
       $ mvn install -Prpm -DskipTests
       (created target/rpm/paasmanager/RPMS/noarch/paasmanager-XXXX.noarch.rpm)
@@ -130,5 +131,5 @@ Start tomcat
 
 #### References
 * [FIWARE.OpenSpecification.Cloud.PaaS](http://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/FIWARE.OpenSpecification.Cloud.PaaS)
-* [PaaS_Open_RESTful_API_Specification_(PRELIMINARY)](http://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/PaaS_Open_RESTful_API_Specification_(PRELIMINARY)
+* [PaaS_Open_RESTful_API_Specification_(PRELIMINARY)](http://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/PaaS_Open_RESTful_API_Specification_(PRELIMINARY))
 * [PaaS_Manager_-_Installation_and_Administration_Guide](http://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/PaaS_Manager_-_Installation_and_Administration_Guide)

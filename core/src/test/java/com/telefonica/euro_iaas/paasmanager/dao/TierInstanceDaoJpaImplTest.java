@@ -263,20 +263,4 @@ public class TierInstanceDaoJpaImplTest {
     }
    
 
-    public void setNetworkInstanceDao(NetworkInstanceDao networkInstanceDao) {
-        this.networkInstanceDao = networkInstanceDao;
-    }
-
-    public void setTierDao(TierDao tierDao) {
-        this.tierDao = tierDao;
-    }
-    
-    public void setTierInstanceDao(TierInstanceDao tierInstanceDao) {
-        this.tierInstanceDao = tierInstanceDao;
-    }
-    
-    public void setProductInstanceDao (ProductInstanceDao productInstanceDao) {
-    	this.productInstanceDao = productInstanceDao;
-    } 
-
 }

@@ -47,7 +47,7 @@ public class ApplicationInstanceDto {
     private List<Attribute> attributes;
     private List<Artifact> artifacts;
     private String environmentInstanceName;
-    private String applicationType;
+
 
     /**
      */
@@ -62,13 +62,12 @@ public class ApplicationInstanceDto {
      * @param environmentInstanceName
      */
     public ApplicationInstanceDto(String applicationName, String version, List<Attribute> attributes,
-            List<Artifact> artifacts, String environmentInstanceName, String applicationType) {
+            List<Artifact> artifacts, String environmentInstanceName) {
         this.applicationName = applicationName;
         this.version = version;
         this.attributes = attributes;
         this.artifacts = artifacts;
         this.environmentInstanceName = environmentInstanceName;
-        this.applicationType = applicationType;
     }
 
     /**
@@ -146,19 +145,5 @@ public class ApplicationInstanceDto {
         this.environmentInstanceName = environmentInstanceName;
     }
 
-    /**
-     * @return the applicationType
-     */
-    public String getApplicationType() {
-        return applicationType;
-    }
-
-    /**
-     * @param applicationType
-     *            the applicationType to set
-     */
-    public void setApplicationType(String applicationType) {
-        this.applicationType = applicationType;
-    }
 
 }
