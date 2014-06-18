@@ -18,8 +18,6 @@
         <product.release>3.2.3</product.release>
 
 
-        <assembly-directory>target/distribution</assembly-directory>
-
         <repoName>fiware-paas</repoName>
 
         <scmURI>git@github.com:telefonicaid</scmURI>
@@ -284,6 +282,7 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.4</version>
+                <inherited>false</inherited>
                 <configuration>
                     <descriptor>src/assembly/distribution.xml</descriptor>
                 </configuration>
@@ -317,10 +316,10 @@
                         <configuration>
                             <distribution>FIWARE 2014</distribution>
                             <group>FIWARE</group>
-                            <prefix>paasmanager</prefix>
+                            <prefix>fiware-paas</prefix>
 
                             <!-- Basics -->
-                            <name>paasmanager</name>
+                            <name>fiware-paas</name>
                             <version>${project.version}</version>
 
                             <copyright>copyright 2014</copyright>
@@ -332,7 +331,7 @@
                             <defineStatements>
                                 <!-- escamez: To speed up rpm creation, no jar re-compression -->
                                 <defineStatement>_binaries_in_noarch_packages_terminate_build 0</defineStatement>
-                                <defineStatement>_prefix /usr/local/paasmanager</defineStatement>
+                                <defineStatement>_prefix /opt/fiware-paas</defineStatement>
                             </defineStatements>
 
                             <requires>
@@ -342,7 +341,7 @@
                             </requires>
                             <mappings>
                                 <mapping>
-                                    <directory>/usr/local/paasmanager</directory>
+                                    <directory>/opt/fiware-paas</directory>
                                     <sources>
                                         <source>
                                             <location>${project.build.directory}/paas-manager-server-dist</location>
@@ -350,14 +349,23 @@
                                     </sources>
                                 </mapping>
                                 <mapping>
-                                    <configuration>/usr/local/paasmanager/webapps/paasmanager.xml</configuration>
+                                    <directory>/opt/fiware-paas/webapps</directory>
+
+                                    <configuration>true</configuration>
+                                    <sources>
+                                        <source>
+                                            <location>
+                                                ${project.build.directory}/paas-manager-server-dist/webapps/paasmanager.xml
+                                            </location>
+                                        </source>
+                                    </sources>
                                 </mapping>
                             </mappings>
                             <preinstallScriptlet>
                                 <script>echo "installing now"</script>
                             </preinstallScriptlet>
                             <postinstallScriptlet>
-                                <script>echo "installed in /usr/local/paasmanager"</script>
+                                <script>echo "installed in /opt/fiware-paas"</script>
                             </postinstallScriptlet>
                             <!--                        <preremoveScriptlet>
 
@@ -377,12 +385,12 @@
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>unix-maven-plugin</artifactId>
                         <version>1.0-alpha-5</version>
-
+                        <inherited>false</inherited>
                         <extensions>true</extensions>
                         <configuration>
                             <contact>fi-ware</contact>
                             <contactEmail>fiware-lab-help@lists.fi-ware.org</contactEmail>
-                            <name>paasmanager</name>
+                            <name>fiware-paas</name>
 
                             <deb>
                                 <section>devel</section>
@@ -392,11 +400,11 @@
 
                                 <copyDirectory>
                                     <from>${project.build.directory}/paas-manager-server-dist</from>
-                                    <to>/usr/local/paasmanager</to>
+                                    <to>/opt/fiware-paas</to>
                                 </copyDirectory>
                                 <copyFile>
                                     <path>${project.build.directory}/paas-manager-server-dist/bin/jetty.sh</path>
-                                    <toFile>/usr/local/paasmanager/bin/jetty.sh</toFile>
+                                    <toFile>/opt/fiware-paas/bin/jetty.sh</toFile>
                                     <attributes>
                                         <mode>0755</mode>
                                     </attributes>
