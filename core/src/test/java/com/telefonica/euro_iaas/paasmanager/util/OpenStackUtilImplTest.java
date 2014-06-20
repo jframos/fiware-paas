@@ -368,7 +368,7 @@ public class OpenStackUtilImplTest {
     }
     
     @Test (expected=OpenStackException.class)
-    public void shouldDeployVMError() throws OpenStackException, ClientProtocolException, IOException {
+    public void testShouldDeployVMError() throws OpenStackException, ClientProtocolException, IOException {
         // given
         String payload ="";
         String content = "<badRequest code=\"400\" xmlns=\"http://docs.openstack.org/compute/api/v1.1\">"+

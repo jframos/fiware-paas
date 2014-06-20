@@ -281,7 +281,7 @@ public class OpenStackRegionImplTest extends TestCase{
     }
 
     @Test
-    public void shouldGetTokenAdmin() throws OpenStackException {
+    public void testShouldGetTokenAdmin() throws OpenStackException {
         // given
 
         
@@ -306,7 +306,7 @@ public class OpenStackRegionImplTest extends TestCase{
     }
     
     @Test
-    public void shouldGetEndPointsForNovaAndARegionName() throws OpenStackException {
+    public void testShouldGetEndPointsForNovaAndARegionName() throws OpenStackException {
         // given
 
         
@@ -330,7 +330,7 @@ public class OpenStackRegionImplTest extends TestCase{
     }
 
     @Test
-    public void shouldGetEndPointsForQuantumAndARegionName() throws OpenStackException {
+    public void testShouldGetEndPointsForQuantumAndARegionName() throws OpenStackException {
         // given
 
        
@@ -356,7 +356,7 @@ public class OpenStackRegionImplTest extends TestCase{
     }
 
     @Test
-    public void shouldReturnTwoRegionNames() throws OpenStackException {
+    public void testShouldReturnTwoRegionNames() throws OpenStackException {
         // given
 
         // when
@@ -376,7 +376,7 @@ public class OpenStackRegionImplTest extends TestCase{
     }
 
     @Test
-    public void shouldReturnTwoRegionNamesInEssex() throws OpenStackException {
+    public void testShouldReturnTwoRegionNamesInEssex() throws OpenStackException {
         // given
         OpenStackRegionImpl openStackRegion = new OpenStackRegionImpl();
         Client client = mock(Client.class);
@@ -429,7 +429,7 @@ public class OpenStackRegionImplTest extends TestCase{
     }
 
     @Test
-    public void shouldGetEndPointForNovaAndARegionNameForEssex() throws OpenStackException {
+    public void testShouldGetEndPointForNovaAndARegionNameForEssex() throws OpenStackException {
 
         OpenStackRegionImpl openStackRegion = new OpenStackRegionImpl();
         Client client = mock(Client.class);
@@ -480,7 +480,7 @@ public class OpenStackRegionImplTest extends TestCase{
     }
 
     @Test
-    public void shouldGetEndPointsForNovaAndARegionNameUsingCache() throws OpenStackException {
+    public void testShouldGetEndPointsForNovaAndARegionNameUsingCache() throws OpenStackException {
         // given
 
         String regionName = "RegionOne";
@@ -498,7 +498,7 @@ public class OpenStackRegionImplTest extends TestCase{
     }
     
     @Test
-    public void shouldGetDefaultRegion() throws OpenStackException {
+    public void testShouldGetDefaultRegion() throws OpenStackException {
         // given
 
       

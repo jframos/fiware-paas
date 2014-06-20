@@ -15,7 +15,7 @@
         <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
         <property name="applicationInstanceAsyncManager" ref="applicationInstanceAsyncManager"/>
         <property name="applicationInstanceManager" ref="applicationInstanceManager"/>
-        <property name="applicationReleaseManager" ref="applicationReleaseManager"/>
+      
     </bean>
 
     <bean id="environmentInstanceResource" lazy-init="true"
@@ -91,6 +91,7 @@
     <bean id="applicationInstanceResourceValidator" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.rest.validation.ApplicationInstanceResourceValidatorImpl">
         <property name="applicationInstanceManager" ref="applicationInstanceManager"/>
+        <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
     </bean>
     <bean id="environmentInstanceResourceValidator" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentInstanceResourceValidatorImpl">

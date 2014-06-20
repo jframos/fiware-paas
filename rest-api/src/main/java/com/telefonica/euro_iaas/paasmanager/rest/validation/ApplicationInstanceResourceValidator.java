@@ -24,6 +24,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.ApplicationInstanceNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.EnvironmentInstanceNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidApplicationReleaseException;
@@ -48,10 +49,11 @@ public interface ApplicationInstanceResourceValidator {
             throws InvalidApplicationReleaseException, ApplicationInstanceNotFoundException;
 
     /**
-     * Verify if the extendedovf is valid could be inserted
      * 
-     * @param extendedovf
-     * @throws InvalidOVFException
+     * @param vdc
+     * @param environmentInstance
+     * @param applicationName
+     * @throws InvalidEntityException
      */
-    void validateInstall(String extendedovf) throws InvalidOVFException;
+   void validateUnInstall(String vdc, String environmentInstance, String applicationName) throws InvalidEntityException ;
 }

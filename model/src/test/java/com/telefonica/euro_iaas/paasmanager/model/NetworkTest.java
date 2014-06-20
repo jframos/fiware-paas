@@ -325,8 +325,10 @@ public class NetworkTest extends TestCase {
 
    }
   
-   @Test
-   public void testFromJsonToRouter () throws JSONException {
+
+  @Test
+  public void testFromJSon() throws Exception {
+
        String payload  =           "{\"status\": \"ACTIVE\", "+
            " \"external_gateway_info\": { " + 
               " \"network_id\": \"080b5f2a-668f-45e0-be23-361c3a7d11d0\" "+ 
@@ -335,14 +337,16 @@ public class NetworkTest extends TestCase {
            "\"admin_state_up\": true, "+ 
            "\"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\", "+
            "\"routes\": [], "+
+           "\"shared\": false, "+
+           "\"router:external\": false, "+
            "\"id\": \"5af6238b-0e9c-4c20-8981-6e4db6de2e17\"" +
        "}";
       JSONObject jsonNet = new JSONObject(payload);
-      RouterInstance router = RouterInstance.fromJson(jsonNet);
-      assertEquals(router.getIdRouter(), "5af6238b-0e9c-4c20-8981-6e4db6de2e17");
-      assertEquals(router.getName(), "test-rt1");
-      assertEquals(router.getTenantId(), "08bed031f6c54c9d9b35b42aa06b51c0");
-      assertEquals(router.getNetworkId (), "080b5f2a-668f-45e0-be23-361c3a7d11d0");
+      NetworkInstance net = NetworkInstance.fromJson(jsonNet,"region");
+      assertEquals(net.getIdNetwork(), "5af6238b-0e9c-4c20-8981-6e4db6de2e17");
+      assertEquals(net.getNetworkName(), "test-rt1");
+      assertEquals(net.getTenantId(), "08bed031f6c54c9d9b35b42aa06b51c0");
+
    }
     /**
      * It test the dto from the Network specification.

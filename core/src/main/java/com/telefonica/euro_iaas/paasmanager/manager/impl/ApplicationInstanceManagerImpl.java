@@ -92,9 +92,10 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
                 + applicationRelease.getArtifacts().size());
 
         if (!(canInstall(environmentInstance, applicationRelease.getArtifacts()))) {
-            throw new InvalidEntityException("The Products included in "
+        	log.warn("The Products included in "
                     + "ApplicationRelease does NOT correspond with the "
                     + "productInstances present in the Environment Instance");
+            throw new InvalidEntityException(applicationRelease);
         }
 
         // Install The applicationRelease=n-Artifacts
@@ -104,11 +105,13 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
             // Install the artifact in the product instance associated
             // Obtain the VMs from EnvInstance where productRelease is installed
             ProductInstance productInstance = getProductInstanceFromEnvironment(artifact, environmentInstance);
-            log.debug("Installing artifact " + artifact.getName());
-            try {
+            log.debug("Installing artifact " + artifact.getName() + " in product instance " + productInstance.getName());
+            try { 
                 productInstallator.installArtifact(data, productInstance, artifact);
+                log.debug("Artifact installed" + artifact.getName() + " in product instance " + productInstance.getName());
             } catch (OpenStackException e) {
-                String errorMessage = "Error to configure the product " + e.getMessage();
+                String errorMessage = "Error to install the product " + e.getMessage();
+                log.warn(errorMessage);
                 new ProductInstallatorException(errorMessage);
             }
 
@@ -123,7 +126,7 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
         // Insert ApplicationInstance in DB
         try {
 
-            applicationInstance = insertApplicationInstanceDB(applicationInstance);
+            applicationInstance = insertApplicationInstanceDB(applicationInstance, environmentInstance.getName(), environmentInstance.getVdc() );
         } catch (InvalidEntityException e3) {
             throw new InvalidEntityException("Error to insert the application instante in the database: "
                     + e3.getMessage());
@@ -135,8 +138,8 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
         return applicationInstance;
     }
 
-    public ApplicationInstance load(String vdc, String name) throws EntityNotFoundException {
-        ApplicationInstance instance = applicationInstanceDao.load(name);
+    public ApplicationInstance load(String vdc,  String name) throws EntityNotFoundException {
+        ApplicationInstance instance = applicationInstanceDao.load(name, vdc);
         if (!instance.getVdc().equals(vdc)) {
             throw new EntityNotFoundException(EnvironmentInstance.class, "vdc", vdc);
         }
@@ -186,7 +189,7 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
      * @throws InvalidEntityException
      * @throws AlreadyExistsEntityException
      */
-    private ApplicationInstance insertApplicationInstanceDB(ApplicationInstance application)
+    private ApplicationInstance insertApplicationInstanceDB(ApplicationInstance application, String env, String vdc)
             throws ProductReleaseNotFoundException,  InvalidEntityException,
             AlreadyExistsEntityException {
         log.debug("Inser application " + application.getName() + " in DB");
@@ -200,7 +203,7 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
         List<Artifact> artifactsIn = new ArrayList<Artifact>();
 
         try {
-            applicationInstance = applicationInstanceDao.load(application.getName());
+            applicationInstance = applicationInstanceDao.load(application.getName(), vdc);
         } catch (EntityNotFoundException e) {
             artifactsIn = application.getApplicationRelease().getArtifacts();
 
@@ -284,8 +287,8 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
     }
 
     private boolean isPRInAllProductReleases(ProductRelease productRelease, List<ProductRelease> allProductReleases) {
-        for (int i = 0; i < allProductReleases.size(); i++) {
-            if (productRelease.getProduct().equals(allProductReleases.get(i).getProduct())) {
+        for (ProductRelease prod: allProductReleases) {
+            if (productRelease.getProduct().equals(prod.getProduct())) {
                 return true;
             }
         }

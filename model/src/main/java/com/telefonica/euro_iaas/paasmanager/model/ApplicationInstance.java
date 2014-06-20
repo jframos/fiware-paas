@@ -42,6 +42,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ApplicationInstance extends InstallableInstance {
 
     public static final String VDC_FIELD = "vdc";
+    
+    public static final String APP_FIELD = "name";
     @ManyToOne
     private ApplicationRelease applicationRelease;
 
@@ -62,6 +64,7 @@ public class ApplicationInstance extends InstallableInstance {
     public ApplicationInstance(ApplicationRelease applicationRelease, EnvironmentInstance environmentInstance) {
         this.applicationRelease = applicationRelease;
         this.environmentInstance = environmentInstance;
+        this.setVdc(environmentInstance.getVdc());
         setName();
     }
 

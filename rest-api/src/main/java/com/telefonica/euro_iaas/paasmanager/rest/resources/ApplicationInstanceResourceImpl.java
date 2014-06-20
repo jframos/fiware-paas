@@ -142,19 +142,20 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
     }
 
     public Task uninstall(String org, String vdc, String environmentName, String applicationName, String callback) {
+
+        ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
+            
         try {
-            ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
-            ApplicationInstance appInstance = applicationInstanceManager.load(vdc, applicationName);
+             validator.validateUnInstall(vdc, environmentName, applicationName);
+             log.debug("Application validated");
+        } catch (Exception ex) {
+             throw new APIException(ex);
+       }
 
-            EnvironmentInstance envInstance = environmentInstanceManager.load(vdc, environmentName);
+       Task task = createTask(MessageFormat.format("Uninstalling application Instance {0} ", applicationName), vdc);
+       applicationInstanceAsyncManager.uninstall(claudiaData, environmentName, applicationName, task, callback);
+       return task;
 
-            Task task = createTask(MessageFormat.format("Uninstalling application Instance {0} ", applicationName), vdc);
-            applicationInstanceAsyncManager.uninstall(claudiaData, environmentName, applicationName, task, callback);
-            return task;
-
-        } catch (EntityNotFoundException e) {
-            throw new WebApplicationException(e, 404);
-        }
     }
 
     /**
@@ -166,7 +167,7 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
      *            , the applicationInstanceName
      * @return the applicationInstance
      */
-    public ApplicationInstance load(String vdc, String name) {
+    public ApplicationInstance load(String vdc, String enviroment, String name) {
         try {
             ApplicationInstance appInstance = applicationInstanceManager.load(vdc, name);
             return appInstance;

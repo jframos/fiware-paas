@@ -27,6 +27,9 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -41,6 +44,7 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.ApplicationInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
+import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationInstanceSearchCriteria;
 
@@ -53,7 +57,30 @@ public class ApplicationInstanceDaoJpaImpl extends AbstractBaseDao<ApplicationIn
     }
 
     public ApplicationInstance load(String arg0) throws EntityNotFoundException {
-        return super.loadByField(ApplicationInstance.class, "name", arg0);
+        //return super.loadByField(ApplicationInstance.class, "name", arg0);
+    	return null;
+    }
+    
+    public ApplicationInstance load(String name, String vdc ) throws EntityNotFoundException {
+    	Query query = getEntityManager().createQuery(
+                "select p from ApplicationInstance p where p.name = :name and p.vdc = :vdc");
+        query.setParameter("name", name);
+
+        query.setParameter("vdc", vdc);
+        if (vdc == null ){
+
+            query.setParameter("vdc", "");
+        } else {
+            query.setParameter("vdc", vdc);
+        }
+        ApplicationInstance app = null;
+        try {
+            app = (ApplicationInstance) query.getSingleResult();
+        } catch (NoResultException e) {
+            String message = " No app found in the database with id: " + name + " and vdc " + vdc +  " Exception: " + e.getMessage();
+            throw new EntityNotFoundException(Network.class, "name", name);
+        }
+        return app;
     }
 
     public List<ApplicationInstance> findByCriteria(ApplicationInstanceSearchCriteria criteria) {
@@ -71,10 +98,12 @@ public class ApplicationInstanceDaoJpaImpl extends AbstractBaseDao<ApplicationIn
         if (!StringUtils.isEmpty(criteria.getVdc())) {
             baseCriteria.add(Restrictions.eq(ApplicationInstance.VDC_FIELD, criteria.getVdc()));
         }
-        /*
-         * if (!StringUtils.isEmpty(criteria.getEnvironmentInstance())) { baseCriteria
-         * .add(Restrictions.eq(ApplicationInstance.ENVIRONMENT_INSTANCE_FIELD, criteria.getEnvironmentInstance())); }
-         */
+ 
+        
+        if (!StringUtils.isEmpty(criteria.getApplicationName())) {
+            baseCriteria.add(Restrictions.eq(ApplicationInstance.APP_FIELD, criteria.getApplicationName()));
+        }
+
 
         List<ApplicationInstance> applicationInstances = setOptionalPagination(criteria, baseCriteria).list();
 
