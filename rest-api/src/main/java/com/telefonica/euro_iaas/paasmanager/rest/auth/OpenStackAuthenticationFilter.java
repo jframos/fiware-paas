@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -145,6 +146,8 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
         String pathInfo = request.getPathInfo();
         logger.debug(header);
         logger.debug(pathInfo);
+
+        MDC.put("txId", ((HttpServletRequest) req).getSession().getId());
 
         if (pathInfo != null && (pathInfo.equals("/") || pathInfo.equals("/extensions"))) {
             /**

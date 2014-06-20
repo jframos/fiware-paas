@@ -26,6 +26,8 @@ package com.telefonica.euro_iaas.paasmanager.rest.exception;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.slf4j.MDC;
+
 @XmlRootElement
 public class ErrorResponseConverter {
 
@@ -52,7 +54,9 @@ public class ErrorResponseConverter {
 
         ErrorCode errorCode = ErrorCode.find(cause.toString());
         this.code = errorCode.getCode();
-        this.message = errorCode.getPublicMessage();
+
+        String txId = MDC.get("txId");
+        this.message = errorCode.getPublicMessage() + "#" + txId;
 
     }
 
