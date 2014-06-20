@@ -19,10 +19,10 @@
         <Arg>
 
             <New class="org.postgresql.ds.PGSimpleDataSource">
-                <Set name="User">postgres</Set>
-                <Set name="Password">postgres</Set>
-                <Set name="DatabaseName">paasmanager_int_grizzly3</Set>
-                <Set name="ServerName">130.206.80.112</Set>
+                <Set name="User">user</Set>
+                <Set name="Password">paas</Set>
+                <Set name="DatabaseName">name</Set>
+                <Set name="ServerName">host</Set>
                 <Set name="PortNumber">5432</Set>
             </New>
 
