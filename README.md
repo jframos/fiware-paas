@@ -22,7 +22,7 @@ It is a a maven application:
 - Compile, launch test and build all modules
 
         $ mvn clean install
-- Create a zip with distribution int target/paas-manager-server-dist.zip
+- Create a zip with distribution in target/paas-manager-server-dist.zip
 
         $ mvn assembly:assembly -DskipTests
 
