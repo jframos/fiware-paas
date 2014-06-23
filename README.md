@@ -35,8 +35,8 @@ It is a a maven application:
 
     for centOS:
 
-      $ mvn install -Prpm -DskipTests
-      (created target/rpm/paasmanager/RPMS/noarch/paasmanager-XXXX.noarch.rpm)
+        $ mvn install -Prpm -DskipTests
+        (created target/rpm/paasmanager/RPMS/noarch/paasmanager-XXXX.noarch.rpm)
 
 
 ## Installation instruction (for CentOS)
@@ -87,47 +87,31 @@ Reload configuration
 
     $ service postgresql reload
 
-[edit] Apache Tomcat configuration
-### Tomcat configuration
-Install Tomcat 7 together with standard Tomcat samples, documentation, and management web apps:
+###Configure Paas-manager application
 
-    $ yum install tomcat7-webapps tomcat7-docs-webapp tomcat7-admin-webapps
-Start/Stop/Restart Tomcat 7 as a service. startp:
+Once the prerequisites are satisfied, you shall modify the context file at $PAASMANAGER_HOME/webapps/paasmanager.xml ($PAASMANAGER_HOME tipically is /opt/fiware-paas):
 
-    $ sudo service tomcat7 start
-stop:
-
-    $ sudo service tomcat7 stop
-restart:
-
-    $ sudo service tomcat7 restart
-Add Tomcat 7 service to the autostart
-
-    $ sudo chkconfig tomcat7 on
+See the snipet bellow to know how it works:
 
 
-Once the prerequisites are satisfied, you shall create the context file as $CATALINA_HOME/conf/Catalina/localhost/paasmanager.xml (substituting PATH_TO_WEBAPP to the corresponding directory):
+    <New id="sdc" class="org.eclipse.jetty.plus.jndi.Resource">
+        <Arg>jdbc/paasmanager</Arg>
+        <Arg>
 
-    <Context path="/paasmanager" docBase="PATH_TO_WEBAPP" reloadable="true" debug="5">
-      <Resource name="jdbc/paasmanager" auth="Container" type="javax.sql.DataSource" driverClassName="org.postgresql.Driver"
-       url="jdbc:postgresql://localhost:5432/paasmanager"
-       username="postgres" password="postgres"
-       maxActive="20" maxIdle="10" maxWait="-1"/>
-    </Context>
+            <New class="org.postgresql.ds.PGSimpleDataSource">
+                <Set name="User"> <database user> </Set>
+                <Set name="Password"> <database password> </Set>
+                <Set name="DatabaseName"> <database name>   </Set>
+                <Set name="ServerName"> <IP/hostname> </Set>
+                <Set name="PortNumber">5432</Set>
+            </New>
+
+        </Arg>
+    </New>
 
 
-Include the library [postgresql-8.4-702.jdbc4.jar](http://130.206.80.169/nexus/content/repositories/public/postgresql/postgresql/8.4-702.jdbc4/) in $CATALINA_HOME/lib
-
-Configure the profile fiware in the catalina.properties. So that, open the file $CATALINA_HOME/conf/catalina.properties and write at the end
- spring.profiles.active=fiware
-
-Start tomcat
-
-    $ sudo service tomcat7 start
 
 #### Acceptance tests
-
-#### Usage
 
 #### References
 * [FIWARE.OpenSpecification.Cloud.PaaS](http://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/FIWARE.OpenSpecification.Cloud.PaaS)
