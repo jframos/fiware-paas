@@ -94,7 +94,7 @@ Once the prerequisites are satisfied, you shall modify the context file at $PAAS
 See the snipet bellow to know how it works:
 
 
-    <New id="sdc" class="org.eclipse.jetty.plus.jndi.Resource">
+    <New id="paasmanager" class="org.eclipse.jetty.plus.jndi.Resource">
         <Arg>jdbc/paasmanager</Arg>
         <Arg>
 
