@@ -46,7 +46,6 @@ import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
@@ -141,20 +140,21 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
 
     }
 
-    public Task uninstall(String org, String vdc, String environmentName, String applicationName, String callback) {
+    public Task uninstall(String org, String vdc, String environmentName, String applicationName, String callback)
+            throws APIException {
 
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
-            
-        try {
-             validator.validateUnInstall(vdc, environmentName, applicationName);
-             log.debug("Application validated");
-        } catch (Exception ex) {
-             throw new APIException(ex);
-       }
 
-       Task task = createTask(MessageFormat.format("Uninstalling application Instance {0} ", applicationName), vdc);
-       applicationInstanceAsyncManager.uninstall(claudiaData, environmentName, applicationName, task, callback);
-       return task;
+        try {
+            validator.validateUnInstall(vdc, environmentName, applicationName);
+            log.debug("Application validated");
+        } catch (Exception ex) {
+            throw new APIException(ex);
+        }
+
+        Task task = createTask(MessageFormat.format("Uninstalling application Instance {0} ", applicationName), vdc);
+        applicationInstanceAsyncManager.uninstall(claudiaData, environmentName, applicationName, task, callback);
+        return task;
 
     }
 
