@@ -81,7 +81,7 @@
         <copyright.year>2012</copyright.year>
         <junit.version>4.11</junit.version>
         <jmock.version>2.5.1</jmock.version>
-        <jvm.version>1.7</jvm.version>
+        <jvm.version>1.6</jvm.version>
         <maven-surefire-plugin.version>2.12.2</maven-surefire-plugin.version>
 
 
@@ -166,12 +166,12 @@
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>commons-dao</artifactId>
-                <version>1.2.2</version>
+                <version>1.2.3</version>
             </dependency>
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>commons-properties</artifactId>
-                <version>1.1.1</version>
+                <version>1.1.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
