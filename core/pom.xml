@@ -9,7 +9,7 @@
     <parent>
         <groupId>com.telefonica.euro_iaas</groupId>
         <artifactId>paas-manager-server</artifactId>
-        <version>1.0.1</version>
+        <version>1.1.0</version>
     </parent>
 
 
@@ -25,6 +25,12 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.3.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!--  restlet libraries for REC Manager -->
         <dependency>
@@ -60,11 +66,13 @@
         </dependency>-->
         <!-- CLAUDIA -->
 
+        <!--
         <dependency>
             <groupId>com.telefonica.claudia</groupId>
             <artifactId>claudia-commons</artifactId>
             <version>0.3.21</version>
-        </dependency>
+
+        </dependency>        -->
 
         <!-- jpa implementation - hibernate -->
         <dependency>
@@ -110,14 +118,12 @@
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-client</artifactId>
-            <!--<version>1.9.50</version>-->
-            <version>2.1.0-SNAPSHOT</version>
+            <version>2.1.1</version>
         </dependency>
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
             <artifactId>sdc-server-model</artifactId>
-            <version>2.1.0-SNAPSHOT</version>
-            <!--   <version>2.1.0-SNAPSHOT</version>-->
+            <version>2.1.1</version>
         </dependency>
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>
@@ -309,9 +315,11 @@
             <version>1.7.1</version>
         </dependency>
         <!--/JERSEY DEPENDENCIES -->
+
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
+            <version>${jersey.version}</version>
         </dependency>
         <!--<dependency>
             <groupId>bouncycastle</groupId>
@@ -324,6 +332,12 @@
             <artifactId>json-lib</artifactId>
             <version>2.4</version>
             <classifier>jdk15</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

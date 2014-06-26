@@ -24,21 +24,22 @@
 
 package com.telefonica.euro_iaas.paasmanager.model;
 
-import java.util.ArrayList;
+
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+
 
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
@@ -54,6 +55,7 @@ public class Environment {
     public static final String ORG_FIELD = "org";
     public static final String VDC_FIELD = "vdc";
     public static final String ENVIRONMENT_NAME_FIELD = "name";
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -75,9 +77,8 @@ public class Environment {
     private String ovf;
 
     @ManyToMany
-    @JoinTable(name = "environment_has_tiers", joinColumns = { @JoinColumn(name = "environment_ID", nullable = false, updatable = false) }, 
-        inverseJoinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) })
-    private Set<Tier> tiers = new HashSet<Tier> ();
+    @JoinTable(name = "environment_has_tiers", joinColumns = { @JoinColumn(name = "environment_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) })
+    private Set<Tier> tiers = new HashSet<Tier>();
 
     /**
      * Default constructor.
@@ -94,20 +95,6 @@ public class Environment {
     public Environment(String name, Set<Tier> tiers) {
         this.name = name;
         this.tiers = tiers;
-    }
-
-    /**
-     * Constructor.
-     * 
-     * @param name
-     * @param tiers
-     * @param description
-     */
-    public Environment(String name, Set<Tier> tiers, String description) {
-        this.name = name;
-        this.description = description;
-        this.tiers = tiers;
-
     }
 
     /**
@@ -155,7 +142,7 @@ public class Environment {
         if (this.tiers == null) {
             tiers = new HashSet<Tier>();
         }
-        System.out.println (tier.getName() + " " +tiers.add(tier));
+        tiers.add(tier);
     }
 
     /**
@@ -168,15 +155,16 @@ public class Environment {
             tiers.remove(tier);
         }
     }
-    
+
     /**
      * Update tier.
+     * 
      * @param tierOld
      * @param tierNew
      */
-    public void updateTier (Tier tierOld, Tier tierNew) {
-    	deleteTier (tierOld);
-    	addTier (tierNew);
+    public void updateTier(Tier tierOld, Tier tierNew) {
+        deleteTier(tierOld);
+        addTier(tierNew);
     }
 
     @Override
@@ -285,5 +273,85 @@ public class Environment {
 
         return envDto;
     }
+
+
+    public HashMap<String, Set<String>> getNetworksRegion() {
+        HashMap<String, Set<String>> map = new HashMap<String, Set<String>>();
+        Set<String> regions;
+        for (Tier tier : this.getTiers()) {
+            for (Network net : tier.getNetworks()) {
+                if (map.get(net.getNetworkName()) != null) {
+                    map.get(net.getNetworkName()).add(tier.getRegion());
+                } else {
+                    regions = new HashSet<String>();
+                    regions.add(tier.getRegion());
+                    map.put(net.getNetworkName(), regions);
+                }
+            }
+
+        }
+        return map;
+    }
+
+    public Set<String> getFederatedNetworks() {
+        Set<String> nets = new HashSet<String>();
+        HashMap<String, Set<String>> map = getNetworksRegion();
+        Iterator<Entry<String, Set<String>>> iterator = map.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Entry<String, Set<String>> d = iterator.next();
+            if (d.getValue().size() > 1) {
+                nets.add(d.getKey());
+            }
+        }
+
+        return nets;
+    }
+
+
+    private int getNumberRegions() {
+        Set<String> map = new HashSet<String>();
+        for (Tier tier : this.getTiers()) {
+            map.add(tier.getRegion());
+            System.out.println ("adding " + tier.getRegion() );
+        }
+        System.out.println ("Number of regions " + map.size());
+        return map.size();
+    }
+
+    public boolean isDifferentRegions() {
+
+        if (getNumberRegions() > 1) {
+            return true;
+        }
+        return false;
+
+    }
+
+    public boolean isNetworkFederated() {
+        if (!isDifferentRegions()) {
+            return false;
+        } else {
+            if (getFederatedNetworks().size() > 0) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+    
+    public Network getNetworkWithRegionAndName (String region, String networkName) {
+    	
+    	for (Tier tier: this.getTiers()) {
+    		if (tier.getRegion().equals(region)) {
+    			for (Network net: tier.getNetworks()) {
+    				if (net.getNetworkName().equals(networkName)) {
+    					return net;
+    				}
+    			}
+    		}
+    	}
+    	return null;
+    } 
+
 
 }

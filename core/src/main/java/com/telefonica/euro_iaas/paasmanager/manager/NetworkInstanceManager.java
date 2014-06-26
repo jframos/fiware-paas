@@ -31,13 +31,26 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 
 /**
  * @author henar
  */
 public interface NetworkInstanceManager {
-    /**
+    
+	
+	/**
+	 * 
+	 * @param claudiaData
+	 * @param networkInstance
+	 * @param region
+	 * @return
+	 * @throws InvalidEntityException
+	 * @throws EntityNotFoundException 
+	 */
+	boolean exists (ClaudiaData claudiaData, NetworkInstance networkInstance, String region) throws InvalidEntityException, EntityNotFoundException;
+	/**
      * Create a network.
      * 
      * @param claudiaData
@@ -60,8 +73,7 @@ public interface NetworkInstanceManager {
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    void delete(ClaudiaData claudiaData, NetworkInstance network, String region) throws EntityNotFoundException,
-            InvalidEntityException, InfrastructureException;
+    void delete(ClaudiaData claudiaData, NetworkInstance network, String region) throws InvalidEntityException, InfrastructureException;
     
     /**
      * 
@@ -85,7 +97,7 @@ public interface NetworkInstanceManager {
      * 
      * @return the network.
      */
-    NetworkInstance load(String networkName, String vdc) throws EntityNotFoundException;
+    NetworkInstance load(String networkName, String vdc, String region) throws EntityNotFoundException;
 
     /**
      * Update a network.
@@ -105,5 +117,7 @@ public interface NetworkInstanceManager {
     List<NetworkInstance> listNetworks (ClaudiaData claudiaData, String region) throws InfrastructureException;
 
     int getNumberDeployedNetwork(ClaudiaData claudiaData, String region) throws InfrastructureException;
+    
+    void joinNetwork(ClaudiaData claudiaData, NetworkInstance networkInstance, NetworkInstance networkInstance2) throws EntityNotFoundException, InvalidEntityException, InfrastructureException;
 
 }

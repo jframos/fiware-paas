@@ -80,17 +80,7 @@ public interface EnvironmentManager {
      *             if the product instance does not exists
      */
     Environment load(String name, String vdc) throws EntityNotFoundException;
-
-    /**
-     * Find the Environment using the given name.
-     * 
-     * @param name
-     *            the name
-     * @return the environment
-     * @throws EntityNotFoundException
-     *             if the product instance does not exists
-     */
-    Environment load(String name) throws EntityNotFoundException;
+ 
 
     /**
      * Updates the environment

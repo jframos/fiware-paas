@@ -27,7 +27,6 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.commons.lang.StringUtils;
@@ -42,7 +41,6 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
-import com.telefonica.euro_iaas.paasmanager.model.Service;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierInstanceSearchCriteria;
@@ -73,9 +71,6 @@ public class TierInstanceDaoJpaImpl extends AbstractBaseDao<TierInstance, String
             tierInstances = filterByProductInstance(tierInstances, criteria.getProductInstance());
         }
 
-        if (criteria.getService() != null) {
-            tierInstances = filterByService(tierInstances, criteria.getService());
-        }
         if (criteria.getEnvironmentInstance() != null && criteria.getVdc() != null) {
             tierInstances = filterByEnvironmentInstanceVDC(tierInstances, criteria.getEnvironmentInstance(),
                     criteria.getVdc());
@@ -121,17 +116,6 @@ public class TierInstanceDaoJpaImpl extends AbstractBaseDao<TierInstance, String
         return result;
     }
 
-    /**
-     * Filter the result by service.
-     */
-    private List<TierInstance> filterByService(List<TierInstance> tierInstances, Service serviceInput) {
-        List<TierInstance> result = new ArrayList<TierInstance>();
-        /*
-         * for (TierInstance tierInstance : tierInstances) { List<Service> services = tierInstance.getServices(); for
-         * (Service serv : services) { if (serv.getName().equals(serviceInput.getName())) result.add(tierInstance); } }
-         */
-        return result;
-    }
 
     /*
      * (non-Javadoc)
@@ -144,10 +128,10 @@ public class TierInstanceDaoJpaImpl extends AbstractBaseDao<TierInstance, String
         query.setParameter("id", tierInstanceId);
         TierInstance tierInstance = null;
         try {
-            tierInstance = (TierInstance) query.getSingleResult();
-        } catch (NoResultException e) {
+            tierInstance = (TierInstance) query.getResultList().get(0);
+        } catch (Exception e) {
             String message = " No TierInstance found in the database with name: " + Long.toString(tierInstanceId);
-            throw new EntityNotFoundException(null, e.getMessage(), message);
+            throw new EntityNotFoundException(TierInstance.class, e.getMessage(), message);
         }
         return tierInstance;
     }
@@ -158,8 +142,8 @@ public class TierInstanceDaoJpaImpl extends AbstractBaseDao<TierInstance, String
         query.setParameter("name", tierInstanceName);
         TierInstance tierInstance = null;
         try {
-            tierInstance = (TierInstance) query.getSingleResult();
-        } catch (NoResultException e) {
+            tierInstance = (TierInstance) query.getResultList().get(0);
+        } catch (Exception e) {
             throw new EntityNotFoundException(TierInstance.class, "name", tierInstanceName);
 
         }

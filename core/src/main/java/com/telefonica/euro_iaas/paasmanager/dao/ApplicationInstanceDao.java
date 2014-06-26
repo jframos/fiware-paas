@@ -27,6 +27,7 @@ package com.telefonica.euro_iaas.paasmanager.dao;
 import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.BaseDAO;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationInstanceSearchCriteria;
 
@@ -45,4 +46,14 @@ public interface ApplicationInstanceDao extends BaseDAO<ApplicationInstance, Str
      * @return the list of elements that match with the criteria.
      */
     List<ApplicationInstance> findByCriteria(ApplicationInstanceSearchCriteria criteria);
+    
+    /**
+     * 
+     * @param name
+     * @param vdc
+     * @param enviroment
+     * @return
+     * @throws EntityNotFoundException 
+     */
+    ApplicationInstance load(String name, String vdc) throws EntityNotFoundException;
 }

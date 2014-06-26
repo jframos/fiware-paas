@@ -15,14 +15,12 @@
         <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
         <property name="applicationInstanceAsyncManager" ref="applicationInstanceAsyncManager"/>
         <property name="applicationInstanceManager" ref="applicationInstanceManager"/>
-        <property name="applicationReleaseManager" ref="applicationReleaseManager"/>
+      
     </bean>
 
     <bean id="environmentInstanceResource" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.rest.resources.EnvironmentInstanceResourceImpl">
         <property name="validator" ref="environmentInstanceResourceValidator"/>
-        <property name="extendedOVFUtil" ref="extendedOVFUtil"/>
-        <property name="ovfGeneration" ref="ovfGeneration"/>
         <property name="taskManager" ref="taskManager"/>
         <property name="environmentInstanceAsyncManager" ref="environmentInstanceAsyncManager"/>
         <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
@@ -36,8 +34,6 @@
         <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
         <property name="environmentResourceValidator" ref="environmentResourceValidator"/>
         <property name="environmentManager" ref="environmentManager"/>
-        <property name="ovfGeneration" ref="ovfGeneration"/>
-        <property name="extendedOVFUtil" ref="extendedOVFUtil"/>
     </bean>
 
     <bean id="abstractEnvironmentResource" lazy-init="true"
@@ -69,17 +65,10 @@
         <property name="tierManager" ref="tierManager"/>
         <property name="productReleaseDao" ref="productReleaseDao"/>
     </bean>
-    <bean id="environmentInstanceOvfResource" lazy-init="true"
-          class="com.telefonica.euro_iaas.paasmanager.rest.resources.EnvironmentInstanceOvfResourceImpl">
-        <property name="validator" ref="environmentInstanceResourceValidator"/>
-        <property name="extendedOVFUtil" ref="extendedOVFUtil"/>
-        <property name="ovfMacro" ref="ovfMacro"/>
-        <!--   <property name="environmentTypeDao" ref="environmentTypeDao"/>  -->
-    </bean>
+
     <bean id="tierInstanceResource" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.rest.resources.TierInstanceResourceImpl">
         <property name="validatorTierInstance" ref="tierInstanceResourceValidator"/>
-        <property name="extendedOVFUtil" ref="extendedOVFUtil"/>
         <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
         <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
         <property name="tierInstanceAsyncManager" ref="tierInstanceAsyncManager"/>
@@ -101,12 +90,11 @@
 
     <bean id="applicationInstanceResourceValidator" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.rest.validation.ApplicationInstanceResourceValidatorImpl">
-        <property name="claudiaUtil" ref="claudiaUtil"/>
         <property name="applicationInstanceManager" ref="applicationInstanceManager"/>
+        <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
     </bean>
     <bean id="environmentInstanceResourceValidator" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentInstanceResourceValidatorImpl">
-        <property name="claudiaUtil" ref="claudiaUtil"/>
         <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
         <property name="quotaClient" ref="quotaClient"/>
         <property name="tierResourceValidator" ref="tierResourceValidator"/>
@@ -145,23 +133,5 @@
 
     </bean>
     
-
-    <!-- ===========
-    == UTIL ==
-    ================ -->
-    <bean id="extendedOVFUtil" lazy-init="true"
-          class="com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtilImpl">
-        <property name="claudiaUtil" ref="claudiaUtil"/>
-        <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
-        <property name="ovfUtils" ref="ovfUtils"/>
-    </bean>
-    <bean id="ovfMacro" lazy-init="true"
-          class="com.telefonica.euro_iaas.paasmanager.rest.util.OVFMacroImpl">
-        <property name="extendedOVFUtil" ref="extendedOVFUtil"/>
-    </bean>
-    <bean id="ovfGeneration" lazy-init="true"
-          class="com.telefonica.euro_iaas.paasmanager.rest.util.OVFGenerationFiwareImpl">
-        <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
-    </bean>
 
 </beans>

@@ -24,12 +24,15 @@
 
 package com.telefonica.euro_iaas.paasmanager.util;
 
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.OPENSTACK_SYNCHRONIZATION_POLLING_PERIOD;
+
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -78,7 +81,7 @@ public class OpenStackSyncImpl extends Thread implements OpenStackSync {
     private Connection connection;
     private OpenStackRegion openStackRegion;
 
-    private static Logger log = Logger.getLogger(OpenStackSyncImpl.class);
+    private static Logger log = LoggerFactory.getLogger(OpenStackSyncImpl.class);
 
     /*
      * (non-Javadoc)
@@ -117,8 +120,7 @@ public class OpenStackSyncImpl extends Thread implements OpenStackSync {
         while (run) {
             try {
                 log.info("synchronize STARTING");
-                Thread.sleep(Integer.parseInt(systemPropertiesProvider
-                        .getProperty(SystemPropertiesProvider.OPENSTACK_SYNCHRONIZATION_POLLING_PERIOD)));
+                Thread.sleep(OPENSTACK_SYNCHRONIZATION_POLLING_PERIOD);
 
                 List<PaasManagerUser> users = getUsersFromKeystoneDataBase(connection);
 

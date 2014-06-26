@@ -64,6 +64,7 @@ public class TierDto {
     private String securityGroup = "";
     private String keypair = "";
     private String floatingip = "";
+    private String affinity = "None";
 
     private String region = "";
 
@@ -97,21 +98,8 @@ public class TierDto {
         this.networkDto = new ArrayList<NetworkDto>();
     }
 
-    /**
-     * Constructor.
-     * 
-     * @param name
-     * @param maximumNumberInstances
-     * @param minimumNumberInstances
-     * @param initialNumberInstances
-     * @param productReleaseDtos
-     * @param flavour
-     * @param image
-     * @param icono
-     * @param keypair
-     * @param floatingip
-     */
-
+  
+    
     public TierDto(String name, Integer maximumNumberInstances, Integer minimumNumberInstances,
             Integer initialNumberInstances, List<ProductReleaseDto> productReleaseDtos, String flavour, String image,
             String icono, String keypair, String floatingip) {
@@ -126,28 +114,13 @@ public class TierDto {
         this.icono = icono;
         this.keypair = keypair;
         this.floatingip = floatingip;
+        this.affinity = "None";
         this.networkDto = new ArrayList<NetworkDto>();
     }
-
-    /**
-     * Constructor.
-     * 
-     * @param name
-     * @param maximumNumberInstances
-     * @param minimumNumberInstances
-     * @param initialNumberInstances
-     * @param productReleaseDtos
-     * @param flavour
-     * @param image
-     * @param icono
-     * @param securityGroup
-     * @param keypair
-     * @param floatingip
-     */
-
+    
     public TierDto(String name, Integer maximumNumberInstances, Integer minimumNumberInstances,
             Integer initialNumberInstances, List<ProductReleaseDto> productReleaseDtos, String flavour, String image,
-            String icono, String securityGroup, String keypair, String floatingip) {
+            String icono, String keypair, String floatingip, String affinity) {
 
         this.name = name;
         this.maximumNumberInstances = maximumNumberInstances;
@@ -159,7 +132,7 @@ public class TierDto {
         this.icono = icono;
         this.keypair = keypair;
         this.floatingip = floatingip;
-        this.securityGroup = securityGroup;
+        this.affinity = affinity;
         this.networkDto = new ArrayList<NetworkDto>();
     }
 
@@ -209,6 +182,9 @@ public class TierDto {
         tier.setRegion(getRegion());
         tier.setVdc(vdc);
         tier.setEnviromentName(envName);
+        tier.setAffinity(this.getAffinity());
+        
+  
 
         for (ProductReleaseDto pReleaseDto : getProductReleaseDtos()) {
             ProductRelease pRelease = new ProductRelease();
@@ -232,9 +208,9 @@ public class TierDto {
         for (NetworkDto networkDto : this.getNetworksDto()) {
             Network network ;
             if (vdc == null) {
-                network = networkDto.fromDto("");
+                network = networkDto.fromDto("", this.getRegion());
             } else {
-                network = networkDto.fromDto(vdc);
+                network = networkDto.fromDto(vdc, this.getRegion());
             }
             tier.addNetwork(network);
         }
@@ -412,5 +388,13 @@ public class TierDto {
 
     public void setRegion(String region) {
         this.region = region;
+    }
+    
+    public String getAffinity() {
+        return affinity;
+    }
+
+    public void setAffinity(String affinity) {
+        this.affinity = affinity;
     }
 }

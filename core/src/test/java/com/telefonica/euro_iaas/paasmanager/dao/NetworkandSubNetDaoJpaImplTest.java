@@ -59,11 +59,12 @@ public class NetworkandSubNetDaoJpaImplTest {
     public static String NETWORK_NAME = "network_name";
     public static String SUB_NETWORK_NAME = "subnetwork_name";
     public static String VDC = "vdc";
+    public static String REGION = "region";
 
     @Test
     public void testNetworkNoSubNet() throws Exception {
 
-        Network network = new Network(NETWORK_NAME, VDC);
+        Network network = new Network(NETWORK_NAME, VDC, REGION);
 
         network = networkDao.create(network);
         assertNotNull(network);
@@ -80,10 +81,15 @@ public class NetworkandSubNetDaoJpaImplTest {
 
     }
     
+    @Test(expected=com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
+    public void testNetworkLoadError() throws Exception {
+        networkDao.load("other",VDC, REGION);
+    }
+
     @Test
     public void testNetworkVDCNull() throws Exception {
 
-        Network network = new Network(NETWORK_NAME, "");
+        Network network = new Network(NETWORK_NAME, "", REGION);
 
         network = networkDao.create(network);
         assertNotNull(network);
@@ -93,7 +99,7 @@ public class NetworkandSubNetDaoJpaImplTest {
         List<Network> networks = networkDao.findAll();
         assertNotNull(networks);
 
-        Network networkOut = networkDao.load(NETWORK_NAME, "");
+        Network networkOut = networkDao.load(NETWORK_NAME, null, REGION);
         assertNotNull(networkOut);
         assertEquals(networkOut.getNetworkName(), NETWORK_NAME);
         assertEquals(networkOut.getSubNets().size(), 0);
@@ -103,7 +109,7 @@ public class NetworkandSubNetDaoJpaImplTest {
     @Test
     public void testDestroyNetworkNoSubNet() throws InvalidEntityException, AlreadyExistsEntityException {
 
-        Network network = new Network(NETWORK_NAME, VDC);
+        Network network = new Network(NETWORK_NAME, VDC, REGION);
 
         network = networkDao.create(network);
         networkDao.remove(network);
@@ -113,7 +119,6 @@ public class NetworkandSubNetDaoJpaImplTest {
         } catch (EntityNotFoundException e) {
             assertNotNull(e);
         } catch (Exception e) {
-            System.out.println (e.getMessage());
         }
 
     }
@@ -121,17 +126,22 @@ public class NetworkandSubNetDaoJpaImplTest {
     @Test
     public void testDestroySubNet() throws AlreadyExistsEntityException, InvalidEntityException {
 
-        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME);
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, VDC, REGION);
         subNet = subNetworkDao.create(subNet);
         subNetworkDao.remove(subNet);
 
         try {
-            subNetworkDao.load(SUB_NETWORK_NAME);
+            subNetworkDao.load(SUB_NETWORK_NAME, VDC, REGION);
             fail("Should have thrown an EntityNotFoundException because the subnet does not exit!");
         } catch (EntityNotFoundException e) {
             assertNotNull(e);
         }
 
+    }
+    
+    @Test(expected=com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
+    public void testSubNetworkLoadError2() throws Exception {
+    	subNetworkDao.load("other", VDC, REGION);
     }
 
     @Test
@@ -141,12 +151,12 @@ public class NetworkandSubNetDaoJpaImplTest {
         assertNotNull(networks);
 
         int number = networks.size();
-        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME);
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, VDC, REGION);
         subNet = subNetworkDao.create(subNet);
 
         Set<SubNetwork> subNets = new HashSet<SubNetwork>();
         subNets.add(subNet);
-        Network network = new Network(NETWORK_NAME + "aa", VDC);
+        Network network = new Network(NETWORK_NAME + "aa", VDC, REGION);
         network.setSubNets(subNets);
 
         networkDao.create(network);
@@ -169,11 +179,11 @@ public class NetworkandSubNetDaoJpaImplTest {
     public void testDeleteNetworkWithSubNets() throws InvalidEntityException, AlreadyExistsEntityException {
 
         // Given
-        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME);
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, VDC, REGION);
         subNet = subNetworkDao.create(subNet);
         Set<SubNetwork> subNets = new HashSet<SubNetwork>();
         subNets.add(subNet);
-        Network network = new Network(NETWORK_NAME, VDC);
+        Network network = new Network(NETWORK_NAME, VDC, REGION);
         network.setSubNets(subNets);
 
         network = networkDao.create(network);
@@ -195,14 +205,4 @@ public class NetworkandSubNetDaoJpaImplTest {
 
     }
 
-    /**
-     * the productReleaseDao to set
-     */
-    public void setNetworkDao(NetworkDao networkDao) {
-        this.networkDao = networkDao;
-    }
-
-    public void setSubNetworkDao(SubNetworkDao subNetworkDao) {
-        this.subNetworkDao = subNetworkDao;
-    }
 }

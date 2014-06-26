@@ -52,7 +52,6 @@ public interface TierResource {
      */
 
     @POST
-    @Path("/")
     // @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void insert(@PathParam("org") String org, @PathParam("vdc") String vdc,
@@ -73,11 +72,10 @@ public interface TierResource {
      */
 
     @GET
-    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<TierDto> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
             @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType,
-            @PathParam("environment") String environment);
+            @PathParam("vdc") String vdc, @PathParam("environment") String environment);
 
     /**
      * Retrieve the selected Tier.
@@ -107,6 +105,7 @@ public interface TierResource {
     @Path("/{tierName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void update(@PathParam("org") String org, @PathParam("vdc") String vdc,
-            @PathParam("environment") String environment, @PathParam("tierName") String tierName, TierDto TierDto) throws APIException;
+            @PathParam("environment") String environment, @PathParam("tierName") String tierName, TierDto TierDto)
+            throws APIException;
 
 }

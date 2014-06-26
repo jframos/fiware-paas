@@ -72,9 +72,9 @@ public class SubNetworkDto {
      * It returns the network object associated to the dto.
      * @return the network
      */
-    public SubNetwork fromDto() {
+    public SubNetwork fromDto(String vdc, String region) {
 
-        SubNetwork subNet = new SubNetwork(this.getSubNetName());
+        SubNetwork subNet = new SubNetwork(this.getSubNetName(), vdc, region);
         subNet.setCidr(this.getCidr());
         return subNet;
     }

@@ -326,7 +326,7 @@ public class TierInstance extends InstallableInstance {
      * 
      * @return
      */
-    public String toJson() {
+    public String toJson(String userData) {
         String payload = "{\"server\": " + "{\"key_name\": \"" + getTier().getKeypair() + "\", ";
         if (getTier().getSecurityGroup() != null) {
             payload = payload + "\"security_groups\": [{ \"name\": \"" + getTier().getSecurityGroup().getName()
@@ -348,10 +348,26 @@ public class TierInstance extends InstallableInstance {
             payload = payload + "], ";
 
         }
+        
+        if (this.getTier().getAffinity()!="None") {
+        	String id = this.getVM().getFqn().substring(0, this.getVM().getFqn().indexOf(".vee"));
+        	String group = null;
+        	if (this.getTier().getAffinity().equals("anti-affinity")) {
+        		   
+        		group = "\"group\": \""+ id + "\""; 
+        		
+        	} else {
+        		group = "\"group\": \"affinity:"+ id+ "\""; 
+        	}
+        	payload = payload + "\"os:scheduler_hints\": { "+ group + "},";
+        }
 
         if (this.getTier().getRegion() != null) {
 
             payload += "\"metadata\": {\"region\": \"" + this.getTier().getRegion() + "\"},";
+        }
+        if (userData != null) {
+            payload += "\"user_data\": \"" + userData +"\",";
         }
         payload += "\"flavorRef\": \"" + getTier().getFlavour() + "\", " + "\"imageRef\": \"" + getTier().getImage()
                 + "\", " + "\"name\": \"" + name + "\"}}";
@@ -359,6 +375,7 @@ public class TierInstance extends InstallableInstance {
         return payload;
 
     }
+
 
     public void update(Tier tier2) {
         tier = tier2;

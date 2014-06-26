@@ -25,32 +25,29 @@
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
-import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
-import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
-import com.telefonica.euro_iaas.paasmanager.rest.util.OVFGeneration;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
@@ -67,33 +64,16 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
     public static final int ERROR_NOT_FOUND = 404;
     public static final int ERROR_REQUEST = 500;
 
+    @Autowired
     private EnvironmentManager environmentManager;
 
+    @Autowired
     private SystemPropertiesProvider systemPropertiesProvider;
 
+    @Autowired
     private EnvironmentResourceValidator environmentResourceValidator;
 
-    private OVFGeneration ovfGeneration;
-
-    private ExtendedOVFUtil extendedOVFUtil;
-
-    private static Logger log = Logger.getLogger(EnvironmentManagerImpl.class);
-
-    /**
-     * Convert a list of tierDtos to a list of Tiers
-     * 
-     * @return
-     */
-    private Set<Tier> convertToTiers(Set<TierDto> tierDtos, String environmentName, String vdc) {
-        Set<Tier> tiers = new HashSet<Tier>();
-        for (TierDto tierDto : tierDtos) {
-            Tier tier = tierDto.fromDto(vdc, environmentName);
-            // tier.setSecurity_group("sg_"
-            // +environmentName+"_"+vdc+"_"+tier.getName());
-            tiers.add(tier);
-        }
-        return tiers;
-    }
+    private static Logger log = LoggerFactory.getLogger(EnvironmentManagerImpl.class);
 
     public void delete(String org, String vdc, String envName) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
@@ -105,7 +85,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
             Environment env = environmentManager.load(envName, vdc);
             environmentManager.destroy(claudiaData, env);
         } catch (Exception e) {
-            throw new APIException(e);
+            throw new APIException(new InvalidEntityException(e.getMessage()));
         }
 
     }
@@ -165,9 +145,10 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
      * @param claudiaData
      */
     public void addCredentialsToClaudiaData(ClaudiaData claudiaData) {
+        log.debug(systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM));
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-
-            claudiaData.setUser(extendedOVFUtil.getCredentials());
+            log.debug("addCredentialsToClaudiaData to claudia ");
+            claudiaData.setUser(getCredentials());
             claudiaData.getUser().setTenantId(claudiaData.getVdc());
         }
 
@@ -186,6 +167,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
             // try {
             environmentManager.create(claudiaData, environmentDto.fromDto(org, vdc));
         } catch (Exception e) {
+            log.debug(e.getMessage());
             throw new APIException(e);
         }
     }
@@ -222,27 +204,11 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
     }
 
     /**
-     * @param ovfGeneration
-     *            the ovfGeneration to set
-     */
-    public void setOvfGeneration(OVFGeneration ovfGeneration) {
-        this.ovfGeneration = ovfGeneration;
-    }
-
-    /**
      * @param systemPropertiesProvider
      *            the systemPropertiesProvider to set
      */
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
         this.systemPropertiesProvider = systemPropertiesProvider;
-    }
-
-    public ExtendedOVFUtil getExtendedOVFUtil() {
-        return extendedOVFUtil;
-    }
-
-    public void setExtendedOVFUtil(ExtendedOVFUtil extendedOVFUtil) {
-        this.extendedOVFUtil = extendedOVFUtil;
     }
 
 }

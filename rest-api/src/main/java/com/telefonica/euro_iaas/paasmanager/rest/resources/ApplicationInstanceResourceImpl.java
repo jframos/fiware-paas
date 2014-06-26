@@ -31,7 +31,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -44,14 +45,13 @@ import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsy
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
-import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
-import com.telefonica.euro_iaas.paasmanager.rest.util.ExtendedOVFUtil;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.ApplicationInstanceResourceValidator;
 
 /**
@@ -64,7 +64,7 @@ import com.telefonica.euro_iaas.paasmanager.rest.validation.ApplicationInstanceR
 @Scope("request")
 public class ApplicationInstanceResourceImpl implements ApplicationInstanceResource {
 
-    private static Logger log = Logger.getLogger(ApplicationInstanceResourceImpl.class.getName());
+    private static Logger log = LoggerFactory.getLogger(ApplicationInstanceResourceImpl.class.getName());
 
     private ApplicationInstanceAsyncManager applicationInstanceAsyncManager;
 
@@ -79,7 +79,6 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
     private EnvironmentInstanceManager environmentInstanceManager;
 
     private ApplicationInstanceResourceValidator validator;
-    private ExtendedOVFUtil extendedOVFUtil;
 
     /**
      * 
@@ -91,6 +90,7 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
                 + applicationReleaseDto.getVersion() + " on " + " enviornment " + environmentInstance
                 + " with artificats " + applicationReleaseDto.getArtifactsDto().size());
 
+        ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentInstance);
         Task task = null;
         try {
             validator.validateInstall(vdc, environmentInstance, applicationReleaseDto);
@@ -105,7 +105,7 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
                 MessageFormat.format("Deploying application {0} in environment instance {1}",
                         applicationRelease.getName(), environmentInstance), vdc);
 
-        applicationInstanceAsyncManager.install(org, vdc, environmentInstance, applicationRelease, task, callback);
+        applicationInstanceAsyncManager.install(claudiaData, environmentInstance, applicationRelease, task, callback);
 
         return task;
 
@@ -140,20 +140,22 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
 
     }
 
-    public Task uninstall(String org, String vdc, String environmentName, String applicationName, String callback) {
+    public Task uninstall(String org, String vdc, String environmentName, String applicationName, String callback)
+            throws APIException {
+
+        ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
+
         try {
-
-            ApplicationInstance appInstance = applicationInstanceManager.load(vdc, applicationName);
-
-            EnvironmentInstance envInstance = environmentInstanceManager.load(vdc, environmentName);
-
-            Task task = createTask(MessageFormat.format("Uninstalling application Instance {0} ", applicationName), vdc);
-            applicationInstanceAsyncManager.uninstall(org, vdc, environmentName, applicationName, task, callback);
-            return task;
-
-        } catch (EntityNotFoundException e) {
-            throw new WebApplicationException(e, 404);
+            validator.validateUnInstall(vdc, environmentName, applicationName);
+            log.debug("Application validated");
+        } catch (Exception ex) {
+            throw new APIException(ex);
         }
+
+        Task task = createTask(MessageFormat.format("Uninstalling application Instance {0} ", applicationName), vdc);
+        applicationInstanceAsyncManager.uninstall(claudiaData, environmentName, applicationName, task, callback);
+        return task;
+
     }
 
     /**
@@ -165,7 +167,7 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
      *            , the applicationInstanceName
      * @return the applicationInstance
      */
-    public ApplicationInstance load(String vdc, String name) {
+    public ApplicationInstance load(String vdc, String enviroment, String name) {
         try {
             ApplicationInstance appInstance = applicationInstanceManager.load(vdc, name);
             return appInstance;
@@ -188,14 +190,6 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
      */
     public void setValidator(ApplicationInstanceResourceValidator validator) {
         this.validator = validator;
-    }
-
-    /**
-     * @param extendedOVFUtil
-     *            the extendedOVFUtil to set
-     */
-    public void setExtendedOVFUtil(ExtendedOVFUtil extendedOVFUtil) {
-        this.extendedOVFUtil = extendedOVFUtil;
     }
 
     public void setEnvironmentInstanceAsyncManager(EnvironmentInstanceAsyncManager environmentInstanceAsyncManager) {

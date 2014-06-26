@@ -26,13 +26,13 @@ package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
@@ -49,7 +49,7 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
  */
 public class EnvironmentResourceValidatorImpl implements EnvironmentResourceValidator {
 
-    private static Logger log = Logger.getLogger(EnvironmentResourceValidatorImpl.class);
+    private static Logger log = LoggerFactory.getLogger(EnvironmentResourceValidatorImpl.class);
     private TierResourceValidator tierResourceValidator;
     private EnvironmentManager environmentManager;
     private EnvironmentInstanceManager environmentInstanceManager;
@@ -58,7 +58,8 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
     /**
      * 
      */
-    public void validateCreate(ClaudiaData claudiaData, EnvironmentDto environmentDto, String vdc) throws AlreadyExistEntityException, InvalidEntityException {
+    public void validateCreate(ClaudiaData claudiaData, EnvironmentDto environmentDto, String vdc)
+            throws AlreadyExistEntityException, InvalidEntityException {
 
         try {
             environmentManager.load(environmentDto.getName(), vdc);
@@ -66,10 +67,9 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
             throw new AlreadyExistEntityException("The environment " + environmentDto.getName() + " already exists");
 
         } catch (EntityNotFoundException e1) {
-        	resourceValidator.validateName(environmentDto.getName());
-        	resourceValidator.validateDescription(environmentDto.getDescription());
+            resourceValidator.validateName(environmentDto.getName());
+            resourceValidator.validateDescription(environmentDto.getDescription());
         }
-
 
         if (environmentDto.getTierDtos() != null) {
 
@@ -86,11 +86,12 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
         }
 
     }
-    
+
     /**
      * 
      */
-    public void validateAbstractCreate(EnvironmentDto environmentDto) throws AlreadyExistEntityException, InvalidEntityException {
+    public void validateAbstractCreate(EnvironmentDto environmentDto) throws AlreadyExistEntityException,
+            InvalidEntityException {
 
         try {
             environmentManager.load(environmentDto.getName(), "");
@@ -102,7 +103,6 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
             resourceValidator.validateDescription(environmentDto.getDescription());
         }
 
-
         if (environmentDto.getTierDtos() != null) {
 
             for (TierDto tierDto : environmentDto.getTierDtos()) {
@@ -112,9 +112,9 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
         }
 
     }
-    
-    public void validateDelete(String environmentName, String vdc)
-            throws EntityNotFoundException, InvalidEntityException {
+
+    public void validateDelete(String environmentName, String vdc) throws EntityNotFoundException,
+            InvalidEntityException {
         Environment environment = null;
 
         environment = environmentManager.load(environmentName, vdc);
@@ -163,8 +163,9 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
     public void setEnvironmentInstanceManager(EnvironmentInstanceManager environmentInstanceManager) {
         this.environmentInstanceManager = environmentInstanceManager;
     }
-    public void setResourceValidator (ResourceValidator resourceValidator) {
-    	this.resourceValidator = resourceValidator;
+
+    public void setResourceValidator(ResourceValidator resourceValidator) {
+        this.resourceValidator = resourceValidator;
     }
 
 }

@@ -34,6 +34,8 @@ import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
+import junit.framework.TestCase;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,7 +47,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.util.RegionCache;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
-public class OpenStackRegionImplTest {
+public class OpenStackRegionImplTest extends TestCase{
 
     final String RESPONSE_JSON_GRIZZLY_TWO_REGIONS = "{\n" + "   \"endpoints_links\":[\n" + "\n" + "   ],\n"
             + "   \"endpoints\":[\n" + "      {\n" + "         \"name\":\"nova\",\n"
@@ -66,6 +68,12 @@ public class OpenStackRegionImplTest {
             + "         \"internalURL\":\"http://130.206.80.58:8774/v2/67c979f51c5b4e89b85c1f876bdffe31\",\n"
             + "         \"type\":\"compute\",\n" + "         \"id\":\"0a3419563dcd4e02b8cd8c865a3bc2ed\",\n"
             + "         \"publicURL\":\"http://130.206.80.58:8774/v2/67c979f51c5b4e89b85c1f876bdffe31\"\n"
+            + "         },\n" + "      {\n" + "         \"name\":\"federatednetwork\",\n"
+                + "         \"adminURL\":\"http://130.206.80.58:8774/v2/67c979f51c5b4e89b85c1f876bdffe31\",\n"
+                + "         \"region\":\"RegionOne\",\n"
+                + "         \"internalURL\":\"http://130.206.80.58:8774/v2/67c979f51c5b4e89b85c1f876bdffe31\",\n"
+                + "         \"type\":\"compute\",\n" + "         \"id\":\"0a3419563dcd4e02b8cd8c865a3bc2ed\",\n"
+                + "         \"publicURL\":\"http://130.206.80.58:8774/v2/67c979f51c5b4e89b85c1f876bdffe31\"\n"
             + "      },\n" + "      {\n" + "         \"name\":\"quantum\",\n"
             + "         \"adminURL\":\"http://130.206.80.58:9696/\",\n" + "         \"region\":\"RegionOne\",\n"
             + "         \"internalURL\":\"http://130.206.80.58:9696/\",\n" + "         \"type\":\"network\",\n"
@@ -273,7 +281,7 @@ public class OpenStackRegionImplTest {
     }
 
     @Test
-    public void shouldGetTokenAdmin() throws OpenStackException {
+    public void testShouldGetTokenAdmin() throws OpenStackException {
         // given
 
         
@@ -298,7 +306,7 @@ public class OpenStackRegionImplTest {
     }
     
     @Test
-    public void shouldGetEndPointsForNovaAndARegionName() throws OpenStackException {
+    public void testShouldGetEndPointsForNovaAndARegionName() throws OpenStackException {
         // given
 
         
@@ -322,7 +330,7 @@ public class OpenStackRegionImplTest {
     }
 
     @Test
-    public void shouldGetEndPointsForQuantumAndARegionName() throws OpenStackException {
+    public void testShouldGetEndPointsForQuantumAndARegionName() throws OpenStackException {
         // given
 
        
@@ -348,7 +356,7 @@ public class OpenStackRegionImplTest {
     }
 
     @Test
-    public void shouldReturnTwoRegionNames() throws OpenStackException {
+    public void testShouldReturnTwoRegionNames() throws OpenStackException {
         // given
 
         // when
@@ -368,7 +376,7 @@ public class OpenStackRegionImplTest {
     }
 
     @Test
-    public void shouldReturnTwoRegionNamesInEssex() throws OpenStackException {
+    public void testShouldReturnTwoRegionNamesInEssex() throws OpenStackException {
         // given
         OpenStackRegionImpl openStackRegion = new OpenStackRegionImpl();
         Client client = mock(Client.class);
@@ -421,7 +429,7 @@ public class OpenStackRegionImplTest {
     }
 
     @Test
-    public void shouldGetEndPointForNovaAndARegionNameForEssex() throws OpenStackException {
+    public void testShouldGetEndPointForNovaAndARegionNameForEssex() throws OpenStackException {
 
         OpenStackRegionImpl openStackRegion = new OpenStackRegionImpl();
         Client client = mock(Client.class);
@@ -472,7 +480,7 @@ public class OpenStackRegionImplTest {
     }
 
     @Test
-    public void shouldGetEndPointsForNovaAndARegionNameUsingCache() throws OpenStackException {
+    public void testShouldGetEndPointsForNovaAndARegionNameUsingCache() throws OpenStackException {
         // given
 
         String regionName = "RegionOne";
@@ -487,5 +495,42 @@ public class OpenStackRegionImplTest {
         // then
         assertNotNull(resultURL);
         assertEquals("http://130.206.80.58:8774/v2/", resultURL);
+    }
+    
+    @Test
+    public void testShouldGetDefaultRegion() throws OpenStackException {
+        // given
+
+      
+        String token = "123123232";
+        // when
+        when(builder.get(ClientResponse.class)).thenReturn(clientResponse);
+        when(clientResponse.getStatus()).thenReturn(200);
+        when(clientResponse.getEntity(String.class)).thenReturn(RESPONSE_JSON_GRIZZLY_TWO_REGIONS);
+
+        String result = openStackRegion.getDefaultRegion(token);
+        // then
+        assertNotNull(result);
+        assertEquals("regionOne", result);
+    }
+    
+    @Test
+    public void testShouldGetEndPointsForFederatedNetwork() throws OpenStackException {
+        // given
+
+      
+        String token = "123123232";
+        when(builder.get(ClientResponse.class)).thenReturn(clientResponse);
+        when(clientResponse.getStatus()).thenReturn(200);
+        when(clientResponse.getEntity(String.class)).thenReturn(RESPONSE_JSON_GRIZZLY_TWO_REGIONS);
+        RegionCache regionCache = new RegionCache();
+        regionCache.putUrl("regionOne", "federatednetwork", "http://130.206.80.58:8774/v2/12321312312312321");
+
+        // when
+
+        String resultURL = openStackRegion.getFederatedQuantumEndPoint(token);
+        // then
+        assertNotNull(resultURL);
+        assertEquals("http://130.206.80.58:8774/v2/12321312312312321", resultURL);
     }
 }

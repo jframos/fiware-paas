@@ -44,9 +44,11 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
+import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
+import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierInstanceSearchCriteria;
 
 /**
  * Unit test for TierDaoJpaImplTest
@@ -65,6 +67,8 @@ public class TierInstanceDaoJpaImplTest {
     private TierDao tierDao;
     @Autowired
     private NetworkInstanceDao networkInstanceDao;
+    @Autowired
+    private ProductInstanceDao productInstanceDao;
 
     public final static String TIER_NAME = "TierName";
     public final static String TIER_INSTANCE_NAME = "TierInstanceName";
@@ -76,6 +80,7 @@ public class TierInstanceDaoJpaImplTest {
     public final static Integer MAXIMUM_INSTANCES = 8;
     public final static Integer MINIMUM_INSTANCES = 1;
     public final static Integer INITIAL_INSTANCES = 1;
+    public static String REGION = "region";
 
     /**
      * Test the create method
@@ -86,7 +91,7 @@ public class TierInstanceDaoJpaImplTest {
         Integer initial = new Integer(2);
         Integer maximum = new Integer(1);
 
-        NetworkInstance networkInstance = new NetworkInstance ("net", "vdc");
+        NetworkInstance networkInstance = new NetworkInstance ("net", "vdc",REGION);
         networkInstance.setIdNetwork("ID");
         networkInstance = networkInstanceDao.create(networkInstance);
 
@@ -106,6 +111,97 @@ public class TierInstanceDaoJpaImplTest {
         assertEquals(tierInst.getNumberReplica(), 2); 
 
     }
+    
+    @Test
+    public void testFindByTierInstanceId() throws Exception {
+        Integer minimum = new Integer(1);
+        Integer initial = new Integer(2);
+        Integer maximum = new Integer(1);
+
+        ProductInstance productInstance = new ProductInstance ();
+        productInstance.setName("name");
+        productInstance = productInstanceDao.create(productInstance);
+        
+
+        Tier tier = new Tier(TIER_NAME, maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes", null);
+        tier = tierDao.create(tier);
+        TierInstance tierInst = new TierInstance();
+        tierInst.setName(TIER_INSTANCE_NAME);
+        tierInst.setNumberReplica(2);
+        tierInst.addProductInstance(productInstance);
+        tierInst.setTier(tier);
+        tierInst = tierInstanceDao.create(tierInst);
+        assertNotNull(tierInst);
+        assertNotNull(tierInst.getId());
+        
+        tierInst = tierInstanceDao.findByTierInstanceId(tierInst.getId());
+        assertEquals(tierInst.getName(), TIER_INSTANCE_NAME);
+        assertEquals(tierInst.getNumberReplica(), 2); 
+
+    }
+    
+    @Test
+    public void testFindByTierInstanceName() throws Exception {
+        Integer minimum = new Integer(1);
+        Integer initial = new Integer(2);
+        Integer maximum = new Integer(1);
+
+        ProductInstance productInstance = new ProductInstance ();
+        productInstance.setName("name");
+        productInstance = productInstanceDao.create(productInstance);
+
+        Tier tier = new Tier(TIER_NAME, maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes", null);
+        tier = tierDao.create(tier);
+        TierInstance tierInst = new TierInstance();
+        tierInst.setName(TIER_INSTANCE_NAME+2);
+        tierInst.setNumberReplica(2);
+        tierInst.addProductInstance(productInstance);
+        tierInst.setTier(tier);
+        
+        tierInst = tierInstanceDao.create(tierInst);
+        assertNotNull(tierInst);
+        assertNotNull(tierInst.getId());
+        
+        tierInst = tierInstanceDao.findByTierInstanceName(TIER_INSTANCE_NAME+2);
+        assertEquals(tierInst.getName(), TIER_INSTANCE_NAME+2);
+        assertEquals(tierInst.getNumberReplica(), 2); 
+
+    }
+    
+    @Test
+    public void testFindByCriteria() throws Exception {
+        Integer minimum = new Integer(1);
+        Integer initial = new Integer(2);
+        Integer maximum = new Integer(1);
+
+        ProductInstance productInstance = new ProductInstance ();
+        productInstance.setName("name2");
+        productInstance = productInstanceDao.create(productInstance);
+
+        Tier tier = new Tier(TIER_NAME+"crite", maximum, minimum, initial, null, "2", "image", "icono", "keypair", "yes", null);
+        tier = tierDao.create(tier);
+        
+        TierInstance tierInst = new TierInstance();
+        tierInst.setName(TIER_INSTANCE_NAME+2);
+        tierInst.setNumberReplica(2);
+        tierInst.addProductInstance(productInstance);
+        tierInst.setTier(tier);
+        tierInst.setVdc(VDC);
+        tierInst = tierInstanceDao.create(tierInst);
+        assertNotNull(tierInst);
+        assertNotNull(tierInst.getId());
+        
+        TierInstanceSearchCriteria criteria = new TierInstanceSearchCriteria ();
+        criteria.setVdc(VDC);
+        criteria.setProductInstance(productInstance);
+        List<TierInstance> lTierInstance = tierInstanceDao.findByCriteria(criteria);
+        assertNotNull(lTierInstance);
+        assertEquals(lTierInstance.size(), 1);
+
+
+    }
+
+    
 
     @Test
     public void testUpdate() throws Exception {
@@ -113,7 +209,7 @@ public class TierInstanceDaoJpaImplTest {
         Integer initial = new Integer(2);
         Integer maximum = new Integer(1);
 
-        NetworkInstance networkInstance = new NetworkInstance ("net","vdc");
+        NetworkInstance networkInstance = new NetworkInstance ("net","vdc",REGION);
         networkInstance.setIdNetwork("ID");
         networkInstance = networkInstanceDao.create(networkInstance);
 
@@ -143,7 +239,7 @@ public class TierInstanceDaoJpaImplTest {
         Integer initial = new Integer(2);
         Integer maximum = new Integer(1);
 
-        NetworkInstance networkInstance = new NetworkInstance ("net","vdc");
+        NetworkInstance networkInstance = new NetworkInstance ("net","vdc",REGION);
         networkInstance.setIdNetwork("ID");
         networkInstance = networkInstanceDao.create(networkInstance);
 
@@ -166,17 +262,5 @@ public class TierInstanceDaoJpaImplTest {
 
     }
    
-
-    public void setNetworkInstanceDao(NetworkInstanceDao networkInstanceDao) {
-        this.networkInstanceDao = networkInstanceDao;
-    }
-
-    public void setTierDao(TierDao tierDao) {
-        this.tierDao = tierDao;
-    }
-    
-    public void setTierInstanceDao(TierInstanceDao tierInstanceDao) {
-        this.tierInstanceDao = tierInstanceDao;
-    }
 
 }

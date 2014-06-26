@@ -39,10 +39,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
+import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
+import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
 
 /**
  * Unit test for TierDaoJpaImplTest
@@ -60,6 +64,9 @@ public class TierDaoJpaImplTest {
     private NetworkDao networkDao;
     @Autowired
     private TierDao tierDao;
+    
+    @Autowired
+    private SecurityGroupDao securityGroupDao;
 
     public final static String TIER_NAME = "TierName";
     public final static String PRODUCT_NAME = "Product";
@@ -70,6 +77,7 @@ public class TierDaoJpaImplTest {
     public final static Integer MAXIMUM_INSTANCES = 8;
     public final static Integer MINIMUM_INSTANCES = 1;
     public final static Integer INITIAL_INSTANCES = 1;
+    public static String REGION = "region";
 
     /**
      * Test the create method
@@ -83,11 +91,136 @@ public class TierDaoJpaImplTest {
         productReleases.add(prodRelease);
 
         Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, productReleases);
+        int num = tierDao.findAll().size();
+        tier = tierDao.create(tier);
+        assertNotNull(tier);
+        assertNotNull(tier.getId());
+        
+        List<Tier> tiers =  tierDao.findAll();
+        assertEquals (tiers.size(),num+1);   
+    }
+    
+    @Test
+    public void testLoadTierWithProductReleaseAndMetadata() throws Exception {
+
+    	Metadata metproduct = new Metadata("product", "product", "product");
+        List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
+        ProductRelease prodRelease = new ProductRelease(PRODUCT_NAME, PRODUCT_VERSION);
+        prodRelease.addMetadata(metproduct);
+        prodRelease = productReleaseDao.create(prodRelease);
+        productReleases.add(prodRelease);
+
+        Tier tier = new Tier(TIER_NAME+"pr", MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, productReleases);
+        tier.setEnviromentName(ENV);
+        tier.setVdc(VDC);
+        tier = tierDao.create(tier);
+        
+        tier=  tierDao.loadTierWithProductReleaseAndMetadata(TIER_NAME+"pr", VDC, ENV);
+        assertEquals (tier.getProductReleases().size(),1);   
+    }
+    
+    
+    
+    
+    
+    @Test
+    public void testCreateNoProduct() throws Exception {
+        Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, null);
 
         tier = tierDao.create(tier);
         assertNotNull(tier);
         assertNotNull(tier.getId());
+        
+        tier = tierDao.load(TIER_NAME, VDC, ENV); 
+        assertNotNull(tier);
 
+    }
+    
+    @Test
+    public void testSecurityGroup () throws EntityNotFoundException, AlreadyExistsEntityException {
+    	SecurityGroup sec = new SecurityGroup("sec2", "description");
+        sec.setIdSecurityGroup("idsec");
+        int num = securityGroupDao.findAll().size();
+        sec = securityGroupDao.create(sec);
+        
+        assertNotNull (sec);
+        assertEquals (sec.getName(), "sec2");
+        assertNotNull(sec.getId());
+        
+        sec = securityGroupDao.load("sec2");
+        assertNotNull (sec);
+        assertEquals (sec.getName(), "sec2");
+        assertEquals (sec.getIdSecurityGroup(), "idsec");
+        
+        assertEquals (securityGroupDao.findAll().size(), num +1);
+    	
+    }
+    
+    @Test
+    public void testUpdateSecurityGroup () throws Exception {
+    	SecurityGroup sec = new SecurityGroup("sec3", "description");
+        sec.setIdSecurityGroup("idsec");
+        sec = securityGroupDao.create(sec);
+        
+        securityGroupDao.updateSecurityGroupId("idsec2", sec);        
+        sec = securityGroupDao.load("sec3");
+        assertEquals (sec.getIdSecurityGroup(), "idsec2");
+    	
+    }
+    
+  /*  @Test
+    public void testFindRegionBySecurityGroup() throws Exception {
+        Tier tier = new Tier(TIER_NAME, MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, null);
+        SecurityGroup sec = new SecurityGroup("sec", "description");
+        sec.setIdSecurityGroup("idsec");
+        sec = securityGroupDao.create(sec);
+        tier.setSecurityGroup(sec);
+        tier.setRegion("region");
+        tier = tierDao.create(tier);
+        
+        assertEquals(tier.getSecurityGroup().getIdSecurityGroup(), "idsec");
+        String region = tierDao.findRegionBySecurityGroup(sec.getIdSecurityGroup()); 
+        assertNotNull(tier);
+        assertEquals (region, "region");
+    }*/
+    
+    @Test
+    public void testFindByCriteria () throws EntityNotFoundException, AlreadyExistsEntityException {
+    	Tier tier = new Tier(TIER_NAME+"find", MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, null);
+        tier.setVdc(VDC);
+        tier.setEnviromentName(ENV);
+        tierDao.create(tier);
+        
+        TierSearchCriteria criteria = new TierSearchCriteria ();
+        criteria.setEnvironmentName(ENV);
+        criteria.setName(TIER_NAME+"find");
+        criteria.setVdc(VDC);
+        List<Tier> tiers = tierDao.findByCriteria(criteria);
+        assertNotNull(tiers); 
+        assertEquals (tiers.size(),1);
+    	
+    }
+
+    
+    
+    
+    @Test
+    public void testCreateVdcNull() throws Exception {
+
+        List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
+        ProductRelease prodRelease = new ProductRelease(PRODUCT_NAME, PRODUCT_VERSION);
+        prodRelease = productReleaseDao.create(prodRelease);
+        productReleases.add(prodRelease);
+
+        Tier tier = new Tier(TIER_NAME+"null", MAXIMUM_INSTANCES, MINIMUM_INSTANCES, INITIAL_INSTANCES, productReleases);
+        tier.setVdc("");
+        tier.setEnviromentName(ENV);
+
+        tier = tierDao.create(tier);
+        assertNotNull(tier);
+        
+        tier = tierDao.load(TIER_NAME+"null", null, ENV); 
+        assertNotNull(tier); 
     }
 
     /**
@@ -143,7 +276,7 @@ public class TierDaoJpaImplTest {
     /**
      * Test the create and load method
      */
-    @Test(expected = EntityNotFoundException.class)
+    @Test
     public void testDeleted() throws Exception {
 
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
@@ -157,9 +290,6 @@ public class TierDaoJpaImplTest {
 
         tier = tierDao.create(tier);
         tierDao.remove(tier);
-
-        tier = tierDao.load(TIER_NAME, "vdc", "environmentName");
-
     }
     
     /**
@@ -174,10 +304,10 @@ public class TierDaoJpaImplTest {
         productReleases.add(prodRelease);
         
         Set<Network> networks = new HashSet<Network>();
-        Network network = new Network(NETWORK_NAME, "VDC");
+        Network network = new Network(NETWORK_NAME, "VDC", REGION);
         network = networkDao.create(network);
         networks.add(network);
-        Network network2 = new Network(NETWORK_NAME+2, "VDC");
+        Network network2 = new Network(NETWORK_NAME+2, "VDC", REGION);
         network2 = networkDao.create(network2);
         networks.add(network2);
 
@@ -207,7 +337,7 @@ public class TierDaoJpaImplTest {
         prodRelease = productReleaseDao.create(prodRelease);
         productReleases.add(prodRelease);
     	String net ="NETFIND";
-    	Network network = new Network(net, "VDC");
+    	Network network = new Network(net, "VDC", REGION);
         network = networkDao.create(network);
         
         assertEquals(tierDao.findAllWithNetwork(net).size(),0);
@@ -231,19 +361,7 @@ public class TierDaoJpaImplTest {
         tierDao.create(tier);
         
         assertEquals(tierDao.findAllWithNetwork(net).size(),2);
-     
-
     }
 
-    
-   
-
-    public void setProductReleaseDao(ProductReleaseDao productReleaseDao) {
-        this.productReleaseDao = productReleaseDao;
-    }
-
-    public void setTierDao(TierDao tierDao) {
-        this.tierDao = tierDao;
-    }
 
 }

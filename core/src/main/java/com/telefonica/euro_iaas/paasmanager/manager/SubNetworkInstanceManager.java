@@ -59,7 +59,13 @@ public interface SubNetworkInstanceManager {
      * @throws InfrastructureException
      */
     void delete(ClaudiaData claudiaData, SubNetworkInstance subNetworkInstance, String region)
-            throws EntityNotFoundException, InvalidEntityException, InfrastructureException;
+            throws InvalidEntityException, InfrastructureException;
+    
+    /**
+     * 
+     * @param subNetworkInstance
+     */
+    void deleteInBD( SubNetworkInstance subNetworkInstance) ;
 
     /**
      * Retrieve all Network created in the system.
@@ -73,7 +79,7 @@ public interface SubNetworkInstanceManager {
      * 
      * @return the subnetwork.
      */
-    SubNetworkInstance load(String name) throws EntityNotFoundException;
+    SubNetworkInstance load(String name, String vdc, String region)  throws EntityNotFoundException;
 
     /**
      * Update a subNetwork.

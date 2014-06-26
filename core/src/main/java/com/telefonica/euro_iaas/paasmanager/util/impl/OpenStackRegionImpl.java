@@ -35,7 +35,8 @@ import javax.ws.rs.core.MediaType;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -53,7 +54,7 @@ public class OpenStackRegionImpl implements OpenStackRegion {
 
     private Client client;
 
-    private static Logger log = Logger.getLogger(OpenStackRegionImpl.class);
+    private static Logger log = LoggerFactory.getLogger(OpenStackRegionImpl.class);
 
     /**
      * Default constructor. It creates a jersey client.
@@ -76,11 +77,12 @@ public class OpenStackRegionImpl implements OpenStackRegion {
 
         String tokenadmin = this.getTokenAdmin();
         if (url != null) {
+            log.debug("Get url for sdc in region " + url);
             return url;
         } else {
             String responseJSON = callToKeystone(token, tokenadmin);
 
-            String result = parseEndpoint(responseJSON, type, regionName);
+            String result = parseEndpoint(token, responseJSON, type, regionName);
             if (result == null) {
                 throw new OpenStackException("region not found");
             }
@@ -109,6 +111,22 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         return url;
 
     }
+    
+    @Override
+    public String getPuppetMasterEndPoint(String regionName, String token) throws OpenStackException  {
+        String defaulRegion = this.getDefaultRegion(token);
+        log.info ("Get url for puppet for default region " + defaulRegion);
+        String url;
+        try {
+            url = getEndPointByNameAndRegionName("puppetmaster", defaulRegion, token);
+        } catch (OpenStackException e) {
+            String msn = "It is not possible to obtain the Puppet Master endpoint";
+            log.info(msn);
+            throw new OpenStackException (msn);
+                    
+        }
+        return url;
+    }
 
     @Override
     public String getQuantumEndPoint(String regionName, String token) throws OpenStackException {
@@ -118,6 +136,36 @@ public class OpenStackRegionImpl implements OpenStackRegion {
             url = url + "v2.0/";
         }
         return url;
+    }
+
+    public String getSdcEndPoint(String regionName, String token) throws OpenStackException {
+        log.debug("Get url for sdc in region " + regionName);
+        String url;
+        try {
+            url = getEndPointByNameAndRegionName("sdc", regionName, token);
+        } catch (OpenStackException e) {
+            String msn = "It is not possible to obtain the SDC endpoint";
+            log.error(msn);
+            throw new OpenStackException(msn);
+
+        }
+        return url;
+    }
+
+    public String getDefaultRegion(String token) throws OpenStackException {
+        log.debug("Get defautl region for token " + token);
+
+        List<String> regions = null;
+        try {
+            regions = getRegionNames(token);
+            log.debug("regions " + regions + " " + regions.size());
+        } catch (OpenStackException e) {
+            String msn = "It is not possible to obtain the SDC endpoint";
+            log.error(msn);
+            throw new OpenStackException(msn);
+        }
+
+        return regions.get(0);
     }
 
     @Override
@@ -165,7 +213,8 @@ public class OpenStackRegionImpl implements OpenStackRegion {
         return response;
     }
 
-    private String parseEndpoint(String response, String type, String regionName) {
+    private String parseEndpoint(String token, String response, String type, String regionName)
+            throws OpenStackException {
 
         JSONObject jsonObject = JSONObject.fromObject(response);
 
@@ -234,7 +283,8 @@ public class OpenStackRegionImpl implements OpenStackRegion {
             }
 
         }
-        return urlMap.get(systemPropertiesProvider.getProperty(SystemPropertiesProvider.DEFAULT_REGION_NAME));
+        ;
+        return urlMap.get(this.getDefaultRegion(token));
     }
 
     /**
@@ -374,5 +424,25 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     public void setClient(Client client) {
         this.client = client;
     }
+
+    public String getFederatedQuantumEndPoint(String token) throws OpenStackException {
+        String url = getEndPointByNameAndRegionName("federatednetwork", getDefaultRegion(token), token);
+        return url;
+    }
+
+	public String getChefServerEndPoint(String regionName, String token)
+			throws OpenStackException {
+    	String url;
+        try {
+            url = getEndPointByNameAndRegionName("chef-server", regionName, token);
+        } catch (OpenStackException e) {
+            String msn = "It is not possible to obtain the chef-server endpoint";
+            log.error(msn);
+            throw new OpenStackException (msn);
+            		
+        }
+        log.debug ("Obtained chef-server endpoint " + url);
+        return url;
+	}
 
 }

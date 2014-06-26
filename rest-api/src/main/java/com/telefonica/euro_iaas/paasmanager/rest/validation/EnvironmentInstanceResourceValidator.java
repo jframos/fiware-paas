@@ -35,14 +35,6 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
  */
 public interface EnvironmentInstanceResourceValidator {
 
-    /**
-     * Validate the request to create an EnvironmentInstance from a payload.
-     * 
-     * @param payload
-     * @throws InvalidEnvironmentRequestException
-     * @throws InvalidEntityException
-     */
-    void validateCreatePayload(String payload) throws InvalidEntityException;
 
     /**
      * Validate the requets to create and EnvironmentInstance from a EnvironmentDto.

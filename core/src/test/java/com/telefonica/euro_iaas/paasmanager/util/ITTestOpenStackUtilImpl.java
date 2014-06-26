@@ -24,13 +24,10 @@
 
 package com.telefonica.euro_iaas.paasmanager.util;
 
-// import org.apache.log4j.Logger;
-
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -163,6 +160,8 @@ public class ITTestOpenStackUtilImpl {
     OpenStackUtilImpl openStackUtil = null;
     SystemPropertiesProvider systemPropertiesProvider = null;
     PaasManagerUser user = null;
+    
+  
 
     /**
      * Build the payload to deploy a VM (createServer)
@@ -195,6 +194,13 @@ public class ITTestOpenStackUtilImpl {
         user.setToken(authToken);
         user.setTenantId(tenant);
         user.setUsername(username);
+        OpenOperationUtil openOperationUtil = mock (OpenOperationUtil.class);
+        OpenStackConfigUtil openStackConfigUtil = mock (OpenStackConfigUtil.class);
+        OpenStackRegion openStackRegion  = mock (OpenStackRegion.class);
+        openStackUtil = new OpenStackUtilImpl ();
+        openStackUtil.setOpenOperationUtil(openOperationUtil);
+        openStackUtil.setOpenStackConfigUtil(openStackConfigUtil);
+        openStackUtil.setOpenStackRegion(openStackRegion);
 
         // http://130.206.80.63:8774/
 
@@ -206,8 +212,6 @@ public class ITTestOpenStackUtilImpl {
     public void testCreateGetDeleteServer() throws OpenStackException {
         try {
             // Creates a new VM
-
-            openStackUtil.setSystemPropertiesProvider(systemPropertiesProvider);
 
             String payload = buildCreateServerPayload();
 
@@ -227,7 +231,7 @@ public class ITTestOpenStackUtilImpl {
             String deleteResponse = openStackUtil.deleteServer(serverId, "region", "token", "vdc");
 
         } catch (Exception ex) {
-            Logger.getLogger(ITTestOpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
+            fail(ex.getMessage());
         }
     }
 
@@ -242,9 +246,6 @@ public class ITTestOpenStackUtilImpl {
     public void testCreateServerAssignFloatingIP() throws OpenStackException {
         try {
             // Creates a new VM
-
-            openStackUtil.setSystemPropertiesProvider(systemPropertiesProvider);
-
             String payload = buildCreateServerPayload();
 
             // Create a VM
@@ -253,7 +254,7 @@ public class ITTestOpenStackUtilImpl {
             Thread.sleep(5000);
 
             // Obtaining a freee floatingIP
-            floatingIP = openStackUtil.getFloatingIP("region", "token", "vdc");
+            floatingIP = openStackUtil.getFloatingIP(user, "region");
 
             // Assign the floatingIP to the serverId
             openStackUtil.assignFloatingIP(serverId, floatingIP, "region", "token", "vdc");
@@ -262,7 +263,7 @@ public class ITTestOpenStackUtilImpl {
             String deleteResponse = openStackUtil.deleteServer(serverId, "region", "token", "vdc");
 
         } catch (Exception ex) {
-            Logger.getLogger(ITTestOpenStackUtilImpl.class.getName()).log(Level.SEVERE, null, ex);
+            fail(ex.getMessage());
         }
     }
 }

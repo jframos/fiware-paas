@@ -27,6 +27,7 @@ package com.telefonica.euro_iaas.paasmanager.dao;
 import java.util.List;
 
 import com.telefonica.euro_iaas.commons.dao.BaseDAO;
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductReleaseSearchCriteria;
@@ -39,6 +40,8 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductReleaseS
 public interface SubNetworkInstanceDao extends
     BaseDAO<SubNetworkInstance, String> {
 	
-	boolean exists(String key);
+	boolean exists(String name, String vdc, String region);
+	
+	SubNetworkInstance load (String name, String vdc, String region) throws EntityNotFoundException;
 
 }

@@ -42,6 +42,8 @@ public interface EnvironmentInstanceDao extends BaseDAO<EnvironmentInstance, Str
      */
     List<EnvironmentInstance> findByCriteria(EnvironmentInstanceSearchCriteria criteria);
 
-    EnvironmentInstance loadForDelete(String name) throws EntityNotFoundException;
+    EnvironmentInstance loadForDelete(String name, String vdc) throws EntityNotFoundException;
+    
+    EnvironmentInstance load(String name, String vdc) throws EntityNotFoundException;
 
 }

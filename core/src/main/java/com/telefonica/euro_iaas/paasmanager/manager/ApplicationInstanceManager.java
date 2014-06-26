@@ -29,11 +29,11 @@ import java.util.List;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.ApplicationTypeNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationInstanceSearchCriteria;
 
@@ -55,9 +55,9 @@ public interface ApplicationInstanceManager {
      * @throws AlreadyExistsEntityException
      * @throws ApplicationTypeNotFoundException
      */
-    ApplicationInstance install(String org, String vdc, EnvironmentInstance environmentInstance,
+    ApplicationInstance install(ClaudiaData data,  EnvironmentInstance environmentInstance,
             ApplicationRelease application) throws ProductReleaseNotFoundException, InvalidEntityException,
-            AlreadyExistsEntityException, ApplicationTypeNotFoundException, ProductInstallatorException;
+            AlreadyExistsEntityException,  ProductInstallatorException;
 
     /**
      * Find all ApplicationInstances
@@ -100,7 +100,7 @@ public interface ApplicationInstanceManager {
      * @throws AlreadyExistsEntityException
      * @throws ApplicationTypeNotFoundException
      */
-    void uninstall(String org, String vdc, EnvironmentInstance environmentInstanceName,
+    void uninstall(ClaudiaData data, EnvironmentInstance environmentInstanceName,
             ApplicationInstance applicationInstance) throws ProductInstallatorException;
 
 }

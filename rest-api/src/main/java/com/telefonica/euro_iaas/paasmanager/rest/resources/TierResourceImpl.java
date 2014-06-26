@@ -31,21 +31,20 @@ import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
-import com.telefonica.euro_iaas.paasmanager.model.Network;
-import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
@@ -64,23 +63,29 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 @Scope("request")
 public class TierResourceImpl implements TierResource {
 
+    @Autowired
     private TierManager tierManager;
-    
+
+    @Autowired
     private NetworkManager networkManager;
 
+    @Autowired
     private EnvironmentManager environmentManager;
 
+    @Autowired
     private SystemPropertiesProvider systemPropertiesProvider;
 
+    @Autowired
     private TierResourceValidator tierResourceValidator;
 
+    @Autowired
     private ProductReleaseDao productReleaseDao;
 
-    private static Logger log = Logger.getLogger(TierResourceImpl.class);
+    private static Logger log = LoggerFactory.getLogger(TierResourceImpl.class);
 
     public void delete(String org, String vdc, String envName, String tierName) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
-        log.debug("Deleting tier " + tierName + " from env " + envName);
+        log.debug("Deleting tier " + tierName + " from env " + envName + " vdc " + vdc);
 
         try {
             tierResourceValidator.validateDelete(vdc, envName, tierName);
@@ -91,7 +96,7 @@ public class TierResourceImpl implements TierResource {
 
             Tier tier = tierManager.load(tierName, vdc, envName);
 
-            Environment environment = environmentManager.load(envName);
+            Environment environment = environmentManager.load(envName, vdc);
             environment.deleteTier(tier);
             environmentManager.update(environment);
             tierManager.delete(claudiaData, tier);
@@ -104,11 +109,12 @@ public class TierResourceImpl implements TierResource {
 
     }
 
-    public List<TierDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String environment) {
+    public List<TierDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String vdc,
+            String environment) {
         TierSearchCriteria criteria = new TierSearchCriteria();
         Environment env = null;
         try {
-            env = environmentManager.load(environment);
+            env = environmentManager.load(environment, vdc);
 
         } catch (EntityNotFoundException e) {
             throw new WebApplicationException(e, 404);
@@ -172,11 +178,12 @@ public class TierResourceImpl implements TierResource {
         log.debug("to tier " + tier + "  product " + tier.getProductReleases() + " nets " + tier.getNetworks());
 
         try {
-            Environment environment = environmentManager.load(environmentName);
+            Environment environment = environmentManager.load(environmentName, vdc);
             Tier newTier = tierManager.create(claudiaData, environmentName, tier);
             environment.addTier(newTier);
             environmentManager.update(environment);
         } catch (Exception ex) {
+            log.debug(ex.getMessage());
             throw new APIException(ex);
         }
     }
@@ -215,17 +222,18 @@ public class TierResourceImpl implements TierResource {
     public void setTierResourceValidator(TierResourceValidator tierResourceValidator) {
         this.tierResourceValidator = tierResourceValidator;
     }
-    
+
     public void setNetworkManager(NetworkManager networkManager) {
         this.networkManager = networkManager;
     }
 
-    public void update(String org, String vdc, String environmentName, String tierName, TierDto tierDto) throws APIException {
+    public void update(String org, String vdc, String environmentName, String tierName, TierDto tierDto)
+            throws APIException {
         log.debug("Update tier " + tierName + " from env " + environmentName);
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
 
         try {
-            tierResourceValidator.validateUpdate(vdc, environmentName,tierName, tierDto);
+            tierResourceValidator.validateUpdate(vdc, environmentName, tierName, tierDto);
             log.debug("Validated tier " + tierDto.getName() + " from env " + environmentName);
 
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
@@ -234,7 +242,7 @@ public class TierResourceImpl implements TierResource {
 
             Tier newtier = tierDto.fromDto(vdc, environmentName);
 
-            Environment environment = environmentManager.load(environmentName);
+            Environment environment = environmentManager.load(environmentName, vdc);
             List<Tier> tiers = new ArrayList();
             for (Tier tier : environment.getTiers()) {
                 tiers.add(tier);
@@ -245,7 +253,8 @@ public class TierResourceImpl implements TierResource {
                 if (tier.getName().equals(newtier.getName())) {
                     log.debug("load tier " + tierDto.getName());
                     tier = tierManager.load(tierDto.getName(), vdc, environmentName);
-                    tierManager.updateTier(tier, newtier);
+
+                    tierManager.updateTier(claudiaData, tier, newtier);
 
                 }
                 environment.addTier(tier);
@@ -260,7 +269,5 @@ public class TierResourceImpl implements TierResource {
             throw new APIException(e);
         }
     }
-
-    
 
 }

@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
@@ -72,6 +73,52 @@ public class ProductReleaseDaoJpaImplTest {
         assertEquals(productRelease.getVersion(), "2");
 
     }
+    
+    @Test(expected=com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
+    public void testProductReleasesNotAttributesError() throws EntityNotFoundException  {
+
+        productReleaseDao.load("otro-2");
+    }
+    
+    @Test(expected=com.telefonica.euro_iaas.commons.dao.EntityNotFoundException.class)
+    public void testProductReleasesNotAttributesError2() throws EntityNotFoundException  {
+
+        productReleaseDao.load("otro","3","tier");
+    }
+    
+    
+    @Test
+    public void testProductReleasesNotAttributesLoadAll() throws Exception {
+
+        ProductRelease productTomcat = new ProductRelease("mysql", "2", "tomcat 7", null);
+        productTomcat.setTierName("tierName");
+
+        productTomcat = productReleaseDao.create(productTomcat);
+        assertNotNull(productTomcat);
+        assertEquals(productTomcat.getProduct(), "mysql");
+        assertEquals(productTomcat.getVersion(), "2");
+
+        List<ProductRelease> productReleases = productReleaseDao.findAll();
+        assertNotNull(productReleases);
+
+        ProductRelease productRelease = productReleaseDao.load("mysql", "2", "tierName");
+        assertNotNull(productRelease);
+        assertEquals(productRelease.getProduct(), "mysql");
+        assertEquals(productRelease.getVersion(), "2");
+
+    }
+    
+    @Test
+    public void testProductReleasesNotAttributesLoadAllError() throws Exception {
+
+        ProductRelease productTomcat = new ProductRelease("mysql", "2", "tomcat 7", null);
+        productTomcat = productReleaseDao.create(productTomcat);
+
+        List<ProductRelease> productReleases = productReleaseDao.findAll();
+
+        ProductRelease productRelease = productReleaseDao.load("mysql", "2", "tierName");
+
+    }
 
     @Test
     public void testProductReleasesWithAttributes() throws Exception {
@@ -102,6 +149,39 @@ public class ProductReleaseDaoJpaImplTest {
         assertEquals(productRelease.getAttributes().size(), 1);
 
     }
+    
+    @Test
+    public void testProductReleasesWithAttributesLoadAll() throws Exception {
+
+        List<ProductRelease> productReleases = productReleaseDao.findAll();
+        assertNotNull(productReleases);
+
+        int number = productReleases.size();
+
+        Set<Attribute> attproduct = new HashSet<Attribute>();
+        attproduct.add(new Attribute("product", "product", "product"));
+
+        ProductRelease productproduct = new ProductRelease("product", "0.1", "product 0.1", attproduct);
+        productproduct.setTierName("tierName");
+
+        productproduct = productReleaseDao.create(productproduct);
+        assertNotNull(productproduct);
+        assertEquals(productproduct.getProduct(), "product");
+        assertEquals(productproduct.getVersion(), "0.1");
+
+        productReleases = productReleaseDao.findAll();
+        assertNotNull(productReleases);
+        assertEquals(productReleases.size(), number + 1);
+
+        ProductRelease productRelease = productReleaseDao.load("product", "0.1", "tierName");
+        assertNotNull(productRelease);
+        assertEquals(productRelease.getProduct(), "product");
+        assertEquals(productRelease.getVersion(), "0.1");
+        assertEquals(productRelease.getAttributes().size(), 1);
+
+    }
+    
+ 
 
     @Test
     public void testProductReleasesWithMetadata() throws Exception {
@@ -192,6 +272,28 @@ public class ProductReleaseDaoJpaImplTest {
         assertEquals(productRelease.getMetadatas().size(), 0);
 
     }
+    
+    @Test
+    public void testProductReleasesWithEmptyAttributesLoadAll() throws Exception {
+
+        ProductRelease productproduct = new ProductRelease("product4", "0.1");
+        productproduct.setTierName("tiername");
+
+        productproduct = productReleaseDao.create(productproduct);
+        assertNotNull(productproduct);
+        assertEquals(productproduct.getProduct(), "product4");
+        assertEquals(productproduct.getVersion(), "0.1");
+        assertEquals(productproduct.getMetadatas().size(), 0);
+        assertEquals(productproduct.getAttributes().size(), 0);
+
+        ProductRelease productRelease = productReleaseDao.load("product4", "0.1", "tiername" );
+        assertNotNull(productRelease);
+        assertEquals(productRelease.getProduct(), "product4");
+        assertEquals(productRelease.getVersion(), "0.1");
+        assertEquals(productRelease.getAttributes().size(), 0);
+        assertEquals(productRelease.getMetadatas().size(), 0);
+
+    }
 
     @Test
     public void testCreateProductReleaseTierNameWithMetadataAndAttributes() throws Exception {
@@ -223,59 +325,31 @@ public class ProductReleaseDaoJpaImplTest {
 
     }
     
-    /*@Test
-    public void testProductReleasesTierWithEmptyAttributes() throws Exception {
-
-        ProductRelease productproduct = new ProductRelease("product4", "0.1");
-        productproduct.setTierName("tierName4");
-        
-        productproduct = productReleaseDao.create(productproduct);
-        assertNotNull(productproduct);
-        assertEquals(productproduct.getProduct(), "product4");
-        assertEquals(productproduct.getVersion(), "0.1");
-        assertEquals(productproduct.getTierName(), "tierName4");
-        assertEquals(productproduct.getMetadatas().size(), 0);
-        assertEquals(productproduct.getAttributes().size(), 0);
-
-        ProductRelease productRelease = productReleaseDao.load("product4", "0.1", "tierName4");
-        assertNotNull(productRelease);
-        assertEquals(productRelease.getProduct(), "product4");
-        assertEquals(productRelease.getVersion(), "0.1");
-        assertEquals(productRelease.getTierName(), "tierName4");
-        assertEquals(productRelease.getAttributes().size(), 0);
-        assertEquals(productRelease.getMetadatas().size(), 0);
-
-    }*/
-    
-    /*@Test
-    public void testProductReleasesTierWithMetadata() throws Exception {
+    @Test
+    public void testLoadProductRealseCreateProductReleaseTierNameWithMetadataAndAttributes() throws Exception {
 
         Metadata metproduct = new Metadata("product", "product", "product");
+        Attribute attribute = new Attribute("product", "product", "product");
+   
 
-        ProductRelease productproduct = new ProductRelease("myproduct2", "0.1");
-        productproduct.setTierName("tierName2");
+        ProductRelease productproduct = new ProductRelease("product2", "0.1");
         productproduct.addMetadata(metproduct);
+        productproduct.addAttribute(attribute);
 
-        productReleaseDao.create(productproduct);
+        productproduct = productReleaseDao.create(productproduct);
+        assertNotNull(productproduct);
+        assertEquals(productproduct.getProduct(), "product2");
+        assertEquals(productproduct.getVersion(), "0.1");
+        assertEquals(productproduct.getMetadatas().size(), 1);
+        assertEquals(productproduct.getAttributes().size(), 1);
 
-        ProductRelease productRelease = productReleaseDao.load("myproduct2", "0.1", "tierName2");
+        ProductRelease productRelease = productReleaseDao.loadProductReleaseWithMetadata("product2-0.1");
         assertNotNull(productRelease);
-        assertEquals(productRelease.getProduct(), "myproduct2");
+        assertEquals(productRelease.getProduct(), "product2");
         assertEquals(productRelease.getVersion(), "0.1");
-        assertEquals(productproduct.getTierName(), "tierName2");
+        assertEquals(productRelease.getAttributes().size(), 1);
         assertEquals(productRelease.getMetadatas().size(), 1);
 
-    }*/
-    
-    /**
-     * @param productReleaseDao
-     *            the productReleaseDao to set
-     */
-    public void setProductReleaseDao(ProductReleaseDao productReleaseDao) {
-        this.productReleaseDao = productReleaseDao;
     }
 
-    public void setAttributeDao(AttributeDao attributeDao) {
-        this.attributeDao = attributeDao;
-    }
 }

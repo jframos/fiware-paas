@@ -24,15 +24,16 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.async.impl;
 
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PRODUCT_INSTANCE_BASE_URL;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.PRODUCT_INSTANCE_PATH;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PAAS_MANAGER_URL;
 
 import java.text.MessageFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidProductInstanceRequestException;
@@ -57,7 +58,7 @@ import com.telefonica.euro_iaas.paasmanager.util.TaskNotificator;
 
 public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncManager {
 
-    private static Logger LOGGER = Logger.getLogger(ProductInstanceAsyncManagerImpl.class.getName());
+    private static Logger log = LoggerFactory.getLogger(ProductInstanceAsyncManagerImpl.class.getName());
     private ProductInstanceManager productInstanceManager;
     private TaskManager taskManager;
     private SystemPropertiesProvider propertiesProvider;
@@ -69,7 +70,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         try {
             ProductInstance productInstance = productInstanceManager.install(tierInstance, claudiaData, envName,
                     productRelease, attributes);
-            LOGGER.info("Product " + productRelease.getProduct() + '-' + productRelease.getVersion()
+            log.info("Product " + productRelease.getProduct() + '-' + productRelease.getVersion()
                     + " installed successfully");
         } catch (InvalidProductInstanceRequestException e) {
             String errorMsg = e.getMessage();
@@ -93,16 +94,16 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         }
     }
 
-    public void uninstall(ProductInstance productInstance, Task task, String callback) {
+    public void uninstall(ClaudiaData data, ProductInstance productInstance, Task task, String callback) {
 
         try {
-            productInstanceManager.uninstall(productInstance);
+            productInstanceManager.uninstall(data, productInstance);
             updateSuccessTask(task, productInstance);
-            LOGGER.info("Product Release " + productInstance.getProductRelease().getProduct() + "-"
+            log.info("Product Release " + productInstance.getProductRelease().getProduct() + "-"
                     + productInstance.getProductRelease().getVersion() + " uninstalled successfully");
         } catch (ProductInstallatorException e) {
             String errorMsg = "Error Unistalling ProductInstance " + e.getMessage();
-            LOGGER.info(errorMsg);
+            log.info(errorMsg);
 
         } catch (Exception e) {
             String errorMsg = "The product " + productInstance.getProductRelease().getProduct() + "-"
@@ -113,7 +114,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
 
         /*
          * try { productInstanceManager.uninstall(productInstance); updateSuccessTask(task, productInstance);
-         * LOGGER.info("Product " + productInstance.getProduct().getProduct().getName() + "-" +
+         * log.info("Product " + productInstance.getProduct().getProduct().getName() + "-" +
          * productInstance.getProduct().getVersion() + " uninstalled successfully"); } catch (FSMViolationException e) {
          * updateErrorTask(productInstance, task, "The product " + productInstance.getId() +
          * " can not be uninstalled due to previous status", e); } catch (ApplicationInstalledException e) {
@@ -137,24 +138,26 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      * Update the task with necessary information when the task is success.
      */
     private void updateSuccessTask(Task task, ProductInstance productInstance) {
-        String piResource = MessageFormat.format(propertiesProvider.getProperty(PRODUCT_INSTANCE_BASE_URL),
-                productInstance.getId(), // the id
-
-                productInstance.getProductRelease().getProduct(), productInstance.getVdc()); // the product
+        String piResource = getUrl(productInstance);
         task.setResult(new TaskReference(piResource));
         task.setEndTime(new Date());
         task.setStatus(TaskStates.SUCCESS);
         taskManager.updateTask(task);
     }
 
+    private String getUrl(ProductInstance productInstance) {
+        String path = MessageFormat.format(PRODUCT_INSTANCE_PATH, productInstance.getId(), // the id
+
+                productInstance.getProductRelease().getProduct(), productInstance.getVdc());
+
+        return propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
+    }
+
     /*
      * Update the task with necessary information when the task is wrong and the product instance exists in the system.
      */
     private void updateErrorTask(ProductInstance productInstance, Task task, String message, Throwable t) {
-        String piResource = MessageFormat.format(propertiesProvider.getProperty(PRODUCT_INSTANCE_BASE_URL),
-                productInstance.getId(), // the id
-
-                productInstance.getProductRelease().getProduct(), productInstance.getVdc()); // the product
+        String piResource = getUrl(productInstance);
         task.setResult(new TaskReference(piResource));
         updateErrorTask(task, message, t);
     }
@@ -170,7 +173,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         task.setStatus(TaskStates.ERROR);
         task.setError(error);
         taskManager.updateTask(task);
-        LOGGER.info("An error occurs while executing a product action. See task " + task.getHref()
+        log.info("An error occurs while executing a product action. See task " + task.getHref()
                 + "for more information");
     }
 

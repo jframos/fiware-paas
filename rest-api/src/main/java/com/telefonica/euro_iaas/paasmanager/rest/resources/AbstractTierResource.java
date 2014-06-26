@@ -60,7 +60,6 @@ public interface AbstractTierResource {
      */
 
     @POST
-    @Path("/")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void insert(@PathParam("org") String org, @PathParam("environment") String environment, TierDto TierDto)
             throws APIException;
@@ -77,11 +76,10 @@ public interface AbstractTierResource {
      * @param orderType
      *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
      * @return the Tiers.
-     * @throws APIException 
+     * @throws APIException
      */
 
     @GET
-    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<TierDto> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
             @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType,
@@ -117,7 +115,7 @@ public interface AbstractTierResource {
     @PUT
     @Path("/{tierName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    void update(@PathParam("org") String org, @PathParam("environment") String environment, @PathParam("tierName") String tierName, TierDto TierDto)
-            throws APIException;
+    void update(@PathParam("org") String org, @PathParam("environment") String environment,
+            @PathParam("tierName") String tierName, TierDto TierDto) throws APIException;
 
 }

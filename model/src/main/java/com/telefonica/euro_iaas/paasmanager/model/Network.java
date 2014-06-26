@@ -65,7 +65,13 @@ public class Network {
 
     private String name;
     
+    private String region;
+    
     private String vdc;
+    
+    private boolean federatedNetwork = false;
+    
+    private String federatedRange = "0";
     
 
     @OneToMany
@@ -81,9 +87,10 @@ public class Network {
     /**
      * @param networkName
      */
-    public Network(String name, String vdc) {
+    public Network(String name, String vdc, String region) {
         this.name = name;
         this.vdc = vdc;
+        this.region = region;
         subNets = new HashSet<SubNetwork>();
     }
 
@@ -155,6 +162,10 @@ public class Network {
         return name;
     }
     
+    public String getRegion() {
+        return region;
+    }
+    
 
     public void setNetworkName(String name) {
         this.name=name;
@@ -166,6 +177,22 @@ public class Network {
     
     public void setVdc (String vdc) {
         this.vdc=vdc;
+    }
+    
+    public void setFederatedNetwork (boolean federatedNetwork) {
+    	this.federatedNetwork = federatedNetwork;
+    }
+    
+    public boolean getfederatedNetwork () {
+    	return this.federatedNetwork;
+    }
+    
+    public void setFederatedRange(String range) {
+    	this.federatedRange = range;
+    }
+    
+    public String getFederatedRange() {
+    	return this.federatedRange;
     }
 
 
@@ -207,9 +234,11 @@ public class Network {
     * @return
     */
     public NetworkInstance toNetworkInstance() {
-        NetworkInstance networkInstance = new NetworkInstance(this.name, vdc);
+        NetworkInstance networkInstance = new NetworkInstance(this.name, vdc, region);
+        networkInstance.setFederatedNetwork(this.getfederatedNetwork());
+        networkInstance.setFederatedRange(this.getFederatedRange());
         for (SubNetwork subnet: this.getSubNets()) {
-            SubNetworkInstance subNetInstance = subnet.toInstance();
+            SubNetworkInstance subNetInstance = subnet.toInstance(vdc, region);
             networkInstance.addSubNet(subNetInstance);
         }
         return networkInstance;

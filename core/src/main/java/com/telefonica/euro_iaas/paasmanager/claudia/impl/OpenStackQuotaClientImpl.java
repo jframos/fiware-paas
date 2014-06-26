@@ -26,7 +26,8 @@ package com.telefonica.euro_iaas.paasmanager.claudia.impl;
 
 import net.sf.json.JSONObject;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
@@ -37,7 +38,7 @@ import com.telefonica.euro_iaas.paasmanager.util.OpenStackUtil;
 
 public class OpenStackQuotaClientImpl implements QuotaClient {
 
-    private static Logger log = Logger.getLogger(OpenStackQuotaClientImpl.class);
+    private static Logger log = LoggerFactory.getLogger(OpenStackQuotaClientImpl.class);
     private OpenStackUtil openStackUtil = null;
 
     public OpenStackUtil getOpenStackUtil() {

@@ -25,6 +25,7 @@
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import static org.junit.Assert.assertEquals;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -82,6 +83,7 @@ public class TierManagerImplTest {
     public static String TIER_NAME = "TIER_NAME";
     public static String VDC = "VDC";
     public static String ENV = "ENV";
+    public static String REGION = "region";
 
 
     @Before
@@ -111,7 +113,7 @@ public class TierManagerImplTest {
         tier.setName("tierName");
         tier.setProductReleases(productReleases);
 
-        when(productReleaseManager.load(any(String.class))).thenReturn(productRelease);
+        when(productReleaseManager.load(any(String.class),any(ClaudiaData.class))).thenReturn(productRelease);
 
         data = new ClaudiaData("dd", "dd", "dd");
         List<? extends GrantedAuthority> authorities = new ArrayList();
@@ -122,9 +124,26 @@ public class TierManagerImplTest {
     }
 
     @Test
-    public void testcreateSecurityGroup() throws EntityNotFoundException {
+    public void testcreateSecurityGroupTcp() throws EntityNotFoundException {
         productRelease = new ProductRelease("product", "2.0");
         productRelease.addMetadata(new Metadata("open_ports", "8080"));
+
+        productReleases = new ArrayList<ProductRelease>();
+        productReleases.add(productRelease);
+        Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
+                "image", "icono", "keypair", "floatingip", "payload");
+        when(productReleaseManager.loadWithMetadata(any(String.class))).thenReturn(productRelease);
+
+        SecurityGroup securityGroup = tierManager.generateSecurityGroup(data, tier);
+        assertEquals(securityGroup.getName(), "sg_dd_dd_" + tier.getName());
+        assertEquals(securityGroup.getRules().size(), 2);
+    }
+    
+    @Test
+    public void testcreateSecurityGroupTcpUdp() throws EntityNotFoundException {
+        productRelease = new ProductRelease("product", "2.0");
+        productRelease.addMetadata(new Metadata("open_ports", "8080"));
+        productRelease.addMetadata(new Metadata("open_ports_udp", "1212"));
 
         productReleases = new ArrayList<ProductRelease>();
         productReleases.add(productRelease);
@@ -149,7 +168,7 @@ public class TierManagerImplTest {
         when(productReleaseManager.loadWithMetadata(any(String.class))).thenReturn(productRelease);
         SecurityGroup securityGroup = tierManager.generateSecurityGroup(data, tier);
         assertEquals(securityGroup.getName(), "sg_dd_dd_" + tier.getName());
-        assertEquals(securityGroup.getRules().size(), 2);
+        assertEquals(securityGroup.getRules().size(), 1);
     }
 
     @Test
@@ -258,7 +277,7 @@ public class TierManagerImplTest {
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
         Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
                 .load(any(String.class), any(String.class), any(String.class));
-        when(productReleaseManager.load(any(String.class))).thenReturn(productRelease);
+        when(productReleaseManager.load(any(String.class),any(ClaudiaData.class))).thenReturn(productRelease);
         Tier tier3 = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image",
                 "icono", "keypair", "floatingip", "payload");
         when(tierDao.update(any(Tier.class))).thenReturn(tier);
@@ -300,7 +319,7 @@ public class TierManagerImplTest {
 
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
                 "keypair", "floatingip", "payload");
-        Network net = new Network("NETWORK_NAME", "vd");
+        Network net = new Network("NETWORK_NAME", "vd",REGION);
         tier.addNetwork(net);
         tier.setVdc(VDC);
         tier.setEnviromentName(ENV);
@@ -309,9 +328,9 @@ public class TierManagerImplTest {
 
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
         when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
-        when(networkManager.exists(any(String.class), any(String.class))).thenReturn(false);
+        when(networkManager.exists(any(String.class), any(String.class), any(String.class))).thenReturn(false);
         when(networkManager.create(any(Network.class))).thenReturn(net);
-        when(networkManager.load(any(String.class), any(String.class))).thenReturn(net);
+        when(networkManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(net);
 
         Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
                 .load(any(String.class), any(String.class), any(String.class));
@@ -329,7 +348,7 @@ public class TierManagerImplTest {
 
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
                 "keypair", "floatingip", "payload");
-        Network net = new Network("NETWORK_NAME", "vd");
+        Network net = new Network("NETWORK_NAME", "vd",REGION);
         tier.addNetwork(net);
         tier.setVdc(null);
         tier.setEnviromentName(ENV);
@@ -339,9 +358,9 @@ public class TierManagerImplTest {
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
         when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
 
-        when(networkManager.exists(any(String.class), any(String.class))).thenReturn(false);
+        when(networkManager.exists(any(String.class), any(String.class), any(String.class))).thenReturn(false);
         when(networkManager.create(any(Network.class))).thenReturn(net);
-        when(networkManager.load(any(String.class), any(String.class))).thenReturn(net);
+        when(networkManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(net);
 
         Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
                 .load(any(String.class), any(String.class), any(String.class));
@@ -359,7 +378,7 @@ public class TierManagerImplTest {
 
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), null, "flavour", "image", "icono",
                 "keypair", "floatingip", "payload");
-        Network net = new Network("NETWORK_NAME", "vdc");
+        Network net = new Network("NETWORK_NAME", "vdc",REGION);
         tier.addNetwork(net);
         tier.setVdc(VDC);
         tier.setEnviromentName(ENV);
@@ -368,8 +387,8 @@ public class TierManagerImplTest {
 
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
         when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);
-        when(networkManager.exists(any(String.class), any(String.class))).thenReturn(true);
-        when(networkManager.load(any(String.class), any(String.class))).thenReturn(net);
+        when(networkManager.exists(any(String.class), any(String.class), any(String.class))).thenReturn(true);
+        when(networkManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(net);
 
         Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
                 .load(any(String.class), any(String.class), any(String.class));
@@ -400,7 +419,7 @@ public class TierManagerImplTest {
     }
     
     @Test(expected=EntityNotFoundException.class)
-    public void testTierDeletionNotFound() throws EntityNotFoundException, InvalidEntityException, InfrastructureException  {
+    public void testTierDeletionNotFound() throws InvalidEntityException, InfrastructureException, EntityNotFoundException  {
 
         productRelease = new ProductRelease("product", "2.0");
         productRelease.addAttribute(new Attribute("open_ports", "8080"));
@@ -411,10 +430,9 @@ public class TierManagerImplTest {
         Tier tier = new Tier("name", new Integer(1), new Integer(1), new Integer(1), productReleases, "flavour",
                 "image", "icono", "keypair", "floatingip", "payload");
         when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).
-          thenThrow(new EntityNotFoundException (Tier.class, "error", tier));
+          thenThrow(new com.telefonica.euro_iaas.commons.dao.EntityNotFoundException  (Tier.class, "error", tier));
 
         tierManager.delete(data, tier);
-
     }
     
     @Test
@@ -432,7 +450,7 @@ public class TierManagerImplTest {
         securityGroup.addRule(new Rule());
         tier.setSecurityGroup(securityGroup);
         
-        Network net = new Network("NETWORK_NAME", "vdc");
+        Network net = new Network("NETWORK_NAME", "vdc",REGION);
         tier.addNetwork(net);
         
         when(tierDao.loadTierWithNetworks(any(String.class), any(String.class), any(String.class))).thenReturn(tier);

@@ -28,22 +28,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Path;
-import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
-import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
@@ -72,7 +70,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
     private ProductReleaseDao productReleaseDao;
 
-    private static Logger log = Logger.getLogger(AbstractTierResourceImpl.class);
+    private static Logger log = LoggerFactory.getLogger(AbstractTierResourceImpl.class);
 
     public void delete(String org, String envName, String tierName) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, "", envName);
@@ -88,7 +86,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
             Tier tier = tierManager.load(tierName, "", envName);
 
-            Environment environment = environmentManager.load(envName);
+            Environment environment = environmentManager.load(envName, "");
             environment.deleteTier(tier);
             environmentManager.update(environment);
             tierManager.delete(claudiaData, tier);
@@ -99,11 +97,12 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
     }
 
-    public List<TierDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String environment) throws APIException {
+    public List<TierDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String environment)
+            throws APIException {
         TierSearchCriteria criteria = new TierSearchCriteria();
         Environment env = null;
         try {
-            env = environmentManager.load(environment);
+            env = environmentManager.load(environment, "");
 
         } catch (EntityNotFoundException e) {
             throw new APIException(e, 404);
@@ -141,7 +140,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
     public void insert(String org, String environmentName, TierDto tierDto) throws APIException {
 
         log.debug("Insert tier " + tierDto.getName() + " from env " + environmentName + " with product release "
-                + tierDto.getProductReleaseDtos()  + " with nets " + tierDto.getNetworksDto());
+                + tierDto.getProductReleaseDtos() + " with nets " + tierDto.getNetworksDto());
         ClaudiaData claudiaData = new ClaudiaData(org, "", environmentName);
 
         try {
@@ -153,7 +152,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
             Tier tier = tierDto.fromDto("", environmentName);
             log.debug("vdc " + claudiaData.getVdc());
 
-            Environment environment = environmentManager.load(environmentName);
+            Environment environment = environmentManager.load(environmentName, "");
             Tier newTier = tierManager.create(claudiaData, environmentName, tier);
             environment.addTier(newTier);
             environmentManager.update(environment);
@@ -174,12 +173,12 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
     }
 
     public void update(String org, String environmentName, String tierName, TierDto tierDto) throws APIException {
-        log.debug("Update tier " + tierName + " from env " + environmentName + "with product release " + 
-        		    tierDto.getProductReleaseDtos() + " with nets " + tierDto.getNetworksDto() );
+        log.debug("Update tier " + tierName + " from env " + environmentName + "with product release "
+                + tierDto.getProductReleaseDtos() + " with nets " + tierDto.getNetworksDto());
         ClaudiaData claudiaData = new ClaudiaData(org, "", environmentName);
 
         try {
-            tierResourceValidator.validateUpdate( "", environmentName,tierName, tierDto);
+            tierResourceValidator.validateUpdate("", environmentName, tierName, tierDto);
             log.debug("Validated tier " + tierDto.getName() + " from env " + environmentName);
 
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
@@ -188,7 +187,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
             Tier newtier = tierDto.fromDto("", environmentName);
 
-            Environment environment = environmentManager.load(environmentName);
+            Environment environment = environmentManager.load(environmentName, "");
             List<Tier> tiers = new ArrayList();
             for (Tier tier : environment.getTiers()) {
                 tiers.add(tier);
@@ -197,10 +196,11 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
             environmentManager.update(environment);
             for (Tier tier : tiers) {
                 if (tier.getName().equals(newtier.getName())) {
-                    
+
                     tier = tierManager.loadTierWithNetworks(tierDto.getName(), "", environmentName);
-                    log.debug("load tier " + tierDto.getName() + " with nets " + tier.getName() + " " + tier.getNetworks());
-                    tierManager.updateTier(tier, newtier);
+                    log.debug("load tier " + tierDto.getName() + " with nets " + tier.getName() + " "
+                            + tier.getNetworks());
+                    tierManager.updateTier(claudiaData, tier, newtier);
 
                 }
                 environment.addTier(tier);
@@ -212,9 +212,6 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
             throw new APIException(e);
         }
     }
-
-
-  
 
     /**
      * @param systemPropertiesProvider

@@ -27,7 +27,8 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -36,7 +37,7 @@ import com.telefonica.euro_iaas.paasmanager.dao.ApplicationInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ApplicationReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ArtifactDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
-import com.telefonica.euro_iaas.paasmanager.exception.ApplicationTypeNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductReleaseNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.installator.ProductInstallator;
@@ -44,6 +45,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Artifact;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
@@ -54,7 +56,7 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationInst
 /**
  * Application Instance Manager operations: install
  * 
- * @author Henar Mu�oz
+ * @author Henar Munoz
  */
 public class ApplicationInstanceManagerImpl implements ApplicationInstanceManager {
 
@@ -63,14 +65,12 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
     private ProductReleaseDao productReleaseDao;
     private ArtifactDao artifactDao;
     private ProductInstallator productInstallator;
-    private static Logger log = Logger.getLogger(ApplicationInstanceManagerImpl.class.getName());
+    private static Logger log = LoggerFactory.getLogger(ApplicationInstanceManagerImpl.class.getName());
 
     /**
      * Install the applicationIntance on a EnvironmetInstance Precondition: 1) The EnvironmentInstance is already
      * installed 2) The ApplicationRelease is described in the request
      * 
-     * @param vdc
-     *            the vdc where the instance will be installed
      * @param environmentInstance
      *            the environmentInstance on which the application is going to be installed
      * @throws ProductReleaseNotFoundException
@@ -83,18 +83,19 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
      *             if artifcat/applicationRelease are already in the paas-manager database
      * @return the installed applicationInstance
      */
-    public ApplicationInstance install(String org, String vdc, EnvironmentInstance environmentInstance,
+    public ApplicationInstance install(ClaudiaData data, EnvironmentInstance environmentInstance,
             ApplicationRelease applicationRelease) throws ProductReleaseNotFoundException, InvalidEntityException,
-            AlreadyExistsEntityException, ApplicationTypeNotFoundException, ProductInstallatorException {
+            AlreadyExistsEntityException, ProductInstallatorException {
 
         log.info("Install aplication " + applicationRelease.getName() + " " + applicationRelease.getVersion() + " on "
                 + " enviornment " + environmentInstance + " with number of artifacts "
                 + applicationRelease.getArtifacts().size());
 
         if (!(canInstall(environmentInstance, applicationRelease.getArtifacts()))) {
-            throw new InvalidEntityException("The Products included in "
+        	log.warn("The Products included in "
                     + "ApplicationRelease does NOT correspond with the "
                     + "productInstances present in the Environment Instance");
+            throw new InvalidEntityException(applicationRelease);
         }
 
         // Install The applicationRelease=n-Artifacts
@@ -104,21 +105,28 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
             // Install the artifact in the product instance associated
             // Obtain the VMs from EnvInstance where productRelease is installed
             ProductInstance productInstance = getProductInstanceFromEnvironment(artifact, environmentInstance);
-            log.debug("Installing artifact " + artifact.getName());
-            productInstallator.installArtifact(productInstance, artifact);
+            log.debug("Installing artifact " + artifact.getName() + " in product instance " + productInstance.getName());
+            try { 
+                productInstallator.installArtifact(data, productInstance, artifact);
+                log.debug("Artifact installed" + artifact.getName() + " in product instance " + productInstance.getName());
+            } catch (OpenStackException e) {
+                String errorMessage = "Error to install the product " + e.getMessage();
+                log.warn(errorMessage);
+                new ProductInstallatorException(errorMessage);
+            }
 
         }
 
         // Create the Corresponding ApplicationInstance Object
         ApplicationInstance applicationInstance = new ApplicationInstance(applicationRelease, environmentInstance);
 
-        applicationInstance.setVdc(vdc);
+        applicationInstance.setVdc(data.getVdc());
         applicationInstance.setStatus(Status.ARTEFACT_DEPLOYED);
 
         // Insert ApplicationInstance in DB
         try {
 
-            applicationInstance = insertApplicationInstanceDB(applicationInstance);
+            applicationInstance = insertApplicationInstanceDB(applicationInstance, environmentInstance.getName(), environmentInstance.getVdc() );
         } catch (InvalidEntityException e3) {
             throw new InvalidEntityException("Error to insert the application instante in the database: "
                     + e3.getMessage());
@@ -130,8 +138,8 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
         return applicationInstance;
     }
 
-    public ApplicationInstance load(String vdc, String name) throws EntityNotFoundException {
-        ApplicationInstance instance = applicationInstanceDao.load(name);
+    public ApplicationInstance load(String vdc,  String name) throws EntityNotFoundException {
+        ApplicationInstance instance = applicationInstanceDao.load(name, vdc);
         if (!instance.getVdc().equals(vdc)) {
             throw new EntityNotFoundException(EnvironmentInstance.class, "vdc", vdc);
         }
@@ -149,7 +157,7 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
         return applicationInstanceDao.findByCriteria(criteria);
     }
 
-    public void uninstall(String org, String vdc, EnvironmentInstance environmentInstance,
+    public void uninstall(ClaudiaData data, EnvironmentInstance environmentInstance,
             ApplicationInstance applicationInstance) throws ProductInstallatorException {
         // Install The applicationRelease=n-Artifacts
         for (int i = 0; i < applicationInstance.getApplicationRelease().getArtifacts().size(); i++) {
@@ -157,8 +165,13 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
             // Obtain the VMs from EnvInstance where productRelease is installed
             ProductInstance productInstance = getProductInstanceFromEnvironment(applicationInstance
                     .getApplicationRelease().getArtifacts().get(i), environmentInstance);
-            productInstallator.uninstallArtifact(productInstance, applicationInstance.getApplicationRelease()
-                    .getArtifacts().get(i));
+            try {
+                productInstallator.uninstallArtifact(data, productInstance, applicationInstance.getApplicationRelease()
+                        .getArtifacts().get(i));
+            } catch (OpenStackException e) {
+                String errorMessage = "Error to configure the product " + e.getMessage();
+                new ProductInstallatorException(errorMessage);
+            }
 
         }
 
@@ -176,8 +189,8 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
      * @throws InvalidEntityException
      * @throws AlreadyExistsEntityException
      */
-    private ApplicationInstance insertApplicationInstanceDB(ApplicationInstance application)
-            throws ProductReleaseNotFoundException, ApplicationTypeNotFoundException, InvalidEntityException,
+    private ApplicationInstance insertApplicationInstanceDB(ApplicationInstance application, String env, String vdc)
+            throws ProductReleaseNotFoundException,  InvalidEntityException,
             AlreadyExistsEntityException {
         log.debug("Inser application " + application.getName() + " in DB");
 
@@ -190,7 +203,7 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
         List<Artifact> artifactsIn = new ArrayList<Artifact>();
 
         try {
-            applicationInstance = applicationInstanceDao.load(application.getName());
+            applicationInstance = applicationInstanceDao.load(application.getName(), vdc);
         } catch (EntityNotFoundException e) {
             artifactsIn = application.getApplicationRelease().getArtifacts();
 
@@ -227,7 +240,7 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
             try {
                 applicationRelease = applicationReleaseDao.create(new ApplicationRelease(application
                         .getApplicationRelease().getName(), application.getApplicationRelease().getVersion(),
-                        application.getApplicationRelease().getDescription(), null,
+                        application.getApplicationRelease().getDescription(), 
 
                         application.getApplicationRelease().getTransitableReleases(), artifactsDB));
             } catch (AlreadyExistsEntityException e3) {
@@ -274,8 +287,8 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
     }
 
     private boolean isPRInAllProductReleases(ProductRelease productRelease, List<ProductRelease> allProductReleases) {
-        for (int i = 0; i < allProductReleases.size(); i++) {
-            if (productRelease.getProduct().equals(allProductReleases.get(i).getProduct())) {
+        for (ProductRelease prod: allProductReleases) {
+            if (productRelease.getProduct().equals(prod.getProduct())) {
                 return true;
             }
         }

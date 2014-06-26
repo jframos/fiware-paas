@@ -24,7 +24,6 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
-import java.util.List;
 import java.util.Set;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -41,31 +40,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 
 public interface InfrastructureManager {
 
-    /**
-     * Obtain a List of VMs
-     * 
-     * @param number_vms
-     * @return lists of VMs.
-     */
-    // List<VM> getVMs(String vdc, Integer number_vms) throws
-    // InfrastructureException,
-    // IPNotRetrievedException;
-
-    /**
-     * Create a List of VMs from an ovf
-     * 
-     * @param envInstance
-     * @param ovf
-     * @param vdc
-     * @param org
-     * @return list of VMS created
-     * @throws InfrastructureException
-     */
-    // List<VM> createEnvironment(EnvironmentInstance envInstance, Tier
-    // tierInstance, String ovf,
-    // ClaudiaData claudiaData) throws InfrastructureException,
-    // InvalidVappException;
-
+    
     /**
      * Create an EnvironmentInstance
      * 
@@ -75,12 +50,12 @@ public interface InfrastructureManager {
      * @return
      * @throws InfrastructureException
      * @throws InvalidVappException
-     * @throws InvalidEntityException 
-     * @throws EntityNotFoundException 
+     * @throws InvalidEntityException
+     * @throws EntityNotFoundException
      */
-    EnvironmentInstance createInfrasctuctureEnvironmentInstance(EnvironmentInstance environmentInstance,
-            Set<Tier> set, ClaudiaData claudiaData) throws InfrastructureException, InvalidVappException,
-            InvalidOVFException, InvalidEntityException, EntityNotFoundException;
+    EnvironmentInstance createInfrasctuctureEnvironmentInstance(EnvironmentInstance environmentInstance, Set<Tier> set,
+            ClaudiaData claudiaData) throws InfrastructureException, InvalidVappException, InvalidOVFException,
+            InvalidEntityException, EntityNotFoundException;
 
     /**
      * Delete the environemnt (vms associated to the environmentInstance)
@@ -88,10 +63,11 @@ public interface InfrastructureManager {
      * @param envInstance
      * @param vdc
      * @throws InfrastructureException
-     * @throws InvalidEntityException 
-     * @throws EntityNotFoundException 
+     * @throws InvalidEntityException
+     * @throws EntityNotFoundException
      */
-    void deleteEnvironment(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws InfrastructureException, EntityNotFoundException, InvalidEntityException;
+    void deleteEnvironment(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws InfrastructureException,
+            InvalidEntityException;
 
     /**
      * Clone the template to a VM with products installed (Element of TierInstance)
@@ -155,7 +131,7 @@ public interface InfrastructureManager {
      * @return
      * @throws InfrastructureException
      */
-    void deployVM(ClaudiaData claudiaData, TierInstance tier, int replica, String vmOVF, VM vm) throws InfrastructureException;
+    void deployVM(ClaudiaData claudiaData, TierInstance tier, int replica, VM vm) throws InfrastructureException;
 
     /**
      * Delete a Vm replica
@@ -167,5 +143,19 @@ public interface InfrastructureManager {
      * @throws InfrastructureException
      */
     public void deleteVMReplica(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException;
+
+    /**
+     * @param environmentInstance
+     * @throws InfrastructureException
+     */
+    void federatedNetworks(ClaudiaData claudiaData, EnvironmentInstance environmentInstance)
+            throws InfrastructureException;
+
+    /**
+     * Generates a instance name or hostname.
+     */
+    String generateVMName(String bluePrintName, String tierName, int numReplica, String vdc);
+    
+    public String getFederatedRange (ClaudiaData data, String region) throws InfrastructureException ; 
 
 }

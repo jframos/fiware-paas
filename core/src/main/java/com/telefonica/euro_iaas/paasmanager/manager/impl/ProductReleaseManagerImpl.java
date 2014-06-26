@@ -27,7 +27,8 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -37,6 +38,7 @@ import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.dao.sdc.ProductReleaseSdcDao;
 import com.telefonica.euro_iaas.paasmanager.exception.SdcException;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
+import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.OS;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 
@@ -47,14 +49,13 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
 
     private ProductReleaseDao productReleaseDao;
     private ProductReleaseSdcDao productReleaseSdcDao;
-    private OSDao osDao;
-    private static Logger log = Logger.getLogger(ProductReleaseManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(ProductReleaseManagerImpl.class);
 
     /*
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.paasmanager.manager.ProductManager#load(java .lang.String)
      */
-    public ProductRelease load(String name) throws EntityNotFoundException {
+    public ProductRelease load(String name, ClaudiaData data) throws EntityNotFoundException {
         log.debug("Loading product release " + name);
         // return productReleaseDao.load(name);
         ProductRelease productRelease = null;
@@ -69,52 +70,26 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
             log.debug("The product " + name + " is not in database");
             try {
                 log.debug("Loading from sdc " + product + " " + version);
-                ProductRelease pRelease = productReleaseSdcDao.load(product, version);
+                ProductRelease pRelease = productReleaseSdcDao.load(product, version, data);
+                productRelease = create(pRelease);
 
-                List<OS> ssoo = new ArrayList<OS>();
-                ssoo = pRelease.getSupportedOOSS();
-
-                if (ssoo != null) {
-                    List<OS> supportedOOSS = new ArrayList<OS>();
-                    for (int j = 0; j < ssoo.size(); j++) {
-
-                        OS so = null;
-                        try {
-                            so = osDao.load(ssoo.get(j).getOsType());
-                        } catch (EntityNotFoundException e1) {
-                            try {
-                                so = osDao.create(ssoo.get(j));
-                            } catch (AlreadyExistsEntityException e3) {
-                                String msg = "Already Exist OSType: " + ssoo.get(j).getOsType();
-                                log.warn(msg);
-                                throw new EntityNotFoundException(OS.class, "osType", ssoo.get(j).getOsType());
-                            }
-                        }
-                        supportedOOSS.add(so);
-                    }
-                    pRelease.setSupportedOOSS(supportedOOSS);
-                }
-
-                try {
-                    productRelease = create(pRelease);
-                } catch (InvalidEntityException e3) {
-                    String msg = "Invalid Entity " + name;
-                    log.warn(msg);
-                    throw new EntityNotFoundException(ProductRelease.class, "name", name);
-                } catch (AlreadyExistsEntityException e4) {
-                    String msg = "Already Exist " + name;
-                    log.warn(msg);
-                    throw new EntityNotFoundException(ProductRelease.class, "name", name);
-                }
             } catch (EntityNotFoundException e5) {
                 String msg = "No product release NOT Found in SDC neither in PaasManager: " + name;
                 log.warn(msg);
-                throw new EntityNotFoundException(ProductRelease.class, "name", name);
+                throw new EntityNotFoundException(ProductRelease.class, msg, name);
             } catch (SdcException e6) {
-                String msg = "SDC failure at loading ProductRelease " + name;
+                String msg = "SDC failure at loading ProductRelease " + name + " " + e6.getMessage();
                 log.warn(msg);
-                throw new EntityNotFoundException(ProductRelease.class, "name", name);
-            }
+                throw new EntityNotFoundException(ProductRelease.class, msg, name);
+            } catch (InvalidEntityException e7) {
+            	 String msg = "SDC failure at loading ProductRelease " + name + " " + e7.getMessage();
+                 log.warn(msg);
+                 throw new EntityNotFoundException(ProductRelease.class, msg, name);
+			} catch (AlreadyExistsEntityException e8) {
+				String msg = "SDC failure at loading ProductRelease " + name + " " + e8.getMessage();
+                log.warn(msg);
+                throw new EntityNotFoundException(ProductRelease.class, msg, name);
+			}
         }
 
         return productRelease;
@@ -175,12 +150,5 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
         this.productReleaseSdcDao = productReleaseSdcDao;
     }
 
-    /**
-     * @param osDao
-     *            the osDao to set
-     */
-    public void setOsDao(OSDao osDao) {
-        this.osDao = osDao;
-    }
 
 }

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+    <appender name="paasAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.base}/logs/paasmanager.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${catalina.base}/logs/paasmanager.%d{yyyy-MM-dd}.gz</fileNamePattern>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="restAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.base}/logs/rest-api.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${catalina.base}/logs/rest-api.%d{yyyy-MM-dd}.gz</fileNamePattern>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            </pattern>
+        </encoder>
+    </appender>
+
+
+    <appender name="managerAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.base}/logs/manager.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${catalina.base}/logs/manager.%d{yyyy-MM-dd}.gz</fileNamePattern>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            </pattern>
+        </encoder>
+    </appender>
+
+
+    <appender name="authAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.base}/logs/authentication.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${catalina.base}/logs/authentication.%d{yyyy-MM-dd}.gz</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="installAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.base}/logs/install.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${catalina.base}/logs/install.%d{yyyy-MM-dd}.gz</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="utilAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.base}/logs/util.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${catalina.base}/logs/util.%d{yyyy-MM-dd}.gz</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="infrastructureAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.base}/logs/infrastructure.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${catalina.base}/logs/infrastructure.%d{yyyy-MM-dd}.gz</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            </pattern>
+        </encoder>
+    </appender>
+
+
+    <logger name="com.telefonica.euro_iaas.paasmanager.claudia" additivity="true" value="DEBUG">
+        <appender-ref ref="infrastructureAppender"/>
+    </logger>
+
+    <logger name="com.telefonica.euro_iaas.paasmanager.installator" additivity="true" value="DEBUG">
+        <appender-ref ref="installAppender"/>
+    </logger>
+
+    <logger name="com.telefonica.euro_iaas.paasmanager.util" additivity="true" value="DEBUG">
+        <appender-ref ref="utilAppender"/>
+    </logger>
+
+    <logger name="com.telefonica.euro_iaas.paasmanager.rest.auth" additivity="false" value="DEBUG">
+        <appender-ref ref="authAppender"/>
+    </logger>
+
+    <logger name="com.telefonica.euro_iaas.paasmanager.manager" additivity="true" value="DEBUG">
+        <appender-ref ref="managerAppender"/>
+    </logger>
+
+    <logger name="com.telefonica.euro_iaas.paasmanager.rest.resources" additivity="true" value="DEBUG">
+        <appender-ref ref="restAppender"/>
+    </logger>
+
+
+    <!-- SpringFramework logger -->
+    <logger name="org.springframework" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="paasAppender"/>
+    </logger>
+
+    <!-- hibernate logger -->
+    <logger name="org.hibernate" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="paasAppender"/>
+    </logger>
+
+    <!-- httpclient logger -->
+    <logger name="org.apache.http" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="paasAppender"/>
+    </logger>
+
+    <root value="WARN">
+        <appender-ref ref="paasAppender"/>
+    </root>
+
+</configuration>

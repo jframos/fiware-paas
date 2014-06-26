@@ -102,7 +102,7 @@ public interface ProductInstanceAsyncManager {
      * @param callback
      *            if not empty, contains the url where the result of the execution will be sent
      */
-    void uninstall(ProductInstance productInstance, Task task, String callback);
+    void uninstall(ClaudiaData data, ProductInstance productInstance, Task task, String callback);
 
     /**
      * Find the ProductInstance using the given id.

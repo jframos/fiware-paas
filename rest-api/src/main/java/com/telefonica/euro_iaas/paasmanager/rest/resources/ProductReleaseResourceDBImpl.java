@@ -30,11 +30,12 @@ import java.util.Set;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.api.core.InjectParam;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
@@ -55,11 +56,11 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 @Scope("request")
 public class ProductReleaseResourceDBImpl implements ProductReleaseDBResource {
 
-    @InjectParam("productReleaseManager")
+    @Autowired
     private ProductReleaseManager productReleaseManager;
 
     private SystemPropertiesProvider systemPropertiesProvider;
-    private static Logger log = Logger.getLogger(ProductReleaseResourceDBImpl.class);
+    private static Logger log = LoggerFactory.getLogger(ProductReleaseResourceDBImpl.class);
 
     public void insert(ProductReleaseDto productReleaseDto) {
         log.debug("Create product release " + productReleaseDto.getProductName() + " " + productReleaseDto.getVersion());

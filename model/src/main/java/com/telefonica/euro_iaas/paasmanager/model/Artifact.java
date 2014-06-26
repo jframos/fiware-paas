@@ -184,5 +184,36 @@ public class Artifact {
     public void setProductRelease(ProductRelease productRelease) {
         this.productRelease = productRelease;
     }
+    
+
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.getName() == null) ? 0 : this.getName().hashCode());
+        return result;
+    }
+    
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Artifact other = (Artifact) obj;
+        if (this.getName() == null) {
+            if (other.getName() != null) {
+                return false;
+            }
+        } else if (!this.getName().equals(other.getName())) {
+            return false;
+        } else if (!this.getPath().equals(other.getPath())) {
+            return false;
+        }
+        return true;
+    }
 
 }

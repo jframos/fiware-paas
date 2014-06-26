@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
@@ -47,25 +47,26 @@
     </filter-mapping>
 
     <!-- The CORS filter with parameters -->
-    <filter>
-        <filter-name>CORS</filter-name>
-        <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
+    <!--   <filter>
+           <filter-name>CORS</filter-name>
+           <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
 
-        <init-param>
-            <param-name>cors.allowOrigin</param-name>
+           <init-param>
+               <param-name>cors.allowOrigin</param-name>
 
-            <param-value>*</param-value>
-        </init-param>
-        <init-param>
-            <param-name>cors.supportedHeaders</param-name>
-            <param-value>Content-Type,Accept-Type,X-Auth-Token,Origin,Accept</param-value>
-        </init-param>
+               <param-value>*</param-value>
+           </init-param>
+           <init-param>
+               <param-name>cors.supportedHeaders</param-name>
+               <param-value>Content-Type,Accept-Type,X-Auth-Token,Origin,Accept</param-value>
+           </init-param>
 
-    </filter>
-    <filter-mapping>
-        <filter-name>CORS</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+       </filter>
+       <filter-mapping>
+           <filter-name>CORS</filter-name>
+           <url-pattern>/*</url-pattern>
+       </filter-mapping> -->
+
 
     <!-- Jersey Servlet  -->
     <servlet>
@@ -73,6 +74,7 @@
         <servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet
         </servlet-class>
     </servlet>
+
 
     <servlet-mapping>
         <servlet-name>Paas Manager Server Rest Servlet</servlet-name>
@@ -118,6 +120,16 @@
     <!-- SECURITY -->
 
 
+    <!-- version page -->
+    <servlet>
+        <servlet-name>versionJSP</servlet-name>
+        <jsp-file>/version.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>versionJSP</servlet-name>
+        <url-pattern>/version</url-pattern>
+    </servlet-mapping>
+
     <!--  ERROR PAGES -->
     <servlet>
         <servlet-name>errorJSP</servlet-name>
@@ -144,5 +156,6 @@
         <error-code>500</error-code>
         <location>/error</location>
     </error-page>
+
 
 </web-app>

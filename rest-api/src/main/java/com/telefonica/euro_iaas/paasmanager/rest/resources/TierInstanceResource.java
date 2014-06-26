@@ -51,7 +51,6 @@ public interface TierInstanceResource {
      */
 
     @POST
-    @Path("/")
     // @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     Task insert(@PathParam("org") String org, @PathParam("vdc") String vdc,
@@ -59,7 +58,6 @@ public interface TierInstanceResource {
             @HeaderParam("callback") String callback) throws APIException;
 
     @PUT
-    @Path("/")
     // @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Task update(@PathParam("org") String org, @PathParam("vdc") String vdc,
@@ -67,7 +65,6 @@ public interface TierInstanceResource {
             @HeaderParam("callback") String callback);
 
     @GET
-    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<TierInstanceDto> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
             @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType,

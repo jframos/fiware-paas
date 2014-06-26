@@ -55,7 +55,6 @@ public interface EnvironmentInstanceResource {
      * @return the task that informs how the environment creation process evolves
      */
     @POST
-    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     Task create(@PathParam("org") String org, @PathParam("vdc") String vdc, EnvironmentInstanceDto envInstanceDto,
@@ -79,7 +78,6 @@ public interface EnvironmentInstanceResource {
      * @return the retrieved environment instances.
      */
     @GET
-    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<EnvironmentInstancePDto> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
             @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType,

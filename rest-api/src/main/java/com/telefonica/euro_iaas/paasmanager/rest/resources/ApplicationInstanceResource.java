@@ -54,7 +54,6 @@ public interface ApplicationInstanceResource {
      * Install a list of application in a given host running on the selected products.
      */
     @POST
-    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     Task install(@PathParam("org") String org, @PathParam("vdc") String vdc,
@@ -65,7 +64,6 @@ public interface ApplicationInstanceResource {
      * Find the applications according to the criteria specified in the request.
      */
     @GET
-    @Path("/")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ApplicationInstance> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
             @QueryParam("orderBy") String orderBy, @QueryParam("orderType") String orderType,
@@ -80,7 +78,7 @@ public interface ApplicationInstanceResource {
     @GET
     @Path("/{name}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ApplicationInstance load(@PathParam("vdc") String vdc, @PathParam("name") String name);
+    ApplicationInstance load(@PathParam("vdc") String vdc,  @PathParam("environmentInstance") String environmentInstance, @PathParam("name") String name);
 
     /**
      * Uninstall a previously installed instance.
@@ -96,6 +94,6 @@ public interface ApplicationInstanceResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     Task uninstall(@PathParam("org") String org, @PathParam("vdc") String vdc,
             @PathParam("environmentInstance") String environmentInstance, @PathParam("name") String name,
-            @HeaderParam("callback") String callback);
+            @HeaderParam("callback") String callback) throws APIException;
 
 }

@@ -34,7 +34,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.NetworkDao;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.NetworkManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -81,11 +83,11 @@ public class NetworkManagerImplTest extends TestCase {
     @Test
     public void testCreateNetwork() throws Exception {
         // Given
-        Network net = new Network(NETWORK_NAME, "vdc");
-        SubNetwork subNet = new SubNetwork("sub-net-" + NETWORK_NAME + "-1");
+        Network net = new Network(NETWORK_NAME, "vdc", "region");
+        SubNetwork subNet = new SubNetwork("sub-net-" + NETWORK_NAME + "-1","vdc", "region");
 
         // When
-        when(networkDao.load(any(String.class), any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
+        when(networkDao.load(any(String.class), any(String.class), any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
         when(subNetworkManager.create(any(SubNetwork.class))).thenReturn(subNet);
         when(networkDao.create(any(Network.class))).thenReturn(net);
         when(networkInstanceManager.getNumberDeployedNetwork(any(ClaudiaData.class), anyString())).thenReturn(0);
@@ -109,12 +111,12 @@ public class NetworkManagerImplTest extends TestCase {
     @Test
     public void testCreateNetworkSubNetSpecified() throws Exception {
         // Given
-        Network net = new Network(NETWORK_NAME, "vdc");
-        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME);
+        Network net = new Network(NETWORK_NAME, "vdc", "region");
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME,"vdc", "region");
         net.addSubNet(subNet);
 
         // When
-        when(networkDao.load(any(String.class),any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
+        when(networkDao.load(any(String.class),any(String.class), any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));
         when(subNetworkManager.create(any(SubNetwork.class))).thenReturn(subNet);
         when(networkDao.create(any(Network.class))).thenReturn(net);
 
@@ -127,6 +129,30 @@ public class NetworkManagerImplTest extends TestCase {
         }
 
     }
+    
+    @Test
+    public void testCreateNetworkSubNetempty () throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
+    	 Network net = new Network(NETWORK_NAME+"empty", null, "region");
+    	 SubNetwork subNet = new SubNetwork (SUB_NETWORK_NAME,  "vdc", "region");
+    	 when(subNetworkManager.create(any(SubNetwork.class))).thenReturn(subNet);
+    	 when(networkDao.load(any(String.class),any(String.class), any(String.class))).thenReturn(net);
+    	 networkManager.create(net);
+    }
+    
+    @Test
+    public void testCreateNetworkAnotherSubNetempty () throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
+    	 Network net = new Network(NETWORK_NAME+"empty", null, "region");
+    	 
+    	 SubNetwork subNet = new SubNetwork (SUB_NETWORK_NAME,  "vdc", "region");
+    	 net.addSubNet(subNet);
+    	 SubNetwork subNet2 = new SubNetwork (SUB_NETWORK_NAME+2,  "vdc", "region");
+    	 when(subNetworkManager.create(any(SubNetwork.class))).thenReturn(subNet);
+    	 when(networkDao.load(any(String.class),any(String.class), any(String.class))).thenReturn(net);
+    	 Network net2 = new Network(NETWORK_NAME+"empty", null, "region");
+    	 net2.addSubNet(subNet2);
+    	 networkManager.create(net2);
+    }
+    
 
     /**
      * It tests the creation of a network.
@@ -136,12 +162,12 @@ public class NetworkManagerImplTest extends TestCase {
     @Test
     public void testCreateNetworkAlreadyexist() throws Exception {
         // Given
-        Network net = new Network(NETWORK_NAME, "vdc");
-        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME);
+        Network net = new Network(NETWORK_NAME, "vdc", "region");
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, "vdc", "region");
         net.addSubNet(subNet);
 
         // When
-        when(networkDao.load(any(String.class),any(String.class))).thenReturn(net);
+        when(networkDao.load(any(String.class),any(String.class), any(String.class))).thenReturn(net);
 
         when(subNetworkManager.create(any(SubNetwork.class))).thenReturn(subNet);
         when(networkDao.create(any(Network.class))).thenReturn(net);
@@ -164,7 +190,9 @@ public class NetworkManagerImplTest extends TestCase {
     @Test
     public void testDestroyNetwork() throws Exception {
         // Given
-        Network net = new Network(NETWORK_NAME, "vdc");
+        Network net = new Network(NETWORK_NAME, "vdc", "region");
+        SubNetwork subNet = new SubNetwork(SUB_NETWORK_NAME, "vdc", "region");
+        net.addSubNet(subNet);
 
         // When
         when(networkDao.load(any(String.class))).thenThrow(new EntityNotFoundException(Network.class, "test", net));

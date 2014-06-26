@@ -33,7 +33,8 @@ import java.sql.SQLException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -53,7 +54,7 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
  */
 public class SynchronizationBoostrap implements ServletContextListener {
 
-    private static Logger log = Logger.getLogger(SynchronizationBoostrap.class);
+    private static Logger log = LoggerFactory.getLogger(SynchronizationBoostrap.class);
 
     /** {@inheritDoc} */
     public void contextInitialized(ServletContextEvent event) {
@@ -74,10 +75,12 @@ public class SynchronizationBoostrap implements ServletContextListener {
         UserDao userDao = (UserDao) ctx.getBean("userDao");
         TokenDao tokenDao = (TokenDao) ctx.getBean("tokenDao");
 
-        String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_DATABASE_URL);
-        String driver = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_DATABASE_DRIVER);
-        String userName = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_DATABASE_USERNAME);
-        String password = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_DATABASE_PASSWORD);
+        /*
+         * String url = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_DATABASE_URL); String
+         * driver = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_DATABASE_DRIVER); String
+         * userName = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_DATABASE_USERNAME); String
+         * password = systemPropertiesProvider.getProperty(SystemPropertiesProvider.KEYSTONE_DATABASE_PASSWORD);
+         */
 
         try {
             // Lineas comentadas por errores al arrancar el paasManager

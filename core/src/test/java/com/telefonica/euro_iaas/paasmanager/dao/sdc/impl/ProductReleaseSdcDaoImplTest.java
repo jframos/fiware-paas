@@ -30,11 +30,13 @@ import java.util.List;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.paasmanager.exception.SdcException;
+import com.telefonica.euro_iaas.paasmanager.installator.sdc.util.SDCUtil;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
@@ -50,7 +52,28 @@ import static org.mockito.Mockito.when;
  *
  */
 public class ProductReleaseSdcDaoImplTest {
+    private ProductReleaseSdcDaoImpl productReleaseSdcDaoImpl ;
+    private Client client;
+    WebResource.Builder builder ;
 
+    @Before
+    public void setUp () {
+        productReleaseSdcDaoImpl = new ProductReleaseSdcDaoImpl();
+        Client client = mock(Client.class);
+        SDCUtil sdcUtils = mock (SDCUtil.class);
+        SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+        productReleaseSdcDaoImpl.setSystemPropertiesProvider(systemPropertiesProvider);
+        productReleaseSdcDaoImpl.setClient(client);
+        productReleaseSdcDaoImpl.setSDCUtil(sdcUtils);
+        WebResource webResource = mock(WebResource.class);
+        builder = mock(WebResource.Builder.class);
+        
+        // when
+        when(client.resource(anyString())).thenReturn(webResource);
+        when(webResource.accept(MediaType.APPLICATION_JSON)).thenReturn(builder);
+        when(builder.type(MediaType.APPLICATION_JSON)).thenReturn(builder);
+        
+    }
   
     /**
      * Tests the findAllProducts functionality
@@ -59,27 +82,14 @@ public class ProductReleaseSdcDaoImplTest {
     @Test
     public void testFindAllProducts() throws SdcException {
         //given
-        ProductReleaseSdcDaoImpl productReleaseSdcDaoImpl = new ProductReleaseSdcDaoImpl();
-        SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+       
         String jsonProducts = "{\"product\":[{\"name\":\"tomcat\",\"description\":\"tomcat J2EE container\",\"attributes\":{\"key\":\"clave\",\"value\":\"valor\"}},{\"name\":\"nodejs\",\"description\":\"nodejs\"},{\"name\":\"mysql\",\"description\":\"mysql\"},{\"name\":\"git\",\"description\":\"git\"},{\"name\":\"mongodbshard\",\"description\":\"mongodbshard\"},{\"name\":\"mongos\",\"description\":\"mongos\"},{\"name\":\"mongodbconfig\",\"description\":\"mongodbconfig\"},{\"name\":\"contextbroker\",\"description\":\"contextbroker\"},{\"name\":\"postgresql\",\"description\":\"db manager\",\"attributes\":[{\"key\":\"username\",\"value\":\"postgres\",\"description\":\"The administrator usename\"},{\"key\":\"password\",\"value\":\"postgres\",\"description\":\"The administrator password\"}]},{\"name\":\"haproxy\",\"description\":\"balancer\",\"attributes\":[{\"key\":\"key1\",\"value\":\"value1\",\"description\":\"keyvaluedesc1\"},{\"key\":\"key2\",\"value\":\"value2\",\"description\":\"keyvaluedesc2\"},{\"key\":\"sdccoregroupid\",\"value\":\"app_server_role\",\"description\":\"idcoregroup\"}]},{\"name\":\"test\",\"description\":\"test\",\"attributes\":{\"key\":\"clave\",\"value\":\"valor\"}},{\"name\":\"mediawiki\",\"description\":\"MediaWiki Product\",\"attributes\":[{\"key\":\"wikiname\",\"value\":\"Wiki to be shown\",\"description\":\"The name of the wiki\"},{\"key\":\"path\",\"value\":\"/demo\",\"description\":\"The url context to be displayed\"}]}]}";
         //String productReleasesList = "{\"productRelease\":{\"releaseNotes\":\"Tomcat server 6\",\"version\":\"6\",\"product\":{\"name\":\"tomcat\",\"description\":\"tomcat J2EE container\",\"attributes\":{\"key\":\"clave\",\"value\":\"valor\"}},\"supportedOOSS\":[{\"description\":\"Ubuntu 10.04\",\"name\":\"Ubuntu\",\"osType\":\"94\",\"version\":\"10.04\"},{\"description\":\"Debian 5\",\"name\":\"Debian\",\"osType\":\"95\",\"version\":\"5\"},{\"description\":\"Centos 2.9\",\"name\":\"Centos\",\"osType\":\"76\",\"version\":\"2.9\"}]}}\"";
         InputStream inputStream = IOUtils.toInputStream(jsonProducts);
-        Client client = mock(Client.class);
-                    
-        productReleaseSdcDaoImpl.setSystemPropertiesProvider(systemPropertiesProvider);
-        productReleaseSdcDaoImpl.setClient(client);
-            
-        WebResource webResource = mock(WebResource.class);
-        WebResource.Builder builder = mock(WebResource.Builder.class);
         
-        // when
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.SDC_SERVER_URL)).thenReturn("http://www.kk.com");
-        when(client.resource(anyString())).thenReturn(webResource);
-        when(webResource.accept(MediaType.APPLICATION_JSON)).thenReturn(builder);
-        when(builder.type(MediaType.APPLICATION_JSON)).thenReturn(builder);
         when(builder.get(InputStream.class)).thenReturn(inputStream);
         
-        List<String> products = productReleaseSdcDaoImpl.findAllProducts();
+        List<String> products = productReleaseSdcDaoImpl.findAllProducts("token", "tenant");
         
         //then
         assertNotNull(products);
@@ -93,26 +103,13 @@ public class ProductReleaseSdcDaoImplTest {
     @Test
     public void testFindAllProductReleasesOfaProduct() throws SdcException {
         //given
-        ProductReleaseSdcDaoImpl productReleaseSdcDaoImpl = new ProductReleaseSdcDaoImpl();
-        SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+       
         String productReleasesList = "{\"productRelease\":{\"releaseNotes\":\"Tomcat server 6\",\"version\":\"6\",\"product\":{\"name\":\"tomcat\",\"description\":\"tomcat J2EE container\",\"attributes\":{\"key\":\"clave\",\"value\":\"valor\"}},\"supportedOOSS\":[{\"description\":\"Ubuntu 10.04\",\"name\":\"Ubuntu\",\"osType\":\"94\",\"version\":\"10.04\"},{\"description\":\"Debian 5\",\"name\":\"Debian\",\"osType\":\"95\",\"version\":\"5\"},{\"description\":\"Centos 2.9\",\"name\":\"Centos\",\"osType\":\"76\",\"version\":\"2.9\"}]}}";
         InputStream inputStream = IOUtils.toInputStream(productReleasesList);
-        Client client = mock(Client.class);
-                    
-        productReleaseSdcDaoImpl.setSystemPropertiesProvider(systemPropertiesProvider);
-        productReleaseSdcDaoImpl.setClient(client);
-            
-        WebResource webResource = mock(WebResource.class);
-        WebResource.Builder builder = mock(WebResource.Builder.class);
-        
-        // when
-        when(systemPropertiesProvider.getProperty(SystemPropertiesProvider.SDC_SERVER_URL)).thenReturn("http://www.kk.com");
-        when(client.resource(anyString())).thenReturn(webResource);
-        when(webResource.accept(MediaType.APPLICATION_JSON)).thenReturn(builder);
-        when(builder.type(MediaType.APPLICATION_JSON)).thenReturn(builder);
+
         when(builder.get(InputStream.class)).thenReturn(inputStream);
         
-        List<ProductRelease> productReleases = productReleaseSdcDaoImpl.findAllProductReleasesOfProduct("tomcat");
+        List<ProductRelease> productReleases = productReleaseSdcDaoImpl.findAllProductReleasesOfProduct("tomcat","token", "tenant");
         
         //then
         assertNotNull(productReleases);
@@ -123,7 +120,7 @@ public class ProductReleaseSdcDaoImplTest {
     @Test
     public void testFromStringToProductReleasesTwoProductReleases() throws Exception {
         //given
-        ProductReleaseSdcDaoImpl productReleaseSdcDaoImpl = new ProductReleaseSdcDaoImpl();
+      
         String twoProductReleaseString = "{\"productRelease\":[{" +
                         "\"version\":\"0.8.1\"," +
                         "\"product\":{" +
@@ -167,7 +164,7 @@ public class ProductReleaseSdcDaoImplTest {
     @Test
     public void testFromStringToProductReleasesOneProductRelease() throws Exception {
         //given
-        ProductReleaseSdcDaoImpl productReleaseSdcDaoImpl = new ProductReleaseSdcDaoImpl();
+     
         String twoProductReleaseString = "{\"productRelease\":{" +
                         "\"version\":\"0.6.0\"," +
                         "\"product\":{" +

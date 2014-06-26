@@ -25,6 +25,7 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -71,6 +72,7 @@ public class EnvironmentInstance extends InstallableInstance {
     @Column(length = 256)
     private String blueprintName = "";
     private String taskId = "";
+
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "environmentInstance_has_tierInstances", joinColumns = { @JoinColumn(name = "environmentinstance_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) })
@@ -166,7 +168,8 @@ public class EnvironmentInstance extends InstallableInstance {
         TierPDto tierPDto = new TierPDto(tier.getName(), tier.getMaximumNumberInstances(),
                 tier.getMinimumNumberInstances(), tier.getInitialNumberInstances(), productReleasedto,
                 tier.getFlavour(), tier.getImage(), tier.getIcono(), securitygroup, tier.getKeypair(),
-                tier.getFloatingip());
+                tier.getFloatingip(), tier.getRegion ());
+      
         if (lTierInstance != null && lTierInstance.size() != 0) {
             for (TierInstance tierInstance : lTierInstance) {
 
@@ -367,4 +370,22 @@ public class EnvironmentInstance extends InstallableInstance {
 
         return envInstanceDto;
     }
+    
+    public NetworkInstance getNetworkInstanceFromNetwork (String networkName, String region) {
+
+    	for (TierInstance tierInstance: this.getTierInstances()) {
+    		if (!tierInstance.getTier().getRegion().equals (region)) {
+    			continue;
+    		}
+    		for (NetworkInstance net2: tierInstance.getNetworkInstances()) {
+				net2.getNetworkName().equals(networkName);
+					return net2;
+			}
+    		
+    	}
+        return null;
+
+    }
+
+	
 }

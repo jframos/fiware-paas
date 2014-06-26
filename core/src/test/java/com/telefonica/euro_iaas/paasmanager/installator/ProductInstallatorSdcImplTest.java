@@ -39,8 +39,9 @@ import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.OS;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
-import com.telefonica.euro_iaas.paasmanager.model.ProductType;
+
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.sdc.client.SDCClient;
@@ -51,14 +52,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.SDC_SERVER_MEDIATYPE;
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.SDC_SERVER_URL;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -84,6 +80,9 @@ public class ProductInstallatorSdcImplTest {
     private final VM host = new VM("fqn", "ip", "hostname", "domain");
     private Task task;
     private com.telefonica.euro_iaas.sdc.model.ProductInstance pInstanceSDC;
+    ClaudiaData data;
+
+    private static String SDC_SERVER_MEDIATYPE = "application/json";
 
     @Before
     public void setUp() throws Exception {
@@ -95,7 +94,6 @@ public class ProductInstallatorSdcImplTest {
         attribute = new Attribute("key", "value");
         lAttributes.add(attribute);
 
-        ProductType productType = new ProductType("type A", "Type A desc");
         tierInstance = new TierInstance();
         //productRelease = new ProductRelease("productPrueba", "1.0", "Product Prueba desc", Arrays.asList(attribute),
           //      null, Arrays.asList(os), true, productType);
@@ -107,7 +105,6 @@ public class ProductInstallatorSdcImplTest {
         productRelease.addAttribute(new Attribute("id_web_server","id_web_server"));
         productRelease.setDescription("Product Prueba desc");
         productRelease.setSupportedOOSS(Arrays.asList(os));
-        productRelease.setProductType(productType);
         productRelease.setWithArtifact(true);
 
         expectedProductInstance = new ProductInstance(productRelease, Status.INSTALLED, "vdc");
@@ -117,13 +114,12 @@ public class ProductInstallatorSdcImplTest {
         tierInstance.setVM(host);
 
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
-        when(systemPropertiesProvider.getProperty(SDC_SERVER_URL)).thenReturn("url");
-        when(systemPropertiesProvider.getProperty(SDC_SERVER_MEDIATYPE)).thenReturn("MediaType");
+       
 
         tierInstanceManager = mock(TierInstanceManager.class);
 
         productReleaseManager = mock(ProductReleaseManager.class);
-        when(productReleaseManager.load(any(String.class))).thenReturn(productRelease);
+        when(productReleaseManager.load(any(String.class),any(ClaudiaData.class))).thenReturn(productRelease);
         when(productReleaseManager.load(any(String.class), any(String.class))).thenReturn(productRelease);
 
         task = new Task();
@@ -133,14 +129,26 @@ public class ProductInstallatorSdcImplTest {
         when(pInstanceSDC.getVm()).thenReturn(new com.telefonica.euro_iaas.sdc.model.dto.VM("aa", "bb", "cc", "dd"));
 
         service = mock(ProductInstanceService.class);
-        when(service.install(Mockito.anyString(), Mockito.any(ProductInstanceDto.class), Mockito.anyString()))
+        when(service.install(Mockito.anyString(), Mockito.any(ProductInstanceDto.class), Mockito.anyString(),Mockito.anyString()))
                 .thenReturn(task);
-        when(service.load(Mockito.anyString(), Mockito.anyString())).thenReturn(pInstanceSDC);
+        when(service.load(Mockito.anyString(), Mockito.anyString(),Mockito.anyString())).thenReturn(pInstanceSDC);
 
         sdcClient = mock(SDCClient.class);
         when(sdcClient.getProductInstanceService(Mockito.anyString(), Mockito.anyString())).thenReturn(service);
 
         sDCUtil = mock(SDCUtil.class);
+        
+        data = mock(ClaudiaData.class);
+        PaasManagerUser user = mock(PaasManagerUser.class);
+        
+    
+
+        when (data.getUser()).thenReturn(user);
+        when (data.getOrg()).thenReturn("FIWARE");
+        when (data.getService()).thenReturn("deploytm");
+        when (data.getVdc()).thenReturn("60b4125450fc4a109f50357894ba2e28");
+        when (user.getToken()).thenReturn("any");
+
         /*
          * when(sDCUtil.checkTaskStatus(any(Task.class), Mockito.anyString()));
          */
@@ -160,17 +168,9 @@ public class ProductInstallatorSdcImplTest {
         List<Attribute> attributes = new ArrayList();
         attributes.add(new Attribute("dd", "ddd"));
 
-        ClaudiaData data = new ClaudiaData("org", "vdc", "service");
+        
         installator.configure(data, productInstance, attributes);
 
-        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_URL);
-        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_MEDIATYPE);
-
-        // only one product will be installed, the other one causes error.
-        // verify(productInstanceDao,
-        // times(1)).update(any(ProductInstance.class));
-        // verify(productInstanceDao, times(1)).findUniqueByCriteria(
-        // any(ProductInstanceSearchCriteria.class));
     }
 
     @Test
@@ -182,20 +182,12 @@ public class ProductInstallatorSdcImplTest {
         installator.setSDCUtil(sDCUtil);
         installator.setTierInstanceManager(tierInstanceManager);
 
-        ClaudiaData data = new ClaudiaData("org", "vdc", "");
+    
         ProductInstance installedProduct = installator.install(data, "env", tierInstance,
                 expectedProductInstance.getProductRelease(), new HashSet<Attribute>());
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);
 
-        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_URL);
-        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_MEDIATYPE);
-
-        // only one product will be installed, the other one causes error.
-        // verify(productInstanceDao,
-        // times(1)).update(any(ProductInstance.class));
-        // verify(productInstanceDao, times(1)).findUniqueByCriteria(
-        // any(ProductInstanceSearchCriteria.class));
     }
     
     @Test
@@ -211,16 +203,13 @@ public class ProductInstallatorSdcImplTest {
         
         productReleaseWithoutAttrs.setDescription("Product Prueba desc");
         productReleaseWithoutAttrs.setSupportedOOSS(Arrays.asList(os));
-        productReleaseWithoutAttrs.setProductType(new ProductType("type A", "Type A desc"));
         productReleaseWithoutAttrs.setWithArtifact(true);
         
-        ClaudiaData data = new ClaudiaData("org", "vdc", "");
+      
         ProductInstance installedProduct = installator.install(data, "env", tierInstance,
                         productReleaseWithoutAttrs, new HashSet<Attribute>());
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);
-
-        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_MEDIATYPE);
     }
     
     @Test
@@ -232,20 +221,11 @@ public class ProductInstallatorSdcImplTest {
         installator.setSDCUtil(sDCUtil);
         installator.setTierInstanceManager(tierInstanceManager);
         
-        ClaudiaData data = new ClaudiaData("org", "vdc", "");
+
         ProductInstance installedProduct = installator.install(data, "env", tierInstance,
                 expectedProductInstance.getProductRelease(), new HashSet<Attribute>());
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);
-
-        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_URL);
-        verify(systemPropertiesProvider, times(1)).getProperty(SDC_SERVER_MEDIATYPE);
-
-        // only one product will be installed, the other one causes error.
-        // verify(productInstanceDao,
-        // times(1)).update(any(ProductInstance.class));
-        // verify(productInstanceDao, times(1)).findUniqueByCriteria(
-        // any(ProductInstanceSearchCriteria.class));
     }
     
     @Test
@@ -257,7 +237,7 @@ public class ProductInstallatorSdcImplTest {
         installator.setSDCUtil(sDCUtil);
         installator.setTierInstanceManager(tierInstanceManager);
 
-        ClaudiaData data = new ClaudiaData("FIWARE", "60b4125450fc4a109f50357894ba2e28", "deploytm");
+
         expectedProductInstance.setName("deploytm-contextbrokr-1_mongos_2.2.3");
         String name = installator.getProductInstanceName(data, expectedProductInstance);
         // make verifications

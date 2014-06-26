@@ -108,8 +108,6 @@ public class ProductRelease {
     @Column(nullable = true)
     private Boolean withArtifact = false;
 
-    @ManyToOne
-    private ProductType productType = null;
 
     /**
      * Constructor.
@@ -150,32 +148,6 @@ public class ProductRelease {
         this.name = product + "-" + version;
         this.description = description;
         this.attributes = attributes;
-        attributes = new HashSet<Attribute>();
-        metadatas = new HashSet<Metadata>();
-    }
-
-    /**
-     * @param product
-     * @param version
-     * @param description
-     * @param attributes
-     * @param transitableReleases
-     * @param supportedOOSS
-     * @param withArtifact
-     * @param productType
-     */
-    public ProductRelease(String product, String version, String description, Set<Attribute> attributes,
-            List<ProductRelease> transitableReleases, List<OS> supportedOOSS, Boolean withArtifact,
-            ProductType productType) {
-        this.name = product + "-" + version;
-        this.product = product;
-        this.version = version;
-        this.description = description;
-        this.attributes = attributes;
-        this.transitableReleases = transitableReleases;
-        this.supportedOOSS = supportedOOSS;
-        this.withArtifact = withArtifact;
-        this.productType = productType;
         metadatas = new HashSet<Metadata>();
     }
 
@@ -234,19 +206,12 @@ public class ProductRelease {
             }
         } else if (!id.equals(other.id)) {
             return false;
+        } else if (!name.equals(other.name)) {
+            return false;
         }
         return true;
     }
 
-    private JSONObject formatJsonArray(JSONObject productJson) {
-        String stringProductJson = productJson.toString();
-        if (stringProductJson.contains("\"attributes\":{")) {
-            stringProductJson = stringProductJson.replace("\"}}", "\"}]}");
-            stringProductJson = stringProductJson.replace("\"attributes\":{", "\"attributes\":[{");
-
-        }
-        return JSONObject.fromObject(stringProductJson);
-    }
     
     private JSONObject formatJsonArray(JSONObject productJson, String tag) {
         String stringProductJson = productJson.toString();
@@ -399,13 +364,6 @@ public class ProductRelease {
     }
 
     /**
-     * @return the productType
-     */
-    public ProductType getProductType() {
-        return productType;
-    }
-
-    /**
      * @return the supportedOOSS
      */
     public List<OS> getSupportedOOSS() {
@@ -498,13 +456,6 @@ public class ProductRelease {
         this.product = product;
     }
 
-    /**
-     * @param productType
-     *            the productType to set
-     */
-    public void setProductType(ProductType productType) {
-        this.productType = productType;
-    }
 
     /**
      * @param supportedOOSS

@@ -24,13 +24,15 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.async.impl;
 
-import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.ENVIRONMENT_BASE_URL;
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.ENVIRONMENT_PATH;
+import static com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider.PAAS_MANAGER_URL;
 
 import java.text.MessageFormat;
 import java.util.Date;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -58,7 +60,7 @@ import com.telefonica.euro_iaas.paasmanager.util.TaskNotificator;
 
 public class TierInstanceAsyncManagerImpl implements TierInstanceAsyncManager {
 
-    private static Logger LOGGER = Logger.getLogger(TierInstanceAsyncManagerImpl.class.getName());
+    private static Logger log = LoggerFactory.getLogger(TierInstanceAsyncManagerImpl.class.getName());
 
     private TierInstanceManager tierInstanceManager;
     private TaskManager taskManager;
@@ -72,7 +74,7 @@ public class TierInstanceAsyncManagerImpl implements TierInstanceAsyncManager {
 
             tierInstanceManager.create(claudiaData, tierInstance, envInstance, propertiesProvider);
             updateSuccessTask(task, tierInstance);
-            LOGGER.info("The Tier Instance " + tierInstance.getName() + " has been CORRECTLY provisioned");
+            log.info("The Tier Instance " + tierInstance.getName() + " has been CORRECTLY provisioned");
         } catch (InfrastructureException e) {
             String errorMsg = " An error has ocurred in the process of creating VMs ";
             updateErrorTaskOnInstall(tierInstance, claudiaData.getVdc(), task, errorMsg, e);
@@ -93,7 +95,7 @@ public class TierInstanceAsyncManagerImpl implements TierInstanceAsyncManager {
 
             tierInstanceManager.update(claudiaData, tierInstance, envInstance);
             updateSuccessTask(task, tierInstance);
-            LOGGER.info("The Tier Instance " + tierInstance.getName() + " has been CORRECTLY updated");
+            log.info("The Tier Instance " + tierInstance.getName() + " has been CORRECTLY updated");
         } catch (TaskNotFoundException e) {
             String errorMsg = "Unable to update task: " + e.getTask().getHref() + ". Description: " + e.getMessage();
             updateErrorTaskOnInstall(tierInstance, claudiaData.getVdc(), task, errorMsg, e);
@@ -111,7 +113,7 @@ public class TierInstanceAsyncManagerImpl implements TierInstanceAsyncManager {
         try {
             tierInstanceManager.delete(claudiaData, tierInstance, envInstance);
             updateSuccessTask(task, tierInstance);
-            LOGGER.info("The Tier Instance " + tierInstance.getName() + " has been CORRECTLY deleted");
+            log.info("The Tier Instance " + tierInstance.getName() + " has been CORRECTLY deleted");
         } catch (InfrastructureException e) {
             String errorMsg = " An error has ocurred in the process of destroying VM ";
             updateErrorTaskOnInstall(tierInstance, claudiaData.getVdc(), task, errorMsg, e);
@@ -165,10 +167,15 @@ public class TierInstanceAsyncManagerImpl implements TierInstanceAsyncManager {
      */
     private void updateErrorTask(TierInstance tierInstance, String vdc, Task task, String message, Throwable t) {
 
-        String aiResource = MessageFormat.format(propertiesProvider.getProperty(ENVIRONMENT_BASE_URL),
-                tierInstance.getName());
+        String aiResource = getUrl(tierInstance);
         task.setResult(new TaskReference(aiResource));
         updateErrorTask(task, message, t);
+    }
+
+    private String getUrl(TierInstance tierInstance) {
+        String path = MessageFormat.format(ENVIRONMENT_PATH, tierInstance.getName());
+
+        return propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
     }
 
     /*
@@ -182,7 +189,7 @@ public class TierInstanceAsyncManagerImpl implements TierInstanceAsyncManager {
         task.setStatus(TaskStates.ERROR);
         task.setError(error);
         taskManager.updateTask(task);
-        LOGGER.info("An error occurs while executing an Tier Instance action. See task " + task.getHref()
+        log.info("An error occurs while executing an Tier Instance action. See task " + task.getHref()
                 + " for more information " + message);
     }
 

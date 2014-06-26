@@ -26,13 +26,18 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.SubNetworkDao;
+import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
+import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
 
 /**
  * @author Henar Munoz
@@ -53,7 +58,27 @@ public class SubNetworkDaoJpaImpl extends AbstractBaseDao<SubNetwork, String> im
      * Loads the subnet.
      */
     public SubNetwork load(String arg0) throws EntityNotFoundException {
-        return super.loadByField(SubNetwork.class, "name", arg0);
+        return null;
+    }
+    
+    public SubNetwork load(String name, String vdc, String region) throws EntityNotFoundException {
+    	return findByNetworkName(name, vdc,  region);
+    }
+    private SubNetwork findByNetworkName(String name, String vdc, String region) throws EntityNotFoundException {
+        Query query = getEntityManager().createQuery(
+                "select p from SubNetwork p where p.name = :name and p.vdc = :vdc and p.region = :region");
+        query.setParameter("name", name);
+        query.setParameter("vdc", vdc);
+        query.setParameter("region", region);
+        SubNetwork subNetwork= null;
+        try {
+        	subNetwork = (SubNetwork) query.getSingleResult();
+        } catch (NoResultException e) {
+            String message = " No subNetwork found in the database with id: " + name + " vdc " + vdc + " region " + region + " Exception: "
+                    + e.getMessage();
+            throw new EntityNotFoundException(SubNetwork.class, "name", name);
+        }
+        return subNetwork;
     }
 
 }

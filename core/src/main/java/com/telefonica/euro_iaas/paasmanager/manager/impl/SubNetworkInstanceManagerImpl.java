@@ -26,7 +26,8 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -45,7 +46,7 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
 
     private SubNetworkInstanceDao subNetworkInstanceDao = null;
     private NetworkClient networkClient = null;
-    private static Logger log = Logger.getLogger(SubNetworkInstanceManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(SubNetworkInstanceManagerImpl.class);
 
     /**
      * To create a network.
@@ -58,7 +59,7 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
     public SubNetworkInstance create(ClaudiaData claudiaData, SubNetworkInstance subNetwork, String region)
             throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
         log.debug("Create subnetwork instance " + subNetwork.getName());
-        if (!subNetworkInstanceDao.exists(subNetwork.getName())) {
+        if (!subNetworkInstanceDao.exists(subNetwork.getName(), claudiaData.getVdc(), region)) {
             networkClient.deploySubNetwork(claudiaData, subNetwork, region);
             log.debug("SubNetwork " + subNetwork.getName() + " in network " + subNetwork.getIdNetwork()
                     + " deployed with id " + subNetwork.getIdSubNet());
@@ -77,16 +78,21 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
      * @params subNetwork
      */
     public void delete(ClaudiaData claudiaData, SubNetworkInstance subNetworkInstance, String region)
-            throws EntityNotFoundException, InvalidEntityException, InfrastructureException {
+            throws InvalidEntityException, InfrastructureException {
         log.debug("Destroying the subnetwork " + subNetworkInstance.getName());
         try {
             networkClient.destroySubNetwork(claudiaData, subNetworkInstance, region);
-            subNetworkInstanceDao.remove(subNetworkInstance);
+            deleteInBD( subNetworkInstance);
         } catch (Exception e) {
             log.error("Error to remove the subnetwork in BD " + e.getMessage());
             throw new InvalidEntityException(subNetworkInstance);
         }
 
+    }
+    
+    public void deleteInBD( SubNetworkInstance subNetworkInstance) {
+    	log.debug("Destroying in bd the subnetwork " + subNetworkInstance.getName());
+        subNetworkInstanceDao.remove(subNetworkInstance);
     }
 
     /**
@@ -117,8 +123,8 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
     /**
      * To obtain the subnetwork.
      */
-    public SubNetworkInstance load(String name) throws EntityNotFoundException {
-        return subNetworkInstanceDao.load(name);
+    public SubNetworkInstance load(String name, String vdc, String region) throws EntityNotFoundException {
+        return subNetworkInstanceDao.load(name, vdc, region);
     }
 
     public void setNetworkClient(NetworkClient networkClient) {

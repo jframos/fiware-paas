@@ -62,11 +62,13 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
     public static String CIDR2 ="10.100.2.0/24";
     public static String CIDR_ID ="1";
     public static String ID ="8";
+    public static String REGION = "region";
+    public static String VDC = "vdc";
 
     @Test
     public void testNetworkNoSubNet() throws Exception {
 
-        NetworkInstance network = new NetworkInstance(NETWORK_NAME+1, "vdc");
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME+1, "vdc", REGION);
 
         network = networkInstanceDao.create(network);
         assertNotNull(network);
@@ -76,7 +78,7 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
         List<NetworkInstance> networks = networkInstanceDao.findAll();
         assertNotNull(networks);
 
-        NetworkInstance networkOut = networkInstanceDao.load(NETWORK_NAME+1);
+        NetworkInstance networkOut = networkInstanceDao.load(NETWORK_NAME+1,VDC, REGION);
         assertNotNull(networkOut);
         assertEquals(networkOut.getNetworkName(), NETWORK_NAME+1);
         assertEquals(networkOut.getSubNets().size(), 0);
@@ -90,14 +92,14 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
         assertNotNull(networks);
 
         int number = networks.size();
-        SubNetworkInstance subNet = new SubNetworkInstance(SUB_NETWORK_NAME, "1");
+        SubNetworkInstance subNet = new SubNetworkInstance(SUB_NETWORK_NAME,VDC, REGION);
         subNet = subNetworkInstanceDao.create(subNet);
         assertNotNull(subNet);
         assertEquals(subNet.getName(), SUB_NETWORK_NAME);
 
         Set<SubNetworkInstance> subNets = new HashSet<SubNetworkInstance>();
         subNets.add(subNet);
-        NetworkInstance network = new NetworkInstance(NETWORK_NAME+2, "vdc");
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME+2, "vdc", REGION);
         network.setSubNets(subNets);
 
         network = networkInstanceDao.create(network);
@@ -109,7 +111,7 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
         assertNotNull(networks);
         assertEquals(networks.size(), number + 1);
 
-        NetworkInstance networkOut = networkInstanceDao.load(NETWORK_NAME+2);
+        NetworkInstance networkOut = networkInstanceDao.load(NETWORK_NAME+2,VDC, REGION);
         assertNotNull(networkOut);
         assertEquals(networkOut.getNetworkName(), NETWORK_NAME+2);
         assertEquals(networkOut.getSubNets().size(), 1);
@@ -120,30 +122,23 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
 
     }
 
-    @Test
+    @Test(expected = EntityNotFoundException.class)
     public void testDestroyNetworkInstNoSubNetInst() throws Exception {
 
-        NetworkInstance network = new NetworkInstance(NETWORK_NAME+3, "vdc");
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME+3, "vdc", REGION);
         network = networkInstanceDao.create(network);
         networkInstanceDao.remove(network);
-        try {
-            networkInstanceDao.load(NETWORK_NAME+3);
-            fail("Should have thrown an EntityNotFoundException because the subnetwork instance does not exit!");
-        } catch (EntityNotFoundException e) {
-            assertNotNull(e);
-        }
-        
-
+        networkInstanceDao.load(NETWORK_NAME+3,VDC, REGION);
     }
 
     @Test(expected = EntityNotFoundException.class)
     public void testDeleteNetworkIInstanceWithSubNets() throws Exception {
 
-        SubNetworkInstance subNet = new SubNetworkInstance(SUB_NETWORK_NAME+2, "1");
+        SubNetworkInstance subNet = new SubNetworkInstance(SUB_NETWORK_NAME+2,VDC, REGION);
         subNet = subNetworkInstanceDao.create(subNet);
         Set<SubNetworkInstance> subNets = new HashSet<SubNetworkInstance>();
         subNets.add(subNet);
-        NetworkInstance network = new NetworkInstance(NETWORK_NAME+4, "vdc");
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME+4, "vdc", REGION);
         network.setSubNets(subNets);
         network = networkInstanceDao.create(network);
         assertNotNull(network);
@@ -154,31 +149,35 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
         for (SubNetworkInstance subNet2 : subNetOut) {
             subNetworkInstanceDao.remove(subNet2);
         }
-        networkInstanceDao.load(NETWORK_NAME + 4);
+        networkInstanceDao.load(NETWORK_NAME + 4,VDC, REGION);
 
     }
 
-    @Test()
-    public void testDeleteSubNet() throws InvalidEntityException, AlreadyExistsEntityException {
+    @Test(expected=EntityNotFoundException.class)
+    public void testDeleteSubNet() throws InvalidEntityException, AlreadyExistsEntityException, EntityNotFoundException {
 
-        SubNetworkInstance subNet = new SubNetworkInstance(SUB_NETWORK_NAME+3, "1");
+        SubNetworkInstance subNet = new SubNetworkInstance(SUB_NETWORK_NAME+3, VDC, REGION);
         subNet = subNetworkInstanceDao.create(subNet);
         subNetworkInstanceDao.remove(subNet); 
-        try {
-            subNetworkInstanceDao.load(SUB_NETWORK_NAME+3);
-            fail("Should have thrown an EntityNotFoundException because the subnetwork instance does not exit!");
-        } catch (EntityNotFoundException e) {
-            assertNotNull(e);
-        }
-       
+        subNetworkInstanceDao.load(SUB_NETWORK_NAME+3, VDC, REGION);
+    }
+    
+    @Test
+    public void testExistsSubNet() throws InvalidEntityException, AlreadyExistsEntityException {
+
+        SubNetworkInstance subNet = new SubNetworkInstance(SUB_NETWORK_NAME+3, VDC, REGION);
+        subNet = subNetworkInstanceDao.create(subNet);
+        boolean result = subNetworkInstanceDao.exists(SUB_NETWORK_NAME+3, VDC, REGION);
+        assertEquals (result, true);
+     
        
     }
     
     @Test
     public void testUpdateSubNetInstance() throws Exception {
 
-        NetworkInstance network = new NetworkInstance(NETWORK_NAME+5, "vdc");
-        SubNetworkInstance subnet = new SubNetworkInstance(SUB_NETWORK_NAME+4, CIDR_ID);
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME+5, "vdc", REGION);
+        SubNetworkInstance subnet = new SubNetworkInstance(SUB_NETWORK_NAME+4,VDC, REGION, CIDR_ID);
         subnet = subNetworkInstanceDao.create(subnet);
         network.addSubNet(subnet);
         network = networkInstanceDao.create(network);
@@ -196,25 +195,11 @@ public class NetworkInstandSubNetInstDaoJpaImplTest {
         }
         
         
-        network = networkInstanceDao.load(NETWORK_NAME+5);
+        network = networkInstanceDao.load(NETWORK_NAME+5,VDC, REGION);
         assertEquals(network.getSubNets().size(), 1);
         for (SubNetworkInstance subNet: network.getSubNets()) {
             assertEquals(subNet.getName(), SUB_NETWORK_NAME+4);
             assertEquals(subNet.getCidr(), CIDR2);
         }
-        
-        
-    }
-
-    /**
-     * @param productReleaseDao
-     *            the productReleaseDao to set
-     */
-    public void setNetworkInstanceDao(NetworkInstanceDao networkInstanceDao) {
-        this.networkInstanceDao = networkInstanceDao;
-    }
-
-    public void setSubNetworkInstanceDao(SubNetworkInstanceDao subNetworkInstanceDao) {
-        this.subNetworkInstanceDao = subNetworkInstanceDao;
     }
 }
