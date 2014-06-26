@@ -24,11 +24,9 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.exception;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.servlet.ServletException;
 
-public class APIException extends WebApplicationException {
+public class APIException extends ServletException {
 
     private String message;
     private String publicMessage;
@@ -38,16 +36,14 @@ public class APIException extends WebApplicationException {
 
     public APIException(Throwable cause) {
 
-        super(Response.status(new ErrorResponseCode(cause).getHttpCode()).entity(new ErrorResponseConverter(cause))
-                .type(MediaType.APPLICATION_JSON).build());
-
+        super(cause);
         this.cause = cause;
 
     }
 
     public APIException(Throwable cause, int error) {
 
-        super(Response.status(error).entity(new ErrorResponseConverter(cause)).type(MediaType.APPLICATION_JSON).build());
+        this.cause = cause;
         this.httpCode = error;
 
     }
