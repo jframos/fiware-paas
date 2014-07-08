@@ -144,6 +144,9 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
       + "+/";
     
     public static String encode(String string){
+    	if (string == null ) {
+    		return "";
+    	}
         String whole_binary = "";
         for(char c:string.toCharArray()){
             String char_to_binary = Integer.toBinaryString(c);
@@ -237,12 +240,73 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 		}
     	
 		
-    	file = file.replace("{node_name}", hostname).replace( "{server_url}" ,chefServerUrl).replace("{validation_key}", chefValidationKey).replace("{puppet_master}", puppetUrl);
+    	file = file.replace("{node_name}", hostname).replace( "{server_url}" ,chefServerUrl).
+    	       replace("{validation_key}", chefValidationKey).
+    	       replace("{networks}", writeInterfaces (tierInstance)).
+    	       replace("{if_up}", generateIfUp (tierInstance)).
+    	       replace("{puppet_master}", puppetUrl);
     	log.debug ("payload " + file);
     	return file;	
     	
     	 
     }
+    
+    public String writeInterfaces ( TierInstance tierInstance) {
+    	int networkNoPublic = tierInstance.getNetworkNumberNoPublic ();
+    	if (!(networkNoPublic > 1)) {
+    		return "";
+    	}  else {
+    		
+    		return generateFileUbuntu (networkNoPublic) + "\n" + generateFileCentos (networkNoPublic);
+    	}
+    }
+    private String generateFileUbuntu (int networkNoPublic) {
+    	String interfaces = "auto lo \n" +
+            "iface lo inet loopback\n"	;
+    	for (int i =0; i< networkNoPublic; i++ ) {
+    			interfaces = interfaces +  " auto eth" +i +" \n" +
+	       " iface eth"+ i+"  inet dhcp\n";
+	
+    	}
+    	interfaces = encode (interfaces);
+
+    	String file = "write_files: \n" +
+			  "-   encoding: b64 \n" + 
+			  "    content: | \n" +
+			  "        "+ interfaces + "\n" + 
+			  "    path: /etc/network/interfaces \n" ;
+    	return file;
+    		
+    }
+    	
+    private String generateFileCentos(int networkNoPublic) {
+    	String interfaces = "";
+    	for (int i =0; i< networkNoPublic; i++ )
+    	{
+    			interfaces = interfaces + "-   content: |\n" + 
+		        "        DEVICE=\"eth" + i + "\"\n" +
+		        "        NM_CONTROLLED=\"yes\"\n" + 
+		        "        ONBOOT=\"yes\" \n" +
+		        "        BOOTPROTO=\"dhcp\" \n" + 
+		        "        TYPE=\"Ethernet\"\n" + 
+    		    "    path: /etc/sysconfig/network-scripts/ifcfg-eth" + i +"\n"+
+    		    "    permissions: '460'\n";
+    	}
+    	
+    	return interfaces;
+    		
+    }
+    
+    private String generateIfUp(TierInstance tierInstance) {
+    	int networkNoPublic = tierInstance.getNetworkNumberNoPublic ();
+    	String interfaces = "\nbootcmd:\n";
+    	for (int i =0; i< networkNoPublic; i++ )
+    	{
+    			interfaces = interfaces + "     - ifup eth"+ i + " \n";
+    	}
+    	return interfaces;
+    }
+    
 
     private void addNetworkToTierInstance(ClaudiaData claudiaData, TierInstance tierInstance)
             throws InfrastructureException, InvalidEntityException, AlreadyExistsEntityException,

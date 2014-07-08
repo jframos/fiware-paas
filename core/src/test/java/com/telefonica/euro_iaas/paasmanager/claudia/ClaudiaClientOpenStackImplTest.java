@@ -170,6 +170,10 @@ public class ClaudiaClientOpenStackImplTest {
         VM vm = new VM();
         vm.setHostname("hotname");
         tierInstance.setVM(vm);
+        NetworkInstance network = new NetworkInstance("NETWORK", "VDC", "REGION");
+        tierInstance.addNetworkInstance(network);
+        NetworkInstance network2 = new NetworkInstance("2", "VDC", "REGION");
+        tierInstance.addNetworkInstance(network2);
         
         when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
         when(openStackRegion.getPuppetMasterEndPoint(anyString(), anyString())).thenReturn("http");
@@ -177,6 +181,7 @@ public class ClaudiaClientOpenStackImplTest {
 
         String result = claudiaClientOpenStack.getUserData(claudiaData, tierInstance);
         assertNotNull (result);
+        System.out.println (result);
 
     }
     
@@ -253,6 +258,38 @@ public class ClaudiaClientOpenStackImplTest {
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         assertEquals(tierInstance.getNetworkInstances().size(), 1);
         verify(openStackUtil).createServer(any(String.class), any(String.class), any(String.class), any(String.class));
+
+    }
+    
+    @Test
+    public void testGenerateInterfacesFileOneNet() throws Exception {
+
+        TierInstance tierInstance = new TierInstance();
+        
+        Network network = new Network("NETWORK", "VDC", "REGION");
+        NetworkInstance netInst = network.toNetworkInstance();
+        tierInstance.addNetworkInstance(netInst);
+        
+        String file = claudiaClientOpenStack.writeInterfaces(tierInstance);
+        assertNotNull(file);
+        assertEquals (file, "");
+
+    }
+    
+    @Test
+    public void testGenerateInterfacesFileTwoNet() throws Exception {
+
+        TierInstance tierInstance = new TierInstance();
+        
+        Network network = new Network("NETWORK", "VDC", "REGION");
+        NetworkInstance netInst = network.toNetworkInstance();
+        tierInstance.addNetworkInstance(netInst);
+        tierInstance.addNetworkInstance(new Network("NETWORK2", "VDC", "REGION").toNetworkInstance());
+        
+        String file = claudiaClientOpenStack.writeInterfaces(tierInstance);
+        System.out.println (file);
+        assertNotNull(file);
+        
 
     }
 

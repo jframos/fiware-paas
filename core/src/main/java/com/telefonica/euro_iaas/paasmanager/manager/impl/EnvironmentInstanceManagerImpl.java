@@ -260,7 +260,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             String newOVF = " ";
             Tier tier = tierManager.loadTierWithProductReleaseAndMetadata(tierInstance.getTier().getName(),
                     tierInstance.getTier().getEnviromentName(), tierInstance.getTier().getVdc());
-            log.debug("The tier " + tier.getName() + " is in bd");
+            log.debug("The tier " + tier.getName() + " is in bd " + tier.getRegion());
             log.debug(tier.getProductReleases().toString());
             if ((tier.getProductReleases() != null) && !(tier.getProductReleases().isEmpty())) {
 
@@ -467,7 +467,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                 Set<Tier> tiers = new HashSet();
                 for (Tier tier : env.getTiers()) {
                     Tier tierDB = tierManager.loadTierWithNetworks(tier.getName(), env.getVdc(), env.getName());
-                   
+                    log.debug ("tier " + tier.getName() + " " + env.getVdc() + " " + tier.getRegion());
+                    log.debug ("tierDB " + tierDB.getName() + " " + env.getVdc() + " " + tierDB.getRegion());
                     tierDB = updateTierDB(tierDB, tier);
                     tierDB = tierManager.update(tierDB);
 
