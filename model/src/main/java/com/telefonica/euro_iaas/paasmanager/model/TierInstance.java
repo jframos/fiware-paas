@@ -213,6 +213,28 @@ public class TierInstance extends InstallableInstance {
         return taskId;
 
     }
+    
+    public boolean isTherePublicNet () {
+    	for (NetworkInstance net: networkInstances) {
+    		if (net.getNetworkName().equals("Internet")) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    public int getNetworkNumberNoPublic () {
+    	int i = 0;
+    	if (networkInstances == null ) {
+    		return 0;
+    	}
+    	for (NetworkInstance net: networkInstances) {
+    		if (!net.getNetworkName().equals("Internet")) {
+    			i ++;
+    		}
+    	}
+    	return i;
+    }
 
     /**
      * @return the tier
