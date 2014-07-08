@@ -286,11 +286,57 @@
                     <descriptor>src/assembly/distribution.xml</descriptor>
                 </configuration>
             </plugin>
-
         </plugins>
+
+        <pluginManagement>
+            <plugins>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>2.12.1</version>
+                    <configuration>
+                        <configLocation>telefonica_checkstyle.xml</configLocation>
+                        <encoding>UTF-8</encoding>
+                        <consoleOutput>true</consoleOutput>
+                        <failsOnError>true</failsOnError>
+                        <failsOnViolations>true</failsOnViolations>
+                        <linkXRef>false</linkXRef>
+                    </configuration>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
 
 
     </build>
+
+
+    <!--
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.12.1</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>checkstyle-aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+                <configuration>
+                    <configLocation>telefonica_checkstyle.xml</configLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <failOnViolation>false</failOnViolation>
+
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+    -->
+
 
     <profiles>
         <profile>
