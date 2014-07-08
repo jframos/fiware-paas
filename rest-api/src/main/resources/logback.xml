@@ -10,7 +10,7 @@
         </rollingPolicy>
 
         <encoder>
-            <pattern>time=%d{yyyy-MM-ddTHH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %C{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -23,7 +23,7 @@
         </rollingPolicy>
 
         <encoder>
-            <pattern>time=%d{yyyy-MM-ddTHH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %C{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -37,7 +37,7 @@
         </rollingPolicy>
 
         <encoder>
-            <pattern>time=%d{yyyy-MM-ddTHH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %C{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -50,7 +50,7 @@
             <fileNamePattern>${jetty.base}/logs/authentication.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
         <encoder>
-            <pattern>time=%d{yyyy-MM-ddTHH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %C{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -62,7 +62,7 @@
             <fileNamePattern>${jetty.base}/logs/install.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
         <encoder>
-            <pattern>time=%d{yyyy-MM-ddTHH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %C{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -74,7 +74,7 @@
             <fileNamePattern>${jetty.base}/logs/util.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
         <encoder>
-            <pattern>time=%d{yyyy-MM-ddTHH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %C{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -86,7 +86,7 @@
             <fileNamePattern>${jetty.base}/logs/infrastructure.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
         <encoder>
-            <pattern>time=%d{yyyy-MM-ddTHH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %C{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
