@@ -319,7 +319,7 @@ class EnvironmentRequest:
 
         if isinstance(tiers_string, list):
             for tier_string in tiers_string:
-                tier = Tier(tier_string['name'], self.image)
+                tier = Tier(tier_string['name'], self.image, tier_string['region'])
                 try:
                     products_string = tier_string['productReleaseDtos']
 

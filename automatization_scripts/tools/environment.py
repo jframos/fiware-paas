@@ -60,7 +60,7 @@ class Environment:
     def to_string(self):
         var = str(self.name).upper()
         for tier in self.tiers:
-            var = var + '\t' + tier.name
+            var = var + '\t' + tier.name + '\t' + tier.region
             for product_release in tier.products:
                 var = var + '\t' + product_release.product + '\t' + product_release.version
         print var
