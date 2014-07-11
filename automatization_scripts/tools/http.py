@@ -74,6 +74,12 @@ def get_content_type(filename):
 
 def __do_http_req(method, url, headers, payload):
     parsed_url = urlparse(url)
+    con = httplib.HTTPSConnection(parsed_url.netloc)
+    con.request(method, parsed_url.path, payload, headers)
+    return con.getresponse()
+
+def __do_http_req_no_https(method, url, headers, payload):
+    parsed_url = urlparse(url)
     con = httplib.HTTPConnection(parsed_url.netloc)
     con.request(method, parsed_url.path, payload, headers)
     return con.getresponse()
@@ -106,6 +112,8 @@ def __put(url, headers):
 def post(url, headers, payload):
     return __do_http_req("POST", url, headers, payload)
 
+def post_nohttps(url, headers, payload):
+    return __do_http_req_no_https("POST", url, headers, payload)
 
 def get_token(keystone_url, tenant, user, password):
 
@@ -115,7 +123,7 @@ def get_token(keystone_url, tenant, user, password):
                'Accept': "application/xml"}
     payload = '{"auth":{"tenantName":"' + tenant + '","passwordCredentials":{"username":"' + user + '","password":"' + password + '"}}}'
     print payload
-    response = post(keystone_url, headers, payload)
+    response = post_nohttps(keystone_url, headers, payload)
     data = response.read()
     print data
 

@@ -28,6 +28,7 @@ package com.telefonica.euro_iaas.paasmanager.model;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -55,25 +56,27 @@ public class Environment {
     public static final String ORG_FIELD = "org";
     public static final String VDC_FIELD = "vdc";
     public static final String ENVIRONMENT_NAME_FIELD = "name";
+    public static final int COLUMN_LENGHT = 256;
+    public static final int LONG_COLUMN_LENGHT = 90000;
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false, length = 256)
+    @Column(nullable = false, length = COLUMN_LENGHT)
     private String name;
 
-    @Column(nullable = false, length = 256)
+    @Column(nullable = false, length = COLUMN_LENGHT)
     private String org;
 
-    @Column(length = 256)
+    @Column(length = COLUMN_LENGHT)
     private String description;
 
-    @Column(length = 256)
+    @Column(length = COLUMN_LENGHT)
     private String vdc;
 
-    @Column(length = 90000)
+    @Column(length = LONG_COLUMN_LENGHT)
     private String ovf;
 
     @ManyToMany
@@ -275,8 +278,8 @@ public class Environment {
     }
 
 
-    public HashMap<String, Set<String>> getNetworksRegion() {
-        HashMap<String, Set<String>> map = new HashMap<String, Set<String>>();
+    public Map<String, Set<String>> getNetworksRegion() {
+        Map<String, Set<String>> map = new HashMap<String, Set<String>>();
         Set<String> regions;
         for (Tier tier : this.getTiers()) {
             for (Network net : tier.getNetworks()) {
@@ -295,7 +298,7 @@ public class Environment {
 
     public Set<String> getFederatedNetworks() {
         Set<String> nets = new HashSet<String>();
-        HashMap<String, Set<String>> map = getNetworksRegion();
+        Map<String, Set<String>> map = getNetworksRegion();
         Iterator<Entry<String, Set<String>>> iterator = map.entrySet().iterator();
         while (iterator.hasNext()) {
             Entry<String, Set<String>> d = iterator.next();
@@ -312,9 +315,7 @@ public class Environment {
         Set<String> map = new HashSet<String>();
         for (Tier tier : this.getTiers()) {
             map.add(tier.getRegion());
-            System.out.println ("adding " + tier.getRegion() );
         }
-        System.out.println ("Number of regions " + map.size());
         return map.size();
     }
 

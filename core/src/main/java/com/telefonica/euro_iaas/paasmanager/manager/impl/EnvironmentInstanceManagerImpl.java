@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -214,9 +215,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
     	log.info(" Update the federated network ");
         Set<String> fedeNetwork = environment.getFederatedNetworks();
         String range = null;
-        
-        
-        HashMap<String, Set<String>> map = environment.getNetworksRegion();
+               
+        Map<String, Set<String>> map = environment.getNetworksRegion();
 
         for (String net: fedeNetwork) {
         	log.debug ("Updating tier for net " + net);
