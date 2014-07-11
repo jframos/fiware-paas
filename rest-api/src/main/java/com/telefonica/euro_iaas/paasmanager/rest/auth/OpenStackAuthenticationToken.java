@@ -93,14 +93,24 @@ public class OpenStackAuthenticationToken {
      */
     private long threshold;
     /**
-     * The Offset between the local time and the remote Date
+     * The Offset between the local time and the remote Date.
      */
     private static long offset;
-
+    /**
+     * The default constructor of the class OpenStackAuthenticationToken.
+     *
+     * @param params The array of params with the values of url, tenant, user and password,
+     *               together with the httpClient and threshold.
+     */
     OpenStackAuthenticationToken(ArrayList<Object> params) {
         initialize(params);
     }
 
+    /**
+     * Function to initialize the data structure.
+     *
+     * @param params    List of parameters to initialize.
+     */
     public void initialize(ArrayList<Object> params) {
         this.token = "";
         this.tenantId = "";
@@ -116,6 +126,11 @@ public class OpenStackAuthenticationToken {
         offset = 0;
     }
 
+    /**
+     * Return a valid token if it is null or it is older than 24h.
+     *
+     * @return  The new credential (tenantid and token).
+     */
     public String[] getCredentials() {
         String[] credential = new String[2];
 
@@ -146,6 +161,12 @@ public class OpenStackAuthenticationToken {
         extractData(response);
     }
 
+    /**
+     * Analyze the response of the keystone and obtain the corresponding
+     * information related to date, tenant and token id.
+     *
+     * @param response
+     */
     protected void extractData(ArrayList<Object> response) {
         String payload = (String) response.get(0);
 
@@ -257,7 +278,8 @@ public class OpenStackAuthenticationToken {
 
             localDate = new Date();
 
-            if ((response.getStatusLine().getStatusCode() != 201) && (response.getStatusLine().getStatusCode() != 200)) {
+            if ((response.getStatusLine().getStatusCode() != 201)
+                    && (response.getStatusLine().getStatusCode() != 200)) {
 
                 String exceptionMessage = "Failed : HTTP error code : (" + postRequest.getURI().toString() + ")"
                         + response.getStatusLine().getStatusCode() + " message: " + response;

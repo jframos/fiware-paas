@@ -90,7 +90,7 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
     /**
      * Thread to recover a valid X-Auth-Token each 24 hour.
      */
-    OpenStackAuthenticationToken oSAuthToken = null;
+    private OpenStackAuthenticationToken oSAuthToken;
 
     /**
      * Jersey client used to validates token to OpenStack.
@@ -101,7 +101,9 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
      * Default constructor.
      */
     public OpenStackAuthenticationProvider() {
+
         client = Client.create();
+        oSAuthToken = null;
     }
 
     /*
@@ -205,7 +207,9 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
      * @param authenticateResponse
      * @return
      */
-    private PaasManagerUser validateUserToken(String token, String tenantId, AuthenticateResponse authenticateResponse) {
+    private PaasManagerUser validateUserToken(String token, String tenantId,
+                                              AuthenticateResponse authenticateResponse) {
+
         AuthenticateResponse responseAuth = authenticateResponse;
 
         if (!tenantId.equals(responseAuth.getToken().getTenant().getId())) {
