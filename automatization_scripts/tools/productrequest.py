@@ -39,16 +39,19 @@ class ProductRequest:
         self.user = user
         self.password = password
         self.tenant = tenant
-        #self.token = self.__get__token()
+        self.vdc= tenant
+        self.token = self.__get__token()
         self.products = []
-        print "init"
+
 
     def __get__token(self):
-        self.token = http.get_token(self.keystone_url + '/tokens', self.tenant, self.user, self.password)
+        return http.get_token(self.keystone_url + '/tokens', self.tenant, self.user, self.password)
 
     def add_product(self, product_name, product_description, attributes, metadatas):
+        print 'add_product'
         url = "%s/%s" % (self.sdc_url, "catalog/product")
-        headers = {'Content-Type': 'application/xml'}
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+                   'Accept': "application/json", 'Content-Type': 'application/xml'}
 
         attributes = self.__process_attributes(attributes)
         metadatas = self.__process_attributes(metadatas)
@@ -75,7 +78,8 @@ class ProductRequest:
 
     def add_product_release(self, product_name, version):
         url = "%s/%s/%s/%s" % (self.sdc_url, "catalog/product", product_name, "release")
-        headers = {'Content-Type': 'application/xml'}
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+                   'Accept': "application/json", 'Content-Type': 'application/xml'}
 
         #  product = self.get_product_info (product_name)
         product = Product(product_name)
@@ -106,7 +110,8 @@ class ProductRequest:
     def get_product_release(self, product_name):
         #headers={'X-Auth-Token': self.token,
         #         'Accept': "application/json"}
-        headers = {'Accept': "application/json"}
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+                   'Accept': "application/json"}
         #get product release
         url = "%s/%s/%s/%s" % (self.sdc_url, "catalog/product", product_name, "release" )
 
@@ -123,9 +128,8 @@ class ProductRequest:
             return data['productRelease']['version']
 
     def get_product_release_info(self, product_name, product_version):
-        #headers={'X-Auth-Token': self.token,
-        #         'Accept': "application/json"}
-        headers = {'Accept': "application/json"}
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+                   'Accept': "application/json"}
         #get product release
         url = "%s/%s/%s/%s/%s" % (self.sdc_url, "catalog/product", product_name, "release", product_version )
 
@@ -151,7 +155,8 @@ class ProductRequest:
     def get_product_info(self, product_name):
         #headers={'X-Auth-Token': self.token,
         #         'Accept': "application/json"}
-        headers = {'Accept': "application/json"}
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+                   'Accept': "application/json"}
         #get product release
         url = "%s/%s/%s" % (self.sdc_url, "catalog/product", product_name )
 
@@ -178,7 +183,8 @@ class ProductRequest:
     def delete_product_release(self, product_name, version):
         #headers={'X-Auth-Token': self.token,
         #         'Accept': "application/json"}
-        headers = {'Accept': "application/json"}
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+                   'Accept': "application/json"}
         #get product release
         url = "%s/%s/%s/%s/%s" % (self.sdc_url, "catalog/product", product_name, "release", version)
 
@@ -198,7 +204,8 @@ class ProductRequest:
             self.delete_product_release(product_name, version);
             #headers={'X-Auth-Token': self.token,
         #         'Accept': "application/json"}
-        headers = {'Accept': "application/json"}
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+                   'Accept': "application/json"}
         #get product release
         url = "%s/%s" % (self.sdc_url, "catalog/product/" + product_name)
         response = http.delete(url, headers)
@@ -209,7 +216,8 @@ class ProductRequest:
 
     def get_products(self):
         url = "%s/%s" % (self.sdc_url, "catalog/product")
-        headers = {'Accept': "application/json"}
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+                   'Accept': "application/json"}
         #headers={'X-Auth-Token': self.token,
         #         'Accept': "application/json"}
         response = http.get(url, headers)
@@ -256,15 +264,18 @@ class ProductRequest:
     ##
     def get_products(self):
         url = "%s/%s" % (self.sdc_url, "catalog/product")
+        print url
+        print self.token
         #headers={'X-Auth-Token': self.token,
         #     'Accept': "application/json"}
-        headers = {'Accept': "application/json"}
-        print url
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+                   'Accept': "application/json"}
+        print headers
         response = http.get(url, headers)
 
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.
         if response.status != 200:
-            print 'error to obtain the token'
+            print 'error to obtain the the list of product' + str(response.status)
             sys.exit(1)
         else:
             data = json.loads(response.read())
