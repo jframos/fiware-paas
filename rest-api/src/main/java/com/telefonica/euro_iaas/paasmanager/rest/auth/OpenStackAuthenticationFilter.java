@@ -54,7 +54,7 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 /**
  * The Class OpenStackAuthenticationFilter.
  * 
- * @author jesus movilla
+ * @author fernandolopezaguilar
  */
 public class OpenStackAuthenticationFilter extends GenericFilterBean {
 

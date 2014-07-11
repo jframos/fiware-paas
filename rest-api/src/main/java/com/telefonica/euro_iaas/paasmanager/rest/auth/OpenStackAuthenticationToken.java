@@ -46,6 +46,8 @@ import com.telefonica.euro_iaas.paasmanager.rest.exception.AuthenticationConnect
 import com.telefonica.euro_iaas.paasmanager.rest.util.CompareDates;
 
 /**
+ * Class to obtain a valid token from the OpenStack.
+ *
  * @author fernandolopezaguilar
  */
 public class OpenStackAuthenticationToken {
@@ -129,7 +131,7 @@ public class OpenStackAuthenticationToken {
     /**
      * Return a valid token if it is null or it is older than 24h.
      *
-     * @return  The new credential (tenantid and token).
+     * @return  The new credential (tenant id and token).
      */
     public String[] getCredentials() {
         String[] credential = new String[2];

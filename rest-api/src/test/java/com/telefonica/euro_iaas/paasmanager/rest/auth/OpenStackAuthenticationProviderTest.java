@@ -81,7 +81,7 @@ public class OpenStackAuthenticationProviderTest {
         OpenStackAuthenticationProvider openStackAuthenticationProvider = new OpenStackAuthenticationProvider();
         openStackAuthenticationProvider.setSystemPropertiesProvider(systemPropertiesProvider);
         openStackAuthenticationToken = mock(OpenStackAuthenticationToken.class);
-        openStackAuthenticationProvider.oSAuthToken = openStackAuthenticationToken;
+        openStackAuthenticationProvider.setoSAuthToken(openStackAuthenticationToken);
         Client client = mock(Client.class);
         openStackAuthenticationProvider.setClient(client);
         WebResource webResource = mock(WebResource.class);
