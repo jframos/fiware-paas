@@ -40,7 +40,7 @@ import javax.ws.rs.core.MediaType;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
-/*
+/**
  * Provides a rest api to works with Abstract Tier.
  * @author Henar Mu�oz Frutos
  */
@@ -49,9 +49,9 @@ public interface AbstractTierResource {
     /**
      * Add the selected Tier for the abstract enviornmetn into the PaaS Manager catalog.
      * 
-     * @param TierDto
+     * @param tierDto
      *            <ol>
-     *            <li>The TierDto: contains the information about the tier</li>
+     *            <li>The tierDto: contains the information about the tier</li>
      *            </ol>
      * @param org
      *            The organization where the abstract template belongs
@@ -61,8 +61,8 @@ public interface AbstractTierResource {
 
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    void insert(@PathParam("org") String org, @PathParam("environment") String environment, TierDto TierDto)
-            throws APIException;
+    void insert(@PathParam("org") String org, @PathParam("environment") String environment, TierDto tierDto)
+        throws APIException;
 
     /**
      * Retrieve all Tiers available created in the system.
@@ -106,9 +106,9 @@ public interface AbstractTierResource {
             @PathParam("tierName") String tierName) throws APIException;
 
     /**
-     * Update the Tier in DB
+     * Update the Tier in DB.
      * 
-     * @param TierDto
+     * @param tierDto
      *            the product name
      */
 
@@ -116,6 +116,6 @@ public interface AbstractTierResource {
     @Path("/{tierName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void update(@PathParam("org") String org, @PathParam("environment") String environment,
-            @PathParam("tierName") String tierName, TierDto TierDto) throws APIException;
+            @PathParam("tierName") String tierName, TierDto tierDto) throws APIException;
 
 }
