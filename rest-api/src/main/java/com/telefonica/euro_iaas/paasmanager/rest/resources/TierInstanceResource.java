@@ -44,12 +44,14 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
+/**
+ * Provides the way to find some tasks stored in the system related to Tier instance resource.
+ */
 public interface TierInstanceResource {
 
     /**
      * Creates a new TierInstance.
      */
-
     @POST
     // @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -57,13 +59,19 @@ public interface TierInstanceResource {
             @PathParam("environmentInstance") String environment, TierDto tierDto,
             @HeaderParam("callback") String callback) throws APIException;
 
+    /**
+     * Update a TierInstance.
+     */
     @PUT
     // @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Task update(@PathParam("org") String org, @PathParam("vdc") String vdc,
+    Task update(@PathParam("org") String org, @PathParam("vdc") String vdc,
             @PathParam("environmentInstance") String environment, TierInstanceDto tierInstanceDto,
             @HeaderParam("callback") String callback);
 
+    /**
+     * Find all Tier instances of a environment instance.
+     */
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<TierInstanceDto> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
@@ -74,7 +82,6 @@ public interface TierInstanceResource {
     /**
      * Retrieve the selected tierInstance.
      */
-
     @GET
     @Path("/{name}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -84,13 +91,12 @@ public interface TierInstanceResource {
     /**
      * Create an environment Instance from a payload.
      */
-
     @DELETE
     @Path("/{tierInstance}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     Task removeTierInstance(@PathParam("org") String org, @PathParam("vdc") String vdc,
             @PathParam("environmentInstance") String environmentInstance,
             @PathParam("tierInstance") String tierInstances, @HeaderParam("callback") String callback)
-            throws APIException;
+        throws APIException;
 
 }

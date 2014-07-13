@@ -43,6 +43,9 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstancePDto;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
+/**
+ * Class to manage environment instance.
+ */
 public interface EnvironmentInstanceResource {
 
     /**
@@ -71,8 +74,6 @@ public interface EnvironmentInstanceResource {
      *            the file to order the search (id by default <i>nullable</i>)
      * @param orderType
      *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
-     * @param status
-     *            the status the product (<i>nullable</i>)
      * @param status
      *            the status the product (<i>nullable</i>)
      * @return the retrieved environment instances.
