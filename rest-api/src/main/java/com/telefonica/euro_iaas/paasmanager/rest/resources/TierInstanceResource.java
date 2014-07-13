@@ -89,7 +89,7 @@ public interface TierInstanceResource {
             @PathParam("name") String name);
 
     /**
-     * Create an environment Instance from a payload.
+     * Delete an environment Instance from a payload.
      */
     @DELETE
     @Path("/{tierInstance}")

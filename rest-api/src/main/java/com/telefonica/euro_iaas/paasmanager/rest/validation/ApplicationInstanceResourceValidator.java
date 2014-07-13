@@ -26,9 +26,7 @@ package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.ApplicationInstanceNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.exception.EnvironmentInstanceNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidApplicationReleaseException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
 
 /**
@@ -39,14 +37,14 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
 public interface ApplicationInstanceResourceValidator {
 
     /**
-     * Verify if the ApplicationInstanceDto is valid could be inserted
+     * Verify if the ApplicationInstanceDto is valid could be inserted.
      * 
      * @param ApplicationInstanceDto
-     * @throws EnvironmentInstanceNotFoundException
+     * @throws ApplicationInstanceNotFoundException
      *             , InvalidApplicationReleaseException
      */
     void validateInstall(String vdc, String environmentInstance, ApplicationReleaseDto applicationReleaseDto)
-            throws InvalidApplicationReleaseException, ApplicationInstanceNotFoundException;
+        throws InvalidApplicationReleaseException, ApplicationInstanceNotFoundException;
 
     /**
      * 
@@ -55,5 +53,6 @@ public interface ApplicationInstanceResourceValidator {
      * @param applicationName
      * @throws InvalidEntityException
      */
-   void validateUnInstall(String vdc, String environmentInstance, String applicationName) throws InvalidEntityException ;
+    void validateUnInstall(String vdc, String environmentInstance, String applicationName)
+        throws InvalidEntityException;
 }

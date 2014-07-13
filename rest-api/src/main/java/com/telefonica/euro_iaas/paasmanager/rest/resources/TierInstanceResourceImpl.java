@@ -135,6 +135,9 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
 
     }
 
+    /**
+     * Retrieve the selected tierInstance.
+     */
     public TierInstanceDto load(String vdc, String environmentInstanceName, String name) {
         log.debug("Loading tierinstance " + name + " from environment " + environmentInstanceName);
         TierInstanceSearchCriteria criteria = new TierInstanceSearchCriteria();
@@ -150,6 +153,9 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
 
     }
 
+    /**
+     * Update a TierInstance.
+     */
     public Task update(String org, String vdc, String environmentInstance, TierInstanceDto tierInstanceDto,
             String callback) {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentInstance);
@@ -174,6 +180,9 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
         return task;
     }
 
+    /**
+     * Delete an environment Instance from a payload.
+     */
     public Task removeTierInstance(String org, String vdc, String environmentInstance, String tierInstanceName,
             String callback) throws APIException {
 
@@ -210,6 +219,9 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
         return task;
     }
 
+    /**
+     * Creates a new TierInstance.
+     */
     public Task insert(String org, String vdc, String environmentName, TierDto tierDto, String callback)
         throws APIException {
 
@@ -399,6 +411,9 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
         return rTierInstance;
     }
 
+    /**
+     * Get the user credentials.
+     */
     public PaasManagerUser getCredentials() {
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
             return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
