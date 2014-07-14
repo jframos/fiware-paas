@@ -31,14 +31,22 @@ import javax.ws.rs.core.Response;
  */
 public class ErrorResponseCode {
 
-    Integer httpCode;
+    private Integer httpCode;
 
+    /**
+     * Constructor.
+     * @param cause
+     */
     public ErrorResponseCode(Throwable cause) {
 
         ErrorCode errorCode = ErrorCode.find(cause.toString());
         this.httpCode = errorCode.getHttpCode();
     }
 
+    /**
+     * Get the HTTP Code.
+     * @return
+     */
     public Response.Status getHttpCode() {
 
         return Response.Status.fromStatusCode(httpCode);

@@ -70,24 +70,31 @@ import com.telefonica.euro_iaas.paasmanager.rest.validation.ApplicationInstanceR
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentInstanceResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
+/**
+ * Test the class ApplicationInstanceResourceImpl.
+ */
 public class ApplicationInstanceResourceImplTest {
 
-	public ApplicationInstanceResourceImpl applicationInstanceResource;
-    public EnvironmentInstanceManager environmentInstanceManager;
-    public ApplicationReleaseManager applicationReleaseManager;
-    public ApplicationInstanceManager applicationInstanceManager;
-    public ApplicationInstanceAsyncManager applicationInstanceAsyncManager;
-    public SystemPropertiesProvider systemPropertiesProvider;
-    public EnvironmentInstanceAsyncManager environmentInstanceAsyncManager;
-    public ApplicationInstanceResourceValidator validator;
-    public String vdc = "vdc";
-    public String org = "org";
-    public String callback = "callback";
-    public Environment environment;
-    public Set<Tier> tiers;
-    public TaskManager taskManager;
-    public Task task;
+    private ApplicationInstanceResourceImpl applicationInstanceResource;
+    private EnvironmentInstanceManager environmentInstanceManager;
+    private ApplicationReleaseManager applicationReleaseManager;
+    private ApplicationInstanceManager applicationInstanceManager;
+    private ApplicationInstanceAsyncManager applicationInstanceAsyncManager;
+    private SystemPropertiesProvider systemPropertiesProvider;
+    private EnvironmentInstanceAsyncManager environmentInstanceAsyncManager;
+    private ApplicationInstanceResourceValidator validator;
+    private String vdc = "vdc";
+    private String org = "org";
+    private String callback = "callback";
+    private Environment environment;
+    private Set<Tier> tiers;
+    private TaskManager taskManager;
+    private Task task;
 
+    /**
+     * Initialize the Unit Test.
+     * @throws Exception
+     */
     @Before
     public void setUp() throws Exception {
     	applicationInstanceResource = new ApplicationInstanceResourceImpl ();
@@ -115,7 +122,10 @@ public class ApplicationInstanceResourceImplTest {
 
     }
 
-
+    /**
+     * Test the operation of installing an application.
+     * @throws Exception
+     */
     @Test
     public void testInstallApplication() throws Exception {
     	
@@ -137,13 +147,20 @@ public class ApplicationInstanceResourceImplTest {
         assertEquals (task.getStatus(), TaskStates.RUNNING);
 
     }
-    
+
+    /**
+     * Test the operation of finding all application instance resource (not implemented).
+     */
     @Test
     public void testFindAll () {
     	//applicationInstanceResource.findAll(page, pageSize, orderBy, orderType, status, vdc, environmentInstance, productInstanceName, applicationName);
     	
     }
-    
+
+    /**
+     * Test the operation of find a specific application instance.
+     * @throws EntityNotFoundException
+     */
     @Test
     public void testLoad () throws EntityNotFoundException {
     	ApplicationInstance app = new ApplicationInstance ();
@@ -152,7 +169,11 @@ public class ApplicationInstanceResourceImplTest {
     	assertNotNull (apps);
     	
     }
-    
+
+    /**
+     * Test the operation of uninstall an applicaiton.
+     * @throws EntityNotFoundException
+     */
     @Test
     public void testUninstall() throws EntityNotFoundException {
     	EnvironmentInstance env = new EnvironmentInstance ();

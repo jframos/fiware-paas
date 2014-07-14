@@ -39,39 +39,45 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
-import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.Limits;
-import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierInstanceDto;
-import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
+/**
+ * Test the EnvironmentInstanceResourceValidatorImpl class.
+ */
 public class EnvironmentInstanceResourceValidatorImplTest {
-	EnvironmentInstanceResourceValidatorImpl environmentInstanceResourceValidator;
-	ResourceValidator resourceValidator;
-	
-	@Before
-	public void setUp () throws  com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
-		environmentInstanceResourceValidator = new EnvironmentInstanceResourceValidatorImpl();
-		resourceValidator = mock(ResourceValidator.class);
-		environmentInstanceResourceValidator.setResourceValidator(resourceValidator);
-  
-		Mockito.doNothing().when(resourceValidator).validateName(anyString());
-		Mockito.doNothing().when(resourceValidator).validateDescription(anyString());
-	}
+    private EnvironmentInstanceResourceValidatorImpl environmentInstanceResourceValidator;
+    private ResourceValidator resourceValidator;
 
+    /**
+     * Initialize the Unit Test.
+     * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
+     */
+    @Before
+    public void setUp() throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+        environmentInstanceResourceValidator = new EnvironmentInstanceResourceValidatorImpl();
+        resourceValidator = mock(ResourceValidator.class);
+        environmentInstanceResourceValidator.setResourceValidator(resourceValidator);
+
+        Mockito.doNothing().when(resourceValidator).validateName(anyString());
+        Mockito.doNothing().when(resourceValidator).validateDescription(anyString());
+    }
+
+    /**
+     * Test the instance number on the creation operation without any exception.
+     * @throws Exception
+     */
     @Test
     public void shouldValidateInstanceNumberOnCreateWithoutException() throws Exception {
         // given
-        
+
         QuotaClient quotaClient = mock(QuotaClient.class);
         ((EnvironmentInstanceResourceValidatorImpl) environmentInstanceResourceValidator).setQuotaClient(quotaClient);
         ClaudiaData claudiaData = mock(ClaudiaData.class);
@@ -100,11 +106,14 @@ public class EnvironmentInstanceResourceValidatorImplTest {
         verify(quotaClient).getLimits(claudiaData, "region");
     }
 
+    /**
+     * Test the creation of an instance when we have no more floating IPs available.
+     * @throws Exception
+     */
     @Test
-    public void shouldValidateInstanceNumberOnCreateAndReturnQuotaExceedByFloatingsIps()
-            throws Exception {
+    public void shouldValidateInstanceNumberOnCreateAndReturnQuotaExceedByFloatingsIps() throws Exception {
         // given
-       
+
         QuotaClient quotaClient = mock(QuotaClient.class);
         ((EnvironmentInstanceResourceValidatorImpl) environmentInstanceResourceValidator).setQuotaClient(quotaClient);
         ClaudiaData claudiaData = mock(ClaudiaData.class);
@@ -138,11 +147,19 @@ public class EnvironmentInstanceResourceValidatorImplTest {
 
     }
 
+    /**
+     * Test that the validation return OK when there is no limits assigned.
+     * @throws AlreadyExistEntityException
+     * @throws InfrastructureException
+     * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
+     */
     @Test
-    public void shouldReturnValidateOKWhenLimitsValuesDontExist() throws 
-             AlreadyExistEntityException, InfrastructureException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+    public void shouldReturnValidateOKWhenLimitsValuesDontExist()
+        throws AlreadyExistEntityException, InfrastructureException,
+               com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+
         // given
-        
+
         QuotaClient quotaClient = mock(QuotaClient.class);
         ((EnvironmentInstanceResourceValidatorImpl) environmentInstanceResourceValidator).setQuotaClient(quotaClient);
         ClaudiaData claudiaData = mock(ClaudiaData.class);
@@ -170,12 +187,19 @@ public class EnvironmentInstanceResourceValidatorImplTest {
 
     }
 
+    /**
+     * Test the validation of resources when the maximum limits of instances do not exist.
+     * @throws AlreadyExistEntityException
+     * @throws InfrastructureException
+     * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
+     */
     @Test
     public void shouldReturnValidateOKWhenLimitMaxTotalInstancesValuesDontExistEgEssexInstance()
-            throws  AlreadyExistEntityException,
-            InfrastructureException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+        throws AlreadyExistEntityException, InfrastructureException,
+               com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+
         // given
-        
+
         QuotaClient quotaClient = mock(QuotaClient.class);
         ((EnvironmentInstanceResourceValidatorImpl) environmentInstanceResourceValidator).setQuotaClient(quotaClient);
         ClaudiaData claudiaData = mock(ClaudiaData.class);
@@ -204,12 +228,19 @@ public class EnvironmentInstanceResourceValidatorImplTest {
 
     }
 
+    /**
+     * Test that the new instance cannot be created due to quota exceeded.
+     * @throws AlreadyExistEntityException
+     * @throws InfrastructureException
+     * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
+     */
     @Test
     public void shouldValidateInstanceNumberOnCreateAndReturnQuotaExceedByInstancesUsed()
-            throws AlreadyExistEntityException,
-            InfrastructureException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+        throws AlreadyExistEntityException, InfrastructureException,
+               com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+
         // given
-       
+
         QuotaClient quotaClient = mock(QuotaClient.class);
         ((EnvironmentInstanceResourceValidatorImpl) environmentInstanceResourceValidator).setQuotaClient(quotaClient);
         ClaudiaData claudiaData = mock(ClaudiaData.class);
@@ -243,10 +274,14 @@ public class EnvironmentInstanceResourceValidatorImplTest {
 
     }
 
+    /**
+     * Test that the information associated to a tier is valid.
+     * @throws Exception
+     */
     @Test
     public void shouldValidateTierWithValidTierDto() throws Exception {
         // given
-               TierDto tierDto = new TierDto();
+        TierDto tierDto = new TierDto();
         tierDto.setName("name");
         tierDto.setFlavour("flavour");
         tierDto.setImage("image");
@@ -260,11 +295,17 @@ public class EnvironmentInstanceResourceValidatorImplTest {
         assertTrue(true);
     }
 
+    /**
+     * Test that it can launch an exception when the maximum number of security group was reached.
+     * @throws InfrastructureException
+     * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
+     */
     @Test
-    public void shouldThrowExceptionWithMaxSecurityGroupsAreExceeded() throws InfrastructureException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
-             {
+    public void shouldThrowExceptionWithMaxSecurityGroupsAreExceeded()
+        throws InfrastructureException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+
         // given
-       
+
         QuotaClient quotaClient = mock(QuotaClient.class);
         ((EnvironmentInstanceResourceValidatorImpl) environmentInstanceResourceValidator).setQuotaClient(quotaClient);
         ClaudiaData claudiaData = mock(ClaudiaData.class);

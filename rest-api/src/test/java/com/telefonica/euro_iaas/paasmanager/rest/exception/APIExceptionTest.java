@@ -30,8 +30,14 @@ import org.junit.Test;
 
 import com.telefonica.euro_iaas.paasmanager.exception.EntityNotFoundException;
 
+/**
+ * Test the class APIException.
+ */
 public class APIExceptionTest {
 
+    /**
+     * Check that the operation should return an error core after hibernate exception.
+     */
     @Test
     public void shouldReturnErrorCode10AfterHibernateException() {
         // given
@@ -49,6 +55,9 @@ public class APIExceptionTest {
         assertEquals(ErrorCode.HIBERNATE.getCode(), apiException.getCode());
     }
 
+    /**
+     * Check that the operation should return an error after some type of connection exception.
+     */
     @Test
     public void shouldReturnError20AfterConnectionException() {
         // given
@@ -62,6 +71,9 @@ public class APIExceptionTest {
         assertEquals(ErrorCode.DB_CONNECTION.getCode(), apiException.getCode());
     }
 
+    /**
+     * Chack that the operation should return a default error after some type of generic exception.
+     */
     @Test
     public void shouldReturnDefaultErrorAfterGenericException() {
         // given
@@ -75,6 +87,9 @@ public class APIExceptionTest {
 
     }
 
+    /**
+     * Check that the operation should parse entity not found.
+     */
     @Test
     public void shouldParseEntityNotFound() {
         // given
