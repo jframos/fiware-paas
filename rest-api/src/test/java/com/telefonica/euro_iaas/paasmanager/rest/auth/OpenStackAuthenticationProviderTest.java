@@ -52,12 +52,18 @@ import com.sun.jersey.api.client.WebResource;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
+/**
+ * Test class to check the OpenStackAuthenticationProvider.
+ */
 public class OpenStackAuthenticationProviderTest {
 
-    SystemPropertiesProvider systemPropertiesProvider;
+    private SystemPropertiesProvider systemPropertiesProvider;
 
-    OpenStackAuthenticationToken openStackAuthenticationToken;
+    private OpenStackAuthenticationToken openStackAuthenticationToken;
 
+    /**
+     * Initialize some parameters before starting the tests.
+     */
     @Before
     public void setup() {
 
@@ -72,6 +78,10 @@ public class OpenStackAuthenticationProviderTest {
 
     }
 
+    /**
+     * Test Unit to be executed in order to check the class. It should create a new token and validate the
+     * obtained token when Admin token is not authorized.
+     */
     @Test
     public void shouldCreatesNewTokenAndValidateWhenAdminTokenIsNotAuthorized() {
         // given
@@ -93,7 +103,7 @@ public class OpenStackAuthenticationProviderTest {
         AuthenticateResponse authenticateResponse = mock(AuthenticateResponse.class);
 
         // when
-        when(openStackAuthenticationToken.getCredentials()).thenReturn(new String[] { adminToken, "string2" });
+        when(openStackAuthenticationToken.getCredentials()).thenReturn(new String[] {adminToken, "string2" });
         when(client.resource("http://keystone.test")).thenReturn(webResource).thenReturn(webResource2);
         when(webResource.path(any(String.class))).thenReturn(webResource);
         when(webResource.header(anyString(), anyString())).thenReturn(builder);

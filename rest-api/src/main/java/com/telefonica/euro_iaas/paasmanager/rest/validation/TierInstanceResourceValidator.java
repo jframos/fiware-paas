@@ -29,24 +29,36 @@ import com.telefonica.euro_iaas.paasmanager.exception.InvalidTierInstanceRequest
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 
 /**
+ * Class to validate the Tier instance resource operations.
+ *
  * @author bmmanso
  */
 public interface TierInstanceResourceValidator {
 
     /**
-     * Validate the request to create an TierInstance
+     * Validate the request to create an TierInstance.
      * 
-     * @param org
-     * @param vdc
-     * @param environmentInstance
-     * @param tierInstance
+     * @param org   The organization id.
+     * @param vdc   The vdc id.
+     * @param environmentInstance   The environment instance id.
+     * @param tierInstance  The tier instance id.
      * @throws InvalidTierInstanceRequestException
      * @throws InvalidEnvironmentRequestException
      */
-    public void validateScaleUpTierInstance(String org, String vdc, EnvironmentInstance environmentInstance,
+    void validateScaleUpTierInstance(String org, String vdc, EnvironmentInstance environmentInstance,
             String tierInstance) throws InvalidTierInstanceRequestException, InvalidEnvironmentRequestException;
 
-    public void validateScaleDownTierInstance(String org, String vdc, EnvironmentInstance environmentInstance,
+    /**
+     * Validate the request to delete a TierInstance.
+     *
+     * @param org   The organization id.
+     * @param vdc   The vdc id.
+     * @param environmentInstance   The environment instance id.
+     * @param tierInstance  The tier instance id.
+     * @throws InvalidTierInstanceRequestException
+     * @throws InvalidEnvironmentRequestException
+     */
+    void validateScaleDownTierInstance(String org, String vdc, EnvironmentInstance environmentInstance,
             String tierInstance) throws InvalidTierInstanceRequestException, InvalidEnvironmentRequestException;
 
 }

@@ -38,9 +38,11 @@ public class APIExceptionTest {
 
         APIException apiException = new APIException(
                 new Exception(
-                        "org.hibernate.PropertyAccessException: Null value was assigned to a property of primitive type setter of com.telefonica.euro_iaas.paasmanager.model.NetworkInstance.adminStateUp"));
-        // when
+                        "org.hibernate.PropertyAccessException: Null value was assigned to a property of "
+                      + "primitive type setter of com.telefonica.euro_iaas.paasmanager.model.NetworkInstance"
+                      + ".adminStateUp"));
 
+        // when
         apiException.parseCause();
 
         // then

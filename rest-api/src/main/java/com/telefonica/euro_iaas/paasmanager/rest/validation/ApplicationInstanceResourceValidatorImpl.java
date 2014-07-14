@@ -35,6 +35,9 @@ import com.telefonica.euro_iaas.paasmanager.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
 
+/**
+ * Validator of the application instance resource.
+ */
 public class ApplicationInstanceResourceValidatorImpl implements ApplicationInstanceResourceValidator {
 
     private ApplicationInstanceManager applicationInstanceManager;
@@ -43,6 +46,14 @@ public class ApplicationInstanceResourceValidatorImpl implements ApplicationInst
     /** The log. */
     private static Logger log = LoggerFactory.getLogger(ApplicationInstanceResourceValidatorImpl.class);
 
+    /**
+     * Validate the installation of a new application.
+     * @param vdc   The vdc id.
+     * @param environmentInstance   The environment instance id.
+     * @param applicationReleaseDto The application release id.
+     * @throws InvalidApplicationReleaseException
+     * @throws ApplicationInstanceNotFoundException
+     */
     public void validateInstall(String vdc, String environmentInstance, ApplicationReleaseDto applicationReleaseDto)
         throws InvalidApplicationReleaseException, ApplicationInstanceNotFoundException {
 
@@ -60,7 +71,14 @@ public class ApplicationInstanceResourceValidatorImpl implements ApplicationInst
         }
 
     }
-    
+
+    /**
+     * Validate the uninstall operation.
+     * @param vdc   The vdc id.
+     * @param environmentInstance   The environment instance id.
+     * @param applicationName   The applicationa name id.
+     * @throws InvalidEntityException
+     */
     public void validateUnInstall(String vdc, String environmentInstance, String applicationName)
         throws InvalidEntityException {
         

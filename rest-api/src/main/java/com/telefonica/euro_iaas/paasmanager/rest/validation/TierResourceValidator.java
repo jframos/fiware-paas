@@ -34,7 +34,6 @@ import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
-import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * @author jesus.movilla
@@ -42,21 +41,60 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 public interface TierResourceValidator {
 
     /**
-     * Validate the requets to create and EnvironmentInstance from a EnvironmentDto
-     * 
-     * @param EnvironmentDto
-     * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException 
-     * @throws InvalidEnvironmentRequestException
+     * Validate the request to create a Tier resource.
+     *
+     * @param claudiaData   The information related to organization, vdc and service together with the user.
+     * @param environmentDto    The information of the environment.
+     * @param vdc   The vdc details.
+     * @param environmentName   The environment name.
+     * @throws InvalidEntityException
+     * @throws AlreadyExistEntityException
+     * @throws InfrastructureException
+     * @throws QuotaExceededException
      */
-    void validateCreate(ClaudiaData claudiaData, TierDto EnvironmentDto, String vdc, String environmentName) throws InvalidEntityException,
-            AlreadyExistEntityException, InfrastructureException, QuotaExceededException;
-    
-    void validateCreateAbstract (TierDto tierDto, String environmentName) throws InvalidEntityException, AlreadyExistEntityException;
+    void validateCreate(ClaudiaData claudiaData, TierDto environmentDto, String vdc, String environmentName)
+        throws InvalidEntityException, AlreadyExistEntityException, InfrastructureException, QuotaExceededException;
 
-    void validateUpdate(String vdc, String environmentName, String tierName, TierDto EnvironmentDto) throws InvalidEntityException, EntityNotFoundException;
+    /**
+     * Validate the request to create an abstract.
+     * @param tierDto   The tier data.
+     * @param environmentName   The name of the environment.
+     * @throws InvalidEntityException
+     * @throws AlreadyExistEntityException
+     */
+    void validateCreateAbstract(TierDto tierDto, String environmentName)
+        throws InvalidEntityException, AlreadyExistEntityException;
 
+    /**
+     * Validate the update of the Tier resource.
+     * @param vdc   The vdc details.
+     * @param environmentName   The environment name.
+     * @param tierName  The Tier name.
+     * @param environmentDto    The information of the environment.
+     * @throws InvalidEntityException
+     * @throws EntityNotFoundException
+     */
+    void validateUpdate(String vdc, String environmentName, String tierName, TierDto environmentDto)
+        throws InvalidEntityException, EntityNotFoundException;
+
+    /**
+     * Validate the delete of the Tier resource.
+     * @param vdc   The vdc details.
+     * @param environmentName   The environment name.
+     * @param tierName  The Tier name.
+     * @throws InvalidEntityException
+     * @throws EntityNotFoundException
+     */
     void validateDelete(String vdc, String environmentName, String tierName)
-            throws InvalidEntityException, EntityNotFoundException;
+        throws InvalidEntityException, EntityNotFoundException;
 
-    void validateTiersDependencies(String name, String vdc, Set<TierDto> set) throws InvalidEntityException;
+    /**
+     * Validate the Tiers software dependencies.
+     * @param environmentName   The environment name.
+     * @param vdc   The vdc details.
+     * @param tierDtoList   Set of tiers.
+     * @throws InvalidEntityException
+     */
+    void validateTiersDependencies(String environmentName, String vdc, Set<TierDto> tierDtoList)
+        throws InvalidEntityException;
 }
