@@ -39,6 +39,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Util class to compare in a unyfied way the dates.
+ *
  * @author fernandolopezaguilar
  */
 public class CompareDates {
@@ -47,14 +49,28 @@ public class CompareDates {
     private static Logger log = LoggerFactory.getLogger(CompareDates.class);
     private long offset;
 
+    /**
+     * Constructor of the class.
+     * @param limit Limit to compare two dates.
+     */
     public CompareDates(Long limit) {
         this.limit = limit;
     }
 
+    /**
+     * Default constructor.
+     */
     public CompareDates() {
         this.limit = 0L;
     }
 
+    /**
+     * Check that the different between the two dates is less than the limit fixed.
+     * @param dateString    The first date.
+     * @param now   The second date.
+     * @return  True is the different is less than the limit
+     *          False otherwise.
+     */
     public boolean checkDate(String dateString, Date now) {
         boolean result;
 
@@ -78,14 +94,32 @@ public class CompareDates {
         this.limit = limit;
     }
 
+    /**
+     * Get the date different between two values.
+     * @param dateOne   Date one.
+     * @param dateTwo   Date two.
+     * @return  The difference.
+     */
     public long getTimeDiff(Date dateOne, Date dateTwo) {
         return Math.abs(dateOne.getTime() - dateTwo.getTime());
     }
 
+    /**
+     * Get the time difference between a Date and a string (not implemented).
+     * @param deteOne   A date.
+     * @param dateTow   A string which represents a date.
+     * @return  The difference between them.
+     */
     public long getTimeDiff(Date deteOne, String dateTow) {
         return 1;
     }
 
+    /**
+     * Get the difference of a string representing a date and a date.
+     * @param dateOne   The string representing a date.
+     * @param dateTwo   The date two.
+     * @return  The difference between them.
+     */
     public long getTimeDiff(String dateOne, Date dateTwo) {
         Date date1 = this.getDate(dateOne, getType(dateOne)); // 1);
 
@@ -94,6 +128,12 @@ public class CompareDates {
         return timeDiff;
     }
 
+    /**
+     * Return the corresponding date in the specified format.
+     * @param dateString    The string representing the date.
+     * @param typeFormat    The format type requested.
+     * @return  The date in Date class with the format specified.
+     */
     public Date getDate(String dateString, int typeFormat) {
         Date date = null;
 
@@ -134,11 +174,21 @@ public class CompareDates {
                 }
 
                 break;
+
+            default:
+                log.error("Unknow date format or date format not controlled: " + date);
+
         }
 
         return date;
     }
 
+    /**
+     * Validate that the difference between the two dates is less than 24h.
+     * @param dateString1   The first date.
+     * @param dateString2   The second date.
+     * @return  The difference between two dates.
+     */
     public String validateDates(String dateString1, String dateString2) {
         Date date1 = this.getDate(dateString1, getType(dateString1)); // 0);
         Date date2 = this.getDate(dateString2, getType(dateString2)); // 1);
@@ -163,6 +213,11 @@ public class CompareDates {
         this.offset = offset;
     }
 
+    /**
+     * Analyze the date in format string and return the type of data representation.
+     * @param data  The date in string format.
+     * @return  The type of data representation.
+     */
     protected int getType(String data) {
         // Regular Expression [0-9]*\-[0-9]*\-[0-9]*T[0-9]*:[0-9]*:[0-9]*Z$
         // as a Java string "[0-9]*\\-[0-9]*\\-[0-9]*T[0-9]*:[0-9]*:[0-9]*Z$"

@@ -47,7 +47,7 @@ import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 
 /**
- * default Environment implementation
+ * default Environment implementation.
  * 
  * @author Henar Munoz
  */
@@ -63,6 +63,12 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
 
     private static Logger log = LoggerFactory.getLogger(AbstractEnvironmentResourceImpl.class);
 
+    /**
+     * Delete an environment instance.
+     * @param org   The organization in which the environment is deployed.
+     * @param envName   The name of the environment.
+     * @throws APIException Exception launch if there is no name or cannot be deleted.
+     */
     public void delete(String org, String envName) throws APIException {
         log.debug("Deleting env " + envName + " from org " + org);
         ClaudiaData claudiaData = new ClaudiaData(org, "", envName);
@@ -81,6 +87,19 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
 
     }
 
+    /**
+     * Find all environments associated to an organization.
+     * @param org   The organization from which extract all environments.
+     * @param page
+     *            for pagination is 0 based number(<i>nullable</i>)
+     * @param pageSize
+     *            for pagination, the number of items retrieved in a query (<i>nullable</i>)
+     * @param orderBy
+     *            the file to order the search (id by default <i>nullable</i>)
+     * @param orderType
+     *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
+     * @return  The list of all environments.
+     */
     public List<EnvironmentDto> findAll(String org, Integer page, Integer pageSize, String orderBy, String orderType) {
         EnvironmentSearchCriteria criteria = new EnvironmentSearchCriteria();
 
@@ -108,6 +127,13 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
 
     }
 
+    /**
+     * Insert a new environment.
+     * @param org   The organization in which inserts the new environment.
+     * @param environmentDto    The data of the new environment.
+     * @throws APIException Exception launch when this environment already exists or any
+     *                      problem was happened into the insertion of it.
+     */
     public void insert(String org, EnvironmentDto environmentDto) throws APIException {
         log.debug("Inserting env " + environmentDto.getName() + " from org " + org);
         ClaudiaData claudiaData = new ClaudiaData(org, "", environmentDto.getName());
@@ -128,6 +154,13 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
 
     }
 
+    /**
+     * Get detail information of a specific environment.
+     * @param org   The organization of the environment to find.
+     * @param name  The name of the environment.
+     * @return  The detail information of the environment.
+     * @throws APIException Exception launch if the environment is not found.
+     */
     public EnvironmentDto load(String org, String name) throws APIException {
         log.debug("Loading env " + name + " from org " + org);
         try {

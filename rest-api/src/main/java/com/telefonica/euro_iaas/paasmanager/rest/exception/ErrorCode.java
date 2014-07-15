@@ -24,6 +24,9 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.exception;
 
+/**
+ * Class that contain the information related to the error code.
+ */
 public enum ErrorCode {
 
     DB_CONNECTION(20, "Could not open connection to database", "(.*)JDBCConnectionException(.*)", 500),
@@ -64,6 +67,11 @@ public enum ErrorCode {
         return code + "(" + httpCode + "): " + publicMessage;
     }
 
+    /**
+     *
+     * @param value
+     * @return
+     */
     public static ErrorCode find(String value) {
         if (value == null) {
             return ErrorCode.DEFAULT;
@@ -77,10 +85,17 @@ public enum ErrorCode {
         return errors[i];
     }
 
+    /**
+     * Getter (pattern).
+     */
     public String getPattern() {
         return pattern;
     }
 
+    /**
+     * Getter (httpCode).
+     * @return
+     */
     public Integer getHttpCode() {
         return this.httpCode;
     }

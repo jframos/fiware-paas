@@ -49,14 +49,21 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.TierResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
+/**
+ * Test the class AbstractTierResource.
+ */
 public class AbstractTierResourceTest extends TestCase {
 
-    public AbstractTierResourceImpl tierResource;
-    public TierManager tierManager;
-    public SystemPropertiesProvider systemPropertiesProvider;
-    public EnvironmentManager environmentManager;
-    public TierResourceValidator validator;
+    private AbstractTierResourceImpl tierResource;
+    private TierManager tierManager;
+    private SystemPropertiesProvider systemPropertiesProvider;
+    private EnvironmentManager environmentManager;
+    private TierResourceValidator validator;
 
+    /**
+     * Initialize the Unit Test.
+     * @throws Exception
+     */
     @Before
     public void setUp() throws Exception {
         tierResource = new AbstractTierResourceImpl();
@@ -95,13 +102,17 @@ public class AbstractTierResourceTest extends TestCase {
 
     }
 
+    /**
+     * Test the insertion of a tier.
+     * @throws Exception
+     */
     @Test
     public void testInsertTier() throws Exception {
 
         Environment environment = new Environment("name", "description", null);
 
         try {
-            when(environmentManager.load(any(String.class),any(String.class))).thenReturn(environment);
+            when(environmentManager.load(any(String.class), any(String.class))).thenReturn(environment);
         } catch (EntityNotFoundException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -123,13 +134,17 @@ public class AbstractTierResourceTest extends TestCase {
 
     }
 
+    /**
+     * Test the insertion of a tier with no products.
+     * @throws Exception
+     */
     @Test
     public void testInsertTierNoProducts() throws Exception {
 
         Environment environment = new Environment("name", "description", null);
 
         try {
-            when(environmentManager.load(any(String.class),any(String.class))).thenReturn(environment);
+            when(environmentManager.load(any(String.class), any(String.class))).thenReturn(environment);
         } catch (EntityNotFoundException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();

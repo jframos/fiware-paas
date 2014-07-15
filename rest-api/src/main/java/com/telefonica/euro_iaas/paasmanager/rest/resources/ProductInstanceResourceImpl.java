@@ -57,7 +57,8 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ProductInstance
  * 
  * @author bmmanso
  */
-@Path("/envInst/org/{org}/vdc/{vdc}/environmentInstance/{environmentInstance}/tierInstance/{tierInstance}/productInstance")
+@Path("/envInst/org/{org}/vdc/{vdc}/environmentInstance/"
+        + "{environmentInstance}/tierInstance/{tierInstance}/productInstance")
 @Component
 @Scope("request")
 public class ProductInstanceResourceImpl implements ProductInstanceResource {
@@ -71,6 +72,20 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
     @Autowired
     private ProductInstanceManager productInstanceManager;
 
+    /**
+     * Install a new product instance.
+     * @param org   The organization which contains the environment.
+     * @param vdc   The vdc which contains the environment.
+     * @param environmentInstanceName   The name of the environment to install.
+     * @param tierInstanceName  The tier in which installs the product
+     * @param product
+     *            the concrete release of a product to install. It also contains information about the VM where the
+     *            product is going to be installed
+     * @param callback
+     *            if not empty, contains the url where the result of the async operation will be sent
+     * @return
+     *            the task of the operation to be followed.
+     */
     public Task install(String org, String vdc, String environmentInstanceName, String tierInstanceName,
             ProductInstanceDto product, String callback) {
 
@@ -97,6 +112,12 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
         }
     }
 
+    /**
+     * Find a specific product instance.
+     * @param vdc   The vdc which contains the environment.
+     * @param name  The product instance name.
+     * @return
+     */
     public ProductInstanceDto load(String vdc, String name) {
         try {
 
@@ -107,6 +128,31 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
         }
     }
 
+    /**
+     * Find all product instances.
+     * @param hostname
+     *            the host name where the product is installed (<i>nullable</i>)
+     * @param domain
+     *            the domain where the machine is (<i>nullable</i>)
+     * @param ip
+     *            the ip of the host (<i>nullable</i>)
+     * @param fqn
+     *            the complete name of the environment @unused
+     * @param page
+     *            for pagination is 0 based number(<i>nullable</i>)
+     * @param pageSize
+     *            for pagination, the number of items retrieved in a query (<i>nullable</i>)
+     * @param orderBy
+     *            the file to order the search (id by default <i>nullable</i>)
+     * @param orderType
+     *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
+     * @param status
+     *            the status the product (<i>nullable</i>)
+     * @param vdc
+     * @param environmentInstanceName
+     * @param tierInstanceName
+     * @return
+     */
     public List<ProductInstanceDto> findAll(String hostname, String domain, String ip, String fqn, Integer page,
             Integer pageSize, String orderBy, String orderType, Status status, String vdc,
             String environmentInstanceName, String tierInstanceName) {
@@ -128,12 +174,15 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
             criteria.setPage(page);
             criteria.setPageSize(pageSize);
         }
+
         if (!StringUtils.isEmpty(orderBy)) {
             criteria.setOrderBy(orderBy);
         }
+
         if (!StringUtils.isEmpty(orderType)) {
             criteria.setOrderBy(orderType);
         }
+
         List<ProductInstanceDto> productInstancesDto = new ArrayList<ProductInstanceDto>();
         List<ProductInstance> productInstances = productInstanceManager.findByCriteria(criteria);
 
@@ -142,10 +191,19 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
             productInstancesDto.add(convertToDto(productInstances.get(i)));
 
         }
-        return productInstancesDto;
 
+        return productInstancesDto;
     }
 
+    /**
+     * Uninstall a specific product instance.
+     * @param vdc   The vdc which contains the environment.
+     * @param id
+     *            the installable instance id
+     * @param callback
+     *            if not empty, contains the url where the result of the async operation will be sent
+     * @return  The task to follow the operation.
+     */
     public Task uninstall(String vdc, Long id, String callback) {
         // TODO Auto-generated method stub
         return null;
@@ -161,10 +219,13 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
     private ProductInstanceDto convertToDto(ProductInstance productInstance) {
         ProductInstanceDto productInstanceDto = new ProductInstanceDto();
 
-        if (productInstance.getName() != null)
+        if (productInstance.getName() != null) {
             productInstanceDto.setName(productInstance.getName());
-        if (productInstance.getProductRelease() != null)
+        }
+
+        if (productInstance.getProductRelease() != null) {
             productInstanceDto.setProductReleaseDto(convertToDto(productInstance.getProductRelease()));
+        }
 
         productInstanceDto.setVdc(productInstance.getVdc());
         return productInstanceDto;

@@ -39,7 +39,7 @@ import javax.ws.rs.core.MediaType;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
-/*
+/**
  * Provides a rest api to works with Environment.
  * @author Jesus M. Movilla
  */
@@ -53,7 +53,7 @@ public interface EnvironmentResource {
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void insert(@PathParam("org") String org, @PathParam("vdc") String vdc, EnvironmentDto environmentDto)
-            throws APIException;
+        throws APIException;
 
     /**
      * Retrieve all Environments available created in the system.
@@ -83,7 +83,7 @@ public interface EnvironmentResource {
     @Path("/{envName}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     EnvironmentDto load(@PathParam("org") String org, @PathParam("vdc") String vdc, @PathParam("envName") String name)
-            throws APIException;
+        throws APIException;
 
     /**
      * Delete the Environment in DB.
@@ -92,6 +92,6 @@ public interface EnvironmentResource {
     @DELETE
     @Path("/{envName}")
     void delete(@PathParam("org") String org, @PathParam("vdc") String vdc, @PathParam("envName") String envName)
-            throws APIException;
+        throws APIException;
 
 }

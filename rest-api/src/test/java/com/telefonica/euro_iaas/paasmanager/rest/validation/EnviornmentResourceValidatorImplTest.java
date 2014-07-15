@@ -33,7 +33,6 @@ import static org.mockito.Matchers.anyString;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
@@ -46,7 +45,6 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -57,75 +55,97 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
 
-import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
- * Test class for validation of enviornment
- * @author henar
+ * Test class for validation of environment.
  *
+ * @author henar
  */
 public class EnviornmentResourceValidatorImplTest {
-	EnvironmentResourceValidatorImpl environmentResourceValidator ;
-	EnvironmentManager environmentManager;
-	EnvironmentInstanceManager environmentInstanceManager;
-	ResourceValidator resourceValidator;
-	TierResourceValidator tierResourceValidator;
-	SystemPropertiesProvider systemPropertiesProvider;
-	
-	@Before
-	public void setUp () throws EntityNotFoundException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException, AlreadyExistEntityException {
-		environmentResourceValidator = new EnvironmentResourceValidatorImpl();
-		resourceValidator = mock(ResourceValidator.class);
-        environmentManager=mock(EnvironmentManager.class);
-        tierResourceValidator=mock(TierResourceValidator.class);
+    private EnvironmentResourceValidatorImpl environmentResourceValidator;
+    private EnvironmentManager environmentManager;
+    private EnvironmentInstanceManager environmentInstanceManager;
+    private ResourceValidator resourceValidator;
+    private TierResourceValidator tierResourceValidator;
+    private SystemPropertiesProvider systemPropertiesProvider;
+
+    /**
+     * Initialize the Unit Test.
+     * @throws EntityNotFoundException
+     * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
+     * @throws AlreadyExistEntityException
+     */
+    @Before
+    public void setUp()
+        throws EntityNotFoundException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException,
+               AlreadyExistEntityException {
+
+        environmentResourceValidator = new EnvironmentResourceValidatorImpl();
+        resourceValidator = mock(ResourceValidator.class);
+        environmentManager = mock(EnvironmentManager.class);
+        tierResourceValidator = mock(TierResourceValidator.class);
         environmentResourceValidator.setResourceValidator(resourceValidator);
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
-        environmentInstanceManager=mock(EnvironmentInstanceManager.class);
+        environmentInstanceManager = mock(EnvironmentInstanceManager.class);
         environmentResourceValidator.setEnvironmentManager(environmentManager);
         environmentResourceValidator.setEnvironmentInstanceManager(environmentInstanceManager);
         environmentResourceValidator.setTierResourceValidator(tierResourceValidator);
-		Mockito.doNothing().when(resourceValidator).validateName(anyString());
-		Mockito.doNothing().when(resourceValidator).validateDescription(anyString());
-		Mockito.doNothing().when(tierResourceValidator).validateCreateAbstract(any(TierDto.class), anyString());
+        Mockito.doNothing().when(resourceValidator).validateName(anyString());
+        Mockito.doNothing().when(resourceValidator).validateDescription(anyString());
+        Mockito.doNothing().when(tierResourceValidator).validateCreateAbstract(any(TierDto.class), anyString());
 
-	}
+    }
 
+    /**
+     * Validate that an environment data is ok.
+     * @throws Exception
+     */
     @Test
     public void shouldValidateEnvironmentDataOK() throws Exception {
         // given
-         
-        EnvironmentDto envDto = new EnvironmentDto ();
-        envDto.setName("name");
-        envDto.setDescription("description");
-        when(environmentManager.load(anyString(),anyString())).thenThrow
-            (new EntityNotFoundException(Environment.class, "dd", envDto.fromDto()));
-        ClaudiaData claudiaData = mock(ClaudiaData.class);
 
-        environmentResourceValidator.validateCreate(claudiaData, envDto, "vdc");
-       
-    }
-    
-    @Test
-    public void shouldValidateAbstractEnv() throws EntityNotFoundException  {
-        
         EnvironmentDto envDto = new EnvironmentDto();
         envDto.setName("name");
         envDto.setDescription("description");
-        when(environmentManager.load(anyString(),anyString())).
-            thenThrow(new EntityNotFoundException(Environment.class, "dd", envDto.fromDto()));
-        
+        when(environmentManager.load(anyString(), anyString()))
+                .thenThrow(new EntityNotFoundException(Environment.class, "dd", envDto.fromDto()));
+
+        ClaudiaData claudiaData = mock(ClaudiaData.class);
+
+        environmentResourceValidator.validateCreate(claudiaData, envDto, "vdc");
+
+    }
+
+    /**
+     * Test the validation of an abstract environment.
+     * @throws EntityNotFoundException
+     */
+    @Test
+    public void shouldValidateAbstractEnv() throws EntityNotFoundException {
+
+        EnvironmentDto envDto = new EnvironmentDto();
+        envDto.setName("name");
+        envDto.setDescription("description");
+        when(environmentManager.load(anyString(), anyString())).
+                thenThrow(new EntityNotFoundException(Environment.class, "dd", envDto.fromDto()));
+
         try {
             environmentResourceValidator.validateAbstractCreate(envDto);
         } catch (Exception e) {
-           fail();
+            fail();
         }
 
     }
-    
+
+    /**
+     * Test the validation of a delete environment.
+     * @throws EntityNotFoundException
+     * @throws InvalidEntityException
+     */
     @Test
-    public void shouldValidateDeleteEnv() throws EntityNotFoundException, InvalidEntityException  {
-        
+    public void shouldValidateDeleteEnv() throws EntityNotFoundException, InvalidEntityException {
+
         EnvironmentDto envDto = new EnvironmentDto();
         envDto.setName("name");
         envDto.setDescription("description");
@@ -139,16 +159,25 @@ public class EnviornmentResourceValidatorImplTest {
         Set<TierDto> ltiers = new HashSet<TierDto>();
         ltiers.add(tierDTO);
         envDto.setTierDtos(ltiers);
-        when(environmentManager.load(anyString(),anyString())).thenReturn(envDto.fromDto());
-        when(environmentInstanceManager.findByCriteria(any(EnvironmentInstanceSearchCriteria.class))).thenReturn(new ArrayList<EnvironmentInstance>());        
+        when(environmentManager.load(anyString(), anyString())).thenReturn(envDto.fromDto());
+        when(environmentInstanceManager.findByCriteria(any(EnvironmentInstanceSearchCriteria.class)))
+                .thenReturn(new ArrayList<EnvironmentInstance>());
+
         environmentResourceValidator.validateDelete(envDto.getName(), "vdc");
 
 
     }
-    
+
+    /**
+     * Test the creation of a abstract environment with tiers.
+     * @throws EntityNotFoundException
+     * @throws AlreadyExistEntityException
+     * @throws InvalidEntityException
+     */
     @Test
-    public void shouldValidateAbstractEnvWitTiers() throws EntityNotFoundException, AlreadyExistEntityException, InvalidEntityException  {
-        
+    public void shouldValidateAbstractEnvWitTiers()
+        throws EntityNotFoundException, AlreadyExistEntityException, InvalidEntityException {
+
         EnvironmentDto envDto = new EnvironmentDto();
         envDto.setName("name");
         envDto.setDescription("description");
@@ -162,32 +191,32 @@ public class EnviornmentResourceValidatorImplTest {
         Set<TierDto> ltiers = new HashSet<TierDto>();
         ltiers.add(tierDTO);
         envDto.setTierDtos(ltiers);
-        when(environmentManager.load(anyString(),anyString())).
-        thenThrow(new EntityNotFoundException(Environment.class, "dd", envDto.fromDto()));
-        
+        when(environmentManager.load(anyString(), anyString())).
+                thenThrow(new EntityNotFoundException(Environment.class, "dd", envDto.fromDto()));
+
         environmentResourceValidator.validateAbstractCreate(envDto);
 
 
     }
-    
-    @Test(expected=AlreadyExistEntityException.class)
-    public void shouldValidateAbstractEnvAlreadyExists() throws EntityNotFoundException, AlreadyExistEntityException, InvalidEntityException  {
-        
+
+    /**
+     * Test the creation of an abstract enviroment when it already exists.
+     * @throws EntityNotFoundException
+     * @throws AlreadyExistEntityException
+     * @throws InvalidEntityException
+     */
+    @Test(expected = AlreadyExistEntityException.class)
+    public void shouldValidateAbstractEnvAlreadyExists()
+        throws EntityNotFoundException, AlreadyExistEntityException, InvalidEntityException {
+
         EnvironmentDto envDto = new EnvironmentDto();
         envDto.setName("name");
         envDto.setDescription("description");
-        when(environmentManager.load(anyString(),anyString())).thenReturn(envDto.fromDto());
+        when(environmentManager.load(anyString(), anyString())).thenReturn(envDto.fromDto());
         environmentResourceValidator.validateAbstractCreate(envDto);
-   
+
 
     }
-    
-
-    
 
 
-    
-
-
- 
 }

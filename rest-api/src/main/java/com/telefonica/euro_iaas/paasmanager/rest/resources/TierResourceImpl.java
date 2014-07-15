@@ -83,6 +83,9 @@ public class TierResourceImpl implements TierResource {
 
     private static Logger log = LoggerFactory.getLogger(TierResourceImpl.class);
 
+    /**
+     * Delete the Tier in DB.
+     */
     public void delete(String org, String vdc, String envName, String tierName) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
         log.debug("Deleting tier " + tierName + " from env " + envName + " vdc " + vdc);
@@ -109,6 +112,19 @@ public class TierResourceImpl implements TierResource {
 
     }
 
+    /**
+     * Retrieve all Tiers available created in the system.
+     *
+     * @param page
+     *            for pagination is 0 based number(<i>nullable</i>)
+     * @param pageSize
+     *            for pagination, the number of items retrieved in a query (<i>nullable</i>)
+     * @param orderBy
+     *            the file to order the search (id by default <i>nullable</i>)
+     * @param orderType
+     *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
+     * @return the Tiers.
+     */
     public List<TierDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String vdc,
             String environment) {
         TierSearchCriteria criteria = new TierSearchCriteria();
@@ -149,6 +165,9 @@ public class TierResourceImpl implements TierResource {
 
     }
 
+    /**
+     * Get the user credentials.
+     */
     private PaasManagerUser getCredentials() {
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
             return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -157,6 +176,10 @@ public class TierResourceImpl implements TierResource {
         }
     }
 
+    /**
+     * Add the selected Environment in to the SDC's catalog. If the Environment already exists, then add the new
+     * Release.
+     */
     public void insert(String org, String vdc, String environmentName, TierDto tierDto) throws APIException {
 
         log.debug("Insert tier " + tierDto.getName() + " from env " + environmentName);
@@ -188,6 +211,9 @@ public class TierResourceImpl implements TierResource {
         }
     }
 
+    /**
+     * Retrieve the selected Tier.
+     */
     public TierDto load(String vdc, String envName, String name) throws APIException {
         try {
             Tier tier = tierManager.load(name, vdc, envName);
@@ -227,8 +253,11 @@ public class TierResourceImpl implements TierResource {
         this.networkManager = networkManager;
     }
 
+    /**
+     * Update the Tier in DB.
+     */
     public void update(String org, String vdc, String environmentName, String tierName, TierDto tierDto)
-            throws APIException {
+        throws APIException {
         log.debug("Update tier " + tierName + " from env " + environmentName);
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
 

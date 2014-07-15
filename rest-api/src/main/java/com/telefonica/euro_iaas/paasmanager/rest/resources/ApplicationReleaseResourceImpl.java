@@ -54,10 +54,14 @@ public class ApplicationReleaseResourceImpl implements ApplicationReleaseResourc
     @Autowired
     private ArtifactManager artifactManager;
 
-    /*
-     * (non-Javadoc)
-     * @seecom.telefonica.euro_iaas.paasmanager.rest.resources. ApplicationReleaseResource#findAll(java.lang.Integer,
-     * java.lang.Integer, java.lang.String, java.lang.String)
+    /**
+     * Find all application releases.
+     * @param artifactName  The name of the artifact.
+     * @param page  The page in which show the data or extract the data.
+     * @param pageSize  The page size of the information to show.
+     * @param orderBy   The order type to apply to the data to show.
+     * @param orderType The type of order to apply in order to show the data.
+     * @return
      */
     public List<ApplicationRelease> findAll(String artifactName, Integer page, Integer pageSize, String orderBy,
             String orderType) {
@@ -88,9 +92,13 @@ public class ApplicationReleaseResourceImpl implements ApplicationReleaseResourc
 
     }
 
-    /*
-     * (non-Javadoc)
-     * @seecom.telefonica.euro_iaas.paasmanager.rest.resources. ApplicationReleaseResource#load(java.lang.String)
+    /**
+     * Find a specific application release.
+     * @param name
+     *            the application Release name
+     * @return
+     *            The aplicaiton release.
+     * @throws EntityNotFoundException
      */
     public ApplicationRelease load(String name) throws EntityNotFoundException {
         return applicationReleaseManager.load(name);
