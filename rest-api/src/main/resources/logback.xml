@@ -105,27 +105,27 @@
     </appender>
 
 
-    <logger name="com.telefonica.euro_iaas.paasmanager.claudia" additivity="true" value="DEBUG">
+    <logger name="com.telefonica.euro_iaas.paasmanager.claudia" additivity="true" value="INFO">
         <appender-ref ref="infrastructureAppender"/>
     </logger>
 
-    <logger name="com.telefonica.euro_iaas.paasmanager.installator" additivity="true" value="DEBUG">
+    <logger name="com.telefonica.euro_iaas.paasmanager.installator" additivity="true" value="INFO">
         <appender-ref ref="installAppender"/>
     </logger>
 
-    <logger name="com.telefonica.euro_iaas.paasmanager.util" additivity="true" value="DEBUG">
+    <logger name="com.telefonica.euro_iaas.paasmanager.util" additivity="true" value="INFO">
         <appender-ref ref="utilAppender"/>
     </logger>
 
-    <logger name="com.telefonica.euro_iaas.paasmanager.rest.auth" additivity="false" value="DEBUG">
+    <logger name="com.telefonica.euro_iaas.paasmanager.rest.auth" additivity="false" value="INFO">
         <appender-ref ref="authAppender"/>
     </logger>
 
-    <logger name="com.telefonica.euro_iaas.paasmanager.manager" additivity="true" value="DEBUG">
+    <logger name="com.telefonica.euro_iaas.paasmanager.manager" additivity="true" value="INFO">
         <appender-ref ref="managerAppender"/>
     </logger>
 
-    <logger name="com.telefonica.euro_iaas.paasmanager.rest.resources" additivity="true" value="DEBUG">
+    <logger name="com.telefonica.euro_iaas.paasmanager.rest.resources" additivity="true" value="INFO">
         <appender-ref ref="restAppender"/>
     </logger>
     
