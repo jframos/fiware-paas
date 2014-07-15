@@ -41,6 +41,15 @@ import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
  */
 public interface ApplicationReleaseResource {
 
+    /**
+     * Retrieve all application releases.
+     * @param artifactName  The name of the artifact.
+     * @param page  The page in which show the data or extract the data.
+     * @param pageSize  The page size of the information to show.
+     * @param orderBy   The order type to apply to the data to show.
+     * @param orderType The type of order to apply in order to show the data.
+     * @return  The list of the applicaiton releases.
+     */
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ApplicationRelease> findAll(@QueryParam("artifactName") String artifactName, @QueryParam("page") Integer page,
@@ -48,7 +57,7 @@ public interface ApplicationReleaseResource {
             @QueryParam("orderType") String orderType);
 
     /**
-     * Retrieve the selected Application Releases
+     * Retrieve the selected Application Releases.
      * 
      * @param name
      *            the application Release name

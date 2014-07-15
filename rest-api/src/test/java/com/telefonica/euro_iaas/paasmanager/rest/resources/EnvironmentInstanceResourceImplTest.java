@@ -58,21 +58,28 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentInstanceResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
+/**
+ * Test the class EnvironmentInstanceResourceImpl.
+ */
 public class EnvironmentInstanceResourceImplTest {
 
-    public EnvironmentInstanceResourceImpl environmentInstanceResource;
-    public SystemPropertiesProvider systemPropertiesProvider;
-    public EnvironmentInstanceAsyncManager environmentInstanceAsyncManager;
-    public EnvironmentInstanceResourceValidator environmentInstanceResourceValidator;
-    public ProductReleaseManager productReleaseManager;
-    public String vdc = "vdc";
-    public String org = "org";
-    public String callback = "callback";
-    public Environment environment;
-    public Set<Tier> tiers;
-    public TaskManager taskManager;
-    public Task task;
+    private EnvironmentInstanceResourceImpl environmentInstanceResource;
+    private SystemPropertiesProvider systemPropertiesProvider;
+    private EnvironmentInstanceAsyncManager environmentInstanceAsyncManager;
+    private EnvironmentInstanceResourceValidator environmentInstanceResourceValidator;
+    private ProductReleaseManager productReleaseManager;
+    private String vdc = "vdc";
+    private String org = "org";
+    private String callback = "callback";
+    private Environment environment;
+    private Set<Tier> tiers;
+    private TaskManager taskManager;
+    private Task task;
 
+    /**
+     * Initialize the Unit Test.
+     * @throws Exception
+     */
     @Before
     public void setUp() throws Exception {
         environmentInstanceResource = new EnvironmentInstanceResourceImpl();
@@ -140,7 +147,10 @@ public class EnvironmentInstanceResourceImplTest {
 
     }
 
-
+    /**
+     * Test the creation of an environment based on a OVF file.
+     * @throws Exception
+     */
     @Test
     public void testCreateOvfEnviornmentInstance() throws Exception {
 

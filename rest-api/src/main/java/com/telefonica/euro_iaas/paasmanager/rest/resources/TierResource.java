@@ -40,7 +40,7 @@ import javax.ws.rs.core.MediaType;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
-/*
+/**
  * Provides a rest api to works with Environment.
  * @author Jesus M. Movilla
  */
@@ -50,12 +50,11 @@ public interface TierResource {
      * Add the selected Environment in to the SDC's catalog. If the Environment already exists, then add the new
      * Release.
      */
-
     @POST
     // @Produces( { MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void insert(@PathParam("org") String org, @PathParam("vdc") String vdc,
-            @PathParam("environment") String environment, TierDto TierDto) throws APIException;
+            @PathParam("environment") String environment, TierDto tierDto) throws APIException;
 
     /**
      * Retrieve all Tiers available created in the system.
@@ -70,7 +69,6 @@ public interface TierResource {
      *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
      * @return the Tiers.
      */
-
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<TierDto> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
@@ -80,7 +78,6 @@ public interface TierResource {
     /**
      * Retrieve the selected Tier.
      */
-
     @GET
     @Path("/{tierName}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -90,7 +87,6 @@ public interface TierResource {
     /**
      * Delete the Tier in DB.
      */
-
     @DELETE
     @Path("/{tierName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -100,12 +96,11 @@ public interface TierResource {
     /**
      * Update the Tier in DB.
      */
-
     @PUT
     @Path("/{tierName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void update(@PathParam("org") String org, @PathParam("vdc") String vdc,
-            @PathParam("environment") String environment, @PathParam("tierName") String tierName, TierDto TierDto)
-            throws APIException;
+            @PathParam("environment") String environment, @PathParam("tierName") String tierName, TierDto tierDto)
+        throws APIException;
 
 }

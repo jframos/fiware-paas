@@ -31,11 +31,13 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.ApplicationInstanceNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidApplicationReleaseException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
 
+/**
+ * Validator of the application instance resource.
+ */
 public class ApplicationInstanceResourceValidatorImpl implements ApplicationInstanceResourceValidator {
 
     private ApplicationInstanceManager applicationInstanceManager;
@@ -44,11 +46,20 @@ public class ApplicationInstanceResourceValidatorImpl implements ApplicationInst
     /** The log. */
     private static Logger log = LoggerFactory.getLogger(ApplicationInstanceResourceValidatorImpl.class);
 
+    /**
+     * Validate the installation of a new application.
+     * @param vdc   The vdc id.
+     * @param environmentInstance   The environment instance id.
+     * @param applicationReleaseDto The application release id.
+     * @throws InvalidApplicationReleaseException
+     * @throws ApplicationInstanceNotFoundException
+     */
     public void validateInstall(String vdc, String environmentInstance, ApplicationReleaseDto applicationReleaseDto)
-            throws InvalidApplicationReleaseException, ApplicationInstanceNotFoundException {
+        throws InvalidApplicationReleaseException, ApplicationInstanceNotFoundException {
 
-        if ((applicationReleaseDto.getApplicationName() == null) || (applicationReleaseDto.getVersion() == null))
+        if ((applicationReleaseDto.getApplicationName() == null) || (applicationReleaseDto.getVersion() == null)) {
             throw new InvalidApplicationReleaseException("Application Name is not provided");
+        }
 
         // Check that the application is not installed already
         try {
@@ -56,30 +67,43 @@ public class ApplicationInstanceResourceValidatorImpl implements ApplicationInst
                     .load(vdc, applicationReleaseDto.getApplicationName() + "-" + environmentInstance);
             throw new InvalidApplicationReleaseException("Application already installed");
         } catch (EntityNotFoundException e) {
-
+            log.error("Entity not found.");
         }
 
     }
-    
-    public void validateUnInstall(String vdc, String environmentInstance, String applicationName) throws InvalidEntityException {
+
+    /**
+     * Validate the uninstall operation.
+     * @param vdc   The vdc id.
+     * @param environmentInstance   The environment instance id.
+     * @param applicationName   The applicationa name id.
+     * @throws InvalidEntityException
+     */
+    public void validateUnInstall(String vdc, String environmentInstance, String applicationName)
+        throws InvalidEntityException {
         
-    	// Check the environmetn and application exists
+    	// Check the environment and application exists
     	try {
-			environmentInstanceManager.load(vdc, environmentInstance);
-		} catch (EntityNotFoundException e) {
-			String mens = "The environmetn instance " + environmentInstance + " does not exists for uninstalling application";
-			log.warn (mens);
-			throw new InvalidEntityException(mens);
-		}
-    	 try {
-			applicationInstanceManager.load(vdc, applicationName);
-		} catch (EntityNotFoundException e) {
-			String mens = "The application instance " + applicationName + " does not exists for uninstalling application";
-			log.warn (mens);
-			throw new InvalidEntityException(mens);
-		}
+            environmentInstanceManager.load(vdc, environmentInstance);
+        } catch (EntityNotFoundException e) {
+            String mens = "The environmetn instance "
+                    + environmentInstance
+                    + " does not exists for uninstalling application";
 
+            log.warn(mens);
+            throw new InvalidEntityException(mens);
+        }
 
+    	try {
+            applicationInstanceManager.load(vdc, applicationName);
+        } catch (EntityNotFoundException e) {
+            String mens = "The application instance "
+                    + applicationName
+                    + " does not exists for uninstalling application";
+
+            log.warn(mens);
+            throw new InvalidEntityException(mens);
+        }
     }
 
 
@@ -88,7 +112,7 @@ public class ApplicationInstanceResourceValidatorImpl implements ApplicationInst
         this.applicationInstanceManager = applicationInstanceManager;
     }
     
-    public void setEnvironmentInstanceManager (EnvironmentInstanceManager environmentInstanceManager) {
+    public void setEnvironmentInstanceManager(EnvironmentInstanceManager environmentInstanceManager) {
     	this.environmentInstanceManager = environmentInstanceManager;
     }
 

@@ -26,16 +26,27 @@ package com.telefonica.euro_iaas.paasmanager.rest.exception;
 
 import javax.ws.rs.core.Response;
 
+/**
+ * Class to manage the exception of the Respose Code.
+ */
 public class ErrorResponseCode {
 
-    Integer httpCode;
+    private Integer httpCode;
 
+    /**
+     * Constructor.
+     * @param cause
+     */
     public ErrorResponseCode(Throwable cause) {
 
         ErrorCode errorCode = ErrorCode.find(cause.toString());
         this.httpCode = errorCode.getHttpCode();
     }
 
+    /**
+     * Get the HTTP Code.
+     * @return
+     */
     public Response.Status getHttpCode() {
 
         return Response.Status.fromStatusCode(httpCode);

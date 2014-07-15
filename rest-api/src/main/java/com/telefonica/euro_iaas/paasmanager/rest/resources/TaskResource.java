@@ -54,7 +54,7 @@ public interface TaskResource {
     Task load(@PathParam("id") Long id) throws APIException;
 
     /**
-     * Retrieve the tasks that match with the given criteria
+     * Retrieve the tasks that match with the given criteria.
      * 
      * @param page
      *            for pagination is 0 based number(<i>nullable</i>)

@@ -52,6 +52,8 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * The Class OpenStackAuthenticationProvider.
+ *
+ * @author fernandolopezaguilar
  */
 public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
@@ -87,10 +89,11 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
      * The log.
      */
     private static Logger log = LoggerFactory.getLogger(OpenStackAuthenticationProvider.class);
+
     /**
      * Thread to recover a valid X-Auth-Token each 24 hour.
      */
-    OpenStackAuthenticationToken oSAuthToken = null;
+    private OpenStackAuthenticationToken oSAuthToken;
 
     /**
      * Jersey client used to validates token to OpenStack.
@@ -101,7 +104,9 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
      * Default constructor.
      */
     public OpenStackAuthenticationProvider() {
+
         client = Client.create();
+        oSAuthToken = null;
     }
 
     /*
@@ -205,7 +210,9 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
      * @param authenticateResponse
      * @return
      */
-    private PaasManagerUser validateUserToken(String token, String tenantId, AuthenticateResponse authenticateResponse) {
+    private PaasManagerUser validateUserToken(String token, String tenantId,
+                                              AuthenticateResponse authenticateResponse) {
+
         AuthenticateResponse responseAuth = authenticateResponse;
 
         if (!tenantId.equals(responseAuth.getToken().getTenant().getId())) {
@@ -294,6 +301,20 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    /**
+     * Getter the oSAuthToken.
+     */
+    public OpenStackAuthenticationToken getoSAuthToken() {
+        return oSAuthToken;
+    }
+
+    /**
+     * Setter the oSAuthToken.
+     */
+    public void setoSAuthToken(OpenStackAuthenticationToken oSAuthToken) {
+        this.oSAuthToken = oSAuthToken;
     }
 
 }

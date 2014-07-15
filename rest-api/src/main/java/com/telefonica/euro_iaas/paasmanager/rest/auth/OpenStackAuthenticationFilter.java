@@ -54,7 +54,7 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 /**
  * The Class OpenStackAuthenticationFilter.
  * 
- * @author jesus movilla
+ * @author fernandolopezaguilar
  */
 public class OpenStackAuthenticationFilter extends GenericFilterBean {
 
@@ -63,7 +63,9 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
     /**
      * The authentication details source.
      */
-    private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
+    private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource =
+            new WebAuthenticationDetailsSource();
+
     /**
      * The ignore failure.
      */
@@ -129,13 +131,12 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
         this.authenticationEntryPoint = pAuthenticationEntryPoint;
     }
 
-    /*
+    /**
      * (non-Javadoc) @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse,
-     * javax.servlet.FilterChain)
+     * javax.servlet.FilterChain).
      */
-
     public final void doFilter(final ServletRequest req, final ServletResponse res, final FilterChain chain)
-            throws IOException, ServletException {
+        throws IOException, ServletException {
 
         final boolean debug = logger.isDebugEnabled();
 

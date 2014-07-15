@@ -40,8 +40,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
  */
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    /*
-     * (non-Javadoc)
+    /**
+     * (non-Javadoc).
      * @see org.springframework.security.web.AuthenticationEntryPoint#commence( javax.servlet.http.HttpServletRequest,
      * javax.servlet.http.HttpServletResponse, org.springframework.security.core.AuthenticationException)
      */

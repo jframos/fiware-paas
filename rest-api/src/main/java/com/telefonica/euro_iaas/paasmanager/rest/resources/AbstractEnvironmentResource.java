@@ -39,7 +39,7 @@ import javax.ws.rs.core.MediaType;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
-/*
+/**
  * Provides a rest api to works with Environment.
  * @author Jesus M. Movilla
  */

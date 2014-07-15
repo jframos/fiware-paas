@@ -34,7 +34,7 @@ import javax.ws.rs.core.MediaType;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
-/*
+/**
  * Provides a rest api to works with ProductRelease.
  */
 public interface ProductReleaseDBResource {
@@ -43,16 +43,20 @@ public interface ProductReleaseDBResource {
      * Add the selected product release in to the SDC's catalog. If the Environment already exists, then add the new
      * Release.
      * 
-     * @param ProductReleaseDto
+     * @param productReleaseDto
      *            <ol>
      *            <li>The TierDto: contains the information about the product</li>
      *            </ol>
      */
-
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    void insert(ProductReleaseDto ProductReleaseDto);
+    void insert(ProductReleaseDto productReleaseDto);
 
+    /**
+     * Delete a product instance.
+     * @param productReleaseName    The name of the product release.
+     * @throws APIException
+     */
     @DELETE
     @Path("/{productReleaseName}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
