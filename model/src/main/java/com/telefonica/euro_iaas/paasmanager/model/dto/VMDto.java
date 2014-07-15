@@ -99,4 +99,24 @@ public class VMDto {
         this.ip = ip;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[VMDto]");
+       sb.append("[domain = ").append(this.domain).append("]");
+       sb.append("[fqn = ").append(this.fqn).append("]");
+       sb.append("[hostname = ").append(this.hostname).append("]");
+       sb.append("[ip = ").append(this.ip).append("]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+
+    
+    
 }

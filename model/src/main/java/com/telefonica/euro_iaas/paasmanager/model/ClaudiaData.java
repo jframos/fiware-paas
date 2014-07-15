@@ -93,4 +93,24 @@ public class ClaudiaData {
         this.user = user;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[ClaudiaData]");
+       sb.append("[org = ").append(this.org).append("]");
+       sb.append("[vdc = ").append(this.vdc).append("]");
+       sb.append("[service = ").append(this.service).append("]");
+       sb.append("[user = ").append(this.user).append("]");
+       sb.append("[replica = ").append(this.replica).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 }

@@ -156,5 +156,25 @@ public class SubNetwork {
 
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[SubNetwork]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("[name = ").append(this.name).append("]");
+       sb.append("[region = ").append(this.region).append("]");
+       sb.append("[vdc = ").append(this.vdc).append("]");
+       sb.append("[cidr = ").append(this.cidr).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 
 }

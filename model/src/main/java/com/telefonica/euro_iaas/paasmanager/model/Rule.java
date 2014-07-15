@@ -205,4 +205,27 @@ public class Rule {
        return result;
    }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[Rule]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("[ipProtocol = ").append(this.ipProtocol).append("]");
+       sb.append("[fromPort = ").append(this.fromPort).append("]");
+       sb.append("[toPort = ").append(this.toPort).append("]");
+       sb.append("[sourceGroup = ").append(this.sourceGroup).append("]");
+       sb.append("[cidr = ").append(this.cidr).append("]");
+       sb.append("[idparent = ").append(this.idparent).append("]");
+       sb.append("[idrule = ").append(this.idrule).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 }

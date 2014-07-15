@@ -241,4 +241,25 @@ public class OS {
             description = jsonNode.getString("description");
 
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[OS]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("[v = ").append(this.v).append("]");
+       sb.append("[osType = ").append(this.osType).append("]");
+       sb.append("[name = ").append(this.name).append("]");
+       sb.append("[description = ").append(this.description).append("]");
+       sb.append("[version = ").append(this.version).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
 }

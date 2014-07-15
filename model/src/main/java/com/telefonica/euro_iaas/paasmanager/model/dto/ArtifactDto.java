@@ -189,4 +189,24 @@ public class ArtifactDto {
         return artifact;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[ArtifactDto]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("[name = ").append(this.name).append("]");
+       sb.append("[path = ").append(this.path).append("]");
+       sb.append("[productReleaseDto = ").append(this.productReleaseDto).append("]");
+       sb.append("[attributes = ").append(this.attributes).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 }

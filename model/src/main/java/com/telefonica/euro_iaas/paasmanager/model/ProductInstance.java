@@ -105,4 +105,21 @@ public class ProductInstance extends InstallableInstance implements Comparable<P
 
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[ProductInstance]");
+       sb.append("[productRelease = ").append(this.productRelease).append("]");
+       sb.append("[taskId = ").append(this.taskId).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 }
