@@ -87,7 +87,7 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
     public Task install(String org, String vdc, String environmentInstance,
 
     ApplicationReleaseDto applicationReleaseDto, String callback) throws APIException {
-        log.debug("Install aplication " + applicationReleaseDto.getApplicationName() + " "
+        log.info("Install aplication " + applicationReleaseDto.getApplicationName() + " "
                 + applicationReleaseDto.getVersion() + " on " + " enviornment " + environmentInstance
                 + " with artificats " + applicationReleaseDto.getArtifactsDto().size());
 
@@ -95,7 +95,7 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
         Task task = null;
         try {
             validator.validateInstall(vdc, environmentInstance, applicationReleaseDto);
-            log.debug("Application validated");
+            log.info("Application validated");
         } catch (Exception ex) {
             throw new APIException(ex);
         }
@@ -171,7 +171,7 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
             
         try {
              validator.validateUnInstall(vdc, environmentName, applicationName);
-             log.debug("Application validated");
+             log.info("Application validated");
         } catch (Exception ex) {
              throw new APIException(ex);
        }

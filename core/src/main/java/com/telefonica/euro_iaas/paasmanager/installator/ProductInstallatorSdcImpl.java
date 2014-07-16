@@ -68,7 +68,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
             ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException,
             OpenStackException {
 
-        log.debug("Install software " + productRelease.getProduct() + "-" + productRelease.getVersion());
+        log.info("Install software " + productRelease.getProduct() + "-" + productRelease.getVersion());
         String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
 
         // From Paasmanager ProductRelease To SDC ProductInstanceDto
@@ -87,7 +87,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         // SDCClient client = new SDCClient();
         com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService pIService = sDCClient
                 .getProductInstanceService(sdcServerUrl, SDC_SERVER_MEDIATYPE);
-        log.debug("sdc url " + sdcServerUrl);
+        log.info("sdc url " + sdcServerUrl);
 
         com.telefonica.euro_iaas.sdc.model.Task task = null;
 
@@ -154,7 +154,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
             while (tokens.hasMoreTokens()) {
                 id = tokens.nextToken();
             }
-            log.debug("Install software in productInstance " + productInstanceDto.getProduct().getName() + " task id "
+            log.info("Install software in productInstance " + productInstanceDto.getProduct().getName() + " task id "
                     + id + " " + task.getHref());
 
             productInstance.setTaskId(id);
@@ -192,7 +192,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
     public void installArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact)
             throws ProductInstallatorException, OpenStackException {
 
-        log.debug("Install artifact " + artifact.getName() + " in product " + artifact.getProductRelease().getProduct()
+        log.info("Install artifact " + artifact.getName() + " in product " + artifact.getProductRelease().getProduct()
                 + " for productinstance " + productInstance.getName());
         String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
 
@@ -216,7 +216,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
         com.telefonica.euro_iaas.sdc.model.Task task = service.installArtifact(productInstance.getVdc(),
                 productInstance.getName(), sdcArtifact, null, claudiaData.getUser().getToken());
-        log.debug("Deploying artefact " + artifact.getName() + "with href task " + task.getHref());
+        log.info("Deploying artefact " + artifact.getName() + "with href task " + task.getHref());
 
         StringTokenizer tokens = new StringTokenizer(task.getHref(), "/");
         String id = "";
@@ -224,7 +224,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         while (tokens.hasMoreTokens()) {
             id = tokens.nextToken();
         }
-        log.debug("Install artifact in productInstance " + productInstance.getProductRelease().getProduct()
+        log.info("Install artifact in productInstance " + productInstance.getProductRelease().getProduct()
                 + " task id " + id + " " + task.getHref());
 
         productInstance.setTaskId(id);

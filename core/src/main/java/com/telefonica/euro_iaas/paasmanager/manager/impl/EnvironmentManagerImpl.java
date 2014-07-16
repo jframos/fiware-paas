@@ -54,7 +54,7 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
     public Environment create(ClaudiaData claudiaData, Environment environment)
             throws InvalidEnvironmentRequestException {
 
-        log.debug("Creating environment " + environment.getName() + " with description " + environment.getDescription()
+        log.info("Creating environment " + environment.getName() + " with description " + environment.getDescription()
                 + " org " + environment.getOrg() + " vdc " + environment.getVdc() + " tiers  " + environment.getTiers());
 
         Environment environmentDB = new Environment();
@@ -68,7 +68,7 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
             environmentDB.setOvf(environment.getOvf());
         }
         if (environment.getTiers() != null) {
-            log.debug("Number of Tiers " + environment.getTiers().size());
+            log.info("Number of Tiers " + environment.getTiers().size());
             for (Tier tier : environment.getTiers()) {
                 Tier tierDB = null;
 
@@ -105,7 +105,7 @@ public class EnvironmentManagerImpl implements EnvironmentManager {
 
         List<Tier> tiers = new ArrayList<Tier>();
         for (Tier tier : environment.getTiers()) {
-            log.debug("Adding tier " + tier.getName() + " " + tier.getNetworks());
+            log.info("Adding tier " + tier.getName() + " " + tier.getNetworks());
             tiers.add(tier);
         }
 

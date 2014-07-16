@@ -60,7 +60,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
     public ProductInstance install(TierInstance tierInstance, ClaudiaData claudiaData, String envName,
             ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException,
             InvalidProductInstanceRequestException, NotUniqueResultException, InvalidEntityException {
-        log.debug("Installing software " + productRelease.getProduct() + " in tier Instance " + tierInstance.getName()
+        log.info("Installing software " + productRelease.getProduct() + " in tier Instance " + tierInstance.getName()
                 + " in vdc " + claudiaData.getVdc());
 
         ProductInstance productInstance = null;
@@ -83,7 +83,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
     }
 
     public void uninstall(ClaudiaData claudiaData, ProductInstance productInstance) throws ProductInstallatorException {
-        log.debug("UnInstalling software " + productInstance.getProductRelease().getProduct());
+        log.info("UnInstalling software " + productInstance.getProductRelease().getProduct());
         try {
             productInstallator.uninstall(claudiaData, productInstance);
         } catch (OpenStackException e) {
@@ -213,7 +213,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
     public void configure(ClaudiaData claudiaData, ProductInstance productInstance, List<Attribute> properties)
             throws InvalidEntityException, AlreadyExistsEntityException, ProductInstallatorException,
             EntityNotFoundException, ProductReconfigurationException {
-        log.debug("Configuring software " + productInstance.getProductRelease().getProduct() + " "
+        log.info("Configuring software " + productInstance.getProductRelease().getProduct() + " "
                 + productInstance.getName());
         try {
             productInstallator.configure(claudiaData, productInstance, properties);

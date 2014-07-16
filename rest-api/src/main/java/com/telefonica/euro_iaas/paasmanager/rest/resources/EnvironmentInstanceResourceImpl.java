@@ -132,10 +132,10 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
 
         EnvironmentInstance environmentInstance = environmentInstanceDto.fromDto();
         Environment environment = environmentInstance.getEnvironment();
-        log.debug("Environment name " + environment.getName() + " " + environment.getVdc() + " " + environment.getOrg()
+        log.info("Environment name " + environment.getName() + " " + environment.getVdc() + " " + environment.getOrg()
                 + " ");
         for (Tier tier : environment.getTiers()) {
-            log.debug("Tier " + tier.getName() + " image " + tier.getImage());
+            log.info("Tier " + tier.getName() + " image " + tier.getImage());
         }
         environmentInstance.setVdc(vdc);
 
@@ -143,7 +143,7 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
         environmentInstance.setDescription(environmentInstanceDto.getDescription());
         environmentInstance.setBlueprintName(environmentInstanceDto.getBlueprintName());
 
-        log.debug("EnvironmentInstance name " + environmentInstance.getBlueprintName() + " vdc "
+        log.info("EnvironmentInstance name " + environmentInstance.getBlueprintName() + " vdc "
                 + environmentInstance.getVdc() + "  description " + environmentInstance.getDescription() + "  status "
                 + environmentInstance.getStatus() + " environment  " + environmentInstance.getEnvironment().getName());
 
@@ -225,7 +225,7 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
      */
     public Task destroy(String org, String vdc, String name, String callback) throws APIException {
 
-        log.debug("Destroy env isntna " + name + " vdc " + vdc);
+        log.info("Destroy env isntna " + name + " vdc " + vdc);
         EnvironmentInstance environmentInstance = null;
         try {
             environmentInstance = environmentInstanceManager.load(vdc, name);

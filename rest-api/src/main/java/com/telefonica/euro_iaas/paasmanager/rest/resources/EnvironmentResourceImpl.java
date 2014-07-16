@@ -171,9 +171,9 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
      * @param claudiaData
      */
     public void addCredentialsToClaudiaData(ClaudiaData claudiaData) {
-        log.debug(systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM));
+        log.info(systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM));
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            log.debug("addCredentialsToClaudiaData to claudia ");
+            log.info("addCredentialsToClaudiaData to claudia ");
             claudiaData.setUser(getCredentials());
             claudiaData.getUser().setTenantId(claudiaData.getVdc());
         }
@@ -190,7 +190,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
     public void insert(String org, String vdc, EnvironmentDto environmentDto) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentDto.getName());
 
-        log.debug("Create an environment " + environmentDto.getName() + " " + environmentDto.getDescription() + " "
+        log.info("Create an environment " + environmentDto.getName() + " " + environmentDto.getDescription() + " "
                 + environmentDto.getVdc() + " " + environmentDto.getOrg() + " " + environmentDto.getTierDtos());
 
         try {
@@ -200,7 +200,7 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
             // try {
             environmentManager.create(claudiaData, environmentDto.fromDto(org, vdc));
         } catch (Exception e) {
-            log.debug(e.getMessage());
+            log.info(e.getMessage());
             throw new APIException(e);
         }
     }

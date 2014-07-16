@@ -139,7 +139,7 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
      * Retrieve the selected tierInstance.
      */
     public TierInstanceDto load(String vdc, String environmentInstanceName, String name) {
-        log.debug("Loading tierinstance " + name + " from environment " + environmentInstanceName);
+        log.info("Loading tierinstance " + name + " from environment " + environmentInstanceName);
         TierInstanceSearchCriteria criteria = new TierInstanceSearchCriteria();
         try {
             EnvironmentInstance envInstance = environmentInstanceManager.load(vdc, environmentInstanceName);
@@ -226,7 +226,7 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
         throws APIException {
 
         try {
-            log.debug("Insert tierinstance " + tierDto.getName() + " from environment " + environmentName);
+            log.info("Insert tierinstance " + tierDto.getName() + " from environment " + environmentName);
             ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                 claudiaData.setUser(getCredentials());
@@ -253,7 +253,7 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
             int replica = obtainReplicaNumber(envInstance, tier) + 1;
             tierInstance.setNumberReplica(replica);
             tierInstance.setName(envInstance.getBlueprintName() + "-" + tier.getName() + "-" + replica);
-            log.debug("New instance " + envInstance.getName() + "-" + tier.getName() + "-" + replica);
+            log.info("New instance " + envInstance.getName() + "-" + tier.getName() + "-" + replica);
 
             validatorTierInstance.validateScaleUpTierInstance(org, vdc, envInstance, tierInstance.getName());
 
@@ -261,12 +261,12 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
             tierInstance.setProductInstances(getProductFirst(envInstance, tierInstance.getTier().getName()));
 
             if (!(isExecutiongTask(vdc, environmentName, tierInstance.getTier().getName()))) {
-                log.debug("Number instances " + tierInstance.getNumberReplica() + " "
+                log.info("Number instances " + tierInstance.getNumberReplica() + " "
                         + tierInstance.getTier().getMaximumNumberInstances());
                 if (tierInstance.getNumberReplica() <= tierInstance.getTier().getMaximumNumberInstances()) {
                     task = createTask(MessageFormat.format("Scale Up Tier Instance {0}", tierInstance.getName()), vdc,
                             environmentName, tierInstance.getName());
-                    log.debug("Creating tier instance " + tierInstance.getName() + " asyncronous");
+                    log.info("Creating tier instance " + tierInstance.getName() + " asyncronous");
                     tierInstanceAsyncManager.create(claudiaData, tierInstance, envInstance, task, callback);
                 } else {
                     log.error("It is not possible to scale. " + "The number maximun of instances has been got");
