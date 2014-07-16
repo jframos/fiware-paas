@@ -54,7 +54,7 @@ class ProductInstanceDto:
         product_instance = Element('productInstanceDto')
         product_instance.append(self.product_release.to_xml())
         vm = SubElement(product_instance, 'vm')
-        ip = SubElement(vm, 'ip')
+        ip = SubElement(vm, 'hostname')
         ip.text = self.ip
         for att in self.attributes:
             attri = SubElement(product_instance, 'attributes')

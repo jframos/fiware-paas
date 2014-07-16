@@ -35,14 +35,14 @@ if __name__ == "__main__":
     #cmd_args = sys.argv
     total = 3
     cmd_args = []
-    cmd_args.append('hola')
+    cmd_args.append('hoddla')
     cmd_args.append('add')
     #cosmos_injection_node
     #cosmos_master_node
     #cosmos_slave_node
-    cmd_args.append('130.206.82.162')
-    cmd_args.append('git')
-    cmd_args.append('1.7')
+    cmd_args.append('ddfa24523-tiernamd-1-000115')
+    cmd_args.append('tomcat')
+    cmd_args.append('6')
     cmd_args.append('sdccoregroupid=cluster_name;cluster_name=test;openports=50030 50031 14000')
 
 

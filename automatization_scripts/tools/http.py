@@ -161,11 +161,12 @@ def processTask(headers, taskdom):
     try:
         print taskdom
         href = taskdom["@href"]
+        print href
         status = taskdom["@status"]
-        while status == 'RUNNING':
-            data1 = get_task(href, headers)
-            data = json.loads(data1)
-            status = data["@status"]
+       # while status == 'RUNNING':
+         #   data1 = get_task(href, headers)
+          #  data = json.loads(data1)
+         #   status = data["@status"]
 
         if status == 'ERROR':
             error = taskdom["error"]

@@ -43,8 +43,8 @@ instance_request = EnvironmentInstanceRequest(config['keystone_url'], config['pa
     config['user'], config['password'],
     config['vdc'], config['sdc_url'])
 
-environment_name = 'ddfasdfffad'
-blueprintname = "dgssfddf2"
+environment_name = 'xxxxddd'
+blueprintname = "ddfa2452ede3ff"
 network = "aad;bbd"
 
 
