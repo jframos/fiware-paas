@@ -130,7 +130,7 @@
     </logger>
     
     <logger name="aspectLogger" additivity="false">
-        <level value="DEBUG"/>
+        <level value="INFO"/>
         <appender-ref ref="aspectAppender"/>
     </logger>
 
