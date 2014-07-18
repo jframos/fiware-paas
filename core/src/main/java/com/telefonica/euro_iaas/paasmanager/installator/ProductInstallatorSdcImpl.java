@@ -146,8 +146,10 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
         productInstance.setStatus(Status.INSTALLING);
         try {
+        	log.info ("Installing " +  productRelease.getProduct() + "-" + productRelease.getVersion());
             task = pIService.install(tierInstance.getVdc(), productInstanceDto, null, claudiaData.getUser().getToken());
-
+            log.info ("task " + task.getHref());
+            log.info ("task " + task.getResult());
             StringTokenizer tokens = new StringTokenizer(task.getHref(), "/");
             String id = "";
 
