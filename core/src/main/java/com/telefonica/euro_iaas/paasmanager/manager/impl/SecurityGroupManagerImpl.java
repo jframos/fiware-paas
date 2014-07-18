@@ -53,7 +53,7 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
 
         SecurityGroup securityGroupDB = new SecurityGroup();
         String idSecurityGroup = firewallingClient.deploySecurityGroup(region, token, vdc, securityGroup);
-        log.debug("Create security group " + securityGroup.getName() + " with idSecurityGroup " + idSecurityGroup);
+        log.info("Create security group " + securityGroup.getName() + " with idSecurityGroup " + idSecurityGroup);
 
         if (securityGroup.getRules() != null) {
             for (Rule rule : securityGroup.getRules()) {

@@ -219,20 +219,20 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         Map<String, Set<String>> map = environment.getNetworksRegion();
 
         for (String net: fedeNetwork) {
-        	log.debug ("Updating tier for net " + net);
+        	log.info ("Updating tier for net " + net);
         	Set<String> regions = map.get(net);
         	for (String region: regions) {
-        		log.debug ("Updating tier for net " + net + " a region " + region);
+        		log.info ("Updating tier for net " + net + " a region " + region);
         		Network network = networkManager.load(net, claudiaData.getVdc(), region);
         		network.setFederatedNetwork(true);
         		if (range == null) {
         			range = infrastructureManager.getFederatedRange(claudiaData, region);
-        			log.debug ("Updating tier for net " + net + " a region " + region + " " + range);
+        			log.info ("Updating tier for net " + net + " a region " + region + " " + range);
         			network.setFederatedRange(range+".0/26");
-        			log.debug (" Federate range " + range+".0/26");
+        			log.info (" Federate range " + range+".0/26");
         		} else {
         			network.setFederatedRange(range+".64/26");
-        			log.debug (" Federate range " + range+".64/26");
+        			log.info (" Federate range " + range+".64/26");
         		}        		
         		networkManager.update(network);
         	}
@@ -260,8 +260,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             String newOVF = " ";
             Tier tier = tierManager.loadTierWithProductReleaseAndMetadata(tierInstance.getTier().getName(),
                     tierInstance.getTier().getEnviromentName(), tierInstance.getTier().getVdc());
-            log.debug("The tier " + tier.getName() + " is in bd " + tier.getRegion());
-            log.debug(tier.getProductReleases().toString());
+            log.info("The tier " + tier.getName() + " is in bd " + tier.getRegion());
+            log.info(tier.getProductReleases().toString());
             if ((tier.getProductReleases() != null) && !(tier.getProductReleases().isEmpty())) {
 
                 for (ProductRelease productRelease : tier.getProductReleases()) {
@@ -328,7 +328,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         try {
             instance = environmentInstanceDao.load(name, vdc);
         } catch (Exception e) {
-            log.debug("error to finde enviornmetn instaqnce " + e.getMessage());
+            log.info("error to finde enviornmetn instaqnce " + e.getMessage());
             throw new EntityNotFoundException(EnvironmentInstance.class, "vdc", vdc);
         }
         if (!instance.getVdc().equals(vdc)) {
@@ -467,8 +467,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                 Set<Tier> tiers = new HashSet();
                 for (Tier tier : env.getTiers()) {
                     Tier tierDB = tierManager.loadTierWithNetworks(tier.getName(), env.getVdc(), env.getName());
-                    log.debug ("tier " + tier.getName() + " " + env.getVdc() + " " + tier.getRegion());
-                    log.debug ("tierDB " + tierDB.getName() + " " + env.getVdc() + " " + tierDB.getRegion());
+                    log.info ("tier " + tier.getName() + " " + env.getVdc() + " " + tier.getRegion());
+                    log.info ("tierDB " + tierDB.getName() + " " + env.getVdc() + " " + tierDB.getRegion());
                     tierDB = updateTierDB(tierDB, tier);
                     tierDB = tierManager.update(tierDB);
 

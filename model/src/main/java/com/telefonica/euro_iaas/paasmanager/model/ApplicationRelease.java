@@ -233,4 +233,25 @@ public class ApplicationRelease {
         this.version = version;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[ApplicationRelease]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("[name = ").append(this.name).append("]");
+       sb.append("[version = ").append(this.version).append("]");
+       sb.append("[description = ").append(this.description).append("]");
+       sb.append("[transitableReleases = ").append(this.transitableReleases).append("]");
+       sb.append("[artifacts = ").append(this.artifacts).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 }

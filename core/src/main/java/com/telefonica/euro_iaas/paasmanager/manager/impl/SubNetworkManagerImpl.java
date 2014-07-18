@@ -53,7 +53,7 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
      * @params network
      */
     public SubNetwork create(SubNetwork subNetwork) throws InvalidEntityException, AlreadyExistsEntityException {
-        log.debug("Create subnetwork " + subNetwork.getName());
+        log.info("Create subnetwork " + subNetwork.getName());
 
         try {
             subNetwork = subNetworkDao.load(subNetwork.getName(), subNetwork.getVdc(), subNetwork.getRegion());
@@ -77,7 +77,7 @@ public class SubNetworkManagerImpl implements SubNetworkManager {
      * @params subNetwork
      */
     public void delete(SubNetwork subNetwork) throws EntityNotFoundException, InvalidEntityException {
-        log.debug("Destroying the subnetwork " + subNetwork.getName());
+        log.info("Destroying the subnetwork " + subNetwork.getName());
         try {
             subNetworkDao.remove(subNetwork);
         } catch (Exception e) {

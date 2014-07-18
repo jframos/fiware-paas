@@ -75,7 +75,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     public TierInstance create(ClaudiaData data, String envName, TierInstance tierInstance)
             throws InvalidEntityException, InfrastructureException {
-        log.debug("Inserting in database for tier instance " + tierInstance.getName() + " "
+        log.info("Inserting in database for tier instance " + tierInstance.getName() + " "
                 + tierInstance.getNetworkInstances().size() + " " + tierInstance.getTier().getFloatingip());
 
         TierInstance tierInstanceDB = new TierInstance();
@@ -91,7 +91,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         Tier tierDB = null;
         try {
             tierDB = tierManager.load(tierInstance.getTier().getName(), data.getVdc(), envName);
-            log.debug("The tier already exists " + tierDB.getName() + " " + tierDB.getFloatingip() + " " + envName
+            log.info("The tier already exists " + tierDB.getName() + " " + tierDB.getFloatingip() + " " + envName
                     + " " + data.getVdc());
         } catch (EntityNotFoundException e) {
             log.error("Error to load the Tier " + tierInstance.getTier().getName() + " : " + e.getMessage());
@@ -156,7 +156,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
         log.info("Creating tier instance " + tierInstance.getName() + " from tier " + tierInstance.getTier().getName());
         if (tierInstance.getOvf() == null) {
-            log.debug("The OVF is null");
+            log.info("The OVF is null");
         }
         // Needed to recover the number of replicas TOBEDONE
         int replicaNumber = tierInstance.getNumberReplica();
@@ -292,7 +292,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     }
 
     public TierInstance getTierInstanceToConfigure(EnvironmentInstance environmentInstance, Tier tier) {
-        log.debug("getTierInstanceToConfigure for tier " + tier.getName());
+        log.info("getTierInstanceToConfigure for tier " + tier.getName());
         String productName = getProductNameBalanced(tier);
         if (productName == null) {
 
@@ -316,7 +316,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     public TierInstance getTierInstanceWithTier(EnvironmentInstance enviromentInstance, Tier tier) {
         if (enviromentInstance.getTierInstances() != null) {
             for (TierInstance tierInstance : enviromentInstance.getTierInstances()) {
-                log.debug("Looking for " + tier.getName() + " tier instance " + tierInstance.getName());
+                log.info("Looking for " + tier.getName() + " tier instance " + tierInstance.getName());
                 if (tierInstance.getTier().getName().equals(tier.getName())) {
                     return tierInstance;
                 }
@@ -381,7 +381,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             return;
         }
 
-        log.debug("Tier instance to reconfigure since it is a balancer " + tierInstanceToConfigured.getName()
+        log.info("Tier instance to reconfigure since it is a balancer " + tierInstanceToConfigured.getName()
                 + " with tier " + tierInstanceToConfigured.getTier().getName());
         try {
             update(claudiaData, tierInstanceToConfigured, environmentInstance);
@@ -496,7 +496,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     public void update(ClaudiaData claudiaData, TierInstance tierInstance, EnvironmentInstance envInstance)
             throws ProductInstallatorException, InvalidEntityException, AlreadyExistsEntityException,
             EntityNotFoundException, ProductReconfigurationException {
-        log.debug("Updating the tier instance " + tierInstance.getTier().getName());
+        log.info("Updating the tier instance " + tierInstance.getTier().getName());
         Tier tier = null;
         try {
             tier = tierManager.load(tierInstance.getTier().getName(), claudiaData.getVdc(), envInstance
@@ -511,7 +511,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
             for (ProductInstance productInstance : tierInstance.getProductInstances()) {
 
-                log.debug("Configure productInstance " + productInstance.getProductRelease().getProduct());
+                log.info("Configure productInstance " + productInstance.getProductRelease().getProduct());
                 List<Attribute> atributes = getPICAttributesOVF(tierInstance.getOvf());
                 productInstanceManager.configure(claudiaData, productInstance, atributes);
             }

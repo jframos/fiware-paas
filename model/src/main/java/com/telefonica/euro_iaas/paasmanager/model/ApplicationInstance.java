@@ -133,4 +133,21 @@ public class ApplicationInstance extends InstallableInstance {
         this.name = applicationRelease.getName() + "-" + environmentInstance.getBlueprintName();
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[ApplicationInstance]");
+       sb.append("[applicationRelease = ").append(this.applicationRelease).append("]");
+       sb.append("[environmentInstance = ").append(this.environmentInstance).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 }

@@ -404,4 +404,27 @@ public class TierInstance extends InstallableInstance {
 
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[TierInstance]");
+       sb.append("[tier = ").append(this.tier).append("]");
+       sb.append("[ovf = ").append(this.ovf).append("]");
+       sb.append("[vapp = ").append(this.vapp).append("]");
+       sb.append("[taskId = ").append(this.taskId).append("]");
+       sb.append("[numberReplica = ").append(this.numberReplica).append("]");
+       sb.append("[vm = ").append(this.vm).append("]");
+       sb.append("[productInstances = ").append(this.productInstances).append("]");
+       sb.append("[networkInstances = ").append(this.networkInstances).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 }

@@ -352,7 +352,29 @@ public class Environment {
     		}
     	}
     	return null;
+    }
+
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[Environment]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("[name = ").append(this.name).append("]");
+       sb.append("[org = ").append(this.org).append("]");
+       sb.append("[description = ").append(this.description).append("]");
+       sb.append("[vdc = ").append(this.vdc).append("]");
+       sb.append("[ovf = ").append(this.ovf).append("]");
+       sb.append("[tiers = ").append(this.tiers).append("]");
+       sb.append("]");
+       return sb.toString();
     } 
 
 
+    
+    
 }

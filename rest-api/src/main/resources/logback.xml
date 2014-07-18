@@ -10,7 +10,7 @@
         </rollingPolicy>
 
         <encoder>
-            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %C{0} | op=%M | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -23,7 +23,7 @@
         </rollingPolicy>
 
         <encoder>
-            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %C{0} | op=%M | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -37,7 +37,7 @@
         </rollingPolicy>
 
         <encoder>
-            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %C{0} | op=%M | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -50,7 +50,7 @@
             <fileNamePattern>${jetty.base}/logs/authentication.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
         <encoder>
-            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %C{0} | op=%M | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -62,7 +62,7 @@
             <fileNamePattern>${jetty.base}/logs/install.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
         <encoder>
-            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %C{0} | op=%M | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -74,7 +74,7 @@
             <fileNamePattern>${jetty.base}/logs/util.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
         <encoder>
-            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %C{0} | op=%M | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -86,34 +86,52 @@
             <fileNamePattern>${jetty.base}/logs/infrastructure.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
         <encoder>
-            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %C{0} | op=%M | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
+            </pattern>
+        </encoder>
+    </appender>
+    
+    <appender name="aspectAppender"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${jetty.base}/logs/paasmanager.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${jetty.base}/logs/paasmanager.%d{yyyy-MM-dd}.gz</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | %m%n
             </pattern>
         </encoder>
     </appender>
 
 
-    <logger name="com.telefonica.euro_iaas.paasmanager.claudia" additivity="true" value="DEBUG">
+    <logger name="com.telefonica.euro_iaas.paasmanager.claudia" additivity="true" value="INFO">
         <appender-ref ref="infrastructureAppender"/>
     </logger>
 
-    <logger name="com.telefonica.euro_iaas.paasmanager.installator" additivity="true" value="DEBUG">
+    <logger name="com.telefonica.euro_iaas.paasmanager.installator" additivity="true" value="INFO">
         <appender-ref ref="installAppender"/>
     </logger>
 
-    <logger name="com.telefonica.euro_iaas.paasmanager.util" additivity="true" value="DEBUG">
+    <logger name="com.telefonica.euro_iaas.paasmanager.util" additivity="true" value="INFO">
         <appender-ref ref="utilAppender"/>
     </logger>
 
-    <logger name="com.telefonica.euro_iaas.paasmanager.rest.auth" additivity="false" value="DEBUG">
+    <logger name="com.telefonica.euro_iaas.paasmanager.rest.auth" additivity="false" value="INFO">
         <appender-ref ref="authAppender"/>
     </logger>
 
-    <logger name="com.telefonica.euro_iaas.paasmanager.manager" additivity="true" value="DEBUG">
+    <logger name="com.telefonica.euro_iaas.paasmanager.manager" additivity="true" value="INFO">
         <appender-ref ref="managerAppender"/>
     </logger>
 
-    <logger name="com.telefonica.euro_iaas.paasmanager.rest.resources" additivity="true" value="DEBUG">
+    <logger name="com.telefonica.euro_iaas.paasmanager.rest.resources" additivity="true" value="INFO">
         <appender-ref ref="restAppender"/>
+    </logger>
+    
+    <logger name="aspectLogger" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="aspectAppender"/>
     </logger>
 
 

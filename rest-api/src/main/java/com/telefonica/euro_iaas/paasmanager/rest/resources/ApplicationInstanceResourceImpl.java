@@ -87,7 +87,7 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
     public Task install(String org, String vdc, String environmentInstance,
 
     ApplicationReleaseDto applicationReleaseDto, String callback) throws APIException {
-        log.debug("Install aplication " + applicationReleaseDto.getApplicationName() + " "
+        log.info("Install aplication " + applicationReleaseDto.getApplicationName() + " "
                 + applicationReleaseDto.getVersion() + " on " + " enviornment " + environmentInstance
                 + " with artificats " + applicationReleaseDto.getArtifactsDto().size());
 
@@ -95,7 +95,7 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
         Task task = null;
         try {
             validator.validateInstall(vdc, environmentInstance, applicationReleaseDto);
-            log.debug("Application validated");
+            log.info("Application validated");
         } catch (Exception ex) {
             throw new APIException(ex);
         }
@@ -112,6 +112,19 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
 
     }
 
+    /**
+     * Find all application instances installed in a environment instance.
+     * @param page  The page to show the data.
+     * @param pageSize  The size of the information to return.
+     * @param orderBy   The order to be formatted.
+     * @param orderType The type of order to apply.
+     * @param status    The status of the operation.
+     * @param vdc   The id of the vdc.
+     * @param environmentInstance   The id of the environment instance.
+     * @param productInstanceName   the name of the product instance.
+     * @param applicationName   The name of the application.
+     * @return  The list of all application instances.
+     */
     public List<ApplicationInstance> findAll(Integer page, Integer pageSize, String orderBy, String orderType,
             List<Status> status, String vdc, String environmentInstance, String productInstanceName,
             String applicationName) {
@@ -141,13 +154,24 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
 
     }
 
-    public Task uninstall(String org, String vdc, String environmentName, String applicationName, String callback) {
+    /**
+     * Uninstall an specific application in a environment instance.
+     * @param org   The organization.
+     * @param vdc   The VDC.
+     * @param environmentName   The name of the environment.
+     * @param applicationName   The name of the application.
+     * @param callback  The url of the callback to return.
+     * @return  The task to follow the execution of the task.
+     * @throws APIException The exception if the information cannot be found.
+     */
+    public Task uninstall(String org, String vdc, String environmentName, String applicationName, String callback)
+        throws APIException {
 
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
             
         try {
              validator.validateUnInstall(vdc, environmentName, applicationName);
-             log.debug("Application validated");
+             log.info("Application validated");
         } catch (Exception ex) {
              throw new APIException(ex);
        }
@@ -159,7 +183,7 @@ public class ApplicationInstanceResourceImpl implements ApplicationInstanceResou
     }
 
     /**
-     * Find an applicationinstance by name and vdc
+     * Find an applicationinstance by name and vdc.
      * 
      * @param vdc
      *            , the vdc the app belongs to

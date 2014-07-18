@@ -52,7 +52,7 @@ import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceV
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
- * default Environment implementation
+ * default Environment implementation.
  * 
  * @author Henar Mu�oz
  */
@@ -75,6 +75,13 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
 
     private static Logger log = LoggerFactory.getLogger(EnvironmentManagerImpl.class);
 
+    /**
+     * Delete an specific environment instance.
+     * @param org   The organization which contains the environment instance.
+     * @param vdc   The vdc which contains the environment instance.
+     * @param envName The name of the environment instance.
+     * @throws APIException Any exception that throws during the operation.
+     */
     public void delete(String org, String vdc, String envName) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
         try {
@@ -99,6 +106,21 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
      * environment.setTiers(tierResult); result.add(environment); } return result; }
      */
 
+    /**
+     * Find all environment resource.
+     * @param org   The organization which contains the environment instance.
+     * @param vdc   The vdc which contains the environment instance.
+     * @param page
+     *            for pagination is 0 based number(<i>nullable</i>)
+     * @param pageSize
+     *            for pagination, the number of items retrieved in a query (<i>nullable</i>)
+     * @param orderBy
+     *            the file to order the search (id by default <i>nullable</i>)
+     * @param orderType
+     *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
+     * @return
+     *            The list of all environment.
+     */
     public List<EnvironmentDto> findAll(String org, String vdc, Integer page, Integer pageSize, String orderBy,
             String orderType) {
         EnvironmentSearchCriteria criteria = new EnvironmentSearchCriteria();
@@ -130,6 +152,10 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
         return envsDto;
     }
 
+    /**
+     * Get the credentials of a user.
+     * @return  The credentials.
+     */
     public PaasManagerUser getCredentials() {
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
             return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -145,19 +171,26 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
      * @param claudiaData
      */
     public void addCredentialsToClaudiaData(ClaudiaData claudiaData) {
-        log.debug(systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM));
+        log.info(systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM));
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
-            log.debug("addCredentialsToClaudiaData to claudia ");
+            log.info("addCredentialsToClaudiaData to claudia ");
             claudiaData.setUser(getCredentials());
             claudiaData.getUser().setTenantId(claudiaData.getVdc());
         }
 
     }
 
+    /**
+     * Insert a new environment resource.
+     * @param org   The organization which contains the environment instance.
+     * @param vdc   The vdc which contains the environment instance.
+     * @param environmentDto    The new environment resource.
+     * @throws APIException
+     */
     public void insert(String org, String vdc, EnvironmentDto environmentDto) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentDto.getName());
 
-        log.debug("Create an environment " + environmentDto.getName() + " " + environmentDto.getDescription() + " "
+        log.info("Create an environment " + environmentDto.getName() + " " + environmentDto.getDescription() + " "
                 + environmentDto.getVdc() + " " + environmentDto.getOrg() + " " + environmentDto.getTierDtos());
 
         try {
@@ -167,11 +200,19 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
             // try {
             environmentManager.create(claudiaData, environmentDto.fromDto(org, vdc));
         } catch (Exception e) {
-            log.debug(e.getMessage());
+            log.info(e.getMessage());
             throw new APIException(e);
         }
     }
 
+    /**
+     * Find a specific environment resource.
+     * @param org   The organization which contains the environment instance.
+     * @param vdc   The vdc which contains the environment instance.
+     * @param name  The name of the environment resource.
+     * @return  The details information of the environment resource.
+     * @throws APIException Any exception happened during the process.
+     */
     public EnvironmentDto load(String org, String vdc, String name) throws APIException {
 
         EnvironmentSearchCriteria criteria = new EnvironmentSearchCriteria();

@@ -28,11 +28,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.slf4j.MDC;
 
+/**
+ *
+ */
 @XmlRootElement
 public class ErrorResponseConverter {
 
-    String message;
-    Integer code;
+    private String message;
+    private Integer code;
 
     public String getMessage() {
         return message;
@@ -50,6 +53,10 @@ public class ErrorResponseConverter {
         this.code = code;
     }
 
+    /**
+     * Extract the information of the cause in order to know the code and the message.
+     * @param cause The throwable cause of the error.
+     */
     public ErrorResponseConverter(Throwable cause) {
 
         ErrorCode errorCode = ErrorCode.find(cause.toString());

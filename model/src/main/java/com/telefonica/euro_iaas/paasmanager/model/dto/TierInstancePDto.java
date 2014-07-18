@@ -103,4 +103,24 @@ public class TierInstancePDto {
     public void setVM(VMDto vm) {
         this.vm = vm;
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[TierInstancePDto]");
+       sb.append("[tierInstanceName = ").append(this.tierInstanceName).append("]");
+       sb.append("[status = ").append(this.status).append("]");
+       sb.append("[taskId = ").append(this.taskId).append("]");
+       sb.append("[productInstanceDtos = ").append(this.productInstanceDtos).append("]");
+       sb.append("[vm = ").append(this.vm).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
 }

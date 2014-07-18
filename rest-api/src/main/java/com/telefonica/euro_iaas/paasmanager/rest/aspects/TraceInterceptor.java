@@ -22,31 +22,27 @@
  * </p>
  */
 
-package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
+package com.telefonica.euro_iaas.paasmanager.rest.aspects;
 
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
+import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.logging.Log;
+import org.springframework.aop.interceptor.CustomizableTraceInterceptor;
 
+@SuppressWarnings("serial")
+public class TraceInterceptor extends CustomizableTraceInterceptor {
 
-/**
- * Validator.
- *
- * @author henar
- */
-public interface ResourceValidator {
-    /**
-     * It validates a name.
-     *
-     * @param name  The name to validate.
-     * @throws InvalidEntityException
-     */
-    void validateName(String name) throws InvalidEntityException;
+    protected void writeToLog(Log logger, String message, Throwable ex) {
+        if(ex!=null){
+            logger.error(ex);
+        }else if (message.contains("ENTER")) {
+            logger.info(message);
+        } else if (message.contains("EXIT")) {
+            logger.debug(message);
+        }
+    }
 
-    /**
-     * It validates a description.
-     *
-     * @param name  The name to validate.
-     * @throws InvalidEntityException
-     */
-    void validateDescription(String name) throws InvalidEntityException;
+    protected boolean isInterceptorEnabled(MethodInvocation invocation, Log logger) {
+        return true;
+    }
 }

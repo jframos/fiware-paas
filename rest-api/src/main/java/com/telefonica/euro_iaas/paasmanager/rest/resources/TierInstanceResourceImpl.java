@@ -135,8 +135,11 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
 
     }
 
+    /**
+     * Retrieve the selected tierInstance.
+     */
     public TierInstanceDto load(String vdc, String environmentInstanceName, String name) {
-        log.debug("Loading tierinstance " + name + " from environment " + environmentInstanceName);
+        log.info("Loading tierinstance " + name + " from environment " + environmentInstanceName);
         TierInstanceSearchCriteria criteria = new TierInstanceSearchCriteria();
         try {
             EnvironmentInstance envInstance = environmentInstanceManager.load(vdc, environmentInstanceName);
@@ -150,6 +153,9 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
 
     }
 
+    /**
+     * Update a TierInstance.
+     */
     public Task update(String org, String vdc, String environmentInstance, TierInstanceDto tierInstanceDto,
             String callback) {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentInstance);
@@ -174,6 +180,9 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
         return task;
     }
 
+    /**
+     * Delete an environment Instance from a payload.
+     */
     public Task removeTierInstance(String org, String vdc, String environmentInstance, String tierInstanceName,
             String callback) throws APIException {
 
@@ -210,11 +219,14 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
         return task;
     }
 
+    /**
+     * Creates a new TierInstance.
+     */
     public Task insert(String org, String vdc, String environmentName, TierDto tierDto, String callback)
-            throws APIException {
+        throws APIException {
 
         try {
-            log.debug("Insert tierinstance " + tierDto.getName() + " from environment " + environmentName);
+            log.info("Insert tierinstance " + tierDto.getName() + " from environment " + environmentName);
             ClaudiaData claudiaData = new ClaudiaData(org, vdc, environmentName);
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                 claudiaData.setUser(getCredentials());
@@ -241,7 +253,7 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
             int replica = obtainReplicaNumber(envInstance, tier) + 1;
             tierInstance.setNumberReplica(replica);
             tierInstance.setName(envInstance.getBlueprintName() + "-" + tier.getName() + "-" + replica);
-            log.debug("New instance " + envInstance.getName() + "-" + tier.getName() + "-" + replica);
+            log.info("New instance " + envInstance.getName() + "-" + tier.getName() + "-" + replica);
 
             validatorTierInstance.validateScaleUpTierInstance(org, vdc, envInstance, tierInstance.getName());
 
@@ -249,12 +261,12 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
             tierInstance.setProductInstances(getProductFirst(envInstance, tierInstance.getTier().getName()));
 
             if (!(isExecutiongTask(vdc, environmentName, tierInstance.getTier().getName()))) {
-                log.debug("Number instances " + tierInstance.getNumberReplica() + " "
+                log.info("Number instances " + tierInstance.getNumberReplica() + " "
                         + tierInstance.getTier().getMaximumNumberInstances());
                 if (tierInstance.getNumberReplica() <= tierInstance.getTier().getMaximumNumberInstances()) {
                     task = createTask(MessageFormat.format("Scale Up Tier Instance {0}", tierInstance.getName()), vdc,
                             environmentName, tierInstance.getName());
-                    log.debug("Creating tier instance " + tierInstance.getName() + " asyncronous");
+                    log.info("Creating tier instance " + tierInstance.getName() + " asyncronous");
                     tierInstanceAsyncManager.create(claudiaData, tierInstance, envInstance, task, callback);
                 } else {
                     log.error("It is not possible to scale. " + "The number maximun of instances has been got");
@@ -302,10 +314,11 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
     private String getOVF(EnvironmentInstance environmentInstance, String tierName) throws EntityNotFoundException {
         TierInstance rTierInstance = getTierInstanceFromTier(environmentInstance, tierName);
 
-        if (rTierInstance == null)
+        if (rTierInstance == null) {
             return "";
-        else
+        } else {
             return rTierInstance.getOvf();
+        }
         /*
          * String name = getTierInstanceName(environmentInstanceName,tierName, replicaNumber); TierInstance
          * tierInstanceFirst = tierInstanceManager.load(name); return tierInstanceFirst.getOvf();
@@ -314,7 +327,7 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
     }
 
     private List<ProductInstance> getProductFirst(EnvironmentInstance environmentInstance, String tierName)
-            throws EntityNotFoundException {
+        throws EntityNotFoundException {
 
         TierInstance tierInstanceFirst = getTierInstanceFromTier(environmentInstance, tierName);
         return tierInstanceFirst.getProductInstances();
@@ -326,7 +339,7 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
     }
 
     /**
-     * Setter of the validator Tier Instance
+     * Setter of the validator Tier Instance.
      * 
      * @param validatorTierInstance
      */
@@ -359,7 +372,7 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
     }
 
     /**
-     * createTask
+     * createTask.
      * 
      * @param description
      * @param vdc
@@ -398,6 +411,9 @@ public class TierInstanceResourceImpl implements TierInstanceResource {
         return rTierInstance;
     }
 
+    /**
+     * Get the user credentials.
+     */
     public PaasManagerUser getCredentials() {
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
             return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

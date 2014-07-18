@@ -39,7 +39,7 @@ import javax.ws.rs.core.MediaType;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
-/*
+/**
  * Provides a rest api to works with ProductRelease.
  */
 public interface ProductReleaseResource {
@@ -48,18 +48,27 @@ public interface ProductReleaseResource {
      * Add the selected product release in to the SDC's catalog. If the Environment already exists, then add the new
      * Release.
      * 
-     * @param ProductReleaseDto
+     * @param productReleaseDto
      *            <ol>
      *            <li>The TierDto: contains the information about the product</li>
      *            </ol>
      */
-
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     void insert(@PathParam("org") String org, @PathParam("vdc") String vdc,
             @PathParam("environment") String environment, @PathParam("tier") String tier,
-            ProductReleaseDto ProductReleaseDto);
+            ProductReleaseDto productReleaseDto);
 
+    /**
+     * Find all product release.
+     * @param page
+     * @param pageSize
+     * @param orderBy
+     * @param orderType
+     * @param environment   Environment which contains the tier.
+     * @param tier  Tier which contains the product to be listed.
+     * @return  All the products contained in the specified tier.
+     */
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     List<ProductReleaseDto> findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize,
@@ -69,7 +78,6 @@ public interface ProductReleaseResource {
     /**
      * Retrieve the selected Tier.
      */
-
     @GET
     @Path("/{productReleaseName}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

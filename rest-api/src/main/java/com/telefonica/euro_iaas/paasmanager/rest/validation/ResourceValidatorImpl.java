@@ -32,12 +32,15 @@ import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
  */
 public class ResourceValidatorImpl implements ResourceValidator {
     
-    private static int DESCRIPTION_LENGHT = 256;
-    private static int NAME_LENGHT = 30;
+    private static final int DESCRIPTION_LENGHT = 256;
+    private static final int NAME_LENGHT = 30;
 
 
     /**
-     * It validates name.
+     * It validates a name.
+     *
+     * @param name  The name to validate.
+     * @throws InvalidEntityException
      */
     public void validateName(String name)  throws InvalidEntityException {
         if (name == null) {
@@ -60,9 +63,12 @@ public class ResourceValidatorImpl implements ResourceValidator {
             throw new InvalidEntityException("The name is not valid. The name has mor than 30 characteres");
         }
     }
-	
+
     /**
-     * it validates the descriptions.
+     * It validates a description.
+     *
+     * @param name  The name to validate.
+     * @throws InvalidEntityException
      */
     public void validateDescription(String name)  throws InvalidEntityException {
         if (name == null) {
@@ -81,6 +87,6 @@ public class ResourceValidatorImpl implements ResourceValidator {
             throw new InvalidEntityException("The description  is not valid. The name has mor than 256 characteres");
         }
 
-	}
+    }
 
 }

@@ -70,13 +70,13 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
             	return false;
             	
             } else {
-            	 log.debug("The network "+  networkInstance.getNetworkName()+ " with id " + networkInstance.getIdNetwork() + " already exists");
+            	 log.info("The network "+  networkInstance.getNetworkName()+ " with id " + networkInstance.getIdNetwork() + " already exists");
             	return true;
             }
             
            
         } else {
-        	log.debug("The network "+  networkInstance.getNetworkName()+ " with id " + networkInstance.getIdNetwork() + " does not exist in DB");
+        	log.info("The network "+  networkInstance.getNetworkName()+ " with id " + networkInstance.getIdNetwork() + " does not exist in DB");
         	return false;
 
         }
@@ -84,12 +84,12 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
     
     public NetworkInstance create (ClaudiaData claudiaData, NetworkInstance networkInstance, String region) throws InfrastructureException, EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
     	networkClient.deployNetwork(claudiaData, networkInstance, region);
-        log.debug("Network isntance " + networkInstance.getNetworkName() + " with vdc " + claudiaData.getVdc()
+        log.info("Network isntance " + networkInstance.getNetworkName() + " with vdc " + claudiaData.getVdc()
                 + ": " + networkInstance.getIdNetwork() + " and federated " + networkInstance.getFederatedRange() + " " + networkInstance.getfederatedNetwork()+  " deployed");
         try {
             createSubNetworksInstance(claudiaData,networkInstance, region);
             networkClient.addNetworkToPublicRouter(claudiaData, networkInstance, region);
-            log.debug("Storing network instance " + networkInstance.getNetworkName() + " vdc "
+            log.info("Storing network instance " + networkInstance.getNetworkName() + " vdc "
                     + claudiaData.getVdc());
             networkInstance = networkInstanceDao.create(networkInstance);
         } catch (InfrastructureException e) {
@@ -111,7 +111,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
     public void createFederatedNetwork(ClaudiaData claudiaData, List<NetworkInstance> networkInstance)
             throws InvalidEntityException, AlreadyExistsEntityException, EntityNotFoundException,
             InfrastructureException {
-        log.debug("Create federated network  for vdc " + claudiaData.getVdc() + " with netwrks "
+        log.info("Create federated network  for vdc " + claudiaData.getVdc() + " with netwrks "
                 + networkInstance.get(0).getNetworkName() + " and " + networkInstance.get(1).getNetworkName());
 
         networkClient.joinNetworks(claudiaData, networkInstance.get(0), networkInstance.get(1));
@@ -139,7 +139,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
                 subNetworkInstanceManager.delete(claudiaData, subNet, region);
             }
         }
-        log.debug("Deleting the network");
+        log.info("Deleting the network");
         networkClient.destroyNetwork(claudiaData, networkInstance, region);
 
         networkInstance.setSubNets(null);
@@ -158,7 +158,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         Set<SubNetworkInstance> subNetAxu = networkInstance.cloneSubNets();
         for (SubNetworkInstance subNet : subNetAxu) {
         	String cidr = null;
-            log.debug("SubNetwork " + subNet.getName() + " id net " + subNet.getIdNetwork());
+            log.info("SubNetwork " + subNet.getName() + " id net " + subNet.getIdNetwork());
             if (networkInstance.getfederatedNetwork()) {
             	cidr = networkInstance.getFederatedRange();
             }
@@ -170,7 +170,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
             networkInstance.updateSubNet(subNet);
             subNet = subNetworkInstanceManager.create(claudiaData, subNet, region);
 
-            log.debug("SubNetwork " + subNet.getName() + " id net " + subNet.getIdNetwork() + " in network  "
+            log.info("SubNetwork " + subNet.getName() + " id net " + subNet.getIdNetwork() + " in network  "
                     + networkInstance.getNetworkName() + " deployed");
         }
     }
@@ -183,16 +183,16 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
      */
     public void delete(ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
             throws InvalidEntityException, InfrastructureException {
-        log.debug("Destroying network " + networkInstance.getNetworkName() + " region " + region);
+        log.info("Destroying network " + networkInstance.getNetworkName() + " region " + region);
 
         if (!canBeDeleted(claudiaData, networkInstance, region)) {
-            log.debug("The network cannot be deleted due to existing ports");
+            log.info("The network cannot be deleted due to existing ports");
             return;
         }
 
-        log.debug("Deleting the public interface");
+        log.info("Deleting the public interface");
         try {
-            log.debug("Loading newtwokr " + networkInstance.getNetworkName() + "  " + claudiaData.getVdc() + " "
+            log.info("Loading newtwokr " + networkInstance.getNetworkName() + "  " + claudiaData.getVdc() + " "
                     + region);
             networkInstance = networkInstanceDao.load(networkInstance.getNetworkName(), claudiaData.getVdc(), region);
         } catch (Exception e) {
@@ -201,14 +201,14 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         }
         networkClient.deleteNetworkToPublicRouter(claudiaData, networkInstance, region);
 
-        log.debug("Deleting the subnets");
+        log.info("Deleting the subnets");
         Set<SubNetworkInstance> subNetAux = networkInstance.cloneSubNets();
         networkInstance.getSubNets().clear();
         networkInstanceDao.update(networkInstance);
         for (SubNetworkInstance subNet : subNetAux) {
             subNetworkInstanceManager.delete(claudiaData, subNet, region);
         }
-        log.debug("Deleting the network");
+        log.info("Deleting the network");
         networkClient.destroyNetwork(claudiaData, networkInstance, region);
         try {
             networkInstanceDao.remove(networkInstance);
@@ -220,18 +220,18 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
     }
     
     private void deleteInDb(NetworkInstance networkInstance) throws InvalidEntityException {
-    log.debug("Destroying network in DB" + networkInstance.getNetworkName() + " " + networkInstance.getSubNets().size() );
+    log.info("Destroying network in DB" + networkInstance.getNetworkName() + " " + networkInstance.getSubNets().size() );
 
     
     Set<SubNetworkInstance> subNetAux = networkInstance.cloneSubNets();
-    log.debug("Deleting the subnets " + subNetAux.size());
+    log.info("Deleting the subnets " + subNetAux.size());
     networkInstance.getSubNets().clear();
     networkInstanceDao.update(networkInstance);
     for (SubNetworkInstance subNet : subNetAux) {
-    	log.debug ("Delete subnet " + subNet.getName());
+    	log.info ("Delete subnet " + subNet.getName());
     	subNetworkInstanceManager.deleteInBD(subNet);
     }
-    log.debug("Deleting the network");
+    log.info("Deleting the network");
     try {
     	networkInstanceDao.remove(networkInstance);
     } catch (Exception e) {
@@ -249,10 +249,10 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
      */
     public boolean canBeDeleted(ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
             throws InvalidEntityException, InfrastructureException {
-        log.debug("Obtaining ports from network" + networkInstance.getNetworkName());
+        log.info("Obtaining ports from network" + networkInstance.getNetworkName());
 
         List<Port> ports = networkClient.listPortsFromNetwork(claudiaData, region, networkInstance.getIdNetwork());
-        log.debug("List ports " + ports.size());
+        log.info("List ports " + ports.size());
         if (ports.size() == 0) {
             return true;
         } else {
@@ -260,7 +260,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
             for (Port port : ports) {
                 strPorts = strPorts + " " + port.getNetworkId();
             }
-            log.debug("It is not possible to undeply the network since there are VMs associated to it " + strPorts);
+            log.info("It is not possible to undeply the network since there are VMs associated to it " + strPorts);
             return false;
 
         }
@@ -268,7 +268,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
 
     public void joinNetwork(ClaudiaData claudiaData, NetworkInstance networkInstance, NetworkInstance networkInstance2)
             throws EntityNotFoundException, InvalidEntityException, InfrastructureException {
-        log.debug("joining netowrk " + networkInstance.getNetworkName() + " " + networkInstance2.getNetworkName());
+        log.info("joining netowrk " + networkInstance.getNetworkName() + " " + networkInstance2.getNetworkName());
         networkClient.joinNetworks(claudiaData, networkInstance, networkInstance2);
 
     }

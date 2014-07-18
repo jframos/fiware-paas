@@ -47,7 +47,6 @@ import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidOVFException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -61,14 +60,21 @@ import com.telefonica.euro_iaas.paasmanager.rest.validation.ResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.TierResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
+/**
+ * Test the EnvironmetnInstanceValidator class.
+ */
 public class EnvironmetnInstanceValidatorTest extends TestCase {
-    EnvironmentInstanceResourceValidatorImpl validator;
-    TierResourceValidator tierResourceValidator;
-    EnvironmentInstanceDao environmentInstanceDao;
-    Environment environment;
-    SystemPropertiesProvider systemPropertiesProvider;
-    ResourceValidator resourceValidator;
+    private EnvironmentInstanceResourceValidatorImpl validator;
+    private TierResourceValidator tierResourceValidator;
+    private EnvironmentInstanceDao environmentInstanceDao;
+    private Environment environment;
+    private SystemPropertiesProvider systemPropertiesProvider;
+    private ResourceValidator resourceValidator;
 
+    /**
+     * Initialize the Unit Test.
+     * @throws Exception
+     */
     @Before
     public void setUp() throws Exception {
         validator = new EnvironmentInstanceResourceValidatorImpl();
@@ -78,9 +84,9 @@ public class EnvironmetnInstanceValidatorTest extends TestCase {
         validator.setEnvironmentInstanceDao(environmentInstanceDao);
         validator.setTierResourceValidator(tierResourceValidator);
         validator.setResourceValidator(resourceValidator);
-        
+
         Mockito.doNothing().when(resourceValidator).validateName(anyString());
-		Mockito.doNothing().when(resourceValidator).validateDescription(anyString());
+        Mockito.doNothing().when(resourceValidator).validateDescription(anyString());
 
         ProductRelease productRelease = new ProductRelease("product", "2.0");
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
@@ -106,6 +112,10 @@ public class EnvironmetnInstanceValidatorTest extends TestCase {
 
     }
 
+    /**
+     * Test the creation of an environment instance.
+     * @throws Exception
+     */
     @Test
     public void testCreateEnviornmentInstance() throws Exception {
         EnvironmentInstanceDto environmentInstanceDto = new EnvironmentInstanceDto();
@@ -121,9 +131,16 @@ public class EnvironmetnInstanceValidatorTest extends TestCase {
 
     }
 
-
+    /**
+     * Test the creation of an environment instance without eny environment.
+     * @throws EntityNotFoundException
+     * @throws AlreadyExistsEntityException
+     * @throws InfrastructureException
+     * @throws InvalidOVFException
+     * @throws QuotaExceededException
+     */
     @Test
-    public void testCreateEnviornmentInstanceNoEnvironment() throws 
+    public void testCreateEnviornmentInstanceNoEnvironment() throws
             EntityNotFoundException, AlreadyExistsEntityException, InfrastructureException,
             InvalidOVFException, QuotaExceededException {
         EnvironmentInstanceDto environmentInstanceDto = new EnvironmentInstanceDto();

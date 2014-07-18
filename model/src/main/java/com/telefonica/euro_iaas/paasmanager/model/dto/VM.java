@@ -308,14 +308,26 @@ public class VM {
 
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#toString()
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
      */
-    @Override
     public String toString() {
-        return "VM [domain=" + domain + ", hostname=" + hostname + ", ip=" + ip + ", fqn=" + fqn + ", osType=" + osType
-                + "]";
+       StringBuilder sb = new StringBuilder("[[VM]");
+       sb.append("[ip = ").append(this.ip).append("]");
+       sb.append("[floatingip = ").append(this.floatingip).append("]");
+       sb.append("[hostname = ").append(this.hostname).append("]");
+       sb.append("[domain = ").append(this.domain).append("]");
+       sb.append("[fqn = ").append(this.fqn).append("]");
+       sb.append("[osType = ").append(this.osType).append("]");
+       sb.append("[vmid = ").append(this.vmid).append("]");
+       sb.append("]");
+       return sb.toString();
     }
+    
+    
 
 }

@@ -51,7 +51,7 @@ import com.telefonica.euro_iaas.paasmanager.rest.validation.TierResourceValidato
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
- * default Tier implementation
+ * default Tier implementation.
  * 
  * @author Henar Mu�oz
  */
@@ -72,13 +72,20 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
     private static Logger log = LoggerFactory.getLogger(AbstractTierResourceImpl.class);
 
+    /**
+     * Delete a specific Tier in a environment.
+     * @param org   The organization of the environment.
+     * @param envName   The name of the environment.
+     * @param tierName  The name of the tier to be deleted.
+     * @throws APIException Exception launched when a problem happens.
+     */
     public void delete(String org, String envName, String tierName) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, "", envName);
-        log.debug("Deleting tier " + tierName + " from env " + envName);
+        log.info("Deleting tier " + tierName + " from env " + envName);
 
         try {
             tierResourceValidator.validateDelete("", envName, tierName);
-            log.debug("Tier validated correctly to be deleted");
+            log.info("Tier validated correctly to be deleted");
 
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                 claudiaData.setUser(getCredentials());
@@ -97,8 +104,22 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
     }
 
+    /**
+     * Find all tiers associated to a specific environment.
+     * @param page
+     *            for pagination is 0 based number(<i>nullable</i>)
+     * @param pageSize
+     *            for pagination, the number of items retrieved in a query (<i>nullable</i>)
+     * @param orderBy
+     *            the file to order the search (id by default <i>nullable</i>)
+     * @param orderType
+     *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
+     * @param environment
+     * @return
+     * @throws APIException
+     */
     public List<TierDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType, String environment)
-            throws APIException {
+        throws APIException {
         TierSearchCriteria criteria = new TierSearchCriteria();
         Environment env = null;
         try {
@@ -137,9 +158,21 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
 
     }
 
+    /**
+     * Insert a new tier inside a specific environment.
+     * @param org
+     *            The organization where the abstract template belongs
+     * @param environmentName
+     *            The name of the environment where the abstract template belongs.
+     * @param tierDto
+     *            <ol>
+     *            <li>The tierDto: contains the information about the tier</li>
+     *            </ol>
+     * @throws APIException
+     */
     public void insert(String org, String environmentName, TierDto tierDto) throws APIException {
 
-        log.debug("Insert tier " + tierDto.getName() + " from env " + environmentName + " with product release "
+        log.info("Insert tier " + tierDto.getName() + " from env " + environmentName + " with product release "
                 + tierDto.getProductReleaseDtos() + " with nets " + tierDto.getNetworksDto());
         ClaudiaData claudiaData = new ClaudiaData(org, "", environmentName);
 
@@ -150,7 +183,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
                 claudiaData.setUser(getCredentials());
             }
             Tier tier = tierDto.fromDto("", environmentName);
-            log.debug("vdc " + claudiaData.getVdc());
+            log.info("vdc " + claudiaData.getVdc());
 
             Environment environment = environmentManager.load(environmentName, "");
             Tier newTier = tierManager.create(claudiaData, environmentName, tier);
@@ -161,6 +194,14 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
         }
     }
 
+    /**
+     * Find a specific tier described by its name from the environment belongs.
+     * @param org   The organization which contains the environment.
+     * @param envName   The name id of the environment.
+     * @param name  The name of the tier to be found.
+     * @return  The detailed information about the tier.
+     * @throws APIException Exception if the tier is not found.
+     */
     public TierDto load(String org, String envName, String name) throws APIException {
         try {
             Tier tier = tierManager.load(name, "", envName);
@@ -172,14 +213,22 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
         }
     }
 
+    /**
+     * Update the description of a specific tier.
+     * @param org   The id of the organization which contains the environment.
+     * @param environmentName   The id of the environment which contains the tier.
+     * @param tierName  The tier id to be updated.
+     * @param tierDto   The updated information of the tier to be updated.
+     * @throws APIException Esception if the tier cannot be found ot cannot be updated.
+     */
     public void update(String org, String environmentName, String tierName, TierDto tierDto) throws APIException {
-        log.debug("Update tier " + tierName + " from env " + environmentName + "with product release "
+        log.info("Update tier " + tierName + " from env " + environmentName + "with product release "
                 + tierDto.getProductReleaseDtos() + " with nets " + tierDto.getNetworksDto());
         ClaudiaData claudiaData = new ClaudiaData(org, "", environmentName);
 
         try {
             tierResourceValidator.validateUpdate("", environmentName, tierName, tierDto);
-            log.debug("Validated tier " + tierDto.getName() + " from env " + environmentName);
+            log.info("Validated tier " + tierDto.getName() + " from env " + environmentName);
 
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                 claudiaData.setUser(getCredentials());
@@ -198,7 +247,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
                 if (tier.getName().equals(newtier.getName())) {
 
                     tier = tierManager.loadTierWithNetworks(tierDto.getName(), "", environmentName);
-                    log.debug("load tier " + tierDto.getName() + " with nets " + tier.getName() + " "
+                    log.info("load tier " + tierDto.getName() + " with nets " + tier.getName() + " "
                             + tier.getNetworks());
                     tierManager.updateTier(claudiaData, tier, newtier);
 
@@ -206,7 +255,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
                 environment.addTier(tier);
                 environmentManager.update(environment);
             }
-            log.debug("updated tier " + tierDto.getName());
+            log.info("updated tier " + tierDto.getName());
 
         } catch (Exception e) {
             throw new APIException(e);
@@ -238,10 +287,11 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
     }
 
     private PaasManagerUser getCredentials() {
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE"))
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
             return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        else
+        } else {
             return null;
+        }
     }
 
 }

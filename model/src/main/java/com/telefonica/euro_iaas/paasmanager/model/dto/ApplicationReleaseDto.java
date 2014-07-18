@@ -161,4 +161,23 @@ public class ApplicationReleaseDto {
         return artifacts;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[ApplicationReleaseDto]");
+       sb.append("[applicationName = ").append(this.applicationName).append("]");
+       sb.append("[version = ").append(this.version).append("]");
+       sb.append("[artifactsDto = ").append(this.artifactsDto).append("]");
+       sb.append("[applicationType = ").append(this.applicationType).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 }

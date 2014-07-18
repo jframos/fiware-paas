@@ -46,9 +46,9 @@ public class RuleManagerImpl implements RuleManager {
 
     public Rule create(String region, String token, String vdc, Rule rule) throws InvalidEntityException,
             AlreadyExistsEntityException, InfrastructureException {
-        log.debug("Create rule " + rule.getFromPort() + " from security group " + rule.getIdParent());
+        log.info("Create rule " + rule.getFromPort() + " from security group " + rule.getIdParent());
         String idRule = firewallingClient.deployRule(region, token, vdc, rule);
-        log.debug("id rule " + idRule);
+        log.info("id rule " + idRule);
         rule.setIdRule(idRule);
         rule = ruleDao.create(rule);
         return rule;
@@ -56,7 +56,7 @@ public class RuleManagerImpl implements RuleManager {
 
     public void destroy(String region, String token, String vdc, Rule rule) throws InvalidEntityException,
             InfrastructureException {
-        log.debug("Destroying rule " + rule.getFromPort() + " from security group " + rule.getIdParent());
+        log.info("Destroying rule " + rule.getFromPort() + " from security group " + rule.getIdParent());
 
         firewallingClient.destroyRule(region, token, vdc, rule);
         try {
