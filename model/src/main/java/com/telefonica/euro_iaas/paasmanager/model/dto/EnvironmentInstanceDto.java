@@ -197,4 +197,27 @@ public class EnvironmentInstanceDto {
     public void setVdc(String vdc) {
         this.vdc = vdc;
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[EnvironmentInstanceDto]");
+       sb.append("[environmentInstanceName = ").append(this.environmentInstanceName).append("]");
+       sb.append("[vdc = ").append(this.vdc).append("]");
+       sb.append("[description = ").append(this.description).append("]");
+       sb.append("[status = ").append(this.status).append("]");
+       sb.append("[blueprintName = ").append(this.blueprintName).append("]");
+       sb.append("[environmentDto = ").append(this.environmentDto).append("]");
+       sb.append("[tierInstanceDtos = ").append(this.tierInstanceDtos).append("]");
+       sb.append("[attributes = ").append(this.attributes).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
 }

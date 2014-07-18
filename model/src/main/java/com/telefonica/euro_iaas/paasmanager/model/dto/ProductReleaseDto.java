@@ -123,4 +123,23 @@ public class ProductReleaseDto {
         return productRelease;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[ProductReleaseDto]");
+       sb.append("[productName = ").append(this.productName).append("]");
+       sb.append("[productDescription = ").append(this.productDescription).append("]");
+       sb.append("[version = ").append(this.version).append("]");
+       sb.append("[attributes = ").append(this.attributes).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 }

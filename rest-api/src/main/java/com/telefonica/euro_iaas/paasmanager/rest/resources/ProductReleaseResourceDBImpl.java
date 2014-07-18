@@ -70,7 +70,7 @@ public class ProductReleaseResourceDBImpl implements ProductReleaseDBResource {
      *            </ol>
      */
     public void insert(ProductReleaseDto productReleaseDto) {
-        log.debug("Create product release "
+        log.info("Create product release "
                 + productReleaseDto.getProductName()
                 + " "
                 + productReleaseDto.getVersion());

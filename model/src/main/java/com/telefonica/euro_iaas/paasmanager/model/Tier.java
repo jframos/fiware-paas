@@ -590,6 +590,37 @@ public class Tier {
     public void setAffinity(String affinity) {
         this.affinity = affinity;
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[Tier]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("[name = ").append(this.name).append("]");
+       sb.append("[vdc = ").append(this.vdc).append("]");
+       sb.append("[environmentname = ").append(this.environmentname).append("]");
+       sb.append("[flavour = ").append(this.flavour).append("]");
+       sb.append("[image = ").append(this.image).append("]");
+       sb.append("[icono = ").append(this.icono).append("]");
+       sb.append("[keypair = ").append(this.keypair).append("]");
+       sb.append("[floatingip = ").append(this.floatingip).append("]");
+       sb.append("[affinity = ").append(this.affinity).append("]");
+       sb.append("[maximumNumberInstances = ").append(this.maximumNumberInstances).append("]");
+       sb.append("[minimumNumberInstances = ").append(this.minimumNumberInstances).append("]");
+       sb.append("[initialNumberInstances = ").append(this.initialNumberInstances).append("]");
+       sb.append("[payload = ").append(this.payload).append("]");
+       sb.append("[productReleases = ").append(this.productReleases).append("]");
+       sb.append("[networks = ").append(this.networks).append("]");
+       sb.append("[securityGroup = ").append(this.securityGroup).append("]");
+       sb.append("[region = ").append(this.region).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
     
     
 }

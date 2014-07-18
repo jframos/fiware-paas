@@ -397,4 +397,34 @@ public class NetworkInstance {
         return result;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[NetworkInstance]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("[name = ").append(this.name).append("]");
+       sb.append("[vdc = ").append(this.vdc).append("]");
+       sb.append("[idNetwork = ").append(this.idNetwork).append("]");
+       sb.append("[region = ").append(this.region).append("]");
+       sb.append("[shared = ").append(this.shared).append("]");
+       sb.append("[adminStateUp = ").append(this.adminStateUp).append("]");
+       sb.append("[netDefault = ").append(this.netDefault).append("]");
+       sb.append("[tenantId = ").append(this.tenantId).append("]");
+       sb.append("[external = ").append(this.external).append("]");
+       sb.append("[federatedNetwork = ").append(this.federatedNetwork).append("]");
+       sb.append("[federatedRange = ").append(this.federatedRange).append("]");
+       sb.append("[subNetCount = ").append(this.subNetCount).append("]");
+       sb.append("[subNets = ").append(this.subNets).append("]");
+       sb.append("[routers = ").append(this.routers).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 }

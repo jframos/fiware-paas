@@ -66,7 +66,7 @@ public class NetworkManagerImpl implements NetworkManager {
      */
     public Network create(Network network) throws EntityNotFoundException, InvalidEntityException,
             AlreadyExistsEntityException {
-        log.debug("Create network " + network.getNetworkName());
+        log.info("Create network " + network.getNetworkName());
         Network networkDB = null;
 
         if (network.getVdc() == null) {
@@ -75,17 +75,17 @@ public class NetworkManagerImpl implements NetworkManager {
         if (exists(network.getNetworkName(), network.getVdc(), network.getRegion())) {
 
             networkDB = networkDao.load(network.getNetworkName(), network.getVdc(), network.getRegion());
-            log.debug("The network " + network.getNetworkName() + " already exists with subnets  "
+            log.info("The network " + network.getNetworkName() + " already exists with subnets  "
                     + networkDB.getSubNets());
 
             if (networkDB.getSubNets().isEmpty()) {
-                log.debug("There is not a associated subnet");
+                log.info("There is not a associated subnet");
                 createDefaultSubNetwork(networkDB);
             }
 
             for (SubNetwork subnet : network.getSubNets()) {
                 if (!networkDB.contains(subnet)) {
-                    log.debug("The subnet " + subnet.getName() + " is not in the net " + networkDB.getNetworkName());
+                    log.info("The subnet " + subnet.getName() + " is not in the net " + networkDB.getNetworkName());
                     createSubNetwork(networkDB, subnet);
                 }
             }
@@ -124,14 +124,14 @@ public class NetworkManagerImpl implements NetworkManager {
      */
     private void createSubNetwork(Network network, SubNetwork subNetwork) throws InvalidEntityException,
             AlreadyExistsEntityException, EntityNotFoundException {
-        log.debug("Creating subnect " + subNetwork.getName());
+        log.info("Creating subnect " + subNetwork.getName());
         try {
             subNetwork = subNetworkManager.create(subNetwork);
         } catch (AlreadyExistsEntityException e) {
             subNetwork = subNetworkManager.load(subNetwork.getName(), subNetwork.getVdc(), subNetwork.getRegion());
         }
         network.updateSubNet(subNetwork);
-        log.debug("SubNetwork " + subNetwork.getName() + " in network  " + network.getNetworkName() + " deployed");
+        log.info("SubNetwork " + subNetwork.getName() + " in network  " + network.getNetworkName() + " deployed");
     }
 
     /**
@@ -155,9 +155,9 @@ public class NetworkManagerImpl implements NetworkManager {
      * @params network
      */
     public void delete(Network network) throws EntityNotFoundException, InvalidEntityException {
-        log.debug("Destroying network " + network.getNetworkName());
+        log.info("Destroying network " + network.getNetworkName());
 
-        log.debug("Deleting the subnets");
+        log.info("Deleting the subnets");
         List<SubNetwork> subNetsAux = new ArrayList<SubNetwork>();
         for (SubNetwork subNet : network.getSubNets()) {
             subNetsAux.add(subNet);
@@ -174,7 +174,7 @@ public class NetworkManagerImpl implements NetworkManager {
             throw new InvalidEntityException(network);
         }
 
-        log.debug("Deleting the network");
+        log.info("Deleting the network");
         try {
             networkDao.remove(network);
         } catch (Exception e) {

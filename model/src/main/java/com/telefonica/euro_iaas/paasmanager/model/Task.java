@@ -317,4 +317,32 @@ public class Task implements Serializable {
         this.vdc = vdc;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[Task]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("[href = ").append(this.href).append("]");
+       sb.append("[error = ").append(this.error).append("]");
+       sb.append("[owner = ").append(this.owner).append("]");
+       sb.append("[result = ").append(this.result).append("]");
+       sb.append("[startTime = ").append(this.startTime).append("]");
+       sb.append("[endTime = ").append(this.endTime).append("]");
+       sb.append("[expireTime = ").append(this.expireTime).append("]");
+       sb.append("[status = ").append(this.status).append("]");
+       sb.append("[description = ").append(this.description).append("]");
+       sb.append("[vdc = ").append(this.vdc).append("]");
+       sb.append("[environment = ").append(this.environment).append("]");
+       sb.append("[tier = ").append(this.tier).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 }

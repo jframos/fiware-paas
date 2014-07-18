@@ -81,11 +81,11 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
      */
     public void delete(String org, String envName, String tierName) throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, "", envName);
-        log.debug("Deleting tier " + tierName + " from env " + envName);
+        log.info("Deleting tier " + tierName + " from env " + envName);
 
         try {
             tierResourceValidator.validateDelete("", envName, tierName);
-            log.debug("Tier validated correctly to be deleted");
+            log.info("Tier validated correctly to be deleted");
 
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                 claudiaData.setUser(getCredentials());
@@ -172,7 +172,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
      */
     public void insert(String org, String environmentName, TierDto tierDto) throws APIException {
 
-        log.debug("Insert tier " + tierDto.getName() + " from env " + environmentName + " with product release "
+        log.info("Insert tier " + tierDto.getName() + " from env " + environmentName + " with product release "
                 + tierDto.getProductReleaseDtos() + " with nets " + tierDto.getNetworksDto());
         ClaudiaData claudiaData = new ClaudiaData(org, "", environmentName);
 
@@ -183,7 +183,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
                 claudiaData.setUser(getCredentials());
             }
             Tier tier = tierDto.fromDto("", environmentName);
-            log.debug("vdc " + claudiaData.getVdc());
+            log.info("vdc " + claudiaData.getVdc());
 
             Environment environment = environmentManager.load(environmentName, "");
             Tier newTier = tierManager.create(claudiaData, environmentName, tier);
@@ -222,13 +222,13 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
      * @throws APIException Esception if the tier cannot be found ot cannot be updated.
      */
     public void update(String org, String environmentName, String tierName, TierDto tierDto) throws APIException {
-        log.debug("Update tier " + tierName + " from env " + environmentName + "with product release "
+        log.info("Update tier " + tierName + " from env " + environmentName + "with product release "
                 + tierDto.getProductReleaseDtos() + " with nets " + tierDto.getNetworksDto());
         ClaudiaData claudiaData = new ClaudiaData(org, "", environmentName);
 
         try {
             tierResourceValidator.validateUpdate("", environmentName, tierName, tierDto);
-            log.debug("Validated tier " + tierDto.getName() + " from env " + environmentName);
+            log.info("Validated tier " + tierDto.getName() + " from env " + environmentName);
 
             if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
                 claudiaData.setUser(getCredentials());
@@ -247,7 +247,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
                 if (tier.getName().equals(newtier.getName())) {
 
                     tier = tierManager.loadTierWithNetworks(tierDto.getName(), "", environmentName);
-                    log.debug("load tier " + tierDto.getName() + " with nets " + tier.getName() + " "
+                    log.info("load tier " + tierDto.getName() + " with nets " + tier.getName() + " "
                             + tier.getNetworks());
                     tierManager.updateTier(claudiaData, tier, newtier);
 
@@ -255,7 +255,7 @@ public class AbstractTierResourceImpl implements AbstractTierResource {
                 environment.addTier(tier);
                 environmentManager.update(environment);
             }
-            log.debug("updated tier " + tierDto.getName());
+            log.info("updated tier " + tierDto.getName());
 
         } catch (Exception e) {
             throw new APIException(e);

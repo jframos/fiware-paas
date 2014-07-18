@@ -146,4 +146,26 @@ public class EnvironmentInstancePDto {
         return this.tierDto;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[EnvironmentInstancePDto]");
+       sb.append("[environmentInstanceName = ").append(this.environmentInstanceName).append("]");
+       sb.append("[vdc = ").append(this.vdc).append("]");
+       sb.append("[description = ").append(this.description).append("]");
+       sb.append("[status = ").append(this.status).append("]");
+       sb.append("[blueprintName = ").append(this.blueprintName).append("]");
+       sb.append("[taskId = ").append(this.taskId).append("]");
+       sb.append("[tierDto = ").append(this.tierDto).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 }

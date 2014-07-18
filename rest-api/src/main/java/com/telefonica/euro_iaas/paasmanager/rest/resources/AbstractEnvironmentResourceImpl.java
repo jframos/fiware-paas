@@ -70,7 +70,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
      * @throws APIException Exception launch if there is no name or cannot be deleted.
      */
     public void delete(String org, String envName) throws APIException {
-        log.debug("Deleting env " + envName + " from org " + org);
+        log.info("Deleting env " + envName + " from org " + org);
         ClaudiaData claudiaData = new ClaudiaData(org, "", envName);
         try {
             environmentResourceValidator.validateDelete(envName, "");
@@ -135,7 +135,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
      *                      problem was happened into the insertion of it.
      */
     public void insert(String org, EnvironmentDto environmentDto) throws APIException {
-        log.debug("Inserting env " + environmentDto.getName() + " from org " + org);
+        log.info("Inserting env " + environmentDto.getName() + " from org " + org);
         ClaudiaData claudiaData = new ClaudiaData(org, "", environmentDto.getName());
         try {
             environmentManager.load(environmentDto.getName(), "");
@@ -162,7 +162,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
      * @throws APIException Exception launch if the environment is not found.
      */
     public EnvironmentDto load(String org, String name) throws APIException {
-        log.debug("Loading env " + name + " from org " + org);
+        log.info("Loading env " + name + " from org " + org);
         try {
             Environment envInstance = environmentManager.load(name, "");
             EnvironmentDto envDto = envInstance.toDto();

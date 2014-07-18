@@ -116,4 +116,21 @@ public class NetworkDto {
         this.subNetworkDto = subNetworkDto;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[NetworkDto]");
+       sb.append("[networkName = ").append(this.networkName).append("]");
+       sb.append("[subNetworkDto = ").append(this.subNetworkDto).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 }

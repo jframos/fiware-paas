@@ -216,4 +216,24 @@ public class Artifact {
         return true;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[Artifact]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("[name = ").append(this.name).append("]");
+       sb.append("[path = ").append(this.path).append("]");
+       sb.append("[productRelease = ").append(this.productRelease).append("]");
+       sb.append("[attributes = ").append(this.attributes).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+
+    
+    
 }

@@ -110,4 +110,24 @@ public class ProductInstanceDto {
     public void setTaskId(String taskId) {
         this.taskId = taskId;
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[ProductInstanceDto]");
+       sb.append("[productReleaseDto = ").append(this.productReleaseDto).append("]");
+       sb.append("[attributes = ").append(this.attributes).append("]");
+       sb.append("[vdc = ").append(this.vdc).append("]");
+       sb.append("[name = ").append(this.name).append("]");
+       sb.append("[taskId = ").append(this.taskId).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
 }

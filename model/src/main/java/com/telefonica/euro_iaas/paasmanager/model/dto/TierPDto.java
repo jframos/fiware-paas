@@ -245,4 +245,32 @@ public class TierPDto {
         return this.floatingip;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[TierPDto]");
+       sb.append("[name = ").append(this.name).append("]");
+       sb.append("[flavour = ").append(this.flavour).append("]");
+       sb.append("[image = ").append(this.image).append("]");
+       sb.append("[maximumNumberInstances = ").append(this.maximumNumberInstances).append("]");
+       sb.append("[minimumNumberInstances = ").append(this.minimumNumberInstances).append("]");
+       sb.append("[initialNumberInstances = ").append(this.initialNumberInstances).append("]");
+       sb.append("[productReleaseDtos = ").append(this.productReleaseDtos).append("]");
+       sb.append("[icono = ").append(this.icono).append("]");
+       sb.append("[security_group = ").append(this.security_group).append("]");
+       sb.append("[keypair = ").append(this.keypair).append("]");
+       sb.append("[floatingip = ").append(this.floatingip).append("]");
+       sb.append("[region = ").append(this.region).append("]");
+       sb.append("[tierInstancePDto = ").append(this.tierInstancePDto).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 }

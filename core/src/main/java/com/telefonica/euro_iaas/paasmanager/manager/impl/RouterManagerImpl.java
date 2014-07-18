@@ -73,7 +73,7 @@ public class RouterManagerImpl implements RouterManager {
 
     public void create(ClaudiaData claudiaData, RouterInstance router, NetworkInstance network, String region)
             throws InvalidEntityException, InfrastructureException {
-        log.debug("Create router " + router.getName());
+        log.info("Create router " + router.getName());
 
         try {
             routerDao.load(router.getName());
@@ -108,7 +108,7 @@ public class RouterManagerImpl implements RouterManager {
      */
     public void delete(ClaudiaData claudiaData, RouterInstance router, NetworkInstance network, String region)
             throws EntityNotFoundException, InvalidEntityException, InfrastructureException {
-        log.debug("Destroying router " + router.getName());
+        log.info("Destroying router " + router.getName());
         deleteInterfacesNetworks(claudiaData, router, network, region);
         try {
             networkClient.destroyRouter(claudiaData, router, region);
@@ -131,7 +131,7 @@ public class RouterManagerImpl implements RouterManager {
      */
     private void deleteInterfacesNetworks(ClaudiaData claudiaData, RouterInstance router, NetworkInstance net,
             String region) throws InfrastructureException, InvalidEntityException {
-        log.debug("Removing the network interface " + net.getNetworkName() + " " + net.getIdNetRouter()
+        log.info("Removing the network interface " + net.getNetworkName() + " " + net.getIdNetRouter()
                 + " from router " + router.getName());
         networkClient.deleteNetworkFromRouter(claudiaData, router, net, region);
         routerDao.update(router);

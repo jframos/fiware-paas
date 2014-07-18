@@ -132,4 +132,25 @@ public class Port {
        return result;
    }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[Port]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("[name = ").append(this.name).append("]");
+       sb.append("[portId = ").append(this.portId).append("]");
+       sb.append("[networkId = ").append(this.networkId).append("]");
+       sb.append("[tenantId = ").append(this.tenantId).append("]");
+       sb.append("[deviceOwner = ").append(this.deviceOwner).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 }

@@ -251,4 +251,25 @@ public class InstallableInstance {
         this.vdc = vdc;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[InstallableInstance]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("[date = ").append(this.date).append("]");
+       sb.append("[name = ").append(this.name).append("]");
+       sb.append("[status = ").append(this.status).append("]");
+       sb.append("[vdc = ").append(this.vdc).append("]");
+       sb.append("[privateAttributes = ").append(this.privateAttributes).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+
+    
+    
 }

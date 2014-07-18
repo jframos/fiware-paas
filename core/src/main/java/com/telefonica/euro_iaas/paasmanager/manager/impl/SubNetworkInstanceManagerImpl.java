@@ -58,10 +58,10 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
      */
     public SubNetworkInstance create(ClaudiaData claudiaData, SubNetworkInstance subNetwork, String region)
             throws InvalidEntityException, InfrastructureException, AlreadyExistsEntityException {
-        log.debug("Create subnetwork instance " + subNetwork.getName());
+        log.info("Create subnetwork instance " + subNetwork.getName());
         if (!subNetworkInstanceDao.exists(subNetwork.getName(), claudiaData.getVdc(), region)) {
             networkClient.deploySubNetwork(claudiaData, subNetwork, region);
-            log.debug("SubNetwork " + subNetwork.getName() + " in network " + subNetwork.getIdNetwork()
+            log.info("SubNetwork " + subNetwork.getName() + " in network " + subNetwork.getIdNetwork()
                     + " deployed with id " + subNetwork.getIdSubNet());
             subNetwork = subNetworkInstanceDao.create(subNetwork);
         } else {
@@ -79,7 +79,7 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
      */
     public void delete(ClaudiaData claudiaData, SubNetworkInstance subNetworkInstance, String region)
             throws InvalidEntityException, InfrastructureException {
-        log.debug("Destroying the subnetwork " + subNetworkInstance.getName());
+        log.info("Destroying the subnetwork " + subNetworkInstance.getName());
         try {
             networkClient.destroySubNetwork(claudiaData, subNetworkInstance, region);
             deleteInBD( subNetworkInstance);
@@ -91,7 +91,7 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
     }
     
     public void deleteInBD( SubNetworkInstance subNetworkInstance) {
-    	log.debug("Destroying in bd the subnetwork " + subNetworkInstance.getName());
+    	log.info("Destroying in bd the subnetwork " + subNetworkInstance.getName());
         subNetworkInstanceDao.remove(subNetworkInstance);
     }
 

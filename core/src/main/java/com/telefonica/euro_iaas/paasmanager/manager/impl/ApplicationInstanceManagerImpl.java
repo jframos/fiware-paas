@@ -100,15 +100,15 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
 
         // Install The applicationRelease=n-Artifacts
         for (Artifact artifact : applicationRelease.getArtifacts()) {
-            log.debug("Installing artifact " + artifact.getName() + " version " + artifact.getPath() + " product "
+            log.info("Installing artifact " + artifact.getName() + " version " + artifact.getPath() + " product "
                     + artifact.getProductRelease());
             // Install the artifact in the product instance associated
             // Obtain the VMs from EnvInstance where productRelease is installed
             ProductInstance productInstance = getProductInstanceFromEnvironment(artifact, environmentInstance);
-            log.debug("Installing artifact " + artifact.getName() + " in product instance " + productInstance.getName());
+            log.info("Installing artifact " + artifact.getName() + " in product instance " + productInstance.getName());
             try { 
                 productInstallator.installArtifact(data, productInstance, artifact);
-                log.debug("Artifact installed" + artifact.getName() + " in product instance " + productInstance.getName());
+                log.info("Artifact installed" + artifact.getName() + " in product instance " + productInstance.getName());
             } catch (OpenStackException e) {
                 String errorMessage = "Error to install the product " + e.getMessage();
                 log.warn(errorMessage);
@@ -192,7 +192,7 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
     private ApplicationInstance insertApplicationInstanceDB(ApplicationInstance application, String env, String vdc)
             throws ProductReleaseNotFoundException,  InvalidEntityException,
             AlreadyExistsEntityException {
-        log.debug("Inser application " + application.getName() + " in DB");
+        log.info("Inser application " + application.getName() + " in DB");
 
         ApplicationInstance applicationInstance = null;
         Artifact artifact;
@@ -305,7 +305,7 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
     private boolean canInstall(EnvironmentInstance envInstance, List<Artifact> applicationArtifact) {
 
         if (applicationArtifact == null) {
-            log.debug("There is not any product release to install");
+            log.info("There is not any product release to install");
             return false;
         }
         List<ProductRelease> productReleasesApp = new ArrayList<ProductRelease>();

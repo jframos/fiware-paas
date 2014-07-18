@@ -177,4 +177,24 @@ public class SecurityGroup {
         return "{\"security_group\": \n" + "{" + "\"name\": \"" + name + "\", " + "\"description\":  \"" + description
                 + "\" " + "}" + "}";
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[SecurityGroup]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("[idSecurityGroup = ").append(this.idSecurityGroup).append("]");
+       sb.append("[name = ").append(this.name).append("]");
+       sb.append("[description = ").append(this.description).append("]");
+       sb.append("[rules = ").append(this.rules).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
 }

@@ -519,4 +519,30 @@ public class ProductRelease {
         return pReleaseDto;
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[ProductRelease]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("[name = ").append(this.name).append("]");
+       sb.append("[product = ").append(this.product).append("]");
+       sb.append("[version = ").append(this.version).append("]");
+       sb.append("[description = ").append(this.description).append("]");
+       sb.append("[tierName = ").append(this.tierName).append("]");
+       sb.append("[attributes = ").append(this.attributes).append("]");
+       sb.append("[metadatas = ").append(this.metadatas).append("]");
+       sb.append("[transitableReleases = ").append(this.transitableReleases).append("]");
+       sb.append("[supportedOOSS = ").append(this.supportedOOSS).append("]");
+       sb.append("[withArtifact = ").append(this.withArtifact).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+    
+    
+
 }

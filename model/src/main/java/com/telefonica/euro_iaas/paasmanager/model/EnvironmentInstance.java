@@ -387,5 +387,26 @@ public class EnvironmentInstance extends InstallableInstance {
 
     }
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[EnvironmentInstance]");
+       sb.append("[environment = ").append(this.environment).append("]");
+       sb.append("[description = ").append(this.description).append("]");
+       sb.append("[blueprintName = ").append(this.blueprintName).append("]");
+       sb.append("[taskId = ").append(this.taskId).append("]");
+       sb.append("[tierInstances = ").append(this.tierInstances).append("]");
+       sb.append("[vapp = ").append(this.vapp).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+
+    
+    
 	
 }

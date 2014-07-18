@@ -193,6 +193,26 @@ public class RouterInstance {
 		
 	}
 
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+       StringBuilder sb = new StringBuilder("[[RouterInstance]");
+       sb.append("[id = ").append(this.id).append("]");
+       sb.append("[name = ").append(this.name).append("]");
+       sb.append("[idRouter = ").append(this.idRouter).append("]");
+       sb.append("[tenantId = ").append(this.tenantId).append("]");
+       sb.append("[idPublicNetwork = ").append(this.idPublicNetwork).append("]");
+       sb.append("[adminStateUp = ").append(this.adminStateUp).append("]");
+       sb.append("[networkId = ").append(this.networkId).append("]");
+       sb.append("]");
+       return sb.toString();
+    }
+
    
 
 
