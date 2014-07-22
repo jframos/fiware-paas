@@ -29,6 +29,7 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -493,7 +494,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         // Get the networks to be federated
 
         Set<String> federatedNetworks = environmentInstance.getEnvironment().getFederatedNetworks();
-        HashMap<String, Set<String>> relation = environmentInstance.getEnvironment().getNetworksRegion();
+        Map<String, Set<String>> relation = environmentInstance.getEnvironment().getNetworksRegion();
         List<NetworkInstance> networkInstances = new ArrayList<NetworkInstance>();
 
         for (String net : federatedNetworks) {

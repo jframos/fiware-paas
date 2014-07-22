@@ -105,8 +105,8 @@ if __name__ == "__main__":
             usage()
         else:
             g.add_product(name, description, arguments, metadata)
-        if (version != ''):
-            g.add_product_release(name, version)
+            if (version != ''):
+                g.add_product_release(name, version)
 
     elif args.option == "show":
         if ((name != '') & (version != '')):
