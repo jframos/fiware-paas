@@ -134,5 +134,9 @@ public class TaskResourceImpl implements TaskResource {
         criteria.setEnvironment(environment);
         return taskManager.findByCriteria(criteria);
     }
+    
+    public void setTaskManager(TaskManager taskManager) {
+    	this.taskManager= taskManager;
+    } 
 
 }
