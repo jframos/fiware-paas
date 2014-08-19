@@ -249,7 +249,6 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
     }
 
     private NetworkInstance isPublicNetwork(JSONObject jsonNet, String vdc, String region) {
-        log.debug("looking for vdc " + vdc);
 
         NetworkInstance netInst;
         try {
@@ -265,6 +264,10 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
         if (!netInst.getExternal()) {
             log.debug("external " + netInst.getExternal());
             return null;
+        }
+        
+        if (netInst.getNetworkName().contains("public")) {
+        	return netInst;
         }
 
         if (!vdc.contains(netInst.getTenantId())) {
@@ -284,16 +287,15 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
             return null;
         }
         log.debug("router " + routerInst.getName() + " " + routerInst.getTenantId() + " " + routerInst.getNetworkId()
-                + " " + vdc);
-        if (!vdc.contains(routerInst.getTenantId())) {
-            return null;
-        }
+                + " " + networkPublic);
+
 
         if (!routerInst.getNetworkId().equals(networkPublic)) {
             return null;
+        } else {
+           return 	routerInst;
         }
 
-        return routerInst;
     }
 
     public OpenStackRegion getOpenStackRegion() {
