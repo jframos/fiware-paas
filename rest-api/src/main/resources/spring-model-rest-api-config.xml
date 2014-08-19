@@ -65,6 +65,11 @@
         <property name="tierManager" ref="tierManager"/>
         <property name="productReleaseDao" ref="productReleaseDao"/>
     </bean>
+    
+    <bean id="taskResource" lazy-init="true"
+          class="com.telefonica.euro_iaas.paasmanager.rest.resources.TaskResourceImpl">
+        <property name="taskManager" ref="taskManager"/>
+    </bean>
 
     <bean id="tierInstanceResource" lazy-init="true"
           class="com.telefonica.euro_iaas.paasmanager.rest.resources.TierInstanceResourceImpl">
