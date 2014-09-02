@@ -43,8 +43,8 @@ import static org.junit.Assert.assertEquals;
 public class ProductReleaseTest {
 
     private ProductRelease productRelease;
-    private JSONObject productReleaseJson, productReleaseJsonNoAttributes, productReleaseJsonOneAttributeAndMetadatas,
-            productReleaseJsonOneAttribute;
+    private JSONObject productReleaseJson, productReleaseJsonNoAttributes;
+    private JSONObject productReleaseJsonOneAttributeAndMetadatas, productReleaseJsonOneAttribute;
     private JSONObject productReleaseJsonNoReleaseNotesNoSSOO;
 
     @Before

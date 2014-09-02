@@ -43,9 +43,12 @@ public class SecurityGroupTest extends TestCase {
 
         securityGroup = new SecurityGroup();
         String secGroupString = "{\"rules\":["
-                + "{\"from_port\":22,\"group\":{},\"ip_protocol\":\"tcp\",\"to_port\":22,\"parent_group_id\":6,\"ip_range\":{\"cidr\":\"0.0.0.0/0\"},\"id\":10},"
-                + "{\"from_port\":8080,\"group\":{},\"ip_protocol\":\"tcp\",\"to_port\":8080,\"parent_group_id\":6,\"ip_range\":{\"cidr\":\"0.0.0.0/0\"},\"id\":11}]"
-                + ",\"tenant_id\":\"ebe6d9ec7b024361b7a3882c65a57dda\"," + "\"id\":6," + "\"name\":\"namedefault\","
+                + "{\"from_port\":22,\"group\":{},\"ip_protocol\":\"tcp\",\"to_port\":22,"
+                + "\"parent_group_id\":6,\"ip_range\":{\"cidr\":\"0.0.0.0/0\"},\"id\":10},"
+                + "{\"from_port\":8080,\"group\":{},\"ip_protocol\":\"tcp\",\"to_port\":8080,"
+                + "\"parent_group_id\":6,\"ip_range\":{\"cidr\":\"0.0.0.0/0\"},\"id\":11}]"
+                + ",\"tenant_id\":\"ebe6d9ec7b024361b7a3882c65a57dda\","
+                + "\"id\":6," + "\"name\":\"namedefault\","
                 + "\"description\":\"default\"" + "} ";
 
         secGroupJson = JSONObject.fromObject(secGroupString);
@@ -61,18 +64,18 @@ public class SecurityGroupTest extends TestCase {
         assertEquals(securityGroup.getRules().get(0).getFromPort(), "22");
         assertEquals(securityGroup.getRules().get(1).getToPort(), "8080");
     }
-    
+
     @Test
     public void testEqualRules() throws Exception {
         Rule rule = new Rule("TCP", "80", "80", "", "0.0.0.0/0");
         Rule rule2 = new Rule("TCP", "80", "80", "", "0.0.0.0/0");
         assertEquals(rule.equals(rule2), true);
-        
+
         rule.setIdParent("1");
         rule.setIdParent("2");
         assertEquals(rule.equals(rule2), false);
     }
-    
+
     @Test
     public void testRule() throws Exception {
         Rule rule = new Rule();
@@ -83,13 +86,13 @@ public class SecurityGroupTest extends TestCase {
         rule.setSourceGroup("sourcegroup");
         rule.setToPort("toPort");
         rule.setIpProtocol("ipProtocol");
-    
+
         assertEquals(rule.getCidr(), "cidr");
         assertEquals(rule.getFromPort(), "fromport");
         assertEquals(rule.getIdParent(), "idparent");
         assertEquals(rule.getIdRule(), "idrule");
         assertEquals(rule.getSourceGroup(), "sourcegroup");
-        assertNotNull (rule.toJSON());
-        
+        assertNotNull(rule.toJSON());
+
     }
 }

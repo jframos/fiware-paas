@@ -80,7 +80,10 @@ public class Environment {
     private String ovf;
 
     @ManyToMany
-    @JoinTable(name = "environment_has_tiers", joinColumns = {@JoinColumn(name = "environment_ID", nullable = false, updatable = false)}, inverseJoinColumns = {@JoinColumn(name = "tier_ID", nullable = false, updatable = false)})
+    @JoinTable(name = "environment_has_tiers",
+            joinColumns = {@JoinColumn(name = "environment_ID", nullable = false, updatable = false) },
+            inverseJoinColumns = {@JoinColumn(name = "tier_ID", nullable = false, updatable = false) })
+
     private Set<Tier> tiers = new HashSet<Tier>();
 
     /**

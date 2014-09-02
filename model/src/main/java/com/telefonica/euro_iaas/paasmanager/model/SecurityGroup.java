@@ -160,6 +160,10 @@ public class SecurityGroup {
         return id;
     }
 
+    /**
+     * Clone the list of rules associated to a security group and return it.
+     * @return
+     */
     public List<Rule> cloneRules() {
         List<Rule> rules = new ArrayList<Rule>();
         for (Rule rule : this.getRules()) {
