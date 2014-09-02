@@ -47,6 +47,10 @@ public class ProductReleaseTest {
     private JSONObject productReleaseJsonOneAttributeAndMetadatas, productReleaseJsonOneAttribute;
     private JSONObject productReleaseJsonNoReleaseNotesNoSSOO;
 
+    /**
+     * Configure the Test Case.
+     * @throws Exception
+     */
     @Before
     public void setUp() throws Exception {
 
@@ -139,6 +143,10 @@ public class ProductReleaseTest {
                 JSONObject.fromObject(productReleaseNoReleaseNotesNoSSOO);
     }
 
+    /**
+     * Test the creation of a product release from a json message.
+     * @throws Exception
+     */
     @Test
     public void testFromJson() throws Exception {
         productRelease.fromSdcJson(productReleaseJson);
@@ -148,6 +156,10 @@ public class ProductReleaseTest {
         assertEquals(productRelease.getName(), "tomcat-7");
     }
 
+    /**
+     * Test the creation of a product release without attributtes in a json message.
+     * @throws Exception
+     */
     @Test
     public void testFromJsonNoAttributes() throws Exception {
         productRelease.fromSdcJson(productReleaseJsonNoAttributes);
@@ -157,6 +169,10 @@ public class ProductReleaseTest {
         assertEquals(productRelease.getName(), "tomcat-7");
     }
 
+    /**
+     * Test the creation of a product message from a json message with only 1 attribute.
+     * @throws Exception
+     */
     @Test
     public void testOneAttributeFromJson() throws Exception {
         productRelease.fromSdcJson(productReleaseJsonOneAttribute);
@@ -166,6 +182,10 @@ public class ProductReleaseTest {
         assertEquals(productRelease.getName(), "mysql-1.2.4");
     }
 
+    /**
+     * Test the creation of a product message from a json message with only 1 attribute and 1 metadata.
+     * @throws Exception
+     */
     @Test
     public void testOneAttributeAndMetadatasFromJson() throws Exception {
         productRelease.fromSdcJson(productReleaseJsonOneAttributeAndMetadatas);
@@ -175,6 +195,10 @@ public class ProductReleaseTest {
         assertEquals(productRelease.getName(), "mysql-1.2.4");
     }
 
+    /**
+     * Test the creation of a product release creation from json message with only version, product and name.
+     * @throws Exception
+     */
     @Test
     public void testFromJsonNoReleaseNotesNoSSOO() throws Exception {
         productRelease.fromSdcJson(productReleaseJsonNoReleaseNotesNoSSOO);
@@ -183,6 +207,10 @@ public class ProductReleaseTest {
         assertEquals(productRelease.getName(), "henar10-1.0");
     }
 
+    /**
+     * Test the creation of a product release.
+     * @throws Exception
+     */
     @Test
     public void testProductRelease() throws Exception {
 
@@ -230,6 +258,9 @@ public class ProductReleaseTest {
 
     }
 
+    /**
+     * Check the creation of a product release and InstanceDto.
+     */
     @Test
     public void testProductReleaseAndInstDto() {
 

@@ -38,6 +38,10 @@ public class SecurityGroupTest extends TestCase {
     private SecurityGroup securityGroup;
     private JSONObject secGroupJson;
 
+    /**
+     * Configure the Test Case.
+     * @throws Exception
+     */
     @Before
     public void setUp() throws Exception {
 
@@ -54,6 +58,10 @@ public class SecurityGroupTest extends TestCase {
         secGroupJson = JSONObject.fromObject(secGroupString);
     }
 
+    /**
+     * Test the creation of a security group from a json message.
+     * @throws Exception
+     */
     @Test
     public void testFromJson() throws Exception {
         securityGroup.fromJson(secGroupJson);
@@ -65,6 +73,10 @@ public class SecurityGroupTest extends TestCase {
         assertEquals(securityGroup.getRules().get(1).getToPort(), "8080");
     }
 
+    /**
+     * Test that 2 rules are equals if they are created with the same values.
+     * @throws Exception
+     */
     @Test
     public void testEqualRules() throws Exception {
         Rule rule = new Rule("TCP", "80", "80", "", "0.0.0.0/0");
@@ -76,6 +88,10 @@ public class SecurityGroupTest extends TestCase {
         assertEquals(rule.equals(rule2), false);
     }
 
+    /**
+     * Test the creation of a rule.
+     * @throws Exception
+     */
     @Test
     public void testRule() throws Exception {
         Rule rule = new Rule();
