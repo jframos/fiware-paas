@@ -29,7 +29,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -37,7 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * An application Release is a concrete version of a given application.
- * 
+ *
  * @author Jesus M. Movilla
  */
 @Entity
@@ -73,7 +72,7 @@ public class ApplicationRelease {
 
     /**
      * Constructor.
-     * 
+     *
      * @param name
      * @param version
      */
@@ -94,7 +93,7 @@ public class ApplicationRelease {
      * @param artifacts
      */
     public ApplicationRelease(String name, String version, String description,
-            List<ApplicationRelease> transitableReleases, List<Artifact> artifacts) {
+                              List<ApplicationRelease> transitableReleases, List<Artifact> artifacts) {
         this.id = name + "-" + version;
         this.name = name;
         this.version = version;
@@ -186,48 +185,42 @@ public class ApplicationRelease {
 
 
     /**
-     * @param artifacts
-     *            the artifacts to set
+     * @param artifacts the artifacts to set
      */
     public void setArtifacts(List<Artifact> artifacts) {
         this.artifacts = artifacts;
     }
 
     /**
-     * @param description
-     *            the description to set
+     * @param description the description to set
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
     /**
-     * @param id
-     *            the id to set
+     * @param id the id to set
      */
     public void setId(String id) {
         this.id = id;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param name the name to set
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * @param transitableReleases
-     *            the transitableReleases to set
+     * @param transitableReleases the transitableReleases to set
      */
     public void setTransitableReleases(List<ApplicationRelease> transitableReleases) {
         this.transitableReleases = transitableReleases;
     }
 
     /**
-     * @param version
-     *            the version to set
+     * @param version the version to set
      */
     public void setVersion(String version) {
         this.version = version;
@@ -237,21 +230,20 @@ public class ApplicationRelease {
      * Constructs a <code>String</code> with all attributes
      * in name = value format.
      *
-     * @return a <code>String</code> representation 
+     * @return a <code>String</code> representation
      * of this object.
      */
     public String toString() {
-       StringBuilder sb = new StringBuilder("[[ApplicationRelease]");
-       sb.append("[id = ").append(this.id).append("]");
-       sb.append("[name = ").append(this.name).append("]");
-       sb.append("[version = ").append(this.version).append("]");
-       sb.append("[description = ").append(this.description).append("]");
-       sb.append("[transitableReleases = ").append(this.transitableReleases).append("]");
-       sb.append("[artifacts = ").append(this.artifacts).append("]");
-       sb.append("]");
-       return sb.toString();
+        StringBuilder sb = new StringBuilder("[[ApplicationRelease]");
+        sb.append("[id = ").append(this.id).append("]");
+        sb.append("[name = ").append(this.name).append("]");
+        sb.append("[version = ").append(this.version).append("]");
+        sb.append("[description = ").append(this.description).append("]");
+        sb.append("[transitableReleases = ").append(this.transitableReleases).append("]");
+        sb.append("[artifacts = ").append(this.artifacts).append("]");
+        sb.append("]");
+        return sb.toString();
     }
-    
-    
+
 
 }

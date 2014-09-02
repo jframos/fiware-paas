@@ -39,7 +39,7 @@ import net.sf.json.JSONObject;
 
 /**
  * Defines an attribute which can be configured.
- * 
+ *
  * @author Jesus M. Movilla
  */
 @Entity
@@ -57,10 +57,14 @@ public class Metadata {
     @XmlTransient
     private Long v;
 
-    /** the attribute key. */
+    /**
+     * the attribute key.
+     */
     @Column(nullable = false, length = 256)
     private String key;
-    /** the attribute value. */
+    /**
+     * the attribute value.
+     */
     @Column(nullable = false, length = 2048)
     private String value;
     /* the description of that attribute* */
@@ -75,7 +79,7 @@ public class Metadata {
 
     /**
      * Constructor.
-     * 
+     *
      * @param key
      * @param value
      */
@@ -86,7 +90,7 @@ public class Metadata {
 
     /**
      * Constructor.
-     * 
+     *
      * @param key
      * @param value
      * @param description
@@ -132,7 +136,7 @@ public class Metadata {
 
     /**
      * from Json.
-     * 
+     *
      * @param jsonNode
      */
     public void fromJson(JSONObject jsonNode) {
@@ -186,24 +190,21 @@ public class Metadata {
     }
 
     /**
-     * @param description
-     *            the description to set
+     * @param description the description to set
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
     /**
-     * @param key
-     *            the key to set
+     * @param key the key to set
      */
     public void setKey(String key) {
         this.key = key;
     }
 
     /**
-     * @param value
-     *            the value to set
+     * @param value the value to set
      */
     public void setValue(String value) {
         this.value = value;
@@ -213,19 +214,19 @@ public class Metadata {
      * Constructs a <code>String</code> with all attributes
      * in name = value format.
      *
-     * @return a <code>String</code> representation 
+     * @return a <code>String</code> representation
      * of this object.
      */
     public String toString() {
-       StringBuilder sb = new StringBuilder("[[Metadata]");
-       sb.append("[id = ").append(this.id).append("]");
-       sb.append("[v = ").append(this.v).append("]");
-       sb.append("[key = ").append(this.key).append("]");
-       sb.append("[value = ").append(this.value).append("]");
-       sb.append("[description = ").append(this.description).append("]");
-       sb.append("]");
-       return sb.toString();
+        StringBuilder sb = new StringBuilder("[[Metadata]");
+        sb.append("[id = ").append(this.id).append("]");
+        sb.append("[v = ").append(this.v).append("]");
+        sb.append("[key = ").append(this.key).append("]");
+        sb.append("[value = ").append(this.value).append("]");
+        sb.append("[description = ").append(this.description).append("]");
+        sb.append("]");
+        return sb.toString();
     }
-    
-    
+
+
 }

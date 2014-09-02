@@ -295,7 +295,6 @@ public class NetworkinEnvironmenInstanceTest {
         subNet.setCidr("10.0.4.6/24");
         for (Network netOut : tierbk.getNetworks()) {
             netOut.addSubNet(subNet);
-            ;
         }
 
         environmentAlreadyNetwork.addTier(tierbk);

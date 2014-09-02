@@ -24,9 +24,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -47,9 +45,9 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.SubNetworkDto;
 
 /**
  * A network.
- * 
+ *
  * @author Henar Munoz
- */ 
+ */
 
 @SuppressWarnings("serial")
 @Entity
@@ -64,15 +62,15 @@ public class Network {
     private Long id;
 
     private String name;
-    
+
     private String region;
-    
+
     private String vdc;
-    
+
     private boolean federatedNetwork = false;
-    
+
     private String federatedRange = "0";
-    
+
 
     @OneToMany
     private Set<SubNetwork> subNets;
@@ -97,7 +95,7 @@ public class Network {
 
     /**
      * It adds a subnet to the network.
-     * 
+     *
      * @param subNet
      * @return
      */
@@ -107,46 +105,46 @@ public class Network {
         }
         subNets.add(subNet);
     }
-    
+
     /**
      * It does a copy of the collection.
+     *
      * @return
      */
-    public Set<SubNetwork> cloneSubNets(){
-        Set<SubNetwork> subNetAux = new HashSet<SubNetwork> ();
-        for (SubNetwork subNet2: getSubNets()) {
-         	subNetAux.add(subNet2);
+    public Set<SubNetwork> cloneSubNets() {
+        Set<SubNetwork> subNetAux = new HashSet<SubNetwork>();
+        for (SubNetwork subNet2 : getSubNets()) {
+            subNetAux.add(subNet2);
         }
         return subNetAux;
-   }
-    
+    }
+
     /**
      * It deletes a subnet to the network.
-     * 
+     *
      * @param subNet
      * @return
      */
     public void deleteSubNet(SubNetwork subNet) {
         if (subNets.contains(subNet)) {
-            subNets.remove(subNet); 
+            subNets.remove(subNet);
         }
     }
-    
+
     /**
      * It updates a subnet to the network.
-     * 
+     *
      * @param subNet
      * @return
      */
     public void updateSubNet(SubNetwork subNet) {
         if (subNets.contains(subNet)) {
-            subNets.remove(subNet); 
+            subNets.remove(subNet);
         }
         subNets.add(subNet);
     }
 
     /**
-     * 
      * @param subNet
      * @return
      */
@@ -161,52 +159,57 @@ public class Network {
     public String getNetworkName() {
         return name;
     }
-    
+
     public String getRegion() {
         return region;
     }
-    
+
 
     public void setNetworkName(String name) {
-        this.name=name;
+        this.name = name;
     }
-    
-    public String getVdc () {
+
+    public String getVdc() {
         return vdc;
     }
-    
-    public void setVdc (String vdc) {
-        this.vdc=vdc;
+
+    public void setVdc(String vdc) {
+        this.vdc = vdc;
     }
-    
-    public void setFederatedNetwork (boolean federatedNetwork) {
-    	this.federatedNetwork = federatedNetwork;
+
+    public void setFederatedNetwork(boolean federatedNetwork) {
+        this.federatedNetwork = federatedNetwork;
     }
-    
-    public boolean getfederatedNetwork () {
-    	return this.federatedNetwork;
+
+    /**
+     * Get the federated network.
+     * @return
+     */
+    public boolean getfederatedNetwork() {
+        return this.federatedNetwork;
     }
-    
+
     public void setFederatedRange(String range) {
-    	this.federatedRange = range;
+        this.federatedRange = range;
     }
-    
+
     public String getFederatedRange() {
-    	return this.federatedRange;
+        return this.federatedRange;
     }
 
 
     /**
      * It gets the subnets.
-     * 
+     *
      * @return List<SubNetwork>
      */
     public Set<SubNetwork> getSubNets() {
         return this.subNets;
     }
-    
+
     /**
-     * It add the subnet collection
+     * It add the subnet collection.
+     *
      * @param subNets
      */
     public void setSubNets(Set<SubNetwork> subNets) {
@@ -216,28 +219,28 @@ public class Network {
 
     /**
      * the dto entity.
-     * 
+     *
      * @return
      */
     public NetworkDto toDto() {
         NetworkDto networkDto = new NetworkDto(this.name);
-        for (SubNetwork subnet: this.getSubNets()) {
+        for (SubNetwork subnet : this.getSubNets()) {
             SubNetworkDto subNetDto = subnet.toDto();
             networkDto.addSubNetworkDto(subNetDto);
         }
         return networkDto;
     }
-    
+
     /**
-    * the network instance.
-    * 
-    * @return
-    */
+     * the network instance.
+     *
+     * @return
+     */
     public NetworkInstance toNetworkInstance() {
         NetworkInstance networkInstance = new NetworkInstance(this.name, vdc, region);
         networkInstance.setFederatedNetwork(this.getfederatedNetwork());
         networkInstance.setFederatedRange(this.getFederatedRange());
-        for (SubNetwork subnet: this.getSubNets()) {
+        for (SubNetwork subnet : this.getSubNets()) {
             SubNetworkInstance subNetInstance = subnet.toInstance(vdc, region);
             networkInstance.addSubNet(subNetInstance);
         }
@@ -269,34 +272,34 @@ public class Network {
 
         return true;
     }
+
     @Override
-   public int hashCode() {
-       final int prime = 31;
-       int result = 1;
-       result = prime * result + ((id == null) ? 0 : id.hashCode());
-       return result;
-   }
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
 
     /**
      * Constructs a <code>String</code> with all attributes
      * in name = value format.
      *
-     * @return a <code>String</code> representation 
+     * @return a <code>String</code> representation
      * of this object.
      */
     public String toString() {
-       StringBuilder sb = new StringBuilder("[[Network]");
-       sb.append("[id = ").append(this.id).append("]");
-       sb.append("[name = ").append(this.name).append("]");
-       sb.append("[region = ").append(this.region).append("]");
-       sb.append("[vdc = ").append(this.vdc).append("]");
-       sb.append("[federatedNetwork = ").append(this.federatedNetwork).append("]");
-       sb.append("[federatedRange = ").append(this.federatedRange).append("]");
-       sb.append("[subNets = ").append(this.subNets).append("]");
-       sb.append("]");
-       return sb.toString();
+        StringBuilder sb = new StringBuilder("[[Network]");
+        sb.append("[id = ").append(this.id).append("]");
+        sb.append("[name = ").append(this.name).append("]");
+        sb.append("[region = ").append(this.region).append("]");
+        sb.append("[vdc = ").append(this.vdc).append("]");
+        sb.append("[federatedNetwork = ").append(this.federatedNetwork).append("]");
+        sb.append("[federatedRange = ").append(this.federatedRange).append("]");
+        sb.append("[subNets = ").append(this.subNets).append("]");
+        sb.append("]");
+        return sb.toString();
     }
-    
-    
+
 
 }

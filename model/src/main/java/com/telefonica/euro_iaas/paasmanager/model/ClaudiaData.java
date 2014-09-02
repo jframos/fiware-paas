@@ -28,22 +28,32 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
 /**
  * Defines the data to be used with Claudia.
- * 
+ *
  * @author jesus.movilla
  */
 public class ClaudiaData {
 
-    /** The org. */
+    /**
+     * The org.
+     */
     private final String org;
-    /** The vdc. */
+    /**
+     * The vdc.
+     */
     private final String vdc;
-    /** The service. */
+    /**
+     * The service.
+     */
     private final String service;
 
-    /** The user. **/
+    /**
+     * The user. *
+     */
     private PaasManagerUser user;
 
-    /** The replica. **/
+    /**
+     * The replica. *
+     */
     private String replica;
 
     /**
@@ -86,8 +96,7 @@ public class ClaudiaData {
     }
 
     /**
-     * @param user
-     *            the user to set
+     * @param user the user to set
      */
     public void setUser(PaasManagerUser user) {
         this.user = user;
@@ -97,20 +106,19 @@ public class ClaudiaData {
      * Constructs a <code>String</code> with all attributes
      * in name = value format.
      *
-     * @return a <code>String</code> representation 
+     * @return a <code>String</code> representation
      * of this object.
      */
     public String toString() {
-       StringBuilder sb = new StringBuilder("[[ClaudiaData]");
-       sb.append("[org = ").append(this.org).append("]");
-       sb.append("[vdc = ").append(this.vdc).append("]");
-       sb.append("[service = ").append(this.service).append("]");
-       sb.append("[user = ").append(this.user).append("]");
-       sb.append("[replica = ").append(this.replica).append("]");
-       sb.append("]");
-       return sb.toString();
+        StringBuilder sb = new StringBuilder("[[ClaudiaData]");
+        sb.append("[org = ").append(this.org).append("]");
+        sb.append("[vdc = ").append(this.vdc).append("]");
+        sb.append("[service = ").append(this.service).append("]");
+        sb.append("[user = ").append(this.user).append("]");
+        sb.append("[replica = ").append(this.replica).append("]");
+        sb.append("]");
+        return sb.toString();
     }
-    
-    
+
 
 }

@@ -36,27 +36,48 @@ public class AlreadyExistsEntityException extends Exception {
 
     private ProductRelease productRelease;
 
+    /**
+     * Default constructor.
+     */
     public AlreadyExistsEntityException() {
         super();
     }
 
+    /**
+     * Constructor.
+     * @param productRelease    The product release of the exception.
+     */
     public AlreadyExistsEntityException(ProductRelease productRelease) {
         this.productRelease = productRelease;
     }
 
+    /**
+     * Constructor.
+     * @param msg   Message to be shown.
+     */
     public AlreadyExistsEntityException(String msg) {
         super(msg);
     }
 
+    /**
+     * Constructor.
+     * @param e     Exception to be launched.
+     */
     public AlreadyExistsEntityException(Throwable e) {
         super(e);
     }
 
+    /**
+     * Constructor.
+     * @param msg   Message to be shown.
+     * @param e     Exception to be launched.
+     */
     public AlreadyExistsEntityException(String msg, Throwable e) {
         super(msg, e);
     }
 
     /**
+     * Get the product release of the exception.
      * @return the productRelease
      */
     public ProductRelease getProductRelease() {
@@ -64,8 +85,8 @@ public class AlreadyExistsEntityException extends Exception {
     }
 
     /**
+     * The productRelease to set.
      * @param productRelease
-     *            the productRelease to set
      */
     public void setProductRelease(ProductRelease productRelease) {
         this.productRelease = productRelease;

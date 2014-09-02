@@ -47,7 +47,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 
 /**
  * Environment entity.
- * 
+ *
  * @author henar
  */
 @Entity
@@ -80,7 +80,7 @@ public class Environment {
     private String ovf;
 
     @ManyToMany
-    @JoinTable(name = "environment_has_tiers", joinColumns = { @JoinColumn(name = "environment_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "tier_ID", nullable = false, updatable = false) })
+    @JoinTable(name = "environment_has_tiers", joinColumns = {@JoinColumn(name = "environment_ID", nullable = false, updatable = false)}, inverseJoinColumns = {@JoinColumn(name = "tier_ID", nullable = false, updatable = false)})
     private Set<Tier> tiers = new HashSet<Tier>();
 
     /**
@@ -91,7 +91,7 @@ public class Environment {
 
     /**
      * Constructor.
-     * 
+     *
      * @param name
      * @param tiers
      */
@@ -102,7 +102,7 @@ public class Environment {
 
     /**
      * Constructor.
-     * 
+     *
      * @param name
      * @param tiers
      * @param description
@@ -121,11 +121,9 @@ public class Environment {
      * <p>
      * Constructor for Service.
      * </p>
-     * 
-     * @param name
-     *            a {@link java.lang.String} object.
-     * @param description
-     *            a {@link java.lang.String} object.
+     *
+     * @param name        a {@link java.lang.String} object.
+     * @param description a {@link java.lang.String} object.
      * @param tiers
      */
     public Environment(String name, String description, Set<Tier> tiers) {
@@ -138,7 +136,7 @@ public class Environment {
 
     /**
      * Add a tier to the environment.
-     * 
+     *
      * @param tier
      */
     public void addTier(Tier tier) {
@@ -150,7 +148,7 @@ public class Environment {
 
     /**
      * Delete a tier in the environment.
-     * 
+     *
      * @param tier
      */
     public void deleteTier(Tier tier) {
@@ -161,7 +159,7 @@ public class Environment {
 
     /**
      * Update tier.
-     * 
+     *
      * @param tierOld
      * @param tierNew
      */
@@ -258,7 +256,7 @@ public class Environment {
 
     /**
      * It returns the dto specification.
-     * 
+     *
      * @return EnvironmentDto.class
      */
     public EnvironmentDto toDto() {
@@ -339,42 +337,40 @@ public class Environment {
         }
         return false;
     }
-    
-    public Network getNetworkWithRegionAndName (String region, String networkName) {
-    	
-    	for (Tier tier: this.getTiers()) {
-    		if (tier.getRegion().equals(region)) {
-    			for (Network net: tier.getNetworks()) {
-    				if (net.getNetworkName().equals(networkName)) {
-    					return net;
-    				}
-    			}
-    		}
-    	}
-    	return null;
+
+    public Network getNetworkWithRegionAndName(String region, String networkName) {
+
+        for (Tier tier : this.getTiers()) {
+            if (tier.getRegion().equals(region)) {
+                for (Network net : tier.getNetworks()) {
+                    if (net.getNetworkName().equals(networkName)) {
+                        return net;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /**
      * Constructs a <code>String</code> with all attributes
      * in name = value format.
      *
-     * @return a <code>String</code> representation 
+     * @return a <code>String</code> representation
      * of this object.
      */
     public String toString() {
-       StringBuilder sb = new StringBuilder("[[Environment]");
-       sb.append("[id = ").append(this.id).append("]");
-       sb.append("[name = ").append(this.name).append("]");
-       sb.append("[org = ").append(this.org).append("]");
-       sb.append("[description = ").append(this.description).append("]");
-       sb.append("[vdc = ").append(this.vdc).append("]");
-       sb.append("[ovf = ").append(this.ovf).append("]");
-       sb.append("[tiers = ").append(this.tiers).append("]");
-       sb.append("]");
-       return sb.toString();
-    } 
+        StringBuilder sb = new StringBuilder("[[Environment]");
+        sb.append("[id = ").append(this.id).append("]");
+        sb.append("[name = ").append(this.name).append("]");
+        sb.append("[org = ").append(this.org).append("]");
+        sb.append("[description = ").append(this.description).append("]");
+        sb.append("[vdc = ").append(this.vdc).append("]");
+        sb.append("[ovf = ").append(this.ovf).append("]");
+        sb.append("[tiers = ").append(this.tiers).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
 
 
-    
-    
 }

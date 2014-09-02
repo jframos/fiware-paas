@@ -44,7 +44,7 @@ import org.json.JSONObject;
 
 /**
  * A network.
- * 
+ *
  * @author Henar Munoz
  */
 
@@ -60,7 +60,9 @@ public class NetworkInstance {
     @XmlTransient
     private Long id;
 
-    /** the network name */
+    /**
+     * the network name.
+     */
     private String name;
     private String vdc;
 
@@ -74,7 +76,7 @@ public class NetworkInstance {
     private boolean netDefault = false;
     private String tenantId;
     private boolean external;
-    
+
     private boolean federatedNetwork = false;
     private String federatedRange = "0";
 
@@ -110,7 +112,7 @@ public class NetworkInstance {
 
     /**
      * It adds a router to the network.
-     * 
+     *
      * @param router
      * @return
      */
@@ -123,7 +125,7 @@ public class NetworkInstance {
 
     /**
      * It adds a subnet to the network.
-     * 
+     *
      * @param subNet
      * @return
      */
@@ -138,7 +140,7 @@ public class NetworkInstance {
 
     /**
      * It does a clone of the collection.
-     * 
+     *
      * @return
      */
     public Set<SubNetworkInstance> cloneSubNets() {
@@ -151,7 +153,7 @@ public class NetworkInstance {
 
     /**
      * It updates a subnet to the network.
-     * 
+     *
      * @param subNet
      * @return
      */
@@ -160,12 +162,21 @@ public class NetworkInstance {
         subNets.add(subNet);
     }
 
+    /**
+     * Delete a subnetwork instance.
+     * @param subNetwork
+     */
     public void removes(SubNetworkInstance subNetwork) {
         if (subNets.contains(subNetwork)) {
             subNets.remove(subNetwork);
         }
     }
 
+    /**
+     * Check if the subnetwork is contained in the stored list of subnetwork.
+     * @param subNet
+     * @return
+     */
     public boolean contains(SubNetworkInstance subNet) {
         for (SubNetworkInstance subNetInst : subNets) {
             if (subNetInst.equals(subNet)) {
@@ -178,7 +189,7 @@ public class NetworkInstance {
 
     /**
      * It obtains the id of the subnet to be used for the router.
-     * 
+     *
      * @return
      */
     public String getIdNetRouter() {
@@ -253,7 +264,7 @@ public class NetworkInstance {
 
     /**
      * It gets the routers.
-     * 
+     *
      * @return List<Router>
      */
     public Set<RouterInstance> getRouters() {
@@ -262,7 +273,7 @@ public class NetworkInstance {
 
     /**
      * It gets the id for the subnet to specify the cidr.
-     * 
+     *
      * @return
      */
     public int getSubNetCounts() {
@@ -271,7 +282,7 @@ public class NetworkInstance {
 
     /**
      * It gets the subnets.
-     * 
+     *
      * @return List<SubNetwork>
      */
     public Set<SubNetworkInstance> getSubNets() {
@@ -288,26 +299,30 @@ public class NetworkInstance {
     public String getRegionName() {
         return this.region;
     }
-    
-    public void setFederatedNetwork (boolean federatedNetwork) {
-    	this.federatedNetwork = federatedNetwork;
+
+    public void setFederatedNetwork(boolean federatedNetwork) {
+        this.federatedNetwork = federatedNetwork;
     }
-    
-    public void setFederatedRange (String range) {
-    	this.federatedRange = range;
+
+    public void setFederatedRange(String range) {
+        this.federatedRange = range;
     }
-    
-    public boolean getfederatedNetwork () {
-    	return this.federatedNetwork;
+
+    /**
+     * Return the federated network.
+     * @return
+     */
+    public boolean getfederatedNetwork() {
+        return this.federatedNetwork;
     }
-    
-    public String getFederatedRange () {
-    	return this.federatedRange;
+
+    public String getFederatedRange() {
+        return this.federatedRange;
     }
 
     /**
      * It obtains the json for adding this subnet into a router.
-     * 
+     *
      * @return
      */
     public String toAddInterfaceJson() {
@@ -319,7 +334,7 @@ public class NetworkInstance {
 
     /**
      * It returns the string representations for rest rerquest.
-     * 
+     *
      * @return the json representation
      */
     public String toJson() {
@@ -328,6 +343,13 @@ public class NetworkInstance {
 
     }
 
+    /**
+     * Create a new network instance from the information of the json message.
+     * @param jsonNet
+     * @param region
+     * @return
+     * @throws JSONException
+     */
     public static NetworkInstance fromJson(JSONObject jsonNet, String region) throws JSONException {
         String name = (String) jsonNet.get("name");
         boolean shared = (Boolean) jsonNet.get("shared");
@@ -401,30 +423,29 @@ public class NetworkInstance {
      * Constructs a <code>String</code> with all attributes
      * in name = value format.
      *
-     * @return a <code>String</code> representation 
+     * @return a <code>String</code> representation
      * of this object.
      */
     public String toString() {
-       StringBuilder sb = new StringBuilder("[[NetworkInstance]");
-       sb.append("[id = ").append(this.id).append("]");
-       sb.append("[name = ").append(this.name).append("]");
-       sb.append("[vdc = ").append(this.vdc).append("]");
-       sb.append("[idNetwork = ").append(this.idNetwork).append("]");
-       sb.append("[region = ").append(this.region).append("]");
-       sb.append("[shared = ").append(this.shared).append("]");
-       sb.append("[adminStateUp = ").append(this.adminStateUp).append("]");
-       sb.append("[netDefault = ").append(this.netDefault).append("]");
-       sb.append("[tenantId = ").append(this.tenantId).append("]");
-       sb.append("[external = ").append(this.external).append("]");
-       sb.append("[federatedNetwork = ").append(this.federatedNetwork).append("]");
-       sb.append("[federatedRange = ").append(this.federatedRange).append("]");
-       sb.append("[subNetCount = ").append(this.subNetCount).append("]");
-       sb.append("[subNets = ").append(this.subNets).append("]");
-       sb.append("[routers = ").append(this.routers).append("]");
-       sb.append("]");
-       return sb.toString();
+        StringBuilder sb = new StringBuilder("[[NetworkInstance]");
+        sb.append("[id = ").append(this.id).append("]");
+        sb.append("[name = ").append(this.name).append("]");
+        sb.append("[vdc = ").append(this.vdc).append("]");
+        sb.append("[idNetwork = ").append(this.idNetwork).append("]");
+        sb.append("[region = ").append(this.region).append("]");
+        sb.append("[shared = ").append(this.shared).append("]");
+        sb.append("[adminStateUp = ").append(this.adminStateUp).append("]");
+        sb.append("[netDefault = ").append(this.netDefault).append("]");
+        sb.append("[tenantId = ").append(this.tenantId).append("]");
+        sb.append("[external = ").append(this.external).append("]");
+        sb.append("[federatedNetwork = ").append(this.federatedNetwork).append("]");
+        sb.append("[federatedRange = ").append(this.federatedRange).append("]");
+        sb.append("[subNetCount = ").append(this.subNetCount).append("]");
+        sb.append("[subNets = ").append(this.subNets).append("]");
+        sb.append("[routers = ").append(this.routers).append("]");
+        sb.append("]");
+        return sb.toString();
     }
-    
-    
+
 
 }

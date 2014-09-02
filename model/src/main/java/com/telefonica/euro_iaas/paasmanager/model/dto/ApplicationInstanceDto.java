@@ -34,8 +34,8 @@ import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 
 /**
- * DTO for application Instance to receive rest request
- * 
+ * DTO for application Instance to receive rest request.
+ *
  * @author Jesus M. Movilla
  */
 @XmlRootElement
@@ -62,7 +62,7 @@ public class ApplicationInstanceDto {
      * @param environmentInstanceName
      */
     public ApplicationInstanceDto(String applicationName, String version, List<Attribute> attributes,
-            List<Artifact> artifacts, String environmentInstanceName) {
+                                  List<Artifact> artifacts, String environmentInstanceName) {
         this.applicationName = applicationName;
         this.version = version;
         this.attributes = attributes;
@@ -78,8 +78,7 @@ public class ApplicationInstanceDto {
     }
 
     /**
-     * @param applicationName
-     *            the applicationName to set
+     * @param applicationName the applicationName to set
      */
     public void setApplicationName(String applicationName) {
         this.applicationName = applicationName;
@@ -93,8 +92,7 @@ public class ApplicationInstanceDto {
     }
 
     /**
-     * @param version
-     *            the version to set
+     * @param version the version to set
      */
     public void setVersion(String version) {
         this.version = version;
@@ -108,8 +106,7 @@ public class ApplicationInstanceDto {
     }
 
     /**
-     * @param attributes
-     *            the attributes to set
+     * @param attributes the attributes to set
      */
     public void setAttributes(List<Attribute> attributes) {
         this.attributes = attributes;
@@ -123,8 +120,7 @@ public class ApplicationInstanceDto {
     }
 
     /**
-     * @param artifacts
-     *            the artifacts to set
+     * @param artifacts the artifacts to set
      */
     public void setArtifacts(List<Artifact> artifacts) {
         this.artifacts = artifacts;
@@ -138,8 +134,7 @@ public class ApplicationInstanceDto {
     }
 
     /**
-     * @param environmentInstanceName
-     *            the environmentInstanceName to set
+     * @param environmentInstanceName the environmentInstanceName to set
      */
     public void setEnvironmentInstanceName(String environmentInstanceName) {
         this.environmentInstanceName = environmentInstanceName;
@@ -149,21 +144,19 @@ public class ApplicationInstanceDto {
      * Constructs a <code>String</code> with all attributes
      * in name = value format.
      *
-     * @return a <code>String</code> representation 
+     * @return a <code>String</code> representation
      * of this object.
      */
     public String toString() {
-       StringBuilder sb = new StringBuilder("[[ApplicationInstanceDto]");
-       sb.append("[applicationName = ").append(this.applicationName).append("]");
-       sb.append("[version = ").append(this.version).append("]");
-       sb.append("[attributes = ").append(this.attributes).append("]");
-       sb.append("[artifacts = ").append(this.artifacts).append("]");
-       sb.append("[environmentInstanceName = ").append(this.environmentInstanceName).append("]");
-       sb.append("]");
-       return sb.toString();
+        StringBuilder sb = new StringBuilder("[[ApplicationInstanceDto]");
+        sb.append("[applicationName = ").append(this.applicationName).append("]");
+        sb.append("[version = ").append(this.version).append("]");
+        sb.append("[attributes = ").append(this.attributes).append("]");
+        sb.append("[artifacts = ").append(this.artifacts).append("]");
+        sb.append("[environmentInstanceName = ").append(this.environmentInstanceName).append("]");
+        sb.append("]");
+        return sb.toString();
     }
-    
-    
 
 
 }

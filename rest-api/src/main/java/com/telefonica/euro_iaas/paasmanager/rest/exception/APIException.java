@@ -62,7 +62,10 @@ public class APIException extends WebApplicationException {
      */
     public APIException(Throwable cause, int error) {
 
-        super(Response.status(error).entity(new ErrorResponseConverter(cause)).type(MediaType.APPLICATION_JSON).build());
+        super(Response.status(error).entity(new ErrorResponseConverter(cause))
+                                    .type(MediaType.APPLICATION_JSON)
+                                    .build());
+
         this.httpCode = error;
 
     }

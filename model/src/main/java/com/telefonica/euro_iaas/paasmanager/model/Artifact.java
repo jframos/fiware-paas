@@ -44,7 +44,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Represents an artifact to be installed on a ProductRelease.
- * 
+ *
  * @author Jesus M. Movilla
  * @version $Id: $
  */
@@ -96,9 +96,8 @@ public class Artifact {
 
     /**
      * Add a new attribute.
-     * 
-     * @param attribute
-     *            the attribute
+     *
+     * @param attribute the attribute
      */
     public void addAttribute(Attribute attribute) {
         if (attributes == null) {
@@ -154,45 +153,49 @@ public class Artifact {
     }
 
     /**
-     * @param attributes
-     *            the attributes to set
+     * @param attributes the attributes to set
      */
     public void setAttributes(List<Attribute> attributes) {
         this.attributes = attributes;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param name the name to set
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * @param path
-     *            the path to set
+     * @param path the path to set
      */
     public void setPath(String path) {
         this.path = path;
     }
 
     /**
-     * @param productRelease
-     *            the productRelease to set
+     * @param productRelease the productRelease to set
      */
     public void setProductRelease(ProductRelease productRelease) {
         this.productRelease = productRelease;
     }
-    
 
+    /**
+     * Return the hash code associated to the name if this is not null, else return 31.
+     * @return  The hash code.
+     */
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.getName() == null) ? 0 : this.getName().hashCode());
         return result;
     }
-    
+
+    /**
+     * Compare the attribute Object with the own object.
+     * @param obj   The object to compare.
+     * @return  The boolean result.
+     */
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -220,20 +223,19 @@ public class Artifact {
      * Constructs a <code>String</code> with all attributes
      * in name = value format.
      *
-     * @return a <code>String</code> representation 
+     * @return a <code>String</code> representation
      * of this object.
      */
     public String toString() {
-       StringBuilder sb = new StringBuilder("[[Artifact]");
-       sb.append("[id = ").append(this.id).append("]");
-       sb.append("[name = ").append(this.name).append("]");
-       sb.append("[path = ").append(this.path).append("]");
-       sb.append("[productRelease = ").append(this.productRelease).append("]");
-       sb.append("[attributes = ").append(this.attributes).append("]");
-       sb.append("]");
-       return sb.toString();
+        StringBuilder sb = new StringBuilder("[[Artifact]");
+        sb.append("[id = ").append(this.id).append("]");
+        sb.append("[name = ").append(this.name).append("]");
+        sb.append("[path = ").append(this.path).append("]");
+        sb.append("[productRelease = ").append(this.productRelease).append("]");
+        sb.append("[attributes = ").append(this.attributes).append("]");
+        sb.append("]");
+        return sb.toString();
     }
 
-    
-    
+
 }

@@ -29,16 +29,29 @@ package com.telefonica.euro_iaas.paasmanager.exception;
  */
 public class AlreadyExistEntityException extends Exception {
 
+    /**
+     * Constructor.
+     * @param msg   Message to be shown when a exception occurs.
+     */
     public AlreadyExistEntityException(String msg) {
         super(msg);
 
 
     }
 
+    /**
+     * Constructor.
+     * @param e     Exception to be launched.
+     */
     public AlreadyExistEntityException(Throwable e) {
         super(e);
     }
 
+    /**
+     * Constructor.
+     * @param msg   Message to be shown when a exception occurs.
+     * @param e     Exception to be launched.
+     */
     public AlreadyExistEntityException(String msg, Throwable e) {
         super(msg, e);
     }
