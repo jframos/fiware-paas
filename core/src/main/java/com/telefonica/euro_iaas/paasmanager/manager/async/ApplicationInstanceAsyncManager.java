@@ -28,15 +28,16 @@ import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 
+/**
+ * Application Instance Async Manager.
+ */
 public interface ApplicationInstanceAsyncManager {
 
     /**
-     * Install an applicationRelease on an already existent EnvironmentInstance
+     * Install an applicationRelease on an already existent EnvironmentInstance.
      * 
-     * @param org
-     *            the org where the instance will be installed
-     * @param vdc
-     *            the vdc where the instance will be installed
+     * @param data
+     *            The data related to claudis (org, vdc)
      * @param environmentInstanceName
      *            on which applicationRelease is going to be deployed
      * @param applicationRelease
@@ -49,6 +50,19 @@ public interface ApplicationInstanceAsyncManager {
     void install(ClaudiaData data, String environmentInstanceName, ApplicationRelease applicationRelease,
             Task task, String callback);
 
+    /**
+     * Uninstall an applicationRelease on an already existent EnvironmentInstance.
+     * @param data
+     *            The data related to claudis (org, vdc)
+     * @param envInstance
+     *            on which applicationRelease is going to be undeployed
+     * @param appInstance
+     *            to be undeployed
+     * @param task
+     *            the task which contains the information about the async execution
+     * @param callback
+     *            if not empty, contains the url where the result of the execution will be sent
+     */
     void uninstall(ClaudiaData data, String envInstance, String appInstance, Task task, String callback);
 
 }

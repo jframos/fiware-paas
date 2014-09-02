@@ -60,7 +60,7 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import com.telefonica.euro_iaas.paasmanager.util.TaskNotificator;
 
 /**
- * Application Instance Manager operations: install
+ * Application Instance Manager operations: install.
  * 
  * @author Jesus M. Movilla
  */
@@ -74,7 +74,7 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
     private EnvironmentInstanceManager environmentInstanceManager;
 
     /**
-     * Install an applicationRelease on an already existent EnvironmentInstance
+     * Install an applicationRelease on an already existent EnvironmentInstance.
      * 
      * @param environmentInstanceName
      *            on which applicationRelease is going to be deployed
@@ -123,12 +123,24 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
 
     }
 
+    /**
+     * Uninstall an applicationRelease on an already existent EnvironmentInstance.
+     *
+     * @param environmentInstanceName
+     *            on which applicationRelease is going to be undeployed
+     * @param applicationName
+     *            to be undeployed
+     * @param task
+     *            the task which contains the information about the async execution
+     * @param callback
+     *            if not empty, contains the url where the result of the execution will be sent
+     */
     public void uninstall(ClaudiaData data, String environmentInstanceName, String applicationName, Task task,
             String callback) {
 
         ApplicationInstance applicationInstance = null;
         try {
-            applicationInstance = applicationInstanceManager.load(data.getVdc(),applicationName);
+            applicationInstance = applicationInstanceManager.load(data.getVdc(), applicationName);
             EnvironmentInstance environmentInstance = environmentInstanceManager.load(data.getVdc(),
                     environmentInstanceName);
             applicationInstanceManager.uninstall(data, environmentInstance, applicationInstance);
@@ -150,7 +162,7 @@ public class ApplicationInstanceAsyncManagerImpl implements ApplicationInstanceA
 
     private void updateSuccessTask(Task task, EnvironmentInstance environmentInstance) throws TaskNotFoundException {
         Task loadedTask;
-        String path = MessageFormat.format(TASK_PATH, environmentInstance.getVdc(), environmentInstance.getName()); // the
+        String path = MessageFormat.format(TASK_PATH, environmentInstance.getVdc(), environmentInstance.getName());
 
         String psyh = propertiesProvider.getProperty(PAAS_MANAGER_URL) + path;
         // vdc

@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Represents an instance of a application.
- * 
+ *
  * @author Jesus M. Movilla
  * @version $Id: $
  */
@@ -42,7 +42,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ApplicationInstance extends InstallableInstance {
 
     public static final String VDC_FIELD = "vdc";
-    
+
     public static final String APP_FIELD = "name";
     @ManyToOne
     private ApplicationRelease applicationRelease;
@@ -54,7 +54,7 @@ public class ApplicationInstance extends InstallableInstance {
      * Default Constructor.
      */
     public ApplicationInstance() {
-  
+
     }
 
     /**
@@ -74,7 +74,7 @@ public class ApplicationInstance extends InstallableInstance {
      * @param vdc
      */
     public ApplicationInstance(ApplicationRelease applicationRelease, EnvironmentInstance environmentInstance,
-            String vdc) {
+                               String vdc) {
         this.applicationRelease = applicationRelease;
         this.environmentInstance = environmentInstance;
         this.setVdc(vdc);
@@ -88,7 +88,7 @@ public class ApplicationInstance extends InstallableInstance {
      * @param status
      */
     public ApplicationInstance(ApplicationRelease applicationRelease, EnvironmentInstance environmentInstance,
-            String vdc, Status status) {
+                               String vdc, Status status) {
         this.applicationRelease = applicationRelease;
         this.environmentInstance = environmentInstance;
         this.setVdc(vdc);
@@ -111,16 +111,14 @@ public class ApplicationInstance extends InstallableInstance {
     }
 
     /**
-     * @param applicationRelease
-     *            the applicationRelease to set
+     * @param applicationRelease the applicationRelease to set
      */
     public void setApplicationRelease(ApplicationRelease applicationRelease) {
         this.applicationRelease = applicationRelease;
     }
 
     /**
-     * @param environmentInstance
-     *            the environmentInstance to set
+     * @param environmentInstance the environmentInstance to set
      */
     public void setEnvironmentInstance(EnvironmentInstance environmentInstance) {
         this.environmentInstance = environmentInstance;
@@ -137,17 +135,16 @@ public class ApplicationInstance extends InstallableInstance {
      * Constructs a <code>String</code> with all attributes
      * in name = value format.
      *
-     * @return a <code>String</code> representation 
+     * @return a <code>String</code> representation
      * of this object.
      */
     public String toString() {
-       StringBuilder sb = new StringBuilder("[[ApplicationInstance]");
-       sb.append("[applicationRelease = ").append(this.applicationRelease).append("]");
-       sb.append("[environmentInstance = ").append(this.environmentInstance).append("]");
-       sb.append("]");
-       return sb.toString();
+        StringBuilder sb = new StringBuilder("[[ApplicationInstance]");
+        sb.append("[applicationRelease = ").append(this.applicationRelease).append("]");
+        sb.append("[environmentInstance = ").append(this.environmentInstance).append("]");
+        sb.append("]");
+        return sb.toString();
     }
-    
-    
+
 
 }

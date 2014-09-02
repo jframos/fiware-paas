@@ -27,7 +27,6 @@ package com.telefonica.euro_iaas.paasmanager.environment;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,7 +37,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
@@ -46,7 +44,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 
 /**
- * Integration Tests for Product Release entity
+ * Integration Tests for Product Release entity.
  * 
  * @author henar
  */
@@ -58,6 +56,10 @@ public class AProductReleaseTest {
     @Autowired
     private ProductReleaseDao productReleaseDao;
 
+    /**
+     * Test the creation of a product release with no attributes.
+     * @throws Exception
+     */
     @Test
     public void testProductReleasesNotAttributes() throws Exception {
 
@@ -81,6 +83,10 @@ public class AProductReleaseTest {
 
     }
 
+    /**
+     * Test the creation of a product release with attributes.
+     * @throws Exception
+     */
     @Test
     public void testProductReleasesWithAttributes() throws Exception {
 
@@ -110,9 +116,12 @@ public class AProductReleaseTest {
         assertEquals(productRelease.getAttributes().size(), 1);
 
     }
-    
-    
-    
+
+
+    /**
+     * Test the creation of a product release with metadata.
+     * @throws Exception
+     */
     @Test
     public void testProductReleasesWithMetadata() throws Exception {
 
@@ -135,7 +144,11 @@ public class AProductReleaseTest {
         assertEquals(productRelease.getAttributes().size(), 0);
 
     }
-    
+
+    /**
+     * Test the creation of a product release with attributes.
+     * @throws Exception
+     */
     @Test
     public void testProductReleasesWithAttributes2() throws Exception {
 
@@ -159,7 +172,11 @@ public class AProductReleaseTest {
         assertEquals(productRelease.getAttributes().size(), 1);
 
     }
-    
+
+    /**
+     * Test the creation of a product release with empty attributes.
+     * @throws Exception
+     */
     @Test
     public void testProductReleasesWithEmptyAttributes() throws Exception {
 
