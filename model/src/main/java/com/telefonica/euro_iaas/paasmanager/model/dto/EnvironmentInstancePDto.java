@@ -60,8 +60,8 @@ public class EnvironmentInstancePDto {
     }
 
     /**
-	 * 
-	 */
+     *
+     */
     public EnvironmentInstancePDto() {
     }
 
@@ -73,8 +73,7 @@ public class EnvironmentInstancePDto {
     }
 
     /**
-     * @param environmentInstanceName
-     *            the environmentInstanceName to set
+     * @param environmentInstanceName the environmentInstanceName to set
      */
     public void setEnvironmentInstanceName(String environmentInstanceName) {
         this.environmentInstanceName = environmentInstanceName;
@@ -120,16 +119,14 @@ public class EnvironmentInstancePDto {
     }
 
     /**
-     * @param vdc
-     *            the vdc to set
+     * @param vdc the vdc to set
      */
     public void setVdc(String vdc) {
         this.vdc = vdc;
     }
 
     /**
-     * @param tierInstances
-     *            the tierInstances to set
+     * @param tierPDtos the tierInstances to set
      */
     public void setTiers(List<TierPDto> tierPDtos) {
         this.tierDto = tierPDtos;
@@ -150,22 +147,21 @@ public class EnvironmentInstancePDto {
      * Constructs a <code>String</code> with all attributes
      * in name = value format.
      *
-     * @return a <code>String</code> representation 
+     * @return a <code>String</code> representation
      * of this object.
      */
     public String toString() {
-       StringBuilder sb = new StringBuilder("[[EnvironmentInstancePDto]");
-       sb.append("[environmentInstanceName = ").append(this.environmentInstanceName).append("]");
-       sb.append("[vdc = ").append(this.vdc).append("]");
-       sb.append("[description = ").append(this.description).append("]");
-       sb.append("[status = ").append(this.status).append("]");
-       sb.append("[blueprintName = ").append(this.blueprintName).append("]");
-       sb.append("[taskId = ").append(this.taskId).append("]");
-       sb.append("[tierDto = ").append(this.tierDto).append("]");
-       sb.append("]");
-       return sb.toString();
+        StringBuilder sb = new StringBuilder("[[EnvironmentInstancePDto]");
+        sb.append("[environmentInstanceName = ").append(this.environmentInstanceName).append("]");
+        sb.append("[vdc = ").append(this.vdc).append("]");
+        sb.append("[description = ").append(this.description).append("]");
+        sb.append("[status = ").append(this.status).append("]");
+        sb.append("[blueprintName = ").append(this.blueprintName).append("]");
+        sb.append("[taskId = ").append(this.taskId).append("]");
+        sb.append("[tierDto = ").append(this.tierDto).append("]");
+        sb.append("]");
+        return sb.toString();
     }
-    
-    
+
 
 }

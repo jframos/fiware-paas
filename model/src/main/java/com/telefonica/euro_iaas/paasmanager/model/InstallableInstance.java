@@ -25,7 +25,6 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -45,7 +44,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * InstallableInstance represents an instance of an execution unit that is (or has been) installed.
- * 
+ *
  * @author Sergio Arroyo
  */
 @SuppressWarnings("restriction")
@@ -82,7 +81,7 @@ public class InstallableInstance {
     public static final String STATUS_FIELD = "status";
     public static final String VDC_FIELD = "vdc";
 
-    public static final String ENVIRONMENT_INSTANCE_FIELD = "environmentinstance";;
+    public static final String ENVIRONMENT_INSTANCE_FIELD = "environmentinstance";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -103,7 +102,7 @@ public class InstallableInstance {
 
     /**
      * Constructor.
-     * 
+     *
      * @param status
      */
     public InstallableInstance() {
@@ -113,7 +112,7 @@ public class InstallableInstance {
 
     /**
      * Constructor.
-     * 
+     *
      * @param status
      */
     public InstallableInstance(Long id) {
@@ -123,7 +122,7 @@ public class InstallableInstance {
 
     /**
      * Constructor.
-     * 
+     *
      * @param status
      */
     public InstallableInstance(Status status) {
@@ -212,40 +211,35 @@ public class InstallableInstance {
     }
 
     /**
-     * @param date
-     *            the date to set
+     * @param date the date to set
      */
     public void setDate(Date date) {
         this.date = date;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param name the name to set
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * @param privateAttributes
-     *            the privateAttributes to set
+     * @param privateAttributes the privateAttributes to set
      */
     public void setPrivateAttributes(Set<Attribute> privateAttributes) {
         this.privateAttributes = privateAttributes;
     }
 
     /**
-     * @param status
-     *            the status to set
+     * @param status the status to set
      */
     public void setStatus(Status status) {
         this.status = status;
     }
 
     /**
-     * @param vdc
-     *            the vdc to set
+     * @param vdc the vdc to set
      */
     public void setVdc(String vdc) {
         this.vdc = vdc;
@@ -255,21 +249,20 @@ public class InstallableInstance {
      * Constructs a <code>String</code> with all attributes
      * in name = value format.
      *
-     * @return a <code>String</code> representation 
+     * @return a <code>String</code> representation
      * of this object.
      */
     public String toString() {
-       StringBuilder sb = new StringBuilder("[[InstallableInstance]");
-       sb.append("[id = ").append(this.id).append("]");
-       sb.append("[date = ").append(this.date).append("]");
-       sb.append("[name = ").append(this.name).append("]");
-       sb.append("[status = ").append(this.status).append("]");
-       sb.append("[vdc = ").append(this.vdc).append("]");
-       sb.append("[privateAttributes = ").append(this.privateAttributes).append("]");
-       sb.append("]");
-       return sb.toString();
+        StringBuilder sb = new StringBuilder("[[InstallableInstance]");
+        sb.append("[id = ").append(this.id).append("]");
+        sb.append("[date = ").append(this.date).append("]");
+        sb.append("[name = ").append(this.name).append("]");
+        sb.append("[status = ").append(this.status).append("]");
+        sb.append("[vdc = ").append(this.vdc).append("]");
+        sb.append("[privateAttributes = ").append(this.privateAttributes).append("]");
+        sb.append("]");
+        return sb.toString();
     }
 
-    
-    
+
 }

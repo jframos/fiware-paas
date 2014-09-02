@@ -148,15 +148,15 @@ public class EnvironmentTest extends TestCase {
         tiers.add(tier);
         tiers.add(tier2);
 
-        Environment envResult = new Environment("environemntName", tiers, "description","ORG",  VDC );
+        Environment envResult = new Environment("environemntName", tiers, "description", "ORG", VDC);
         envResult.setName("environemntName");
         envResult.setTiers(tiers);
 
         boolean result = envResult.isNetworkFederated();
         assertEquals(result, true);
-        assertEquals (envResult.getDescription(), "description");
-        assertEquals (envResult.getVdc(), VDC);
-        assertEquals (envResult.getOrg(), "ORG");
+        assertEquals(envResult.getDescription(), "description");
+        assertEquals(envResult.getVdc(), VDC);
+        assertEquals(envResult.getOrg(), "ORG");
     }
 
     @Test
@@ -219,64 +219,64 @@ public class EnvironmentTest extends TestCase {
         assertEquals(nets.size(), 1);
 
     }
-    
+
     @Test
-    public void testEnvironmentII () {
-    	
-    	 Tier tier = new Tier("name1", new Integer(1), new Integer(5), new Integer(1), null);
-         tier.setRegion("region1");
-         tier.addNetwork(new Network("uno2", VDC, REGION));
+    public void testEnvironmentII() {
 
-         Tier tier3 = new Tier("name3", new Integer(1), new Integer(5), new Integer(1), null);
-         tier3.setRegion("region3");
-         tier3.addNetwork(new Network("uno2", VDC, REGION));
+        Tier tier = new Tier("name1", new Integer(1), new Integer(5), new Integer(1), null);
+        tier.setRegion("region1");
+        tier.addNetwork(new Network("uno2", VDC, REGION));
 
-         Tier tier2 = new Tier("name2", new Integer(1), new Integer(5), new Integer(1), null);
-         tier2.setRegion("region2");
-         tier2.addNetwork(new Network("uno", VDC, REGION));
+        Tier tier3 = new Tier("name3", new Integer(1), new Integer(5), new Integer(1), null);
+        tier3.setRegion("region3");
+        tier3.addNetwork(new Network("uno2", VDC, REGION));
 
-         Set<Tier> tiers = new HashSet<Tier>();
-         tiers.add(tier);
+        Tier tier2 = new Tier("name2", new Integer(1), new Integer(5), new Integer(1), null);
+        tier2.setRegion("region2");
+        tier2.addNetwork(new Network("uno", VDC, REGION));
+
+        Set<Tier> tiers = new HashSet<Tier>();
+        tiers.add(tier);
 
 
-         Environment envResult = new Environment("environemntName", tiers);
-         assertEquals (envResult.getTiers().size(), 1);
-         
-         envResult.addTier(tier2);
-         assertEquals (envResult.getTiers().size(), 2);
-         
-         envResult.deleteTier(tier);
-         assertEquals (envResult.getTiers().size(), 1);
-         
-         envResult.updateTier(tier2, tier3);
-         
-         for (Tier t: envResult.getTiers() ) {
-        	 assertEquals (t.getName(), "name3");
-         }
+        Environment envResult = new Environment("environemntName", tiers);
+        assertEquals(envResult.getTiers().size(), 1);
 
-    	
+        envResult.addTier(tier2);
+        assertEquals(envResult.getTiers().size(), 2);
+
+        envResult.deleteTier(tier);
+        assertEquals(envResult.getTiers().size(), 1);
+
+        envResult.updateTier(tier2, tier3);
+
+        for (Tier t : envResult.getTiers()) {
+            assertEquals(t.getName(), "name3");
+        }
+
+
     }
 
-    public void testGetNetworkWithRegionAndName () {
-    	 Tier tier = new Tier("name1", new Integer(1), new Integer(5), new Integer(1), null);
-         tier.setRegion(REGION);
-         tier.addNetwork(new Network("uno2", VDC, REGION));
-         
-         Tier tier3 = new Tier("name3", new Integer(1), new Integer(5), new Integer(1), null);
-         tier3.setRegion("region3");
-         tier3.addNetwork(new Network("uno3", VDC, REGION+3));
-         
-         Set<Tier> tiers = new HashSet<Tier>();
-         tiers.add(tier);
-         tiers.add(tier3);
-         
-         Environment envResult = new Environment("environemntName", tiers);
-         
-         Network net = envResult.getNetworkWithRegionAndName(REGION, "uno2");
-         Network net2 = envResult.getNetworkWithRegionAndName(REGION+3, "uno3");
-         assertEquals (net.getNetworkName(), "uno2");
-         assertEquals (net2.getNetworkName(), "uno3");
-         assertNull (envResult.getNetworkWithRegionAndName(REGION+3, "noexists"));
+    public void testGetNetworkWithRegionAndName() {
+        Tier tier = new Tier("name1", new Integer(1), new Integer(5), new Integer(1), null);
+        tier.setRegion(REGION);
+        tier.addNetwork(new Network("uno2", VDC, REGION));
+
+        Tier tier3 = new Tier("name3", new Integer(1), new Integer(5), new Integer(1), null);
+        tier3.setRegion("region3");
+        tier3.addNetwork(new Network("uno3", VDC, REGION + 3));
+
+        Set<Tier> tiers = new HashSet<Tier>();
+        tiers.add(tier);
+        tiers.add(tier3);
+
+        Environment envResult = new Environment("environemntName", tiers);
+
+        Network net = envResult.getNetworkWithRegionAndName(REGION, "uno2");
+        Network net2 = envResult.getNetworkWithRegionAndName(REGION + 3, "uno3");
+        assertEquals(net.getNetworkName(), "uno2");
+        assertEquals(net2.getNetworkName(), "uno3");
+        assertNull(envResult.getNetworkWithRegionAndName(REGION + 3, "noexists"));
     }
 
 

@@ -95,6 +95,10 @@ public class EnvironmentInstanceTest extends TestCase {
         envIns.setTierInstances(tieInstances);
     }
 
+    /**
+     * Test the creation of a Environment.
+     * @throws Exception    Any exception launched during the creation of the Environment.
+     */
     @Test
     public void testCreateEnvironment() throws Exception {
 

@@ -124,20 +124,20 @@ public class Limits {
      * Constructs a <code>String</code> with all attributes
      * in name = value format.
      *
-     * @return a <code>String</code> representation 
+     * @return a <code>String</code> representation
      * of this object.
      */
     public String toString() {
-       StringBuilder sb = new StringBuilder("[[Limits]");
-       sb.append("[maxTotalFloatingIps = ").append(this.maxTotalFloatingIps).append("]");
-       sb.append("[totalFloatingIpsUsed = ").append(this.totalFloatingIpsUsed).append("]");
-       sb.append("[maxTotalInstances = ").append(this.maxTotalInstances).append("]");
-       sb.append("[totalInstancesUsed = ").append(this.totalInstancesUsed).append("]");
-       sb.append("[maxSecurityGroups = ").append(this.maxSecurityGroups).append("]");
-       sb.append("[totalSecurityGroups = ").append(this.totalSecurityGroups).append("]");
-       sb.append("]");
-       return sb.toString();
+        StringBuilder sb = new StringBuilder("[[Limits]");
+        sb.append("[maxTotalFloatingIps = ").append(this.maxTotalFloatingIps).append("]");
+        sb.append("[totalFloatingIpsUsed = ").append(this.totalFloatingIpsUsed).append("]");
+        sb.append("[maxTotalInstances = ").append(this.maxTotalInstances).append("]");
+        sb.append("[totalInstancesUsed = ").append(this.totalInstancesUsed).append("]");
+        sb.append("[maxSecurityGroups = ").append(this.maxSecurityGroups).append("]");
+        sb.append("[totalSecurityGroups = ").append(this.totalSecurityGroups).append("]");
+        sb.append("]");
+        return sb.toString();
     }
-    
-    
+
+
 }
