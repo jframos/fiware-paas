@@ -28,12 +28,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -45,7 +42,6 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ApplicationReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
-import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.ApplicationInstanceAsyncManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsyncManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
@@ -54,20 +50,13 @@ import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
-import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
-import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
-import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.Task.TaskStates;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
-import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ArtifactDto;
-import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
-import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 
 import com.telefonica.euro_iaas.paasmanager.rest.validation.ApplicationInstanceResourceValidator;
-import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentInstanceResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
@@ -93,21 +82,22 @@ public class ApplicationInstanceResourceImplTest {
 
     /**
      * Initialize the Unit Test.
+     *
      * @throws Exception
      */
     @Before
     public void setUp() throws Exception {
-    	applicationInstanceResource = new ApplicationInstanceResourceImpl ();
-    	environmentInstanceManager = mock( EnvironmentInstanceManager.class);
-    	applicationInstanceManager = mock( ApplicationInstanceManager.class);
-    	applicationReleaseManager = mock( ApplicationReleaseManager.class);
-    	applicationInstanceAsyncManager = mock (ApplicationInstanceAsyncManager.class);
+        applicationInstanceResource = new ApplicationInstanceResourceImpl();
+        environmentInstanceManager = mock(EnvironmentInstanceManager.class);
+        applicationInstanceManager = mock(ApplicationInstanceManager.class);
+        applicationReleaseManager = mock(ApplicationReleaseManager.class);
+        applicationInstanceAsyncManager = mock(ApplicationInstanceAsyncManager.class);
         environmentInstanceAsyncManager = mock(EnvironmentInstanceAsyncManager.class);
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         taskManager = mock(TaskManager.class);
-        validator = mock (ApplicationInstanceResourceValidator.class);
+        validator = mock(ApplicationInstanceResourceValidator.class);
 
-        
+
         applicationInstanceResource.setApplicationInstanceAsyncManager(applicationInstanceAsyncManager);
         applicationInstanceResource.setApplicationInstanceManager(applicationInstanceManager);
         applicationInstanceResource.setApplicationReleaseManager(applicationReleaseManager);
@@ -118,33 +108,42 @@ public class ApplicationInstanceResourceImplTest {
 
 
         when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("");
-       
+
 
     }
 
     /**
      * Test the operation of installing an application.
+     *
      * @throws Exception
      */
     @Test
     public void testInstallApplication() throws Exception {
-    	
-    	List<ArtifactDto> artifacts = new ArrayList ();
-    	ArtifactDto artifact = new ArtifactDto ();
-    	artifacts.add(artifact);
-    	ApplicationReleaseDto application = new ApplicationReleaseDto ("APP", "version", artifacts);
 
-    	Mockito.doNothing().when (validator).validateInstall(any(String.class), any(String.class), any(ApplicationReleaseDto.class));
-    	Mockito.doNothing().when(applicationInstanceAsyncManager).install(any(ClaudiaData.class), any(String.class), 
-    			any(ApplicationRelease.class), any(Task.class), any(String.class));
+        List<ArtifactDto> artifacts = new ArrayList();
+        ArtifactDto artifact = new ArtifactDto();
+        artifacts.add(artifact);
+        ApplicationReleaseDto application = new ApplicationReleaseDto("APP", "version", artifacts);
+
+        Mockito
+                .doNothing()
+                .when(validator)
+                .validateInstall(any(String.class), any(String.class), any(ApplicationReleaseDto.class));
+
+        Mockito
+                .doNothing()
+                .when(applicationInstanceAsyncManager)
+                .install(any(ClaudiaData.class), any(String.class),
+                any(ApplicationRelease.class), any(Task.class), any(String.class));
+
         Task tasks = new Task();
         tasks.setStatus(TaskStates.RUNNING);
-    	when(taskManager.createTask(any(Task.class))).thenReturn(tasks);
-    	task = applicationInstanceResource.install(org, vdc, "environment", application, callback);
-    	
-    	
-    	assertNotNull (task);
-        assertEquals (task.getStatus(), TaskStates.RUNNING);
+        when(taskManager.createTask(any(Task.class))).thenReturn(tasks);
+        task = applicationInstanceResource.install(org, vdc, "environment", application, callback);
+
+
+        assertNotNull(task);
+        assertEquals(task.getStatus(), TaskStates.RUNNING);
 
     }
 
@@ -152,42 +151,45 @@ public class ApplicationInstanceResourceImplTest {
      * Test the operation of finding all application instance resource (not implemented).
      */
     @Test
-    public void testFindAll () {
-    	//applicationInstanceResource.findAll(page, pageSize, orderBy, orderType, status, vdc, environmentInstance, productInstanceName, applicationName);
-    	
+    public void testFindAll() {
+        //applicationInstanceResource.findAll(page, pageSize, orderBy, orderType, status, vdc,
+        //                            environmentInstance, productInstanceName, applicationName);
+
     }
 
     /**
      * Test the operation of find a specific application instance.
+     *
      * @throws EntityNotFoundException
      */
     @Test
-    public void testLoad () throws EntityNotFoundException {
-    	ApplicationInstance app = new ApplicationInstance ();
-    	when(applicationInstanceManager.load( any(String.class), any(String.class))).thenReturn(app);
-    	ApplicationInstance apps= applicationInstanceResource.load(vdc, "environment", "APP");
-    	assertNotNull (apps);
-    	
+    public void testLoad() throws EntityNotFoundException {
+        ApplicationInstance app = new ApplicationInstance();
+        when(applicationInstanceManager.load(any(String.class), any(String.class))).thenReturn(app);
+        ApplicationInstance apps = applicationInstanceResource.load(vdc, "environment", "APP");
+        assertNotNull(apps);
+
     }
 
     /**
      * Test the operation of uninstall an applicaiton.
+     *
      * @throws EntityNotFoundException
      */
     @Test
     public void testUninstall() throws EntityNotFoundException {
-    	EnvironmentInstance env = new EnvironmentInstance ();
-    	ApplicationInstance app = new ApplicationInstance ();
-    	when(environmentInstanceManager.load(any(String.class), any(String.class))).thenReturn(env);
-    	when(applicationInstanceManager.load( any(String.class), any(String.class))).thenReturn(app);
-    	Mockito.doNothing().when(applicationInstanceAsyncManager).uninstall(any(ClaudiaData.class), any(String.class), 
-    			any(String.class), any(Task.class), any(String.class));
+        EnvironmentInstance env = new EnvironmentInstance();
+        ApplicationInstance app = new ApplicationInstance();
+        when(environmentInstanceManager.load(any(String.class), any(String.class))).thenReturn(env);
+        when(applicationInstanceManager.load(any(String.class), any(String.class))).thenReturn(app);
+        Mockito.doNothing().when(applicationInstanceAsyncManager).uninstall(any(ClaudiaData.class), any(String.class),
+                any(String.class), any(Task.class), any(String.class));
         Task tasks = new Task();
         tasks.setStatus(TaskStates.RUNNING);
-    	when(taskManager.createTask(any(Task.class))).thenReturn(tasks);
-    	task = applicationInstanceResource.uninstall(org, vdc, "env", "APP", callback); 
-    	assertNotNull (task);
-        assertEquals (task.getStatus(), TaskStates.RUNNING);
-    	
+        when(taskManager.createTask(any(Task.class))).thenReturn(tasks);
+        task = applicationInstanceResource.uninstall(org, vdc, "env", "APP", callback);
+        assertNotNull(task);
+        assertEquals(task.getStatus(), TaskStates.RUNNING);
+
     }
 }

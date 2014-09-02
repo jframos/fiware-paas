@@ -40,11 +40,20 @@ import com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.ErrorCode;
 
+/**
+ * Class to manage an HTTP error.
+ */
 public class ErrorHandler extends HttpServlet {
 
     private static Logger log = LoggerFactory.getLogger(EnvironmentManagerImpl.class);
 
-    // Method to handle GET method request.
+    /**
+     * Method to handle GET method request.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         response.setContentType("application/json; charset=UTF-8");
@@ -59,6 +68,12 @@ public class ErrorHandler extends HttpServlet {
 
     }
 
+    /**
+     * Create a response HTTP message.
+     * @param request
+     * @param response
+     * @return
+     */
     public String createResponseMessage(HttpServletRequest request, HttpServletResponse response) {
 
         String responseMessage = "{\"errors\":[ ";
@@ -115,7 +130,13 @@ public class ErrorHandler extends HttpServlet {
         return new PrintWriter(new OutputStreamWriter(response.getOutputStream(), "UTF8"), true);
     }
 
-    // Method to handle POST method request.
+    /**
+     * Method to handle POST method request.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }
