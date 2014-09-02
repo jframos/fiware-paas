@@ -278,7 +278,10 @@ public class Environment {
         return envDto;
     }
 
-
+    /**
+     * Get the list of available networks per region.
+     * @return
+     */
     public Map<String, Set<String>> getNetworksRegion() {
         Map<String, Set<String>> map = new HashMap<String, Set<String>>();
         Set<String> regions;
@@ -297,6 +300,10 @@ public class Environment {
         return map;
     }
 
+    /**
+     * Get the list of federated networks per regions.
+     * @return
+     */
     public Set<String> getFederatedNetworks() {
         Set<String> nets = new HashSet<String>();
         Map<String, Set<String>> map = getNetworksRegion();
@@ -320,6 +327,10 @@ public class Environment {
         return map.size();
     }
 
+    /**
+     * Check if the number of regios is gt 1.
+     * @return
+     */
     public boolean isDifferentRegions() {
 
         if (getNumberRegions() > 1) {
@@ -329,6 +340,10 @@ public class Environment {
 
     }
 
+    /**
+     * Check if the number of regios is gt 1 and the size is gt 0.
+     * @return
+     */
     public boolean isNetworkFederated() {
         if (!isDifferentRegions()) {
             return false;
@@ -341,6 +356,12 @@ public class Environment {
         return false;
     }
 
+    /**
+     * Get the network associated to a region and identified by its name.
+     * @param region
+     * @param networkName
+     * @return
+     */
     public Network getNetworkWithRegionAndName(String region, String networkName) {
 
         for (Tier tier : this.getTiers()) {
