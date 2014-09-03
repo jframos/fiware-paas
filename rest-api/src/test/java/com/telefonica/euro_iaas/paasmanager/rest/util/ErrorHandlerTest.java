@@ -37,8 +37,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Test;
 
+/**
+ * Test Case related to ErrorHandler class.
+ */
 public class ErrorHandlerTest {
 
+    /**
+     * Test the response with a valid error without message in json format.
+     * @throws IOException
+     */
     @Test
     public void shouldReturnResponseWithValidErrorJSONWithoutMessage() throws IOException {
         // given
