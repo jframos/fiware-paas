@@ -37,6 +37,9 @@ import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.ApplicationInstanceSearchCriteria;
 
+/**
+ * Manager class of the Application Instance.
+ */
 public interface ApplicationInstanceManager {
 
     /**
