@@ -76,23 +76,33 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     private OpenStackRegion openStackRegion = null;
     private FileUtils fileUtils;
     private NetworkInstanceManager networkInstanceManager = null;
-    private final int POLLING_INTERVAL = 10000;
+    private static final int POLLING_INTERVAL = 10000;
 
+    /**
+     * Get the response of the server from openstack.
+     * @param claudiaData
+     * @param tier
+     * @param replica
+     * @param vm
+     * @param region
+     * @return
+     * @throws ClaudiaResourceNotFoundException
+     */
     public String browseVMReplica(ClaudiaData claudiaData, String tier, int replica, VM vm, String region)
-            throws ClaudiaResourceNotFoundException {
+        throws ClaudiaResourceNotFoundException {
 
         String response = "No Content";
+
         try {
             String token = claudiaData.getUser().getToken();
             String vdc = claudiaData.getVdc();
             response = openStackUtil.getServer(vm.getVmid(), region, token, vdc);
         } catch (OpenStackException e) {
-
             String errorMessage = "Error obtaining info from Server " + vm.getVmid();
             log.error(errorMessage);
             throw new ClaudiaResourceNotFoundException(errorMessage, e);
-
         }
+
         return response;
     }
 
@@ -103,7 +113,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
      * java.lang.String)
      */
     private String buildCreateServerPayload(ClaudiaData claudiaData, TierInstance tierInstance, int replica)
-            throws InfrastructureException {
+        throws InfrastructureException {
 
 
         if ((tierInstance.getTier().getImage() == null) || (tierInstance.getTier().getFlavour() == null)
@@ -219,14 +229,20 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         }
 
         try {
-            chefServerUrl = openStackRegion.getChefServerEndPoint(tierInstance.getTier().getRegion(), claudiaData.getUser().getToken());
+            chefServerUrl = openStackRegion.getChefServerEndPoint(
+                    tierInstance.getTier().getRegion(),
+                    claudiaData.getUser().getToken());
+
         } catch (Exception e1) {
             log.warn("Error to obtain the chef-server url" + e1.getMessage());
             return file;
         }
 
         try {
-            puppetUrl = openStackRegion.getPuppetMasterEndPoint(tierInstance.getTier().getRegion(), claudiaData.getUser().getToken());
+            puppetUrl = openStackRegion.getPuppetMasterEndPoint(
+                    tierInstance.getTier().getRegion(),
+                    claudiaData.getUser().getToken());
+
         } catch (Exception e1) {
             log.warn("Error to obtain the puppetmaster url" + e1.getMessage());
             return file;
@@ -434,7 +450,8 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         // openStackUtilImpl = new OpenStackUtilImpl(claudiaData.getUser());
 
         log.debug("Deploy server " + claudiaData.getService() + " tier instance " + tierInstance.getName()
-                + " replica " + replica + " with networks " + tierInstance.getNetworkInstances() + " and region " + tierInstance.getTier().getRegion());
+                + " replica " + replica + " with networks " + tierInstance.getNetworkInstances()
+                + " and region " + tierInstance.getTier().getRegion());
 
         if (tierInstance.getNetworkInstances().isEmpty()) {
             try {
@@ -634,7 +651,8 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             openStackUtil.deleteServer(tierInstance.getVM().getVmid(), region, token, vdc);
 
             checkDeleteServerTaskStatus(tierInstance, claudiaData);
-            log.debug("Undeployed VM replica " + tierInstance.getName() + " for region " + tierInstance.getTier().getRegion() + " and user " + tierInstance.getTier().getVdc());
+            log.debug("Undeployed VM replica " + tierInstance.getName() + " for region "
+                    + tierInstance.getTier().getRegion() + " and user " + tierInstance.getTier().getVdc());
 
             if (tierInstance.getTier().getFloatingip().equals("true")) {
                 log.debug("Delete floating ip ");
