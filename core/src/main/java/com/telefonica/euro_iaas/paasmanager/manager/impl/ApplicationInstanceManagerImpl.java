@@ -69,19 +69,15 @@ public class ApplicationInstanceManagerImpl implements ApplicationInstanceManage
 
     /**
      * Install the applicationIntance on a EnvironmetInstance Precondition: 1) The EnvironmentInstance is already
-     * installed 2) The ApplicationRelease is described in the request
-     * 
+     * installed 2) The ApplicationRelease is described in the request.
+     * @param data
      * @param environmentInstance
-     *            the environmentInstance on which the application is going to be installed
+     * @param applicationRelease
+     * @return
      * @throws ProductReleaseNotFoundException
-     *             if ProuctRelease provided is not in the paas-manager database
-     * @throws ApplicationTypeNotFoundException
-     *             if ApplicationType provided in applicatonRelease object is not in the paas-manager database
      * @throws InvalidEntityException
-     *             if data in applicationRelease is not valid (artifacts, and applciatonRelease objects)
      * @throws AlreadyExistsEntityException
-     *             if artifcat/applicationRelease are already in the paas-manager database
-     * @return the installed applicationInstance
+     * @throws ProductInstallatorException
      */
     public ApplicationInstance install(ClaudiaData data, EnvironmentInstance environmentInstance,
             ApplicationRelease applicationRelease) throws ProductReleaseNotFoundException, InvalidEntityException,
