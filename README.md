@@ -1,5 +1,5 @@
 # FI-WARE PaaS Manager 
-[![Build Status](https://travis-ci.org/telefonicaid/fiware-paas.svg)](https://travis-ci.org/telefonicaid/fiware-paas) [![Coverage Status](https://coveralls.io/repos/jesuspg/fiware-paas/badge.png?branch=develop)](https://coveralls.io/r/jesuspg/fiware-paas?branch=develop) [![help stackoverflow](http://b.repl.ca/v1/help-stackoverflow-orange.png)](http://www.stackoverflow.com)
+[![Build Status](https://travis-ci.org/telefonicaid/fiware-paas.svg)](https://travis-ci.org/telefonicaid/fiware-paas) [![Coverage Status](https://coveralls.io/repos/telefonicaid/fiware-paas/badge.png?branch=develop)](https://coveralls.io/r/telefonicaid/fiware-paas?branch=develop) [![help stackoverflow](http://b.repl.ca/v1/help-stackoverflow-orange.png)](http://www.stackoverflow.com)
 
 
 
