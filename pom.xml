@@ -300,7 +300,8 @@
                         <encoding>UTF-8</encoding>
                         <consoleOutput>true</consoleOutput>
                         <failsOnError>true</failsOnError>
-                        <failsOnViolations>true</failsOnViolations>
+                        <includeTestResources>true</includeTestResources>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
                         <linkXRef>false</linkXRef>
                     </configuration>
                 </plugin>
