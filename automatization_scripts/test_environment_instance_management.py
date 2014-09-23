@@ -37,9 +37,9 @@ if __name__ == "__main__":
 
     cmd_args = []
     cmd_args.append('hola')
-    cmd_args.append('envjesus04')
-    cmd_args.append('bluepjesus04')
-    cmd_args.append('tier16')
+    cmd_args.append('envjesus50')
+    cmd_args.append('bluepjesus50')
+    cmd_args.append('tiertest')
     cmd_args.append('mysql=1.2.4')
 
     config = {}
