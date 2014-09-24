@@ -21,7 +21,7 @@
         <repoName>fiware-paas</repoName>
 
         <scmURI>git@github.com:telefonicaid</scmURI>
-        <nexusURI>http://130.206.80.169</nexusURI>
+        <nexusURI>http://130.206.80.85</nexusURI>
         <issueURI>https://jirapdi.tid.es/browse</issueURI>
         <nexusRepositories>${nexusURI}/nexus/content/repositories</nexusRepositories>
         <continousIntegrationSystemProjectName>${repoName}</continousIntegrationSystemProjectName>
@@ -149,6 +149,12 @@
             </dependency>
                                 -->
 
+
+            <dependency>
+                <groupId>javax.ws.rs</groupId>
+                <artifactId>javax.ws.rs-api</artifactId>
+                <version>2.0</version>
+            </dependency>
 
             <dependency>
                 <groupId>junit</groupId>
@@ -517,8 +523,8 @@
             <url>http://repository.springsource.com/maven/libraries/external</url>
         </repository>
 
-
         <!-- Restlet repository-->
+
         <repository>
             <id>maven-restlet</id>
             <name>Public online Restlet repository</name>

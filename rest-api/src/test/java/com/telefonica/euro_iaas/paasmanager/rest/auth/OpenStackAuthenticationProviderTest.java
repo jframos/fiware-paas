@@ -97,7 +97,7 @@ public class OpenStackAuthenticationProviderTest {
         openStackAuthenticationProvider.setClient(client);
         WebTarget webResource = mock(WebTarget.class);
         Invocation.Builder builder = mock(Invocation.Builder.class);
-        WebTarget webResource2 = mock(WebTarget.class);
+        WebTarget webResource2 = mock(WebTarget.class, "webresource2");
         Invocation.Builder builder2 = mock(Invocation.Builder.class);
         Response response401 = mock(Response.class);
         AuthenticateResponse authenticateResponse = mock(AuthenticateResponse.class);
@@ -106,14 +106,16 @@ public class OpenStackAuthenticationProviderTest {
         when(openStackAuthenticationToken.getCredentials()).thenReturn(new String[] { adminToken, "string2" });
         when(client.target("http://keystone.test")).thenReturn(webResource).thenReturn(webResource2);
         when(webResource.path(any(String.class))).thenReturn(webResource);
-        when(webResource.request(MediaType.APPLICATION_JSON)).thenReturn(builder);
+        when(webResource.path(any(String.class))).thenReturn(webResource);
+        when(webResource.request()).thenReturn(builder);
+        when(builder.accept(MediaType.APPLICATION_XML)).thenReturn(builder);
         when(builder.header(eq("X-Auth-Token"), anyString())).thenReturn(builder);
         when(builder.get()).thenReturn(response401);
         when(response401.getStatus()).thenReturn(401);
 
         when(webResource2.path(any(String.class))).thenReturn(webResource2);
-        when(webResource.path(any(String.class))).thenReturn(webResource);
-        when(webResource2.request(MediaType.APPLICATION_JSON)).thenReturn(builder2);
+        when(webResource2.path(any(String.class))).thenReturn(webResource2);
+        when(webResource2.request(MediaType.APPLICATION_XML)).thenReturn(builder2);
         when(builder2.header(eq("X-Auth-Token"), anyString())).thenReturn(builder2);
         when(builder2.get(AuthenticateResponse.class)).thenReturn(authenticateResponse);
 

@@ -30,6 +30,7 @@ import java.util.Set;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -170,8 +171,9 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
         WebTarget webResource = client.target(keystoneURL);
         try {
 
-            Response response = webResource.path("tokens").path(token).request().accept(MediaType.APPLICATION_XML)
-                    .header("X-Auth-Token", credential[0]).get();
+            WebTarget tokens = webResource.path("tokens").path(token);
+            Invocation.Builder builder = tokens.request();
+            Response response = builder.accept(MediaType.APPLICATION_XML).header("X-Auth-Token", credential[0]).get();
 
             if (response.getStatus() == 200) {
                 // Validate user's token
