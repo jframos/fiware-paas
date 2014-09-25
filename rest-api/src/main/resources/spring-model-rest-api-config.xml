@@ -81,7 +81,7 @@
     <!-- <bean id="tierResource" lazy-init="true" class="com.telefonica.euro_iaas.paasmanager.rest.resources.TierResourceImpl">
 		</bean> -->
 
-	<aop:config proxy-target-class="true">
+<!--<aop:config proxy-target-class="true">
 		<aop:advisor advice-ref="traceInterceptor"
 			pointcut="execution(* com.telefonica.euro_iaas.paasmanager.rest.resources..*(..))" />
 		<aop:advisor advice-ref="traceInterceptor"
@@ -97,7 +97,7 @@
 		<property name="exitMessage"
 			value="comp=SDC - $[targetClassShortName] | op=$[methodName] | msg=EXIT: $[targetClassShortName].$[methodName](): $[returnValue]" />
 		<property name="loggerName" value="aspectLogger" />
-	</bean>
+	</bean>-->
 
 	<!-- =========== == VALIDATORS == ================ -->
 
