@@ -170,17 +170,18 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
     public Tier loadTierWithNetworks(String name, String vdc, String environmentname) throws EntityNotFoundException {
         Query query = getEntityManager()
                 .createQuery(
-                        "select p from Tier p left join fetch p.networks where p.name = :name and p.vdc =:vdc and p.environmentname= :environmentname");
+                        "select p from Tier p left join fetch  p.networks where p.name = :name and p.vdc =:vdc and p.environmentname= :environmentname");
         query.setParameter("name", name);
         query.setParameter("vdc", vdc);
         query.setParameter("environmentname", environmentname);
         Tier tier = null;
         try {
             tier = (Tier) query.getResultList().get(0);
+            tier.getNetworks();
+            getEntityManager().flush();
         } catch (Exception e) {
             String message = " No Tier found in the database with name: " + name + " vdc " + vdc
-                    + " no products and environmentname " + environmentname + " " + e.getMessage();
-            log.warn(message);
+                    + " no products and environmentname " + environmentname;
             throw new EntityNotFoundException(Tier.class, message, name);
         }
         return tier;

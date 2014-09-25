@@ -299,7 +299,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
             throws InfrastructureException {
 
         log.info("Deploy VM for tier " + tierInstance.getTier().getName() + " with networks "
-                + tierInstance.getNetworkInstances() + " and public ip " + tierInstance.getTier().getFloatingip());
+                + tierInstance.getNetworkInstances().size() + " and public ip " + tierInstance.getTier().getFloatingip());
 
         claudiaClient.deployVM(claudiaData, tierInstance, replica, vm);
 
@@ -355,7 +355,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         Tier tier = tierInstance.getTier();
         tier = tierManager.loadTierWithNetworks(tier.getName(), data.getVdc(), tier.getEnviromentName());
         // Creating networks...
-        log.info("Deploying network for tier instance " + tierInstance.getName() + " " + tier.getNetworks()
+        log.info("Deploying network for tier instance " + tierInstance.getName() + " " + tier.getNetworks().size()
                 + " region " + tier.getRegion());
         List<Network> networkToBeDeployed = new ArrayList<Network>();
         for (Network network : tier.getNetworks()) {

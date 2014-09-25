@@ -282,7 +282,7 @@ public class Environment {
      * Get the list of available networks per region.
      * @return
      */
-    public HashMap<String, Set<String>> getNetworksRegion() {
+    public Map<String, Set<String>> getNetworksRegion() {
         Map<String, Set<String>> map = new HashMap<String, Set<String>>();
         Set<String> regions;
         for (Tier tier : this.getTiers()) {

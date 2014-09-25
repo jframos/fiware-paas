@@ -260,7 +260,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             Tier tier = tierManager.loadTierWithProductReleaseAndMetadata(tierInstance.getTier().getName(),
                     tierInstance.getTier().getEnviromentName(), tierInstance.getTier().getVdc());
             log.info("The tier " + tier.getName() + " is in bd " + tier.getRegion());
-            log.info(tier.getProductReleases().toString());
+
             if ((tier.getProductReleases() != null) && !(tier.getProductReleases().isEmpty())) {
 
                 for (ProductRelease productRelease : tier.getProductReleases()) {
