@@ -73,7 +73,6 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
 
     }
 
-
     private Tier findByNameAndVdcAndEnvironment(String name, String vdc, String environmentname)
             throws EntityNotFoundException {
         if (vdc == null) {
@@ -208,7 +207,28 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
                 "select tier from Tier tier left join fetch tier.networks nets where nets.name=:net");
         query.setParameter("net", networkName);
         List<Tier> tiers = (List<Tier>) query.getResultList();
+
         return tiers;
     }
 
+    @Override
+    public Tier loadComplete(Tier newTier) throws EntityNotFoundException {
+        Query query = getEntityManager()
+                .createQuery(
+                        "select p from Tier p fetch all properties where p.name = :name and p.vdc =:vdc and p.environmentname= :environmentname");
+        query.setParameter("name", newTier.getName());
+        query.setParameter("vdc", newTier.getVdc());
+        query.setParameter("environmentname", newTier.getEnviromentName());
+        Tier tier = null;
+        try {
+            tier = (Tier) query.getResultList().get(0);
+            tier.getNetworks();
+            tier.getProductReleases();
+            tier.getSecurityGroup();
+        } catch (Exception e) {
+            String message = " Tier don't exist in database ";
+            throw new EntityNotFoundException(Tier.class, message, newTier.getName());
+        }
+        return tier;
+    }
 }
