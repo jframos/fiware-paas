@@ -24,6 +24,8 @@
 
 package com.telefonica.euro_iaas.paasmanager.dao.sdc.impl;
 
+import static com.telefonica.euro_iaas.paasmanager.util.Configuration.SDC_SERVER_MEDIATYPE;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -50,9 +52,12 @@ import com.telefonica.euro_iaas.paasmanager.dao.sdc.ProductReleaseSdcDao;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.exception.SdcException;
 import com.telefonica.euro_iaas.paasmanager.installator.sdc.util.SDCUtil;
+import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+import com.telefonica.euro_iaas.sdc.client.SDCClient;
+import com.telefonica.euro_iaas.sdc.client.exception.ResourceNotFoundException;
 
 /**
  * @author jesus.movilla
@@ -63,6 +68,7 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
     private static Logger log = LoggerFactory.getLogger(ProductReleaseSdcDaoImpl.class);
     Client client;
     private SDCUtil sDCUtil;
+    private SDCClient sDCClient;
 
     public List<ProductRelease> findAll(String token, String tenant) throws SdcException {
         List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
@@ -86,11 +92,28 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
 
     public ProductRelease load(String product, String version, ClaudiaData data) throws EntityNotFoundException,
             SdcException {
-        ProductRelease productRelease = new ProductRelease();
-        String productReleaseString = loadByName(product, version, data.getUser().getToken(), data.getVdc());
-        productRelease.fromSdcJson(JSONObject.fromObject(productReleaseString));
+        log.debug("Load by name " + product + " " + version);
+        ProductRelease p = null;
 
-        return productRelease;
+        try {
+            String url = sDCUtil.getSdcUtil(data.getUser().getToken()) + "/catalog/product/" + product + "/release/" + version;
+            log.debug("the url: " + url);
+            
+            com.telefonica.euro_iaas.sdc.client.services.ProductReleaseService pIService = 
+            	sDCClient.getProductReleaseService(url, SDC_SERVER_MEDIATYPE);
+            com.telefonica.euro_iaas.sdc.model.ProductRelease prod= pIService.load(product, version, data.getUser().getToken(), data.getUser().getTenantId() );
+            p = new ProductRelease (prod.getProduct().getName(), prod.getVersion());
+        } catch (OpenStackException e) {
+            String message = "Error calling SDC to obtain the products " + e.getMessage();
+            log.error(message);
+            throw new SdcException(message);
+        } catch (ResourceNotFoundException e) {
+        	 String message = "The Product Release " + product + "-" + version + " is not present in SDC DataBase ";
+             log.error(message);
+             throw new EntityNotFoundException(ProductRelease.class, "name", "product" + "-" + "version");
+		}
+
+        return p;
     }
 
     public List<String> findAllProducts(String token, String tenant) throws SdcException {
@@ -139,48 +162,6 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
 
     }
 
-    private String loadByName(String product, String version, String token, String tenant)
-            throws EntityNotFoundException, SdcException {
-        log.debug("Load by name " + product + " " + version);
-        ClientResponse response = null;
-        try {
-            String url = sDCUtil.getSdcUtil(token) + "/catalog/product/" + product + "/release/" + version;
-            log.debug("the url: " + url);
-
-            Builder builder = createWebResource(url, token, tenant);
-
-            response = builder.get(ClientResponse.class);
-        } catch (OpenStackException e) {
-            String message = "Error calling SDC to obtain the products " + e.getMessage();
-            log.error(message);
-            throw new SdcException(message);
-        }
-
-        if (response.getStatus() == 404) {
-            String message = "The Product Release " + product + "-" + version + " is not present in SDC DataBase ";
-            log.error(message);
-            throw new EntityNotFoundException(ProductRelease.class, "name", "product" + "-" + "version");
-        }
-
-        if (response.getStatus() != 200) {
-
-            InputStream input = response.getEntityInputStream();
-            StringWriter writer = new StringWriter();
-            try {
-                IOUtils.copy(input, writer, "UTF-8");
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            String theString = writer.toString();
-
-            String message = "Error calling SDC to recover all product Releases. " + "Status " + response.getStatus()
-                    + " " + theString;
-            throw new SdcException(message);
-        }
-
-        return response.getEntity(String.class);
-    }
 
     private List<String> fromSDCToProductNames(String sdcproducts) {
 
@@ -244,6 +225,10 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
 
     public void setSDCUtil(SDCUtil sDCUtil) {
         this.sDCUtil = sDCUtil;
+    }
+    
+    public void setsDCClient (SDCClient sDCClient) {
+    	this.sDCClient=sDCClient;
     }
 
     private Builder createWebResource(String url, String token, String tenant) {

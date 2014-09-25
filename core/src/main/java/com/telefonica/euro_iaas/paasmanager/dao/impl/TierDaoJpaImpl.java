@@ -33,12 +33,15 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
+import com.telefonica.euro_iaas.paasmanager.manager.impl.TierManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
@@ -46,7 +49,7 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCrite
 
 @Transactional(propagation = Propagation.REQUIRED)
 public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements TierDao {
-
+	 private static Logger log = LoggerFactory.getLogger(TierDaoJpaImpl.class);
     public List<Tier> findAll() {
         return super.findAll(Tier.class);
     }
@@ -87,7 +90,8 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
             tier = (Tier) query.getResultList().get(0);
         } catch (Exception e) {
             String message = " No Tier found in the database with name: " + name + " vdc " + vdc
-                    + " and environmentname " + environmentname;
+                    + " and environmentname " + environmentname + " " + e.getMessage();
+            log.warn(message);
             throw new EntityNotFoundException(Tier.class, message, name);
         }
 
@@ -106,7 +110,8 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
             tier = (Tier) query.getResultList().get(0);
         } catch (Exception e) {
             String message = " No Tier found in the database with name: " + name + " vdc " + vdc
-                    + " no products and environmentname " + environmentname;
+                    + " no products and environmentname " + environmentname+ " " + e.getMessage();
+            log.warn(message);
             throw new EntityNotFoundException(Tier.class, message, name);
         }
         return tier;
@@ -175,7 +180,8 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
             tier = (Tier) query.getResultList().get(0);
         } catch (Exception e) {
             String message = " No Tier found in the database with name: " + name + " vdc " + vdc
-                    + " no products and environmentname " + environmentname;
+                    + " no products and environmentname " + environmentname + " " + e.getMessage();
+            log.warn(message);
             throw new EntityNotFoundException(Tier.class, message, name);
         }
         return tier;

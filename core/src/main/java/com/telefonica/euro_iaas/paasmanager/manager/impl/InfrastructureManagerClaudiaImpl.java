@@ -66,7 +66,6 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
-    private static final long POLLING_INTERVAL = 10000;
 
     private SystemPropertiesProvider systemPropertiesProvider;
     private ClaudiaClient claudiaClient;

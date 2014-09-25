@@ -459,11 +459,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
             try {
                 environment = environmentManager.load(env.getName(), env.getVdc());
-                if (environment.getOvf() == null && env.getOvf() != null) {
-                    environment.setOvf(env.getOvf());
-                    environment = environmentManager.update(environment);
-                }
-
+                log.info ("afeter obtainin environment");
+                
                 Set<Tier> tiers = new HashSet();
                 for (Tier tier : env.getTiers()) {
                     Tier tierDB = tierManager.loadTierWithNetworks(tier.getName(), env.getVdc(), env.getName());
@@ -490,7 +487,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                 environment.setTiers(tiers);
 
                 return environment;
-            } catch (EntityNotFoundException e1) {
+            } catch (Exception e1) {
+            	log.warn ("Error to load env " + e1.getMessage());
                 throw new EntityNotFoundException(Environment.class,
                         "The environment should have been already created", e1);
             }
