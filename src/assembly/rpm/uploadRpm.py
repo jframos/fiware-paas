@@ -3,6 +3,7 @@ __author__ = 'jmmovilla'
 import requests
 import json
 import os
+import sys
 
 #AUTHENTICATION CONSTANTS
 AUTH = u'auth'
@@ -28,9 +29,9 @@ AUTH_TOKEN_HEADER = u'x-Auth-Token'
 
 #REPOSITORY LOCATION
 REPOSITORY_URL = 'http://repositories.testbed.fi-ware.eu:8889/upload'
-RPM_LOCATION = './target/rpm/fiware-paas/RPMS/noarch/fiware-paas-2.2.0-SNAPSHOT*.noarch.rpm'
-
-PROXY_OPTION = '--socks4 jam.hi.inet:1080'
+print "Paas Version "  + str(sys.argv[1])
+RPM_LOCATION = './target/rpm/fiware-paas/RPMS/noarch/fiware-paas-' + str(sys.argv[1]) + '*.noarch.rpm'
+print RPM_LOCATION
 
 def get_token():
     print TENANT_NAME_VALUE
