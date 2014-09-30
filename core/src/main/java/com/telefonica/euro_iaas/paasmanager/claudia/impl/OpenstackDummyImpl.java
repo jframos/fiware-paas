@@ -192,7 +192,6 @@ public class OpenstackDummyImpl implements ClaudiaClient {
                     + "\", \"imageRef\": \"44dcdba3-a75d-46a3-b209-5e9035d2435e\", \"flavorRef\": \"2\" }}";
 
             Client client = ClientBuilder.newClient();
-            Response response;
 
             WebTarget wr = client.target(url);
             Invocation.Builder builder = wr.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
@@ -202,7 +201,7 @@ public class OpenstackDummyImpl implements ClaudiaClient {
                 builder = builder.header(key, header.get(key));
             }
 
-            response = builder.post(Entity.entity(payload, MediaType.APPLICATION_JSON));
+            Response response = builder.post(Entity.entity(payload, MediaType.APPLICATION_JSON));
 
             String result = response.readEntity(String.class);
 
