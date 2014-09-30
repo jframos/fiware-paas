@@ -223,7 +223,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
      * (com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance)
      */
     public void deleteEnvironment(ClaudiaData claudiaData, EnvironmentInstance envInstance)
-            throws InfrastructureException, InvalidEntityException {
+            throws InfrastructureException, InvalidEntityException, EntityNotFoundException {
         log.info("Delete environment " + envInstance.getBlueprintName());
         List<TierInstance> tierInstances = envInstance.getTierInstances();
 
@@ -231,6 +231,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
             return;
         for (int i = 0; i < tierInstances.size(); i++) {
             TierInstance tierInstance = tierInstances.get(i);
+            tierInstance = tierInstanceManager.loadNetworkInstnace(tierInstance.getName());
             try {
                 claudiaClient.browseVMReplica(claudiaData, tierInstance.getName(), 1, tierInstance.getVM(),
                         tierInstance.getTier().getRegion());
@@ -252,7 +253,6 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         tierInstance.getNetworkInstances().clear();
         tierInstanceManager.update(tierInstance);
         for (NetworkInstance net : netInts) {
-            log.info(net + " " + net.getNetworkName());
             if (!netInst.contains(net)) {
                 netInst.add(net);
             }
@@ -261,16 +261,19 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         return netInst;
     }
 
-    public void deleteNetworksInTierInstance(ClaudiaData claudiaData, TierInstance envInstance)
-            throws InvalidEntityException, InfrastructureException {
+    public void deleteNetworksInTierInstance(ClaudiaData claudiaData, TierInstance tierInstance)
+            throws InvalidEntityException, InfrastructureException, EntityNotFoundException {
         log.info("Delete the networks in env if there are not being used");
 
         List<NetworkInstance> netInsts = null;
         try {
-            netInsts = getNetworkInstInEnv(envInstance);
+            netInsts = getNetworkInstInEnv(tierInstance);
         } catch (EntityNotFoundException e) {
             throw new InfrastructureException("It is not possible to find the network " + e.getMessage());
         }
+        
+        tierInstance.getNetworkInstances().clear();
+        tierInstanceManager.update(tierInstance);
         for (NetworkInstance network : netInsts) {
             log.info("Is network default? " + network.isDefaultNet());
 

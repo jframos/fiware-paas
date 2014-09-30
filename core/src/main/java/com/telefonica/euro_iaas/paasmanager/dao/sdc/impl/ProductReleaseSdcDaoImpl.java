@@ -94,7 +94,7 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
         ProductRelease p = null;
 
         try {
-            String url = sDCUtil.getSdcUtil(data.getUser().getToken()) + "/catalog/product/" + product + "/release/" + version;
+            String url = sDCUtil.getSdcUtil(data.getUser().getToken());
             log.debug("the url: " + url);
             
             com.telefonica.euro_iaas.sdc.client.services.ProductReleaseService pIService = 
@@ -261,7 +261,7 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
         this.sDCUtil = sDCUtil;
     }
     
-    public void setsDCClient (SDCClient sDCClient) {
+    public void setSDCClient (SDCClient sDCClient) {
     	this.sDCClient=sDCClient;
     }
 

@@ -406,7 +406,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
                     infrastructureManager.deleteEnvironment(claudiaData, envInstance);
 
-                } catch (InfrastructureException e) {
+                } catch (Exception e) {
                     log.error("It is not possible to delete the environment " + envInstance.getName() + " : "
                             + e.getMessage());
                     throw new InvalidEntityException(EnvironmentInstance.class, e);

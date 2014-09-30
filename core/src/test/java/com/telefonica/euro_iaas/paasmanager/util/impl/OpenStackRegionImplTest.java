@@ -24,6 +24,8 @@
 
 package com.telefonica.euro_iaas.paasmanager.util.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -46,7 +48,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.util.RegionCache;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
-public class OpenStackRegionImplTest extends TestCase {
+public class OpenStackRegionImplTest  {
 
     final String RESPONSE_JSON_GRIZZLY_TWO_REGIONS = "{\n" + "   \"endpoints_links\":[\n" + "\n" + "   ],\n"
             + "   \"endpoints\":[\n" + "      {\n" + "         \"name\":\"nova\",\n"
