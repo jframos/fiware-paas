@@ -27,10 +27,10 @@ KEYSTONE_URL = 'http://130.206.80.61:35357/v2.0/tokens'
 #HEADERS
 AUTH_TOKEN_HEADER = u'x-Auth-Token'
 
-#REPOSITORY LOCATION
 REPOSITORY_URL = 'http://repositories.testbed.fi-ware.eu:8889/upload'
-RPM_LOCATION = './target/rpm/fiware-paas/RPMS/noarch/fiware-paas-' + str(sys.argv[1]) + '*.noarch.rpm'
+RPM_LOCATION = str(sys.argv[1])
 
+# This method obtains a token from keystone to upload rpm afterwards
 def get_token():
     print TENANT_NAME_VALUE
     print USERNAME_VALUE
@@ -49,8 +49,8 @@ def get_token():
 print "Paas Version "  + str(sys.argv[1])	
 token_id = get_token()
 
+#This method uploads the rpm to the repository
 def upload_rpm():
-    #url = REPOSITORY_URL
     print 'Uploading rpm to ' + REPOSITORY_URL
     print 'Rpm location: ' + RPM_LOCATION
     files = {'file': (RPM_LOCATION, open(RPM_LOCATION, 'rb'), {'Expires': '0'})}
