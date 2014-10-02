@@ -26,17 +26,17 @@ The PaaS Manager a a maven application:
 
    mvn assembly:assembly -DskipTests
 
-- You can generate a rpm o debian packages (using profiles in pom)
-
-    for debian/ubuntu:
+- You can generate a rpm o debian packages (using profiles in pom)   for debian/ubuntu:
 .. code::
    mvn install -Pdebian -DskipTests
         (created target/paas-manager-server-XXXXX.deb)
 
-for centOS:
+- for centOS:
 .. code::
    mvn install -Prpm -DskipTests
         (created target/rpm/paasmanager/RPMS/noarch/paasmanager-XXXX.noarch.rpm)
+
+
 
 
  Installation  (for CentOS)
@@ -45,12 +45,12 @@ for centOS:
 Requirements: Install PostgreSQL
 ------------------
 The first thing is to install and configure the requirements, in this case, the postgresql
-    .. code::
+ .. code::
    yum install postgresql postgresql-server postgresql-contrib
 
 Type the following commands to install the postgresql as service and start it
 
-    .. code::
+.. code::
     chkconfig --add postgresql
     chkconfig postgresql on
     service postgresql initdb
@@ -86,8 +86,7 @@ Install PaaS Manager
 The PaaS Manager is packaged as RPM and stored in the rpm repository. Thus, the first thing to do is to create a file in /etc/yum.repos.d/fiware.repo, 
 with the following content.
 
-     .. code::
-
+ .. code::
      [Fiware]
      name=FIWARE repository
      baseurl=http://repositories.testbed.fi-ware.eu/repo/rpm/x86_64/
@@ -96,8 +95,7 @@ with the following content.
     
 
 After that, you can install the paas manager just doing:
-         .. code::
-
+.. code::
     yum install paas-manager
 
 Configuring the database
@@ -106,8 +104,7 @@ Configuring the database
 We need to create the paasmanager database. To do that we need to connect as postgres user to the PostgreSQL
 server and set the password for user postgres using alter user as below:
 
-     .. code::
-
+.. code::
      su - postgres
     postgres$ psql postgres postgres;
     psql (8.4.13)
@@ -117,8 +114,7 @@ server and set the password for user postgres using alter user as below:
     postgres=# grant all privileges on database paasmanager to postgres;
  
 To create the tables in the databases, just go to 
-     .. code::
-
+.. code::
      cd /opt/fiware-paas/db
      su - potgres
     postgres$ psql postgres postgres;
@@ -134,11 +130,9 @@ Once the prerequisites are satisfied, you shall modify the context file at  /opt
 
 See the snipet bellow to know how it works:
 .. code::
-
     <New id="paasmanager" class="org.eclipse.jetty.plus.jndi.Resource">
        <Arg>jdbc/paasmanager</Arg>
        <Arg>
-
            <New class="org.postgresql.ds.PGSimpleDataSource">
                <Set name="User"> <database user> </Set>
                <Set name="Password"> <database password> </Set>
