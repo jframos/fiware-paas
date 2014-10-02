@@ -30,14 +30,12 @@ The PaaS Manager a a maven application:
 
     for debian/ubuntu:
 .. code::
-
-   $ mvn install -Pdebian -DskipTests
+   mvn install -Pdebian -DskipTests
         (created target/paas-manager-server-XXXXX.deb)
 
-    for centOS:
+for centOS:
 .. code::
-
-   $ mvn install -Prpm -DskipTests
+   mvn install -Prpm -DskipTests
         (created target/rpm/paasmanager/RPMS/noarch/paasmanager-XXXX.noarch.rpm)
 
 
@@ -48,17 +46,15 @@ Requirements: Install PostgreSQL
 ------------------
 The first thing is to install and configure the requirements, in this case, the postgresql
     .. code::
-
-   $ yum install postgresql postgresql-server postgresql-contrib
+   yum install postgresql postgresql-server postgresql-contrib
 
 Type the following commands to install the postgresql as service and start it
 
     .. code::
-
-    $ chkconfig --add postgresql
-    $ chkconfig postgresql on
-    $ service postgresql initdb
-    $ service postgresql start
+    chkconfig --add postgresql
+    chkconfig postgresql on
+    service postgresql initdb
+    service postgresql start
     
 Edit file /var/lib/pgsql/data/pg_hba.conf and set authentication method to md5:
 
@@ -127,7 +123,7 @@ To create the tables in the databases, just go to
      su - potgres
     postgres$ psql postgres postgres;
     postgres=# \i db-initial.sql
-    $ postgres=# \i db-changelog.sql
+    postgres=# \i db-changelog.sql
     exit
 
 
@@ -152,7 +148,7 @@ See the snipet bellow to know how it works:
            </New>
 
        </Arg>
-    $ </New>
+    </New>
 
 
 Configuring the PaaS Manager as service 
@@ -253,7 +249,7 @@ Network interfaces Up & Open
 Taking into account the results of the ps commands in the previous section, we take the PID in order to know the information about the network interfaces up & open. To check the ports in use and listening, execute the command:
   .. code::
 
-   $ netstat �p �a | grep $PID/java
+   netstat �p �a | grep $PID/java
 
 
 Where $PID is the PID of Java process obtained at the ps command described before, in the previous case 18641 tomcat and 23546 (postgresql). The expected results must be something similar to the following:
