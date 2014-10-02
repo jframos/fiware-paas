@@ -77,9 +77,13 @@ The PaaS Manager is packaged as RPM and stored in the rpm repository. Thus, the 
 with the following content.
 
     [Fiware]
+    
     name=FIWARE repository
+    
     baseurl=http://repositories.testbed.fi-ware.eu/repo/rpm/x86_64/
+    
     gpgcheck=0
+    
     enabled=1
     
 
@@ -183,6 +187,10 @@ Now you need to execute:
     service fiware-paas start
 
 
+Configuring the PaaS Manager in the keystone 
+=======================
+The FIWARE keystone is a endpoint catalogue which collects all the endpoint of the different services
+
 Sanity check procedures
 =======================
 
@@ -193,15 +201,12 @@ The Sanity Check Procedures are the steps that a System Administrator will take 
 End to End testing
 ------------------
 Although one End to End testing must be associated to the Integration Test, we can show here a quick testing to check that everything is up and running. It involves to obtain the product information storaged in the catalogue. With it, we test that the service is running and the database configure correctly.
-<pre>
   http://{PaaSManagerIP}:{port}/paasmanager/rest
-</pre>
 The request to test it in the testbed should be
 
-<pre>
-curl -v -H "Access-Control-Request-Method: GET" -H "Content-Type: application xml" -H "Accept: application/xml" 
+  curl -v -H "Access-Control-Request-Method: GET" -H "Content-Type: application xml" -H "Accept: application/xml" 
 -H "X-Auth-Token: 5d035c3a29be41e0b7007383bdbbec57" -H "Tenant-Id: 60b4125450fc4a109f50357894ba2e28" -X GET " http://{PaaSManagerIP}:{port}/paasmanager/rest/catalog/org/FIWARE/environment"
-</pre>
+
 
 Whose result is the PaaS Manager API documentation.
 
@@ -209,67 +214,63 @@ List of Running Processes
 ------------------
 Due to the PaaS Manager basically is running over the Tomcat, the list of processes must be only the Tomcat and PostgreSQL. If we execute the following command:
 
-<pre>
 ps -ewF | grep 'postgres\|tomcat' | grep -v grep
-</pre>
 
 It should show something similar to the following:
-<pre>
-postgres  2057     1  0 30179   884   0 Nov05 ?        00:00:00 /usr/bin/postmaster -p 5432 -D /var/lib/pgsql/data
-postgres  2062  2057  0 27473   248   0 Nov05 ?        00:00:00 postgres: logger process
-postgres  2064  2057  0 30207   636   0 Nov05 ?        00:00:00 postgres: writer process
-postgres  2065  2057  0 27724   160   0 Nov05 ?        00:00:00 postgres: stats buffer process
-postgres  2066  2065  0 27521   204   0 Nov05 ?        00:00:00 postgres: stats collector process
-root      2481     1  0 228407 96324  0 Nov05 ?        00:03:34 /usr/bin/java -Djava.util.logging.config.file=/opt/apache-tomcat-7.0.16/conf/...
-postgres  2501  2057  0 31629   560   0 Nov05 ?        00:00:01 postgres: postgres paasmanager 127.0.0.1(49303) idle
-postgres  7208  2057  0 30588  3064   0 Nov05 ?        00:00:00 postgres: postgres paasmanager 127.0.0.1(49360) idle
-</pre>
+  postgres  2057     1  0 30179   884   0 Nov05 ?        00:00:00 /usr/bin/postmaster -p 5432 -D /var/lib/pgsql/data
+  postgres  2062  2057  0 27473   248   0 Nov05 ?        00:00:00 postgres: logger process
+  postgres  2064  2057  0 30207   636   0 Nov05 ?        00:00:00 postgres: writer process
+  postgres  2065  2057  0 27724   160   0 Nov05 ?        00:00:00 postgres: stats buffer process
+  postgres  2066  2065  0 27521   204   0 Nov05 ?        00:00:00 postgres: stats collector process
+  root      2481     1  0 228407 96324  0 Nov05 ?        00:03:34 /usr/bin/java -Djava.util.logging.config.file=/opt/apache-tomcat-7.0.16/conf/...
+  postgres  2501  2057  0 31629   560   0 Nov05 ?        00:00:01 postgres: postgres paasmanager 127.0.0.1(49303) idle
+  postgres  7208  2057  0 30588  3064   0 Nov05 ?        00:00:00 postgres: postgres paasmanager 127.0.0.1(49360) idle
+
 
 Network interfaces Up & Open
 ------------------
 Taking into account the results of the ps commands in the previous section, we take the PID in order to know the information about the network interfaces up & open. To check the ports in use and listening, execute the command:
-<pre>
-netstat –p –a | grep $PID/java
-</pre>
+
+  netstat –p –a | grep $PID/java
+
 
 Where $PID is the PID of Java process obtained at the ps command described before, in the previous case 18641 tomcat and 23546 (postgresql). The expected results must be something similar to the following:
 
-<pre>
-tcp        0      0 localhost.localdomain:8005  *:*                         LISTEN      2481/java
-tcp        0      0 *:8009                      *:*                         LISTEN      2481/java
-tcp        0      0 *:webcache                  *:*                         LISTEN      2481/java
-tcp        0      0 localhost.localdomain:49360 localhost.localdom:postgres ESTABLISHED 2481/java
-tcp        0      0 localhost.localdomain:49303 localhost.localdom:postgres ESTABLISHED 2481/java
-tcp        0      0 *:postgres                  *:*                         LISTEN      2057/postmaster
-tcp        0      0 *:postgres                  *:*                         LISTEN      2057/postmaster
-udp        0      0 localhost.localdomain:33556 localhost.localdomain:33556 ESTABLISHED 2057/postmaster
 
-unix       2      [ ACC ]     STREAM     LISTENING     8921   2057/postmaster     /tmp/.s.PGSQL.5432
-</pre>
+  tcp        0      0 localhost.localdomain:8005  *:*                         LISTEN      2481/java
+  tcp        0      0 *:8009                      *:*                         LISTEN      2481/java
+  tcp        0      0 *:webcache                  *:*                         LISTEN      2481/java
+  tcp        0      0 localhost.localdomain:49360 localhost.localdom:postgres ESTABLISHED 2481/java
+  tcp        0      0 localhost.localdomain:49303 localhost.localdom:postgres ESTABLISHED 2481/java
+  tcp        0      0 *:postgres                  *:*                         LISTEN      2057/postmaster
+  tcp        0      0 *:postgres                  *:*                         LISTEN      2057/postmaster
+  udp        0      0 localhost.localdomain:33556 localhost.localdomain:33556 ESTABLISHED 2057/postmaster
+
+  unix       2      [ ACC ]     STREAM     LISTENING     8921   2057/postmaster     /tmp/.s.PGSQL.5432
+
 
 Databases
 The last step in the sanity check, once that we have identified the processes and ports is to check the different databases that have to be up and accept queries. Fort he first one, if we execute the following commands:
 
-<pre>
-psql -U postgres -d paasmanager
-</pre>
+  psql -U postgres -d paasmanager
+
 For obtaining the tables in the database, just use
-<pre>
-paasmanager=# \dt
 
- Schema|                Name                     | Type  |  Owner
+  paasmanager=# \dt
 
----------+---------------------------------------+-------+----------
- public  | applicationinstance                   | tabla | postgres
- public  | applicationrelease                    | tabla | postgres
- public  | applicationrelease_applicationrelease | tabla | postgres
- public  | applicationrelease_artifact           | tabla | postgres
- public  | applicationrelease_attribute          | tabla | postgres
- public  | applicationtype                       | tabla | postgres
- public  | applicationtype_environmenttype       | tabla | postgres
- public  | artifact                              | tabla | postgres
- public  | artifact_artifact                     | tabla | postgres
- public  | artifacttype                          | tabla | postgres
- public  | attribute                             | tabla | postgres
- ...
-</pre>
+   Schema|                Name                     | Type  |  Owner
+
+  ---------+---------------------------------------+-------+----------
+  public  | applicationinstance                   | tabla | postgres
+  public  | applicationrelease                    | tabla | postgres
+  public  | applicationrelease_applicationrelease | tabla | postgres
+  public  | applicationrelease_artifact           | tabla | postgres
+  public  | applicationrelease_attribute          | tabla | postgres
+  public  | applicationtype                       | tabla | postgres
+  public  | applicationtype_environmenttype       | tabla | postgres
+  public  | artifact                              | tabla | postgres
+  public  | artifact_artifact                     | tabla | postgres
+  public  | artifacttype                          | tabla | postgres
+  public  | attribute                             | tabla | postgres
+  ...
+
