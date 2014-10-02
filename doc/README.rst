@@ -1,7 +1,10 @@
 PaaS Manager - Overview
 ____________________________
 
-[![Build Status](https://travis-ci.org/telefonicaid/fiware-paas.svg)](https://travis-ci.org/telefonicaid/fiware-paas) [![Coverage Status](https://coveralls.io/repos/telefonicaid/fiware-paas/badge.png?branch=develop)](https://coveralls.io/r/telefonicaid/fiware-paas?branch=develop) [![help stackoverflow](http://b.repl.ca/v1/help-stackoverflow-orange.png)](http://www.stackoverflow.com)
+.. figure:: https://coveralls.io/repos/telefonicaid/fiware-paas/badge.png?branch=develop
+.. figure:: https://travis-ci.org/telefonicaid/fiware-paas.svg  
+.. figure:: http://b.repl.ca/v1/help-stackoverflow-orange.png
+
 
 What you get
 ============
@@ -35,11 +38,6 @@ of that.
      and the management of the inventory (instances of what has been already deployed). 
      In addition, decoupling the management of environments from the management of applications, 
      since there could be uses cases where the users of those functionalities could be different ones.
-    
-   
-
-
-Fast elasticity mechanisms, avoiding overhead or repeated work as much as possible during elasticity.
 
 
 Documentation
