@@ -1,7 +1,6 @@
 Pre-requisites
 ***************
-1)python modules requests must be previously installed
-Pyhton modules can be installed:
+1)Python modules requests must be previously installed
 	pip requests install
 	easy_install requests install
 
