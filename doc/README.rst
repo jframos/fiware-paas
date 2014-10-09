@@ -1,10 +1,8 @@
 PaaS Manager - Overview
 ____________________________
 
-.. figure:: https://coveralls.io/repos/telefonicaid/fiware-paas/badge.png?branch=develop
-.. figure:: https://travis-ci.org/telefonicaid/fiware-paas.svg  
-.. figure:: http://b.repl.ca/v1/help-stackoverflow-orange.png
 
+| |Build Status| |Coverage Status| |StackOverflow|
 
 What you get
 ============
@@ -47,6 +45,15 @@ Documentation
 -   `Installation and Administration Guide <admin_guide.rst>`_
 
 
+.. IMAGES
+
+.. |Build Status| image:: https://coveralls.io/repos/telefonicaid/fiware-paas/badge.png?branch=develop
+   :target: https://travis-ci.org/telefonicaid/fiware-paas
+.. |Coverage Status| image:: https://travis-ci.org/telefonicaid/fiware-paas.svg 
+   :target: https://coveralls.io/r/telefonicaid/fiware-paas
+.. |StackOverflow| image:: http://b.repl.ca/v1/help-stackoverflow-orange.png
+   :target: https://travis-ci.org/telefonicaid/fiware-paas
+   
 References
 ==========
 
