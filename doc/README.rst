@@ -32,10 +32,10 @@ of that.
 
 -   **Decoupling the management  and provisioning**
 
-     Decoupling the management of the catalogue (specifications of what can be deployed) 
-     and the management of the inventory (instances of what has been already deployed). 
-     In addition, decoupling the management of environments from the management of applications, 
-     since there could be uses cases where the users of those functionalities could be different ones.
+    Decoupling the management of the catalogue (specifications of what can be deployed) 
+    and the management of the inventory (instances of what has been already deployed). 
+    In addition, decoupling the management of environments from the management of applications, 
+    since there could be uses cases where the users of those functionalities could be different ones.
 
 
 Documentation
@@ -54,8 +54,7 @@ Documentation
 .. |StackOverflow| image:: http://b.repl.ca/v1/help-stackoverflow-orange.png
    :target: https://travis-ci.org/telefonicaid/fiware-paas
    
-References
-==========
+.. REFERENCES
 
 .. _FIWARE.OpenSpecification.Cloud.PaaS: http://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/FIWARE.OpenSpecification.Cloud.PaaS
 .. _PaaS_Open_RESTful_API_Specification_(PRELIMINARY): http://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/PaaS_Open_RESTful_API_Specification_(PRELIMINARY)

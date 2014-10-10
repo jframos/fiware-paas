@@ -66,7 +66,7 @@ Type the following commands to install the postgresql as service and start it
     
 Edit file /var/lib/pgsql/data/pg_hba.conf and set authentication method to md5:
 
- .. code::
+.. code::
 
     # TYPE  DATABASE    USER        CIDR-ADDRESS          METHOD
       "local" is for Unix domain socket connections only
@@ -149,11 +149,11 @@ See the snipet bellow to know how it works:
        <Arg>jdbc/paasmanager</Arg>
        <Arg>
            <New class="org.postgresql.ds.PGSimpleDataSource">
-               <Set name="User"> <database user> </Set>
-               <Set name="Password"> <database password> </Set>
-               <Set name="DatabaseName"> <database name>   </Set>
-               <Set name="ServerName"> <IP/hostname> </Set>
-               <Set name="PortNumber">5432</Set>
+               <Set name="User"> {database user} </Set>
+               <Set name="Password"> {database password} </Set>
+               <Set name="DatabaseName"> {database name}   </Set>
+               <Set name="ServerName"> {IP database hostname} </Set>
+               <Set name="PortNumber"> {port database - 5432 default}</Set>
            </New>
 
        </Arg>
@@ -162,7 +162,7 @@ See the snipet bellow to know how it works:
 
 Configuring the PaaS Manager as service 
 ---------------------------------------
-Once we have isntalled and configure the paas manager, the next step is to configure it as a service. To do that just create a file in /etc/init.d/fiware-paas
+Once we have installed and configured the paas manager, the next step is to configure it as a service. To do that just create a file in /etc/init.d/fiware-paas
 with the following content
 
 .. code::
@@ -221,7 +221,7 @@ End to End testing
 ------------------
 Although one End to End testing must be associated to the Integration Test, we can show here a quick testing to check that everything is up and running. It involves to obtain the product information storaged in the catalogue. With it, we test that the service is running and the database configure correctly.
 
-..code ::
+.. code ::
 
     http://{PaaSManagerIP}:{port}/paasmanager/rest
 
