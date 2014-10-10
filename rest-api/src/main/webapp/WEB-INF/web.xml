@@ -102,7 +102,7 @@
 
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
-            <param-value>com.telefonica.euro_iaas.passmanager.rest.util.MyRESTAPIApp</param-value>
+            <param-value>com.telefonica.euro_iaas.paasmanager.rest.util.MyRESTAPIApp</param-value>
         </init-param>
 
         <load-on-startup>1</load-on-startup>
