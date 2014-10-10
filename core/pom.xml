@@ -242,9 +242,8 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- /SPRING DEPENDENCIES -->
 
-        <!-- SPRINC SECURITY DEPENDENCIES -->
+        <!-- SPRING SECURITY DEPENDENCIES -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
@@ -267,7 +266,7 @@
             <artifactId>spring-security-taglibs</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <!-- FIN SPRINC SECURITY DEPENDENCIES -->
+        <!-- FIN SPRING SECURITY DEPENDENCIES -->
 
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -335,6 +334,16 @@
                     <version>${jersey.version}</version>
                 </dependency>
             -->
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+        </dependency>
 
         <!--<dependency> <groupId>bouncycastle</groupId> <artifactId>bcprov-jdk16</artifactId>
             <version>140</version> </dependency> -->
