@@ -50,26 +50,47 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
 	private static Logger log = LoggerFactory.getLogger(EnvironmentDaoJpaImpl.class);
     private static final String QUERY_LOAD_BY_TWO_FIELDS = "SELECT o FROM {0} o WHERE o.{1} = :{1} and o.{2} =:{2}";
 
+    /**
+     * It obtains all the environments in database
+     */
     public List<Environment> findAll() {
         return super.findAll(Environment.class);
     }
 
 
+    /**
+     * It loads for the environment in the database with the name and vdc
+     * 
+     */
     public Environment load(String envName, String vdc) throws EntityNotFoundException {
-    	Environment env = findByEnvironmentNameVdc(envName, vdc);
-    
-    	log.info("after findByEnvironmentNameVdc");
-    	log.info(env.getOrg());
-        return env;
+    	return findByEnvironmentNameVdc(envName, vdc);
     }
+    
+    /**
+     * It loads for the abstract environment in the database with the name and vdc
+     * 
+     */
+	public Environment load(String envName) throws EntityNotFoundException {
+	    Query query = getEntityManager().createQuery(
+		"select p from Environment p left join " + "fetch p.tiers where p.name = :name and p.vdc = :vdc");
+		query.setParameter("name", envName);
+		query.setParameter("vdc", "");
+		Environment environment = null;
+		    try {
+		        environment = (Environment) query.getResultList().get(0);
+		} catch (Exception e) {
+		     throw new EntityNotFoundException(Environment.class, "name", envName);
+		}
+        return environment;
+	}
 
+    
+    /**
+     * It obtain a set of environments based on a Criteria
+     */
     public List<Environment> findByCriteria(EnvironmentSearchCriteria criteria) {
         Session session = (Session) getEntityManager().getDelegate();
         Criteria baseCriteria = session.createCriteria(Environment.class);
-
-        /*
-         * if (criteria.getTier() != null) { baseCriteria.add(Restrictions.eq("tier", criteria.getTier())); }
-         */
 
         List<Environment> environments = setOptionalPagination(criteria, baseCriteria).list();
 
@@ -172,19 +193,4 @@ public class EnvironmentDaoJpaImpl extends AbstractBaseDao<Environment, String> 
         return result;
     }
 
-
-	@Override
-	public Environment load(String envName) throws EntityNotFoundException {
-	    Query query = getEntityManager().createQuery(
-		"select p from Environment p left join " + "fetch p.tiers where p.name = :name and p.vdc = :vdc");
-		query.setParameter("name", envName);
-		query.setParameter("vdc", "");
-		Environment environment = null;
-		    try {
-		        environment = (Environment) query.getResultList().get(0);
-		} catch (Exception e) {
-		     throw new EntityNotFoundException(Environment.class, "name", envName);
-		}
-        return environment;
-	}
 }
