@@ -14,28 +14,14 @@
 
 
     <dependencies>
-        <!-- XPathAPI -->
+
         <dependency>
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
             <version>2.7.1</version>
         </dependency>
-        <dependency>
-	<groupId>javax.ws.rs</groupId>
-	<artifactId>javax.ws.rs-api</artifactId>
-	<version>2.0</version>
-</dependency>
-
-
-<dependency>
-    <groupId>org.glassfish.jersey.core</groupId>
-    <artifactId>jersey-client</artifactId>
-    <version>2.12</version>
-</dependency>
-
-        
         <!-- httpclient -->
-        <dependency>
+<dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.3.1</version>
@@ -47,7 +33,7 @@
             </exclusions>
         </dependency>
         <!-- restlet libraries for REC Manager -->
-        <dependency>
+<!--        <dependency>
             <groupId>com.noelios.restlet</groupId>
             <artifactId>com.noelios.restlet</artifactId>
             <version>1.1.7</version>
@@ -61,7 +47,7 @@
             <groupId>org.restlet</groupId>
             <artifactId>org.restlet.ext.json</artifactId>
             <version>1.1.7</version>
-        </dependency>
+        </dependency-->
         <!-- tcloud apis -->
         <!-- <dependency> <groupId>com.telefonica.claudia</groupId> <artifactId>tcloud-schemas</artifactId>
             <version>0.11</version> </dependency> <dependency> <groupId>com.telefonica.claudia</groupId>
@@ -84,6 +70,12 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>4.2.0.Final</version>
         </dependency>
 
         <dependency>
@@ -346,6 +338,26 @@
 
         <!--<dependency> <groupId>bouncycastle</groupId> <artifactId>bcprov-jdk16</artifactId>
             <version>140</version> </dependency> -->
+
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+        </dependency>
+	
+	<dependency>
+    <groupId>org.glassfish.jersey.containers</groupId>
+    <artifactId>jersey-container-servlet</artifactId>
+    <version>2.13</version>
+    <scope>provided</scope>
+</dependency>
+<!-- if you are using Jersey client specific features without the server side -->
+<dependency>
+    <groupId>org.glassfish.jersey.core</groupId>
+    <artifactId>jersey-client</artifactId>
+    <version>2.13</version>
+    <scope>provided</scope>
+</dependency>
+
 
         <dependency>
             <groupId>net.sf.json-lib</groupId>
