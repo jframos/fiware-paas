@@ -379,12 +379,7 @@ public class TierDaoJpaImplTest {
         assertNotNull (tier.getProductReleases());
 
     }
-    
-    @Test
-    public void testFindRegionBySec() throws Exception {
 
-        String region = tierDao.findRegionBySecurityGroup("12334");
-    }
 
 
 }

@@ -43,18 +43,18 @@ instance_request = EnvironmentInstanceRequest(config['keystone_url'], config['pa
     config['user'], config['password'],
     config['vdc'], config['sdc_url'])
 
-environment_name = 'xxdx'
-blueprintname = "xxdgsssdsssdssxe"
-network = "aadddd"
+environment_name = 'dadddssssssssssdsssjdfdd'
+blueprintname = "aasdfddasjssssssssdsdssdf"
+network = "aadssssdddddd"
 
 
 print('Create a template for network: ')
-#g.add_environment(environment_name, 'description')
+g.add_environment(environment_name, 'description')
 print("  OK")
 
 print('Create template: node')
 tier_name = 'tiernamd'
-#g.add_tier_environment_network(environment_name, tier_name, "Spain", "tomcat=6", network)
+g.add_tier_environment_network(environment_name, tier_name, "Spain", "tomcat=6", network)
 print("  OK")
 #tier_name = 'tiernamd2'
 #g.add_tier_environment_network(environment_name, tier_name, "Spain", "tomcat=6", network)
@@ -71,8 +71,8 @@ instance_request.add_blueprint_instance(blueprint_instance)
 print ('OK')
 
 print('Delete an environment Instance' + blueprintname )
-#instance_request.delete_blueprint_instance(blueprintname)
+instance_request.delete_blueprint_instance(blueprintname)
 
 print('Delete an environment ' + environment_name )
-#g.delete_environment(environment_name);
+g.delete_environment(environment_name);
 

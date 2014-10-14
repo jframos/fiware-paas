@@ -242,9 +242,8 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- /SPRING DEPENDENCIES -->
 
-        <!-- SPRINC SECURITY DEPENDENCIES -->
+        <!-- SPRING SECURITY DEPENDENCIES -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
@@ -267,7 +266,7 @@
             <artifactId>spring-security-taglibs</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <!-- FIN SPRINC SECURITY DEPENDENCIES -->
+        <!-- FIN SPRING SECURITY DEPENDENCIES -->
 
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -336,6 +335,16 @@
                 </dependency>
             -->
 
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+        </dependency>
+
         <!--<dependency> <groupId>bouncycastle</groupId> <artifactId>bcprov-jdk16</artifactId>
             <version>140</version> </dependency> -->
 
@@ -343,21 +352,6 @@
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
         </dependency>
-	
-	<dependency>
-    <groupId>org.glassfish.jersey.containers</groupId>
-    <artifactId>jersey-container-servlet</artifactId>
-    <version>2.13</version>
-    <scope>provided</scope>
-</dependency>
-<!-- if you are using Jersey client specific features without the server side -->
-<dependency>
-    <groupId>org.glassfish.jersey.core</groupId>
-    <artifactId>jersey-client</artifactId>
-    <version>2.13</version>
-    <scope>provided</scope>
-</dependency>
-
 
         <dependency>
             <groupId>net.sf.json-lib</groupId>
