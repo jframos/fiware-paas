@@ -3,10 +3,10 @@
 <configuration>
 
     <appender name="paasAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${catalina.base}/logs/paasmanager.log</file>
+        <file>${jetty.base}/logs/paasmanager.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>${catalina.base}/logs/paasmanager.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>${jetty.base}/logs/paasmanager.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
 
         <encoder>
@@ -16,10 +16,10 @@
     </appender>
 
     <appender name="restAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${catalina.base}/logs/rest-api.log</file>
+        <file>${jetty.base}/logs/rest-api.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>${catalina.base}/logs/rest-api.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>${jetty.base}/logs/rest-api.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
 
         <encoder>
@@ -30,10 +30,10 @@
 
 
     <appender name="managerAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${catalina.base}/logs/manager.log</file>
+        <file>${jetty.base}/logs/manager.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>${catalina.base}/logs/manager.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>${jetty.base}/logs/manager.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
 
         <encoder>
@@ -44,10 +44,10 @@
 
 
     <appender name="authAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${catalina.base}/logs/authentication.log</file>
+        <file>${jetty.base}/logs/authentication.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>${catalina.base}/logs/authentication.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>${jetty.base}/logs/authentication.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
         <encoder>
             <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
@@ -56,10 +56,10 @@
     </appender>
 
     <appender name="installAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${catalina.base}/logs/install.log</file>
+        <file>${jetty.base}/logs/install.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>${catalina.base}/logs/install.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>${jetty.base}/logs/install.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
         <encoder>
             <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
@@ -68,10 +68,10 @@
     </appender>
 
     <appender name="utilAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${catalina.base}/logs/util.log</file>
+        <file>${jetty.base}/logs/util.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>${catalina.base}/logs/util.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>${jetty.base}/logs/util.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
         <encoder>
             <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
@@ -80,10 +80,10 @@
     </appender>
 
     <appender name="infrastructureAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${catalina.base}/logs/infrastructure.log</file>
+        <file>${jetty.base}/logs/infrastructure.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>${catalina.base}/logs/infrastructure.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>${jetty.base}/logs/infrastructure.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
         <encoder>
             <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
@@ -158,3 +158,4 @@
     </root>
 
 </configuration>
+

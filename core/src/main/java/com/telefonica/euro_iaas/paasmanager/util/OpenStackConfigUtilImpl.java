@@ -91,11 +91,11 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
         try {
 
             request = openOperationUtil.createQuantumGetRequest(RESOURCE_NETWORKS, APPLICATION_JSON, region,
-                adminUser.getToken(), adminUser.getTenantId());
+                    adminUser.getToken(), adminUser.getTenantId());
         } catch (OpenStackException e) {
-        	log.warn ("It is not possible to obtain the quantum endpoint for obtaining the public network net");
-        	return null;
-        	
+            log.warn("It is not possible to obtain the quantum endpoint for obtaining the public network net");
+            return null;
+
         }
 
         String response = null;
@@ -141,14 +141,14 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
         }
 
         PaasManagerUser adminUser = openOperationUtil.getAdminUser(user);
-        HttpUriRequest request ;
-        
-        try  {
-          request = openOperationUtil.createQuantumGetRequest(RESOURCE_NETWORKS, APPLICATION_JSON, region,
-                adminUser.getToken(), adminUser.getTenantId());
+        HttpUriRequest request;
+
+        try {
+            request = openOperationUtil.createQuantumGetRequest(RESOURCE_NETWORKS, APPLICATION_JSON, region,
+                    adminUser.getToken(), adminUser.getTenantId());
         } catch (OpenStackException e) {
-        	log.warn("Error to obtain the quantum request url " );
-        	return "net8300";
+            log.warn("Error to obtain the quantum request url ");
+            return "net8300";
         }
 
         String response = null;
@@ -265,9 +265,9 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
             log.debug("external " + netInst.getExternal());
             return null;
         }
-        
+
         if (netInst.getNetworkName().contains("public")) {
-        	return netInst;
+            return netInst;
         }
 
         if (!vdc.contains(netInst.getTenantId())) {
@@ -289,11 +289,10 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
         log.debug("router " + routerInst.getName() + " " + routerInst.getTenantId() + " " + routerInst.getNetworkId()
                 + " " + networkPublic);
 
-
         if (!routerInst.getNetworkId().equals(networkPublic)) {
             return null;
         } else {
-           return 	routerInst;
+            return routerInst;
         }
 
     }
