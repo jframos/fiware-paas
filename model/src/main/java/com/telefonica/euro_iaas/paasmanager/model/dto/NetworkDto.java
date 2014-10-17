@@ -36,7 +36,7 @@ import com.telefonica.euro_iaas.paasmanager.model.SubNetwork;
 
 /**
  * Represents the data about the network to be invoke in the request.
- * 
+ *
  * @author Henar Munoz
  * @version $Id: $
  */
@@ -64,20 +64,24 @@ public class NetworkDto {
         subNetworkDto = new ArrayList<SubNetworkDto>();
     }
 
-    public void addSubNetworkDto (SubNetworkDto subNetworkDto) {
+    /**
+     * Add a sub newtwork info.
+     * @param subNetworkDto
+     */
+    public void addSubNetworkDto(SubNetworkDto subNetworkDto) {
         this.subNetworkDto.add(subNetworkDto);
     }
 
     /**
      * It returns the network object associated to the dto.
-     * 
+     *
      * @return the network
      */
     public Network fromDto(String vdc, String region) {
 
         Network net = new Network(this.getNetworkName(), vdc, region);
 
-        for (SubNetworkDto subNetworkDto: this.getSubNetworkDto()) {
+        for (SubNetworkDto subNetworkDto : this.getSubNetworkDto()) {
             SubNetwork subnet = new SubNetwork(subNetworkDto.getSubNetName(), vdc, region);
             subnet.setCidr(subNetworkDto.getCidr());
             net.addSubNet(subnet);
@@ -93,7 +97,6 @@ public class NetworkDto {
     }
 
     /**
-     * 
      * @return List<SubNetworkDto>
      */
     public List<SubNetworkDto> getSubNetworkDto() {
@@ -109,11 +112,26 @@ public class NetworkDto {
 
 
     /**
-     * 
      * @param subNetworkDto
      */
     public void setSubNetworkDto(List<SubNetworkDto> subNetworkDto) {
         this.subNetworkDto = subNetworkDto;
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation
+     * of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[NetworkDto]");
+        sb.append("[networkName = ").append(this.networkName).append("]");
+        sb.append("[subNetworkDto = ").append(this.subNetworkDto).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
+
 
 }

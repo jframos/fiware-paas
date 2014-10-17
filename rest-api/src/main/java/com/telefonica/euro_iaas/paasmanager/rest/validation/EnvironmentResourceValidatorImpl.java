@@ -45,7 +45,8 @@ import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInst
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
- * * @author Henar Munoz
+ * Validator of the environment resource.
+ * @author Henar Munoz
  */
 public class EnvironmentResourceValidatorImpl implements EnvironmentResourceValidator {
 
@@ -56,10 +57,16 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
     private ResourceValidator resourceValidator;
 
     /**
-     * 
+     * Validate the request to create and EnvironmentInstance from a EnvironmentDto.
+     *
+     * @param claudiaData   The information related to organization, vdc and service together with the user.
+     * @param environmentDto    The information about the environment instance.
+     * @param vdc   The vdc info (to be deprecated).
+     * @throws AlreadyExistEntityException
+     * @throws InvalidEntityException
      */
     public void validateCreate(ClaudiaData claudiaData, EnvironmentDto environmentDto, String vdc)
-            throws AlreadyExistEntityException, InvalidEntityException {
+        throws AlreadyExistEntityException, InvalidEntityException {
 
         try {
             environmentManager.load(environmentDto.getName(), vdc);
@@ -88,7 +95,11 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
     }
 
     /**
-     * 
+     * Validate the request to create and EnvironmentInstance from a EnvironmentDto in abstract environment.
+     *
+     * @param environmentDto    The information about the environment instance.
+     * @throws AlreadyExistEntityException
+     * @throws InvalidEntityException
      */
     public void validateAbstractCreate(EnvironmentDto environmentDto) throws AlreadyExistEntityException,
             InvalidEntityException {
@@ -113,11 +124,17 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
 
     }
 
-    public void validateDelete(String environmentName, String vdc) throws EntityNotFoundException,
-            InvalidEntityException {
-        Environment environment = null;
-
-        environment = environmentManager.load(environmentName, vdc);
+    /**
+     * Validate the operation delete of an environment resource.
+     *
+     * @param environmentName   The environment to delete.
+     * @param vdc   The vdc which contains this environment.
+     * @throws InvalidEntityException
+     * @throws EntityNotFoundException
+     */
+    public void validateDelete(String environmentName, String vdc)
+        throws EntityNotFoundException, InvalidEntityException {
+        Environment environment = environmentManager.load(environmentName, vdc);
 
         if (validateEnvironmentInstance(environment, vdc)) {
             throw new InvalidEntityException("The environment is being used by an environment instance");
@@ -125,12 +142,19 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
 
     }
 
+    /**
+     * Validate the update operation of an environment resource.
+     *
+     * @param environmentName   The environment to update.
+     * @param vdc   The vdc which contains this environment.
+     * @param systemPropertiesProvider  The properties from the default file or from
+     * @throws InvalidEntityException
+     * @throws EntityNotFoundException
+     */
     public void validateUpdate(String environmentName, String vdc, SystemPropertiesProvider systemPropertiesProvider)
-            throws InvalidEntityException, EntityNotFoundException {
+        throws InvalidEntityException, EntityNotFoundException {
 
-        Environment environment = null;
-
-        environment = environmentManager.load(environmentName, vdc);
+        Environment environment = environmentManager.load(environmentName, vdc);
 
         if (validateEnvironmentInstance(environment, vdc)) {
             throw new InvalidEntityException("The environment is being used by an env instance");
@@ -146,10 +170,7 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
 
         List<EnvironmentInstance> envInstances = environmentInstanceManager.findByCriteria(criteria);
 
-        if (envInstances != null && envInstances.size() != 0) {
-            return true;
-        }
-        return false;
+        return envInstances != null && envInstances.size() != 0;
     }
 
     public void setTierResourceValidator(TierResourceValidator tierResourceValidator) {

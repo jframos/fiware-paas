@@ -56,7 +56,7 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
      * @see com.telefonica.euro_iaas.paasmanager.manager.ProductManager#load(java .lang.String)
      */
     public ProductRelease load(String name, ClaudiaData data) throws EntityNotFoundException {
-        log.debug("Loading product release " + name);
+        log.info("Loading product release " + name);
         // return productReleaseDao.load(name);
         ProductRelease productRelease = null;
         String product = name.split("-")[0];
@@ -67,9 +67,9 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
 
         } catch (EntityNotFoundException e) {
             // Buscar en el SDC y si existe darlo de alta en el paas-manager
-            log.debug("The product " + name + " is not in database");
+            log.info("The product " + name + " is not in database");
             try {
-                log.debug("Loading from sdc " + product + " " + version);
+                log.info("Loading from sdc " + product + " " + version);
                 ProductRelease pRelease = productReleaseSdcDao.load(product, version, data);
                 productRelease = create(pRelease);
 
@@ -97,7 +97,7 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
 
     public ProductRelease create(ProductRelease productRelease) throws InvalidEntityException,
             AlreadyExistsEntityException {
-        log.debug("Create product release " + productRelease.getName() + " " + productRelease.getVersion());
+        log.info("Create product release " + productRelease.getName() + " " + productRelease.getVersion());
         productRelease = productReleaseDao.create(productRelease);
         return productRelease;
     }
@@ -117,19 +117,19 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
      * telefonica.euro_iaas.sdc.model.Product, java.lang.String)
      */
     public ProductRelease load(String productName, String productVersion) throws EntityNotFoundException {
-        log.debug("Loading " + productName + "-" + productVersion);
+        log.info("Loading " + productName + "-" + productVersion);
 
         return productReleaseDao.load(productName + "-" + productVersion);
     }
 
     public ProductRelease loadWithMetadata(String name) throws EntityNotFoundException {
-        log.debug("Loading " + name);
+        log.info("Loading " + name);
 
         return productReleaseDao.loadProductReleaseWithMetadata(name);
     }
 
     public ProductRelease update(ProductRelease productRelease) throws InvalidEntityException {
-        log.debug("Updating " + productRelease.getName());
+        log.info("Updating " + productRelease.getName());
 
         return productReleaseDao.update(productRelease);
     }

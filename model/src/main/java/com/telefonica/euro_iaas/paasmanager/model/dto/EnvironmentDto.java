@@ -24,9 +24,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.model.dto;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -38,7 +36,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 
 /**
  * EnvironmentDto for the Environment entity.
- * 
+ *
  * @author henar
  */
 @XmlRootElement
@@ -69,7 +67,7 @@ public class EnvironmentDto {
 
     /**
      * from Dto.
-     * 
+     *
      * @return
      */
     public Environment fromDto() {
@@ -89,10 +87,10 @@ public class EnvironmentDto {
         environment.setVdc(vdc);
         return environment;
     }
-    
+
     /**
      * from Dto.
-     * 
+     *
      * @return
      */
     public Environment fromDto(String org, String vdc) {
@@ -149,43 +147,57 @@ public class EnvironmentDto {
     }
 
     /**
-     * @param description
-     *            the description to set
+     * @param description the description to set
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param name the name to set
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * @param org
-     *            the org to set
+     * @param org the org to set
      */
     public void setOrg(String org) {
         this.org = org;
     }
 
     /**
-     * @param tierDtos
-     *            the tierDtos to set
+     * @param tierDtos the tierDtos to set
      */
     public void setTierDtos(Set<TierDto> tierDtos) {
         this.tierDtos = tierDtos;
     }
 
     /**
-     * @param vdc
-     *            the vdc to set
+     * @param vdc the vdc to set
      */
     public void setVdc(String vdc) {
         this.vdc = vdc;
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation
+     * of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[EnvironmentDto]");
+        sb.append("[tierDtos = ").append(this.tierDtos).append("]");
+        sb.append("[name = ").append(this.name).append("]");
+        sb.append("[description = ").append(this.description).append("]");
+        sb.append("[org = ").append(this.org).append("]");
+        sb.append("[vdc = ").append(this.vdc).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
+
 
 }

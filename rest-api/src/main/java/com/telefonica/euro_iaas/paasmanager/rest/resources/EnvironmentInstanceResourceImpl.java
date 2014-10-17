@@ -43,7 +43,6 @@ import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsyncManager;
@@ -107,13 +106,12 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
     }
 
     /**
-     * @throws InvalidEnvironmentRequestException
      * @throws AlreadyExistsEntityException
      * @throws InvalidEntityException
      * @throws EntityNotFoundException
      */
     public Task create(String org, String vdc, EnvironmentInstanceDto environmentInstanceDto, String callback)
-            throws APIException {
+        throws APIException {
 
         log.warn("Deploy an environment instance " + environmentInstanceDto.getBlueprintName() + " from environment "
                 + environmentInstanceDto.getEnvironmentDto());
@@ -134,10 +132,10 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
 
         EnvironmentInstance environmentInstance = environmentInstanceDto.fromDto();
         Environment environment = environmentInstance.getEnvironment();
-        log.debug("Environment name " + environment.getName() + " " + environment.getVdc() + " " + environment.getOrg()
+        log.info("Environment name " + environment.getName() + " " + environment.getVdc() + " " + environment.getOrg()
                 + " ");
         for (Tier tier : environment.getTiers()) {
-            log.debug("Tier " + tier.getName() + " image " + tier.getImage());
+            log.info("Tier " + tier.getName() + " image " + tier.getImage());
         }
         environmentInstance.setVdc(vdc);
 
@@ -145,7 +143,7 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
         environmentInstance.setDescription(environmentInstanceDto.getDescription());
         environmentInstance.setBlueprintName(environmentInstanceDto.getBlueprintName());
 
-        log.debug("EnvironmentInstance name " + environmentInstance.getBlueprintName() + " vdc "
+        log.info("EnvironmentInstance name " + environmentInstance.getBlueprintName() + " vdc "
                 + environmentInstance.getVdc() + "  description " + environmentInstance.getDescription() + "  status "
                 + environmentInstance.getStatus() + " environment  " + environmentInstance.getEnvironment().getName());
 
@@ -215,9 +213,19 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
          */
     }
 
+    /**
+     * Delete a specific environment instance.
+     * @param org   The organization that contains the environment instance.
+     * @param vdc   The vdc of the environment instance.
+     * @param name  The name of the instance.
+     * @param callback
+     *            if not empty, contains the url where the result of the async operation will be sent
+     * @return  The task to follow the execution of the operation.
+     * @throws APIException Any exception launched during the process.
+     */
     public Task destroy(String org, String vdc, String name, String callback) throws APIException {
 
-        log.debug("Destroy env isntna " + name + " vdc " + vdc);
+        log.info("Destroy env isntna " + name + " vdc " + vdc);
         EnvironmentInstance environmentInstance = null;
         try {
             environmentInstance = environmentInstanceManager.load(vdc, name);
@@ -238,7 +246,7 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
     }
 
     /**
-     * createTask
+     * createTask.
      * 
      * @param description
      * @param vdc
@@ -313,6 +321,10 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
         return result;
     }
 
+    /**
+     * Get the credentials associated to an user.
+     * @return
+     */
     public PaasManagerUser getCredentials() {
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
             return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

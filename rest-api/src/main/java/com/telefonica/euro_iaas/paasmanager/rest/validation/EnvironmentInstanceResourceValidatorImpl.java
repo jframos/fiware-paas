@@ -157,7 +157,7 @@ public class EnvironmentInstanceResourceValidatorImpl implements EnvironmentInst
      * It validates the quota.
      */
     public void validateQuota(ClaudiaData claudiaData, EnvironmentInstanceDto environmentInstanceDto)
-            throws QuotaExceededException, InvalidEntityException {
+        throws QuotaExceededException, InvalidEntityException {
 
         Map<String, Limits> limits = new HashMap<String, Limits>();
 

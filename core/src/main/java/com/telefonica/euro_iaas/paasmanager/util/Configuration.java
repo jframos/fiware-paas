@@ -33,7 +33,7 @@ public interface Configuration {
     String PRODUCT_RELEASE_PATH = "/rest/product/{0}";
     String APPLICATION_RELEASE_PATH = "/rest/application/{0}";
     
-    String SDC_SERVER_MEDIATYPE = "application/json";
+    String SDC_SERVER_MEDIATYPE = "application/xml";
     
     long OPENSTACK_SYNCHRONIZATION_POLLING_PERIOD = 84000000;
     String VALIDATION_TIME_THRESHOLD = "84000000";

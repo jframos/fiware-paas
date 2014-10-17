@@ -47,7 +47,7 @@ import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
- * default Environment implementation
+ * default Environment implementation.
  * 
  * @author Henar Mu�oz
  */
@@ -62,8 +62,19 @@ public class ProductReleaseResourceDBImpl implements ProductReleaseDBResource {
     private SystemPropertiesProvider systemPropertiesProvider;
     private static Logger log = LoggerFactory.getLogger(ProductReleaseResourceDBImpl.class);
 
+    /**
+     * Insert a new product release.
+     * @param productReleaseDto
+     *            <ol>
+     *            <li>The TierDto: contains the information about the product</li>
+     *            </ol>
+     */
     public void insert(ProductReleaseDto productReleaseDto) {
-        log.debug("Create product release " + productReleaseDto.getProductName() + " " + productReleaseDto.getVersion());
+        log.info("Create product release "
+                + productReleaseDto.getProductName()
+                + " "
+                + productReleaseDto.getVersion());
+
         ProductRelease productRelease = new ProductRelease(productReleaseDto.getProductName(),
                 productReleaseDto.getVersion(), productReleaseDto.getProductDescription(),
                 productReleaseDto.getPrivateAttributes());
@@ -93,6 +104,11 @@ public class ProductReleaseResourceDBImpl implements ProductReleaseDBResource {
 
     }
 
+    /**
+     * Delete a product release.
+     * @param productReleaseName    The name of the product release.
+     * @throws APIException
+     */
     public void delete(String productReleaseName) throws APIException {
         // TODO Auto-generated method stub
 

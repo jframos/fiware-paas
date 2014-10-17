@@ -43,9 +43,9 @@ instance_request = EnvironmentInstanceRequest(config['keystone_url'], config['pa
     config['user'], config['password'],
     config['vdc'], config['sdc_url'])
 
-environment_name = 'diasss29'
-blueprintname = "diass29"
-network = "aaa"
+environment_name = 'dadddssssssssssdsssjdfdd'
+blueprintname = "aasdfddasjssssssssdsdssdf"
+network = "aadssssdddddd"
 
 
 print('Create a template for network: ')
@@ -54,7 +54,7 @@ print("  OK")
 
 print('Create template: node')
 tier_name = 'tiernamd'
-g.add_tier_environment_network(environment_name, tier_name, "Trento", "tomcat=6", network)
+g.add_tier_environment_network(environment_name, tier_name, "Spain", "tomcat=6", network)
 print("  OK")
 #tier_name = 'tiernamd2'
 #g.add_tier_environment_network(environment_name, tier_name, "Spain", "tomcat=6", network)

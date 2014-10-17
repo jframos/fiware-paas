@@ -51,13 +51,20 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
+/**
+ * Check the Class AbstractEnvironmentResource.
+ */
 public class AbstractEnvironmentResourceTest extends TestCase {
 
-    public AbstractEnvironmentResourceImpl environmentResource;
-    public EnvironmentManager environmentManager;
-    public SystemPropertiesProvider systemPropertiesProvider;
-    public EnvironmentResourceValidator environmentResourceValidator;
+    private AbstractEnvironmentResourceImpl environmentResource;
+    private EnvironmentManager environmentManager;
+    private SystemPropertiesProvider systemPropertiesProvider;
+    private EnvironmentResourceValidator environmentResourceValidator;
 
+    /**
+     * Initialize the Unit Test.
+     * @throws Exception
+     */
     @Before
     public void setUp() throws Exception {
         environmentResource = new AbstractEnvironmentResourceImpl();
@@ -85,6 +92,10 @@ public class AbstractEnvironmentResourceTest extends TestCase {
         when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("FIWARE2");
     }
 
+    /**
+     * Test the insertion of a new environment.
+     * @throws Exception
+     */
     @Test
     public void testInsertEnvironment() throws Exception {
         Environment environment = new Environment();
@@ -112,6 +123,10 @@ public class AbstractEnvironmentResourceTest extends TestCase {
         environmentResource.insert("org", environmentDto);
     }
 
+    /**
+     * Test the insertion of a environment together with some tiers on it.
+     * @throws Exception
+     */
     @Test
     public void testInsertEnvironmentAndTiers() throws Exception {
         Environment environment = new Environment();

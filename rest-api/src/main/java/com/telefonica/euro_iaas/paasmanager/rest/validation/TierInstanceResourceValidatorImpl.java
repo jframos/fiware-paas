@@ -30,31 +30,52 @@ import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 
 /**
- * * @author bmmanso
+ * Class to validate the Tier instance resource operations.
+ *
+ * @author bmmanso
  */
 public class TierInstanceResourceValidatorImpl implements TierInstanceResourceValidator {
-
+    /**
+     * Validate the request to create an TierInstance.
+     *
+     * @param org   The organization id.
+     * @param vdc   The vdc id.
+     * @param environmentInstance   The environment instance id.
+     * @param tierInstance  The tier instance id.
+     * @throws InvalidTierInstanceRequestException
+     * @throws InvalidEnvironmentRequestException
+     */
     public void validateScaleUpTierInstance(String org, String vdc, EnvironmentInstance environmentInstance,
-            String tierInst) throws InvalidTierInstanceRequestException, InvalidEnvironmentRequestException {
+            String tierInstance) throws InvalidTierInstanceRequestException, InvalidEnvironmentRequestException {
         // We check if the tierInstance is in the BD; if not, we
         // cannot scale it
 
         if (!environmentInstance.getVdc().equals(vdc)) {
-            throw new InvalidEnvironmentRequestException("EnvironmentInstance does" + "not exists in that vdc");
+            throw new InvalidEnvironmentRequestException("EnvironmentInstance does not exists in that vdc");
         }
         boolean existTier = false;
         for (TierInstance tier : environmentInstance.getTierInstances()) {
-            existTier = tier.getName().equals(tierInst);
+            existTier = tier.getName().equals(tierInstance);
             if (existTier) {
                 break;
             }
         }
         if (existTier) {
-            throw new InvalidTierInstanceRequestException("TierInstance does" + " exists in that Enviroment");
+            throw new InvalidTierInstanceRequestException("TierInstance does exists in that Environment");
         }
 
     }
 
+    /**
+     * Validate the request to delete a TierInstance.
+     *
+     * @param org   The organization id.
+     * @param vdc   The vdc id.
+     * @param environmentInstance   The environment instance id.
+     * @param tierInstance  The tier instance id.
+     * @throws InvalidTierInstanceRequestException
+     * @throws InvalidEnvironmentRequestException
+     */
     public void validateScaleDownTierInstance(String org, String vdc, EnvironmentInstance environmentInstance,
             String tierInstance) throws InvalidTierInstanceRequestException, InvalidEnvironmentRequestException {
         // TODO Auto-generated method stub
@@ -69,7 +90,7 @@ public class TierInstanceResourceValidatorImpl implements TierInstanceResourceVa
             }
         }
         if (!existTier) {
-            throw new InvalidTierInstanceRequestException("TierInstance does" + " exists in that Enviroment");
+            throw new InvalidTierInstanceRequestException("TierInstance does exists in that Environment");
         }
     }
 

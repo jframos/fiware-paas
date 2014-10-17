@@ -38,7 +38,7 @@ import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 
 /**
  * The dto entity for the environment instance.
- * 
+ *
  * @author henar
  */
 @XmlRootElement
@@ -58,7 +58,7 @@ public class EnvironmentInstanceDto {
     private Set<Attribute> attributes;
 
     /**
-     * 
+     *
      */
     public EnvironmentInstanceDto() {
     }
@@ -70,7 +70,7 @@ public class EnvironmentInstanceDto {
      * @param tierInstances
      */
     public EnvironmentInstanceDto(String environmentInstanceName, EnvironmentDto environmentDto,
-            List<TierInstanceDto> tierInstanceDtos, String vdc) {
+                                  List<TierInstanceDto> tierInstanceDtos, String vdc) {
         this.environmentInstanceName = environmentInstanceName;
         this.environmentDto = environmentDto;
         this.tierInstanceDtos = tierInstanceDtos;
@@ -79,7 +79,7 @@ public class EnvironmentInstanceDto {
 
     /**
      * the dto specification.
-     * 
+     *
      * @return
      */
     public EnvironmentInstance fromDto() {
@@ -146,8 +146,7 @@ public class EnvironmentInstanceDto {
     }
 
     /**
-     * @param attributes
-     *            the attributes to set
+     * @param attributes the attributes to set
      */
     public void setAttributes(Set<Attribute> attributes) {
         this.attributes = attributes;
@@ -162,8 +161,7 @@ public class EnvironmentInstanceDto {
     }
 
     /**
-     * @param environmentDto
-     *            the environmentDto to set
+     * @param environmentDto the environmentDto to set
      */
 
     public void setEnvironmentDto(EnvironmentDto environmentDto) {
@@ -171,8 +169,7 @@ public class EnvironmentInstanceDto {
     }
 
     /**
-     * @param environmentInstanceName
-     *            the environmentInstanceName to set
+     * @param environmentInstanceName the environmentInstanceName to set
      */
     public void setEnvironmentInstanceName(String environmentInstanceName) {
         this.environmentInstanceName = environmentInstanceName;
@@ -183,18 +180,39 @@ public class EnvironmentInstanceDto {
     }
 
     /**
-     * @param tierInstanceDtos
-     *            the tierInstances to set
+     * @param tierInstanceDtos the tierInstances to set
      */
     public void setTierInstances(List<TierInstanceDto> tierInstanceDtos) {
         this.tierInstanceDtos = tierInstanceDtos;
     }
 
     /**
-     * @param vdc
-     *            the vdc to set
+     * @param vdc the vdc to set
      */
     public void setVdc(String vdc) {
         this.vdc = vdc;
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation
+     * of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[EnvironmentInstanceDto]");
+        sb.append("[environmentInstanceName = ").append(this.environmentInstanceName).append("]");
+        sb.append("[vdc = ").append(this.vdc).append("]");
+        sb.append("[description = ").append(this.description).append("]");
+        sb.append("[status = ").append(this.status).append("]");
+        sb.append("[blueprintName = ").append(this.blueprintName).append("]");
+        sb.append("[environmentDto = ").append(this.environmentDto).append("]");
+        sb.append("[tierInstanceDtos = ").append(this.tierInstanceDtos).append("]");
+        sb.append("[attributes = ").append(this.attributes).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
+
+
 }

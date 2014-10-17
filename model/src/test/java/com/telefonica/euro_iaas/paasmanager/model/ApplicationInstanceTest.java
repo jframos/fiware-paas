@@ -27,15 +27,12 @@ package com.telefonica.euro_iaas.paasmanager.model;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationInstanceDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ArtifactDto;
-import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstanceDto;
-import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentInstancePDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import junit.framework.TestCase;
 import org.junit.Before;
@@ -43,17 +40,17 @@ import org.junit.Test;
 
 /**
  * Test for environmetn instances.
- * 
+ *
  * @author henar
  */
 public class ApplicationInstanceTest extends TestCase {
-    
-    public static String ARTIFACT_NAME ="ARTIFACT_NAME";
-    public static String ARTIFACT_PATH ="ARTIFACT_PATH";
-    public static String APP_NAME ="APP_NAME";
-    public static String APP_VERSION="APP_VERSION";
-    public static String PRODUCT_NAME="PRODUCT_NAME";
-    public static String PRODUCT_VERSION="PRODUCT_VERSION";
+
+    private static final String ARTIFACT_NAME = "ARTIFACT_NAME";
+    private static final String ARTIFACT_PATH = "ARTIFACT_PATH";
+    private static final String APP_NAME = "APP_NAME";
+    private static final String APP_VERSION = "APP_VERSION";
+    private static final String PRODUCT_NAME = "PRODUCT_NAME";
+    private static final String PRODUCT_VERSION = "PRODUCT_VERSION";
 
     private EnvironmentInstance envIns = null;
     private Environment envResult;
@@ -110,51 +107,51 @@ public class ApplicationInstanceTest extends TestCase {
 
     @Test
     public void testCreateArtifact() throws Exception {
-        ProductRelease productRelease = new ProductRelease (PRODUCT_NAME, PRODUCT_VERSION);
-        Artifact artifact = new Artifact (ARTIFACT_NAME, ARTIFACT_PATH, productRelease);
-        
+        ProductRelease productRelease = new ProductRelease(PRODUCT_NAME, PRODUCT_VERSION);
+        Artifact artifact = new Artifact(ARTIFACT_NAME, ARTIFACT_PATH, productRelease);
+
 
         assertEquals(artifact.getName(), ARTIFACT_NAME);
         assertEquals(artifact.getPath(), ARTIFACT_PATH);
         assertEquals(artifact.getProductRelease().getProduct(), PRODUCT_NAME);
         assertEquals(artifact.getProductRelease().getVersion(), PRODUCT_VERSION);
     }
-    
+
     @Test
     public void testEqualArtifact() throws Exception {
-        ProductRelease productRelease = new ProductRelease (PRODUCT_NAME, PRODUCT_VERSION);
-        Artifact artifact = new Artifact (ARTIFACT_NAME, ARTIFACT_PATH, productRelease);
-        Artifact artifact2 = new Artifact (ARTIFACT_NAME, ARTIFACT_PATH, productRelease);
-        Artifact artifact3 = new Artifact (ARTIFACT_NAME+2, ARTIFACT_PATH, productRelease);
+        ProductRelease productRelease = new ProductRelease(PRODUCT_NAME, PRODUCT_VERSION);
+        Artifact artifact = new Artifact(ARTIFACT_NAME, ARTIFACT_PATH, productRelease);
+        Artifact artifact2 = new Artifact(ARTIFACT_NAME, ARTIFACT_PATH, productRelease);
+        Artifact artifact3 = new Artifact(ARTIFACT_NAME + 2, ARTIFACT_PATH, productRelease);
         assertTrue(artifact.equals(artifact2));
         assertFalse(artifact.equals(artifact3));
 
     }
-    
+
     @Test
     public void testConvertArtifactFromDto() throws Exception {
-        ProductRelease productRelease = new ProductRelease (PRODUCT_NAME, PRODUCT_VERSION);
-        ArtifactDto artifactDto = new ArtifactDto (ARTIFACT_NAME, ARTIFACT_PATH, productRelease.toDto());
+        ProductRelease productRelease = new ProductRelease(PRODUCT_NAME, PRODUCT_VERSION);
+        ArtifactDto artifactDto = new ArtifactDto(ARTIFACT_NAME, ARTIFACT_PATH, productRelease.toDto());
         Artifact artifact = artifactDto.fromDto();
-        
+
 
         assertEquals(artifact.getName(), ARTIFACT_NAME);
         assertEquals(artifact.getPath(), ARTIFACT_PATH);
         assertEquals(artifact.getProductRelease().getProduct(), PRODUCT_NAME);
         assertEquals(artifact.getProductRelease().getVersion(), PRODUCT_VERSION);
     }
-    
+
     @Test
     public void testConvertApplicationReleaseFromDto() throws Exception {
-        ProductRelease productRelease = new ProductRelease (PRODUCT_NAME, PRODUCT_VERSION);
-        ArtifactDto artifactDto = new ArtifactDto (ARTIFACT_NAME, ARTIFACT_PATH, productRelease.toDto());
-        ArrayList<ArtifactDto> artifactsDto = new ArrayList<ArtifactDto> ();
+        ProductRelease productRelease = new ProductRelease(PRODUCT_NAME, PRODUCT_VERSION);
+        ArtifactDto artifactDto = new ArtifactDto(ARTIFACT_NAME, ARTIFACT_PATH, productRelease.toDto());
+        ArrayList<ArtifactDto> artifactsDto = new ArrayList<ArtifactDto>();
         artifactsDto.add(artifactDto);
 
-        ApplicationReleaseDto applicationReleaseDto = new ApplicationReleaseDto (APP_NAME, APP_VERSION, artifactsDto);
+        ApplicationReleaseDto applicationReleaseDto = new ApplicationReleaseDto(APP_NAME, APP_VERSION, artifactsDto);
         ApplicationRelease appRelease = applicationReleaseDto.fromDto();
         Artifact artifact = appRelease.getArtifacts().get(0);
-        
+
         assertEquals(appRelease.getName(), APP_NAME);
         assertEquals(appRelease.getVersion(), APP_VERSION);
         assertEquals(appRelease.getArtifacts().size(), 1);
@@ -163,116 +160,111 @@ public class ApplicationInstanceTest extends TestCase {
         assertEquals(artifact.getProductRelease().getProduct(), PRODUCT_NAME);
         assertEquals(artifact.getProductRelease().getVersion(), PRODUCT_VERSION);
     }
-    
+
     @Test
     public void testApplicationInstance() throws Exception {
-        ProductRelease productRelease = new ProductRelease (PRODUCT_NAME, PRODUCT_VERSION);
+        ProductRelease productRelease = new ProductRelease(PRODUCT_NAME, PRODUCT_VERSION);
         Artifact artifactDto = new Artifact(ARTIFACT_NAME, ARTIFACT_PATH, productRelease);
-        ArrayList<Artifact> artifacts= new ArrayList<Artifact> ();
+        ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
         artifacts.add(artifactDto);
 
-        ApplicationRelease applicationRelease = new ApplicationRelease (APP_NAME, APP_VERSION);
+        ApplicationRelease applicationRelease = new ApplicationRelease(APP_NAME, APP_VERSION);
         applicationRelease.setArtifacts(artifacts);
-        
 
-        EnvironmentInstance environmentInstance = new EnvironmentInstance ();
+
+        EnvironmentInstance environmentInstance = new EnvironmentInstance();
         environmentInstance.setBlueprintName("blueprintName");
 
-        ApplicationInstance applicationInstance = new ApplicationInstance (applicationRelease, environmentInstance);
-      
-        
-        assertEquals(applicationInstance.getName(), APP_NAME+ "-"+"blueprintName");
+        ApplicationInstance applicationInstance = new ApplicationInstance(applicationRelease, environmentInstance);
+
+
+        assertEquals(applicationInstance.getName(), APP_NAME + "-" + "blueprintName");
         assertEquals(applicationInstance.getApplicationRelease().getVersion(), APP_VERSION);
-        
-        
-      
+
+
     }
-    
+
     @Test
     public void testApplicationInstanceDto() {
-    	ApplicationInstanceDto applicationInstance = new ApplicationInstanceDto ();
-    	applicationInstance.setApplicationName("applicationName");
-    	applicationInstance.setEnvironmentInstanceName("environmentInstanceName");
-    	applicationInstance.setVersion("version");
-    	
-    	assertEquals (applicationInstance.getApplicationName(), "applicationName");
-    	assertEquals (applicationInstance.getVersion(),"version");
-    	assertEquals (applicationInstance.getEnvironmentInstanceName(),"environmentInstanceName");
+        ApplicationInstanceDto applicationInstance = new ApplicationInstanceDto();
+        applicationInstance.setApplicationName("applicationName");
+        applicationInstance.setEnvironmentInstanceName("environmentInstanceName");
+        applicationInstance.setVersion("version");
+
+        assertEquals(applicationInstance.getApplicationName(), "applicationName");
+        assertEquals(applicationInstance.getVersion(), "version");
+        assertEquals(applicationInstance.getEnvironmentInstanceName(), "environmentInstanceName");
     }
-    
+
     @Test
     public void testApplicationReleaseII() throws Exception {
-    	ApplicationRelease applRele = new ApplicationRelease(APP_NAME, APP_VERSION, "description", null, null); 
-    	applRele.setId("id");
-    	ApplicationRelease applRele2 = new ApplicationRelease(APP_NAME+ "2", APP_VERSION, "description", null, null); 
-    	applRele2.setId("id2");
-    	
-    	assertEquals(applRele.getName(), APP_NAME);
-    	assertEquals(applRele.getDescription(), "description");
-    	assertEquals(applRele.getVersion(), APP_VERSION);
-    	assertNull (applRele.getTransitableReleases());
-    	assertNull (applRele.getArtifacts());
-    	assertEquals(applRele.getId(), "id");
-    	assertEquals(applRele.equals(applRele2),false);
-  
+        ApplicationRelease applRele = new ApplicationRelease(APP_NAME, APP_VERSION, "description", null, null);
+        applRele.setId("id");
+        ApplicationRelease applRele2 = new ApplicationRelease(APP_NAME + "2", APP_VERSION, "description", null, null);
+        applRele2.setId("id2");
 
-    	 
+        assertEquals(applRele.getName(), APP_NAME);
+        assertEquals(applRele.getDescription(), "description");
+        assertEquals(applRele.getVersion(), APP_VERSION);
+        assertNull(applRele.getTransitableReleases());
+        assertNull(applRele.getArtifacts());
+        assertEquals(applRele.getId(), "id");
+        assertEquals(applRele.equals(applRele2), false);
+
+
     }
-    
+
     @Test
     public void testApplicationInstanceII() throws Exception {
-    	ApplicationRelease applRele = new ApplicationRelease(APP_NAME, APP_VERSION, "description", null, null); 
-    	ApplicationInstance applInst = new ApplicationInstance(applRele, envIns, "vdc"); 
+        ApplicationRelease applRele = new ApplicationRelease(APP_NAME, APP_VERSION, "description", null, null);
+        ApplicationInstance applInst = new ApplicationInstance(applRele, envIns, "vdc");
 
-    	assertEquals(applInst.getName(), APP_NAME+"-blueprint");
-    	assertEquals(applInst.getVdc(), "vdc");
-    	assertEquals(applInst.getApplicationRelease(), applRele);
-    	assertEquals(applInst.getEnvironmentInstance(), envIns);  
-    	 
+        assertEquals(applInst.getName(), APP_NAME + "-blueprint");
+        assertEquals(applInst.getVdc(), "vdc");
+        assertEquals(applInst.getApplicationRelease(), applRele);
+        assertEquals(applInst.getEnvironmentInstance(), envIns);
+
     }
-    
+
     @Test
     public void testApplicationInstanceIII() throws Exception {
-    	ApplicationRelease applRele = new ApplicationRelease(APP_NAME, APP_VERSION, "description", null, null); 
-    	ApplicationInstance applInst = new ApplicationInstance();
-    	applInst.setApplicationRelease(applRele);
-    	applInst.setEnvironmentInstance(envIns);
-    	applInst.setName(APP_NAME+"-blueprint");
+        ApplicationRelease applRele = new ApplicationRelease(APP_NAME, APP_VERSION, "description", null, null);
+        ApplicationInstance applInst = new ApplicationInstance();
+        applInst.setApplicationRelease(applRele);
+        applInst.setEnvironmentInstance(envIns);
+        applInst.setName(APP_NAME + "-blueprint");
 
-    	assertEquals(applInst.getName(), APP_NAME+"-blueprint");
-    	assertEquals(applInst.getApplicationRelease(), applRele);
-    	assertEquals(applInst.getEnvironmentInstance(), envIns);  
-    	 
+        assertEquals(applInst.getName(), APP_NAME + "-blueprint");
+        assertEquals(applInst.getApplicationRelease(), applRele);
+        assertEquals(applInst.getEnvironmentInstance(), envIns);
+
     }
-    
+
     @Test
     public void testApplicationInstanceIV() throws Exception {
-    	ApplicationRelease applRele = new ApplicationRelease(APP_NAME, APP_VERSION, "description", null, null); 
-    	ApplicationInstance applInst = new ApplicationInstance(applRele, envIns, "vdc", Status.INSTALLING);
+        ApplicationRelease applRele = new ApplicationRelease(APP_NAME, APP_VERSION, "description", null, null);
+        ApplicationInstance applInst = new ApplicationInstance(applRele, envIns, "vdc", Status.INSTALLING);
 
-    	assertEquals(applInst.getName(), APP_NAME+"-blueprint");
-    	assertEquals(applInst.getApplicationRelease(), applRele);
-    	assertEquals(applInst.getEnvironmentInstance(), envIns);  
-    	 
+        assertEquals(applInst.getName(), APP_NAME + "-blueprint");
+        assertEquals(applInst.getApplicationRelease(), applRele);
+        assertEquals(applInst.getEnvironmentInstance(), envIns);
+
     }
-    
+
     @Test
     public void testArtifactAtt() throws Exception {
-    	Artifact artifact = new Artifact ();
-    	artifact.addAttribute(new Attribute ("key", "value"));
-    	assertEquals(artifact.getAttributes().get(0).getKey(), "key");
-    	
-    	List<Attribute> atts = new ArrayList<Attribute> ();
-    	atts.add(new Attribute ("key", "value"));
-    	artifact.setAttributes(atts);
-    	assertEquals(artifact.getAttributes().get(0).getKey(), "key");
-    	
-    	assertNotNull (artifact.getMapAttributes());
-    	 
+        Artifact artifact = new Artifact();
+        artifact.addAttribute(new Attribute("key", "value"));
+        assertEquals(artifact.getAttributes().get(0).getKey(), "key");
+
+        List<Attribute> atts = new ArrayList<Attribute>();
+        atts.add(new Attribute("key", "value"));
+        artifact.setAttributes(atts);
+        assertEquals(artifact.getAttributes().get(0).getKey(), "key");
+
+        assertNotNull(artifact.getMapAttributes());
+
     }
-   
 
-
-   
 
 }

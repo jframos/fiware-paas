@@ -10,7 +10,7 @@
         </rollingPolicy>
 
         <encoder>
-            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -23,7 +23,7 @@
         </rollingPolicy>
 
         <encoder>
-            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -37,7 +37,7 @@
         </rollingPolicy>
 
         <encoder>
-            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -50,7 +50,7 @@
             <fileNamePattern>${catalina.base}/logs/authentication.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
         <encoder>
-            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -62,7 +62,7 @@
             <fileNamePattern>${catalina.base}/logs/install.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
         <encoder>
-            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -74,7 +74,7 @@
             <fileNamePattern>${catalina.base}/logs/util.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
         <encoder>
-            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
             </pattern>
         </encoder>
     </appender>
@@ -86,7 +86,20 @@
             <fileNamePattern>${catalina.base}/logs/infrastructure.%d{yyyy-MM-dd}.gz</fileNamePattern>
         </rollingPolicy>
         <encoder>
-            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=%C{1} | msg=%m%n
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | comp=PaaS - %c{0} | op=%M | msg=%m%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="aspectAppender"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${jetty.base}/logs/paasmanager.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${jetty.base}/logs/paasmanager.%d{yyyy-MM-dd}.gz</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>time=%d{yyyy-MM-dd HH:mm:ss.SSS} | lvl=%-5p | trans=%X{txId} | %m%n
             </pattern>
         </encoder>
     </appender>
@@ -116,6 +129,11 @@
         <appender-ref ref="restAppender"/>
     </logger>
 
+    <logger name="aspectLogger" additivity="false">
+        <level value="DEBUG"/>
+        <appender-ref ref="aspectAppender"/>
+    </logger>
+
 
     <!-- SpringFramework logger -->
     <logger name="org.springframework" additivity="false">
@@ -135,7 +153,7 @@
         <appender-ref ref="paasAppender"/>
     </logger>
 
-    <root value="WARN">
+    <root value="DEBUG">
         <appender-ref ref="paasAppender"/>
     </root>
 

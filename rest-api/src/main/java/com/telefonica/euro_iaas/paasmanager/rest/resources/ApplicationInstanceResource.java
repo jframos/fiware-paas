@@ -44,7 +44,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 
 /**
- * Provides a rest api to works with ApplicationInstances
+ * Provides a rest api to works with ApplicationInstances.
  * 
  * @author Jesus M. Movilla
  */
@@ -70,7 +70,7 @@ public interface ApplicationInstanceResource {
             @QueryParam("status") List<Status> status, @PathParam("vdc") String vdc,
             @PathParam("environmentInstance") String environmentInstance,
             @PathParam("productInstance") String productInstance, @QueryParam("applicationName") String applicationName)
-            throws APIException;
+        throws APIException;
 
     /**
      * Retrieve the selected application instance.
@@ -78,16 +78,18 @@ public interface ApplicationInstanceResource {
     @GET
     @Path("/{name}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    ApplicationInstance load(@PathParam("vdc") String vdc,  @PathParam("environmentInstance") String environmentInstance, @PathParam("name") String name);
+    ApplicationInstance load(@PathParam("vdc") String vdc,
+                             @PathParam("environmentInstance") String environmentInstance,
+                             @PathParam("name") String name);
 
     /**
-     * Uninstall a previously installed instance.
-     * 
-     * @param id
-     *            the installable instance id
-     * @param callback
-     *            if not empty, contains the url where the result of the async operation will be sent
-     * @return the task.
+     * Uninstall previously installed instance.
+     * @param org   The organization.
+     * @param vdc   The VDC.
+     * @param environmentInstance   The name of the environment instance.
+     * @param name  The name
+     * @param callback  The url of the callback to return.
+     * @return  A task to follow the execution of the task.
      */
     @DELETE
     @Path("/{name}")

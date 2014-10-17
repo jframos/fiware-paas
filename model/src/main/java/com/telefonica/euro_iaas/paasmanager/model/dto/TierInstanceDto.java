@@ -36,7 +36,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 
 /**
  * The Dto for the Tier Instance.
- * 
+ *
  * @author henar
  */
 @XmlRootElement
@@ -73,7 +73,7 @@ public class TierInstanceDto {
 
     /**
      * Add the product instance dto object.
-     * 
+     *
      * @param productInstanceDto
      */
     public void addProductInstanceDto(ProductInstanceDto productInstanceDto) {
@@ -127,4 +127,25 @@ public class TierInstanceDto {
     public void setVM(VMDto vm) {
         this.vm = vm;
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation
+     * of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[TierInstanceDto]");
+        sb.append("[tierInstanceName = ").append(this.tierInstanceName).append("]");
+        sb.append("[tierDto = ").append(this.tierDto).append("]");
+        sb.append("[attributes = ").append(this.attributes).append("]");
+        sb.append("[replicaNumber = ").append(this.replicaNumber).append("]");
+        sb.append("[productInstanceDtos = ").append(this.productInstanceDtos).append("]");
+        sb.append("[vm = ").append(this.vm).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
+
+
 }

@@ -102,7 +102,7 @@ public class TierManagerImpl implements TierManager {
     public Tier create(ClaudiaData claudiaData, String envName, Tier tier) throws InvalidEntityException,
             InvalidSecurityGroupRequestException, InfrastructureException, EntityNotFoundException,
             AlreadyExistsEntityException {
-        log.debug("Create tier name " + tier.getName() + " image " + tier.getImage() + " flavour " + tier.getFlavour()
+        log.info("Create tier name " + tier.getName() + " image " + tier.getImage() + " flavour " + tier.getFlavour()
                 + " initial_number_instances " + tier.getInitialNumberInstances() + " maximum_number_instances "
                 + tier.getMaximumNumberInstances() + " minimum_number_instances " + tier.getMinimumNumberInstances()
                 + " floatingIp " + tier.getFloatingip() + " keyPair " + tier.getKeypair() + " icon " + tier.getIcono()
@@ -130,7 +130,7 @@ public class TierManagerImpl implements TierManager {
         if (tier.getProductReleases() != null && tier.getProductReleases().size() != 0) {
             for (ProductRelease prod : tier.getProductReleases()) {
                 try {
-                    log.debug("Sync product release " + prod.getProduct() + "-" + prod.getVersion());
+                    log.info("Sync product release " + prod.getProduct() + "-" + prod.getVersion());
                     prod = productReleaseManager.load(prod.getProduct() + "-" + prod.getVersion(), data);
                 } catch (Exception e2) {
                     String errorMessage = "The ProductRelease Object " + prod.getProduct() + "-" + prod.getVersion()
@@ -150,7 +150,7 @@ public class TierManagerImpl implements TierManager {
      */
 
     public Rule createRulePort(String port) {
-        log.debug("Generate security rule " + port);
+        log.info("Generate security rule " + port);
         Rule rule = new Rule("TCP", port, port, "", "0.0.0.0/0");
         return rule;
     }
@@ -211,7 +211,7 @@ public class TierManagerImpl implements TierManager {
 
         for (Network network : networkToBeDeployed) {
             if (networkManager.exists(network.getNetworkName(), network.getVdc(), tier.getRegion())) {
-                log.debug("the network " + network.getNetworkName() + " already exists");
+                log.info("the network " + network.getNetworkName() + " already exists");
                 network = networkManager.load(network.getNetworkName(), network.getVdc(), tier.getRegion());
 
             } else {
@@ -232,7 +232,7 @@ public class TierManagerImpl implements TierManager {
 
         try {
             tier = loadTierWithNetworks(tier.getName(), tier.getVdc(), tier.getEnviromentName());
-            log.debug("Deleting tier " + tier.getName() + " from vdc " + tier.getVdc() + "  env  "
+            log.info("Deleting tier " + tier.getName() + " from vdc " + tier.getVdc() + "  env  "
                     + tier.getEnviromentName() + " " + tier.getNetworks());
         } catch (EntityNotFoundException e) {
 
@@ -243,14 +243,14 @@ public class TierManagerImpl implements TierManager {
 
         if (tier.getSecurityGroup() != null && !tier.getVdc().isEmpty()) {
             SecurityGroup sec = tier.getSecurityGroup();
-            log.debug("Deleting security group " + sec.getName() + " in tier " + tier.getName());
+            log.info("Deleting security group " + sec.getName() + " in tier " + tier.getName());
             tier.setSecurityGroup(null);
             tierDao.update(tier);
             securityGroupManager.destroy(tier.getRegion(), claudiaData.getUser().getToken(), tier.getVdc(), sec);
 
         }
 
-        log.debug("Deleting the networks " + tier.getNetworks());
+        log.info("Deleting the networks " + tier.getNetworks());
 
         List<Network> netsAux = new ArrayList<Network>();
         for (Network netNet : tier.getNetworks()) {
@@ -263,16 +263,16 @@ public class TierManagerImpl implements TierManager {
         for (Network net : netsAux) {
 
             if (isAvailableToBeDeleted(net)) {
-                log.debug("Deleting network " + net.getNetworkName());
+                log.info("Deleting network " + net.getNetworkName());
                 try {
                     networkManager.delete(net);
                 } catch (Exception e) {
-                    log.debug("There is an error to delete the network");
+                    log.info("There is an error to delete the network");
                 }
             }
 
         }
-        log.debug("Networks deleted");
+        log.info("Networks deleted");
 
         try {
             tierDao.remove(tier);
@@ -288,12 +288,12 @@ public class TierManagerImpl implements TierManager {
 
         List<Tier> tiers = tierDao.findAllWithNetwork(net.getNetworkName());
         if (tiers.isEmpty()) {
-            log.debug("The network " + net + " can be deleted");
+            log.info("The network " + net + " can be deleted");
             return true;
         } else {
-            log.debug("The network " + net.getNetworkName() + " cannot be deleted. The following tiers are using it");
+            log.info("The network " + net.getNetworkName() + " cannot be deleted. The following tiers are using it");
             for (Tier tier : tiers) {
-                log.debug(tier.getName());
+                log.info(tier.getName());
             }
             return false;
         }
@@ -318,7 +318,7 @@ public class TierManagerImpl implements TierManager {
         SecurityGroup securityGroup = new SecurityGroup();
         securityGroup.setName("sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() + "_" + tier.getName());
 
-        log.debug("Generate security group " + "sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() + "_"
+        log.info("Generate security group " + "sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() + "_"
                 + tier.getName());
 
         List<Rule> rules = getDefaultRules();
@@ -337,7 +337,7 @@ public class TierManagerImpl implements TierManager {
     public List<Rule> getDefaultRules() {
         List<Rule> rules = new ArrayList<Rule>();
         // 9990
-        log.debug("Generate security rule " + 9990);
+        log.info("Generate security rule " + 9990);
         Rule rule2 = new Rule("TCP", "22", "22", "", "0.0.0.0/0");
         rules.add(rule2);
         return rules;
@@ -356,7 +356,7 @@ public class TierManagerImpl implements TierManager {
     private void getRules(ProductRelease productRelease, List<Rule> rules, String pathrules) {
         Metadata openPortsAttribute = productRelease.getMetadata(pathrules);
         if (openPortsAttribute != null) {
-            log.debug("Adding product rule " + openPortsAttribute.getValue());
+            log.info("Adding product rule " + openPortsAttribute.getValue());
             StringTokenizer st = new StringTokenizer(openPortsAttribute.getValue());
             while (st.hasMoreTokens()) {
                 Rule rule = createRulePort(st.nextToken());
@@ -489,7 +489,7 @@ public class TierManagerImpl implements TierManager {
                     try {
                         ProductRelease templateProduct = productReleaseManager.load(product.getProduct() + "-"
                                 + product.getVersion(), data);
-                        log.debug("Adding product release " + templateProduct.getProduct() + "-"
+                        log.info("Adding product release " + templateProduct.getProduct() + "-"
                                 + templateProduct.getVersion() + " to tier " + templateProduct.getName());
 
                         mergeAttributes(product, templateProduct);
@@ -513,7 +513,7 @@ public class TierManagerImpl implements TierManager {
 
             try {
                 net = networkManager.load(net.getNetworkName(), net.getVdc(), net.getRegion());
-                log.debug("Adding network " + net.getNetworkName() + "-" + " to tier " + tier.getName());
+                log.info("Adding network " + net.getNetworkName() + "-" + " to tier " + tier.getName());
                 tier.addNetwork(net);
                 update(tier);
             } catch (Exception e2) {
@@ -570,9 +570,10 @@ public class TierManagerImpl implements TierManager {
     }
 
     public Tier update(Tier tier) throws InvalidEntityException {
-        log.debug("Update tier " + tier.getName());
+        log.info("Update tier " + tier.getName());
         try {
-            return tierDao.update(tier);
+            Tier newTier = tierDao.update(tier);
+            return tierDao.loadComplete(newTier);
         } catch (Exception e) {
             log.error("It is not possible to update the tier " + tier.getName() + " : " + e.getMessage(), e);
             throw new InvalidEntityException("It is not possible to update the tier " + tier.getName() + " : "
@@ -607,7 +608,7 @@ public class TierManagerImpl implements TierManager {
 
         // adding networks
         for (Network net : tiernew.getNetworks()) {
-            log.debug("Creating new network " + net.getNetworkName());
+            log.info("Creating new network " + net.getNetworkName());
             try {
                 net = networkManager.create(net);
             } catch (AlreadyExistsEntityException e) {

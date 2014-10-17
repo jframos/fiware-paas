@@ -53,6 +53,9 @@ public class TaskResourceImpl implements TaskResource {
     @Autowired
     private TaskManager taskManager;
 
+    /**
+     * Find a task for a given id.
+     */
     public Task load(Long id) throws APIException {
         try {
             return taskManager.load(id);
@@ -61,6 +64,29 @@ public class TaskResourceImpl implements TaskResource {
         }
     }
 
+    /**
+     * Retrieve the tasks that match with the given criteria.
+     *
+     * @param page
+     *            for pagination is 0 based number(<i>nullable</i>)
+     * @param pageSize
+     *            for pagination, the number of items retrieved in a query (<i>nullable</i>)
+     * @param orderBy
+     *            the file to order the search (id by default <i>nullable</i>)
+     * @param orderType
+     *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
+     * @param states
+     *            the list containing the task states
+     * @param resource
+     *            the resource url the task is related to
+     * @param owner
+     *            the task's owner url
+     * @param fromDate
+     *            the initial date where the task was created (included)
+     * @param toDate
+     *            the final date where the task was created (included)
+     * @return the tasks that match with the criteria.
+     */
     public List<Task> findAll(Integer page, Integer pageSize, String orderBy, String orderType,
             List<TaskStates> states, String resource, String owner, Date fromDate, Date toDate, String vdc) {
         TaskSearchCriteria criteria = new TaskSearchCriteria();
@@ -83,6 +109,9 @@ public class TaskResourceImpl implements TaskResource {
         return taskManager.findByCriteria(criteria);
     }
 
+    /**
+     * Find tier instances with pagination.
+     */
     public List<Task> findTierInstance(Integer page, Integer pageSize, String orderBy, String orderType,
             List<TaskStates> states, String resource, String owner, Date fromDate, Date toDate, String vdc,
             String environment, String tierInstance) {
@@ -110,6 +139,9 @@ public class TaskResourceImpl implements TaskResource {
 
     }
 
+    /**
+     * Find an environment with pagination.
+     */
     public List<Task> findEnvironment(Integer page, Integer pageSize, String orderBy, String orderType,
             List<TaskStates> states, String resource, String owner, Date fromDate, Date toDate, String vdc,
             String environment) {

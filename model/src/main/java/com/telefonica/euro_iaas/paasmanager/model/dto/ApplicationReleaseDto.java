@@ -35,8 +35,8 @@ import com.telefonica.euro_iaas.paasmanager.model.ApplicationRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 
 /**
- * DTO for application Instance to receive rest request
- * 
+ * DTO for application Instance to receive rest request.
+ *
  * @author Jesus M. Movilla
  */
 @XmlRootElement
@@ -61,13 +61,19 @@ public class ApplicationReleaseDto {
      * @param environmentInstanceName
      */
     public ApplicationReleaseDto(String applicationName, String version, List<ArtifactDto> artifactsDto,
-            String applicationType) {
+                                 String applicationType) {
         this.applicationName = applicationName;
         this.version = version;
         this.artifactsDto = artifactsDto;
         this.applicationType = applicationType;
     }
 
+    /**
+     * The application to be released.
+     * @param applicationName   The application name.
+     * @param version           The version of the application.
+     * @param artifactsDto      The list of artifacts.
+     */
     public ApplicationReleaseDto(String applicationName, String version, List<ArtifactDto> artifactsDto) {
         this.applicationName = applicationName;
         this.version = version;
@@ -83,8 +89,7 @@ public class ApplicationReleaseDto {
     }
 
     /**
-     * @param applicationName
-     *            the applicationName to set
+     * @param applicationName the applicationName to set
      */
     public void setApplicationName(String applicationName) {
         this.applicationName = applicationName;
@@ -98,8 +103,7 @@ public class ApplicationReleaseDto {
     }
 
     /**
-     * @param version
-     *            the version to set
+     * @param version the version to set
      */
     public void setVersion(String version) {
         this.version = version;
@@ -113,8 +117,8 @@ public class ApplicationReleaseDto {
     }
 
     /**
-     * @param artifacts
-     *            the artifacts to set
+     * Set the list of ArtifactDto.
+     * @param artifactsDto the artifacts list to set
      */
     public void setArtifactsDto(List<ArtifactDto> artifactsDto) {
         this.artifactsDto = artifactsDto;
@@ -128,15 +132,18 @@ public class ApplicationReleaseDto {
     }
 
     /**
-     * @param applicationType
-     *            the applicationType to set
+     * @param applicationType the applicationType to set
      */
     public void setApplicationType(String applicationType) {
         this.applicationType = applicationType;
     }
-    
-    public ApplicationRelease fromDto () {
-        ApplicationRelease applicationRelease = new ApplicationRelease ();
+
+    /**
+     * Create a new application release from the information of the class.
+     * @return  the new application release.
+     */
+    public ApplicationRelease fromDto() {
+        ApplicationRelease applicationRelease = new ApplicationRelease();
         if (this.getApplicationName() != null) {
             applicationRelease.setName(this.getApplicationName());
         }
@@ -145,12 +152,13 @@ public class ApplicationReleaseDto {
             applicationRelease.setArtifacts(this.convertToArtifact(this.getArtifactsDto()));
         }
 
-        if (this.getVersion() != null)
+        if (this.getVersion() != null) {
             applicationRelease.setVersion(this.getVersion());
+        }
 
         return applicationRelease;
     }
-    
+
     private List<Artifact> convertToArtifact(List<ArtifactDto> artifactsDto) {
         List<Artifact> artifacts = new ArrayList<Artifact>();
 
@@ -160,5 +168,23 @@ public class ApplicationReleaseDto {
         }
         return artifacts;
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation
+     * of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[ApplicationReleaseDto]");
+        sb.append("[applicationName = ").append(this.applicationName).append("]");
+        sb.append("[version = ").append(this.version).append("]");
+        sb.append("[artifactsDto = ").append(this.artifactsDto).append("]");
+        sb.append("[applicationType = ").append(this.applicationType).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
+
 
 }

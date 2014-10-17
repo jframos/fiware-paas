@@ -7,7 +7,6 @@ target/
 .settings
 
 # Package Files #
-*.jar
 *.war
 *.ear
 
@@ -17,3 +16,8 @@ target/
 # Acceptance tests logs and reports
 testreport/
 logs/
+
+#IDE
+*.iml
+.idea/
+/bin/

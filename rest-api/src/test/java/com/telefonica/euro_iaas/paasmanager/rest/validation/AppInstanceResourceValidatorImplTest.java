@@ -24,116 +24,125 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 
 
-import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.ApplicationInstanceNotFoundException;
-import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidApplicationReleaseException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
 
-import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
-
 import com.telefonica.euro_iaas.paasmanager.manager.ApplicationInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
-import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
-import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
-import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 
 import com.telefonica.euro_iaas.paasmanager.model.ApplicationInstance;
-import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
-import com.telefonica.euro_iaas.paasmanager.model.Metadata;
-import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
-import com.telefonica.euro_iaas.paasmanager.model.Tier;
 
 import com.telefonica.euro_iaas.paasmanager.model.dto.ApplicationReleaseDto;
-import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
-import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
-import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
+/**
+ * Test the AppInstanceResourceValidatorImpl class.
+ */
 public class AppInstanceResourceValidatorImplTest {
-	
-	ApplicationInstanceResourceValidatorImpl appInstanceResourceValidator ;
-	ApplicationInstanceManager applicationInstanceManager;
-	EnvironmentInstanceManager environmentInstanceManager;
 
+    private ApplicationInstanceResourceValidatorImpl appInstanceResourceValidator;
+    private ApplicationInstanceManager applicationInstanceManager;
+    private EnvironmentInstanceManager environmentInstanceManager;
 
-	
-	@Before
-	public void setUp () throws EntityNotFoundException, InvalidEntityException {
-		appInstanceResourceValidator = new ApplicationInstanceResourceValidatorImpl();
-		applicationInstanceManager = mock (ApplicationInstanceManager.class);
-		environmentInstanceManager = mock (EnvironmentInstanceManager.class);
-		appInstanceResourceValidator.setApplicationInstanceManager(applicationInstanceManager);
-		appInstanceResourceValidator.setEnvironmentInstanceManager(environmentInstanceManager);
-        
-	}
+    /**
+     * Initialize the Unit Test.
+     *
+     * @throws EntityNotFoundException
+     * @throws InvalidEntityException
+     */
+    @Before
+    public void setUp() throws EntityNotFoundException, InvalidEntityException {
+        appInstanceResourceValidator = new ApplicationInstanceResourceValidatorImpl();
+        applicationInstanceManager = mock(ApplicationInstanceManager.class);
+        environmentInstanceManager = mock(EnvironmentInstanceManager.class);
+        appInstanceResourceValidator.setApplicationInstanceManager(applicationInstanceManager);
+        appInstanceResourceValidator.setEnvironmentInstanceManager(environmentInstanceManager);
 
+    }
+
+    /**
+     * Test the installation of an application instance.
+     *
+     * @throws InvalidApplicationReleaseException
+     * @throws ApplicationInstanceNotFoundException
+     * @throws EntityNotFoundException
+     */
     @Test
-    public void testCheckValidateInstall() throws InvalidApplicationReleaseException, ApplicationInstanceNotFoundException, EntityNotFoundException {
+    public void testCheckValidateInstall()
+        throws InvalidApplicationReleaseException, ApplicationInstanceNotFoundException, EntityNotFoundException {
+
         // given
-    	ApplicationReleaseDto applicationReleaseDto = new ApplicationReleaseDto ("app", "version", null);
-   
-    	when (applicationInstanceManager
+        ApplicationReleaseDto applicationReleaseDto = new ApplicationReleaseDto("app", "version", null);
+
+        when(applicationInstanceManager
                 .load(any(String.class), any(String.class))).thenThrow(
-                		new EntityNotFoundException (ApplicationInstance.class, "", applicationReleaseDto));
-    	appInstanceResourceValidator.validateInstall("vdc", "environmentInstance", applicationReleaseDto);
-    	verify(applicationInstanceManager)
+                new EntityNotFoundException(ApplicationInstance.class, "", applicationReleaseDto));
+        appInstanceResourceValidator.validateInstall("vdc", "environmentInstance", applicationReleaseDto);
+        verify(applicationInstanceManager)
                 .load(any(String.class), any(String.class));
 
     }
-    
-    @Test(expected=InvalidApplicationReleaseException.class)
-    public void testCheckValidateInstallError() throws InvalidApplicationReleaseException, ApplicationInstanceNotFoundException, EntityNotFoundException {
+
+    /**
+     * Test the exception in the installation of an application instance.
+     *
+     * @throws InvalidApplicationReleaseException
+     * @throws ApplicationInstanceNotFoundException
+     * @throws EntityNotFoundException
+     */
+    @Test(expected = InvalidApplicationReleaseException.class)
+    public void testCheckValidateInstallError()
+        throws InvalidApplicationReleaseException, ApplicationInstanceNotFoundException, EntityNotFoundException {
+
         // given
-    	ApplicationReleaseDto applicationReleaseDto = new ApplicationReleaseDto ("app", "version", null);
-   
-    	when (applicationInstanceManager
+        ApplicationReleaseDto applicationReleaseDto = new ApplicationReleaseDto("app", "version", null);
+
+        when(applicationInstanceManager
                 .load(any(String.class), any(String.class))).thenReturn(new ApplicationInstance());
         appInstanceResourceValidator.validateInstall("vdc", "environmentInstance", applicationReleaseDto);
-    	verify(applicationInstanceManager)
+        verify(applicationInstanceManager)
                 .load(any(String.class), any(String.class));
 
     }
-    
+
+    /**
+     * Test the uninstall an application.
+     *
+     * @throws InvalidApplicationReleaseException
+     * @throws ApplicationInstanceNotFoundException
+     * @throws EntityNotFoundException
+     * @throws com.telefonica.euro_iaas.commons.dao.InvalidEntityException
+     */
     @Test
-    public void testCheckValidateUnInstall() throws InvalidApplicationReleaseException, ApplicationInstanceNotFoundException, EntityNotFoundException, com.telefonica.euro_iaas.commons.dao.InvalidEntityException {
+    public void testCheckValidateUnInstall()
+            throws InvalidApplicationReleaseException, ApplicationInstanceNotFoundException, EntityNotFoundException,
+            com.telefonica.euro_iaas.commons.dao.InvalidEntityException {
+
         // given
-   
-    	when (applicationInstanceManager
+
+        when(applicationInstanceManager
                 .load(any(String.class), any(String.class))).thenReturn(new ApplicationInstance());
-    	when (environmentInstanceManager
+        when(environmentInstanceManager
                 .load(any(String.class), any(String.class))).thenReturn(new EnvironmentInstance());
-    	appInstanceResourceValidator.validateUnInstall("vdc", "environmentInstance", "applicationName");
-    	verify(applicationInstanceManager)
+        appInstanceResourceValidator.validateUnInstall("vdc", "environmentInstance", "applicationName");
+        verify(applicationInstanceManager)
                 .load(any(String.class), any(String.class));
-    	verify(environmentInstanceManager)
+        verify(environmentInstanceManager)
                 .load(any(String.class), any(String.class));
 
     }
 
-    
 
 }

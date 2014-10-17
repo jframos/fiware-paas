@@ -38,6 +38,20 @@
                 <include>*.war</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/src/assembly/db</directory>
+            <outputDirectory>/db</outputDirectory>
+	        <includes>
+                <include>*.sh</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/src/assembly/rpm</directory>
+            <outputDirectory>/rpm</outputDirectory>
+            <includes>
+                <include>*.py</include>
+            </includes>
+        </fileSet>
 
         <!-- create emtpy directories -->
         <fileSet>

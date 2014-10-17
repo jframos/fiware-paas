@@ -26,6 +26,9 @@ package com.telefonica.euro_iaas.paasmanager.model;
 
 import net.sf.json.JSONObject;
 
+/**
+ * Class Limits of available resources.
+ */
 public class Limits {
     private Integer maxTotalFloatingIps;
     private Integer totalFloatingIpsUsed;
@@ -68,6 +71,10 @@ public class Limits {
         return totalInstancesUsed;
     }
 
+    /**
+     * Obtain the limits from a json message.
+     * @param jsonAbsolute
+     */
     public void fromJson(JSONObject jsonAbsolute) {
         if (jsonAbsolute.containsKey("maxTotalFloatingIps")) {
             maxTotalFloatingIps = jsonAbsolute.getInt("maxTotalFloatingIps");
@@ -90,15 +97,27 @@ public class Limits {
 
     }
 
+    /**
+     * Check the number of total instances used.
+     * @return
+     */
     public boolean checkTotalInstancesUsed() {
         return (maxTotalInstances != null) && (totalInstancesUsed != null);
     }
 
+    /**
+     * Check the total of floating IPs used.
+     * @return
+     */
     public boolean checkTotalFloatingsIpsUsed() {
 
         return (maxTotalFloatingIps != null) && (totalFloatingIpsUsed != null);
     }
 
+    /**
+     * Check the total of security group used.
+     * @return
+     */
     public boolean checkTotalSecurityGroupsUsed() {
 
         return (maxSecurityGroups != null) && (totalSecurityGroups != null);
@@ -119,4 +138,25 @@ public class Limits {
     public void setTotalSecurityGroups(Integer totalSecurityGroups) {
         this.totalSecurityGroups = totalSecurityGroups;
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation
+     * of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[Limits]");
+        sb.append("[maxTotalFloatingIps = ").append(this.maxTotalFloatingIps).append("]");
+        sb.append("[totalFloatingIpsUsed = ").append(this.totalFloatingIpsUsed).append("]");
+        sb.append("[maxTotalInstances = ").append(this.maxTotalInstances).append("]");
+        sb.append("[totalInstancesUsed = ").append(this.totalInstancesUsed).append("]");
+        sb.append("[maxSecurityGroups = ").append(this.maxSecurityGroups).append("]");
+        sb.append("[totalSecurityGroups = ").append(this.totalSecurityGroups).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
+
+
 }

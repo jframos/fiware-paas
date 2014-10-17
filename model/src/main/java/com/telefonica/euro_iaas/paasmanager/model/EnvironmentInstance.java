@@ -25,7 +25,6 @@
 package com.telefonica.euro_iaas.paasmanager.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -50,8 +49,8 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.TierPDto;
 // import org.hibernate.annotations.Cascade;
 
 /**
- * Represents an instance of a environment
- * 
+ * Represents an instance of a environment.
+ *
  * @author Jesus M. Movilla
  * @version $Id: $
  */
@@ -75,7 +74,9 @@ public class EnvironmentInstance extends InstallableInstance {
 
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "environmentInstance_has_tierInstances", joinColumns = { @JoinColumn(name = "environmentinstance_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) })
+    @JoinTable(name = "environmentInstance_has_tierInstances",
+            joinColumns = {@JoinColumn(name = "environmentinstance_ID", nullable = false, updatable = false) },
+            inverseJoinColumns = {@JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) })
     private List<TierInstance> tierInstances;
 
     @Column(length = 90000)
@@ -168,8 +169,8 @@ public class EnvironmentInstance extends InstallableInstance {
         TierPDto tierPDto = new TierPDto(tier.getName(), tier.getMaximumNumberInstances(),
                 tier.getMinimumNumberInstances(), tier.getInitialNumberInstances(), productReleasedto,
                 tier.getFlavour(), tier.getImage(), tier.getIcono(), securitygroup, tier.getKeypair(),
-                tier.getFloatingip(), tier.getRegion ());
-      
+                tier.getFloatingip(), tier.getRegion());
+
         if (lTierInstance != null && lTierInstance.size() != 0) {
             for (TierInstance tierInstance : lTierInstance) {
 
@@ -215,8 +216,8 @@ public class EnvironmentInstance extends InstallableInstance {
     }
 
     /**
-     * It removes a tier instance in the environment
-     * 
+     * It removes a tier instance in the environment.
+     *
      * @param tierInstance
      */
     public void removeTierInstance(TierInstance tierInstance) {
@@ -235,8 +236,7 @@ public class EnvironmentInstance extends InstallableInstance {
     }
 
     /**
-     * @param environment
-     *            the environment to set
+     * @param environment the environment to set
      */
     public void setEnvironment(Environment environment) {
         this.environment = environment;
@@ -251,16 +251,14 @@ public class EnvironmentInstance extends InstallableInstance {
     }
 
     /**
-     * @param tierInstances
-     *            the tierInstances to set
+     * @param tierInstances the tierInstances to set
      */
     public void setTierInstances(List<TierInstance> tierInstances) {
         this.tierInstances = tierInstances;
     }
 
     /**
-     * @param vapp
-     *            the vapp to set
+     * @param vapp the vapp to set
      */
     public void setVapp(String vapp) {
         this.vapp = vapp;
@@ -268,7 +266,7 @@ public class EnvironmentInstance extends InstallableInstance {
 
     /**
      * the dto specification.
-     * 
+     *
      * @return the dto
      */
     public EnvironmentInstanceDto toDto() {
@@ -302,7 +300,7 @@ public class EnvironmentInstance extends InstallableInstance {
 
     /**
      * The dto entity for the portal.
-     * 
+     *
      * @return
      */
     public EnvironmentInstancePDto toPDto() {
@@ -342,7 +340,7 @@ public class EnvironmentInstance extends InstallableInstance {
 
     /**
      * The environment instance dto for the portal.
-     * 
+     *
      * @return
      */
     public EnvironmentInstancePDto toPDtos() {
@@ -370,22 +368,47 @@ public class EnvironmentInstance extends InstallableInstance {
 
         return envInstanceDto;
     }
-    
-    public NetworkInstance getNetworkInstanceFromNetwork (String networkName, String region) {
 
-    	for (TierInstance tierInstance: this.getTierInstances()) {
-    		if (!tierInstance.getTier().getRegion().equals (region)) {
-    			continue;
-    		}
-    		for (NetworkInstance net2: tierInstance.getNetworkInstances()) {
-				net2.getNetworkName().equals(networkName);
-					return net2;
-			}
-    		
-    	}
+    /**
+     * Get the network instances from a network of a tier instance.
+     * @param networkName
+     * @param region
+     * @return
+     */
+    public NetworkInstance getNetworkInstanceFromNetwork(String networkName, String region) {
+
+        for (TierInstance tierInstance : this.getTierInstances()) {
+            if (!tierInstance.getTier().getRegion().equals(region)) {
+                continue;
+            }
+            for (NetworkInstance net2 : tierInstance.getNetworkInstances()) {
+                net2.getNetworkName().equals(networkName);
+                return net2;
+            }
+
+        }
         return null;
 
     }
 
-	
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation
+     * of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[EnvironmentInstance]");
+        sb.append("[environment = ").append(this.environment).append("]");
+        sb.append("[description = ").append(this.description).append("]");
+        sb.append("[blueprintName = ").append(this.blueprintName).append("]");
+        sb.append("[taskId = ").append(this.taskId).append("]");
+        sb.append("[tierInstances = ").append(this.tierInstances).append("]");
+        sb.append("[vapp = ").append(this.vapp).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
+
+
 }

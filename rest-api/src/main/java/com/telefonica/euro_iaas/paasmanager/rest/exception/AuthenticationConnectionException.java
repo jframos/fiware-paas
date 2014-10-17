@@ -30,13 +30,21 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 /**
+ * Exception method of the Authentication process to keystone.
+ *
  * @author fernandolopezaguilar
  */
 @SuppressWarnings("serial")
 public class AuthenticationConnectionException extends WebApplicationException {
 
+    /**
+     * Constructor.
+     * @param message   The information of the error.
+     */
     public AuthenticationConnectionException(final String message) {
-        super(Response.status(Status.SERVICE_UNAVAILABLE).type(MediaType.APPLICATION_XHTML_XML).entity(message).build());
+        super(Response.status(Status.SERVICE_UNAVAILABLE)
+                .type(MediaType.APPLICATION_XHTML_XML)
+                .entity(message).build());
     }
 
 }

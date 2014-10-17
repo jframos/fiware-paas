@@ -47,7 +47,7 @@ import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
- * default Environment implementation
+ * default Environment implementation.
  * 
  * @author Henar Mu�oz
  */
@@ -63,8 +63,17 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
     private SystemPropertiesProvider systemPropertiesProvider;
 
+    /**
+     * Delete a product release resource.
+     * @param org   The organization id
+     * @param vdc   The vdc id.
+     * @param envName   The name of th environment.
+     * @param tierName  The name of the tier.
+     * @param productReleaseName    The name of the product to be deleted.
+     * @throws APIException Any exception launched during the deleting process.
+     */
     public void delete(String org, String vdc, String envName, String tierName, String productReleaseName)
-            throws APIException {
+        throws APIException {
         ClaudiaData claudiaData = new ClaudiaData(org, vdc, envName);
 
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
@@ -85,6 +94,14 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
     }
 
+    /**
+     * Insert a new product release resource.
+     * @param org   The organization id
+     * @param vdc   The vdc id.
+     * @param environmentName   The environment name.
+     * @param tierName  The name of the tier.
+     * @param productReleaseDto The information of the new product release resource.
+     */
     public void insert(String org, String vdc, String environmentName, String tierName,
             ProductReleaseDto productReleaseDto) {
 
@@ -120,8 +137,18 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
     }
 
+    /**
+     * Find a specific product release resource.
+     * @param org   The organization id
+     * @param vdc   The vdc id.
+     * @param environment   The environment id.
+     * @param tier  The tier id.
+     * @param name  The name of the product release resource.
+     * @return  The detail of the product release resource.
+     * @throws APIException Any exception launched during the process.
+     */
     public ProductReleaseDto load(String org, String vdc, String environment, String tier, String name)
-            throws APIException {
+        throws APIException {
         try {
             ClaudiaData claudiaData = new ClaudiaData(org, vdc, environment);
 
@@ -141,10 +168,13 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
 
         ProductReleaseDto productReleaseDto = new ProductReleaseDto();
 
-        if (productRelease.getName() != null)
+        if (productRelease.getName() != null) {
             productReleaseDto.setProductName(productRelease.getName());
-        if (productRelease.getVersion() != null)
+        }
+
+        if (productRelease.getVersion() != null) {
             productRelease.setVersion(productRelease.getVersion());
+        }
 
         return productReleaseDto;
     }
@@ -157,13 +187,28 @@ public class ProductReleaseResourceImpl implements ProductReleaseResource {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
+    /**
+     * Get user credentials.
+     * @return  Credential.
+     */
     public PaasManagerUser getCredentials() {
-        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE"))
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
             return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        else
+        } else {
             return null;
+        }
     }
 
+    /**
+     * Find all product release resource associated to a tier.
+     * @param page  The page of data to show.
+     * @param pageSize  The size of data to be returned.
+     * @param orderBy   The order by parameter.
+     * @param orderType The type of order of data o returned.
+     * @param environment   Environment which contains the tier.
+     * @param tier  Tier which contains the product to be listed.
+     * @return  The complete list of product release resource.
+     */
     public List<ProductReleaseDto> findAll(Integer page, Integer pageSize, String orderBy, String orderType,
             String environment, String tier) {
         // TODO Auto-generated method stub

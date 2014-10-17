@@ -42,7 +42,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Task;
 import com.telefonica.euro_iaas.paasmanager.model.dto.ProductInstanceDto;
 
 /**
- * Provides a rest api to works with ProductInstances
+ * Provides a rest api to works with ProductInstances.
  * 
  * @author Sergio Arroyo
  */

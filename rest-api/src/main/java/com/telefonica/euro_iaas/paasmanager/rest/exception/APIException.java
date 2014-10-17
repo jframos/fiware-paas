@@ -24,9 +24,14 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.exception;
 
-import javax.servlet.ServletException;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-public class APIException extends ServletException {
+/**
+ * Launch an exception when we detect an error in the API.
+ */
+public class APIException extends WebApplicationException {
 
     private String message;
     private String publicMessage;
@@ -34,6 +39,11 @@ public class APIException extends ServletException {
     private Integer httpCode;
     private Throwable cause;
 
+    /**
+     * Assign the cause of the problem to the ServletException class.
+     *
+     * @param cause The cause of the exception.
+     */
     public APIException(Throwable cause) {
 
         super(cause);
@@ -41,17 +51,36 @@ public class APIException extends ServletException {
 
     }
 
+    /**
+     * Assign the cause and the http code of the error to the internal variables.
+     *
+     * @param cause The cause of the exception.
+     * @param error The http code of it.
+     */
     public APIException(Throwable cause, int error) {
 
-        this.cause = cause;
+        super(Response.status(error).entity(new ErrorResponseConverter(cause))
+                                    .type(MediaType.APPLICATION_JSON)
+                                    .build());
+
         this.httpCode = error;
 
     }
 
+    /**
+     * Return the http code of the error.
+     *
+     * @return  The http code of the error.
+     */
     public Integer getCode() {
         return this.code;
     }
 
+    /**
+     * Return the message associated to the error.
+     *
+     * @return  The stored message or the corresponding message to the http error code.
+     */
     public String getMessage() {
         if (message == null) {
             parseCause();
@@ -60,6 +89,9 @@ public class APIException extends ServletException {
         return this.message;
     }
 
+    /**
+     * Obtain the informacion realted to the cause of the error (code, messages and http code).
+     */
     public void parseCause() {
 
         ErrorCode errorCode = ErrorCode.find(cause.toString());
@@ -70,10 +102,16 @@ public class APIException extends ServletException {
 
     }
 
+    /**
+     * Getter method.
+     */
     public String getPublicMessage() {
         return publicMessage;
     }
 
+    /**
+     * Getter method.
+     */
     public Integer getHttpCode() {
         return httpCode;
     }

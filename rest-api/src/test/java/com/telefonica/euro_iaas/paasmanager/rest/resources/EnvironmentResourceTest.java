@@ -55,13 +55,20 @@ import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
+/**
+ * Test the EnvironmentResource class.
+ */
 public class EnvironmentResourceTest extends TestCase {
 
-    public EnvironmentResourceImpl environmentResource;
-    public EnvironmentManager environmentManager;
-    public SystemPropertiesProvider systemPropertiesProvider;
-    public EnvironmentResourceValidator validator;
+    private EnvironmentResourceImpl environmentResource;
+    private EnvironmentManager environmentManager;
+    private SystemPropertiesProvider systemPropertiesProvider;
+    private EnvironmentResourceValidator validator;
 
+    /**
+     * Initialize the Unit Test.
+     * @throws Exception
+     */
     @Override
     @Before
     public void setUp() throws Exception {
@@ -73,7 +80,7 @@ public class EnvironmentResourceTest extends TestCase {
 
         environmentResource.setSystemPropertiesProvider(systemPropertiesProvider);
         environmentResource.setEnvironmentResourceValidator(validator);
-       
+
 
         Environment environment = new Environment();
         environment.setName("Name");
@@ -101,15 +108,19 @@ public class EnvironmentResourceTest extends TestCase {
 
     }
 
+    /**
+     * Test the creation of a environment without any tier.
+     * @throws Exception
+     */
     @Test
     public void testCreateEnvironmentNoTiers() throws Exception {
         EnvironmentDto environmentDto = new EnvironmentDto();
         environmentDto.setDescription("Description");
         environmentDto.setName("Name");
         Mockito.doNothing()
-        .doThrow(new RuntimeException())
-        .when(validator)
-        .validateCreate(any(ClaudiaData.class), any(EnvironmentDto.class), any(String.class));
+                .doThrow(new RuntimeException())
+                .when(validator)
+                .validateCreate(any(ClaudiaData.class), any(EnvironmentDto.class), any(String.class));
 
         boolean thrown = false;
         try {
@@ -120,12 +131,23 @@ public class EnvironmentResourceTest extends TestCase {
 
     }
 
+    /**
+     * Test the operation of insert a environment.
+     * @throws InvalidEnvironmentRequestException
+     * @throws AlreadyExistEntityException
+     * @throws InvalidEntityException
+     * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
+     */
     @Test
-    public void testInsertEnvironment() throws InvalidEnvironmentRequestException, AlreadyExistEntityException, InvalidEntityException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
-    	 Mockito.doNothing()
-         .doThrow(new RuntimeException())
-         .when(validator)
-         .validateCreate(any(ClaudiaData.class), any(EnvironmentDto.class), any(String.class));
+    public void testInsertEnvironment()
+        throws InvalidEnvironmentRequestException, AlreadyExistEntityException, InvalidEntityException,
+               com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+
+        Mockito.doNothing()
+                .doThrow(new RuntimeException())
+                .when(validator)
+                .validateCreate(any(ClaudiaData.class), any(EnvironmentDto.class), any(String.class));
+
         EnvironmentDto environmentDto = new EnvironmentDto();
         environmentDto.setName("Name");
         environmentDto.setDescription("Description");
@@ -154,7 +176,6 @@ public class EnvironmentResourceTest extends TestCase {
             fail();
         }
     }
-    
-    
+
 
 }

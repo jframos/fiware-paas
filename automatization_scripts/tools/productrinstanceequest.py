@@ -50,11 +50,12 @@ class ProductInstanceRequest:
         self.products = []
 
     def __get__token(self):
-        self.token = http.get_token(self.keystone_url + '/tokens', self.tenant, self.user, self.password)
+        return http.get_token(self.keystone_url + '/tokens', self.tenant, self.user, self.password)
 
     def deploy_product(self, ip, product_name, product_version, attributes_string):
         url = "%s/%s/%s/%s" % (self.sdc_url, "vdc", self.vdc, "productInstance")
-        headers = {'Content-Type': 'application/xml', 'Accept': 'application/json'}
+        headers = {'X-Auth-Token': self.token, 'Tenant-Id': self.vdc,
+                   'Accept': "application/json", 'Content-Type':  "application/xml"}
 
         productrequest = ProductRequest(self.keystone_url, self.sdc_url, self.tenant, self.user, self.password)
 
@@ -65,7 +66,9 @@ class ProductInstanceRequest:
 
         productInstanceDto = ProductInstanceDto(ip, product_release, attributes)
         payload = productInstanceDto.to_xml()
-
+        print url
+        print headers
+        print tostring(payload)
         response = http.post(url, headers, tostring(payload))
 
         ## Si la respuesta es la adecuada, creo el diccionario de los datos en JSON.

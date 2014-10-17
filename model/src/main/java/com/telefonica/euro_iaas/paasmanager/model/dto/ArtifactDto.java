@@ -42,8 +42,8 @@ import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 
 /**
- * Represents an artifact to be installed on a ProductRelease
- * 
+ * Represents an artifact to be installed on a ProductRelease.
+ *
  * @author Henar Mu�oz
  * @version $Id: $
  */
@@ -69,7 +69,7 @@ public class ArtifactDto {
     private List<Attribute> attributes;
 
     /**
-     * Default Constructor
+     * Default Constructor.
      */
     public ArtifactDto() {
 
@@ -101,8 +101,7 @@ public class ArtifactDto {
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param name the name to set
      */
     public void setName(String name) {
         this.name = name;
@@ -116,8 +115,7 @@ public class ArtifactDto {
     }
 
     /**
-     * @param path
-     *            the path to set
+     * @param path the path to set
      */
     public void setPath(String path) {
         this.path = path;
@@ -131,8 +129,7 @@ public class ArtifactDto {
     }
 
     /**
-     * @param productReleaseDto
-     *            the productRelease to set
+     * @param productReleaseDto the productRelease to set
      */
     public void setProductReleaseDto(ProductReleaseDto productReleaseDto) {
         this.productReleaseDto = productReleaseDto;
@@ -146,8 +143,7 @@ public class ArtifactDto {
     }
 
     /**
-     * @param attributes
-     *            the attributes to set
+     * @param attributes the attributes to set
      */
     public void setAttributes(List<Attribute> attributes) {
         this.attributes = attributes;
@@ -155,9 +151,8 @@ public class ArtifactDto {
 
     /**
      * Add a new attribute.
-     * 
-     * @param attribute
-     *            the attribute
+     *
+     * @param attribute the attribute
      */
     public void addAttribute(Attribute attribute) {
         if (attributes == null) {
@@ -176,8 +171,12 @@ public class ArtifactDto {
         }
         return atts;
     }
-    
-    public Artifact fromDto () {
+
+    /**
+     * Create a new Artifact with the information of the class.
+     * @return
+     */
+    public Artifact fromDto() {
         Artifact artifact = new Artifact();
         artifact.setName(this.getName());
         if (this.getPath() != null) {
@@ -188,5 +187,24 @@ public class ArtifactDto {
         }
         return artifact;
     }
+
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation
+     * of this object.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[[ArtifactDto]");
+        sb.append("[id = ").append(this.id).append("]");
+        sb.append("[name = ").append(this.name).append("]");
+        sb.append("[path = ").append(this.path).append("]");
+        sb.append("[productReleaseDto = ").append(this.productReleaseDto).append("]");
+        sb.append("[attributes = ").append(this.attributes).append("]");
+        sb.append("]");
+        return sb.toString();
+    }
+
 
 }
