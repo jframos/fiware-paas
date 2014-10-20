@@ -6,7 +6,6 @@
     <packaging>war</packaging>
     <name>paas-manager-rest-api</name>
 
-
     <parent>
         <groupId>com.telefonica.euro_iaas</groupId>
         <artifactId>paas-manager-server</artifactId>
@@ -14,14 +13,12 @@
     </parent>
 
     <dependencies>
-    <dependency>
-	<groupId>org.glassfish.hk2</groupId>
-	<artifactId>hk2-api</artifactId>
-	<version>2.3.0</version>
-</dependency>
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-api</artifactId>
+            <version>2.3.0</version>
 
-
-
+        </dependency>
 
         <dependency>
             <groupId>com.telefonica.euro_iaas</groupId>

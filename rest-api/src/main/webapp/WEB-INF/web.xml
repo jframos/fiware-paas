@@ -67,6 +67,16 @@
            <url-pattern>/*</url-pattern>
        </filter-mapping> -->
 
+    <servlet>
+        <servlet-name>default</servlet-name>
+        <servlet-class>org.eclipse.jetty.servlet.DefaultServlet</servlet-class>
+        <init-param>
+            <param-name>dirAllowed</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+
 
     <!-- Jersey Servlet  -->
     <servlet>
@@ -155,12 +165,13 @@
 
     <!--  ERROR PAGES -->
     <servlet>
-        <servlet-name>errorJSP</servlet-name>
-        <jsp-file>/errors.jsp</jsp-file>
+        <servlet-name>ErrorHandler</servlet-name>
+        <servlet-class>com.telefonica.euro_iaas.paasmanager.rest.util.ErrorHandler</servlet-class>
     </servlet>
+    <!-- servlet mappings -->
     <servlet-mapping>
-        <servlet-name>errorJSP</servlet-name>
-        <url-pattern>/error</url-pattern>
+        <servlet-name>ErrorHandler</servlet-name>
+        <url-pattern>/ErrorHandler</url-pattern>
     </servlet-mapping>
 
     <error-page>
