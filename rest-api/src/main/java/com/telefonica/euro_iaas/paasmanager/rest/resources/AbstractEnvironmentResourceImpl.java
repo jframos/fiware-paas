@@ -146,7 +146,6 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
                     + " already exists"));
 
         } catch (EntityNotFoundException e1) {
-
             try {
                 environmentResourceValidator.validateAbstractCreate(environmentDto);
                 environmentManager.create(claudiaData, environmentDto.fromDto(org, ""));
