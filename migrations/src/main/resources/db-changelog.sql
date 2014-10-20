@@ -1,4 +1,4 @@
----liquibase formatted sql
+--liquibase formatted sql
 
 --changeset jesuspg:1-1
 CREATE TABLE artifact_attribute (
