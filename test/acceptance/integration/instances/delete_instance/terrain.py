@@ -50,5 +50,6 @@ def before_each_scenario(feature):
 @after.each_scenario
 def after_each_scenario(scenario):
     # Delete the environments created in the scenario.
-    environment_instance_request.delete_created_instances()
-    environment_request.delete_created_environments()
+    #environment_instance_request.delete_created_instances()
+    #environment_request.delete_created_environments()
+    None
