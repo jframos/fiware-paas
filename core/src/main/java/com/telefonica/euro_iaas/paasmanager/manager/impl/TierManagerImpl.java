@@ -152,7 +152,8 @@ public class TierManagerImpl implements TierManager {
     public Rule createRulePort(String port, String protocol) {
         log.info("Generate security rule " + port);
         if (port.contains("-")) {
-        	return new Rule(protocol, port.substring(0, port.indexOf("-")),  port.substring(port.indexOf("-")+1), "", "0.0.0.0/0");
+        	return new Rule(protocol, port.substring(0, port.indexOf("-")),  
+        	    port.substring(port.indexOf("-")+1), "", "0.0.0.0/0");
         } else {
         	return new Rule(protocol, port, port, "", "0.0.0.0/0");
         }
