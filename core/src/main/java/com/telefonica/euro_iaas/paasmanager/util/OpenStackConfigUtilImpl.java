@@ -189,6 +189,11 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
     public String getPublicRouter(PaasManagerUser user, String region, String publicNetworkId)
             throws OpenStackException {
         log.debug("Obtain public router for external netwrk " + publicNetworkId);
+        if (publicNetworkId == null ) {
+        	String errorMessage = "There is not an external network valid for the router";
+            log.error(errorMessage);
+            throw new OpenStackException(errorMessage);
+        }
         String type = "router";
         RegionCache regionCache = new RegionCache();
         String routerId = regionCache.getUrl(region, type);
@@ -259,22 +264,29 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
         }
 
         log.debug("net " + netInst.getNetworkName() + " " + netInst.getIdNetwork() + " " + netInst.getExternal() + " "
-                + netInst.getTenantId());
+                + netInst.getTenantId()  + " vdc " + vdc);
 
         if (!netInst.getExternal()) {
             log.debug("external " + netInst.getExternal());
             return null;
         }
+        
+        if (vdc.contains(netInst.getTenantId())) {
+        	return netInst;
+        }
 
         if (netInst.getNetworkName().contains("public")) {
             return netInst;
         }
-
-        if (!vdc.contains(netInst.getTenantId())) {
-            log.debug("vdc " + vdc + " tenant id " + netInst.getTenantId());
-            return null;
+        
+        if (netInst.getNetworkName().contains("ext-net")) {
+            return netInst;
         }
-        return netInst;
+        
+        if (netInst.getNetworkName().contains("ext")) {
+            return netInst;
+        }
+        return null;
     }
 
     private RouterInstance isPublicRouter(JSONObject jsonRouter, String vdc, String networkPublic) {
