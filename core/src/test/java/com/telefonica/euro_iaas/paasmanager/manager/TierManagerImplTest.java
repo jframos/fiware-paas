@@ -123,6 +123,10 @@ public class TierManagerImplTest {
 
     }
 
+    /** 
+     * It creates a security group for a metadata restriction including just tcp rules
+     * @throws EntityNotFoundException
+     */
     @Test
     public void testcreateSecurityGroupTcp() throws EntityNotFoundException {
         productRelease = new ProductRelease("product", "2.0");
@@ -139,6 +143,10 @@ public class TierManagerImplTest {
         assertEquals(securityGroup.getRules().size(), 2);
     }
     
+    /** 
+     * It creates a security group for a metadata restriction including tcp and upd rules
+     * @throws EntityNotFoundException
+     */
     @Test
     public void testcreateSecurityGroupTcpUdp() throws EntityNotFoundException {
         productRelease = new ProductRelease("product", "2.0");
@@ -156,6 +164,10 @@ public class TierManagerImplTest {
         assertEquals(securityGroup.getRules().size(), 3);
     }
     
+    /** 
+     * It creates a security group for a metadata restriction including just upd rules
+     * @throws EntityNotFoundException
+     */
     @Test
     public void testcreateSecurityGroupUdp() throws EntityNotFoundException {
         productRelease = new ProductRelease("product", "2.0");
@@ -175,6 +187,10 @@ public class TierManagerImplTest {
         assertEquals(securityGroup.getRules().get(1).getFromPort(), "1212");
     }
     
+    /** 
+     * It creates a security group for a metadata restriction with a port range
+     * @throws EntityNotFoundException
+     */
     @Test
     public void testcreateSecurityGroupUdpRange() throws EntityNotFoundException {
         productRelease = new ProductRelease("product", "2.0");
