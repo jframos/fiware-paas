@@ -391,6 +391,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                     String errorMsg = "Error deleting node from Node Manager : " + tierInstance.getVM().getFqn() + ""
                             + e.getMessage();
                     log.warn(errorMsg);
+                    throw new InvalidEntityException(EnvironmentInstance.class, e);
                 }
                 // }
 
