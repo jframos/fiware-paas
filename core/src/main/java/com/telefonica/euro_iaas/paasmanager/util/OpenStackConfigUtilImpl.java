@@ -191,7 +191,7 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
         log.debug("Obtain public router for external netwrk " + publicNetworkId);
         if (publicNetworkId == null ) {
         	String errorMessage = "There is not an external network valid for the router";
-            log.error(errorMessage);
+            log.warn(errorMessage);
             throw new OpenStackException(errorMessage);
         }
         String type = "router";
