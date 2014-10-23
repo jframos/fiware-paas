@@ -283,11 +283,6 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
         if (netInst.getNetworkName().contains("ext-net")) {
             return netInst;
         }
-
-        if (!vdc.contains(netInst.getTenantId())) {
-            log.debug("vdc " + vdc + " tenant id " + netInst.getTenantId());
-            return null;
-        }
         
         if (netInst.getNetworkName().contains("ext")) {
             return netInst;
