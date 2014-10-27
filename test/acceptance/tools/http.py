@@ -38,7 +38,7 @@ status_codes = {"OK": 200,
                 "Conflict": 409,
                 "Internal Server Error": 500}
 
-MAX_CHECK_TIMES_FOR_TASK_EXECUTION = 100
+MAX_CHECK_TIMES_FOR_TASK_EXECUTION = 300
 
 
 def post_multipart(host, port, selector, fields, files):
