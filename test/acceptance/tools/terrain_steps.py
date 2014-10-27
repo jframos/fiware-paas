@@ -20,6 +20,8 @@
 # For those usages not covered by the Apache version 2.0 License please
 # contact with opensource@tid.es
 
+__author__ = 'jfernandez'
+
 from lettuce import world
 from tools.product_sdc_request import ProductSdcRequest
 from tools.constants import PAAS, KEYSTONE_URL, TENANT, USER, PASSWORD, VDC, SDC_URL

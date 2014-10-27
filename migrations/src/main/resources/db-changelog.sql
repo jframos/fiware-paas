@@ -285,24 +285,22 @@ ALTER TABLE subnetworkinstance ADD COLUMN region VARCHAR(255);
 ALTER TABLE subnetworkinstance ADD COLUMN vdc VARCHAR(255);
 
 
-
-
--- changeset henar:5-42 --
+-- changeset henar:5-3 --
 ALTER TABLE tier ADD COLUMN affinity VARCHAR(128);
 DROP TABLE artifacttype;
 DROP TABLE configuration;
 DROP TABLE service_attribute;
 DROP TABLE service;
 ALTER TABLE applicationrelease drop constraint fk_applicationrelease_applicationtype;
-DROP TABLE applicationtype;
 ALTER TABLE productrelease DROP COLUMN producttype_id;
 ALTER TABLE applicationrelease DROP COLUMN applicationtype_id;
--- DROP TABLE productype;
-
--- changeset henar:5-3 --
-ALTER TABLE tierinstance ADD COLUMN floatingip VARCHAR(128);
+DROP TABLE applicationtype;
+DROP TABLE productype;
 
 -- changeset henar:5-4 --
+ALTER TABLE tierinstance ADD COLUMN floatingip VARCHAR(128);
+
+-- changeset henar:5-5 --
 ALTER TABLE network ADD COLUMN federatednetwork VARCHAR(128);
 ALTER TABLE network ADD COLUMN federatedRange VARCHAR(128);
 ALTER TABLE networkinstance ADD COLUMN federatednetwork VARCHAR(128);
