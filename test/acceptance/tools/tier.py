@@ -22,7 +22,7 @@
 
 import json
 from tools.constants import PAAS, TIER_NUM_MIN, TIER_NUM_MAX, TIER_NUM_INITIAL,\
-    TIER_FLAVOUR, TIER_KEYPAIR, TIER_FLOATINGIP, TIER_IMAGE
+    TIER_FLAVOUR, TIER_KEYPAIR, TIER_FLOATINGIP, TIER_IMAGE, TIER_REGION
 
 __author__ = 'henar'
 
@@ -55,18 +55,20 @@ class Tier:
                  tier_num_initial=world.config[PAAS][TIER_NUM_INITIAL],
                  tier_flavour=world.config[PAAS][TIER_FLAVOUR],
                  tier_keypair=world.config[PAAS][TIER_KEYPAIR],
-                 tier_floatingip=world.config[PAAS][TIER_FLOATINGIP]):
-        self.name = tier_name
-        self.tier_num_min = tier_num_min
-        self.tier_num_max = tier_num_max
-        self.tier_num_initial = tier_num_initial
-        self.tier_image = tier_image
-        self.tier_flavour = tier_flavour
-        self.tier_keypair = tier_keypair
-        self.tier_floatingip = tier_floatingip
+                 tier_floatingip=world.config[PAAS][TIER_FLOATINGIP],
+                 tier_region=world.config[PAAS][TIER_REGION]):
+
+        self.name = str(tier_name)
+        self.tier_num_min = str(tier_num_min)
+        self.tier_num_max = str(tier_num_max)
+        self.tier_num_initial = str(tier_num_initial)
+        self.tier_image = str(tier_image)
+        self.tier_flavour = str(tier_flavour)
+        self.tier_keypair = str(tier_keypair)
+        self.tier_floatingip = str(tier_floatingip)
         self.products = []
         self.networks = []
-        self.region = "RegionOne"
+        self.region = str(tier_region)
 
     def __eq__(self, other):
         return self.name == other.name\
@@ -194,7 +196,14 @@ def process_tier(tier):
     :param tiers: tier to be processed.
     :return: a Tier object.
     """
-    processed_tier = Tier(tier['name'], world.config[PAAS][TIER_IMAGE])
+    processed_tier = Tier(tier_name=tier['name'], tier_image=tier['image'],
+                          tier_num_min=tier['minimumNumberInstances'],
+                          tier_num_max=tier['maximumNumberInstances'],
+                          tier_num_initial=tier['initialNumberInstances'],
+                          tier_flavour=tier['flavour'],
+                          tier_keypair=tier['keypair'],
+                          tier_floatingip=tier['floatingip'],
+                          tier_region=tier['region'])
 
     try:
         product_dtos = tier['productReleaseDtos']

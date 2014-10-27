@@ -1,0 +1,25 @@
+{
+    "environment": {
+        "name": "dev-havana",
+        "logs_path": "logs"
+    },
+    "paas": {
+        "keystone_url": "http://130.206.80.57:4731/v2.0",
+        "sdc_url": "https://130.206.81.126:8443/sdc/rest",
+        "paasmanager_url": "https://130.206.81.64:8443/paasmanager/rest",
+        "glance_url": "",
+        "nova_url": "",
+        "vdc": "00000000000000000000000000000129",
+        "tenant": "00000000000000000000000000000129",
+        "user": "e.cloud10@tid.es",
+        "password": "f1-cl0ud",
+        "tier_image": "6e2519b8-1b36-4669-b6fe-ed2e77815b9f",
+        "tier_num_min": "1",
+        "tier_num_max": "1",
+        "tier_num_initial": "1",
+        "tier_flavour": "2",
+        "tier_keypair": "default",
+        "tier_floatingip": "false",
+        "tier_region": "Trento"
+    }
+}

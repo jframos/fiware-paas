@@ -21,10 +21,28 @@
 # contact with opensource@tid.es
 
 import httplib
+import json
 from xml.dom.minidom import parse, parseString
 from xml.dom.minidom import getDOMImplementation
 from xml.etree.ElementTree import Element, SubElement, tostring
 import sys
+
+
+def raw_httplib_request_to_python_dic(http_lib_request, accept_header='application/json'):
+    """
+    Parse a HTTPResponse (httplib) to obtain body data as Python dict
+    :param http_lib_request: http.client.HTTPResponse (httplib)
+    :param accept_header: Response representation expected
+    :return: Python dict with all body content in the request
+    """
+    if accept_header == 'application/json':
+        try:
+            raw_request = http_lib_request.read()
+            return json.loads(raw_request)
+        except Exception as e:
+            raise Exception("Error to obtain an image. " + e.message)
+    else:
+        raise Exception("TCs don't manage XML so far")
 
 
 def doRequestHttpOperation(domine, port, resource, operation, data, headers):
