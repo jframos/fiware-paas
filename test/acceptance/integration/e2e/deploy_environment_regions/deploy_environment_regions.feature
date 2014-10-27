@@ -5,7 +5,7 @@ Feature: Deploy an environment on all Fiware regions
     so that I can work with VMs in all of them
 
 
-    @region_existence
+    @scenario_01
     Scenario Outline: 01: Verify the existence of regions in the service catalog
       Given the region "<region>"
       When I retrieve the service catalog
@@ -32,7 +32,7 @@ Feature: Deploy an environment on all Fiware regions
       | Gent                |
 
 
-    @sdc_aware_images
+    @scenario_02
     Scenario Outline: 02: Validate if the region has SDC-aware images
       Given the region "<region>"
       And endpoints from service catalog
@@ -60,7 +60,7 @@ Feature: Deploy an environment on all Fiware regions
       | Gent                |
 
 
-    @flavors
+    @scenario_03
     Scenario Outline: 03: Validate if the region has flavors
       Given the region "<region>"
       And endpoints from service catalog
@@ -88,7 +88,7 @@ Feature: Deploy an environment on all Fiware regions
       | Gent                |
 
 
-    @blueprints_no_products
+    @scenario_04
     Scenario Outline: 04: Deploy Blueprints without products and without networks
       Given the region "<region>"
       And endpoints from service catalog
@@ -126,7 +126,7 @@ Feature: Deploy an environment on all Fiware regions
       | Gent                |
 
 
-    @blueprints_products_no_networks
+    @scenario_05
     Scenario Outline: 05: Deploy Blueprints with products and no networks
       Given the region "<region>"
       And endpoints from service catalog
@@ -164,7 +164,7 @@ Feature: Deploy an environment on all Fiware regions
       | Gent                |
 
 
-    @blueprints_products
+    @scenario_06
     Scenario Outline: 06: Deploy Blueprints with products and networks
       Given the region "<region>"
       And endpoints from service catalog
