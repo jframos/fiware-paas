@@ -168,6 +168,25 @@ def the_region_exists_and_it_has_valid_images_and_flavors(step):
     the_region_has_at_least_one_flavor(step)
 
 
+@step(u'the region exists and it has valid SDC-aware images and flavors')
+def the_region_exists_and_it_has_valid_images_and_flavors(step):
+    """
+    Complex step: Retrieve and check if region exists in keystone and retrieve and check SDC-aware images and flavors
+    """
+    # Region is in service catalog list (image)
+    i_retrieve_the_service_catalog(step)
+    the_region_is_in_image_endpoints_list(step)
+
+    # Region has images
+    i_retrieve_the_list_of_sdc_aware_images(step)
+    the_region_has_images(step)
+
+    # Region has flavors
+    i_retrieve_the_list_of_flavours(step)
+    the_region_has_at_least_one_flavor(step)
+
+
+
 @step(u'a created environment with data:')
 def a_created_environment_with_data(step):
     """ Create a environment """

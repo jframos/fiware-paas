@@ -130,7 +130,7 @@ Feature: Deploy an environment on all Fiware regions
     Scenario Outline: 05: Deploy Blueprints with products and no networks
       Given the region "<region>"
       And endpoints from service catalog
-      And the region exists and it has valid images and flavors
+      And the region exists and it has valid SDC-aware images and flavors
       And a created environment with data:
             | name        | description           |
             | qa-testing  | For testing purposes  |
@@ -168,7 +168,7 @@ Feature: Deploy an environment on all Fiware regions
     Scenario Outline: 06: Deploy Blueprints with products and networks
       Given the region "<region>"
       And endpoints from service catalog
-      And the region exists and it has valid images and flavors
+      And the region exists and it has valid SDC-aware images and flavors
       And a created environment with data:
             | name        | description           |
             | qa-testing  | For testing purposes  |
