@@ -372,28 +372,6 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             envInstance.setStatus(Status.UNINSTALLING);
             envInstance = environmentInstanceDao.update(envInstance);
             for (int i = 0; i < envInstance.getTierInstances().size(); i++) {
-                TierInstance tierInstance = envInstance.getTierInstances().get(i);
-                log.info("Deleting node " + tierInstance.getVM().getHostname());
-                tierInstance.setStatus(Status.UNINSTALLING);
-                tierInstanceDao.update(tierInstance);
-                try {
-                    ChefClient chefClient = productInstallator.loadNode(claudiaData, tierInstance.getVdc(),
-                            tierInstance.getVM().getHostname());
-
-                    productInstallator.deleteNode(claudiaData, tierInstance.getVdc(), chefClient.getName());
-
-                    tierInstance.setStatus(Status.UNINSTALLED);
-                    tierInstanceDao.update(tierInstance);
-                } catch (EntityNotFoundException enfe) {
-                    String errorMsg = "The ChefClient " + tierInstance.getVM().getHostname() + " is not at ChefServer";
-                    log.warn(errorMsg);
-                } catch (Exception e) {
-                    String errorMsg = "Error deleting node from Node Manager : " + tierInstance.getVM().getFqn() + ""
-                            + e.getMessage();
-                    log.warn(errorMsg);
-                    throw new InvalidEntityException(EnvironmentInstance.class, e);
-                }
-                // }
 
                 envInstance.setStatus(Status.UNINSTALLED);
                 envInstance = environmentInstanceDao.update(envInstance);
@@ -412,7 +390,6 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                     throw new InvalidEntityException(EnvironmentInstance.class, e);
                 }
 
-                envInstance.setStatus(Status.UNDEPLOYED);
             }
 
             // Borrado del registro en BBDD paasmanager
@@ -436,8 +413,36 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             log.info("Environment Instance " + envInstance.getBlueprintName()
                     + " does not have any TierInstances associated");
         } finally {
+            envInstance.setStatus(Status.UNDEPLOYED);
             environmentInstanceDao.remove(envInstance);
             log.info("Environment Instance " + envInstance.getBlueprintName() + " DESTROYED");
+            
+            for (int i = 0; i < envInstance.getTierInstances().size(); i++) {
+                // delete data on SDC
+                TierInstance tierInstance = envInstance.getTierInstances().get(i);
+                log.info("Deleting node " + tierInstance.getVM().getHostname());
+                tierInstance.setStatus(Status.UNINSTALLING);
+                tierInstanceDao.update(tierInstance);
+                try {
+                    ChefClient chefClient = productInstallator.loadNode(claudiaData, tierInstance.getVdc(),
+                            tierInstance.getVM().getHostname());
+
+                    productInstallator.deleteNode(claudiaData, tierInstance.getVdc(), chefClient.getName());
+
+                    tierInstance.setStatus(Status.UNINSTALLED);
+                    tierInstanceDao.update(tierInstance);
+                } catch (EntityNotFoundException enfe) {
+                    String errorMsg = "The ChefClient " + tierInstance.getVM().getHostname() + " is not at ChefServer";
+                    log.warn(errorMsg);
+                } catch (Exception e) {
+                    String errorMsg = "Error deleting node from Node Manager : " + tierInstance.getVM().getFqn() + ""
+                            + e.getMessage();
+                    log.warn(errorMsg);
+                    throw new InvalidEntityException(EnvironmentInstance.class, e);
+                }
+            }
+
+           
         }
 
     }
