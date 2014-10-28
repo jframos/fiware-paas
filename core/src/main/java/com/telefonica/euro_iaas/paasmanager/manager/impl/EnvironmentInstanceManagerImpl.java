@@ -91,8 +91,12 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
     /*
      * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager #findByCriteria
-     * (com.telefonica.euro_iaas.paasmanager.model.searchcriteria. EnvironmentInstanceSearchCriteria)
+     * 
+     * @see
+     * com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager
+     * #findByCriteria
+     * (com.telefonica.euro_iaas.paasmanager.model.searchcriteria.
+     * EnvironmentInstanceSearchCriteria)
      */
     public List<EnvironmentInstance> findByCriteria(EnvironmentInstanceSearchCriteria criteria) {
 
@@ -101,7 +105,10 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
     /*
      * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager #findAll()
+     * 
+     * @see
+     * com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager
+     * #findAll()
      */
     public List<EnvironmentInstance> findAll() {
         return environmentInstanceDao.findAll();
@@ -360,7 +367,9 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
     /*
      * (non-Javadoc)
-     * @see com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager
+     * 
+     * @see
+     * com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager
      * #destroy(com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance)
      */
     public void destroy(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws InvalidEntityException {
@@ -392,31 +401,13 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
             }
 
-            // Borrado del registro en BBDD paasmanager
-            log.info("Deleting the environment instance " + envInstance.getBlueprintName() + " in the database ");
-
-            List<TierInstance> tierInstances = envInstance.getTierInstances();
-
-            if (tierInstances != null) {
-                envInstance.setTierInstances(null);
-                try {
-                    envInstance = environmentInstanceDao.update(envInstance);
-                } catch (Exception e) {
-                    log.error(e.getMessage());
-                    throw new InvalidEntityException(EnvironmentInstance.class, e);
-                }
-                for (TierInstance tierInstance : tierInstances) {
-                    tierInstanceManager.remove(tierInstance);
-                }
-            }
         } catch (NullPointerException ne) {
             log.info("Environment Instance " + envInstance.getBlueprintName()
                     + " does not have any TierInstances associated");
         } finally {
-            envInstance.setStatus(Status.UNDEPLOYED);
-            environmentInstanceDao.remove(envInstance);
+
             log.info("Environment Instance " + envInstance.getBlueprintName() + " DESTROYED");
-            
+
             for (int i = 0; i < envInstance.getTierInstances().size(); i++) {
                 // delete data on SDC
                 TierInstance tierInstance = envInstance.getTierInstances().get(i);
@@ -439,10 +430,31 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                             + e.getMessage();
                     log.warn(errorMsg);
                     throw new InvalidEntityException(EnvironmentInstance.class, e);
+                } finally {
+                    // Borrado del registro en BBDD paasmanager
+                    log.info("Deleting the environment instance " + envInstance.getBlueprintName()
+                            + " in the database ");
+
+                    List<TierInstance> tierInstances = envInstance.getTierInstances();
+
+                    if (tierInstances != null) {
+                        envInstance.setTierInstances(null);
+                        try {
+                            envInstance = environmentInstanceDao.update(envInstance);
+                        } catch (Exception e) {
+                            log.error(e.getMessage());
+                            throw new InvalidEntityException(EnvironmentInstance.class, e);
+                        }
+                        for (TierInstance tierInstancePaas : tierInstances) {
+                            tierInstanceManager.remove(tierInstancePaas);
+                        }
+                    }
+                    envInstance.setStatus(Status.UNDEPLOYED);
+                    environmentInstanceDao.remove(envInstance);
                 }
+
             }
 
-           
         }
 
     }
@@ -463,8 +475,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
             try {
                 environment = environmentManager.load(env.getName(), env.getVdc());
-                log.info ("afeter obtainin environment");
-                
+                log.info("afeter obtainin environment");
+
                 Set<Tier> tiers = new HashSet();
                 for (Tier tier : env.getTiers()) {
                     Tier tierDB = tierManager.loadTierWithNetworks(tier.getName(), env.getVdc(), env.getName());
@@ -492,7 +504,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
                 return environment;
             } catch (Exception e1) {
-            	log.warn ("Error to load env " + e1.getMessage());
+                log.warn("Error to load env " + e1.getMessage());
                 throw new EntityNotFoundException(Environment.class,
                         "The environment should have been already created", e1);
             }
