@@ -105,7 +105,7 @@ def before_outline(param1, param2, param3, param4):
         file.write(str(body_env_response))
         file.close()
     except Exception as e:
-        print "WARNING: Instance data {} cannot be written to test file. {}".format(world.instance_name, e.message)
+        print "WARNING: Instance data cannot be written to test file. {}".format(e.message)
 
 
 @after.each_scenario

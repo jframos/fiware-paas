@@ -94,8 +94,8 @@ Feature: Deploy an environment on all Fiware regions
       And endpoints from service catalog
       And the region exists and it has valid images and flavors
       And a created environment with data:
-            | name       | description           |
-            | qa-test-04 | For testing purposes  |
+            | name      | description           |
+            | qa-env-04 | For testing purposes  |
       And a created tiers with data:
             | name       |
             | qa-tier-04 |
@@ -132,14 +132,14 @@ Feature: Deploy an environment on all Fiware regions
       And endpoints from service catalog
       And the region exists and it has valid SDC-aware images and flavors
       And a created environment with data:
-            | name        | description           |
-            | qa-test-05  | For testing purposes  |
+            | name      | description           |
+            | qa-env-05 | For testing purposes  |
       And a created tiers with data:
             | name        | products |
             | qa-tier-05  | tomcat=6 |
       When I request the creation of an instance for that environment using data:
-            | name        | description           |
-            | qa-ins-05   | For testing purposes  |
+            | name       | description           |
+            | qa-ins-05  | For testing purposes  |
       Then I receive an "OK" response with a task
       And the task ends with "SUCCESS" status
 
@@ -170,14 +170,14 @@ Feature: Deploy an environment on all Fiware regions
       And endpoints from service catalog
       And the region exists and it has valid SDC-aware images and flavors
       And a created environment with data:
-            | name        | description           |
-            | qa-test-06  | For testing purposes  |
+            | name      | description           |
+            | qa-env-06 | For testing purposes  |
       And a created tiers with data:
             | name        | networks   | products |
             | qa-tier-06  | qa-network | tomcat=6 |
       When I request the creation of an instance for that environment using data:
-            | name        | description           |
-            | qa-ins-06   | For testing purposes  |
+            | name       | description           |
+            | qa-ins-06  | For testing purposes  |
       Then I receive an "OK" response with a task
       And the task ends with "SUCCESS" status
 
