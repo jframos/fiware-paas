@@ -48,6 +48,7 @@ import org.springframework.security.authentication.dao.AbstractUserDetailsAuthen
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.util.Configuration;
@@ -113,8 +114,11 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
     }
 
     /*
-     * (non-Javadoc) @seeorg.springframework.security.authentication.dao. AbstractUserDetailsAuthenticationProvider
-     * #additionalAuthenticationChecks( org.springframework.security.core.userdetails.UserDetails, org.springframework
+     * (non-Javadoc) @seeorg.springframework.security.authentication.dao.
+     * AbstractUserDetailsAuthenticationProvider
+     * #additionalAuthenticationChecks(
+     * org.springframework.security.core.userdetails.UserDetails,
+     * org.springframework
      * .security.authentication.UsernamePasswordAuthenticationToken)
      */
     @Override
@@ -270,8 +274,10 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
     }
 
     /*
-     * (non-Javadoc) @seeorg.springframework.security.authentication.dao. AbstractUserDetailsAuthenticationProvider
-     * #retrieveUser(java.lang.String, org .springframework.security.authentication.UsernamePasswordAuthenticationToken
+     * (non-Javadoc) @seeorg.springframework.security.authentication.dao.
+     * AbstractUserDetailsAuthenticationProvider #retrieveUser(java.lang.String,
+     * org
+     * .springframework.security.authentication.UsernamePasswordAuthenticationToken
      * )
      */
     @Override
@@ -281,12 +287,18 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
 
         PaasManagerUser user = null;
 
-        String tenantId = authentication.getCredentials().toString();
+        if (null != authentication.getCredentials()) {
+            String tenantId = authentication.getCredentials().toString();
 
-        if (SYSTEM_FIWARE.equals(system)) {
-            user = authenticationFiware(username, tenantId);
-        } else if (SYSTEM_FASTTRACK.equals(system)) {
-            user = authenticationFastTrack(username, tenantId);
+            if (SYSTEM_FIWARE.equals(system)) {
+                user = authenticationFiware(username, tenantId);
+            } else if (SYSTEM_FASTTRACK.equals(system)) {
+                user = authenticationFastTrack(username, tenantId);
+            }
+        } else {
+            String str = "Missing tenantId header";
+            log.info(str);
+            throw new UsernameNotFoundException(str);
         }
 
         return user;
