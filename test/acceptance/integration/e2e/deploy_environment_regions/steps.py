@@ -87,19 +87,31 @@ def the_region_is_in_image_endpoints_list(step):
 @step(u'I retrieve the list of images')
 def i_retrieve_the_list_of_images(step):
     """ Retrieve the list of images """
-    world.response = world.glance_request.get_image_list()
+    try:
+        world.response = world.glance_request.get_image_list()
+    except:
+        raise Exception("Problem retrieving images from GLANCE ({}: {})".format(world.region_name,
+                                                                                world.glance_request.glance_url))
 
 
 @step(u'I retrieve the list of SDC-aware images')
 def i_retrieve_the_list_of_sdc_aware_images(step):
     """ Retrieve the list of SDC-Aware images """
-    world.response = world.glance_request.get_image_list_by_property('sdc_aware', 'true')
+    try:
+        world.response = world.glance_request.get_image_list_by_property('sdc_aware', 'true')
+    except:
+        raise Exception("Problem retrieving images from GLANCE ({}: {})".format(world.region_name,
+                                                                                world.glance_request.glance_url))
 
 
 @step(u'I retrieve the list of flavors')
 def i_retrieve_the_list_of_flavours(step):
     """ Retrieve the list of flavors """
-    world.response = world.nova_request.get_flavour_list()
+    try:
+        world.response = world.nova_request.get_flavour_list()
+    except:
+        raise Exception("Problem retrieving flavors from NOVA ({}: {})".format(world.region_name,
+                                                                               world.nova_request.nova_url))
 
 
 @step(u'the region has at least one SDC-aware image')
