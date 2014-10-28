@@ -31,8 +31,10 @@ from tools.environment_request import EnvironmentRequest
 from tools.environment_instance_request import EnvironmentInstanceRequest
 from tools.nova_request import NovaRequest
 from tools import environment_request, environment_instance_request
+from tools.utils import raw_httplib_request_to_python_dic
+import os
 from tools.constants import PAAS, KEYSTONE_URL, PAASMANAGER_URL, TENANT, USER,\
-    PASSWORD, VDC, SDC_URL, GLANCE_URL, NOVA_URL
+    PASSWORD, VDC, SDC_URL, GLANCE_URL, NOVA_URL, ENVIRONMENT, ENVIRONMENT_TESTFILES
 
 
 @before.all
@@ -84,6 +86,26 @@ def after_each_feature(feature):
         world.config[PAAS][SDC_URL])
 
     world.region_list = None
+
+
+@after.outline
+def before_outline(param1, param2, param3, param4):
+    """ Hook: Will be executed before each Scenario Outline. Same behaviour as 'before_each_scenario'"""
+    try:
+        test_files_dir = world.config[ENVIRONMENT][ENVIRONMENT_TESTFILES]
+        print "Writing instance {} details to dir {}".format(world.instance_name, test_files_dir)
+
+        world.inst_requests.get_instance(world.instance_name)
+        body_env_response = raw_httplib_request_to_python_dic(world.response)
+
+        if not os.path.exists(test_files_dir):
+            os.makedirs(test_files_dir)
+
+        file = open(os.path.join(test_files_dir, world.instance_name+"_instance"), 'w')
+        file.write(str(body_env_response))
+        file.close()
+    except Exception as e:
+        print "WARNING: Instance data {} cannot be written to test file. {}".format(world.instance_name, e.message)
 
 
 @after.each_scenario

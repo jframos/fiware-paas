@@ -22,6 +22,7 @@
 # Names of the properties in the {environment}-properties.json files
 
 ENVIRONMENT = "environment"
+ENVIRONMENT_TESTFILES = "test_files"
 NAME = "name"
 LOGS_PATH = "logs_path"
 PAAS = "paas"

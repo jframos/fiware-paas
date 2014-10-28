@@ -1,7 +1,8 @@
 {
     "environment": {
         "name": "dev-havana",
-        "logs_path": "logs"
+        "logs_path": "logs",
+        "test_files": "testreport/additional_output_files"
     },
     "paas": {
         "keystone_url": "http://130.206.80.57:4731/v2.0",
@@ -13,13 +14,13 @@
         "tenant": "00000000000000000000000000000129",
         "user": "e.cloud10@tid.es",
         "password": "f1-cl0ud",
-        "tier_image": "6e2519b8-1b36-4669-b6fe-ed2e77815b9f",
+        "tier_image": "422128fe-02a2-44ca-b9a7-67ec69809e5e",
         "tier_num_min": "1",
         "tier_num_max": "1",
         "tier_num_initial": "1",
         "tier_flavour": "2",
         "tier_keypair": "default",
         "tier_floatingip": "false",
-        "tier_region": "Trento"
+        "tier_region": "Spain"
     }
 }

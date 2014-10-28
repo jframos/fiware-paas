@@ -186,12 +186,11 @@ def the_region_exists_and_it_has_valid_images_and_flavors(step):
     the_region_has_at_least_one_flavor(step)
 
 
-
 @step(u'a created environment with data:')
 def a_created_environment_with_data(step):
     """ Create a environment """
     data = dataset_utils.prepare_data(step.hashes[0])
-    world.environment_name = data.get(NAME)+world.region_name
+    world.environment_name = data.get(NAME)+world.region_name.replace("_", "")
     world.env_requests.add_environment(world.environment_name, data.get(DESCRIPTION))
 
 
@@ -234,7 +233,9 @@ def i_request_the_creation_of_an_instance_using_data(step):
 
     # Then, create the instance
     env_data = dataset_utils.prepare_data(step.hashes[0])
-    environment_instance = EnvironmentInstance(env_data.get(NAME)+world.region_name, env_data.get(DESCRIPTION),
+    world.instance_name = env_data.get(NAME)+world.region_name.replace("_", "")
+    environment_instance = EnvironmentInstance(world.instance_name,
+                                               env_data.get(DESCRIPTION),
                                                target_environment)
 
     world.inst_requests.add_instance(environment_instance)
@@ -250,5 +251,6 @@ def i_receive_a_response_of_type(step, response_type):
 @step(u'the task ends with "([^"]*)" status')
 def the_task_ends_with_status(step, status):
     """ Wait for task execution and check task status """
-    print "TEST DATA - Region: {}; Image: {}; Flavor: {}".format(world.region_name, world.image_sdc_aware_id, world.flavor_id)
+    print "TEST DATA - Region: {}; Image: {}; Flavor: {}".format(world.region_name, world.image_sdc_aware_id,
+                                                                 world.flavor_id)
     check_task_status(world.task_data, status)

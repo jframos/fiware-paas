@@ -37,10 +37,10 @@ def raw_httplib_request_to_python_dic(http_lib_request, accept_header='applicati
     """
     if accept_header == 'application/json':
         try:
-            raw_request = http_lib_request.read()
-            return json.loads(raw_request)
+            raw_response = http_lib_request.read()
+            return json.loads(raw_response)
         except Exception as e:
-            raise Exception("Error to obtain an image. " + e.message)
+            raise Exception("Response cannot be parsed: {}. RAW RESPONSE: {}".format(e.message, raw_response))
     else:
         raise Exception("TCs don't manage XML so far")
 
