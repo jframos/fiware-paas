@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
@@ -113,8 +114,11 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
     }
 
     /*
-     * (non-Javadoc) @seeorg.springframework.security.authentication.dao. AbstractUserDetailsAuthenticationProvider
-     * #additionalAuthenticationChecks( org.springframework.security.core.userdetails.UserDetails, org.springframework
+     * (non-Javadoc) @seeorg.springframework.security.authentication.dao.
+     * AbstractUserDetailsAuthenticationProvider
+     * #additionalAuthenticationChecks(
+     * org.springframework.security.core.userdetails.UserDetails,
+     * org.springframework
      * .security.authentication.UsernamePasswordAuthenticationToken)
      */
     @Override
@@ -270,8 +274,10 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
     }
 
     /*
-     * (non-Javadoc) @seeorg.springframework.security.authentication.dao. AbstractUserDetailsAuthenticationProvider
-     * #retrieveUser(java.lang.String, org .springframework.security.authentication.UsernamePasswordAuthenticationToken
+     * (non-Javadoc) @seeorg.springframework.security.authentication.dao.
+     * AbstractUserDetailsAuthenticationProvider #retrieveUser(java.lang.String,
+     * org
+     * .springframework.security.authentication.UsernamePasswordAuthenticationToken
      * )
      */
     @Override
@@ -281,12 +287,18 @@ public class OpenStackAuthenticationProvider extends AbstractUserDetailsAuthenti
 
         PaasManagerUser user = null;
 
-        String tenantId = authentication.getCredentials().toString();
+        if (null != authentication.getCredentials()) {
+            String tenantId = authentication.getCredentials().toString();
 
-        if (SYSTEM_FIWARE.equals(system)) {
-            user = authenticationFiware(username, tenantId);
-        } else if (SYSTEM_FASTTRACK.equals(system)) {
-            user = authenticationFastTrack(username, tenantId);
+            if (SYSTEM_FIWARE.equals(system)) {
+                user = authenticationFiware(username, tenantId);
+            } else if (SYSTEM_FASTTRACK.equals(system)) {
+                user = authenticationFastTrack(username, tenantId);
+            }
+        } else {
+            String str = "Missing tenantId header";
+            log.info(str);
+            throw new BadRequestException(str);
         }
 
         return user;
