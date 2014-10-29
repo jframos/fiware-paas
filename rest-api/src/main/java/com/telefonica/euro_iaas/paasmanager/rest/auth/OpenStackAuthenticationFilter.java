@@ -32,6 +32,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.BadRequestException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.NullRememberMeServices;
 import org.springframework.security.web.authentication.RememberMeServices;
@@ -64,8 +64,7 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
     /**
      * The authentication details source.
      */
-    private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource =
-            new WebAuthenticationDetailsSource();
+    private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
 
     /**
      * The ignore failure.
@@ -110,8 +109,10 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
      * Creates an instance which will authenticate against the supplied.
      * 
      * @param pAuthenticationManager
-     *            the bean to submit authentication requests to {@code AuthenticationManager} and which will ignore
-     *            failed authentication attempts, allowing the request to proceed down the filter chain.
+     *            the bean to submit authentication requests to
+     *            {@code AuthenticationManager} and which will ignore failed
+     *            authentication attempts, allowing the request to proceed down
+     *            the filter chain.
      */
     public OpenStackAuthenticationFilter(final AuthenticationManager pAuthenticationManager) {
         this.authenticationManager = pAuthenticationManager;
@@ -133,11 +134,12 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
     }
 
     /**
-     * (non-Javadoc) @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse,
-     * javax.servlet.FilterChain).
+     * (non-Javadoc) @see
+     * javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
+     * javax.servlet.ServletResponse, javax.servlet.FilterChain).
      */
     public final void doFilter(final ServletRequest req, final ServletResponse res, final FilterChain chain)
-        throws IOException, ServletException {
+            throws IOException, ServletException {
 
         final boolean debug = logger.isDebugEnabled();
 
@@ -167,7 +169,7 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
                 if ("".equals(token)) {
                     String str = "Missing token header";
                     logger.info(str);
-                    throw new UsernameNotFoundException(str);
+                    throw new BadRequestException(str);
                 }
                 String tenantId = request.getHeader(OPENSTACK_HEADER_TENANTID);
                 logger.debug(tenantId);
@@ -375,16 +377,22 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
     }
 
     /*
-     * @Override public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-     * throws AuthenticationException, IOException, ServletException { final String username = OPENSTACK_IDENTIFIER;
-     * String token = request.getHeader(OPENSTACK_HEADER_TOKEN); if (token == null) { logger.debug("Failed to obtain an
-     * artifact (openstack tocken)"); token = ""; } UsernamePasswordAuthenticationToken authRequest = new
-     * UsernamePasswordAuthenticationToken(username, token); authRequest.setDetails
-     * (authenticationDetailsSource.buildDetails(request)); Authentication authResult =
-     * getAuthenticationManager().authenticate(authRequest);
-     * SecurityContextHolder.getContext().setAuthentication(authResult); return authResult; }
-     * @Override protected boolean requiresAuthentication(HttpServletRequest request, HttpServletResponse response) {
-     * return true; }
+     * @Override public Authentication attemptAuthentication(HttpServletRequest
+     * request, HttpServletResponse response) throws AuthenticationException,
+     * IOException, ServletException { final String username =
+     * OPENSTACK_IDENTIFIER; String token =
+     * request.getHeader(OPENSTACK_HEADER_TOKEN); if (token == null) {
+     * logger.debug("Failed to obtain an artifact (openstack
+     * tocken)"); token = ""; } UsernamePasswordAuthenticationToken authRequest
+     * = new UsernamePasswordAuthenticationToken(username, token);
+     * authRequest.setDetails
+     * (authenticationDetailsSource.buildDetails(request)); Authentication
+     * authResult = getAuthenticationManager().authenticate(authRequest);
+     * SecurityContextHolder.getContext().setAuthentication(authResult); return
+     * authResult; }
+     * 
+     * @Override protected boolean requiresAuthentication(HttpServletRequest
+     * request, HttpServletResponse response) { return true; }
      */
     /**
      * Gets the system properties provider.
