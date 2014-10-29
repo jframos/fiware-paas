@@ -76,13 +76,22 @@ public class OpenStackConfigUtilImplTest {
             + "\"admin_state_up\": true, " + "\"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\", "
             + "\"routes\": [], " + "\"id\": \"5af6238b-0e9c-4c20-8981-6e4db6de2e17\"" + "}  ]}";
 
-    String ROUTERS = " {\"routers\": [{\"status\": \"ACTIVE\", \"external_gateway_info\": { \"network_id\": \"080b5f2a-668f-45e0-be23-361c3a7d11d0\"}, \"name\": \"router\", \"admin_state_up\": true,"
-            + " \"tenant_id\": \"f8b9284b4a5f4875b591d22185ba835c\", \"routes\": [], \"id\": \"084d97ec-a348-4907-94d4-95e339b1cdd4\"}, {\"status\": \"ACTIVE\", "
-            + " \"external_gateway_info\": [{\"network_id\":\"080b5f2a-668f-45e0-be23-361c3a7d11d0\"}], \"name\": \"test\", \"admin_state_up\": true, \"tenant_id\": \"f8b9284b4a5f4875b591d22185ba835c\", \"routes\": [], "
-            + " \"id\": \"46a97147-27ed-4ee1-b88e-b74a5a831706\"}, {\"status\": \"ACTIVE\", \"external_gateway_info\": {\"network_id\": "
-            + "\"080b5f2a-668f-45e0-be23-361c3a7d11d0\"}, \"name\": \"test-rt1\", \"admin_state_up\": true, \"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\","
-            + " \"routes\": [], \"id\": \"5af6238b-0e9c-4c20-8981-6e4db6de2e17\"}, {\"status\": \"ACTIVE\", \"external_gateway_info\": {\"network_id\": "
-            + " \"080b5f2a-668f-45e0-be23-361c3a7d11d0\"}, \"name\": \"prueba\", \"admin_state_up\": true, \"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\", "
+    String ROUTERS = " {\"routers\": [{\"status\": \"ACTIVE\", \"external_gateway_info\":" +
+    		" { \"network_id\": \"080b5f2a-668f-45e0-be23-361c3a7d11d0\"}, " +
+    	    "\"name\": \"router\", \"admin_state_up\": true," +
+            " \"tenant_id\": \"f8b9284b4a5f4875b591d22185ba835c\", \"routes\": " +
+            "[], \"id\": \"084d97ec-a348-4907-94d4-95e339b1cdd4\"}, {\"status\": \"ACTIVE\", "
+            + " \"external_gateway_info\": [{\"network_id\":\"080b5f2a-668f-45e0-be23-361c3a7d11d0\"}]" +
+         	" \"name\": \"test\", \"admin_state_up\": true, \"tenant_id\": \"f8b9284b4a5f4875b591d22185ba835c\"," +
+         	"\"routes\": [], "
+            + " \"id\": \"46a97147-27ed-4ee1-b88e-b74a5a831706\"}, {\"status\": \"ACTIVE\", " +
+            "\"external_gateway_info\": {\"network_id\": "
+            + "\"080b5f2a-668f-45e0-be23-361c3a7d11d0\"}, \"name\": \"test-rt1\", \"admin_state_up\": " +
+            "true, \"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\","
+            + " \"routes\": [], \"id\": \"5af6238b-0e9c-4c20-8981-6e4db6de2e17\"}, {\"status\":" +
+            "\"ACTIVE\", \"external_gateway_info\": {\"network_id\": "
+            + " \"080b5f2a-668f-45e0-be23-361c3a7d11d0\"}, \"name\": \"prueba\", \"admin_state_up\": " +
+            "true, \"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\", "
             + " \"routes\": [], \"id\": \"89c6eca5-99d5-41bd-b6c6-deb8d03820ac\"}]} ";
 
     @Before
@@ -108,8 +117,10 @@ public class OpenStackConfigUtilImplTest {
         openStackUtil.setOpenStackRegion(openStackRegion);
         openStackUtil.setOpenOperationUtil(openOperationUtil);
 
-        String responseJSON = "{\"access\": {\"token\": {\"issued_at\": \"2014-01-13T14:00:10.103025\", \"expires\": \"2014-01-14T14:00:09Z\","
-                + "\"id\": \"ec3ecab46f0c4830ad2a5837fd0ad0d7\", \"tenant\": { \"description\": null, \"enabled\": true, \"id\": \"08bed031f6c54c9d9b35b42aa06b51c0\","
+        String responseJSON = "{\"access\": {\"token\": {\"issued_at\": " +
+        		"\"2014-01-13T14:00:10.103025\", \"expires\": \"2014-01-14T14:00:09Z\","
+                + "\"id\": \"ec3ecab46f0c4830ad2a5837fd0ad0d7\", \"tenant\": " +
+                "{ \"description\": null, \"enabled\": true, \"id\": \"08bed031f6c54c9d9b35b42aa06b51c0\","
                 + "\"name\": \"admin\" } },         \"serviceCatalog\": []}}}";
 
         HttpPost httpPost = mock(HttpPost.class);
