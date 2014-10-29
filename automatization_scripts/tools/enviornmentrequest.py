@@ -142,9 +142,18 @@ class EnvironmentRequest:
         product_list = product_information.split(';')
 
         for prod in product_list:
-            a = prod.split('=')
+            productsattributes = prod.split(':')
 
-            product = self.__check_product_exist(a[0], a[1])
+            i = 0
+            for productinfoatt in productsattributes:
+                if i == 0:
+                    productinfo = productinfoatt[0]
+                    a = productinfo.split('=')
+                    product = self.__check_product_exist(a[0], a[1])
+                    i++
+                else:
+                    
+
 
             products.append(product)
         return products
