@@ -251,7 +251,7 @@ public class OpenStackConfigUtilImplTest {
             + "\"external_gateway_info\": {\"network_id\": \"e5892de7-38f9-4002-90f9-eedf0e72f5fc\"," +
             " \"enable_snat\": true}, \"name\": \"ext-rt\", \"admin_state_up\": "
             + " true, \"tenant_id\": \"00000000000000000000000000000001\", \"routes\": [], \"id\":" +
-            "\"35da518-03f8-4167-868d-932637d83105\"}]}";
+            "\"35da5189-03f8-4167-868d-932637d83105\"}]}";
 
         String routerId = openStackUtil.getPublicRouterId(response, "00000000000000000000000000000001",
                 "e5892de7-38f9-4002-90f9-eedf0e72f5fc");
