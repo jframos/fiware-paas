@@ -81,7 +81,7 @@ public class OpenStackConfigUtilImplTest {
     	    "\"name\": \"router\", \"admin_state_up\": true," +
             " \"tenant_id\": \"f8b9284b4a5f4875b591d22185ba835c\", \"routes\": " +
             "[], \"id\": \"084d97ec-a348-4907-94d4-95e339b1cdd4\"}, {\"status\": \"ACTIVE\", "
-            + " \"external_gateway_info\": [{\"network_id\":\"080b5f2a-668f-45e0-be23-361c3a7d11d0\"}]" +
+            + " \"external_gateway_info\": [{\"network_id\":\"080b5f2a-668f-45e0-be23-361c3a7d11d0\"}] ," +
          	" \"name\": \"test\", \"admin_state_up\": true, \"tenant_id\": \"f8b9284b4a5f4875b591d22185ba835c\"," +
          	"\"routes\": [], "
             + " \"id\": \"46a97147-27ed-4ee1-b88e-b74a5a831706\"}, {\"status\": \"ACTIVE\", " +
@@ -193,10 +193,15 @@ public class OpenStackConfigUtilImplTest {
 
     @Test
     public void shouldGetPublicRouterId() throws JSONException {
-        String response = "{\"routers\": [{\"status\": \"ACTIVE\", \"external_gateway_info\": {\"network_id\": \"e8892de7-38f9-4002-90f9-eedf0e72f5fc\"}, \"name\": \"router-1137229409\", \"admin_state_up\": false, "
-                + "\"tenant_id\": \"00000000000000000000000000000017\", \"routes\": [], \"id\": \"2fe38e4d-a4cb-4c0a-b1b9-e87e0d147f9c\"}, {\"status\": \"ACTIVE\", "
-                + "\"external_gateway_info\": {\"network_id\": \"e5892de7-38f9-4002-90f9-eedf0e72f5fc\", \"enable_snat\": true}, \"name\": \"ext-rt\", \"admin_state_up\": "
-                + " true, \"tenant_id\": \"00000000000000000000000000000001\", \"routes\": [], \"id\": \"35da5189-03f8-4167-868d-932637d83105\"}]}";
+        String response = "{\"routers\": [{\"status\": \"ACTIVE\", \"external_gateway_info\": " +
+        		"{\"network_id\": \"e8892de7-38f9-4002-90f9-eedf0e72f5fc\"}, \"name\": " +
+        		"\"router-1137229409\", \"admin_state_up\": false, "
+                + "\"tenant_id\": \"00000000000000000000000000000017\", \"routes\": [], " +
+                "\"id\": \"2fe38e4d-a4cb-4c0a-b1b9-e87e0d147f9c\"}, {\"status\": \"ACTIVE\", "
+                + "\"external_gateway_info\": {\"network_id\": \"e5892de7-38f9-4002-90f9-eedf0e72f5fc\"," +
+                " \"enable_snat\": true}, \"name\": \"ext-rt\", \"admin_state_up\": "
+                + " true, \"tenant_id\": \"00000000000000000000000000000001\", \"routes\": [], \"id\":" +
+                " \"35da5189-03f8-4167-868d-932637d83105\"}]}";
 
         String routerId = openStackUtil.getPublicRouterId(response, "00000000000000000000000000000001",
                 "e5892de7-38f9-4002-90f9-eedf0e72f5fc");
