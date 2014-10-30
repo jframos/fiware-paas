@@ -263,8 +263,8 @@ ALTER TABLE productrelease ADD COLUMN tiername VARCHAR(256);
 
 -- Change that corresponds to bug/CLAUDIA3663-Invalidnamesforenvironmentandtiers -->
 -- changeset henar:3-1
-ALTER TABLE environmentinstance alter column description type  VARCHAR(256) ;
-ALTER TABLE environmentinstance alter column blueprintname type  VARCHAR(256) ;
+ALTER TABLE environmentinstance ALTER COLUMN description TYPE VARCHAR(256);
+ALTER TABLE environmentinstance ALTER COLUMN blueprintname TYPE VARCHAR(256);
 
 
 -- changeset jesuspg:4-1
@@ -272,42 +272,54 @@ ALTER TABLE tierinstance DROP COLUMN networks;
 
 ALTER TABLE artifact DROP COLUMN artifacttype_id;
 
--- changeset henar:5-1 --
-ALTER TABLE networkinstance ADD COLUMN external BOOL NOT NULL;
-
-
--- changeset henar:5-2 --
-ALTER TABLE networkinstance ADD COLUMN region VARCHAR(255);
-ALTER TABLE network ADD COLUMN region VARCHAR(255);
-ALTER TABLE subnetwork ADD COLUMN region VARCHAR(255);
-ALTER TABLE subnetwork ADD COLUMN vdc VARCHAR(255);
-ALTER TABLE subnetworkinstance ADD COLUMN region VARCHAR(255);
-ALTER TABLE subnetworkinstance ADD COLUMN vdc VARCHAR(255);
-
 
 -- changeset henar:5-3 --
-ALTER TABLE tier ADD COLUMN affinity VARCHAR(128);
-DROP TABLE artifacttype;
 DROP TABLE configuration;
 DROP TABLE service_attribute;
 DROP TABLE service;
-ALTER TABLE applicationrelease drop constraint fk_applicationrelease_applicationtype;
 ALTER TABLE productrelease DROP COLUMN producttype_id;
 ALTER TABLE applicationrelease DROP COLUMN applicationtype_id;
 DROP TABLE applicationtype;
-DROP TABLE productype;
+DROP TABLE producttype;
 
--- changeset henar:5-4 --
-ALTER TABLE tierinstance ADD COLUMN floatingip VARCHAR(128);
 
 -- changeset henar:5-5 --
-ALTER TABLE network ADD COLUMN federatednetwork VARCHAR(128);
-ALTER TABLE network ADD COLUMN federatedRange VARCHAR(128);
-ALTER TABLE networkinstance ADD COLUMN federatednetwork VARCHAR(128);
-ALTER TABLE networkinstance ADD COLUMN federatedRange VARCHAR(128);
-UPDATE network set federatednetwork=false where federatednetwork is NULL;
-UPDATE networkinstance set federatednetwork=false where federatednetwork is NULL;
-UPDATE networkinstance set federatedRange='' where federatedRange is NULL;
-UPDATE network set federatedRange='' where federatedRange is NULL;
+UPDATE network
+SET federatednetwork = FALSE
+WHERE federatednetwork IS NULL;
+UPDATE networkinstance
+SET federatednetwork = FALSE
+WHERE federatednetwork IS NULL;
+UPDATE networkinstance
+SET federatedRange = ''
+WHERE federatedRange IS NULL;
+UPDATE network
+SET federatedRange = ''
+WHERE federatedRange IS NULL;
+
+-- changeset jesus:6-1
+ALTER TABLE router ADD COLUMN adminstateup BOOL;
+ALTER TABLE router ADD COLUMN networkid VARCHAR(128);
+ALTER TABLE router ADD COLUMN tenantid VARCHAR(128);
+ALTER TABLE applicationrelease DROP COLUMN version;
+
+ALTER TABLE productrelease_productrelease ADD CONSTRAINT fk_productrelease_productrelease_securitygroup FOREIGN KEY (transitablereleases_id)
+REFERENCES securitygroup (id) NOT DEFERRABLE;
+
+ALTER TABLE productrelease_productrelease DROP CONSTRAINT fk_productrelease_productrelease_transitablereleases;
+-- ALTER TABLE productrelease DROP CONSTRAINT fk_productrelease_producttype;
+
+ALTER TABLE task ALTER COLUMN majorerrorcode TYPE CHARACTER VARYING(1024) USING substr("majorerrorcode", 1, 1024);
+ALTER TABLE task ALTER COLUMN starttime TYPE TIMESTAMP WITHOUT TIME ZONE;
+
+ALTER TABLE template ALTER COLUMN tierinstance_id SET NOT NULL;
+
+ALTER TABLE productrelease ALTER COLUMN tiername TYPE VARCHAR(255);
 
 
+ALTER TABLE productrelease_attribute DROP CONSTRAINT productrelease_attribute_pkey;
+ALTER TABLE productrelease_attribute ADD CONSTRAINT productrelease_attribute_pkey PRIMARY KEY (productrelease_id, attributes_id);
+
+
+ALTER TABLE task ALTER COLUMN message TYPE CHARACTER VARYING(1024) USING substr("message", 1, 1024);
+ALTER TABLE networkinstance ALTER COLUMN external SET NOT NULL;

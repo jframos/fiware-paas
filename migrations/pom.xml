@@ -66,6 +66,8 @@
                                 <phase>process-resources</phase>
                                 <configuration>
 
+                                    <clearCheckSums>true</clearCheckSums>
+
                                     <changeLogFile>src/main/resources/db-changelog.sql</changeLogFile>
                                     <driver>org.postgresql.Driver</driver>
                                     <url>jdbc:postgresql://localhost:5432/paasmanager</url>
