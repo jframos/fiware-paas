@@ -117,14 +117,14 @@ class ProductRelease:
         version = SubElement(product, 'version')
         version.text = self.version
 
-        #   if self.product.attributes == None:
-        #       return product
-        #   for att in self.product.attributes:
-        #       attribute = SubElement(product, "privateAttributes")
-        #       key = SubElement(attribute, "key")
-        #       key.text = att.key
-        #       value = SubElement(attribute, "value")
-        #       value.text = att.value
+        if self.product.attributes == None:
+            return product
+        for att in self.product.attributes:
+            attribute = SubElement(product, "attributes")
+            key = SubElement(attribute, "key")
+            key.text = att.key
+            value = SubElement(attribute, "value")
+            value.text = att.value
 
         return product
 
