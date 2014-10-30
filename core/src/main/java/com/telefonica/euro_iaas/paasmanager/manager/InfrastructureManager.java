@@ -157,6 +157,9 @@ public interface InfrastructureManager {
      */
     String generateVMName(String bluePrintName, String tierName, int numReplica, String vdc);
     
-    public String getFederatedRange (ClaudiaData data, String region) throws InfrastructureException ; 
+    public String getFederatedRange (ClaudiaData data, String region) throws InfrastructureException ;
+
+    void deleteNetworksInTierInstance(ClaudiaData claudiaData, TierInstance tierInstance)
+            throws InvalidEntityException, InfrastructureException, EntityNotFoundException; 
 
 }

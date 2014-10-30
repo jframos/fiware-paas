@@ -109,8 +109,10 @@ public interface EnvironmentInstanceManager {
      * @param envInstance
      * @param org
      * @param vdc
+     * @throws EntityNotFoundException 
+     * @throws InfrastructureException 
      */
-    void destroy(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws InvalidEntityException;
+    void destroy(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws InvalidEntityException, InfrastructureException, EntityNotFoundException;
 
     /**
      * @param vdc

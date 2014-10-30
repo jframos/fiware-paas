@@ -236,11 +236,11 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 claudiaClient.browseVMReplica(claudiaData, tierInstance.getName(), 1, tierInstance.getVM(),
                         tierInstance.getTier().getRegion());
             } catch (ClaudiaResourceNotFoundException e) {
-                deleteNetworksInTierInstance(claudiaData, tierInstance);
+//                deleteNetworksInTierInstance(claudiaData, tierInstance);
                 break;
             }
             claudiaClient.undeployVMReplica(claudiaData, tierInstance);
-            deleteNetworksInTierInstance(claudiaData, tierInstance);
+//            deleteNetworksInTierInstance(claudiaData, tierInstance);
         }
 
     }
@@ -261,6 +261,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         return netInst;
     }
 
+    @Override
     public void deleteNetworksInTierInstance(ClaudiaData claudiaData, TierInstance tierInstance)
             throws InvalidEntityException, InfrastructureException, EntityNotFoundException {
         log.info("Delete the networks in env if there are not being used");
