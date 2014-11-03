@@ -435,8 +435,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
                     List<TierInstance> tierInstances = envInstance.getTierInstances();
 
-                    if (tierInstances != null) {
-                        envInstance.setTierInstances(null);
+//                    if (tierInstances != null) {
+//                        envInstance.setTierInstances(null);
                         try {
                             envInstance = environmentInstanceDao.update(envInstance);
                         } catch (Exception e) {
@@ -448,7 +448,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                             tierInstanceManager.remove(tierInstancePaas);
                             
                         }
-                    }
+//                    }
                     
                 }
 
