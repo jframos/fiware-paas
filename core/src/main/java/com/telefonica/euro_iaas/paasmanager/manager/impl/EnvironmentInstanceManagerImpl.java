@@ -446,8 +446,9 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                             throw new InvalidEntityException(EnvironmentInstance.class, e);
                         }
                         for (TierInstance tierInstancePaas : tierInstances) {
-                            tierInstanceManager.remove(tierInstancePaas);
                             infrastructureManager.deleteNetworksInTierInstance(claudiaData, tierInstancePaas);
+                            tierInstanceManager.remove(tierInstancePaas);
+                            
                         }
                     }
                     envInstance.setStatus(Status.UNDEPLOYED);
