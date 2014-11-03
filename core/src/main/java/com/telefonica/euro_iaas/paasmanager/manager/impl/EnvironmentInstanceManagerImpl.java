@@ -405,8 +405,9 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             log.info("Environment Instance " + envInstance.getBlueprintName()
                     + " does not have any TierInstances associated");
         } finally {
+            List<TierInstance> tierInstancesSDC = envInstance.getTierInstances();
 
-            for (int i = 0; i < envInstance.getTierInstances().size(); i++) {
+            for (int i = 0; i < tierInstancesSDC.size(); i++) {
                 // delete data on SDC
                 TierInstance tierInstance = envInstance.getTierInstances().get(i);
                 log.info("Deleting node " + tierInstance.getVM().getHostname());
@@ -435,8 +436,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
                     List<TierInstance> tierInstances = envInstance.getTierInstances();
 
-//                    if (tierInstances != null) {
-//                        envInstance.setTierInstances(null);
+                    if (tierInstances != null) {
+                        envInstance.setTierInstances(null);
                         try {
                             envInstance = environmentInstanceDao.update(envInstance);
                         } catch (Exception e) {
@@ -448,7 +449,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                             tierInstanceManager.remove(tierInstancePaas);
                             
                         }
-//                    }
+                    }
                     
                 }
 
