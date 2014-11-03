@@ -406,8 +406,6 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                     + " does not have any TierInstances associated");
         } finally {
 
-            log.info("Environment Instance " + envInstance.getBlueprintName() + " DESTROYED");
-
             for (int i = 0; i < envInstance.getTierInstances().size(); i++) {
                 // delete data on SDC
                 TierInstance tierInstance = envInstance.getTierInstances().get(i);
@@ -451,11 +449,13 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                             
                         }
                     }
-                    envInstance.setStatus(Status.UNDEPLOYED);
-                    environmentInstanceDao.remove(envInstance);
+                    
                 }
 
             }
+            log.info("Environment Instance " + envInstance.getBlueprintName() + " DESTROYED");
+            envInstance.setStatus(Status.UNDEPLOYED);
+            environmentInstanceDao.remove(envInstance);
 
         }
 
