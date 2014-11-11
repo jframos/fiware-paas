@@ -224,8 +224,6 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         String chefServerUrl;
         String puppetUrl;
         try {
-            File f = new File (".");
-            log.debug(f.getAbsolutePath());
             file = fileUtils.readFile(systemPropertiesProvider.getProperty("user_data_path"));
             log.debug("File userdata read");
         } catch (Exception e) {
@@ -242,6 +240,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             log.warn("Error to obtain the chef-server url" + e1.getMessage());
             return file;
         }
+        
 
         try {
             puppetUrl = openStackRegion.getPuppetMasterEndPoint(
