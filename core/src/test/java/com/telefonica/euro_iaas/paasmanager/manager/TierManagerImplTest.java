@@ -211,6 +211,10 @@ public class TierManagerImplTest {
         assertEquals(securityGroup.getRules().get(1).getToPort(), "2024");
     }
 
+    /**
+     * It tests the generation of security gruops without product attributes.
+     * @throws EntityNotFoundException
+     */
     @Test
     public void testcreateSecurityGroupNoAttributes() throws EntityNotFoundException {
         productRelease = new ProductRelease("product", "2.0");

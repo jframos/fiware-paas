@@ -85,7 +85,6 @@ public class FileUtilsImpl implements FileUtils {
         try {
 
             initialFile = new File(fileName);
-            System.out.println (initialFile.getAbsoluteFile());
 
             InputStream targetStream = new FileInputStream(initialFile);
             reader = new BufferedReader(new InputStreamReader(targetStream));
