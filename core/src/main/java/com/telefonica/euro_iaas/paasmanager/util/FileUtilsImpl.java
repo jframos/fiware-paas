@@ -33,8 +33,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.net.URL;
+
 
 import com.telefonica.euro_iaas.paasmanager.exception.FileUtilsException;
 
@@ -59,6 +58,7 @@ public class FileUtilsImpl implements FileUtils {
             throw new FileUtilsException("Error in reading the file " + path);
         }
 
+
         return ruleFile.toString();
     }
 
@@ -79,12 +79,8 @@ public class FileUtilsImpl implements FileUtils {
 
     public String readFile(String fileName) throws FileUtilsException {
         BufferedReader reader;
-        InputStream url = null;
         StringBuffer ruleFile = new StringBuffer();
         File initialFile = null;
-        //	url = this.getClass().getResourceAsStream ("/" + fileName);
-//            url = this.getClass().getResource(new InputStream(new File(fileName)));
-
 
         try {
 

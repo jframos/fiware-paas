@@ -51,6 +51,7 @@ public interface SystemPropertiesProvider {
  
     String KEYSTONE_TENANT = "openstack-tcloud.keystone.tenant";
 
+    /** Path for the user data **/
     String USER_DATA_PATH= "user_data_path";
 
 

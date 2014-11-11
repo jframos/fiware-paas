@@ -240,7 +240,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             log.warn("Error to obtain the chef-server url" + e1.getMessage());
             return file;
         }
-        
+
 
         try {
             puppetUrl = openStackRegion.getPuppetMasterEndPoint(

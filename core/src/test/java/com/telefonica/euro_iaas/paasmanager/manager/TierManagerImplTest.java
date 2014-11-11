@@ -226,6 +226,10 @@ public class TierManagerImplTest {
         assertEquals(securityGroup.getRules().size(), 1);
     }
 
+    /**
+     * It tests the addition of a product to the tier
+     * @throws Exception
+     */
     @Test
     public void testTierAddProduct() throws Exception {
 
