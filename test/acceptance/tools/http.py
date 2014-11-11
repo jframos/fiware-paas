@@ -160,8 +160,8 @@ def get_token(keystone_url, tenant, user, password):
 
 def wait_for_task(task_data, headers):
     try:
-        href = task_data["@href"]
-        status = task_data["@status"]
+        href = task_data["href"]
+        status = task_data["status"]
     except:
         assert False, "No task information received: %s" % (task_data)
 
@@ -169,7 +169,7 @@ def wait_for_task(task_data, headers):
     while status == 'RUNNING' and i < MAX_CHECK_TIMES_FOR_TASK_EXECUTION:
         time.sleep(5)
         task_data = json.loads(get_task_data(href, headers))
-        status = task_data["@status"]
+        status = task_data["status"]
         print "WAITING for task execution ({}). STATUS: {}".format(i, status)
         i += 1
     return task_data
