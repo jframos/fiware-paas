@@ -80,22 +80,28 @@ public class FileUtilsImpl implements FileUtils {
     public String readFile(String fileName) throws FileUtilsException {
         BufferedReader reader;
         InputStream url = null;
-        
-        	url = this.getClass().getResourceAsStream ("/" + fileName);
-          //  url = this.getClass().getResource("./" + fileName);
-
-            reader = new BufferedReader(new InputStreamReader(url));
-     
         StringBuffer ruleFile = new StringBuffer();
-        String actualString;
+        File initialFile = null;
+        //	url = this.getClass().getResourceAsStream ("/" + fileName);
+//            url = this.getClass().getResource(new InputStream(new File(fileName)));
+
 
         try {
+
+            initialFile = new File(fileName);
+            System.out.println (initialFile.getAbsoluteFile());
+
+            InputStream targetStream = new FileInputStream(initialFile);
+            reader = new BufferedReader(new InputStreamReader(targetStream));
+
+
+            String actualString;
             while ((actualString = reader.readLine()) != null) {
                 ruleFile.append(actualString + "\n");
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            throw new FileUtilsException("Error in reading the file " + fileName);
+            throw new FileUtilsException("Error in reading the file " + initialFile.getAbsolutePath());
         }
 
         return ruleFile.toString();

@@ -354,7 +354,7 @@ public class TierManagerImpl implements TierManager {
         productRelease = productReleaseManager.loadWithMetadata(productRelease.getProduct() + "-"
                 + productRelease.getVersion());
         getRules(productRelease, rules, "open_ports", "TCP");
-        getRules(productRelease, rules, "open_ports_udp", "UCP");
+        getRules(productRelease, rules, "open_ports_udp", "UDP");
 
     }
 

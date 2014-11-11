@@ -183,7 +183,7 @@ public class TierManagerImplTest {
         assertEquals(securityGroup.getName(), "sg_dd_dd_" + tier.getName());
         assertEquals(securityGroup.getRules().size(), 2);
         assertEquals(securityGroup.getRules().get(0).getIpProtocol(), "TCP");
-        assertEquals(securityGroup.getRules().get(1).getIpProtocol(), "UCP");
+        assertEquals(securityGroup.getRules().get(1).getIpProtocol(), "UDP");
         assertEquals(securityGroup.getRules().get(1).getFromPort(), "1212");
     }
     
@@ -206,7 +206,7 @@ public class TierManagerImplTest {
         assertEquals(securityGroup.getName(), "sg_dd_dd_" + tier.getName());
         assertEquals(securityGroup.getRules().size(), 2);
         assertEquals(securityGroup.getRules().get(0).getIpProtocol(), "TCP");
-        assertEquals(securityGroup.getRules().get(1).getIpProtocol(), "UCP");
+        assertEquals(securityGroup.getRules().get(1).getIpProtocol(), "UDP");
         assertEquals(securityGroup.getRules().get(1).getFromPort(), "1212");
         assertEquals(securityGroup.getRules().get(1).getToPort(), "2024");
     }

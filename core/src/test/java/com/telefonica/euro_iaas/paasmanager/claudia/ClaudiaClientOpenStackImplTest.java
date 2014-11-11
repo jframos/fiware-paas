@@ -57,6 +57,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.util.FileUtilsImpl;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackRegion;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackUtil;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 
 /**
@@ -71,6 +72,7 @@ public class ClaudiaClientOpenStackImplTest {
     private OpenStackRegion openStackRegion;
     private NetworkInstanceManager networkInstanceManager;
     private ClaudiaClientOpenStackImpl claudiaClientOpenStack;
+    private SystemPropertiesProvider systemPropertiesProvider;
 
     @Before
     public void setUp() throws Exception {
@@ -104,6 +106,69 @@ public class ClaudiaClientOpenStackImplTest {
                 + " \"router:external\": false, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\","
                 + " \"admin_state_up\": false,"
                 + " \"shared\": false, \"id\": \"d8023576-7743-4f98-8089-a1ccc60b5ec2\"}}";
+
+        String userData = "# The default is to install from packages.\n" +
+                "{networks}\n" +
+                "\n" +
+                "{if_up}\n" +
+                "\n" +
+                "# Key from http://apt.opscode.com/packages@opscode.com.gpg.key\n" +
+                "runcmd:\n" +
+                "     - mkdir /etc/chef\n" +
+                "     - curl -L http://repositories.testbed.fi-ware.org/webdav/chef/install.sh | bash\n" +
+                "     - OHAI_TIME_DIR=\"$(find / -name ohai_time.rb)\"\n" +
+                "     - sed -i 's/ohai_time Time.now.to_f/ohai_time Time.now/' ${OHAI_TIME_DIR}\n" +
+                "     - mkdir -p /var/log/chef\n" +
+                "     - chef-client -i 60 -s 6 -L /var/log/chef/client.log\n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                "chef:\n" +
+                "\n" +
+                " # Valid values are 'gems' and 'packages' and 'omnibus'\n" +
+                " install_type: \"packages\"\n" +
+                "\n" +
+                " # Boolean: run 'install_type' code even if chef-client\n" +
+                " #          appears already installed.\n" +
+                " force_install: false\n" +
+                " node_name: {node_name}\n" +
+                " # Chef settings\n" +
+                " server_url: {server_url}\n" +
+                " # Node Name\n" +
+                " # Defaults to the instance-id if not present\n" +
+                " validation_name: \"chef-validator\"\n" +
+                " # Node Name\n" +
+                " # Defaults to the instance-id if not present\n" +
+                "\n" +
+                " # Default validation name is chef-validator\n" +
+                " validation_key: |\n" +
+                "{validation_key}\n" +
+                "\n" +
+                "puppet:\n" +
+                " # Every key present in the conf object will be added to puppet.conf:\n" +
+                " # [name]\n" +
+                " # subkey=value\n" +
+                " #\n" +
+                " # For example the configuration below will have the following section\n" +
+                " # added to puppet.conf:\n" +
+                " # [puppetd]\n" +
+                " # server=puppetmaster.example.org\n" +
+                " # certname=i-0123456.ip-X-Y-Z.cloud.internal\n" +
+                " #\n" +
+                " # The puppmaster ca certificate will be available in\n" +
+                " # /var/lib/puppet/ssl/certs/ca.pem\n" +
+                " conf:\n" +
+                "   agent:\n" +
+                "     server: \"{puppet_master}\"\n" +
+                "     runinterval: \"60\"\n" +
+                "     pluginsync: true\n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                " # Capture all subprocess output into a logfile\n" +
+                "# Useful for troubleshooting cloud-init issues\n" +
+                "output: {all: '| tee -a /var/log/cloud-init-output.log'}\n";
+
         PaasManagerUser user = new PaasManagerUser("username", "myToken", new HashSet<GrantedAuthority>());
         user.setTenantName("FIWARE");
         claudiaData = new ClaudiaData("vdc", "org", "service");
@@ -122,10 +187,13 @@ public class ClaudiaClientOpenStackImplTest {
         networkInstanceManager = mock(NetworkInstanceManager.class);
         openStackRegion = mock(OpenStackRegion.class);
         fileUtils = new FileUtilsImpl();
+        systemPropertiesProvider = mock (SystemPropertiesProvider.class);
+        when(systemPropertiesProvider.getProperty(anyString())).thenReturn("src/main/resources/userdata");
         claudiaClientOpenStack.setNetworkInstanceManager(networkInstanceManager);
         claudiaClientOpenStack.setOpenStackUtil(openStackUtil);
         claudiaClientOpenStack.setFileUtils(fileUtils);
         claudiaClientOpenStack.setOpenStackRegion(openStackRegion);
+        claudiaClientOpenStack.setSystemPropertiesProvider(systemPropertiesProvider);
 
 
         when(openStackUtil.createServer(any(String.class), anyString(), anyString(), anyString())).thenReturn(
@@ -136,10 +204,10 @@ public class ClaudiaClientOpenStackImplTest {
                 .thenReturn(expectedSubnet);
         when(openStackUtil.createRouter(any(RouterInstance.class), anyString(), anyString(), anyString())).thenReturn(
                 expectedRouter);
-        when(
-                openStackUtil.addRouterInterface(any(String.class), any(String.class), anyString(), anyString(),
+        when(openStackUtil.addRouterInterface(any(String.class), any(String.class), anyString(), anyString(),
                         anyString())).thenReturn("OK");
         when(openStackUtil.getNetworks(anyString(), anyString(), anyString())).thenReturn(expectedNetworks);
+        //when(fileUtils.readFile(anyString())).thenReturn(userData);
     }
 
 
@@ -175,6 +243,8 @@ public class ClaudiaClientOpenStackImplTest {
         tierInstance.addNetworkInstance(network);
         NetworkInstance network2 = new NetworkInstance("2", "VDC", "REGION");
         tierInstance.addNetworkInstance(network2);
+
+
 
         when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
         when(openStackRegion.getPuppetMasterEndPoint(anyString(), anyString())).thenReturn("http");

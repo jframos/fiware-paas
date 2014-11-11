@@ -466,6 +466,18 @@
                                         </source>
                                     </sources>
                                 </mapping>
+                                <mapping>
+                                    <directory>/opt/fiware-paas/resources</directory>
+
+                                    <configuration>true</configuration>
+                                    <sources>
+                                        <source>
+                                            <location>
+                                                ${project.build.directory}/paas-manager-server-dist/webapps/paasmanager.xml
+                                            </location>
+                                        </source>
+                                    </sources>
+                                </mapping>
                             </mappings>
                             <preinstallScriptlet>
                                 <script>echo "installing now"</script>
