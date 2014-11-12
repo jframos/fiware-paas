@@ -95,13 +95,13 @@ Feature: Deploy an environment on all Fiware regions
       And the region exists and it has valid images and flavors
       And a created environment with data:
             | name      | description           |
-            | qa-env-04 | For testing purposes  |
+            | qa-envb04 | For testing purposes  |
       And a created tiers with data:
             | name       |
-            | qa-tier-04 |
+            | qa-tierb04 |
       When I request the creation of an instance for that environment using data:
             | name       | description           |
-            | qa-ins-04  | For testing purposes  |
+            | qa-insb04  | For testing purposes  |
       Then I receive an "OK" response with a task
       And the task ends with "SUCCESS" status
 
@@ -133,13 +133,13 @@ Feature: Deploy an environment on all Fiware regions
       And the region exists and it has valid SDC-aware images and flavors
       And a created environment with data:
             | name      | description           |
-            | qa-env-05 | For testing purposes  |
+            | qa-envb05 | For testing purposes  |
       And a created tiers with data:
             | name        | products |
-            | qa-tier-05  | tomcat=6 |
+            | qa-tierb05  | tomcat=6 |
       When I request the creation of an instance for that environment using data:
             | name       | description           |
-            | qa-ins-05  | For testing purposes  |
+            | qa-insb05  | For testing purposes  |
       Then I receive an "OK" response with a task
       And the task ends with "SUCCESS" status
 
@@ -171,13 +171,13 @@ Feature: Deploy an environment on all Fiware regions
       And the region exists and it has valid SDC-aware images and flavors
       And a created environment with data:
             | name      | description           |
-            | qa-env-06 | For testing purposes  |
+            | qa-envb06 | For testing purposes  |
       And a created tiers with data:
             | name        | networks   | products |
-            | qa-tier-06  | qa-network | tomcat=6 |
+            | qa-tierb06  | qa-networkb | tomcat=6 |
       When I request the creation of an instance for that environment using data:
             | name       | description           |
-            | qa-ins-06  | For testing purposes  |
+            | qa-insb06  | For testing purposes  |
       Then I receive an "OK" response with a task
       And the task ends with "SUCCESS" status
 
