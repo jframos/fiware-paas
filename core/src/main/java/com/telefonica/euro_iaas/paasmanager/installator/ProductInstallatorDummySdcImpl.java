@@ -34,6 +34,7 @@ import com.telefonica.euro_iaas.paasmanager.installator.sdc.util.SDCUtil;
 import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
@@ -73,7 +74,7 @@ public class ProductInstallatorDummySdcImpl implements ProductInstallator {
 
 
 
-    public ProductInstance install(ClaudiaData claudiaData, String envName, TierInstance tierInstance,
+    public ProductInstance install(ClaudiaData claudiaData, EnvironmentInstance environmentInstance, TierInstance tierInstance,
             ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException {
 
         ProductInstance productInstance = new ProductInstance();

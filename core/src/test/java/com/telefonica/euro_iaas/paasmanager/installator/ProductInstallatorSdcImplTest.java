@@ -24,22 +24,31 @@
 
 package com.telefonica.euro_iaas.paasmanager.installator;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
 import com.telefonica.euro_iaas.paasmanager.installator.sdc.util.SDCUtil;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.OS;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
-
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
@@ -48,14 +57,6 @@ import com.telefonica.euro_iaas.sdc.client.SDCClient;
 import com.telefonica.euro_iaas.sdc.client.services.ProductInstanceService;
 import com.telefonica.euro_iaas.sdc.model.Task;
 import com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit test suite for ProductInstallatorSdcImpl.
@@ -81,6 +82,12 @@ public class ProductInstallatorSdcImplTest {
     private Task task;
     private com.telefonica.euro_iaas.sdc.model.ProductInstance pInstanceSDC;
     ClaudiaData data;
+    private EnvironmentInstance environmentInstance; 
+    private TierInstance tierInstance2;
+    private ProductRelease productRelease2;
+    private Set<Attribute> lAttributes2;
+    private Attribute attribute2;
+    private ProductInstance expectedProductInstance2;
 
     private static String SDC_SERVER_MEDIATYPE = "application/json";
 
@@ -91,7 +98,7 @@ public class ProductInstallatorSdcImplTest {
         host.setOsType(os.getOsType());
         host.setFqn("xx.vees.xx");
         Set<Attribute> lAttributes = new HashSet<Attribute> ();
-        attribute = new Attribute("key", "value");
+        attribute = new Attribute("key", "value","Plain");
         lAttributes.add(attribute);
 
         tierInstance = new TierInstance();
@@ -148,6 +155,28 @@ public class ProductInstallatorSdcImplTest {
         when (data.getService()).thenReturn("deploytm");
         when (data.getVdc()).thenReturn("60b4125450fc4a109f50357894ba2e28");
         when (user.getToken()).thenReturn("any");
+        
+        environmentInstance=mock(EnvironmentInstance.class);
+        List<TierInstance> tierInstancesList = new ArrayList<TierInstance>();
+        tierInstancesList.add(tierInstance);
+        productRelease2 = new ProductRelease("productPrueba", "1.0");
+        
+        productRelease2.addAttribute(attribute);
+        productRelease2.addAttribute(new Attribute("sdcgroupid","sdcgroupid"));
+        productRelease2.addAttribute(new Attribute("idcoregroup","idcoregroup"));
+        productRelease2.addAttribute(new Attribute("id_web_server","id_web_server"));
+        productRelease2.setDescription("Product Prueba desc");
+        productRelease2.setSupportedOOSS(Arrays.asList(os));
+        productRelease2.setWithArtifact(true);
+        Set<Attribute> lAttributes2 = new HashSet<Attribute> ();
+        attribute2 = new Attribute("key2", "value2","PLAIN");
+        lAttributes2.add(attribute2);
+        expectedProductInstance2 = new ProductInstance(productRelease2, Status.INSTALLED, "vdc");
+        expectedProductInstance2.setPrivateAttributes(lAttributes2);
+
+        tierInstance.addProductInstance(expectedProductInstance);
+        tierInstance.setVM(host);
+        
 
         /*
          * when(sDCUtil.checkTaskStatus(any(Task.class), Mockito.anyString()));
@@ -183,7 +212,7 @@ public class ProductInstallatorSdcImplTest {
         installator.setTierInstanceManager(tierInstanceManager);
 
     
-        ProductInstance installedProduct = installator.install(data, "env", tierInstance,
+        ProductInstance installedProduct = installator.install(data, environmentInstance, tierInstance,
                 expectedProductInstance.getProductRelease(), new HashSet<Attribute>());
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);
@@ -206,7 +235,7 @@ public class ProductInstallatorSdcImplTest {
         productReleaseWithoutAttrs.setWithArtifact(true);
         
       
-        ProductInstance installedProduct = installator.install(data, "env", tierInstance,
+        ProductInstance installedProduct = installator.install(data, environmentInstance, tierInstance,
                         productReleaseWithoutAttrs, new HashSet<Attribute>());
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);
@@ -222,7 +251,7 @@ public class ProductInstallatorSdcImplTest {
         installator.setTierInstanceManager(tierInstanceManager);
         
 
-        ProductInstance installedProduct = installator.install(data, "env", tierInstance,
+        ProductInstance installedProduct = installator.install(data, environmentInstance, tierInstance,
                 expectedProductInstance.getProductRelease(), new HashSet<Attribute>());
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);

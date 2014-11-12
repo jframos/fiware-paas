@@ -34,6 +34,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.ProductReconfigurationExce
 import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
@@ -52,7 +53,7 @@ public interface ProductInstallator {
     // ProductInstance install (ProductInstance productInstance) throws
     // ProductInstallatorException;
 
-    ProductInstance install(ClaudiaData claudiaData, String envName, TierInstance tierInstance,
+    ProductInstance install(ClaudiaData claudiaData, EnvironmentInstance environmentInstance, TierInstance tierInstance,
             ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException, OpenStackException;
 
     /**
