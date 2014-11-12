@@ -372,7 +372,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
      * com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager
      * #destroy(com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance)
      */
-    public void destroy(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws InvalidEntityException, InfrastructureException, EntityNotFoundException {
+    public void destroy(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws InvalidEntityException,
+            InfrastructureException, EntityNotFoundException {
         log.info("Destroying enviornment isntance " + envInstance.getBlueprintName() + " with environment "
                 + envInstance.getEnvironment().getName() + " vdc " + envInstance.getVdc());
 
@@ -447,10 +448,10 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                         for (TierInstance tierInstancePaas : tierInstances) {
                             infrastructureManager.deleteNetworksInTierInstance(claudiaData, tierInstancePaas);
                             tierInstanceManager.remove(tierInstancePaas);
-                            
+
                         }
                     }
-                    
+
                 }
 
             }
