@@ -60,10 +60,13 @@ public interface EnvironmentInstanceManager {
      * @throws InvalidEnvironmentRequestException
      */
     /*
-     * EnvironmentInstance create(String org, String vdc, PaasManagerUser user, String envInstanceName, Environment
-     * environment) throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException,
-     * NotUniqueResultException, InfrastructureException, IPNotRetrievedException, ProductInstallatorException,
-     * InvalidEnvironmentRequestException, InvalidProductInstanceRequestException, InvalidOVFException;
+     * EnvironmentInstance create(String org, String vdc, PaasManagerUser user,
+     * String envInstanceName, Environment environment) throws
+     * EntityNotFoundException, InvalidEntityException,
+     * AlreadyExistsEntityException, NotUniqueResultException,
+     * InfrastructureException, IPNotRetrievedException,
+     * ProductInstallatorException, InvalidEnvironmentRequestException,
+     * InvalidProductInstanceRequestException, InvalidOVFException;
      */
     EnvironmentInstance create(ClaudiaData claudiaData, EnvironmentInstance environmentInstance)
             throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException,
@@ -109,8 +112,11 @@ public interface EnvironmentInstanceManager {
      * @param envInstance
      * @param org
      * @param vdc
+     * @throws EntityNotFoundException
+     * @throws InfrastructureException
      */
-    void destroy(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws InvalidEntityException;
+    void destroy(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws InvalidEntityException,
+            InfrastructureException, EntityNotFoundException;
 
     /**
      * @param vdc
