@@ -222,11 +222,11 @@ def a_list_of_tiers_has_been_defined_with_data(step):
             # Is Neutron available?
             i_retrieve_the_service_catalog(step)
             body_response = raw_httplib_request_to_python_dic(world.response)
-            nova_public_url = get_public_endpoint_url_by_name(body_response, 'nova', world.region_name)
-            if nova_public_url is not None:
-                tier.parse_and_add_networks(data.get(NETWORKS))
-            else:
-                print "WARNING: Neutron is not available. Tier wil be created without networks."
+            nova_public_url = get_public_endpoint_url_by_type(body_response, 'network', world.region_name)
+            if nova_public_url is None:
+                raise Exception("Networks are not available. Region: {}".format(world.region_name))
+
+            tier.parse_and_add_networks(data.get(NETWORKS))
 
         world.env_requests.add_tier_environment(world.environment_name, tier)
 
