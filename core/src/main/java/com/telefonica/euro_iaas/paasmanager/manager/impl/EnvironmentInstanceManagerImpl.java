@@ -378,7 +378,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                 + envInstance.getEnvironment().getName() + " vdc " + envInstance.getVdc());
 
         try {
-            // Borrado de nodos en el chefServer
+            // Borrado de nodos en el SDC
             envInstance.setStatus(Status.UNINSTALLING);
             envInstance = environmentInstanceDao.update(envInstance);
             for (int i = 0; i < envInstance.getTierInstances().size(); i++) {
@@ -446,7 +446,11 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                             throw new InvalidEntityException(EnvironmentInstance.class, e);
                         }
                         for (TierInstance tierInstancePaas : tierInstances) {
-                            infrastructureManager.deleteNetworksInTierInstance(claudiaData, tierInstancePaas);
+                            try {
+                                infrastructureManager.deleteNetworksInTierInstance(claudiaData, tierInstancePaas);
+                            } catch (Exception e) {
+                                log.error(e.getMessage());
+                            }
                             tierInstanceManager.remove(tierInstancePaas);
 
                         }
