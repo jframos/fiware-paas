@@ -207,17 +207,29 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         newAtt.setKey(attribute.getKey());
         newAtt.setType(attribute.getType());
 
+        String name = extractTierNameFromMacro(attribute);
+
         if (TYPE_IP.equals(attribute.getType())) {
-            newAtt.setValue(tierInstance.getVM().getIp());
+            for (TierInstance ti : environmentInstance.getTierInstances()) {
+                if (ti.getName().equals(name) && ti.getNumberReplica()==1) {
+                    newAtt.setValue(ti.getVM().getIp());
+                }
+            }
         } else if (TYPE_IPALL.equals(attribute.getType())) {
-            String ips="";
-            for(TierInstance ti:environmentInstance.getTierInstances()){
-                ips=ips+ti.getVM().getIp()+", ";
+            String ips = "";
+            for (TierInstance ti : environmentInstance.getTierInstances()) {
+                ips = ips + ti.getVM().getIp() + ", ";
             }
             newAtt.setValue(ips);
         }
 
         return newAtt;
+    }
+
+
+    private String extractTierNameFromMacro(com.telefonica.euro_iaas.sdc.model.Attribute attribute) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     public void installArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact)
