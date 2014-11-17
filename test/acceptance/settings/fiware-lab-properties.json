@@ -1,7 +1,8 @@
 {
     "environment": {
         "name": "fiware-lab",
-        "logs_path": "logs"
+        "logs_path": "logs",
+        "test_files": "testreport/additional_output_files"
     },
     "paas": {
         "keystone_url": "http://cloud.lab.fi-ware.org:4731/v2.0",

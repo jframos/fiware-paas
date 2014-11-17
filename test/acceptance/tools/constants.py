@@ -22,12 +22,15 @@
 # Names of the properties in the {environment}-properties.json files
 
 ENVIRONMENT = "environment"
+ENVIRONMENT_TESTFILES = "test_files"
 NAME = "name"
 LOGS_PATH = "logs_path"
 PAAS = "paas"
 KEYSTONE_URL = "keystone_url"
 SDC_URL = "sdc_url"
 PAASMANAGER_URL = "paasmanager_url"
+GLANCE_URL = "glance_url"
+NOVA_URL = "nova_url"
 VDC = "vdc"
 TENANT = "tenant"
 USER = "user"
@@ -39,7 +42,7 @@ TIER_NUM_INITIAL = "tier_num_initial"
 TIER_FLAVOUR = "tier_flavour"
 TIER_KEYPAIR = "tier_keypair"
 TIER_FLOATINGIP = "tier_floatingip"
-
+TIER_REGION = "tier_region"
 # Auxiliary constants used in .feature files or interfaces
 NAME = "name"
 DESCRIPTION = "description"
