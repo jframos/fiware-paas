@@ -206,6 +206,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
             <property name="productReleaseManager" ref="productReleaseManager"/>
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
+            <property name="infrastructureManager" ref="infrastructureManager"/>
         </bean>
 
         <!--<bean id="productInstallator" lazy-init="true"

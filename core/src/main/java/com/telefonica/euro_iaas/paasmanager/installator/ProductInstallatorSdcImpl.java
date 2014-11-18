@@ -38,6 +38,7 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.installator.sdc.util.SDCUtil;
+import com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.model.Artifact;
@@ -58,12 +59,13 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
     public static final String TYPE_PLAIN = "PLAIN";
     public static final String TYPE_IP = "IP";
-    public static final String TYPE_IPALL = "IP(All)";
+    public static final String TYPE_IPALL = "IPALL";
 
     private SDCClient sDCClient;
     private SystemPropertiesProvider systemPropertiesProvider;
     private ProductReleaseManager productReleaseManager;
     private TierInstanceManager tierInstanceManager;
+    private InfrastructureManager infrastructureManager;
 
     private SDCUtil sDCUtil;
 
@@ -83,8 +85,8 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         if (!(attributes.isEmpty())) {
             for (Attribute attrib : attributes) {
                 com.telefonica.euro_iaas.sdc.model.Attribute sdcAttr = resolveAttributeTypeValue(
-                        new com.telefonica.euro_iaas.sdc.model.Attribute(attrib.getKey(), attrib.getValue()),
-                        tierInstance, environmentInstance);
+                        new com.telefonica.euro_iaas.sdc.model.Attribute(attrib.getKey(), attrib.getValue(),
+                                attrib.getDescription(), attrib.getType()), tierInstance, environmentInstance);
                 attrs.add(sdcAttr);
             }
             productInstanceDto.setAttributes(attrs);
@@ -197,7 +199,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
     }
 
-    private com.telefonica.euro_iaas.sdc.model.Attribute resolveAttributeTypeValue(
+    public com.telefonica.euro_iaas.sdc.model.Attribute resolveAttributeTypeValue(
             com.telefonica.euro_iaas.sdc.model.Attribute attribute, TierInstance tierInstance,
             EnvironmentInstance environmentInstance) {
 
@@ -209,27 +211,40 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
         String name = extractTierNameFromMacro(attribute);
 
+        String compoundName;
+
         if (TYPE_IP.equals(attribute.getType())) {
+            compoundName = infrastructureManager.generateVMName(environmentInstance.getBlueprintName(), name, 1,
+                    environmentInstance.getVdc());
             for (TierInstance ti : environmentInstance.getTierInstances()) {
-                if (ti.getName().equals(name) && ti.getNumberReplica()==1) {
+                if (ti.getName().equals(compoundName)) {
                     newAtt.setValue(ti.getVM().getIp());
                 }
             }
         } else if (TYPE_IPALL.equals(attribute.getType())) {
             String ips = "";
             for (TierInstance ti : environmentInstance.getTierInstances()) {
-                ips = ips + ti.getVM().getIp() + ", ";
+                compoundName = infrastructureManager.generateVMName(environmentInstance.getBlueprintName(), name,
+                        ti.getNumberReplica(), environmentInstance.getVdc());
+                if (ti.getName().equals(compoundName)) {
+                    ips = ips + ti.getVM().getIp() + ",";
+                }
             }
+            ips = ips.substring(0, ips.length() - 1);
             newAtt.setValue(ips);
         }
 
         return newAtt;
     }
 
-
     private String extractTierNameFromMacro(com.telefonica.euro_iaas.sdc.model.Attribute attribute) {
-        // TODO Auto-generated method stub
-        return null;
+
+        String name = "";
+        if (TYPE_IP.equals(attribute.getType()) || TYPE_IPALL.equals(attribute.getType())) {
+            name = attribute.getValue().substring(attribute.getValue().indexOf("(") + 1,
+                    attribute.getValue().indexOf(")"));
+        }
+        return name;
     }
 
     public void installArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact)
@@ -489,6 +504,10 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
                 + claudiaData.getService() + ".vees." + tierName + ".replicas." + productName;
         return name;
 
+    }
+
+    public void setInfrastructureManager(InfrastructureManager infrastructureManager) {
+        this.infrastructureManager = infrastructureManager;
     }
 
     /*
