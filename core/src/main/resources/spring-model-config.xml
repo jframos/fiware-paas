@@ -196,6 +196,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="networkInstanceManager" ref="networkInstanceManager"/>
             <property name="openStackRegion" ref="openStackRegion"/>
             <property name="fileUtils" ref="fileUtils"/>
+            <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
 
         </bean>
 

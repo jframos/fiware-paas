@@ -203,12 +203,6 @@
             </dependency>
 
             <dependency>
-                <groupId>javax.ws.rs</groupId>
-                <artifactId>javax.ws.rs-api</artifactId>
-                <version>2.0</version>
-            </dependency>
-
-            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
@@ -456,6 +450,18 @@
                                 </mapping>
                                 <mapping>
                                     <directory>/opt/fiware-paas/webapps</directory>
+
+                                    <configuration>true</configuration>
+                                    <sources>
+                                        <source>
+                                            <location>
+                                                ${project.build.directory}/paas-manager-server-dist/webapps/paasmanager.xml
+                                            </location>
+                                        </source>
+                                    </sources>
+                                </mapping>
+                                <mapping>
+                                    <directory>/opt/fiware-paas/resources</directory>
 
                                     <configuration>true</configuration>
                                     <sources>
