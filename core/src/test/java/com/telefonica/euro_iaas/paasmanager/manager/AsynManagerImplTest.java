@@ -398,8 +398,7 @@ public class AsynManagerImplTest {
     }
 
     @Test
-    public void testDeleteEnvInstanceManager() throws AlreadyExistsEntityException, InvalidEntityException,
-            InfrastructureException, EntityNotFoundException {
+    public void testDeleteEnvInstanceManager() throws Exception{
 
         ClaudiaData claudiaData = new ClaudiaData("org", "vdc", "service");
         String callback = "";
