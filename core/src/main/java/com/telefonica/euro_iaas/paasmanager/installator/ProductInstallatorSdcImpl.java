@@ -232,6 +232,8 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
             }
             ips = ips.substring(0, ips.length() - 1);
             newAtt.setValue(ips);
+        }else{
+            newAtt.setValue(attribute.getValue());
         }
 
         return newAtt;
