@@ -67,14 +67,15 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     private TaskNotificator taskNotificator;
     private EnvironmentInstanceManager environmentInstanceManager;
 
-    public void install(TierInstance tierInstance, ClaudiaData claudiaData, String envName,String vdc,
-            ProductRelease productRelease, Set<Attribute> attributes, Task task, String callback) throws EntityNotFoundException {
-        
-        EnvironmentInstance environmentInstance = environmentInstanceManager.load(vdc,envName);
-        
+    public void install(TierInstance tierInstance, ClaudiaData claudiaData, String envName, String vdc,
+            ProductRelease productRelease, Set<Attribute> attributes, Task task, String callback)
+            throws EntityNotFoundException {
+
+        EnvironmentInstance environmentInstance = environmentInstanceManager.load(vdc, envName);
+
         try {
-            ProductInstance productInstance = productInstanceManager.install(tierInstance, claudiaData, environmentInstance,
-                    productRelease, attributes);
+            ProductInstance productInstance = productInstanceManager.install(tierInstance, claudiaData,
+                    environmentInstance, productRelease, attributes);
             log.info("Product " + productRelease.getProduct() + '-' + productRelease.getVersion()
                     + " installed successfully");
         } catch (InvalidProductInstanceRequestException e) {
@@ -118,17 +119,25 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         }
 
         /*
-         * try { productInstanceManager.uninstall(productInstance); updateSuccessTask(task, productInstance);
-         * log.info("Product " + productInstance.getProduct().getProduct().getName() + "-" +
-         * productInstance.getProduct().getVersion() + " uninstalled successfully"); } catch (FSMViolationException e) {
-         * updateErrorTask(productInstance, task, "The product " + productInstance.getId() +
-         * " can not be uninstalled due to previous status", e); } catch (ApplicationInstalledException e) {
-         * updateErrorTask(productInstance, task, "The product " + productInstance.getId() +
-         * " can not be uninstalled due to some applications are" + " installed on it.", e); } catch
-         * (NodeExecutionException e) { updateErrorTask(productInstance, task, "The product " + productInstance.getId()
-         * + " can not be uninstalled due to an error executing in node.", e); } catch (Throwable e) {
-         * updateErrorTask(productInstance, task, "The product " + productInstance.getId() +
-         * " can not be uninstalled due to unexpected error.", e); } finally { notifyTask(callback, task); }
+         * try { productInstanceManager.uninstall(productInstance);
+         * updateSuccessTask(task, productInstance); log.info("Product " +
+         * productInstance.getProduct().getProduct().getName() + "-" +
+         * productInstance.getProduct().getVersion() +
+         * " uninstalled successfully"); } catch (FSMViolationException e) {
+         * updateErrorTask(productInstance, task, "The product " +
+         * productInstance.getId() +
+         * " can not be uninstalled due to previous status", e); } catch
+         * (ApplicationInstalledException e) { updateErrorTask(productInstance,
+         * task, "The product " + productInstance.getId() +
+         * " can not be uninstalled due to some applications are" +
+         * " installed on it.", e); } catch (NodeExecutionException e) {
+         * updateErrorTask(productInstance, task, "The product " +
+         * productInstance.getId() +
+         * " can not be uninstalled due to an error executing in node.", e); }
+         * catch (Throwable e) { updateErrorTask(productInstance, task,
+         * "The product " + productInstance.getId() +
+         * " can not be uninstalled due to unexpected error.", e); } finally {
+         * notifyTask(callback, task); }
          */
 
     }
@@ -151,7 +160,8 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     }
 
     private String getUrl(ProductInstance productInstance) {
-        String path = MessageFormat.format(PRODUCT_INSTANCE_PATH, productInstance.getId(), // the id
+        String path = MessageFormat.format(PRODUCT_INSTANCE_PATH, productInstance.getId(), // the
+                                                                                           // id
 
                 productInstance.getProductRelease().getProduct(), productInstance.getVdc());
 
@@ -159,7 +169,8 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     }
 
     /*
-     * Update the task with necessary information when the task is wrong and the product instance exists in the system.
+     * Update the task with necessary information when the task is wrong and the
+     * product instance exists in the system.
      */
     private void updateErrorTask(ProductInstance productInstance, Task task, String message, Throwable t) {
         String piResource = getUrl(productInstance);

@@ -48,13 +48,14 @@ public interface ProductInstallator {
      * @param productInstance
      * @return
      * @throws ProductInstallatorException
-     * @throws OpenStackException 
+     * @throws OpenStackException
      */
     // ProductInstance install (ProductInstance productInstance) throws
     // ProductInstallatorException;
 
-    ProductInstance install(ClaudiaData claudiaData, EnvironmentInstance environmentInstance, TierInstance tierInstance,
-            ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException, OpenStackException;
+    ProductInstance install(ClaudiaData claudiaData, EnvironmentInstance environmentInstance,
+            TierInstance tierInstance, ProductRelease productRelease, Set<Attribute> attributes)
+            throws ProductInstallatorException, OpenStackException;
 
     /**
      * Operation that installs an artefact in the productInstance
@@ -62,11 +63,11 @@ public interface ProductInstallator {
      * @param productInstance
      * @return
      * @throws ProductInstallatorException
-     * @throws OpenStackException 
+     * @throws OpenStackException
      */
 
-    void installArtifact(ClaudiaData claudiaData,ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException, OpenStackException;
-
+    void installArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact)
+            throws ProductInstallatorException, OpenStackException;
 
     /**
      * Operation that uninstalls an artefact in the productInstance
@@ -74,33 +75,37 @@ public interface ProductInstallator {
      * @param productInstance
      * @return
      * @throws ProductInstallatorException
-     * @throws OpenStackException 
+     * @throws OpenStackException
      */
 
-    void uninstallArtifact(ClaudiaData claudiaData,ProductInstance productInstance, Artifact artifact) throws ProductInstallatorException, OpenStackException;
-
+    void uninstallArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact)
+            throws ProductInstallatorException, OpenStackException;
 
     /*
      * Operation that installs the productInstance
      */
 
-    void uninstall(ClaudiaData claudiaData,ProductInstance productInstance) throws ProductInstallatorException, OpenStackException;
-
+    void uninstall(ClaudiaData claudiaData, ProductInstance productInstance) throws ProductInstallatorException,
+            OpenStackException;
 
     void configure(ClaudiaData claudiaData, ProductInstance productInstance, List<Attribute> properties)
-            throws ProductInstallatorException, EntityNotFoundException, ProductReconfigurationException, OpenStackException;
+            throws ProductInstallatorException, EntityNotFoundException, ProductReconfigurationException,
+            OpenStackException;
 
     /*
-     * Operation that deletes a chefClien from the node manager (Chef server in SDC, for instance)
+     * Operation that deletes a chefClien from the node manager (Chef server in
+     * SDC, for instance)
      */
 
-    void deleteNode(ClaudiaData claudiaData, String vdc, String nodeName) throws ProductInstallatorException, OpenStackException;
-
+    void deleteNode(ClaudiaData claudiaData, String vdc, String nodeName) throws ProductInstallatorException,
+            OpenStackException;
 
     /*
-     * Operation that load a chefClient from the node manager (Chef server in SDC, for instance)
+     * Operation that load a chefClient from the node manager (Chef server in
+     * SDC, for instance)
      */
 
-    ChefClient loadNode(ClaudiaData claudiaData,String vdc, String nodeName) throws ProductInstallatorException, EntityNotFoundException, OpenStackException;
+    ChefClient loadNode(ClaudiaData claudiaData, String vdc, String nodeName) throws ProductInstallatorException,
+            EntityNotFoundException, OpenStackException;
 
 }
