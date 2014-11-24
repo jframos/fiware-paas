@@ -281,7 +281,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
                     try {
                         ProductInstance productInstance = productInstanceManager.install(tierInstance, claudiaData,
-                                environmentInstance.getEnvironment().getName(), productRelease,
+                                environmentInstance, productRelease,
                                 productRelease.getAttributes());
                         log.info("Adding product instance " + productInstance.getName());
                         tierInstance.setStatus(Status.INSTALLED);

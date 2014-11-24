@@ -91,8 +91,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         Tier tierDB = null;
         try {
             tierDB = tierManager.load(tierInstance.getTier().getName(), data.getVdc(), envName);
-            log.info("The tier already exists " + tierDB.getName() + " " + tierDB.getFloatingip() + " " + envName
-                    + " " + data.getVdc());
+            log.info("The tier already exists " + tierDB.getName() + " " + tierDB.getFloatingip() + " " + envName + " "
+                    + data.getVdc());
         } catch (EntityNotFoundException e) {
             log.error("Error to load the Tier " + tierInstance.getTier().getName() + " : " + e.getMessage());
             throw new InvalidEntityException("Error to load the Tier " + tierInstance.getTier().getName() + " : "
@@ -183,7 +183,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         // SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
         for (ProductRelease productRelease : tierInstance.getTier().getProductReleases()) {
 
-            // infrastructureManager.deployVM(claudiaData, tierInstance, replicaNumber, tierInstance.getOvf(),
+            // infrastructureManager.deployVM(claudiaData, tierInstance,
+            // replicaNumber, tierInstance.getOvf(),
             // vm);
 
             ProductInstance productInstance = null;
@@ -192,8 +193,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                 tierInstance = tierInstanceDao.update(tierInstance);
                 envInstance.setStatus(Status.INSTALLING);
                 environmentInstanceManager.update(envInstance);
-                productInstance = productInstanceManager.install(tierInstance, claudiaData, envInstance
-                        .getEnvironment().getName(), productRelease, productRelease.getAttributes());
+                productInstance = productInstanceManager.install(tierInstance, claudiaData, envInstance,
+                        productRelease, productRelease.getAttributes());
             } catch (ProductInstallatorException e) {
                 String mens = "Error to install the productINstance " + productRelease.getName() + " in "
                         + tierInstance.getName() + " " + e.getMessage();
@@ -203,8 +204,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                 String mens = "Error to install the productINstance " + productRelease.getName() + " in "
                         + tierInstance.getName() + " " + e.getMessage();
 
-                productInstance = productInstanceManager.install(tierInstance, claudiaData, envInstance
-                        .getEnvironment().getName(), productRelease, productRelease.getAttributes());
+                productInstance = productInstanceManager.install(tierInstance, claudiaData, envInstance,
+                        productRelease, productRelease.getAttributes());
             }
             tierInstance.addProductInstance(productInstance);
         }
@@ -370,7 +371,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     public TierInstance loadByName(String name) throws EntityNotFoundException {
         return tierInstanceDao.findByTierInstanceName(name);
     }
-    
+
     public TierInstance loadNetworkInstnace(String name) throws EntityNotFoundException {
         return tierInstanceDao.findByTierInstanceNameNetworkInst(name);
     }
@@ -457,7 +458,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     /**
      * @param infrastructureManager
-     *            the infrastructureManager to set <property name="tierInstanceDao" ref="tierInstanceDao"/>
+     *            the infrastructureManager to set <property
+     *            name="tierInstanceDao" ref="tierInstanceDao"/>
      */
     public void setInfrastructureManager(InfrastructureManager infrastructureManager) {
         this.infrastructureManager = infrastructureManager;

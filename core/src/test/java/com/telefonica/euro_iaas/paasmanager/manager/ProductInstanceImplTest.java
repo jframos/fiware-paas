@@ -24,15 +24,26 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import junit.framework.TestCase;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Matchers;
 
 import com.telefonica.euro_iaas.paasmanager.dao.ProductInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.installator.ProductInstallator;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.ProductInstanceManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
@@ -40,15 +51,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Matchers;
-
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla
@@ -112,7 +114,7 @@ public class ProductInstanceImplTest extends TestCase {
         when(productReleaseManager.load(any(String.class),any(ClaudiaData.class))).thenReturn(productRelease);
         when(productInstanceDao.load(any(String.class))).thenReturn(productInstance);
         when(
-                productInstallator.install(any(ClaudiaData.class), any(String.class), any(TierInstance.class),
+                productInstallator.install(any(ClaudiaData.class), any(EnvironmentInstance.class), any(TierInstance.class),
                         any(ProductRelease.class), Matchers.<Set<Attribute>> any())).thenReturn(productInstance);
     }
 
@@ -127,10 +129,11 @@ public class ProductInstanceImplTest extends TestCase {
 
     @Test
     public void testInstallProductInstanceNoAttributes() throws Exception {
-
+        EnvironmentInstance enviromnentInstance = mock(EnvironmentInstance.class);
+        
         ProductInstance productInstance = new ProductInstance(productRelease, Status.INSTALLING, "vdc");
    
-        ProductInstance productInstanceCreated = manager.install(tierInstance, data, " ", productRelease, null);
+        ProductInstance productInstanceCreated = manager.install(tierInstance, data, enviromnentInstance, productRelease, null);
         assertEquals(productInstance.getName(), productInstanceCreated.getName());
 
     }

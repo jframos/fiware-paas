@@ -44,6 +44,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
@@ -57,16 +58,17 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
     private static Logger log = LoggerFactory.getLogger(ProductInstanceManagerImpl.class);
 
-    public ProductInstance install(TierInstance tierInstance, ClaudiaData claudiaData, String envName,
-            ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException,
-            InvalidProductInstanceRequestException, NotUniqueResultException, InvalidEntityException {
+    public ProductInstance install(TierInstance tierInstance, ClaudiaData claudiaData,
+            EnvironmentInstance environmentInstance, ProductRelease productRelease, Set<Attribute> attributes)
+            throws ProductInstallatorException, InvalidProductInstanceRequestException, NotUniqueResultException,
+            InvalidEntityException {
         log.info("Installing software " + productRelease.getProduct() + " in tier Instance " + tierInstance.getName()
                 + " in vdc " + claudiaData.getVdc());
 
         ProductInstance productInstance = null;
         try {
-            productInstance = productInstallator
-                    .install(claudiaData, envName, tierInstance, productRelease, attributes);
+            productInstance = productInstallator.install(claudiaData, environmentInstance, tierInstance,
+                    productRelease, attributes);
             if (productInstance.getVdc() == null) {
                 productInstance.setVdc(claudiaData.getVdc());
             }
