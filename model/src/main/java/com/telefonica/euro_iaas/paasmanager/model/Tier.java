@@ -533,6 +533,7 @@ public class Tier {
                 ProductReleaseDto pReleaseDto = new ProductReleaseDto();
                 pReleaseDto.setProductName(pRelease.getProduct());
                 pReleaseDto.setVersion(pRelease.getVersion());
+                pReleaseDto.setPrivateAttributes(pRelease.getAttributes());
 
                 if (pRelease.getDescription() != null) {
                     pReleaseDto.setProductDescription(pRelease.getDescription());
