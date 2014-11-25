@@ -405,7 +405,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             envInstance.setStatus(Status.UNINSTALLED);
             envInstance = environmentInstanceDao.update(envInstance);
 
-            deletePaasDB(claudiaData, envInstance, tierInstance, error);
+            deletePaaSDB(claudiaData, envInstance, tierInstance, error);
 
         }
         log.info("Environment Instance " + envInstance.getBlueprintName() + " DESTROYED");
@@ -419,7 +419,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
     }
 
-    private void deletePaasDB(ClaudiaData claudiaData, EnvironmentInstance envInstance, TierInstance tierInstance, boolean error) throws InvalidEntityException {
+    private void deletePaaSDB(ClaudiaData claudiaData, EnvironmentInstance envInstance, TierInstance tierInstance, boolean error) throws InvalidEntityException {
         // Borrado del registro en BBDD paasmanager
         log.info("Deleting the environment instance " + envInstance.getBlueprintName() + " in the database ");
 
