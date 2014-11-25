@@ -131,7 +131,8 @@ public class TierManagerImpl implements TierManager {
             for (ProductRelease prod : tier.getProductReleases()) {
                 try {
                     log.info("Sync product release " + prod.getProduct() + "-" + prod.getVersion());
-                    prod = productReleaseManager.load(prod.getProduct() + "-" + prod.getVersion(), data);
+                    prod = productReleaseManager
+                            .loadFromSDCAndCreate(prod.getProduct() + "-" + prod.getVersion(), data);
                 } catch (Exception e2) {
                     String errorMessage = "The ProductRelease Object " + prod.getProduct() + "-" + prod.getVersion()
                             + " not exist in database";
@@ -152,10 +153,10 @@ public class TierManagerImpl implements TierManager {
     public Rule createRulePort(String port, String protocol) {
         log.info("Generate security rule " + port);
         if (port.contains("-")) {
-        	return new Rule(protocol, port.substring(0, port.indexOf("-")),  
-        	    port.substring(port.indexOf("-")+1), "", "0.0.0.0/0");
+            return new Rule(protocol, port.substring(0, port.indexOf("-")), port.substring(port.indexOf("-") + 1), "",
+                    "0.0.0.0/0");
         } else {
-        	return new Rule(protocol, port, port, "", "0.0.0.0/0");
+            return new Rule(protocol, port, port, "", "0.0.0.0/0");
         }
 
     }
@@ -371,8 +372,6 @@ public class TierManagerImpl implements TierManager {
             }
         }
     }
-    
-   
 
     public Tier load(String name, String vdc, String environmentName) throws EntityNotFoundException {
         try {
@@ -536,7 +535,7 @@ public class TierManagerImpl implements TierManager {
     public void mergeAttributes(ProductRelease product, ProductRelease templateProduct) {
 
         if (product.getAttributes() != null) {
-            if (!templateProduct.getAttributes().isEmpty()) {
+            if ((templateProduct.getAttributes() != null) && (!templateProduct.getAttributes().isEmpty())) {
 
                 for (Attribute attribute : product.getAttributes()) {
 

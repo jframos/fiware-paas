@@ -47,7 +47,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 
 /**
  * Represents an instance of a tier.
- *
+ * 
  * @author Jesus M. Movilla
  * @version $Id: $
  */
@@ -78,17 +78,11 @@ public class TierInstance extends InstallableInstance {
     private VM vm;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "tierinstance_has_productinstances",
-            joinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) },
-            inverseJoinColumns = { @JoinColumn(name = "productinstance_ID", nullable = false, updatable = false) })
-
+    @JoinTable(name = "tierinstance_has_productinstances", joinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "productinstance_ID", nullable = false, updatable = false) })
     private List<ProductInstance> productInstances;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "tierinstance_has_networkinstance",
-            joinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) },
-            inverseJoinColumns = { @JoinColumn(name = "networkinstance_ID", nullable = false, updatable = false) })
-
+    @JoinTable(name = "tierinstance_has_networkinstance", joinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "networkinstance_ID", nullable = false, updatable = false) })
     private Set<NetworkInstance> networkInstances;
 
     /**
@@ -171,6 +165,7 @@ public class TierInstance extends InstallableInstance {
 
     /**
      * Clone the network instances.
+     * 
      * @return
      */
     public Set<NetworkInstance> cloneNetworkInt() {
@@ -230,6 +225,7 @@ public class TierInstance extends InstallableInstance {
 
     /**
      * Check if there is a public network (Internet) in the list of network instances.
+     * 
      * @return
      */
     public boolean isTherePublicNet() {
@@ -243,6 +239,7 @@ public class TierInstance extends InstallableInstance {
 
     /**
      * Return the number of no public networks (with name different to Internet).
+     * 
      * @return
      */
     public int getNetworkNumberNoPublic() {
@@ -295,14 +292,16 @@ public class TierInstance extends InstallableInstance {
     }
 
     /**
-     * @param productInstances the productInstances to set
+     * @param productInstances
+     *            the productInstances to set
      */
     public void setProductInstances(List<ProductInstance> productInstances) {
         this.productInstances = productInstances;
     }
 
     /**
-     * @param networkInstances the networkInstances to set
+     * @param networkInstances
+     *            the networkInstances to set
      */
     public void setNetworkInstance(Set<NetworkInstance> networkInstances) {
         this.networkInstances = networkInstances;
@@ -314,7 +313,8 @@ public class TierInstance extends InstallableInstance {
     }
 
     /**
-     * @param tier the tier to set
+     * @param tier
+     *            the tier to set
      */
     public void setTier(Tier tier) {
         this.tier = tier;
@@ -333,7 +333,7 @@ public class TierInstance extends InstallableInstance {
 
     /**
      * The Dto specification.
-     *
+     * 
      * @return
      */
     public TierInstanceDto toDto() {
@@ -364,7 +364,7 @@ public class TierInstance extends InstallableInstance {
 
     /**
      * to json.
-     *
+     * 
      * @return
      */
     public String toJson(String userData) {
@@ -403,10 +403,8 @@ public class TierInstance extends InstallableInstance {
             payload = payload + "\"os:scheduler_hints\": { " + group + "},";
         }
 
-        if (this.getTier().getRegion() != null) {
+        payload = createMetadata(payload);
 
-            payload += "\"metadata\": {\"region\": \"" + this.getTier().getRegion() + "\"},";
-        }
         if (userData != null) {
             payload += "\"user_data\": \"" + userData + "\",";
         }
@@ -417,8 +415,38 @@ public class TierInstance extends InstallableInstance {
 
     }
 
+    private String createMetadata(String payload) {
+
+        payload += "\"metadata\": {";
+
+        if (this.getTier().getRegion() != null) {
+
+            payload += "\"region\": \"" + this.getTier().getRegion() + "\"";
+        }
+
+        if (this.getTier().getProductReleases() != null) {
+            List<ProductRelease> list = this.getTier().getProductReleases();
+
+            for (ProductRelease productRelease : list) {
+
+                Metadata nid = productRelease.getMetadata("nid");
+                if (nid != null) {
+                    payload += ",\"nid\": \"" + nid.getValue() + "\"";
+
+                }
+
+            }
+
+        }
+
+        payload += "},";
+
+        return payload;
+    }
+
     /**
      * Update the Application instance with a new tier.
+     * 
      * @param tier2
      */
     public void update(Tier tier2) {
@@ -427,11 +455,9 @@ public class TierInstance extends InstallableInstance {
     }
 
     /**
-     * Constructs a <code>String</code> with all attributes
-     * in name = value format.
-     *
-     * @return a <code>String</code> representation
-     * of this object.
+     * Constructs a <code>String</code> with all attributes in name = value format.
+     * 
+     * @return a <code>String</code> representation of this object.
      */
     public String toString() {
         StringBuilder sb = new StringBuilder("[[TierInstance]");
@@ -446,6 +472,5 @@ public class TierInstance extends InstallableInstance {
         sb.append("]");
         return sb.toString();
     }
-
 
 }

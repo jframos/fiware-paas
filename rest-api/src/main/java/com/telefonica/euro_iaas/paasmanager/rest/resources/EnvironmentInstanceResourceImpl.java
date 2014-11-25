@@ -26,9 +26,7 @@ package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
@@ -111,7 +109,7 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
      * @throws EntityNotFoundException
      */
     public Task create(String org, String vdc, EnvironmentInstanceDto environmentInstanceDto, String callback)
-        throws APIException {
+            throws APIException {
 
         log.warn("Deploy an environment instance " + environmentInstanceDto.getBlueprintName() + " from environment "
                 + environmentInstanceDto.getEnvironmentDto());
@@ -215,13 +213,18 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
 
     /**
      * Delete a specific environment instance.
-     * @param org   The organization that contains the environment instance.
-     * @param vdc   The vdc of the environment instance.
-     * @param name  The name of the instance.
+     * 
+     * @param org
+     *            The organization that contains the environment instance.
+     * @param vdc
+     *            The vdc of the environment instance.
+     * @param name
+     *            The name of the instance.
      * @param callback
      *            if not empty, contains the url where the result of the async operation will be sent
-     * @return  The task to follow the execution of the operation.
-     * @throws APIException Any exception launched during the process.
+     * @return The task to follow the execution of the operation.
+     * @throws APIException
+     *             Any exception launched during the process.
      */
     public Task destroy(String org, String vdc, String name, String callback) throws APIException {
 
@@ -288,41 +291,9 @@ public class EnvironmentInstanceResourceImpl implements EnvironmentInstanceResou
         this.taskManager = taskManager;
     }
 
-    private List<EnvironmentInstance> filterEqualTiers(List<EnvironmentInstance> envInstances) {
-        List<EnvironmentInstance> result = new ArrayList<EnvironmentInstance>();
-
-        for (EnvironmentInstance envInstance : envInstances) {
-            Set<Tier> tierResult = new HashSet<Tier>();
-            EnvironmentInstance environmentInstance = new EnvironmentInstance();
-
-            Environment environment = envInstance.getEnvironment();
-            Set<Tier> tiers = environment.getTiers();
-            for (Tier tier : tiers) {
-                int i = 0;
-                List<Tier> tierAux = new ArrayList<Tier>();
-                for (int j = i + 1; j < tiers.size(); j++) {
-                    tierAux.add(tier);
-                }
-                i++;
-                if (!tierAux.contains(tier)) {
-                    tierResult.add(tier);
-                }
-            }
-            environment.setTiers(tierResult);
-            environmentInstance.setEnvironment(environment);
-            environmentInstance.setBlueprintName(envInstance.getBlueprintName());
-            environmentInstance.setDescription(envInstance.getDescription());
-            environmentInstance.setName(envInstance.getName());
-            environmentInstance.setStatus(envInstance.getStatus());
-            environmentInstance.setTaskId(envInstance.getTaskId());
-            environmentInstance.setTierInstances(envInstance.getTierInstances());
-            result.add(environmentInstance);
-        }
-        return result;
-    }
-
     /**
      * Get the credentials associated to an user.
+     * 
      * @return
      */
     public PaasManagerUser getCredentials() {

@@ -104,11 +104,12 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         // Deploy MVs
         log.info("Creating infrastructure for environment instance " + environmentInstance.getBlueprintName());
 
-        int numberTier = 0;
         for (Tier tier : tiers) {
             for (int numReplica = 1; numReplica <= tier.getInitialNumberInstances(); numReplica++) {
                 // claudiaData.setVm(tier.getName());
                 log.info("Deploying tier instance for tier " + tier.getName() + " " + tier.getRegion());
+                Tier tierDB=tierManager.loadTierWithProductReleaseAndMetadata(tier.getName(),tier.getEnviromentName(),tier.getVdc());
+
 
                 TierInstance tierInstance = new TierInstance();
                 String name = generateVMName(environmentInstance.getBlueprintName(), tier.getName(), numReplica,
@@ -117,7 +118,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 tierInstance.setNumberReplica(numReplica);
                 tierInstance.setVdc(claudiaData.getVdc());
                 tierInstance.setStatus(Status.DEPLOYING);
-                tierInstance.setTier(tier);
+                tierInstance.setTier(tierDB);
                 VM vm = new VM();
                 String fqn = claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc()
                         + ".services." + claudiaData.getService() + ".vees." + tier.getName() + ".replicas."
@@ -189,7 +190,6 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 }
 
             }
-            numberTier++;
         }
         return environmentInstance;
     }
@@ -236,11 +236,11 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 claudiaClient.browseVMReplica(claudiaData, tierInstance.getName(), 1, tierInstance.getVM(),
                         tierInstance.getTier().getRegion());
             } catch (ClaudiaResourceNotFoundException e) {
-//                deleteNetworksInTierInstance(claudiaData, tierInstance);
+                // deleteNetworksInTierInstance(claudiaData, tierInstance);
                 break;
             }
             claudiaClient.undeployVMReplica(claudiaData, tierInstance);
-//            deleteNetworksInTierInstance(claudiaData, tierInstance);
+            // deleteNetworksInTierInstance(claudiaData, tierInstance);
         }
 
     }
@@ -272,7 +272,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         } catch (EntityNotFoundException e) {
             throw new InfrastructureException("It is not possible to find the network " + e.getMessage());
         }
-        
+
         tierInstance.getNetworkInstances().clear();
         tierInstanceManager.update(tierInstance);
         for (NetworkInstance network : netInsts) {
@@ -282,8 +282,8 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 try {
                     networkInstanceManager.delete(claudiaData, network, network.getRegionName());
                 } catch (Exception e) {
-  				    throw new InfrastructureException ("It is not delete  the network " +network.getNetworkName() + " " + 
-  				        network.getRegionName() + " " +  e.getMessage());
+                    throw new InfrastructureException("It is not delete  the network " + network.getNetworkName() + " "
+                            + network.getRegionName() + " " + e.getMessage());
                 }
             }
         }
@@ -303,7 +303,8 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
             throws InfrastructureException {
 
         log.info("Deploy VM for tier " + tierInstance.getTier().getName() + " with networks "
-                + tierInstance.getNetworkInstances().size() + " and public ip " + tierInstance.getTier().getFloatingip());
+                + tierInstance.getNetworkInstances().size() + " and public ip "
+                + tierInstance.getTier().getFloatingip());
 
         claudiaClient.deployVM(claudiaData, tierInstance, replica, vm);
 

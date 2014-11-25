@@ -90,9 +90,10 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
         Tier tierDB = null;
         try {
-            tierDB = tierManager.load(tierInstance.getTier().getName(), data.getVdc(), envName);
-            log.info("The tier already exists " + tierDB.getName() + " " + tierDB.getFloatingip() + " " + envName
-                    + " " + data.getVdc());
+            tierDB = tierManager.loadTierWithProductReleaseAndMetadata(tierInstance.getTier().getName(), envName,
+                    data.getVdc());
+            log.info("The tier already exists " + tierDB.getName() + " " + tierDB.getFloatingip() + " " + envName + " "
+                    + data.getVdc());
         } catch (EntityNotFoundException e) {
             log.error("Error to load the Tier " + tierInstance.getTier().getName() + " : " + e.getMessage());
             throw new InvalidEntityException("Error to load the Tier " + tierInstance.getTier().getName() + " : "
@@ -215,8 +216,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         environmentInstanceManager.update(envInstance);
 
         try {
-
-            reconfigure(claudiaData, envInstance, tierInstance);
 
             reconfigure(claudiaData, envInstance, tierInstance);
 
@@ -370,7 +369,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     public TierInstance loadByName(String name) throws EntityNotFoundException {
         return tierInstanceDao.findByTierInstanceName(name);
     }
-    
+
     public TierInstance loadNetworkInstnace(String name) throws EntityNotFoundException {
         return tierInstanceDao.findByTierInstanceNameNetworkInst(name);
     }
@@ -489,6 +488,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
         if (tierInstance.getId() != null) {
             tierInstance = tierInstanceDao.update(tierInstance);
+            tierInstance = tierInstanceDao.findByTierInstanceIdWithMetadata(tierInstance.getId());
         }
 
         else {

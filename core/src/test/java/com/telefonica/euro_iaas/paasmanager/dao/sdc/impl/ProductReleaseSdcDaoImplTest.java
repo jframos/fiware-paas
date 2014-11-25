@@ -45,7 +45,6 @@ import org.junit.Test;
 import com.telefonica.euro_iaas.paasmanager.exception.SdcException;
 import com.telefonica.euro_iaas.paasmanager.installator.sdc.util.SDCUtil;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
-import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * @author jesus.movilla
@@ -59,8 +58,6 @@ public class ProductReleaseSdcDaoImplTest {
         productReleaseSdcDaoImpl = new ProductReleaseSdcDaoImpl();
         Client client = mock(Client.class);
         SDCUtil sdcUtils = mock(SDCUtil.class);
-        SystemPropertiesProvider systemPropertiesProvider = mock(SystemPropertiesProvider.class);
-        productReleaseSdcDaoImpl.setSystemPropertiesProvider(systemPropertiesProvider);
         productReleaseSdcDaoImpl.setClient(client);
         productReleaseSdcDaoImpl.setSDCUtil(sdcUtils);
         WebTarget webResource = mock(WebTarget.class);
