@@ -38,11 +38,13 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.installator.sdc.util.SDCUtil;
+import com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
@@ -55,18 +57,23 @@ import com.telefonica.euro_iaas.sdc.model.dto.ChefClient;
 
 public class ProductInstallatorSdcImpl implements ProductInstallator {
 
+    public static final String TYPE_PLAIN = "PLAIN";
+    public static final String TYPE_IP = "IP";
+    public static final String TYPE_IPALL = "IPALL";
+
     private SDCClient sDCClient;
     private SystemPropertiesProvider systemPropertiesProvider;
     private ProductReleaseManager productReleaseManager;
     private TierInstanceManager tierInstanceManager;
+    private InfrastructureManager infrastructureManager;
 
     private SDCUtil sDCUtil;
 
     private static Logger log = LoggerFactory.getLogger(ProductInstallatorSdcImpl.class);
 
-    public ProductInstance install(ClaudiaData claudiaData, String envName, TierInstance tierInstance,
-            ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException,
-            OpenStackException {
+    public ProductInstance install(ClaudiaData claudiaData, EnvironmentInstance environmentInstance,
+            TierInstance tierInstance, ProductRelease productRelease, Set<Attribute> attributes)
+            throws ProductInstallatorException, OpenStackException {
 
         log.info("Install software " + productRelease.getProduct() + "-" + productRelease.getVersion());
         String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
@@ -77,8 +84,9 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
         if (!(attributes.isEmpty())) {
             for (Attribute attrib : attributes) {
-                com.telefonica.euro_iaas.sdc.model.Attribute sdcAttr = new com.telefonica.euro_iaas.sdc.model.Attribute(
-                        attrib.getKey(), attrib.getValue());
+                com.telefonica.euro_iaas.sdc.model.Attribute sdcAttr = resolveAttributeTypeValue(
+                        new com.telefonica.euro_iaas.sdc.model.Attribute(attrib.getKey(), attrib.getValue(),
+                                attrib.getDescription(), attrib.getType()), tierInstance, environmentInstance);
                 attrs.add(sdcAttr);
             }
             productInstanceDto.setAttributes(attrs);
@@ -146,10 +154,10 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
         productInstance.setStatus(Status.INSTALLING);
         try {
-        	log.info ("Installing " +  productRelease.getProduct() + "-" + productRelease.getVersion());
+            log.info("Installing " + productRelease.getProduct() + "-" + productRelease.getVersion());
             task = pIService.install(tierInstance.getVdc(), productInstanceDto, null, claudiaData.getUser().getToken());
-            log.info ("task " + task.getHref());
-            log.info ("task " + task.getResult());
+            log.info("task " + task.getHref());
+            log.info("task " + task.getResult());
             StringTokenizer tokens = new StringTokenizer(task.getHref(), "/");
             String id = "";
 
@@ -161,7 +169,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
             productInstance.setTaskId(id);
             tierInstance.setTaskId(id);
-            tierInstanceManager.update(claudiaData, envName, tierInstance);
+            tierInstanceManager.update(claudiaData, environmentInstance.getName(), tierInstance);
             sDCUtil.checkTaskStatus(task, claudiaData.getUser().getToken(), tierInstance.getVdc());
 
             com.telefonica.euro_iaas.sdc.model.ProductInstance pInstanceSDC = pIService.load(tierInstance.getVdc(),
@@ -169,7 +177,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
                             + productInstanceDto.getProduct().getVersion(), claudiaData.getUser().getToken());
             // Set the domain
             tierInstance.getVM().setDomain(pInstanceSDC.getVm().getDomain());
-            tierInstanceManager.update(claudiaData, envName, tierInstance);
+            tierInstanceManager.update(claudiaData, environmentInstance.getName(), tierInstance);
 
         } catch (Exception e) {
             String errorMessage = " Error invokg SDC to Install Product" + productRelease.getName() + " "
@@ -189,6 +197,56 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
         return productInstance;
 
+    }
+
+    public com.telefonica.euro_iaas.sdc.model.Attribute resolveAttributeTypeValue(
+            com.telefonica.euro_iaas.sdc.model.Attribute attribute, TierInstance tierInstance,
+            EnvironmentInstance environmentInstance) {
+
+        com.telefonica.euro_iaas.sdc.model.Attribute newAtt = new com.telefonica.euro_iaas.sdc.model.Attribute();
+
+        newAtt.setDescription(attribute.getDescription());
+        newAtt.setKey(attribute.getKey());
+        newAtt.setType(attribute.getType());
+
+        String name = extractTierNameFromMacro(attribute);
+
+        String compoundName;
+
+        if (TYPE_IP.equals(attribute.getType())) {
+            compoundName = infrastructureManager.generateVMName(environmentInstance.getBlueprintName(), name, 1,
+                    environmentInstance.getVdc());
+            for (TierInstance ti : environmentInstance.getTierInstances()) {
+                if (ti.getName().equals(compoundName)) {
+                    newAtt.setValue(ti.getVM().getIp());
+                }
+            }
+        } else if (TYPE_IPALL.equals(attribute.getType())) {
+            String ips = "";
+            for (TierInstance ti : environmentInstance.getTierInstances()) {
+                compoundName = infrastructureManager.generateVMName(environmentInstance.getBlueprintName(), name,
+                        ti.getNumberReplica(), environmentInstance.getVdc());
+                if (ti.getName().equals(compoundName)) {
+                    ips = ips + ti.getVM().getIp() + ",";
+                }
+            }
+            ips = ips.substring(0, ips.length() - 1);
+            newAtt.setValue(ips);
+        }else{
+            newAtt.setValue(attribute.getValue());
+        }
+
+        return newAtt;
+    }
+
+    private String extractTierNameFromMacro(com.telefonica.euro_iaas.sdc.model.Attribute attribute) {
+
+        String name = "";
+        if (TYPE_IP.equals(attribute.getType()) || TYPE_IPALL.equals(attribute.getType())) {
+            name = attribute.getValue().substring(attribute.getValue().indexOf("(") + 1,
+                    attribute.getValue().indexOf(")"));
+        }
+        return name;
     }
 
     public void installArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact)
@@ -234,10 +292,9 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
         /* How to catch an productInstallation error */
         if (task.getStatus() == com.telefonica.euro_iaas.sdc.model.Task.TaskStates.ERROR) {
-        	String mens= "Error installing artefact " + artifact.getName()
-            + " in product instance " + productInstance.getProductRelease().getProduct() + ". Description: "
-            + task.getError();
-        	log.warn (mens);
+            String mens = "Error installing artefact " + artifact.getName() + " in product instance "
+                    + productInstance.getProductRelease().getProduct() + ". Description: " + task.getError();
+            log.warn(mens);
             throw new ProductInstallatorException(mens);
         }
 
@@ -451,9 +508,14 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
 
     }
 
+    public void setInfrastructureManager(InfrastructureManager infrastructureManager) {
+        this.infrastructureManager = infrastructureManager;
+    }
+
     /*
-     * private Map<String, String> getHeaders(ClaudiaData claudiaData) { Map<String, String> headers = new
-     * HashMap<String, String>(); headers.put("X-Auth-Token", claudiaData.getUser().getToken());
+     * private Map<String, String> getHeaders(ClaudiaData claudiaData) {
+     * Map<String, String> headers = new HashMap<String, String>();
+     * headers.put("X-Auth-Token", claudiaData.getUser().getToken());
      * headers.put("Tenant-ID", claudiaData.getUser().getTenantId()); }
      */
 

@@ -71,6 +71,9 @@ public class Attribute {
     @Column(nullable = true, length = 2048)
     private String description;
 
+    @Column(nullable = true, length = 256)
+    private String type;
+
     /**
      */
     public Attribute() {
@@ -94,6 +97,18 @@ public class Attribute {
         this.key = key;
         this.value = value;
         this.description = description;
+    }
+
+    /**
+     * @param key
+     * @param value
+     * @param description
+     */
+    public Attribute(String key, String value, String description, String type) {
+        this.key = key;
+        this.value = value;
+        this.description = description;
+        this.type = type;
     }
 
     /**
@@ -175,6 +190,7 @@ public class Attribute {
 
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -187,32 +203,34 @@ public class Attribute {
     }
 
     /**
-     * @param description the description to set
+     * @param description
+     *            the description to set
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
     /**
-     * @param key the key to set
+     * @param key
+     *            the key to set
      */
     public void setKey(String key) {
         this.key = key;
     }
 
     /**
-     * @param value the value to set
+     * @param value
+     *            the value to set
      */
     public void setValue(String value) {
         this.value = value;
     }
 
     /**
-     * Constructs a <code>String</code> with all attributes
-     * in name = value format.
+     * Constructs a <code>String</code> with all attributes in name = value
+     * format.
      *
-     * @return a <code>String</code> representation
-     * of this object.
+     * @return a <code>String</code> representation of this object.
      */
     public String toString() {
         StringBuilder sb = new StringBuilder("[[Attribute]");
@@ -221,9 +239,25 @@ public class Attribute {
         sb.append("[key = ").append(this.key).append("]");
         sb.append("[value = ").append(this.value).append("]");
         sb.append("[description = ").append(this.description).append("]");
+        sb.append("[type = ").append(this.type).append("]");
         sb.append("]");
         return sb.toString();
     }
 
+    /**
+     * 
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * 
+     * @param type
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 
 }

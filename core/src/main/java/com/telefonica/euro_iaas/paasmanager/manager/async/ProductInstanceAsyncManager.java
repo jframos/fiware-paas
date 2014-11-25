@@ -58,9 +58,10 @@ public interface ProductInstanceAsyncManager {
      *            the task which contains the information about the async execution
      * @param callback
      *            if not empty, contains the url where the result of the execution will be sent
+     * @throws EntityNotFoundException 
      */
-    void install(TierInstance tierInstance, ClaudiaData claudiaData, String envName, ProductRelease product,
-            Set<Attribute> attributes, Task task, String callback);
+    void install(TierInstance tierInstance, ClaudiaData claudiaData, String envName, String vdc, ProductRelease product,
+            Set<Attribute> attributes, Task task, String callback) throws EntityNotFoundException;
 
     /**
      * Configure an installed product

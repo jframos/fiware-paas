@@ -114,6 +114,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 TierInstance tierInstance = new TierInstance();
                 String name = generateVMName(environmentInstance.getBlueprintName(), tier.getName(), numReplica,
                         claudiaData.getVdc());
+                
                 tierInstance.setName(name);
                 tierInstance.setNumberReplica(numReplica);
                 tierInstance.setVdc(claudiaData.getVdc());

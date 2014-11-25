@@ -184,7 +184,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         // SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
         for (ProductRelease productRelease : tierInstance.getTier().getProductReleases()) {
 
-            // infrastructureManager.deployVM(claudiaData, tierInstance, replicaNumber, tierInstance.getOvf(),
+            // infrastructureManager.deployVM(claudiaData, tierInstance,
+            // replicaNumber, tierInstance.getOvf(),
             // vm);
 
             ProductInstance productInstance = null;
@@ -193,8 +194,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                 tierInstance = tierInstanceDao.update(tierInstance);
                 envInstance.setStatus(Status.INSTALLING);
                 environmentInstanceManager.update(envInstance);
-                productInstance = productInstanceManager.install(tierInstance, claudiaData, envInstance
-                        .getEnvironment().getName(), productRelease, productRelease.getAttributes());
+                productInstance = productInstanceManager.install(tierInstance, claudiaData, envInstance,
+                        productRelease, productRelease.getAttributes());
             } catch (ProductInstallatorException e) {
                 String mens = "Error to install the productINstance " + productRelease.getName() + " in "
                         + tierInstance.getName() + " " + e.getMessage();
@@ -204,8 +205,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                 String mens = "Error to install the productINstance " + productRelease.getName() + " in "
                         + tierInstance.getName() + " " + e.getMessage();
 
-                productInstance = productInstanceManager.install(tierInstance, claudiaData, envInstance
-                        .getEnvironment().getName(), productRelease, productRelease.getAttributes());
+                productInstance = productInstanceManager.install(tierInstance, claudiaData, envInstance,
+                        productRelease, productRelease.getAttributes());
             }
             tierInstance.addProductInstance(productInstance);
         }
