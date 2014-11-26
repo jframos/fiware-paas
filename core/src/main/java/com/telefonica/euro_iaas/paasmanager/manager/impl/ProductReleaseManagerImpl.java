@@ -106,26 +106,37 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
             ProductRelease pRelease = productReleaseSdcDao.load(product, version, data);
             try {
                 productRelease = productReleaseDao.load(name);
-                productRelease.setAttributes(null);
-                productRelease.setMetadatas(null);
                 productRelease = productReleaseDao.update(productRelease);
 
-                // TODO reset attributes
+                boolean isNew;
                 for (Attribute attribute : pRelease.getAttributes()) {
-                    Attribute newAttribute = new Attribute();
+                    isNew = false;
+                    Attribute newAttribute = productRelease.getAttribute(attribute.getKey());
+                    if (newAttribute == null) {
+                        newAttribute = new Attribute();
+                        isNew = true;
+                    }
                     newAttribute.setKey(attribute.getKey());
                     newAttribute.setValue(attribute.getValue());
                     newAttribute.setDescription(attribute.getDescription());
-                    productRelease.addAttribute(newAttribute);
+                    if (isNew) {
+                        productRelease.addAttribute(newAttribute);
+                    }
                 }
 
-                // TODO reset metadata
                 for (Metadata metadata : pRelease.getMetadatas()) {
-                    Metadata newMetadata = new Metadata();
+                    isNew = false;
+                    Metadata newMetadata = productRelease.getMetadata(metadata.getKey());
+                    if (newMetadata == null) {
+                        newMetadata = new Metadata();
+                        isNew = true;
+                    }
                     newMetadata.setKey(metadata.getKey());
                     newMetadata.setValue(metadata.getValue());
                     newMetadata.setDescription(metadata.getDescription());
-                    productRelease.addMetadata(newMetadata);
+                    if (isNew) {
+                        productRelease.addMetadata(newMetadata);
+                    }
                 }
 
                 productReleaseDao.update(productRelease);
