@@ -24,7 +24,6 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -33,13 +32,13 @@ import org.slf4j.LoggerFactory;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.dao.OSDao;
 import com.telefonica.euro_iaas.paasmanager.dao.ProductReleaseDao;
 import com.telefonica.euro_iaas.paasmanager.dao.sdc.ProductReleaseSdcDao;
 import com.telefonica.euro_iaas.paasmanager.exception.SdcException;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
+import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.paasmanager.model.OS;
+import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 
 /**
@@ -82,14 +81,86 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
                 log.warn(msg);
                 throw new EntityNotFoundException(ProductRelease.class, msg, name);
             } catch (InvalidEntityException e7) {
-            	 String msg = "SDC failure at loading ProductRelease " + name + " " + e7.getMessage();
-                 log.warn(msg);
-                 throw new EntityNotFoundException(ProductRelease.class, msg, name);
-			} catch (AlreadyExistsEntityException e8) {
-				String msg = "SDC failure at loading ProductRelease " + name + " " + e8.getMessage();
+                String msg = "SDC failure at loading ProductRelease " + name + " " + e7.getMessage();
                 log.warn(msg);
                 throw new EntityNotFoundException(ProductRelease.class, msg, name);
-			}
+            } catch (AlreadyExistsEntityException e8) {
+                // if already exist, we should update metadatas or attributes
+                String msg = "SDC failure at loading ProductRelease " + name + " " + e8.getMessage();
+                log.warn(msg);
+                throw new EntityNotFoundException(ProductRelease.class, msg, name);
+            }
+        }
+
+        return productRelease;
+    }
+
+    public ProductRelease loadFromSDCAndCreate(String name, ClaudiaData data) throws EntityNotFoundException {
+        log.info("Sync product release " + name);
+        ProductRelease productRelease;
+        String product = name.split("-")[0];
+        String version = name.split("-")[1];
+
+        try {
+            log.info("Loading from sdc " + product + " " + version);
+            ProductRelease pRelease = productReleaseSdcDao.load(product, version, data);
+            try {
+                productRelease = productReleaseDao.load(name);
+                productRelease = productReleaseDao.update(productRelease);
+
+                boolean isNew;
+                for (Attribute attribute : pRelease.getAttributes()) {
+                    isNew = false;
+                    Attribute newAttribute = productRelease.getAttribute(attribute.getKey());
+                    if (newAttribute == null) {
+                        newAttribute = new Attribute();
+                        isNew = true;
+                    }
+                    newAttribute.setKey(attribute.getKey());
+                    newAttribute.setValue(attribute.getValue());
+                    newAttribute.setDescription(attribute.getDescription());
+                    if (isNew) {
+                        productRelease.addAttribute(newAttribute);
+                    }
+                }
+
+                for (Metadata metadata : pRelease.getMetadatas()) {
+                    isNew = false;
+                    Metadata newMetadata = productRelease.getMetadata(metadata.getKey());
+                    if (newMetadata == null) {
+                        newMetadata = new Metadata();
+                        isNew = true;
+                    }
+                    newMetadata.setKey(metadata.getKey());
+                    newMetadata.setValue(metadata.getValue());
+                    newMetadata.setDescription(metadata.getDescription());
+                    if (isNew) {
+                        productRelease.addMetadata(newMetadata);
+                    }
+                }
+
+                productReleaseDao.update(productRelease);
+            } catch (Exception ex) {
+                log.info("Product don't exist in database: creates");
+                productRelease = create(pRelease);
+            }
+
+        } catch (EntityNotFoundException e5) {
+            String msg = "Product release don't found in SDC: " + name;
+            log.warn(msg);
+            throw new EntityNotFoundException(ProductRelease.class, msg, name);
+        } catch (SdcException e6) {
+            String msg = "Failure at loading ProductRelease from SDC" + name + " " + e6.getMessage();
+            log.warn(msg);
+            throw new EntityNotFoundException(ProductRelease.class, msg, name);
+        } catch (InvalidEntityException e7) {
+            String msg = "Failure creating new ProductRelease " + name + " " + e7.getMessage();
+            log.warn(msg);
+            throw new EntityNotFoundException(ProductRelease.class, msg, name);
+        } catch (AlreadyExistsEntityException e8) {
+            String msg = "Failure creating ProductRelease " + name + " " + e8.getMessage();
+            log.warn(msg);
+            throw new EntityNotFoundException(ProductRelease.class, msg, name);
         }
 
         return productRelease;
@@ -149,6 +220,5 @@ public class ProductReleaseManagerImpl implements ProductReleaseManager {
     public void setProductReleaseSdcDao(ProductReleaseSdcDao productReleaseSdcDao) {
         this.productReleaseSdcDao = productReleaseSdcDao;
     }
-
 
 }

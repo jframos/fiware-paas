@@ -115,36 +115,6 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         return productInstanceDao.findByCriteria(criteria);
     }
 
-    public ProductInstance create2(ClaudiaData data, ProductInstance productInstance, TierInstance tierInstance)
-            throws InvalidEntityException, AlreadyExistsEntityException {
-        ProductRelease productRelease = productInstance.getProductRelease();
-        if (productInstance.getName() == null) {
-            productInstance.setName(tierInstance + "_" + productRelease.getProduct() + "_"
-                    + productRelease.getVersion());
-        }
-
-        if (productRelease.getId() == null)
-            try {
-                productRelease = productReleaseManager.load(
-                        productRelease.getProduct() + "-" + productRelease.getVersion(), data);
-            } catch (EntityNotFoundException e) {
-                // TODO Auto-generated catch block
-                throw new InvalidEntityException("Error to load the product release for persist the product Instance "
-                        + productInstance.getName() + " : " + e.getMessage());
-            }
-
-        if (productInstance.getId() == null)
-            try {
-                productInstanceDao.create(productInstance);
-            } catch (AlreadyExistsEntityException e) {
-                // TODO Auto-generated catch block
-                throw new AlreadyExistsEntityException("Error to persist the product Instance "
-                        + productInstance.getName() + " : " + e.getMessage());
-            }
-        return productInstance;
-
-    }
-
     // //////////// I.O.C /////////////
     /**
      * @param productInstanceDao

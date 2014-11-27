@@ -122,7 +122,7 @@ public class InfrastructureManagerClaudiaImplTest {
     }
 
     @Test
-    public void testCreateInfrasctuctureEnvironmentInstance() throws Exception {
+    public void testCreateInfrastructureEnvironmentInstance() throws Exception {
 
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
@@ -173,6 +173,9 @@ public class InfrastructureManagerClaudiaImplTest {
         when(tierManager.loadTierWithNetworks(any(String.class), any(String.class), any(String.class)))
                 .thenReturn(tier);
 
+        when(tierManager.loadTierWithProductReleaseAndMetadata(any(String.class), any(String.class), any(String.class)))
+                .thenReturn(tier);
+
         EnvironmentInstance envInst2 = manager.createInfrasctuctureEnvironmentInstance(envInst, envInst
                 .getEnvironment().getTiers(), claudiaData);
         assertEquals(envInst2.getBlueprintName(), "blue");
@@ -187,7 +190,7 @@ public class InfrastructureManagerClaudiaImplTest {
     }
 
     @Test
-    public void testDeleteInfrasctuctureEnvironmentInstance() throws Exception {
+    public void testDeleteInfrastructureEnvironmentInstance() throws Exception {
 
         Network net = new Network("NET", "vdc", "region");
         tier.addNetwork(net);
@@ -197,7 +200,7 @@ public class InfrastructureManagerClaudiaImplTest {
 
         Set<Tier> lTier = new HashSet<Tier>();
         lTier.add(tier);
-        Environment env = new Environment("name",  "description", lTier);
+        Environment env = new Environment("name", "description", lTier);
         EnvironmentInstance envInst = new EnvironmentInstance("blue", "des", env);
 
         String ovf = null;
@@ -250,7 +253,7 @@ public class InfrastructureManagerClaudiaImplTest {
     }
 
     @Test
-    public void testDeployNetwrok() throws Exception {
+    public void testDeployNetwork() throws Exception {
 
         Network net = new Network("NET", "vdc", "region");
         tier.addNetwork(net);
@@ -274,7 +277,7 @@ public class InfrastructureManagerClaudiaImplTest {
     }
 
     @Test
-    public void testDeployNetwrokInternet() throws Exception {
+    public void testDeployNetworkInternet() throws Exception {
 
         Network net = new Network("NET", "vdc", "region");
         Network net2 = new Network("Internet", "vdc", "region");
@@ -300,7 +303,7 @@ public class InfrastructureManagerClaudiaImplTest {
     }
 
     @Test
-    public void testDeleteNetwroksinEnv() throws Exception {
+    public void testDeleteNetworkWithoutEnv() throws Exception {
 
         Network net = new Network("NET", "vdc", "region");
         Network net2 = new Network("Internet", "vdc", "region");

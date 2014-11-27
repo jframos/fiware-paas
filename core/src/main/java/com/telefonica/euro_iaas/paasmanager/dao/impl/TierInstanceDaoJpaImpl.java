@@ -41,6 +41,7 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
+import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierInstanceSearchCriteria;
@@ -116,7 +117,6 @@ public class TierInstanceDaoJpaImpl extends AbstractBaseDao<TierInstance, String
         return result;
     }
 
-
     /*
      * (non-Javadoc)
      * @see com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao#findByTierInstanceId (java.lang.Long)
@@ -145,14 +145,14 @@ public class TierInstanceDaoJpaImpl extends AbstractBaseDao<TierInstance, String
             tierInstance = (TierInstance) query.getResultList().get(0);
             tierInstance.getNetworkInstances();
             getEntityManager().flush();
-            
+
         } catch (Exception e) {
             throw new EntityNotFoundException(TierInstance.class, "name", tierInstanceName);
 
         }
         return tierInstance;
     }
-    
+
     public TierInstance findByTierInstanceNameNetworkInst(String tierInstanceName) throws EntityNotFoundException {
         Query query = getEntityManager().createQuery(
                 "select p from TierInstance p left join fetch p.networkInstances where p.name = :name");
@@ -162,7 +162,7 @@ public class TierInstanceDaoJpaImpl extends AbstractBaseDao<TierInstance, String
             tierInstance = (TierInstance) query.getResultList().get(0);
             tierInstance.getNetworkInstances();
             getEntityManager().flush();
-            
+
         } catch (Exception e) {
             throw new EntityNotFoundException(TierInstance.class, "name", tierInstanceName);
 
@@ -170,4 +170,22 @@ public class TierInstanceDaoJpaImpl extends AbstractBaseDao<TierInstance, String
         return tierInstance;
     }
 
+    @Override
+    public TierInstance findByTierInstanceIdWithMetadata(Long tierInstanceId) throws EntityNotFoundException {
+        TierInstance tierInstance;
+        try {
+            tierInstance = super.loadByField(TierInstance.class, "id", tierInstanceId);
+            tierInstance.getProductInstances();
+
+            for (ProductRelease productRelease : tierInstance.getTier().getProductReleases()) {
+                productRelease.getMetadatas();
+            }
+
+        } catch (Exception e) {
+            String message = " No TierInstance found in the database with id: " + tierInstanceId;
+            throw new EntityNotFoundException(TierInstance.class, e.getMessage(), message);
+        }
+        // load product releases
+        return tierInstance;
+    }
 }

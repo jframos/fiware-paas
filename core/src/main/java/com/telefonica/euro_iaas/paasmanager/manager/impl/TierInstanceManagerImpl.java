@@ -90,7 +90,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
         Tier tierDB = null;
         try {
-            tierDB = tierManager.load(tierInstance.getTier().getName(), data.getVdc(), envName);
+            tierDB = tierManager.loadTierWithProductReleaseAndMetadata(tierInstance.getTier().getName(), envName,
+                    data.getVdc());
             log.info("The tier already exists " + tierDB.getName() + " " + tierDB.getFloatingip() + " " + envName + " "
                     + data.getVdc());
         } catch (EntityNotFoundException e) {
@@ -216,8 +217,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         environmentInstanceManager.update(envInstance);
 
         try {
-
-            reconfigure(claudiaData, envInstance, tierInstance);
 
             reconfigure(claudiaData, envInstance, tierInstance);
 
@@ -458,8 +457,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     /**
      * @param infrastructureManager
-     *            the infrastructureManager to set <property
-     *            name="tierInstanceDao" ref="tierInstanceDao"/>
+     *            the infrastructureManager to set <property name="tierInstanceDao" ref="tierInstanceDao"/>
      */
     public void setInfrastructureManager(InfrastructureManager infrastructureManager) {
         this.infrastructureManager = infrastructureManager;
@@ -491,6 +489,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
         if (tierInstance.getId() != null) {
             tierInstance = tierInstanceDao.update(tierInstance);
+            tierInstance = tierInstanceDao.findByTierInstanceIdWithMetadata(tierInstance.getId());
         }
 
         else {
