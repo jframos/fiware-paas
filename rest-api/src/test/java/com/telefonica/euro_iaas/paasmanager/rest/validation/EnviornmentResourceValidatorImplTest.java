@@ -35,26 +35,22 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentInstanceException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
-
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
-
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
@@ -69,6 +65,7 @@ public class EnviornmentResourceValidatorImplTest {
     private ResourceValidator resourceValidator;
     private TierResourceValidator tierResourceValidator;
     private SystemPropertiesProvider systemPropertiesProvider;
+    private ProductValidator productValidator;
 
     /**
      * Initialize the Unit Test.
@@ -86,6 +83,8 @@ public class EnviornmentResourceValidatorImplTest {
         environmentManager = mock(EnvironmentManager.class);
         tierResourceValidator = mock(TierResourceValidator.class);
         environmentResourceValidator.setResourceValidator(resourceValidator);
+        productValidator=mock(ProductValidator.class);
+        environmentResourceValidator.setProductValidator(productValidator);
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         environmentInstanceManager = mock(EnvironmentInstanceManager.class);
         environmentResourceValidator.setEnvironmentManager(environmentManager);
@@ -173,10 +172,11 @@ public class EnviornmentResourceValidatorImplTest {
      * @throws EntityNotFoundException
      * @throws AlreadyExistEntityException
      * @throws InvalidEntityException
+     * @throws InvalidEnvironmentInstanceException 
      */
     @Test
     public void shouldValidateAbstractEnvWitTiers()
-        throws EntityNotFoundException, AlreadyExistEntityException, InvalidEntityException {
+        throws EntityNotFoundException, AlreadyExistEntityException, InvalidEntityException, InvalidEnvironmentInstanceException {
 
         EnvironmentDto envDto = new EnvironmentDto();
         envDto.setName("name");
@@ -204,10 +204,11 @@ public class EnviornmentResourceValidatorImplTest {
      * @throws EntityNotFoundException
      * @throws AlreadyExistEntityException
      * @throws InvalidEntityException
+     * @throws InvalidEnvironmentInstanceException 
      */
     @Test(expected = AlreadyExistEntityException.class)
     public void shouldValidateAbstractEnvAlreadyExists()
-        throws EntityNotFoundException, AlreadyExistEntityException, InvalidEntityException {
+        throws EntityNotFoundException, AlreadyExistEntityException, InvalidEntityException, InvalidEnvironmentInstanceException {
 
         EnvironmentDto envDto = new EnvironmentDto();
         envDto.setName("name");

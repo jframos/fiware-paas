@@ -33,6 +33,7 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentInstanceException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
@@ -55,6 +56,7 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
     private EnvironmentManager environmentManager;
     private EnvironmentInstanceManager environmentInstanceManager;
     private ResourceValidator resourceValidator;
+    private ProductValidator productValidator;
 
     /**
      * Validate the request to create and EnvironmentInstance from a EnvironmentDto.
@@ -84,9 +86,12 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
                 log.info("Validating " + tierDto.getName());
                 try {
                     tierResourceValidator.validateCreate(claudiaData, tierDto, vdc, environmentDto.getName());
+                    productValidator.validateAttributes(tierDto);
                 } catch (InfrastructureException e) {
                     throw new InvalidEntityException(e);
                 } catch (QuotaExceededException e) {
+                    throw new InvalidEntityException(e);
+                } catch (InvalidEnvironmentInstanceException e) {
                     throw new InvalidEntityException(e);
                 }
             }
@@ -100,9 +105,10 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
      * @param environmentDto    The information about the environment instance.
      * @throws AlreadyExistEntityException
      * @throws InvalidEntityException
+     * @throws InvalidEnvironmentInstanceException 
      */
     public void validateAbstractCreate(EnvironmentDto environmentDto) throws AlreadyExistEntityException,
-            InvalidEntityException {
+            InvalidEntityException, InvalidEnvironmentInstanceException {
 
         try {
             environmentManager.load(environmentDto.getName(), "");
@@ -119,6 +125,7 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
             for (TierDto tierDto : environmentDto.getTierDtos()) {
                 log.info("Validating " + tierDto.getName());
                 tierResourceValidator.validateCreateAbstract(tierDto, environmentDto.getName());
+                productValidator.validateAttributes(tierDto);
             }
         }
 
@@ -187,6 +194,10 @@ public class EnvironmentResourceValidatorImpl implements EnvironmentResourceVali
 
     public void setResourceValidator(ResourceValidator resourceValidator) {
         this.resourceValidator = resourceValidator;
+    }
+
+    public void setProductValidator(ProductValidator productValidator) {
+        this.productValidator = productValidator;
     }
 
 }
