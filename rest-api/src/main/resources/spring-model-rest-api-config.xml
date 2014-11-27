@@ -42,6 +42,8 @@
 
 		<property name="environmentResourceValidator" ref="environmentResourceValidator" />
 		<property name="environmentManager" ref="environmentManager" />
+		<property name="systemPropertiesProvider" ref="systemPropertiesProvider" />
+
 	</bean>
 
 	<bean id="productReleaseResource" lazy-init="true"
@@ -87,7 +89,6 @@
 		</bean> -->
 
 
-
 	<!-- =========== == VALIDATORS == ================ -->
 
 	<bean id="applicationInstanceResourceValidator" lazy-init="true"
@@ -111,7 +112,6 @@
 		<property name="environmentInstanceManager" ref="environmentInstanceManager" />
 		<property name="resourceValidator" ref="resourceValidator" />
 		<property name="productValidator" ref="productValidator" />
-
 	</bean>
 
 	<bean id="tierInstanceResourceValidator" lazy-init="true"
@@ -133,12 +133,9 @@
 	<bean id="resourceValidator" lazy-init="true"
 		class="com.telefonica.euro_iaas.paasmanager.rest.validation.ResourceValidatorImpl">
 	</bean>
-
 	<bean id="productValidator" lazy-init="true"
 		class="com.telefonica.euro_iaas.paasmanager.rest.validation.ProductValidatorImpl">
 		<property name="systemPropertiesProvider" ref="systemPropertiesProvider" />
 	</bean>
-
-
 
 </beans>
