@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -42,13 +43,15 @@ import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
+import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * default Environment implementation.
- *
+ * 
  * @author Henar Munoz
  */
 @Path("/catalog/org/{org}/environment")
@@ -59,13 +62,16 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
     @Autowired
     private EnvironmentManager environmentManager;
 
+    @Autowired
+    private SystemPropertiesProvider systemPropertiesProvider;
+
     private EnvironmentResourceValidator environmentResourceValidator;
 
     private static Logger log = LoggerFactory.getLogger(AbstractEnvironmentResourceImpl.class);
 
     /**
      * Delete an environment instance.
-     *
+     * 
      * @param org
      *            The organization in which the environment is deployed.
      * @param envName
@@ -93,7 +99,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
 
     /**
      * Find all environments associated to an organization.
-     *
+     * 
      * @param org
      *            The organization from which extract all environments.
      * @param page
@@ -135,7 +141,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
 
     /**
      * Insert a new environment.
-     *
+     * 
      * @param org
      *            The organization in which inserts the new environment.
      * @param environmentDto
@@ -147,6 +153,9 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
     public void insert(String org, EnvironmentDto environmentDto) throws APIException {
         log.info("Inserting env " + environmentDto.getName() + " from org " + org);
         ClaudiaData claudiaData = new ClaudiaData(org, "", environmentDto.getName());
+
+        addCredentialsToClaudiaData(claudiaData);
+
         try {
 
             environmentManager.load(environmentDto.getName(), "");
@@ -166,8 +175,35 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
     }
 
     /**
+     * Add PaasManagerUser to claudiaData.
+     * 
+     * @param claudiaData
+     */
+    public void addCredentialsToClaudiaData(ClaudiaData claudiaData) {
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+
+            claudiaData.setUser(getCredentials());
+        }
+
+    }
+
+    /**
+     * Get the credentials associated to an user.
+     * 
+     * @return
+     */
+    public PaasManagerUser getCredentials() {
+        if (systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")) {
+            return (PaasManagerUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } else {
+            return null;
+        }
+
+    }
+
+    /**
      * Get detail information of a specific environment.
-     *
+     * 
      * @param org
      *            The organization of the environment to find.
      * @param name
@@ -194,6 +230,10 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
 
     public void setEnvironmentResourceValidator(EnvironmentResourceValidator environmentResourceValidator) {
         this.environmentResourceValidator = environmentResourceValidator;
+    }
+
+    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
+        this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
 }
