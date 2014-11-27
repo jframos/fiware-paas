@@ -82,7 +82,7 @@ public class ProductReleaseSdcDaoImpl implements ProductReleaseSdcDao {
 
         try {
             String url = sDCUtil.getSdcUtil(data.getUser().getToken());
-            log.debug("the url: " + url);
+            log.info("Loading from SDC in url: " + url);
 
             com.telefonica.euro_iaas.sdc.client.services.ProductReleaseService pIService = sDCClient
                     .getProductReleaseService(url, SDC_SERVER_MEDIATYPE);
