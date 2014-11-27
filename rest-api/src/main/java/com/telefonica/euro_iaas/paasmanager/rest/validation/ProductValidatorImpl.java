@@ -31,7 +31,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.ProductReleaseDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
-public class ProductValidatorImpl implements ProductValidator{
+public class ProductValidatorImpl implements ProductValidator {
 
     private SystemPropertiesProvider systemPropertiesProvider;
 
@@ -55,15 +55,15 @@ public class ProductValidatorImpl implements ProductValidator{
                         break;
                     }
                 }
-                String patternIP="IP(\\W+)";
-                String patternIPALL="IPALL(\\W+)";
-                String patternPlain="\\W+";
-                if(a.getValue().matches(patternIP)&&"IP".equals(a.getType())){
-                    error=false;
-                }else if(a.getValue().matches(patternIPALL)&&"IPALL".equals(a.getType())){
-                    error=false;
-                }else if(a.getValue().matches(patternPlain)&&"Plain".equals(a.getType())){
-                    error=false;
+                String patternIP = "IP(\\W+)";
+                String patternIPALL = "IPALL(\\W+)";
+                String patternPlain = "\\W+";
+                if (a.getValue().matches(patternIP) && "IP".equals(a.getType())) {
+                    error = false;
+                } else if (a.getValue().matches(patternIPALL) && "IPALL".equals(a.getType())) {
+                    error = false;
+                } else if (a.getValue().matches(patternPlain) && "Plain".equals(a.getType())) {
+                    error = false;
                 }
                 if (error) {
                     throw new InvalidEnvironmentInstanceException(msg);
