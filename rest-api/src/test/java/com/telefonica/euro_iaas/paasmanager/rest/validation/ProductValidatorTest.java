@@ -91,6 +91,122 @@ public class ProductValidatorTest {
     }
     
     @Test
+    public void testValidateAttributesBadValue() throws InvalidEnvironmentInstanceException {
+        
+
+        Attribute attribute = new Attribute("ssl_port", "8443", "The ssl listen port", "IP");
+        Set<Attribute> attributes = new HashSet<Attribute>();
+        attributes.add(attribute);
+
+        TierDto tierDTO = new TierDto();
+        tierDTO.setName("tier1");
+        tierDTO.setInitialNumberInstances(new Integer(1));
+        tierDTO.setMaximumNumberInstances(new Integer(1));
+        tierDTO.setMinimumNumberInstances(new Integer(1));
+        tierDTO.setImage("image");
+        tierDTO.setFlavour("flavor");
+        List<ProductReleaseDto> list = new ArrayList<ProductReleaseDto>();
+
+        ProductReleaseDto pdto = new ProductReleaseDto("a", "b", "1.0");
+        pdto.setPrivateAttributes(attributes);
+        List<ProductReleaseDto> lpdto = new ArrayList<ProductReleaseDto>();
+        lpdto.add(pdto);
+
+        tierDTO.setProductReleaseDtos(lpdto);
+
+        productValidator.validateAttributes(tierDTO);
+
+        verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
+    }
+    
+    @Test
+    public void testValidateAttributesOKValue() throws InvalidEnvironmentInstanceException {
+        
+
+        Attribute attribute = new Attribute("ssl_port", "IP(tierName)", "The ssl listen port", "IP");
+        Set<Attribute> attributes = new HashSet<Attribute>();
+        attributes.add(attribute);
+
+        TierDto tierDTO = new TierDto();
+        tierDTO.setName("tier1");
+        tierDTO.setInitialNumberInstances(new Integer(1));
+        tierDTO.setMaximumNumberInstances(new Integer(1));
+        tierDTO.setMinimumNumberInstances(new Integer(1));
+        tierDTO.setImage("image");
+        tierDTO.setFlavour("flavor");
+        List<ProductReleaseDto> list = new ArrayList<ProductReleaseDto>();
+
+        ProductReleaseDto pdto = new ProductReleaseDto("a", "b", "1.0");
+        pdto.setPrivateAttributes(attributes);
+        List<ProductReleaseDto> lpdto = new ArrayList<ProductReleaseDto>();
+        lpdto.add(pdto);
+
+        tierDTO.setProductReleaseDtos(lpdto);
+
+        productValidator.validateAttributes(tierDTO);
+
+        verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
+    }
+    
+    @Test
+    public void testValidateAttributesBadValue2() throws InvalidEnvironmentInstanceException {
+        
+
+        Attribute attribute = new Attribute("ssl_port", "8443", "The ssl listen port", "IPALL");
+        Set<Attribute> attributes = new HashSet<Attribute>();
+        attributes.add(attribute);
+
+        TierDto tierDTO = new TierDto();
+        tierDTO.setName("tier1");
+        tierDTO.setInitialNumberInstances(new Integer(1));
+        tierDTO.setMaximumNumberInstances(new Integer(1));
+        tierDTO.setMinimumNumberInstances(new Integer(1));
+        tierDTO.setImage("image");
+        tierDTO.setFlavour("flavor");
+        List<ProductReleaseDto> list = new ArrayList<ProductReleaseDto>();
+
+        ProductReleaseDto pdto = new ProductReleaseDto("a", "b", "1.0");
+        pdto.setPrivateAttributes(attributes);
+        List<ProductReleaseDto> lpdto = new ArrayList<ProductReleaseDto>();
+        lpdto.add(pdto);
+
+        tierDTO.setProductReleaseDtos(lpdto);
+
+        productValidator.validateAttributes(tierDTO);
+
+        verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
+    }
+    
+    @Test
+    public void testValidateAttributesOKValue2() throws InvalidEnvironmentInstanceException {
+        
+
+        Attribute attribute = new Attribute("ssl_port", "IPALL(tierName)", "The ssl listen port", "IPALL");
+        Set<Attribute> attributes = new HashSet<Attribute>();
+        attributes.add(attribute);
+
+        TierDto tierDTO = new TierDto();
+        tierDTO.setName("tier1");
+        tierDTO.setInitialNumberInstances(new Integer(1));
+        tierDTO.setMaximumNumberInstances(new Integer(1));
+        tierDTO.setMinimumNumberInstances(new Integer(1));
+        tierDTO.setImage("image");
+        tierDTO.setFlavour("flavor");
+        List<ProductReleaseDto> list = new ArrayList<ProductReleaseDto>();
+
+        ProductReleaseDto pdto = new ProductReleaseDto("a", "b", "1.0");
+        pdto.setPrivateAttributes(attributes);
+        List<ProductReleaseDto> lpdto = new ArrayList<ProductReleaseDto>();
+        lpdto.add(pdto);
+
+        tierDTO.setProductReleaseDtos(lpdto);
+
+        productValidator.validateAttributes(tierDTO);
+
+        verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
+    }
+    
+    @Test
     public void testValidateAttributesDefaultType() throws InvalidEnvironmentInstanceException {
         
 
