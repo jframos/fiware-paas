@@ -47,7 +47,7 @@ import com.telefonica.euro_iaas.paasmanager.rest.util.CompareDates;
 
 /**
  * Class to obtain a valid token from the OpenStack.
- *
+ * 
  * @author fernandolopezaguilar
  */
 public class OpenStackAuthenticationToken {
@@ -98,11 +98,13 @@ public class OpenStackAuthenticationToken {
      * The Offset between the local time and the remote Date.
      */
     private static long offset;
+
     /**
      * The default constructor of the class OpenStackAuthenticationToken.
-     *
-     * @param params The array of params with the values of url, tenant, user and password,
-     *               together with the httpClient and threshold.
+     * 
+     * @param params
+     *            The array of params with the values of url, tenant, user and password, together with the httpClient
+     *            and threshold.
      */
     OpenStackAuthenticationToken(ArrayList<Object> params) {
         initialize(params);
@@ -110,8 +112,9 @@ public class OpenStackAuthenticationToken {
 
     /**
      * Function to initialize the data structure.
-     *
-     * @param params    List of parameters to initialize.
+     * 
+     * @param params
+     *            List of parameters to initialize.
      */
     public void initialize(ArrayList<Object> params) {
         this.token = "";
@@ -130,8 +133,8 @@ public class OpenStackAuthenticationToken {
 
     /**
      * Return a valid token if it is null or it is older than 24h.
-     *
-     * @return  The new credential (tenant id and token).
+     * 
+     * @return The new credential (tenant id and token).
      */
     public String[] getCredentials() {
         String[] credential = new String[2];
@@ -164,9 +167,9 @@ public class OpenStackAuthenticationToken {
     }
 
     /**
-     * Analyze the response of the keystone and obtain the corresponding
-     * information related to date, tenant and token id.
-     *
+     * Analyze the response of the keystone and obtain the corresponding information related to date, tenant and token
+     * id.
+     * 
      * @param response
      */
     protected void extractData(ArrayList<Object> response) {
@@ -239,7 +242,7 @@ public class OpenStackAuthenticationToken {
         // curl -d '{"auth": {"tenantName": "demo", "passwordCredentials":
         // {"username": "admin", "password": "temporal"}}}'
         // -H "Content-type: application/json"
-        // -H "Accept: application/xml"�
+        // -H "Accept: application/xml"?
         // http://10.95.171.115:35357/v2.0/tokens
 
         log.debug("createKeystonePostRequest " + url);
@@ -267,7 +270,10 @@ public class OpenStackAuthenticationToken {
 
     private ArrayList<Object> executePostRequest(HttpPost postRequest) {
         HttpResponse response;
-        httpClient = new DefaultHttpClient();
+
+        if (httpClient == null) {
+            httpClient = new DefaultHttpClient();
+        }
 
         ArrayList<Object> message = new ArrayList();
 
@@ -280,8 +286,9 @@ public class OpenStackAuthenticationToken {
 
             localDate = new Date();
 
-            if ((response.getStatusLine().getStatusCode() != 201)
-                    && (response.getStatusLine().getStatusCode() != 200)) {
+            int status = response.getStatusLine().getStatusCode();
+
+            if (status != 201 && status != 200) {
 
                 String exceptionMessage = "Failed : HTTP error code : (" + postRequest.getURI().toString() + ")"
                         + response.getStatusLine().getStatusCode() + " message: " + response;
