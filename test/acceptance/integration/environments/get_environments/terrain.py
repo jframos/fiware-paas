@@ -25,6 +25,7 @@ from tools import environment_request
 from tools.environment_request import EnvironmentRequest
 from tools.constants import PAAS, KEYSTONE_URL, PAASMANAGER_URL, TENANT, USER,\
     PASSWORD, VDC, SDC_URL
+from tools import terrain_steps
 
 
 @before.each_feature
@@ -41,8 +42,17 @@ def before_each_scenario(feature):
     world.env_requests.get_environments()
     environment_request.check_get_environments_response(world.response, 200, 0)
 
+    # Create product in SDC to be used by this feature
+    terrain_steps.init_products_in_sdc()
+
 
 @after.each_scenario
 def after_each_scenario(scenario):
     # Delete the environments created in the scenario.
     environment_request.delete_created_environments()
+
+
+@after.each_feature
+def after_each_feature(feature):
+    """ Remove testing products in SDC """
+    terrain_steps.remove_testing_products_in_sdc()
