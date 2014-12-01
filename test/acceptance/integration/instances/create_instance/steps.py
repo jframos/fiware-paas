@@ -44,6 +44,13 @@ def a_list_of_tiers_has_been_defined_with_data(step):
         data = dataset_utils.prepare_data(row)
         tier = Tier(data.get(NAME), world.config[PAAS][TIER_IMAGE])
         tier.parse_and_add_products(data.get(PRODUCTS))
+
+        # For each product, check if there are defined attributes
+        for product_with_attributes in world.product_list_with_attributes:
+            for attribute in product_with_attributes['attributes']:
+                tier.add_attribute_to_product(product_with_attributes['name'], attribute['key'], attribute['value'],
+                                              attribute['type'])
+
         tier.parse_and_add_networks(data.get(NETWORKS))
         world.tiers.append(tier)
 
@@ -92,3 +99,25 @@ def i_receive_a_response_of_type(step, response_type):
 @step(u'the task ends with "([^"]*)" status')
 def the_task_ends_with_status(step, status):
     environment_instance_request.check_task_status(world.task_data, status)
+
+
+@step(u'the product installator to be used is "([^"]*)"')
+def the_installator_to_be_used_is_group1(step, installator):
+    world.product_installator = installator
+
+
+@step(u'the product "([^"]*)" with version "([^"]*)" is created in SDC with attributes:')
+def the_product_group1_is_created_in_sdc_with_attributes(step, product_name, product_version):
+    product_data = dict()
+    product_data['name'] = product_name
+
+    attribute_list = list()
+    for dataset_row in step.hashes:
+        attribute_list.append(dataset_utils.prepare_data(dataset_row))
+    product_data['attributes'] = attribute_list
+    world.product_list_with_attributes.append(product_data)
+
+    # Create product in SDC
+    world.product_sdc_request.create_product_and_release_with_attributes_and_installator(product_name, product_version,
+                                                                                         attribute_list,
+                                                                                         world.product_installator)

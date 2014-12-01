@@ -43,6 +43,15 @@ def a_list_of_tiers_has_been_defined_with_data(step):
         data = dataset_utils.prepare_data(row)
         tier = Tier(data.get(NAME), world.config[PAAS][TIER_IMAGE])
         tier.parse_and_add_products(data.get(PRODUCTS))
+
+        # For each product, check if there are defined attributes
+        print world.product_list_with_attributes
+        for product_with_attributes in world.product_list_with_attributes:
+            for attribute in product_with_attributes['attributes']:
+                attribute_type = attribute['type'] if 'type' in attribute else None
+                tier.add_attribute_to_product(product_with_attributes['name'], attribute['key'], attribute['value'],
+                                              attribute_type)
+
         tier.parse_and_add_networks(data.get(NETWORKS))
         world.tiers.append(tier)
 
@@ -62,9 +71,27 @@ def i_request_the_creation_of_an_abstract_environment_with_data(step):
 def i_request_the_creation_of_an_abstract_environment_with_tiers_and_data(step):
     data = dataset_utils.prepare_data(step.hashes[0])
     world.env_requests.add_abstract_environment(data.get(NAME), data.get(DESCRIPTION), world.tiers)
+    raw_input('Press key...')
 
 
 @step(u'I receive an? "([^"]*)" response')
 def i_receive_a_response_of_type(step, response_type):
     status_code = http.status_codes[response_type]
     environment_request.check_add_environment_response(world.response, status_code)
+
+
+@step(u'the product "([^"]*)" with version "([^"]*)" is created in SDC with attributes:')
+def the_product_group1_is_created_in_sdc_with_attributes(step, product_name, product_version):
+    product_data = dict()
+    product_data['name'] = product_name
+
+    attribute_list = list()
+    for dataset_row in step.hashes:
+        attribute_list.append(dataset_utils.prepare_data(dataset_row))
+    product_data['attributes'] = attribute_list
+    world.product_list_with_attributes.append(product_data)
+
+    # Create product in SDC
+    world.product_sdc_request.create_product_and_release_with_attributes_and_installator(product_name, product_version,
+                                                                                         attribute_list,
+                                                                                         world.product_installator)

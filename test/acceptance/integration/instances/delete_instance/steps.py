@@ -71,15 +71,21 @@ def an_instance_of_the_environment_has_already_been_created_using_data(step, env
     assert world.response.status == 200,\
     "Wrong status code received getting environment: %d. Expected: %d. Body content: %s"\
     % (world.response.status, 200, world.response.read())
-    environment = environment_request.process_environment(json.loads(world.response.read()))
+
+    parsed_body = json.loads(world.response.read())
+    environment = environment_request.process_environment(parsed_body)
+
     # Then, create the instance
     data = dataset_utils.prepare_data(step.hashes[0])
     instance = EnvironmentInstance(data.get(NAME), data.get(DESCRIPTION), environment)
     world.inst_requests.add_instance(instance)
+    i_receive_a_response_of_type(step, 'OK')
+    the_task_ends_with_status(step, 'SUCCESS')
 
 
 @step(u'I request the deletion of the instance "([^"]*)"')
 def i_request_the_deletion_of_the_instance(step, name):
+    raw_input("Press key...")
     name = dataset_utils.generate_fixed_length_param(name)
     world.inst_requests.delete_instance(name)
 
@@ -93,3 +99,8 @@ def i_receive_a_response_of_type(step, response_type):
 @step(u'the task ends with "([^"]*)" status')
 def the_task_ends_with_status(step, status):
     environment_instance_request.check_task_status(world.task_data, status)
+
+
+@step(u'I remove the node from Chef-Server')
+def i_remove_the_node_from_chef_server(step):
+    world.product_sdc_request.delete_node()

@@ -39,13 +39,24 @@ def before_each_scenario(feature):
         world.config[PAAS][SDC_URL])
 
     # Create product in SDC to be used by this feature
+    world.product_and_release_list = list()
+    world.product_installator = 'chef'
     terrain_steps.init_products_in_sdc()
+
+
+@before.each_scenario
+def before_each_scenario(scenario):
+    world.product_list_with_attributes = list()
 
 
 @after.each_scenario
 def after_each_scenario(scenario):
     # Delete the environments created in the scenario.
     environment_request.delete_created_abstract_environments()
+
+    for product_and_release in world.product_and_release_list:
+        world.product_sdc_request.delete_product_and_release(product_and_release['product_name'],
+                                                             product_and_release['product_release'])
 
 
 @after.each_feature

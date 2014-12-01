@@ -5,39 +5,41 @@ Feature: Create an instance of an environment in a tenant
     I want to be able to create instances of the environments in a tenant
     so that I can use them and work with them
 
-    @happy_path @slow
+
+    @happy_path
     Scenario: Create instance of an environment with one tier
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
-            | name       |
-            | tiernameqa |
+            | name   |
+            | tierqa |
         And an environment has already been created with the previous tiers and data:
-            | name   | description |
-            | nameqa | descqa      |
-        When I request the creation of an instance of the environment "nameqa" using data:
-            | name           | description    |
-            | instancenameqa | instancedescqa |
-        Then I receive an "OK" response with a task
-        And the task ends with "SUCCESS" status
-        
-    @slow
-    Scenario: Create instance of an environment with several tiers
-        Given the paas manager is up and properly configured
-        And a list of tiers has been defined with data:
-            | name        |
-            | tiernameqa1 |
-            | tiernameqa2 |
-            | tiernameqa3 |
-        And an environment has already been created with the previous tiers and data:
-            | name   | description |
-            | nameqa | descqa      |
-        When I request the creation of an instance of the environment "nameqa" using data:
-            | name           | description    |
-            | instancenameqa | instancedescqa |
+            | name  | description |
+            | envqa | descqa      |
+        When I request the creation of an instance of the environment "envqa" using data:
+            | name   | description    |
+            | instqa | instancedescqa |
         Then I receive an "OK" response with a task
         And the task ends with "SUCCESS" status
 
-    @slow
+
+    Scenario: Create instance of an environment with several tiers
+        Given the paas manager is up and properly configured
+        And a list of tiers has been defined with data:
+            | name      |
+            | tierqa1   |
+            | tierqa2   |
+            | tierqa3   |
+        And an environment has already been created with the previous tiers and data:
+            | name  | description |
+            | envqa | descqa      |
+        When I request the creation of an instance of the environment "envqa" using data:
+            | name   | description    |
+            | instqa | instancedescqa |
+        Then I receive an "OK" response with a task
+        And the task ends with "SUCCESS" status
+
+
+
     Scenario Outline: Create instance of an environment with tiers with different valid data (1/3)
     # Split in three parts due to OpenStack limits that cannot be easily overridden
         Given the paas manager is up and properly configured
@@ -56,12 +58,12 @@ Feature: Create an instance of an environment in a tenant
         And the task ends with "SUCCESS" status
         
         Examples:
-            | name            | envname                 | envdesc                  |
-            | instancenameqa1 | a                       | descqa                   |
-            | instancenameqa2 | nameqa-1                | descqa                   |
-            | instancenameqa3 | [STRING_WITH_LENGTH_30] | descqa                   |
-        
-    @slow
+            | name    | envname                 | envdesc                  |
+            | instqa1 | a                       | descqa                   |
+            | instqa2 | nameqa-1                | descqa                   |
+            | instqa3 | [STRING_WITH_LENGTH_30] | descqa                   |
+
+
     Scenario Outline: Create instance of an environment with tiers with different valid data (2/3)
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -83,8 +85,8 @@ Feature: Create an instance of an environment in a tenant
             | instancenameqa4 | nameqa1                 | a                        |
             | instancenameqa5 | nameqa2                 | descqa-1                 |
             | instancenameqa6 | nameqa3                 | Symbols: +*=._,;"@#%)/?! |
-        
-    @slow
+
+
     Scenario Outline: Create instance of an environment with tiers with different valid data (3/3)
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -105,8 +107,8 @@ Feature: Create an instance of an environment in a tenant
             | name            | envname                 | envdesc                  |
             | instancenameqa7 | nameqa4                 | Non-ASCII: á.é.í.ñ       |
             | instancenameqa8 | nameqa5                 | [STRING_WITH_LENGTH_256] |
-        
-    @slow
+
+
     Scenario Outline: Create instance with different valid data of an environment with tiers
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -132,7 +134,7 @@ Feature: Create an instance of an environment in a tenant
             | instancenameqa4         | Non-ASCII: á.é.í.ñ       | nameqa7 |
             | instancenameqa5         | [STRING_WITH_LENGTH_256] | nameqa8 |
 
-    @slow
+
     Scenario: Create instance with different invalid data of an environment with tiers
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -156,7 +158,7 @@ Feature: Create an instance of an environment in a tenant
             | instancenameqa2         |                          | nameqa6 |
             | instancenameqa3         | [MISSING_PARAM]          | nameqa7 |
 
-    @slow
+
     Scenario Outline: Create instance of an environment with one tier with products
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -172,25 +174,26 @@ Feature: Create an instance of an environment in a tenant
         And the task ends with "SUCCESS" status
 
         Examples:
-            | name            | envname | tiername    | products                 |
-            | instancenameqa1 | nameqa1 | tiernameqa1 | git=1.7                  |
-            | instancenameqa2 | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 |
+            | name            | envname | tiername    | products                    |
+            | instancenameqa  | nameqa  | tiernameqa  | testing_paas_product=0.0.1  |
+
 
     @slow
     Scenario: Create instance of an environment with several tiers with products
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
-            | name        | products         |
-            | tiernameqa1 | git=1.7          |
-            | tiernameqa2 | mediawiki=1.17.0 |
+            | name       | products                   |
+            | tiernameqa | testing_paas_product=0.0.1 |
+            | tiernameqa | testing_paas_product=0.0.1 |
         And an environment has already been created with the previous tiers and data:
             | name   | description |
             | nameqa | descqa      |
-        When I request the creation of an instance of the environment "nameqa" using data:
+        When I request the creation of an instance of the environment "nameqa02" using data:
             | name           | description    |
             | instancenameqa | instancedescqa |
         Then I receive an "OK" response with a task
         And the task ends with "SUCCESS" status
+
 
     @slow
     Scenario Outline: Create instance of an environment with one tier with networks
@@ -212,6 +215,7 @@ Feature: Create an instance of an environment in a tenant
             | instancenameqa1 | nameqa1 | tiernameqa1 | netqa1        |
             | instancenameqa2 | nameqa2 | tiernameqa2 | netqa1,netqa2 |
 
+
     @slow
     Scenario: Create instance of an environment with several tiers with networks
         Given the paas manager is up and properly configured
@@ -227,6 +231,7 @@ Feature: Create an instance of an environment in a tenant
             | instancenameqa | instancedescqa |
         Then I receive an "OK" response with a task
         And the task ends with "SUCCESS" status
+
 
     @slow
     Scenario Outline: Create instance of an environment with one tier with products and networks
@@ -248,6 +253,7 @@ Feature: Create an instance of an environment in a tenant
             | instancenameqa1 | nameqa1 | tiernameqa1 | git=1.7                  | netqa1        |
             | instancenameqa2 | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
 
+
     @slow
     Scenario: Create instance of an environment with tiers with products and networks
         Given the paas manager is up and properly configured
@@ -264,6 +270,7 @@ Feature: Create an instance of an environment in a tenant
         Then I receive an "OK" response with a task
         And the task ends with "SUCCESS" status
 
+
     Scenario: Create instance with the same name of an already existing one
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -279,6 +286,7 @@ Feature: Create an instance of an environment in a tenant
             | name           | description    |
             | instancenameqa | instancedescqa |
         Then I receive a "Conflict" response
+
 
     Scenario: Create instance of an environment without tiers
         Given the paas manager is up and properly configured

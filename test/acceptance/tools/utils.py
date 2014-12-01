@@ -45,6 +45,12 @@ def raw_httplib_request_to_python_dic(http_lib_request, accept_header='applicati
         raise Exception("TCs don't manage XML so far")
 
 
+def generate_instance_name(instance_name, tier_name, tier_number, tenant_id):
+    # instancenameqa-tiernameqa-1-000129
+    last_tenant_id = tenant_id[len(tenant_id)]
+    return "{}-{}-{}-{}".format(instance_name, tier_name, tier_number, last_tenant_id)
+
+
 def doRequestHttpOperation(domine, port, resource, operation, data, headers):
     try:
         conn = httplib.HTTPConnection(domine, port)
