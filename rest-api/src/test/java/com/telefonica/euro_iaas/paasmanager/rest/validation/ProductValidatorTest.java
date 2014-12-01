@@ -90,7 +90,7 @@ public class ProductValidatorTest {
         verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
     }
     
-    @Test
+    @Test(expected=InvalidEnvironmentInstanceException.class)
     public void testValidateAttributesBadValue() throws InvalidEnvironmentInstanceException {
         
 
@@ -148,7 +148,7 @@ public class ProductValidatorTest {
         verify(systemPropertiesProvider, times(1)).getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
     }
     
-    @Test
+    @Test(expected=InvalidEnvironmentInstanceException.class)
     public void testValidateAttributesBadValue2() throws InvalidEnvironmentInstanceException {
         
 

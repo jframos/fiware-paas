@@ -24,6 +24,8 @@
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentInstanceException;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
@@ -37,40 +39,53 @@ public class ProductValidatorImpl implements ProductValidator {
 
     @Override
     public void validateAttributes(TierDto tierDto) throws InvalidEnvironmentInstanceException {
-        String msg = "Attribute type is incorrect.";
+        
         for (ProductReleaseDto p : tierDto.getProductReleaseDtos()) {
-            for (Attribute a : p.getPrivateAttributes()) {
-                if (a.getType() == null) {
-                    a.setType("Plain");
+            for (Attribute att : p.getPrivateAttributes()) {
+                if (att.getType() == null) {
+                    att.setType("Plain");
                 }
 
-                String availableTypes = systemPropertiesProvider
-                        .getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
-
-                StringTokenizer st2 = new StringTokenizer(availableTypes, "|");
-                boolean error = true;
-                while (st2.hasMoreElements()) {
-                    if (a.getType().equals(st2.nextElement())) {
-                        error = false;
-                        break;
-                    }
-                }
-                String patternIP = "IP(\\W+)";
-                String patternIPALL = "IPALL(\\W+)";
-                String patternPlain = "\\W+";
-                if (a.getValue().matches(patternIP) && "IP".equals(a.getType())) {
-                    error = false;
-                } else if (a.getValue().matches(patternIPALL) && "IPALL".equals(a.getType())) {
-                    error = false;
-                } else if (a.getValue().matches(patternPlain) && "Plain".equals(a.getType())) {
-                    error = false;
-                }
-                if (error) {
-                    throw new InvalidEnvironmentInstanceException(msg);
-                }
+                checkType(att);
+                checkValue(att);
 
             }
         }
+    }
+
+    private void checkValue(Attribute att) throws InvalidEnvironmentInstanceException {
+        String msg = "Attribute value is incorrect.";
+        boolean error=true;
+        String patternPlain = "\\W+";
+        if (att.getValue().startsWith("IP(") && att.getValue().endsWith(")") && "IP".equals(att.getType())) {
+            error = false;
+        } else if (att.getValue().startsWith("IPALL(") && att.getValue().endsWith(")") && "IPALL".equals(att.getType())) {
+            error = false;
+        } else if ("Plain".equals(att.getType())) {
+            error = false;
+        }
+        if (error) {
+            throw new InvalidEnvironmentInstanceException(msg);
+        }
+    }
+
+    private void checkType(Attribute att) throws InvalidEnvironmentInstanceException {
+        String msg = "Attribute type is incorrect.";
+        String availableTypes = systemPropertiesProvider
+                .getProperty(SystemPropertiesProvider.AVAILABLE_ATTRIBUTE_TYPES);
+
+        StringTokenizer st2 = new StringTokenizer(availableTypes, "|");
+        boolean error = true;
+        while (st2.hasMoreElements()) {
+            if (att.getType().equals(st2.nextElement())) {
+                error = false;
+                break;
+            }
+        }
+        if(error){
+            throw new InvalidEnvironmentInstanceException(msg);
+        }
+        
     }
 
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
