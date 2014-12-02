@@ -136,14 +136,14 @@ Feature: Create an abstract environment with tiers
         Then I receive a "No Content" response
 
 
-
-
-
     Scenario Outline: Create abstract environment. Products with valid attributes
         Given the paas manager is up and properly configured
         And the product "<product_name>" with version "<product_version>" is created in SDC with attributes:
             | key               | value               | type              |
             | custom_att_01     | <attribute_value>   | <attribute_type>  |
+        And the following instance attributes for product "<product_name>":
+            | key               | value               | type              |
+            | custom_att_01     | <attribute_value>   | <attribute_type> |
         And a list of tiers has been defined with data:
             | name        | products       |
             | tiernameqa1 | <paas_product> |
@@ -164,8 +164,11 @@ Feature: Create an abstract environment with tiers
     Scenario Outline: Create abstract environment. Products with invalid attribute type
         Given the paas manager is up and properly configured
         And the product "<product_name>" with version "<product_version>" is created in SDC with attributes:
-            | key               | value               | type              |
-            | custom_att_01     | default_value_plain | <attribute_type>  |
+            | key               | value               | type                  |
+            | custom_att_01     | default_value_plain | <sdc_attribute_type>  |
+        And the following instance attributes for product "<product_name>":
+            | key               | value               | type                   |
+            | custom_att_01     | default_value_plain | <paas_attribute_type>  |
         And a list of tiers has been defined with data:
             | name        | products       |
             | tiernameqa1 | <paas_product> |
@@ -175,18 +178,21 @@ Feature: Create an abstract environment with tiers
         Then I receive an "Bad Request" response
 
         Examples:
-        | product_name     | product_version   | attribute_type  | paas_product          | env_name    |
-        | qa_paas_att_01a  | 0.0.1             | Plai            | qa_paas_att_01a=0.0.1 | qaenvatt01  |
-        | qa_paas_att_02a  | 0.0.1             | ip              | qa_paas_att_02a=0.0.1 | qaenvatt02  |
-        | qa_paas_att_03a  | 0.0.1             | ipall           | qa_paas_att_03a=0.0.1 | qaenvatt03  |
-        | qa_paas_att_04a  | 0.0.1             | ip_al           | qa_paas_att_04a=0.0.1 | qaenvatt04  |
-        | qa_paas_att_05a  | 0.0.1             |                 | qa_paas_att_05a=0.0.1 | qaenvatt05  |
+        | product_name     | product_version   | sdc_attribute_type | paas_attribute_type  | paas_product          | env_name    |
+        | qa_paas_att_01a  | 0.0.1             | Plain              | Plai                 | qa_paas_att_01a=0.0.1 | qaenvatt01  |
+        | qa_paas_att_02a  | 0.0.1             | IP                 | ip                   | qa_paas_att_02a=0.0.1 | qaenvatt02  |
+        | qa_paas_att_03a  | 0.0.1             | IPALL              | ipall                | qa_paas_att_03a=0.0.1 | qaenvatt03  |
+        | qa_paas_att_04a  | 0.0.1             | IPALL              | ip_al                | qa_paas_att_04a=0.0.1 | qaenvatt04  |
+        | qa_paas_att_05a  | 0.0.1             | Plain              |                      | qa_paas_att_05a=0.0.1 | qaenvatt05  |
 
 
     Scenario Outline: Create abstract environment. Products with invalid attribute value
         Given the paas manager is up and properly configured
         And the product "<product_name>" with version "<product_version>" is created in SDC with attributes:
             | key               | value               | type              |
+            | custom_att_01     | <attribute_value>   | <attribute_type>  |
+        And the following instance attributes for product "<product_name>":
+            | key               | value               | type                   |
             | custom_att_01     | <attribute_value>   | <attribute_type>  |
         And a list of tiers has been defined with data:
             | name        | products       |

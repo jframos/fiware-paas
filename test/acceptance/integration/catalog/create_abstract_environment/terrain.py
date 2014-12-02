@@ -47,6 +47,7 @@ def before_each_scenario(feature):
 @before.each_scenario
 def before_each_scenario(scenario):
     world.product_list_with_attributes = list()
+    world.paas_product_list_with_attributes = list()
 
 
 @after.each_scenario
