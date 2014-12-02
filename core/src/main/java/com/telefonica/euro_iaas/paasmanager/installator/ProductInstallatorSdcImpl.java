@@ -74,7 +74,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
     public ProductInstance install(ClaudiaData claudiaData, EnvironmentInstance environmentInstance,
             TierInstance tierInstance, ProductRelease productRelease, Set<Attribute> attributes)
             throws ProductInstallatorException, OpenStackException {
-
+        
         log.info("Install software " + productRelease.getProduct() + "-" + productRelease.getVersion());
         String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
 
