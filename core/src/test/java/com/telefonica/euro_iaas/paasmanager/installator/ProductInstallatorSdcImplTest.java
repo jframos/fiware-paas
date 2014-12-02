@@ -268,7 +268,8 @@ public class ProductInstallatorSdcImplTest {
         String name = installator.getProductInstanceName(data, expectedProductInstance);
         // make verifications
         assertEquals(name,
-                "FIWARE.customers.60b4125450fc4a109f50357894ba2e28.services.deploytm.vees.contextbrokr.replicas.1_mongos_2.2.3");
+                "FIWARE.customers.60b4125450fc4a109f50357894ba2e28.services."
+                + "deploytm.vees.contextbrokr.replicas.1_mongos_2.2.3");
 
         // only one product will be installed, the other one causes error.
         // verify(productInstanceDao,
