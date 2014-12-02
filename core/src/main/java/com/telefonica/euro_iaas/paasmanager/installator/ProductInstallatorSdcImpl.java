@@ -72,9 +72,9 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
     private static Logger log = LoggerFactory.getLogger(ProductInstallatorSdcImpl.class);
 
     public ProductInstance install(ClaudiaData claudiaData, EnvironmentInstance environmentInstance,
-            TierInstance tierInstance, ProductRelease productRelease, Set<Attribute> attributes)
-            throws ProductInstallatorException, OpenStackException {
-        
+            TierInstance tierInstance, ProductRelease productRelease) throws ProductInstallatorException,
+            OpenStackException {
+
         log.info("Install software " + productRelease.getProduct() + "-" + productRelease.getVersion());
         String sdcServerUrl = sDCUtil.getSdcUtil(claudiaData.getUser().getToken());
 
@@ -82,6 +82,7 @@ public class ProductInstallatorSdcImpl implements ProductInstallator {
         com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto productInstanceDto = new com.telefonica.euro_iaas.sdc.model.dto.ProductInstanceDto();
         List<com.telefonica.euro_iaas.sdc.model.Attribute> attrs = new ArrayList<com.telefonica.euro_iaas.sdc.model.Attribute>();
 
+        Set<Attribute> attributes = productRelease.getAttributes();
         if (!(attributes.isEmpty())) {
             for (Attribute attrib : attributes) {
                 com.telefonica.euro_iaas.sdc.model.Attribute sdcAttr = resolveAttributeTypeValue(

@@ -59,7 +59,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
     private static Logger log = LoggerFactory.getLogger(ProductInstanceManagerImpl.class);
 
     public ProductInstance install(TierInstance tierInstance, ClaudiaData claudiaData,
-            EnvironmentInstance environmentInstance, ProductRelease productRelease, Set<Attribute> attributes)
+            EnvironmentInstance environmentInstance, ProductRelease productRelease)
             throws ProductInstallatorException, InvalidProductInstanceRequestException, NotUniqueResultException,
             InvalidEntityException {
         log.info("Installing software " + productRelease.getProduct() + " in tier Instance " + tierInstance.getName()
@@ -68,7 +68,7 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
         ProductInstance productInstance = null;
         try {
             productInstance = productInstallator.install(claudiaData, environmentInstance, tierInstance,
-                    productRelease, attributes);
+                    productRelease);
             if (productInstance.getVdc() == null) {
                 productInstance.setVdc(claudiaData.getVdc());
             }

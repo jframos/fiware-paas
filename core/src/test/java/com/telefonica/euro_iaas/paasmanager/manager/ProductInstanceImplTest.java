@@ -115,7 +115,7 @@ public class ProductInstanceImplTest extends TestCase {
         when(productInstanceDao.load(any(String.class))).thenReturn(productInstance);
         when(
                 productInstallator.install(any(ClaudiaData.class), any(EnvironmentInstance.class), any(TierInstance.class),
-                        any(ProductRelease.class), Matchers.<Set<Attribute>> any())).thenReturn(productInstance);
+                        any(ProductRelease.class))).thenReturn(productInstance);
     }
 
     @Test
@@ -133,7 +133,7 @@ public class ProductInstanceImplTest extends TestCase {
         
         ProductInstance productInstance = new ProductInstance(productRelease, Status.INSTALLING, "vdc");
    
-        ProductInstance productInstanceCreated = manager.install(tierInstance, data, enviromnentInstance, productRelease, null);
+        ProductInstance productInstanceCreated = manager.install(tierInstance, data, enviromnentInstance, productRelease);
         assertEquals(productInstance.getName(), productInstanceCreated.getName());
 
     }

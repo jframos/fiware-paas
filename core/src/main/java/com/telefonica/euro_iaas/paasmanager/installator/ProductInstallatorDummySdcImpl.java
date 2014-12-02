@@ -71,7 +71,7 @@ public class ProductInstallatorDummySdcImpl implements ProductInstallator {
     }
 
     public ProductInstance install(ClaudiaData claudiaData, EnvironmentInstance environmentInstance,
-            TierInstance tierInstance, ProductRelease productRelease, Set<Attribute> attributes)
+            TierInstance tierInstance, ProductRelease productRelease)
             throws ProductInstallatorException {
 
         ProductInstance productInstance = new ProductInstance();

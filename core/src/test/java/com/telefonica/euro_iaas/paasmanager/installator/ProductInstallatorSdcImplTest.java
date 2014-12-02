@@ -213,7 +213,7 @@ public class ProductInstallatorSdcImplTest {
         installator.setTierInstanceManager(tierInstanceManager);
 
         ProductInstance installedProduct = installator.install(data, environmentInstance, tierInstance,
-                expectedProductInstance.getProductRelease(), new HashSet<Attribute>());
+                expectedProductInstance.getProductRelease());
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);
 
@@ -235,7 +235,7 @@ public class ProductInstallatorSdcImplTest {
         productReleaseWithoutAttrs.setWithArtifact(true);
 
         ProductInstance installedProduct = installator.install(data, environmentInstance, tierInstance,
-                productReleaseWithoutAttrs, new HashSet<Attribute>());
+                productReleaseWithoutAttrs);
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);
     }
@@ -250,7 +250,7 @@ public class ProductInstallatorSdcImplTest {
         installator.setTierInstanceManager(tierInstanceManager);
 
         ProductInstance installedProduct = installator.install(data, environmentInstance, tierInstance,
-                expectedProductInstance.getProductRelease(), new HashSet<Attribute>());
+                expectedProductInstance.getProductRelease());
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);
     }
