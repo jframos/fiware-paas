@@ -58,11 +58,14 @@ public interface TierResourceValidator {
 
     /**
      * Validate the request to create an abstract.
-     * @param tierDto   The tier data.
-     * @param environmentName   The name of the environment.
+     * 
+     * @param tierDto
+     *            The tier data.
+     * @param environmentName
+     *            The name of the environment.
      * @throws InvalidEntityException
      * @throws AlreadyExistEntityException
-     * @throws InvalidEnvironmentInstanceException 
+     * @throws InvalidEnvironmentInstanceException
      */
     void validateCreateAbstract(TierDto tierDto, String environmentName)
         throws InvalidEntityException, AlreadyExistEntityException, InvalidEnvironmentInstanceException;
