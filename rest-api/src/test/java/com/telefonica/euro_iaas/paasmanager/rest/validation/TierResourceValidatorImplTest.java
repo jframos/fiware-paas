@@ -45,25 +45,20 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-
-
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
-
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentInstanceException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
-
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
-
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
@@ -77,6 +72,8 @@ public class TierResourceValidatorImplTest {
     private SystemPropertiesProvider systemPropertiesProvider;
     private ResourceValidator resourceValidator;
     private TierManager tierManager;
+    private ProductValidator productValidator;
+    
 
     /**
      * Initialize the Unit Test.
@@ -93,6 +90,8 @@ public class TierResourceValidatorImplTest {
         tierResourceValidator.setTierManager(tierManager);
         tierResourceValidator.setEnvironmentInstanceManager(environmentInstanceManager);
         tierResourceValidator.setEnvironmentManager(environmentManager);
+        productValidator=mock(ProductValidator.class);
+        tierResourceValidator.setProductValidator(productValidator);
 
         resourceValidator = mock(ResourceValidator.class);
         tierResourceValidator.setResourceValidator(resourceValidator);
@@ -351,11 +350,12 @@ public class TierResourceValidatorImplTest {
      * @throws InfrastructureException
      * @throws QuotaExceededException
      * @throws EntityNotFoundException
+     * @throws InvalidEnvironmentInstanceException 
      */
     @Test(expected = InvalidEntityException.class)
     public void shouldValidateEmptyNameTier()
         throws AlreadyExistEntityException, InvalidEntityException, InfrastructureException, QuotaExceededException,
-               EntityNotFoundException {
+               EntityNotFoundException, InvalidEnvironmentInstanceException {
 
         // given
         ClaudiaData claudiaData = mock(ClaudiaData.class);
@@ -375,10 +375,11 @@ public class TierResourceValidatorImplTest {
      * @throws InfrastructureException
      * @throws QuotaExceededException
      * @throws EntityNotFoundException
+     * @throws InvalidEnvironmentInstanceException 
      */
     @Test(expected = InvalidEntityException.class)
     public void shouldValidateStrangeCharacteresEnvironment() throws AlreadyExistEntityException,
-            InvalidEntityException, InfrastructureException, QuotaExceededException, EntityNotFoundException {
+            InvalidEntityException, InfrastructureException, QuotaExceededException, EntityNotFoundException, InvalidEnvironmentInstanceException {
         // given
 
         TierDto tierDto = new TierDto();
@@ -397,10 +398,11 @@ public class TierResourceValidatorImplTest {
      * @throws QuotaExceededException
      * @throws InvalidEntityException
      * @throws EntityNotFoundException
+     * @throws InvalidEnvironmentInstanceException 
      */
     @Test(expected = InvalidEntityException.class)
     public void shouldValidateNameTooLong() throws AlreadyExistEntityException,
-            InfrastructureException, QuotaExceededException, InvalidEntityException, EntityNotFoundException {
+            InfrastructureException, QuotaExceededException, InvalidEntityException, EntityNotFoundException, InvalidEnvironmentInstanceException {
         // given
 
         TierDto tierDto = new TierDto();
@@ -418,10 +420,11 @@ public class TierResourceValidatorImplTest {
      * @throws EntityNotFoundException
      * @throws InvalidEntityException
      * @throws AlreadyExistEntityException
+     * @throws InvalidEnvironmentInstanceException 
      */
     @Test
     public void shouldValidateAbstractTier()
-        throws EntityNotFoundException, InvalidEntityException, AlreadyExistEntityException {
+        throws EntityNotFoundException, InvalidEntityException, AlreadyExistEntityException, InvalidEnvironmentInstanceException {
 
         TierDto tierDTO = new TierDto();
         tierDTO.setName("tier1");

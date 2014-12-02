@@ -65,26 +65,25 @@ public class EnviornmentResourceValidatorImplTest {
     private ResourceValidator resourceValidator;
     private TierResourceValidator tierResourceValidator;
     private SystemPropertiesProvider systemPropertiesProvider;
-    private ProductValidator productValidator;
 
     /**
      * Initialize the Unit Test.
      * @throws EntityNotFoundException
      * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
      * @throws AlreadyExistEntityException
+     * @throws InvalidEnvironmentInstanceException 
      */
     @Before
     public void setUp()
         throws EntityNotFoundException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException,
-               AlreadyExistEntityException {
+               AlreadyExistEntityException, InvalidEnvironmentInstanceException {
 
         environmentResourceValidator = new EnvironmentResourceValidatorImpl();
         resourceValidator = mock(ResourceValidator.class);
         environmentManager = mock(EnvironmentManager.class);
         tierResourceValidator = mock(TierResourceValidator.class);
         environmentResourceValidator.setResourceValidator(resourceValidator);
-        productValidator=mock(ProductValidator.class);
-        environmentResourceValidator.setProductValidator(productValidator);
+        
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         environmentInstanceManager = mock(EnvironmentInstanceManager.class);
         environmentResourceValidator.setEnvironmentManager(environmentManager);

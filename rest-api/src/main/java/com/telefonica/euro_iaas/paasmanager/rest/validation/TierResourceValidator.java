@@ -27,10 +27,10 @@ package com.telefonica.euro_iaas.paasmanager.rest.validation;
 import java.util.Set;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentInstanceException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
@@ -51,9 +51,10 @@ public interface TierResourceValidator {
      * @throws AlreadyExistEntityException
      * @throws InfrastructureException
      * @throws QuotaExceededException
+     * @throws InvalidEnvironmentInstanceException 
      */
     void validateCreate(ClaudiaData claudiaData, TierDto environmentDto, String vdc, String environmentName)
-        throws InvalidEntityException, AlreadyExistEntityException, InfrastructureException, QuotaExceededException;
+        throws InvalidEntityException, AlreadyExistEntityException, InfrastructureException, QuotaExceededException, InvalidEnvironmentInstanceException;
 
     /**
      * Validate the request to create an abstract.
@@ -61,9 +62,10 @@ public interface TierResourceValidator {
      * @param environmentName   The name of the environment.
      * @throws InvalidEntityException
      * @throws AlreadyExistEntityException
+     * @throws InvalidEnvironmentInstanceException 
      */
     void validateCreateAbstract(TierDto tierDto, String environmentName)
-        throws InvalidEntityException, AlreadyExistEntityException;
+        throws InvalidEntityException, AlreadyExistEntityException, InvalidEnvironmentInstanceException;
 
     /**
      * Validate the update of the Tier resource.

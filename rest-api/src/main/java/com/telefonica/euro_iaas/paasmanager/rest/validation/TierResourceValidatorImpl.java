@@ -39,6 +39,7 @@ import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentInstanceException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
@@ -65,6 +66,7 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
     private EnvironmentManager environmentManager;
     private QuotaClient quotaClient;
     private ResourceValidator resourceValidator;
+    private ProductValidator productValidator;
 
     /**
      * Validate the request to create a Tier resource.
@@ -77,9 +79,10 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
      * @throws AlreadyExistEntityException
      * @throws InfrastructureException
      * @throws QuotaExceededException
+     * @throws InvalidEnvironmentInstanceException 
      */
     public void validateCreate(ClaudiaData claudiaData, TierDto environmentDto, String vdc, String environmentName)
-        throws AlreadyExistEntityException, InfrastructureException, QuotaExceededException, InvalidEntityException {
+        throws AlreadyExistEntityException, InfrastructureException, QuotaExceededException, InvalidEntityException, InvalidEnvironmentInstanceException {
 
         try {
             tierManager.load(environmentDto.getName(), vdc, environmentName);
@@ -100,9 +103,10 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
      * @param environmentName   The name of the environment.
      * @throws InvalidEntityException
      * @throws AlreadyExistEntityException
+     * @throws InvalidEnvironmentInstanceException 
      */
     public void validateCreateAbstract(TierDto tierDto, String environmentName) throws InvalidEntityException,
-            AlreadyExistEntityException {
+            AlreadyExistEntityException, InvalidEnvironmentInstanceException {
         try {
             tierManager.load(tierDto.getName(), "", environmentName);
             log.error("The tier " + tierDto.getName() + " already exists in ");
@@ -113,6 +117,8 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
             log.debug("Entity not found. It is possible to create it ");
             resourceValidator.validateName(tierDto.getName());
             validataDefaultTier(tierDto);
+            productValidator.validateAttributes(tierDto);
+
         }
 
     }
@@ -123,13 +129,16 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
      * @throws InfrastructureException
      * @throws QuotaExceededException
      * @throws InvalidEntityException
+     * @throws InvalidEnvironmentInstanceException 
      */
     private void validateCreateTier(ClaudiaData claudiaData, TierDto tierDto) throws InfrastructureException,
-            QuotaExceededException, InvalidEntityException {
+            QuotaExceededException, InvalidEntityException, InvalidEnvironmentInstanceException {
 
         resourceValidator.validateName(tierDto.getName());
 
         validataDefaultTier(tierDto);
+        
+        productValidator.validateAttributes(tierDto);
 
         validateSecurityGroups(claudiaData, tierDto);
 
@@ -393,6 +402,10 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
     public void setResourceValidator(ResourceValidator resourceValidator) {
         this.resourceValidator = resourceValidator;
+    }
+
+    public void setProductValidator(ProductValidator productValidator) {
+        this.productValidator = productValidator;
     }
 
 }

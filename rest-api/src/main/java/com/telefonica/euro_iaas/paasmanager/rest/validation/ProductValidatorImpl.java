@@ -56,7 +56,6 @@ public class ProductValidatorImpl implements ProductValidator {
     private void checkValue(Attribute att) throws InvalidEnvironmentInstanceException {
         String msg = "Attribute value is incorrect.";
         boolean error=true;
-        String patternPlain = "\\W+";
         if (att.getValue().startsWith("IP(") && att.getValue().endsWith(")") && "IP".equals(att.getType())) {
             error = false;
         } else if (att.getValue().startsWith("IPALL(") && att.getValue().endsWith(")") && "IPALL".equals(att.getType())) {

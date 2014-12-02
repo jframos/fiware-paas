@@ -111,7 +111,6 @@
 		<property name="environmentManager" ref="environmentManager" />
 		<property name="environmentInstanceManager" ref="environmentInstanceManager" />
 		<property name="resourceValidator" ref="resourceValidator" />
-		<property name="productValidator" ref="productValidator" />
 	</bean>
 
 	<bean id="tierInstanceResourceValidator" lazy-init="true"
@@ -126,8 +125,7 @@
 		<property name="environmentManager" ref="environmentManager" />
 		<property name="quotaClient" ref="quotaClient" />
 		<property name="resourceValidator" ref="resourceValidator" />
-
-
+		<property name="productValidator" ref="productValidator" />
 	</bean>
 
 	<bean id="resourceValidator" lazy-init="true"

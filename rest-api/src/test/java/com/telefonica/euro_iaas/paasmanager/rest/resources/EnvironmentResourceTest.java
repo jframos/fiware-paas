@@ -42,6 +42,7 @@ import org.mockito.Mockito;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentInstanceException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -137,11 +138,12 @@ public class EnvironmentResourceTest extends TestCase {
      * @throws AlreadyExistEntityException
      * @throws InvalidEntityException
      * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
+     * @throws InvalidEnvironmentInstanceException 
      */
     @Test
     public void testInsertEnvironment()
         throws InvalidEnvironmentRequestException, AlreadyExistEntityException, InvalidEntityException,
-               com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+               com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException, InvalidEnvironmentInstanceException {
 
         Mockito.doNothing()
                 .doThrow(new RuntimeException())
