@@ -304,7 +304,7 @@ public class ProductInstallatorSdcImplTest {
         List<TierInstance> til = new ArrayList<TierInstance>();
         til.add(tierIns);
         when(environmentInstance.getTierInstances()).thenReturn(til);
-        
+
         InfrastructureManager infrastructureManager = mock(InfrastructureManager.class);
 
         when(infrastructureManager.generateVMName(anyString(), anyString(), anyInt(), anyString())).thenReturn(

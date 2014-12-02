@@ -267,7 +267,6 @@ public class OpenStackAuthenticationToken {
 
     private ArrayList<Object> executePostRequest(HttpPost postRequest) {
         HttpResponse response;
-//        httpClient = new DefaultHttpClient();
 
         ArrayList<Object> message = new ArrayList();
 
