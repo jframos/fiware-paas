@@ -24,10 +24,25 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import junit.framework.TestCase;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.security.core.GrantedAuthority;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
@@ -43,20 +58,6 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
-import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
-import junit.framework.TestCase;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.springframework.security.core.GrantedAuthority;
-
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author jesus.movilla
@@ -155,14 +156,16 @@ public class TierInstanceManagerImplTest extends TestCase {
         tierInstanceMongos = new TierInstance(tierProductMongos, "tierInsatnceMongos", "nametierInstance-tier-1", host);
         tierInstanceMongos.setId(new Long(1));
         tierInstanceMongos.addProductInstance(productInstance);
-        when(tierManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(tierProductConfig);
+        when(tierManager.loadTierWithProductReleaseAndMetadata(anyString(), anyString(), anyString())).thenReturn(
+                tierProductConfig);
         when(tierInstanceDao.create(any(TierInstance.class))).thenReturn(tierInstanceMongos);
         when(tierInstanceDao.update(any(TierInstance.class))).thenReturn(tierInstanceMongos);
 
         when(tierInstanceDao.load(any(String.class))).thenThrow(
                 new EntityNotFoundException(TierInstance.class, "dD", null));
 
-        when(productInstanceManager.create(any(ClaudiaData.class), any(ProductInstance.class))).thenReturn(productInstance);
+        when(productInstanceManager.create(any(ClaudiaData.class), any(ProductInstance.class))).thenReturn(
+                productInstance);
 
         Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tierProductConfig);
@@ -265,6 +268,8 @@ public class TierInstanceManagerImplTest extends TestCase {
     @SuppressWarnings("unchecked")
     @Test
     public void testReconfigure() throws Exception {
+
+        when(tierManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(tierProductConfig);
         Mockito.doNothing().when(productInstanceManager)
                 .configure(any(ClaudiaData.class), any(ProductInstance.class), anyList());
 
@@ -280,18 +285,6 @@ public class TierInstanceManagerImplTest extends TestCase {
         TierInstance tierInstanceCreated = manager.create(claudiaData, "env", tierInstance);
         // when(tierInstanceDao.load(any(String.class))).thenReturn(tierInstance);
         manager.remove(tierInstanceCreated);
-    }
-
-    @Test
-    public void testScalePaaSInstance() throws Exception {
-
-        TierInstance tierInstanceCreated = manager.create(claudiaData, "env", tierInstanceShard);
-
-        SystemPropertiesProvider propertiesProvider = mock(SystemPropertiesProvider.class);
-        when(propertiesProvider.getProperty(any(String.class))).thenReturn("dd");
-        // manager.create(claudiaData, tierInstanceCreated, environmentInstance,
-        // propertiesProvider);
-
     }
 
 }
