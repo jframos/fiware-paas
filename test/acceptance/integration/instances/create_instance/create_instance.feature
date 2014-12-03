@@ -249,18 +249,18 @@ Feature: Create an instance of an environment in a tenant
         And the task ends with "SUCCESS" status
 
         Examples:
-            | name            | envname | tiername    | products                 | networks      |
-            | instancenameqa1 | nameqa1 | tiernameqa1 | git=1.7                  | netqa1        |
-            | instancenameqa2 | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
+            | name            | envname | tiername    | products                                                 | networks      |
+            | instancenameqa1 | nameqa1 | tiernameqa1 | testing_paas_product=0.0.1                               | netqa1        |
+            | instancenameqa2 | nameqa2 | tiernameqa2 | testing_paas_product=0.0.1,testing_paas_product_02=0.0.1 | netqa1,netqa2 |
 
 
     @slow
     Scenario: Create instance of an environment with tiers with products and networks
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
-            | name        | products         | networks |
-            | tiernameqa1 | git=1.7          | netqa1   |
-            | tiernameqa2 | mediawiki=1.17.0 | netqa2   |
+            | name        | products                      | networks |
+            | tiernameqa1 | testing_paas_product=0.0.1    | netqa1   |
+            | tiernameqa2 | testing_paas_product_02=0.0.1 | netqa2   |
         And an environment has already been created with the previous tiers and data:
             | name   | description |
             | nameqa | descqa      |

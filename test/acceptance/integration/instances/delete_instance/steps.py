@@ -85,7 +85,6 @@ def an_instance_of_the_environment_has_already_been_created_using_data(step, env
 
 @step(u'I request the deletion of the instance "([^"]*)"')
 def i_request_the_deletion_of_the_instance(step, name):
-    raw_input("Press key...")
     name = dataset_utils.generate_fixed_length_param(name)
     world.inst_requests.delete_instance(name)
 

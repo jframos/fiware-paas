@@ -23,11 +23,10 @@
 from lettuce import step, world
 from lettuce_tools.dataset_utils.dataset_utils import DatasetUtils
 from tools import http, environment_request, environment_instance_request
-from tools.tier import Tier
 from tools.environment_instance import EnvironmentInstance
 import json
-from tools.constants import NAME, DESCRIPTION, PRODUCTS, NETWORKS, PAAS,\
-    TIER_IMAGE
+from tools.constants import NAME, DESCRIPTION
+from common_steps import sdc_product_provisioning_steps, paas_environment_provisioning
 
 dataset_utils = DatasetUtils()
 
@@ -39,20 +38,7 @@ def the_paas_manager_is_up_and_properly_configured(step):
 
 @step(u'a list of tiers has been defined with data:')
 def a_list_of_tiers_has_been_defined_with_data(step):
-    world.tiers = []
-    for row in step.hashes:
-        data = dataset_utils.prepare_data(row)
-        tier = Tier(data.get(NAME), world.config[PAAS][TIER_IMAGE])
-        tier.parse_and_add_products(data.get(PRODUCTS))
-
-        # For each product, check if there are defined attributes
-        for product_with_attributes in world.product_list_with_attributes:
-            for attribute in product_with_attributes['attributes']:
-                tier.add_attribute_to_product(product_with_attributes['name'], attribute['key'], attribute['value'],
-                                              attribute['type'])
-
-        tier.parse_and_add_networks(data.get(NETWORKS))
-        world.tiers.append(tier)
+    world.tiers = paas_environment_provisioning.process_the_list_of_tiers(step)
 
 
 @step(u'an environment has already been created with data:')
@@ -73,7 +59,7 @@ def an_environment_has_already_been_created_with_the_previous_tiers_and_data(ste
 @step(u'an instance of the environment "([^"]*)" has already been created using data:')
 def an_instance_of_the_environment_has_already_been_created_using_data(step, env_name):
     i_request_the_creation_of_an_instance_of_an_environment_using_data(step, env_name)
-
+    the_task_ends_with_status(step, "SUCCESS")
 
 @step(u'I request the creation of an instance of the environment "([^"]*)" using data:')
 def i_request_the_creation_of_an_instance_of_an_environment_using_data(step, env_name):
@@ -108,16 +94,4 @@ def the_installator_to_be_used_is_group1(step, installator):
 
 @step(u'the product "([^"]*)" with version "([^"]*)" is created in SDC with attributes:')
 def the_product_group1_is_created_in_sdc_with_attributes(step, product_name, product_version):
-    product_data = dict()
-    product_data['name'] = product_name
-
-    attribute_list = list()
-    for dataset_row in step.hashes:
-        attribute_list.append(dataset_utils.prepare_data(dataset_row))
-    product_data['attributes'] = attribute_list
-    world.product_list_with_attributes.append(product_data)
-
-    # Create product in SDC
-    world.product_sdc_request.create_product_and_release_with_attributes_and_installator(product_name, product_version,
-                                                                                         attribute_list,
-                                                                                         world.product_installator)
+    sdc_product_provisioning_steps.product_is_created_in_sdc_with_attributes(step, product_name, product_version)
