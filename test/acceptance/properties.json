@@ -1,18 +1,19 @@
 {
     "environment": {
         "name": "fiware-lab",
-        "logs_path": "logs"
+        "logs_path": "logs",
+        "test_files": "testreport/additional_output_files"
     },
     "paas": {
         "keystone_url": "http://cloud.lab.fi-ware.org:4731/v2.0",
         "sdc_url": "http://saggita.lab.fi-ware.org:8080/sdc/rest",
         "paasmanager_url": "http://pegasus.lab.fi-ware.org:8080/paasmanager/rest",
         "glance_url": "http://glance.lab.fi-ware.org:9292/v1",
-        "nova_url": "http://cloud.lab.fi-ware.org:8774/v2/00000000000000000000000000004259",
-        "vdc": "00000000000000000000000000004259",
-        "tenant": "00000000000000000000000000004259",
-        "user": "jfernandez@tcpsi.es",
-        "password": "FILAB53593",
+        "nova_url": "http://cloud.lab.fi-ware.org:8774/v2/******tenant*******",
+        "vdc": "*******vdc******",
+        "tenant": "******tenant*******",
+        "user": "******user*******",
+        "password": "*******pass******",
         "tier_image": "6e2519b8-1b36-4669-b6fe-ed2e77815b9f",
         "tier_num_min": "1",
         "tier_num_max": "1",

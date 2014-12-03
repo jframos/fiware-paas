@@ -41,15 +41,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
-import com.telefonica.euro_iaas.paasmanager.manager.impl.TierManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
+import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
 
 @Transactional(propagation = Propagation.REQUIRED)
 public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements TierDao {
-	 private static Logger log = LoggerFactory.getLogger(TierDaoJpaImpl.class);
+    private static Logger log = LoggerFactory.getLogger(TierDaoJpaImpl.class);
+
     public List<Tier> findAll() {
         return super.findAll(Tier.class);
     }
@@ -109,7 +110,7 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
             tier = (Tier) query.getResultList().get(0);
         } catch (Exception e) {
             String message = " No Tier found in the database with name: " + name + " vdc " + vdc
-                    + " no products and environmentname " + environmentname+ " " + e.getMessage();
+                    + " no products and environmentname " + environmentname + " " + e.getMessage();
             log.warn(message);
             throw new EntityNotFoundException(Tier.class, message, name);
         }
@@ -160,7 +161,9 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
 
         for (ProductRelease productRelease : tier.getProductReleases()) {
 
-            productRelease.getMetadatas();
+            for (Metadata metadata : productRelease.getMetadatas()) {
+                metadata.getValue();
+            }
         }
 
         return tier;

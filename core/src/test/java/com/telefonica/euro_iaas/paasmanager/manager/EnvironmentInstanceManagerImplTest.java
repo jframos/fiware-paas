@@ -176,7 +176,7 @@ public class EnvironmentInstanceManagerImplTest {
 
         productInstanceManager = mock(ProductInstanceManager.class);
         when(
-                productInstanceManager.install(any(TierInstance.class), any(ClaudiaData.class), any(String.class),
+                productInstanceManager.install(any(TierInstance.class), any(ClaudiaData.class), any(EnvironmentInstance.class),
                         any(ProductRelease.class), anySet())).thenReturn(productInstance);
 
         List<ProductInstance> productInstances = new ArrayList<ProductInstance>();

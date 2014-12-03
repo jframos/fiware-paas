@@ -281,8 +281,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
                     try {
                         ProductInstance productInstance = productInstanceManager.install(tierInstance, claudiaData,
-                                environmentInstance.getEnvironment().getName(), productRelease,
-                                productRelease.getAttributes());
+                                environmentInstance, productRelease, productRelease.getAttributes());
                         log.info("Adding product instance " + productInstance.getName());
                         tierInstance.setStatus(Status.INSTALLED);
                         tierInstance.addProductInstance(productInstance);
@@ -372,102 +371,101 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
      * com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager
      * #destroy(com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance)
      */
-    public void destroy(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws InvalidEntityException,
-            InfrastructureException, EntityNotFoundException {
+    public void destroy(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws Exception {
         log.info("Destroying enviornment isntance " + envInstance.getBlueprintName() + " with environment "
                 + envInstance.getEnvironment().getName() + " vdc " + envInstance.getVdc());
-
+        boolean error = false;
         try {
-            // Borrado de nodos en el SDC
             envInstance.setStatus(Status.UNINSTALLING);
             envInstance = environmentInstanceDao.update(envInstance);
             for (int i = 0; i < envInstance.getTierInstances().size(); i++) {
-
-                envInstance.setStatus(Status.UNINSTALLED);
-                envInstance = environmentInstanceDao.update(envInstance);
-
-                // Borrado de VMs
-                try {
-                    log.info("Deleting Virtual Machines for environmetn instance " + envInstance.getBlueprintName());
-                    envInstance.setStatus(Status.UNDEPLOYING);
-                    envInstance = environmentInstanceDao.update(envInstance);
-
-                    infrastructureManager.deleteEnvironment(claudiaData, envInstance);
-
-                } catch (Exception e) {
-                    log.error("It is not possible to delete the environment " + envInstance.getName() + " : "
-                            + e.getMessage());
-                    throw new InvalidEntityException(EnvironmentInstance.class, e);
-                }
-
+                deleteVM(claudiaData, envInstance);
             }
 
         } catch (NullPointerException ne) {
             log.info("Environment Instance " + envInstance.getBlueprintName()
                     + " does not have any TierInstances associated");
-        } finally {
-            List<TierInstance> tierInstancesSDC = envInstance.getTierInstances();
+        }
 
-            for (int i = 0; i < tierInstancesSDC.size(); i++) {
-                // delete data on SDC
-                TierInstance tierInstance = envInstance.getTierInstances().get(i);
-                log.info("Deleting node " + tierInstance.getVM().getHostname());
-                tierInstance.setStatus(Status.UNINSTALLING);
-                tierInstanceDao.update(tierInstance);
-                try {
-                    ChefClient chefClient = productInstallator.loadNode(claudiaData, tierInstance.getVdc(),
-                            tierInstance.getVM().getHostname());
+        List<TierInstance> tierInstancesSDC = envInstance.getTierInstances();
+        envInstance.setTierInstances(null);
 
-                    productInstallator.deleteNode(claudiaData, tierInstance.getVdc(), chefClient.getName());
-
-                    tierInstance.setStatus(Status.UNINSTALLED);
-                    tierInstanceDao.update(tierInstance);
-                } catch (EntityNotFoundException enfe) {
-                    String errorMsg = "The ChefClient " + tierInstance.getVM().getHostname() + " is not at ChefServer";
-                    log.warn(errorMsg);
-                } catch (Exception e) {
-                    String errorMsg = "Error deleting node from Node Manager : " + tierInstance.getVM().getFqn() + ""
-                            + e.getMessage();
-                    log.warn(errorMsg);
-                    throw new InvalidEntityException(EnvironmentInstance.class, e);
-                } finally {
-                    // Borrado del registro en BBDD paasmanager
-                    log.info("Deleting the environment instance " + envInstance.getBlueprintName()
-                            + " in the database ");
-
-                    List<TierInstance> tierInstances = envInstance.getTierInstances();
-
-                    if (tierInstances != null) {
-                        envInstance.setTierInstances(null);
-                        try {
-                            envInstance = environmentInstanceDao.update(envInstance);
-                        } catch (Exception e) {
-                            log.error(e.getMessage());
-                            throw new InvalidEntityException(EnvironmentInstance.class, e);
-                        }
-                        for (TierInstance tierInstancePaas : tierInstances) {
-                            try {
-                                infrastructureManager.deleteNetworksInTierInstance(claudiaData, tierInstancePaas);
-                            } catch (Exception e) {
-                                log.error(e.getMessage());
-                            }
-                            tierInstanceManager.remove(tierInstancePaas);
-
-                        }
-                    }
-
-                }
-
+        for (int i = 0; i < tierInstancesSDC.size(); i++) {
+            // delete data on SDC
+            TierInstance tierInstance = tierInstancesSDC.get(i);
+            try {
+                deleteTierOnSDC(claudiaData, tierInstance, error);
+            } catch (Exception e) {
+                String errorMsg = "Error deleting node from Node Manager : " + tierInstance.getVM().getFqn() + ""
+                        + e.getMessage();
+                log.error(errorMsg);
+                error = true;
             }
-            log.info("Environment Instance " + envInstance.getBlueprintName() + " DESTROYED");
-            envInstance.setStatus(Status.UNDEPLOYED);
-            environmentInstanceDao.remove(envInstance);
 
+            envInstance.setStatus(Status.UNINSTALLED);
+            envInstance = environmentInstanceDao.update(envInstance);
+
+            deletePaaSDB(claudiaData, envInstance, tierInstance, error);
+
+        }
+        log.info("Environment Instance " + envInstance.getBlueprintName() + " DESTROYED");
+        envInstance.setStatus(Status.UNDEPLOYED);
+        environmentInstanceDao.remove(envInstance);
+
+        if (error) {
+            String errorMsg = "Unexpected error destroying  environmentInstance";
+            throw new Exception(errorMsg);
         }
 
     }
 
+    private void deletePaaSDB(ClaudiaData claudiaData, EnvironmentInstance envInstance, TierInstance tierInstance, boolean error) throws InvalidEntityException {
+        // Borrado del registro en BBDD paasmanager
+        log.info("Deleting the environment instance " + envInstance.getBlueprintName() + " in the database ");
+
+        envInstance = environmentInstanceDao.update(envInstance);
+        try {
+            infrastructureManager.deleteNetworksInTierInstance(claudiaData, tierInstance);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            error = true;
+        }
+        tierInstanceManager.remove(tierInstance);
+    }
+
     // PRVATE METHODS
+
+    private void deleteVM(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws InvalidEntityException {
+        // Borrado de VMs
+        try {
+            log.info("Deleting Virtual Machines for environmetn instance " + envInstance.getBlueprintName());
+            envInstance.setStatus(Status.UNDEPLOYING);
+            envInstance = environmentInstanceDao.update(envInstance);
+
+            infrastructureManager.deleteEnvironment(claudiaData, envInstance);
+
+        } catch (Exception e) {
+            log.error("It is not possible to delete the environment " + envInstance.getName() + " : " + e.getMessage());
+            throw new InvalidEntityException(EnvironmentInstance.class, e);
+        }
+
+    }
+
+    private void deleteTierOnSDC(ClaudiaData claudiaData, TierInstance tierInstance, boolean error) throws Exception {
+        log.info("Deleting node " + tierInstance.getVM().getHostname());
+        tierInstance.setStatus(Status.UNINSTALLING);
+        tierInstanceDao.update(tierInstance);
+        try {
+
+            productInstallator.deleteNode(claudiaData, tierInstance.getVdc(), tierInstance.getVM().getHostname());
+
+            tierInstance.setStatus(Status.UNINSTALLED);
+            tierInstanceDao.update(tierInstance);
+        } catch (Exception e) {
+            throw e;
+        }
+
+    }
 
     private Environment insertEnvironmentInDatabase(ClaudiaData claudiaData, Environment env)
             throws InvalidEntityException, EntityNotFoundException {

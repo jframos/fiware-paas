@@ -323,3 +323,9 @@ ALTER TABLE productrelease_attribute ADD CONSTRAINT productrelease_attribute_pke
 
 ALTER TABLE task ALTER COLUMN message TYPE CHARACTER VARYING(1024) USING substr("message", 1, 1024);
 ALTER TABLE networkinstance ALTER COLUMN external SET NOT NULL;
+
+
+--changeset alberts:6-1
+ALTER TABLE attribute ADD COLUMN type character varying(255) NULL;
+UPDATE attribute SET type='Plain' WHERE 1=1;
+ALTER TABLE attribute ALTER COLUMN type SET NOT NULL;

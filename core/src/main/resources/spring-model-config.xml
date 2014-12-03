@@ -4,7 +4,7 @@
 http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
-    <beans profile="fiware,dummy">
+    <beans profile="fiware">
         <bean id="restClient" class="javax.ws.rs.client.ClientBuilder" factory-method="newClient"/>
 
         <bean id="openStackRegion" class="com.telefonica.euro_iaas.paasmanager.util.impl.OpenStackRegionImpl">
@@ -207,14 +207,8 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
             <property name="productReleaseManager" ref="productReleaseManager"/>
             <property name="tierInstanceManager" ref="tierInstanceManager"/>
+            <property name="infrastructureManager" ref="infrastructureManager"/>
         </bean>
-
-        <!--<bean id="productInstallator" lazy-init="true"
-            class="com.telefonica.euro_iaas.paasmanager.installator.ProductInstallatorDummySdcImpl">
-            <property name="sDCClient" ref="sDCClient"/>
-            <property name="sDCUtil" ref="sDCUtil"/>
-            <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
-        </bean>-->
 
 
         <bean id="openStackUtil" lazy-init="true"
@@ -250,43 +244,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     </beans>
 
-    <beans profile="dummy">
 
-
-        <bean id="quotaClient" lazy-init="true"
-              class="com.telefonica.euro_iaas.paasmanager.claudia.impl.OpenStackQuotaDummyClientImpl">
-
-        </bean>
-
-        <bean id="networkClient" lazy-init="true"
-              class="com.telefonica.euro_iaas.paasmanager.claudia.impl.NetworkClientDummyImpl">
-        </bean>
-
-        <bean id="productInstallator" lazy-init="true"
-              class="com.telefonica.euro_iaas.paasmanager.installator.ProductInstallatorDummySdcImpl">
-            <property name="sDCClient" ref="sDCClient"/>
-            <property name="sDCUtil" ref="sDCUtil"/>
-            <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
-        </bean>
-
-        <bean id="claudiaClient" lazy-init="true"
-              class="com.telefonica.euro_iaas.paasmanager.claudia.impl.ClaudiaDummyClientImpl">
-            <property name="fileUtils" ref="fileUtils"/>
-        </bean>
-
-        <bean id="infrastructureManager" lazy-init="true"
-              class="com.telefonica.euro_iaas.paasmanager.manager.impl.InfrastructureManagerClaudiaImpl">
-            <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
-            <property name="claudiaClient" ref="claudiaClient"/>
-            <property name="claudiaResponseAnalyser" ref="claudiaResponseAnalyser"/>
-            <property name="tierInstanceManager" ref="tierInstanceManager"/>
-            <property name="environmentInstanceDao" ref="environmentInstanceDao"/>
-            <property name="networkInstanceManager" ref="networkInstanceManager"/>
-            <property name="networkManager" ref="networkManager"/>
-            <property name="tierManager" ref="tierManager"/>
-        </bean>
-
-    </beans>
 </beans>
 
 

@@ -44,6 +44,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
@@ -57,16 +58,17 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
     private static Logger log = LoggerFactory.getLogger(ProductInstanceManagerImpl.class);
 
-    public ProductInstance install(TierInstance tierInstance, ClaudiaData claudiaData, String envName,
-            ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException,
-            InvalidProductInstanceRequestException, NotUniqueResultException, InvalidEntityException {
+    public ProductInstance install(TierInstance tierInstance, ClaudiaData claudiaData,
+            EnvironmentInstance environmentInstance, ProductRelease productRelease, Set<Attribute> attributes)
+            throws ProductInstallatorException, InvalidProductInstanceRequestException, NotUniqueResultException,
+            InvalidEntityException {
         log.info("Installing software " + productRelease.getProduct() + " in tier Instance " + tierInstance.getName()
                 + " in vdc " + claudiaData.getVdc());
 
         ProductInstance productInstance = null;
         try {
-            productInstance = productInstallator
-                    .install(claudiaData, envName, tierInstance, productRelease, attributes);
+            productInstance = productInstallator.install(claudiaData, environmentInstance, tierInstance,
+                    productRelease, attributes);
             if (productInstance.getVdc() == null) {
                 productInstance.setVdc(claudiaData.getVdc());
             }
@@ -111,36 +113,6 @@ public class ProductInstanceManagerImpl implements ProductInstanceManager {
 
     public List<ProductInstance> findByCriteria(ProductInstanceSearchCriteria criteria) {
         return productInstanceDao.findByCriteria(criteria);
-    }
-
-    public ProductInstance create2(ClaudiaData data, ProductInstance productInstance, TierInstance tierInstance)
-            throws InvalidEntityException, AlreadyExistsEntityException {
-        ProductRelease productRelease = productInstance.getProductRelease();
-        if (productInstance.getName() == null) {
-            productInstance.setName(tierInstance + "_" + productRelease.getProduct() + "_"
-                    + productRelease.getVersion());
-        }
-
-        if (productRelease.getId() == null)
-            try {
-                productRelease = productReleaseManager.load(
-                        productRelease.getProduct() + "-" + productRelease.getVersion(), data);
-            } catch (EntityNotFoundException e) {
-                // TODO Auto-generated catch block
-                throw new InvalidEntityException("Error to load the product release for persist the product Instance "
-                        + productInstance.getName() + " : " + e.getMessage());
-            }
-
-        if (productInstance.getId() == null)
-            try {
-                productInstanceDao.create(productInstance);
-            } catch (AlreadyExistsEntityException e) {
-                // TODO Auto-generated catch block
-                throw new AlreadyExistsEntityException("Error to persist the product Instance "
-                        + productInstance.getName() + " : " + e.getMessage());
-            }
-        return productInstance;
-
     }
 
     // //////////// I.O.C /////////////

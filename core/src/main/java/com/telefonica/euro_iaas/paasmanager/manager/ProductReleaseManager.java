@@ -46,7 +46,17 @@ public interface ProductReleaseManager {
      * @throws EntityNotFoundException
      *             if the product instance does not exists
      */
-    ProductRelease load(String name,  ClaudiaData data) throws EntityNotFoundException;
+    ProductRelease load(String name, ClaudiaData data) throws EntityNotFoundException;
+
+    /**
+     * Request product release to SDC and creates.
+     * 
+     * @param name
+     * @param data
+     * @return
+     * @throws EntityNotFoundException
+     */
+    ProductRelease loadFromSDCAndCreate(String name, ClaudiaData data) throws EntityNotFoundException;
 
     /**
      * Retrieve all ProductRelease created in the system.
@@ -67,18 +77,18 @@ public interface ProductReleaseManager {
      *             if the product release does not exists
      */
     ProductRelease load(String productName, String productVersion) throws EntityNotFoundException;
+
     /**
-     * 
      * @param productName
      * @param productVersion
      * @return
      * @throws EntityNotFoundException
      */
-    
+
     ProductRelease loadWithMetadata(String name) throws EntityNotFoundException;
 
     ProductRelease create(ProductRelease tomcat6) throws InvalidEntityException, AlreadyExistsEntityException;
-    
+
     /**
      * Retrieve a Product release for a given product and version.
      * 
