@@ -24,8 +24,6 @@
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentInstanceException;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
@@ -39,23 +37,25 @@ public class ProductValidatorImpl implements ProductValidator {
 
     @Override
     public void validateAttributes(TierDto tierDto) throws InvalidEnvironmentInstanceException {
-        
+
         for (ProductReleaseDto p : tierDto.getProductReleaseDtos()) {
-            for (Attribute att : p.getPrivateAttributes()) {
-                if (att.getType() == null) {
-                    att.setType("Plain");
+            if (p.getPrivateAttributes() != null) {
+                for (Attribute att : p.getPrivateAttributes()) {
+                    if (att.getType() == null) {
+                        att.setType("Plain");
+                    }
+
+                    checkType(att);
+                    checkValue(att);
+
                 }
-
-                checkType(att);
-                checkValue(att);
-
             }
         }
     }
 
     private void checkValue(Attribute att) throws InvalidEnvironmentInstanceException {
         String msg = "Attribute value is incorrect.";
-        boolean error=true;
+        boolean error = true;
         if (att.getValue().startsWith("IP(") && att.getValue().endsWith(")") && "IP".equals(att.getType())) {
             error = false;
         } else if (att.getValue().startsWith("IPALL(") && att.getValue().endsWith(")") && "IPALL".equals(att.getType())) {
@@ -81,10 +81,10 @@ public class ProductValidatorImpl implements ProductValidator {
                 break;
             }
         }
-        if(error){
+        if (error) {
             throw new InvalidEnvironmentInstanceException(msg);
         }
-        
+
     }
 
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
