@@ -27,6 +27,7 @@ package com.telefonica.euro_iaas.paasmanager.rest.validation;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentInstanceException;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
@@ -45,9 +46,10 @@ public interface EnvironmentResourceValidator {
      * @param vdc   The vdc info (to be deprecated).
      * @throws AlreadyExistEntityException
      * @throws InvalidEntityException
+     * @throws InvalidEnvironmentInstanceException 
      */
     void validateCreate(ClaudiaData claudiaData, EnvironmentDto environmentDto, String vdc)
-        throws AlreadyExistEntityException, InvalidEntityException;
+        throws AlreadyExistEntityException, InvalidEntityException, InvalidEnvironmentInstanceException;
 
     /**
      * Validate the request to create and EnvironmentInstance from a EnvironmentDto in abstract environment.
@@ -55,9 +57,10 @@ public interface EnvironmentResourceValidator {
      * @param environmentDto    The information about the environment instance.
      * @throws AlreadyExistEntityException
      * @throws InvalidEntityException
+     * @throws InvalidEnvironmentInstanceException 
      */
     void validateAbstractCreate(EnvironmentDto environmentDto)
-        throws AlreadyExistEntityException, InvalidEntityException;
+        throws AlreadyExistEntityException, InvalidEntityException, InvalidEnvironmentInstanceException;
 
     /**
      * Validate the operation delete of an environment resource.

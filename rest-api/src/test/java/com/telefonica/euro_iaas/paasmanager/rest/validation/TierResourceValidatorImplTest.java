@@ -45,25 +45,20 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-
-
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
-
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentInstanceException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
-
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
-
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
@@ -77,9 +72,11 @@ public class TierResourceValidatorImplTest {
     private SystemPropertiesProvider systemPropertiesProvider;
     private ResourceValidator resourceValidator;
     private TierManager tierManager;
+    private ProductValidator productValidator;
 
     /**
      * Initialize the Unit Test.
+     * 
      * @throws EntityNotFoundException
      * @throws InvalidEntityException
      */
@@ -93,10 +90,11 @@ public class TierResourceValidatorImplTest {
         tierResourceValidator.setTierManager(tierManager);
         tierResourceValidator.setEnvironmentInstanceManager(environmentInstanceManager);
         tierResourceValidator.setEnvironmentManager(environmentManager);
+        productValidator = mock(ProductValidator.class);
+        tierResourceValidator.setProductValidator(productValidator);
 
         resourceValidator = mock(ResourceValidator.class);
         tierResourceValidator.setResourceValidator(resourceValidator);
-
 
         Mockito.doNothing().when(resourceValidator).validateName(anyString());
         Mockito.doNothing().when(resourceValidator).validateDescription(anyString());
@@ -133,7 +131,8 @@ public class TierResourceValidatorImplTest {
     }
 
     /**
-     * Test that it returns false when it does not exist a dependency for a product.
+     * Test that it returns false when it does not exist a dependency for a
+     * product.
      */
     @Test
     public void shouldReturnFalseWhenNotExistADependencyForAproduct() {
@@ -154,7 +153,8 @@ public class TierResourceValidatorImplTest {
     }
 
     /**
-     * Test that it returns false when the list of dependencies is empty due to a product need another product.
+     * Test that it returns false when the list of dependencies is empty due to
+     * a product need another product.
      */
     @Test
     public void shouldReturnFalseWhenDependenciesListIsEmptyBecauseAProductNeedAnotherProduct() {
@@ -173,7 +173,8 @@ public class TierResourceValidatorImplTest {
     }
 
     /**
-     * Test that it returns true when the list of dependencies is empty and products have no dependencies.
+     * Test that it returns true when the list of dependencies is empty and
+     * products have no dependencies.
      */
     @Test
     public void shouldReturnTrueWhenDependenciesListIsEmptyAndProductHasntDependencies() {
@@ -281,6 +282,7 @@ public class TierResourceValidatorImplTest {
 
     /**
      * Test the dependencies of a tier.
+     * 
      * @throws EntityNotFoundException
      * @throws InvalidEntityException
      */
@@ -306,13 +308,15 @@ public class TierResourceValidatorImplTest {
     }
 
     /**
-     * Test the launch of a exception in the process to validate a tier with dependencies that there is not exist.
+     * Test the launch of a exception in the process to validate a tier with
+     * dependencies that there is not exist.
+     * 
      * @throws EntityNotFoundException
      * @throws InvalidEntityException
      */
     @Test(expected = InvalidEntityException.class)
-    public void shouldThrowExceptionInValidateATierWithDependencyThatNotExist()
-        throws EntityNotFoundException, InvalidEntityException {
+    public void shouldThrowExceptionInValidateATierWithDependencyThatNotExist() throws EntityNotFoundException,
+            InvalidEntityException {
 
         // given
         TierResourceValidatorImpl tierResourceValidator = new TierResourceValidatorImpl();
@@ -346,45 +350,51 @@ public class TierResourceValidatorImplTest {
 
     /**
      * Test that an exception is launched when a tier has no name.
+     * 
      * @throws AlreadyExistEntityException
      * @throws InvalidEntityException
      * @throws InfrastructureException
      * @throws QuotaExceededException
      * @throws EntityNotFoundException
+     * @throws InvalidEnvironmentInstanceException
      */
     @Test(expected = InvalidEntityException.class)
-    public void shouldValidateEmptyNameTier()
-        throws AlreadyExistEntityException, InvalidEntityException, InfrastructureException, QuotaExceededException,
-               EntityNotFoundException {
+    public void shouldValidateEmptyNameTier() throws AlreadyExistEntityException, InvalidEntityException,
+            InfrastructureException, QuotaExceededException, EntityNotFoundException,
+            InvalidEnvironmentInstanceException {
 
         // given
         ClaudiaData claudiaData = mock(ClaudiaData.class);
         TierDto tierDto = new TierDto();
         tierDto.setName("");
-        when(tierManager.load(anyString(), anyString(), anyString()))
-                .thenThrow(new EntityNotFoundException(Tier.class, "tier", tierDto.getName()));
+        when(tierManager.load(anyString(), anyString(), anyString())).thenThrow(
+                new EntityNotFoundException(Tier.class, "tier", tierDto.getName()));
 
         tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName");
 
     }
 
     /**
-     * Test that an exception is launched when a strange character is found in the environment name.
+     * Test that an exception is launched when a strange character is found in
+     * the environment name.
+     * 
      * @throws AlreadyExistEntityException
      * @throws InvalidEntityException
      * @throws InfrastructureException
      * @throws QuotaExceededException
      * @throws EntityNotFoundException
+     * @throws InvalidEnvironmentInstanceException
      */
     @Test(expected = InvalidEntityException.class)
     public void shouldValidateStrangeCharacteresEnvironment() throws AlreadyExistEntityException,
-            InvalidEntityException, InfrastructureException, QuotaExceededException, EntityNotFoundException {
+            InvalidEntityException, InfrastructureException, QuotaExceededException, EntityNotFoundException,
+            InvalidEnvironmentInstanceException {
         // given
 
         TierDto tierDto = new TierDto();
         tierDto.setName("name.name");
-        when(tierManager.load(anyString(), anyString(), anyString()))
-                .thenThrow(new EntityNotFoundException(Tier.class, "tier", tierDto.getName()));
+        when(tierManager.load(anyString(), anyString(), anyString())).thenThrow(
+                new EntityNotFoundException(Tier.class, "tier", tierDto.getName()));
 
         ClaudiaData claudiaData = mock(ClaudiaData.class);
         tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName");
@@ -392,21 +402,24 @@ public class TierResourceValidatorImplTest {
 
     /**
      * Test that an exception is launched when a tier name is too long.
+     * 
      * @throws AlreadyExistEntityException
      * @throws InfrastructureException
      * @throws QuotaExceededException
      * @throws InvalidEntityException
      * @throws EntityNotFoundException
+     * @throws InvalidEnvironmentInstanceException
      */
     @Test(expected = InvalidEntityException.class)
-    public void shouldValidateNameTooLong() throws AlreadyExistEntityException,
-            InfrastructureException, QuotaExceededException, InvalidEntityException, EntityNotFoundException {
+    public void shouldValidateNameTooLong() throws AlreadyExistEntityException, InfrastructureException,
+            QuotaExceededException, InvalidEntityException, EntityNotFoundException,
+            InvalidEnvironmentInstanceException {
         // given
 
         TierDto tierDto = new TierDto();
         tierDto.setName("aaaaaaaaaaaaaaaaaaaaaaaahhhhhhhhhhhhhhhhhhhhhaaaaaaaaaaa");
-        when(tierManager.load(anyString(), anyString(), anyString()))
-                .thenThrow(new EntityNotFoundException(Tier.class, "tier", tierDto.getName()));
+        when(tierManager.load(anyString(), anyString(), anyString())).thenThrow(
+                new EntityNotFoundException(Tier.class, "tier", tierDto.getName()));
 
         ClaudiaData claudiaData = mock(ClaudiaData.class);
         tierResourceValidator.validateCreate(claudiaData, tierDto, "vdc", "envName");
@@ -415,13 +428,15 @@ public class TierResourceValidatorImplTest {
 
     /**
      * Test that an abstract tier is created properly.
+     * 
      * @throws EntityNotFoundException
      * @throws InvalidEntityException
      * @throws AlreadyExistEntityException
+     * @throws InvalidEnvironmentInstanceException
      */
     @Test
-    public void shouldValidateAbstractTier()
-        throws EntityNotFoundException, InvalidEntityException, AlreadyExistEntityException {
+    public void shouldValidateAbstractTier() throws EntityNotFoundException, InvalidEntityException,
+            AlreadyExistEntityException, InvalidEnvironmentInstanceException {
 
         TierDto tierDTO = new TierDto();
         tierDTO.setName("tier1");
@@ -430,8 +445,8 @@ public class TierResourceValidatorImplTest {
         tierDTO.setMinimumNumberInstances(new Integer(1));
         tierDTO.setImage("image");
         tierDTO.setFlavour("flavor");
-        when(tierManager.load(anyString(), anyString(), anyString()))
-                .thenThrow(new EntityNotFoundException(Tier.class, "tier", tierDTO.getName()));
+        when(tierManager.load(anyString(), anyString(), anyString())).thenThrow(
+                new EntityNotFoundException(Tier.class, "tier", tierDTO.getName()));
 
         tierResourceValidator.validateCreateAbstract(tierDTO, "en");
 
@@ -439,6 +454,7 @@ public class TierResourceValidatorImplTest {
 
     /**
      * Test the operation to update a tier.
+     * 
      * @throws AlreadyExistEntityException
      * @throws InfrastructureException
      * @throws QuotaExceededException
@@ -446,8 +462,8 @@ public class TierResourceValidatorImplTest {
      * @throws EntityNotFoundException
      */
     @Test
-    public void shouldValidateUpdateTier() throws AlreadyExistEntityException,
-            InfrastructureException, QuotaExceededException, InvalidEntityException, EntityNotFoundException {
+    public void shouldValidateUpdateTier() throws AlreadyExistEntityException, InfrastructureException,
+            QuotaExceededException, InvalidEntityException, EntityNotFoundException {
         // given
 
         TierDto tierDTO = new TierDto();
@@ -465,6 +481,7 @@ public class TierResourceValidatorImplTest {
 
     /**
      * Test that an exception is launched when ti tries to update a error tier.
+     * 
      * @throws AlreadyExistEntityException
      * @throws InfrastructureException
      * @throws QuotaExceededException
@@ -472,8 +489,8 @@ public class TierResourceValidatorImplTest {
      * @throws EntityNotFoundException
      */
     @Test(expected = InvalidEntityException.class)
-    public void shouldValidateUpdateTierError() throws AlreadyExistEntityException,
-            InfrastructureException, QuotaExceededException, InvalidEntityException, EntityNotFoundException {
+    public void shouldValidateUpdateTierError() throws AlreadyExistEntityException, InfrastructureException,
+            QuotaExceededException, InvalidEntityException, EntityNotFoundException {
         // given
 
         TierDto tierDTO = new TierDto();
@@ -491,6 +508,7 @@ public class TierResourceValidatorImplTest {
 
     /**
      * Test the operation to delete a tier.
+     * 
      * @throws InvalidEntityException
      * @throws EntityNotFoundException
      */
