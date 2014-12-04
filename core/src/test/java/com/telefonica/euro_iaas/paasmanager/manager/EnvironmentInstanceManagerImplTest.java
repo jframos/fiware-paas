@@ -63,7 +63,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.security.core.GrantedAuthority;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -106,7 +105,6 @@ public class EnvironmentInstanceManagerImplTest {
     @Before
     public void setUp() throws Exception {
         // OVF
-       
 
         claudiaData = new ClaudiaData("org", "vdc", "service");
         // Collection<GrantedAuthority> authorities = null;
@@ -130,8 +128,8 @@ public class EnvironmentInstanceManagerImplTest {
         tier.setName("tierName");
         tier.setProductReleases(productReleases);
         tier.setRegion("region1");
-        tier.addNetwork(new Network ("uno", "VDC", "region1"));
-        
+        tier.addNetwork(new Network("uno", "VDC", "region1"));
+
         Tier tier2 = new Tier();
         tier2.setInitialNumberInstances(new Integer(1));
         tier2.setMaximumNumberInstances(new Integer(5));
@@ -139,7 +137,7 @@ public class EnvironmentInstanceManagerImplTest {
         tier2.setName("tierName2");
         tier2.setProductReleases(productReleases);
         tier2.setRegion("region2");
-        tier2.addNetwork(new Network ("uno", "VDC", "region2"));
+        tier2.addNetwork(new Network("uno", "VDC", "region2"));
 
         Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tier);
@@ -176,8 +174,9 @@ public class EnvironmentInstanceManagerImplTest {
 
         productInstanceManager = mock(ProductInstanceManager.class);
         when(
-                productInstanceManager.install(any(TierInstance.class), any(ClaudiaData.class), any(EnvironmentInstance.class),
-                        any(ProductRelease.class), anySet())).thenReturn(productInstance);
+                productInstanceManager.install(any(TierInstance.class), any(ClaudiaData.class),
+                        any(EnvironmentInstance.class), any(ProductRelease.class))).thenReturn(
+                productInstance);
 
         List<ProductInstance> productInstances = new ArrayList<ProductInstance>();
         productInstances.add(productInstance);
@@ -201,22 +200,23 @@ public class EnvironmentInstanceManagerImplTest {
 
         environmentInstanceDao = mock(EnvironmentInstanceDao.class);
         when(environmentInstanceDao.load(any(String.class))).thenReturn(environmentInstance);
-        
+
         environmentInstanceManager = new EnvironmentInstanceManagerImpl();
-        infrastructureManager = mock (InfrastructureManager.class);
-        networkManager = mock (NetworkManager.class);
+        infrastructureManager = mock(InfrastructureManager.class);
+        networkManager = mock(NetworkManager.class);
         environmentInstanceManager.setInfrastructureManager(infrastructureManager);
         environmentInstanceManager.setNetworkManager(networkManager);
     }
-    
-    @Test
-    public void testUpdateFederatedNetworks () throws InfrastructureException, EntityNotFoundException, InvalidEntityException {
-    	when (infrastructureManager.getFederatedRange(any(ClaudiaData.class), any(String.class))).thenReturn("12");
-    	Network net2 = new Network ("uno", "VDC", "region2");
-    	when (networkManager.load( any(String.class), any(String.class), any(String.class))).thenReturn(net2);
 
-    	environmentInstanceManager.updateFederatedNetworks(claudiaData, environment);
-    //	verify (networkManager.update(any(Network.class)));
+    @Test
+    public void testUpdateFederatedNetworks() throws InfrastructureException, EntityNotFoundException,
+            InvalidEntityException {
+        when(infrastructureManager.getFederatedRange(any(ClaudiaData.class), any(String.class))).thenReturn("12");
+        Network net2 = new Network("uno", "VDC", "region2");
+        when(networkManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(net2);
+
+        environmentInstanceManager.updateFederatedNetworks(claudiaData, environment);
+        // verify (networkManager.update(any(Network.class)));
 
     }
 

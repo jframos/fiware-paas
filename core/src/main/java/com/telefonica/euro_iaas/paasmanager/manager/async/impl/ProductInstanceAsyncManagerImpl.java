@@ -75,7 +75,7 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
 
         try {
             ProductInstance productInstance = productInstanceManager.install(tierInstance, claudiaData,
-                    environmentInstance, productRelease, attributes);
+                    environmentInstance, productRelease);
             log.info("Product " + productRelease.getProduct() + '-' + productRelease.getVersion()
                     + " installed successfully");
         } catch (InvalidProductInstanceRequestException e) {

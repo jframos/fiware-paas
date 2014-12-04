@@ -64,7 +64,7 @@ public interface ProductInstanceManager {
      * @throws InvalidEntityException
      */
     ProductInstance install(TierInstance tierInstance, ClaudiaData claudiaData,
-            EnvironmentInstance environmentInstance, ProductRelease product, Set<Attribute> set)
+            EnvironmentInstance environmentInstance, ProductRelease product)
             throws ProductInstallatorException, InvalidProductInstanceRequestException, NotUniqueResultException,
             InvalidEntityException;
 

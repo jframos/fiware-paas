@@ -213,7 +213,7 @@ public class ProductInstallatorSdcImplTest {
         installator.setTierInstanceManager(tierInstanceManager);
 
         ProductInstance installedProduct = installator.install(data, environmentInstance, tierInstance,
-                expectedProductInstance.getProductRelease(), new HashSet<Attribute>());
+                expectedProductInstance.getProductRelease());
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);
 
@@ -235,7 +235,7 @@ public class ProductInstallatorSdcImplTest {
         productReleaseWithoutAttrs.setWithArtifact(true);
 
         ProductInstance installedProduct = installator.install(data, environmentInstance, tierInstance,
-                productReleaseWithoutAttrs, new HashSet<Attribute>());
+                productReleaseWithoutAttrs);
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);
     }
@@ -250,7 +250,7 @@ public class ProductInstallatorSdcImplTest {
         installator.setTierInstanceManager(tierInstanceManager);
 
         ProductInstance installedProduct = installator.install(data, environmentInstance, tierInstance,
-                expectedProductInstance.getProductRelease(), new HashSet<Attribute>());
+                expectedProductInstance.getProductRelease());
         // make verifications
         assertEquals(expectedProductInstance, installedProduct);
     }
@@ -268,7 +268,8 @@ public class ProductInstallatorSdcImplTest {
         String name = installator.getProductInstanceName(data, expectedProductInstance);
         // make verifications
         assertEquals(name,
-                "FIWARE.customers.60b4125450fc4a109f50357894ba2e28.services.deploytm.vees.contextbrokr.replicas.1_mongos_2.2.3");
+                "FIWARE.customers.60b4125450fc4a109f50357894ba2e28.services."
+                + "deploytm.vees.contextbrokr.replicas.1_mongos_2.2.3");
 
         // only one product will be installed, the other one causes error.
         // verify(productInstanceDao,
@@ -304,7 +305,7 @@ public class ProductInstallatorSdcImplTest {
         List<TierInstance> til = new ArrayList<TierInstance>();
         til.add(tierIns);
         when(environmentInstance.getTierInstances()).thenReturn(til);
-        
+
         InfrastructureManager infrastructureManager = mock(InfrastructureManager.class);
 
         when(infrastructureManager.generateVMName(anyString(), anyString(), anyInt(), anyString())).thenReturn(

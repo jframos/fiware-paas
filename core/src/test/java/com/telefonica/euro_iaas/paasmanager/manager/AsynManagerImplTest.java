@@ -301,7 +301,7 @@ public class AsynManagerImplTest {
         Task task = new Task();
 
         when(productInstanceManager.install(any(TierInstance.class),
-                any(ClaudiaData.class), any(EnvironmentInstance.class), any(ProductRelease.class), any(HashSet.class)))
+                any(ClaudiaData.class), any(EnvironmentInstance.class), any(ProductRelease.class)))
                 .thenReturn(productInstance);
 
         productInstanceAsyncManagerImpl
@@ -320,7 +320,7 @@ public class AsynManagerImplTest {
         Task task = new Task();
 
         when(productInstanceManager.install(any(TierInstance.class),
-                any(ClaudiaData.class), any(EnvironmentInstance.class), any(ProductRelease.class), any(HashSet.class))).
+                any(ClaudiaData.class), any(EnvironmentInstance.class), any(ProductRelease.class))).
                 thenThrow(new InvalidProductInstanceRequestException("test"));
         
         productInstanceAsyncManagerImpl
@@ -338,7 +338,7 @@ public class AsynManagerImplTest {
         Task task = new Task();
 
         when(productInstanceManager.install(any(TierInstance.class),
-                any(ClaudiaData.class), any(EnvironmentInstance.class), any(ProductRelease.class), any(HashSet.class))).
+                any(ClaudiaData.class), any(EnvironmentInstance.class), any(ProductRelease.class))).
                 thenThrow(new InvalidProductInstanceRequestException("test"));
 
         when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class)))
