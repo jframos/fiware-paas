@@ -65,6 +65,22 @@ class NovaRequest:
         url = "{}/{}".format(self.nova_url, 'flavors')
         return self.__get__(url)
 
+    def get_server_list(self):
+        """
+        Gets the list of launched servers
+        :return: HTTPlib request
+        """
+        url = "{}/{}".format(self.nova_url, 'servers')
+        return self.__get__(url)
+
+    def get_server_details(self, server_id):
+        """
+        Gets full details about a server
+        :return: HTTPlib request
+        """
+        url = "{}/{}/{}".format(self.nova_url, 'servers', server_id)
+        return self.__get__(url)
+
 
 def get_number_of_flavors(body_response):
     """
@@ -87,3 +103,32 @@ def get_first_flavor_in_list(body_response, name_filter=None):
             flavor = body_response['flavors'][0]['id']
 
     return flavor
+
+def get_server_id_by_partial_name(body_response_server_list, partial_server_name):
+    """
+    Looks for server Id in the server list by server name
+    :param body_response_server_list: Parsed response (python dic). List of deployed instances
+    :param partial_name: The name of the server to find (or a substring)
+    :return: Server ID
+    """
+    server_id = None
+    for server in body_response_server_list['servers']:
+        if partial_server_name in server['name']:
+            server_id = server['id']
+            break
+
+    return server_id
+
+
+def get_metadata_value(body_response_server_details, metadata_key):
+    """
+    Retrieves the metadata value from instance details
+    :param body_response_server_details: Parsed response (python dic). Server details data
+    :param metadata_key: The key of the metadata to be retrieved
+    :return: Metadata value with that key
+    """
+    metadata_value = None
+    if metadata_key in body_response_server_details['server']['metadata']:
+        metadata_value = body_response_server_details['server']['metadata'][metadata_key]
+
+    return metadata_value
