@@ -120,7 +120,7 @@ Feature: Add a tier to an environment in a tenant
             | name    | tiername    | products                 | networks      |
             | nameqa1 | tiernameqa1 | git=1.7                  | netqa1        |
             | nameqa2 | tiernameqa2 | git=1.7,mediawiki=1.17.0 | netqa1,netqa2 |
-        
+
     Scenario: Add tier to non existent environment
         Given the paas manager is up and properly configured
         And there is no environment with name "nameqa" already created
@@ -128,3 +128,80 @@ Feature: Add a tier to an environment in a tenant
             | name       |
             | tiernameqa |
         Then I receive a "Not Found" response
+
+
+   Scenario Outline: Add tier to an environment with valid product attributes
+        Given the paas manager is up and properly configured
+        And the product "<product_name>" with version "<product_version>" is created in SDC with attributes:
+            | key               | value               | type              |
+            | custom_att_01     | <attribute_value>   | <attribute_type>  |
+        And the following instance attributes for product "<product_name>":
+            | key               | value               | type              |
+            | custom_att_01     | <attribute_value>   | <attribute_type>  |
+        And an environment has already been created with data:
+            | name       | description |
+            | <env_name> | descqa  |
+        When I request the addition of a tier to the environment "<env_name>" with data:
+            | name    | products       |
+            | qa-test | <paas_product> |
+        Then I receive a "No Content" response
+
+        Examples:
+        | product_name    | product_version   | attribute_type  | attribute_value   | paas_product         | env_name    |
+        | qa_paas_att_01  | 0.0.1             | Plain           | default_value     | qa_paas_att_01=0.0.1 | qaenvatt01  |
+        | qa_paas_att_02  | 0.0.1             | IP              | IP(tiername)      | qa_paas_att_02=0.0.1 | qaenvatt02  |
+        | qa_paas_att_03  | 0.0.1             | IPALL           | IPALL(tiername)   | qa_paas_att_03=0.0.1 | qaenvatt03  |
+        | qa_paas_att_04  | 0.0.1             | [MISSING_PARAM] | default_value     | qa_paas_att_04=0.0.1 | qaenvatt04  |
+
+
+    Scenario Outline: Add tier to an environment. Products with invalid attribute type
+        Given the paas manager is up and properly configured
+        And the product "<product_name>" with version "<product_version>" is created in SDC with attributes:
+            | key               | value               | type                  |
+            | custom_att_01     | default_value_plain | <sdc_attribute_type>  |
+        And the following instance attributes for product "<product_name>":
+            | key               | value               | type                   |
+            | custom_att_01     | default_value_plain | <paas_attribute_type>  |
+        And an environment has already been created with data:
+            | name   | description |
+            | <env_name> | descqa      |
+        When I request the addition of a tier to the environment "<env_name>" with data:
+            | name    | products   |
+            | qa-test | <paas_product> |
+       Then I receive an "Bad Request" response
+
+        Examples:
+        | product_name     | product_version   | sdc_attribute_type | paas_attribute_type  | paas_product          | env_name    |
+        | qa_paas_att_01a  | 0.0.1             | Plain              | Plai                 | qa_paas_att_01a=0.0.1 | qaenvatt01  |
+        | qa_paas_att_02a  | 0.0.1             | IP                 | ip                   | qa_paas_att_02a=0.0.1 | qaenvatt02  |
+        | qa_paas_att_03a  | 0.0.1             | IPALL              | ipall                | qa_paas_att_03a=0.0.1 | qaenvatt03  |
+        | qa_paas_att_04a  | 0.0.1             | IPALL              | ip_al                | qa_paas_att_04a=0.0.1 | qaenvatt04  |
+        | qa_paas_att_05a  | 0.0.1             | Plain              |                      | qa_paas_att_05a=0.0.1 | qaenvatt05  |
+
+
+    Scenario Outline: Add tier to an environment. Products with invalid attribute value
+        Given the paas manager is up and properly configured
+        And the product "<product_name>" with version "<product_version>" is created in SDC with attributes:
+            | key               | value               | type              |
+            | custom_att_01     | <attribute_value>   | <attribute_type>  |
+        And the following instance attributes for product "<product_name>":
+            | key               | value               | type              |
+            | custom_att_01     | <attribute_value>   | <attribute_type>  |
+        And an environment has already been created with data:
+            | name   | description |
+            | <env_name> | descqa      |
+        When I request the addition of a tier to the environment "<env_name>" with data:
+            | name    | products   |
+            | qa-test | <paas_product> |
+        Then I receive an "Bad Request" response
+
+        Examples:
+        | product_name     | product_version   | attribute_type  | attribute_value             | paas_product          | env_name    |
+        | qa_paas_att_01b  | 0.0.1             | IP              | 192.168.1.1                 | qa_paas_att_01b=0.0.1 | qaenvatt01  |
+        | qa_paas_att_02b  | 0.0.1             | IP              | (192.168.1.1)               | qa_paas_att_02b=0.0.1 | qaenvatt02  |
+        | qa_paas_att_03b  | 0.0.1             | IP              | P(192.168.1.1)              | qa_paas_att_03b=0.0.1 | qaenvatt03  |
+        | qa_paas_att_04b  | 0.0.1             | IP              | IPALL(192.168.1.1)          | qa_paas_att_04b=0.0.1 | qaenvatt04  |
+        | qa_paas_att_05b  | 0.0.1             | IPALL           | 192.168.1.1                 | qa_paas_att_05b=0.0.1 | qaenvatt05  |
+        | qa_paas_att_06b  | 0.0.1             | IPALL           | (192.168.1.1,192.168.1.2    | qa_paas_att_06b=0.0.1 | qaenvatt06  |
+        | qa_paas_att_07b  | 0.0.1             | IPALL           | IP(192.168.1.1,192.168.1.2  | qa_paas_att_07b=0.0.1 | qaenvatt07  |
+        | qa_paas_att_08b  | 0.0.1             | IPALL           | ALL(192.168.1.1,192.168.1.2 | qa_paas_att_08b=0.0.1 | qaenvatt08  |

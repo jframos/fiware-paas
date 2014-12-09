@@ -58,17 +58,17 @@ class Tier:
                  tier_floatingip=world.config[PAAS][TIER_FLOATINGIP],
                  tier_region=world.config[PAAS][TIER_REGION]):
 
-        self.name = str(tier_name)
-        self.tier_num_min = str(tier_num_min)
-        self.tier_num_max = str(tier_num_max)
-        self.tier_num_initial = str(tier_num_initial)
-        self.tier_image = str(tier_image)
-        self.tier_flavour = str(tier_flavour)
-        self.tier_keypair = str(tier_keypair)
-        self.tier_floatingip = str(tier_floatingip)
+        self.name = str(tier_name) if tier_name is not None else None
+        self.tier_num_min = str(tier_num_min) if tier_num_min is not None else None
+        self.tier_num_max = str(tier_num_max) if tier_num_max is not None else None
+        self.tier_num_initial = str(tier_num_initial) if tier_num_initial is not None else None
+        self.tier_image = str(tier_image) if tier_image is not None else None
+        self.tier_flavour = str(tier_flavour) if tier_flavour is not None else None
+        self.tier_keypair = str(tier_keypair) if tier_keypair is not None else None
+        self.tier_floatingip = str(tier_floatingip) if tier_floatingip is not None else None
         self.products = []
         self.networks = []
-        self.region = str(tier_region)
+        self.region = str(tier_region) if tier_region is not None else None
 
     def __eq__(self, other):
         return self.name == other.name\
@@ -88,6 +88,11 @@ class Tier:
 
     def add_network(self, network):
         self.networks.append(network)
+
+    def add_attribute_to_product(self, product_name, attribute_key, attribute_value, attribute_type):
+        for product_in_tier in self.products:
+            if product_in_tier.product == product_name:
+                product_in_tier.add_atribute(attribute_key, attribute_value, attribute_type)
 
     def parse_and_add_products(self, products_information):
         self.products.extend(parse_products(products_information))
@@ -210,11 +215,15 @@ def process_tier(tier):
 
         if isinstance(product_dtos, list):
             for product_dto in product_dtos:
+                attribute_list = product_dto['attributes'] if 'attributes' in product_dto else None
                 processed_tier.add_product(ProductRelease(product_dto['productName'],
-                    product_dto['version']))
+                                                          product_dto['version'],
+                                                          ProductRelease.parse_attribute_from_dict(attribute_list)))
         else:
+            attribute_list = product_dtos['attributes'] if 'attributes' in product_dtos else None
             processed_tier.add_product(ProductRelease(product_dtos['productName'],
-                product_dtos['version']))
+                                                      product_dtos['version'],
+                                                      ProductRelease.parse_attribute_from_dict(attribute_list)))
     except:
         pass
 
