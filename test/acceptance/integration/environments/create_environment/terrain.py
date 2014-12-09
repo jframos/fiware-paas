@@ -53,9 +53,9 @@ def before_each_scenario(scenario):
     world.paas_product_list_with_attributes = list()
 
 
-
 @after.each_scenario
 def after_each_scenario(scenario):
+
     # Delete the environments created in the scenario.
     environment_request.delete_created_environments()
 

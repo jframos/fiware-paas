@@ -38,6 +38,9 @@ def before_each_scenario(feature):
         world.config[PAAS][VDC],
         world.config[PAAS][SDC_URL])
 
+    # Init feature vars
+    world.product_and_release_list = list()
+
     # Create product in SDC to be used by this feature
     terrain_steps.init_products_in_sdc()
 

@@ -42,6 +42,9 @@ def before_each_scenario(feature):
     world.env_requests.get_environments()
     environment_request.check_get_environments_response(world.response, 200, 0)
 
+    # Init feature vars
+    world.product_and_release_list = list()
+
     # Create product in SDC to be used by this feature
     terrain_steps.init_products_in_sdc()
 
