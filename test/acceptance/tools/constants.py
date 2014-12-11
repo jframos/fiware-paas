@@ -21,6 +21,7 @@
 # contact with opensource@tid.es
 # Names of the properties in the {environment}-properties.json files
 
+# Configuration values
 ENVIRONMENT = "environment"
 ENVIRONMENT_TESTFILES = "test_files"
 NAME = "name"
@@ -44,7 +45,16 @@ TIER_KEYPAIR = "tier_keypair"
 TIER_FLOATINGIP = "tier_floatingip"
 TIER_REGION = "tier_region"
 # Auxiliary constants used in .feature files or interfaces
+# Request values
 NAME = "name"
 DESCRIPTION = "description"
 PRODUCTS = "products"
 NETWORKS = "networks"
+TIER_REQUEST_IMAGE = "image"
+TIER_REQUEST_NUM_MIN = "minimumNumberInstances"
+TIER_REQUEST_NUM_MAX = "maximumNumberInstances"
+TIER_REQUEST_NUM_INITIAL = "initialNumberInstances"
+TIER_REQUEST_FLAVOUR = "flavour"
+TIER_REQUEST_KEYPAIR = "keypair"
+TIER_REQUEST_FLOATINGIP = "floatingip"
+TIER_REQUEST_REGION = "region"

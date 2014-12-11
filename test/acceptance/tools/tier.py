@@ -29,6 +29,7 @@ __author__ = 'henar'
 from xml.etree.ElementTree import Element, SubElement
 from productrelease import ProductRelease
 from lettuce import world
+from nose.tools import assert_equals
 
 
 class Network:
@@ -49,7 +50,8 @@ class Network:
 
 
 class Tier:
-    def __init__(self, tier_name, tier_image,
+    def __init__(self, tier_name,
+                 tier_image=world.config[PAAS][TIER_IMAGE],
                  tier_num_min=world.config[PAAS][TIER_NUM_MIN],
                  tier_num_max=world.config[PAAS][TIER_NUM_MAX],
                  tier_num_initial=world.config[PAAS][TIER_NUM_INITIAL],
@@ -330,7 +332,8 @@ def check_tier_in_list(tiers_list, tier_name, products=None, networks=None):
 def check_get_tier_response(response, expected_status_code,
                             expected_tier_name=None,
                             expected_products=None,
-                            expected_networks=None):
+                            expected_networks=None,
+                            all_tier_data=None):
     """
     Checks that the response for a get tier request is the
     expected one.
@@ -384,3 +387,27 @@ def check_get_tier_response(response, expected_status_code,
 
             assert network_found,\
             "Network not found in response: %s" % (expected_network.network_name)
+
+    if "region" in all_tier_data:
+        assert_equals(all_tier_data["region"], tier.region)
+
+    if "image" in all_tier_data:
+        assert_equals(all_tier_data["image"], tier.tier_image)
+
+    if "flavour" in all_tier_data:
+        assert_equals(all_tier_data["flavour"], tier.tier_flavour)
+
+    if "minimumNumberInstances" in all_tier_data:
+        assert_equals(all_tier_data["minimumNumberInstances"], tier.tier_num_min)
+
+    if "maximumNumberInstances" in all_tier_data:
+        assert_equals(all_tier_data["maximumNumberInstances"], tier.tier_num_max)
+
+    if "initialNumberInstances" in all_tier_data:
+        assert_equals(all_tier_data["initialNumberInstances"], tier.tier_num_initial)
+
+    if "keypair" in all_tier_data:
+        assert_equals(all_tier_data["keypair"], tier.tier_keypair)
+
+    if "floatingip" in all_tier_data:
+        assert_equals(all_tier_data["floatingip"], tier.tier_floatingip)
