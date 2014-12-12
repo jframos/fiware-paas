@@ -22,7 +22,9 @@
 
 import json
 from tools.constants import PAAS, TIER_NUM_MIN, TIER_NUM_MAX, TIER_NUM_INITIAL,\
-    TIER_FLAVOUR, TIER_KEYPAIR, TIER_FLOATINGIP, TIER_IMAGE, TIER_REGION
+    TIER_FLAVOUR, TIER_KEYPAIR, TIER_FLOATINGIP, TIER_IMAGE, TIER_REGION, \
+    TIER_REQUEST_IMAGE, TIER_REQUEST_REGION, TIER_REQUEST_NUM_MIN, TIER_REQUEST_FLAVOUR, TIER_REQUEST_FLOATINGIP, \
+    TIER_REQUEST_KEYPAIR, TIER_REQUEST_NUM_INITIAL, TIER_REQUEST_NUM_MAX
 
 __author__ = 'henar'
 
@@ -386,26 +388,26 @@ def check_get_tier_response(response, expected_status_code,
             assert network_found,\
             "Network not found in response: %s" % (expected_network.network_name)
 
-    if "region" in all_tier_data:
-        assert_equals(all_tier_data["region"], tier.region)
+    if TIER_REQUEST_REGION in all_tier_data:
+        assert_equals(all_tier_data[TIER_REQUEST_REGION], tier.region)
 
-    if "image" in all_tier_data:
-        assert_equals(all_tier_data["image"], tier.tier_image)
+    if TIER_REQUEST_IMAGE in all_tier_data:
+        assert_equals(all_tier_data[TIER_REQUEST_IMAGE], tier.tier_image)
 
-    if "flavour" in all_tier_data:
-        assert_equals(all_tier_data["flavour"], tier.tier_flavour)
+    if TIER_REQUEST_FLAVOUR in all_tier_data:
+        assert_equals(str(all_tier_data[TIER_REQUEST_FLAVOUR]), tier.tier_flavour)
 
-    if "minimumNumberInstances" in all_tier_data:
-        assert_equals(all_tier_data["minimumNumberInstances"], tier.tier_num_min)
+    if TIER_REQUEST_NUM_MIN in all_tier_data:
+        assert_equals(str(all_tier_data[TIER_REQUEST_NUM_MIN]), tier.tier_num_min)
 
-    if "maximumNumberInstances" in all_tier_data:
-        assert_equals(all_tier_data["maximumNumberInstances"], tier.tier_num_max)
+    if TIER_REQUEST_NUM_MAX in all_tier_data:
+        assert_equals(str(all_tier_data[TIER_REQUEST_NUM_MAX]), tier.tier_num_max)
 
-    if "initialNumberInstances" in all_tier_data:
-        assert_equals(all_tier_data["initialNumberInstances"], tier.tier_num_initial)
+    if TIER_REQUEST_NUM_INITIAL in all_tier_data:
+        assert_equals(str(all_tier_data[TIER_REQUEST_NUM_INITIAL]), tier.tier_num_initial)
 
-    if "keypair" in all_tier_data:
-        assert_equals(all_tier_data["keypair"], tier.tier_keypair)
+    if TIER_REQUEST_KEYPAIR in all_tier_data:
+        assert_equals(all_tier_data[TIER_REQUEST_KEYPAIR], tier.tier_keypair)
 
-    if "floatingip" in all_tier_data:
-        assert_equals(all_tier_data["floatingip"], tier.tier_floatingip)
+    if TIER_REQUEST_FLOATINGIP in all_tier_data:
+        assert_equals(all_tier_data[TIER_REQUEST_FLOATINGIP], tier.tier_floatingip)

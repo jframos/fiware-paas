@@ -60,28 +60,28 @@ def i_request_the_update_of_a_tier_of_a_environment_with_data(step, tier_name, e
     tier = Tier(data.get(NAME))
 
     if TIER_REQUEST_IMAGE in data:
-        tier.tier_image = data.get(str(TIER_REQUEST_IMAGE))
+        tier.tier_image = data.get(TIER_REQUEST_IMAGE)
 
     if TIER_REQUEST_REGION in data:
-         tier.region = data.get(str(TIER_REQUEST_REGION))
+         tier.region = data.get(TIER_REQUEST_REGION)
 
     if TIER_REQUEST_NUM_MIN in data:
-         tier.tier_num_min = data.get(str(TIER_REQUEST_NUM_MIN))
+         tier.tier_num_min = data.get(TIER_REQUEST_NUM_MIN)
 
     if TIER_REQUEST_NUM_MAX in data:
-         tier.tier_num_max = data.get(str(TIER_REQUEST_NUM_MAX))
+         tier.tier_num_max = data.get(TIER_REQUEST_NUM_MAX)
 
     if TIER_REQUEST_NUM_INITIAL in data:
-         tier.tier_num_initial = data.get(str(TIER_REQUEST_NUM_INITIAL))
+         tier.tier_num_initial = data.get(TIER_REQUEST_NUM_INITIAL)
 
     if TIER_REQUEST_FLAVOUR in data:
-         tier.tier_flavour = data.get(str(TIER_REQUEST_FLAVOUR))
+         tier.tier_flavour = data.get(TIER_REQUEST_FLAVOUR)
 
     if TIER_REQUEST_KEYPAIR in data:
-         tier.tier_keypair = data.get(str(TIER_REQUEST_KEYPAIR))
+         tier.tier_keypair = data.get(TIER_REQUEST_KEYPAIR)
 
     if TIER_REQUEST_FLOATINGIP in data:
-         tier.tier_floatingip = data.get(str(TIER_REQUEST_FLOATINGIP))
+         tier.tier_floatingip = data.get(TIER_REQUEST_FLOATINGIP)
 
     tier.parse_and_add_products(data.get(PRODUCTS))
     tier.parse_and_add_networks(data.get(NETWORKS))

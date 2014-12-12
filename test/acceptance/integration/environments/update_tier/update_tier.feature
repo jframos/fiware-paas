@@ -185,7 +185,7 @@ Feature: Update a tier of an environment in a tenant
             | tiernameqa | netqa1   |
         Then I receive a "Not Found" response
 
-
+    @skip @CLAUDIA-4421
     Scenario Outline: Update tier of an environment. Update Region
         Given the paas manager is up and properly configured
         And an environment has already been created with data:
@@ -252,7 +252,7 @@ Feature: Update a tier of an environment in a tenant
             | nameqa7 | tiernameqa | false                           |
 
 
-    Scenario Outline: Update tier of an environment. Update minimumNumberInstances
+    Scenario Outline: Update tier of an environment. Update flavour
         Given the paas manager is up and properly configured
         And an environment has already been created with data:
             | name   | description |
@@ -261,55 +261,34 @@ Feature: Update a tier of an environment in a tenant
             | name       |
             | <tiername> |
         When I request the update of the tier "<tiername>" of the environment "<name>" with data:
-            | name       | minimumNumberInstances     |
-            | <tiername> | <param_value>              |
-        Then I receive a "No Content" response
-        And the data of the tier "<tiername>" of the environment "<name>" becomes:
-            | name       | minimumNumberInstances     |
-            | <tiername> | <param_value>              |
-
-        Examples:
-            | name    | tiername   | param_value                     |
-            | nameqa8 | tiernameqa | 3                               |
-
-
-    Scenario Outline: Update tier of an environment. Update maximumNumberInstances
-        Given the paas manager is up and properly configured
-        And an environment has already been created with data:
-            | name   | description |
-            | <name> | descqa      |
-        And a tier has already been added to the environment "<name>" with data:
-            | name       |
-            | <tiername> |
-        When I request the update of the tier "<tiername>" of the environment "<name>" with data:
-            | name       | maximumNumberInstances     |
-            | <tiername> | <param_value>              |
-        Then I receive a "No Content" response
-        And the data of the tier "<tiername>" of the environment "<name>" becomes:
-            | name       | maximumNumberInstances     |
-            | <tiername> | <param_value>              |
-
-        Examples:
-            | name    | tiername   | param_value                     |
-            | nameqa9 | tiernameqa | 7                               |
-
-
-    Scenario Outline: Update tier of an environment. Update initialNumberInstances
-        Given the paas manager is up and properly configured
-        And an environment has already been created with data:
-            | name   | description |
-            | <name> | descqa      |
-        And a tier has already been added to the environment "<name>" with data:
-            | name       |
-            | <tiername> |
-        When I request the update of the tier "<tiername>" of the environment "<name>" with data:
-            | name       | initialNumberInstances     |
+            | name       | flavour        |
             | <tiername> | <param_value>  |
         Then I receive a "No Content" response
         And the data of the tier "<tiername>" of the environment "<name>" becomes:
-            | name       | initialNumberInstances     |
+            | name       | flavour        |
             | <tiername> | <param_value>  |
 
         Examples:
-            | name    | tiername   | param_value                     |
-            | nameqa10| tiernameqa | 2                               |
+            | name    | tiername   | param_value |
+            | nameqa8 | tiernameqa | 4           |
+
+
+    Scenario Outline: Update tier of an environment. Update mini, max and initial number of instances
+        Given the paas manager is up and properly configured
+        And an environment has already been created with data:
+            | name   | description |
+            | <name> | descqa      |
+        And a tier has already been added to the environment "<name>" with data:
+            | name       |
+            | <tiername> |
+        When I request the update of the tier "<tiername>" of the environment "<name>" with data:
+            | name       | minimumNumberInstances     | maximumNumberInstances    | initialNumberInstances    |
+            | <tiername> | <minimumNumberInstances>   | <maximumNumberInstances>  | <initialNumberInstances>  |
+        Then I receive a "No Content" response
+        And the data of the tier "<tiername>" of the environment "<name>" becomes:
+            | name       | minimumNumberInstances     | maximumNumberInstances    | initialNumberInstances    |
+            | <tiername> | <minimumNumberInstances>   | <maximumNumberInstances>  | <initialNumberInstances>  |
+
+        Examples:
+            | name    | tiername   | minimumNumberInstances | maximumNumberInstances | initialNumberInstances |
+            | nameqa9 | tiernameqa | 2                      | 5                      | 3                      |
