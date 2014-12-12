@@ -81,7 +81,7 @@ class ProductSdcRequest:
         world.response = self.__get_product_sdc(url)
 
     def add_product(self, product_name, product_description):
-        """ Get product release from SDC catalog """
+        """ ADD product to SDC catalog """
         url = "%s/%s/%s" % (self.sdc_url, "catalog", "product")
 
         payload = "<product><name>%s</name><description>%s</description></product>" \
@@ -89,7 +89,7 @@ class ProductSdcRequest:
         world.response = self.__add_product_sdc(url, payload)
 
     def add_product_with_installator(self, product_name, product_description, installator):
-        """ Get product release from SDC catalog """
+        """ ADD product to SDC catalog with s custom installator """
         url = "%s/%s/%s" % (self.sdc_url, "catalog", "product")
 
         payload = "<product><name>%s</name><description>%s</description>" \
@@ -98,7 +98,7 @@ class ProductSdcRequest:
         world.response = self.__add_product_sdc(url, payload)
 
     def add_product_with_attributes(self, product_name, product_description, attribute_list):
-        """ Get product release from SDC catalog """
+        """ ADD product to SDC catalog with attributes """
         url = "%s/%s/%s" % (self.sdc_url, "catalog", "product")
 
         attribute_list_xml = ""
@@ -107,6 +107,18 @@ class ProductSdcRequest:
                                   (attribute['key'], attribute['value'], attribute['type'])
         payload = "<product><name>%s</name><description>%s</description>%s</product>" \
                   % (product_name, product_description, attribute_list_xml)
+        world.response = self.__add_product_sdc(url, payload)
+
+    def add_product_with_metadatas(self, product_name, product_description, metadata_list):
+        """ ADD product to SDC catalog with metadatas """
+        url = "%s/%s/%s" % (self.sdc_url, "catalog", "product")
+
+        metadata_list_xml = ""
+        for metadata in metadata_list:
+            metadata_list_xml += "<metadatas><key>%s</key><value>%s</value></metadatas>" % \
+                                 (metadata['key'], metadata['value'])
+        payload = "<product><name>%s</name><description>%s</description>%s</product>" \
+                  % (product_name, product_description, metadata_list_xml)
         world.response = self.__add_product_sdc(url, payload)
 
     def add_product_with_attributes_and_installator(self, product_name, product_description, attribute_list,
@@ -171,6 +183,18 @@ class ProductSdcRequest:
         self.get_product(product_name)
         if world.response.status is not 200:
             self.add_product_with_attributes(product_name, 'QA Tests - PaaS Manager', attribute_list)
+            self.add_product_release(product_name, product_release)
+        else:
+            self.get_product_release(product_name, product_release)
+            if world.response.status is not 200:
+                self.add_product_release(product_name, product_release)
+        world.product_and_release_list.append({'product_name': product_name, 'product_release': product_release})
+
+    def create_product_and_release_with_metadatas(self, product_name, product_release, metadata_list):
+        """ Helper: Create product with custom metadatas and it release """
+        self.get_product(product_name)
+        if world.response.status is not 200:
+            self.add_product_with_metadatas(product_name, 'QA Tests - PaaS Manager - Metadatas', metadata_list)
             self.add_product_release(product_name, product_release)
         else:
             self.get_product_release(product_name, product_release)

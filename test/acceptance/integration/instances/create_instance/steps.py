@@ -25,10 +25,34 @@ from lettuce_tools.dataset_utils.dataset_utils import DatasetUtils
 from tools import http, environment_request, environment_instance_request
 from tools.environment_instance import EnvironmentInstance
 import json
-from tools.constants import NAME, DESCRIPTION
+from tools.constants import NAME, DESCRIPTION, METADATA_NID_NOVA_KEY, METADATA_NID
 from common_steps import sdc_product_provisioning_steps, paas_environment_provisioning
+from tools.utils import raw_httplib_request_to_python_dic
+from nose.tools import assert_equal, assert_is_not_none, assert_equals
+from tools.nova_request import get_server_id_by_partial_name, get_metadata_value
 
 dataset_utils = DatasetUtils()
+
+
+def _check_metadata_for_tier_in_nova(tier_name, metadata_key, metadata_value):
+    # Request the list of servers to Nova
+    raw_response = world.nova_request.get_server_list()
+    assert_equal(raw_response.status, 200, "Error to obtain the server list. HTTP status code is not the expected")
+
+    body_response = raw_httplib_request_to_python_dic(raw_response)
+    print body_response
+    sub_instance_name = "{}-{}".format(world.instance_name, tier_name)
+    server_id = get_server_id_by_partial_name(body_response, sub_instance_name)
+    assert_is_not_none(server_id, "Server has not been found with sub-name " + sub_instance_name)
+
+    # Request the server details by server_id
+    raw_response = world.nova_request.get_server_details(server_id)
+    assert_equal(raw_response.status, 200, "Error to obtain server details. HTTP status code is not the expected")
+
+    body_response = raw_httplib_request_to_python_dic(raw_response)
+    print body_response
+    nid_metadata_value = get_metadata_value(body_response, metadata_key)
+    assert_equals(str(nid_metadata_value), str(metadata_value))
 
 
 @step(u'the paas manager is up and properly configured')
@@ -61,6 +85,7 @@ def an_instance_of_the_environment_has_already_been_created_using_data(step, env
     i_request_the_creation_of_an_instance_of_an_environment_using_data(step, env_name)
     the_task_ends_with_status(step, "SUCCESS")
 
+
 @step(u'I request the creation of an instance of the environment "([^"]*)" using data:')
 def i_request_the_creation_of_an_instance_of_an_environment_using_data(step, env_name):
     # First, send the request to get the environment on which the instance will be based
@@ -72,7 +97,8 @@ def i_request_the_creation_of_an_instance_of_an_environment_using_data(step, env
     environment = environment_request.process_environment(json.loads(world.response.read()))
     # Then, create the instance
     data = dataset_utils.prepare_data(step.hashes[0])
-    instance = EnvironmentInstance(data.get(NAME), data.get(DESCRIPTION), environment)
+    world.instance_name = data.get(NAME)
+    instance = EnvironmentInstance(world.instance_name, data.get(DESCRIPTION), environment)
     world.inst_requests.add_instance(instance)
 
 
@@ -92,6 +118,48 @@ def the_installator_to_be_used_is_group1(step, installator):
     world.product_installator = installator
 
 
-@step(u'the product "([^"]*)" with version "([^"]*)" is created in SDC with attributes:')
+@step(u'the product "([^"]*)" with version "([^"]*)" is created in SDC$')
+def the_product_group1_is_created_in_sdc(step, product_name, product_version):
+    world.product_sdc_request.create_product_and_release(product_name, product_version)
+
+
+@step(u'the product "([^"]*)" with version "([^"]*)" is created in SDC with attributes:$')
 def the_product_group1_is_created_in_sdc_with_attributes(step, product_name, product_version):
     sdc_product_provisioning_steps.product_is_created_in_sdc_with_attributes(step, product_name, product_version)
+
+
+@step(u'the product "([^"]*)" with version "([^"]*)" is created in SDC with metadatas:$')
+def the_product_group1_is_created_in_sdc_with_metadatas(step, product_name, product_version):
+    sdc_product_provisioning_steps.product_is_created_in_sdc_with_metadatas(step, product_name, product_version)
+
+
+@step(u'the created instances have not NID metadata')
+def the_created_instances_have_not_nid_metadata(step):
+    # For each tier, check NID value
+    for tier in world.tiers:
+        _check_metadata_for_tier_in_nova(tier.name, METADATA_NID_NOVA_KEY, None)
+
+
+@step(u'the created instances have the correct NID metadata value')
+def the_created_instances_have_not_nid_metadata(step):
+    # For each tier, check NID value
+    for tier in world.tiers:
+        # Get the last product installed
+        last_product_name = None
+        for tier_product in tier.products:
+            last_product_name = tier_product.product
+
+        # Look for test product data in the world and get the nid value
+        metadata_value = None
+        if last_product_name is not None:
+            for test_product in world.product_list_with_attributes:
+                if test_product['name'] == last_product_name:
+                    # Look for metadata with key=nid
+                    for metadata in test_product['metadatas']:
+                        if metadata['key'] == METADATA_NID:
+                            metadata_value = metadata['value']
+                            break
+                    break
+
+        print "NID value expected:", metadata_value
+        _check_metadata_for_tier_in_nova(tier.name, METADATA_NID_NOVA_KEY, metadata_value)

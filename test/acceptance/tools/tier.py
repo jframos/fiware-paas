@@ -27,7 +27,7 @@ from tools.constants import PAAS, TIER_NUM_MIN, TIER_NUM_MAX, TIER_NUM_INITIAL,\
 __author__ = 'henar'
 
 from xml.etree.ElementTree import Element, SubElement
-from productrelease import ProductRelease
+from productrelease import ProductRelease, parse_attribute_from_dict
 from lettuce import world
 from nose.tools import assert_equals
 
@@ -212,7 +212,7 @@ def process_tier(tier):
                           tier_floatingip=tier['floatingip'],
                           tier_region=tier['region'])
 
-    try:
+    if 'productReleaseDtos' in tier:
         product_dtos = tier['productReleaseDtos']
 
         if isinstance(product_dtos, list):
@@ -220,14 +220,12 @@ def process_tier(tier):
                 attribute_list = product_dto['attributes'] if 'attributes' in product_dto else None
                 processed_tier.add_product(ProductRelease(product_dto['productName'],
                                                           product_dto['version'],
-                                                          ProductRelease.parse_attribute_from_dict(attribute_list)))
+                                                          parse_attribute_from_dict(attribute_list)))
         else:
             attribute_list = product_dtos['attributes'] if 'attributes' in product_dtos else None
             processed_tier.add_product(ProductRelease(product_dtos['productName'],
                                                       product_dtos['version'],
-                                                      ProductRelease.parse_attribute_from_dict(attribute_list)))
-    except:
-        pass
+                                                      parse_attribute_from_dict(attribute_list)))
 
     try:
         network_dtos = tier['networkDto']
