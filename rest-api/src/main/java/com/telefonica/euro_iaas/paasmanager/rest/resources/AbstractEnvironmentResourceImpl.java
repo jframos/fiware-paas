@@ -29,7 +29,6 @@ import java.util.List;
 
 import javax.ws.rs.Path;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,6 @@ import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
-import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentSearchCriteria;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
@@ -98,48 +96,6 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
     }
 
     /**
-     * Find all environments associated to an organization.
-     * 
-     * @param org
-     *            The organization from which extract all environments.
-     * @param page
-     *            for pagination is 0 based number(<i>nullable</i>)
-     * @param pageSize
-     *            for pagination, the number of items retrieved in a query (<i>nullable</i>)
-     * @param orderBy
-     *            the file to order the search (id by default <i>nullable</i>)
-     * @param orderType
-     *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
-     * @return The list of all environments.
-     */
-    public List<EnvironmentDto> findAll(String org, Integer page, Integer pageSize, String orderBy, String orderType) {
-        EnvironmentSearchCriteria criteria = new EnvironmentSearchCriteria();
-
-        criteria.setOrg(org);
-
-        if (page != null && pageSize != null) {
-            criteria.setPage(page);
-            criteria.setPageSize(pageSize);
-        }
-        if (!StringUtils.isEmpty(orderBy)) {
-            criteria.setOrderBy(orderBy);
-        }
-        if (!StringUtils.isEmpty(orderType)) {
-            criteria.setOrderBy(orderType);
-        }
-
-        List<Environment> env = environmentManager.findByCriteria(criteria);
-
-        List<EnvironmentDto> envsDto = new ArrayList<EnvironmentDto>();
-        for (int i = 0; i < env.size(); i++) {
-            envsDto.add(env.get(i).toDto());
-
-        }
-        return envsDto;
-
-    }
-
-    /**
      * Insert a new environment.
      * 
      * @param org
@@ -171,6 +127,35 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
                 throw new APIException(e);
             }
         }
+
+    }
+
+    /**
+     * Find all environments associated to an organization without tenantid.
+     * 
+     * @param org
+     *            The organization from which extract all environments.
+     * @param page
+     *            for pagination is 0 based number(<i>nullable</i>)
+     * @param pageSize
+     *            for pagination, the number of items retrieved in a query (<i>nullable</i>)
+     * @param orderBy
+     *            the file to order the search (id by default <i>nullable</i>)
+     * @param orderType
+     *            defines if the order is ascending or descending (asc by default <i>nullable</i>)
+     * @return The list of all environments.
+     */
+    public List<EnvironmentDto> findAll(String org, Integer page, Integer pageSize, String orderBy, String orderType) {
+
+        List<EnvironmentDto> environmentDtos = new ArrayList<EnvironmentDto>();
+
+        List<Environment> list = environmentManager.findByOrgAndVdc(org, "");
+
+        for (Environment environment : list) {
+            environmentDtos.add(environment.toDto());
+        }
+
+        return environmentDtos;
 
     }
 
