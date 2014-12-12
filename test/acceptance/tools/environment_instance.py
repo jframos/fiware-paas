@@ -49,7 +49,7 @@ class EnvironmentInstance:
         return blueprint_dto
 
     def to_string(self):
-        var = str(self.name).upper()
+        var = str(self.blueprint_name).upper()
         for tier in self.tiers:
             var = var + '\t' + tier.name
             for product in tier.products:

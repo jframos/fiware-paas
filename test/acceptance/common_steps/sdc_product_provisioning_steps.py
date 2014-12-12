@@ -50,3 +50,34 @@ def product_is_created_in_sdc_with_attributes(step, product_name, product_versio
     world.product_sdc_request.create_product_and_release_with_attributes_and_installator(product_name, product_version,
                                                                                          attribute_list,
                                                                                          world.product_installator)
+
+
+def product_is_created_in_sdc_with_metadatas(step, product_name, product_version):
+    """
+    Lettuce Step. Register the product in SDC and save register data in the world (product_list_with_attributes).
+    Metadatas will be defined in the step dataset.
+    :param step: Lettuce step data.
+    :param product_name: Name of the product
+    :param product_version: Version of the product
+    :return: None
+    """
+
+    product_data = dict()
+
+    # Look for the product in the list (retrieve it if this one is already created for this test)
+    for produc_with_attributes in world.product_list_with_attributes:
+        if produc_with_attributes['name'] == product_name:
+            product_data = produc_with_attributes
+            break
+
+    if len(product_data) == 0:
+        product_data['name'] = product_name
+
+    metadata_list = list()
+    for dataset_row in step.hashes:
+        metadata_list.append(dataset_utils.prepare_data(dataset_row))
+    product_data['metadatas'] = metadata_list
+    world.product_list_with_attributes.append(product_data)
+
+    # Create product in SDC
+    world.product_sdc_request.create_product_and_release_with_metadatas(product_name, product_version, metadata_list)

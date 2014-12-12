@@ -139,11 +139,11 @@ Feature: Create an environment with tiers in a tenant
     Scenario Outline: Create abstract environment. Products with valid attributes
         Given the paas manager is up and properly configured
         And the product "<product_name>" with version "<product_version>" is created in SDC with attributes:
-            | key               | value               | type              |
-            | custom_att_01     | <attribute_value>   | <attribute_type>  |
+            | key               | value         | type              |
+            | custom_att_01     | att_new_value | <attribute_type>  |
         And the following instance attributes for product "<product_name>":
             | key               | value               | type              |
-            | custom_att_01     | <attribute_value>   | <attribute_type> |
+            | custom_att_01     | <attribute_value>   | <attribute_type>  |
         And a list of tiers has been defined with data:
             | name        | products       |
             | tiernameqa1 | <paas_product> |

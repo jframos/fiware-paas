@@ -112,10 +112,10 @@ class Product:
 
 
 class ProductRelease:
-    def __init__(self, product, product_version, attribute_list=None):
+    def __init__(self, product, product_version, attribute_list=list()):
         self.version = product_version
         self.product = product
-        self.attribute_list = []
+        self.attribute_list = attribute_list
 
     def add_atribute(self, attribute_key, attribute_value, attribute_type):
         attribute = Attribute(attribute_key, attribute_value, attribute_type)
@@ -173,9 +173,10 @@ class ProductRelease:
 
 def parse_attribute_from_dict(attributes_dict):
     attribute_list = list()
-    if isinstance(attributes_dict, list):
-        for attribute in attributes_dict:
-            attribute_list.append(Attribute(attribute['key'], attribute['value'], attribute['type']))
-    else:
-        attribute_list.append(Attribute(attributes_dict['key'], attributes_dict['value'], attributes_dict['type']))
+    if attributes_dict is not None:
+        if isinstance(attributes_dict, list):
+            for attribute in attributes_dict:
+                attribute_list.append(Attribute(attribute['key'], attribute['value'], attribute['type']))
+        else:
+            attribute_list.append(Attribute(attributes_dict['key'], attributes_dict['value'], attributes_dict['type']))
     return attribute_list

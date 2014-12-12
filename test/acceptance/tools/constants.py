@@ -43,6 +43,11 @@ TIER_FLAVOUR = "tier_flavour"
 TIER_KEYPAIR = "tier_keypair"
 TIER_FLOATINGIP = "tier_floatingip"
 TIER_REGION = "tier_region"
+
+# METADATA constants
+METADATA_NID = "nid"
+METADATA_NID_NOVA_KEY = "nid"
+
 # Auxiliary constants used in .feature files or interfaces
 NAME = "name"
 DESCRIPTION = "description"
