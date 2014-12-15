@@ -319,6 +319,7 @@ public class TierResourceTest extends TestCase {
         tierDto.setFlavour("flavour");
         tierDto.setFloatingip("floatingip");
         tierDto.setKeypair("keypair");
+        tierDto.setRegion("region1");
         when(tierManager.create(any(ClaudiaData.class), any(String.class), any(Tier.class)))
                 .thenReturn(tierDto.fromDto(vdc, "env"));
 
@@ -333,10 +334,9 @@ public class TierResourceTest extends TestCase {
         tierDto2.setFlavour("flavour");
         tierDto2.setFloatingip("floatingip");
         tierDto2.setKeypair("keypair");
+        tierDto.setRegion("region2");
         Mockito.doNothing().when(tierManager).updateTier(any(ClaudiaData.class), any(Tier.class), any(Tier.class));
         tierResource.update(org, vdc, env, tierDto.getName(), tierDto2);
-
-
     }
 
     /**
