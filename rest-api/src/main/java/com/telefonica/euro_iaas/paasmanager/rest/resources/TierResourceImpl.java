@@ -284,7 +284,6 @@ public class TierResourceImpl implements TierResource {
                     tier = tierManager.load(tierDto.getName(), vdc, environmentName);
 
                     tierManager.updateTier(claudiaData, tier, newtier);
-
                 }
                 environment.addTier(tier);
                 environmentManager.update(environment);
