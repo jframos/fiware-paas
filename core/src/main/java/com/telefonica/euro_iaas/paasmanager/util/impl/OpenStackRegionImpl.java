@@ -58,12 +58,14 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     private Client client;
 
     private static Logger log = LoggerFactory.getLogger(OpenStackRegionImpl.class);
+    private RegionCache regionCache;
 
     /**
      * Default constructor. It creates a jersey client.
      */
     public OpenStackRegionImpl() {
         client = ClientBuilder.newClient();
+        regionCache = new RegionCache();
     }
 
     /**
@@ -75,7 +77,6 @@ public class OpenStackRegionImpl implements OpenStackRegion {
     public String getEndPointByNameAndRegionName(String type, String regionName, String token)
             throws OpenStackException {
 
-        RegionCache regionCache = new RegionCache();
         String url = regionCache.getUrl(regionName, type);
 
         String tokenadmin = this.getTokenAdmin();
