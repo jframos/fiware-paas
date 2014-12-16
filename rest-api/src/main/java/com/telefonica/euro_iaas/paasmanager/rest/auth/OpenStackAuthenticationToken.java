@@ -37,7 +37,6 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -270,10 +269,6 @@ public class OpenStackAuthenticationToken {
 
     private ArrayList<Object> executePostRequest(HttpPost postRequest) {
         HttpResponse response;
-
-        if (httpClient == null) {
-            httpClient = new DefaultHttpClient();
-        }
 
         ArrayList<Object> message = new ArrayList();
 

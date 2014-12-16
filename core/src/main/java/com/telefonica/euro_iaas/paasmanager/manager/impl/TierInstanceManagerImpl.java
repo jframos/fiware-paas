@@ -195,7 +195,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                 envInstance.setStatus(Status.INSTALLING);
                 environmentInstanceManager.update(envInstance);
                 productInstance = productInstanceManager.install(tierInstance, claudiaData, envInstance,
-                        productRelease, productRelease.getAttributes());
+                        productRelease);
             } catch (ProductInstallatorException e) {
                 String mens = "Error to install the productINstance " + productRelease.getName() + " in "
                         + tierInstance.getName() + " " + e.getMessage();
@@ -206,7 +206,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                         + tierInstance.getName() + " " + e.getMessage();
 
                 productInstance = productInstanceManager.install(tierInstance, claudiaData, envInstance,
-                        productRelease, productRelease.getAttributes());
+                        productRelease);
             }
             tierInstance.addProductInstance(productInstance);
         }

@@ -39,6 +39,7 @@ import com.telefonica.euro_iaas.paasmanager.claudia.QuotaClient;
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentInstanceException;
 import com.telefonica.euro_iaas.paasmanager.exception.QuotaExceededException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
@@ -65,28 +66,35 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
     private EnvironmentManager environmentManager;
     private QuotaClient quotaClient;
     private ResourceValidator resourceValidator;
+    private ProductValidator productValidator;
 
     /**
      * Validate the request to create a Tier resource.
      *
-     * @param claudiaData   The information related to organization, vdc and service together with the user.
-     * @param environmentDto    The information of the environment.
-     * @param vdc   The vdc details.
-     * @param environmentName   The environment name.
+     * @param claudiaData
+     *            The information related to organization, vdc and service
+     *            together with the user.
+     * @param environmentDto
+     *            The information of the environment.
+     * @param vdc
+     *            The vdc details.
+     * @param environmentName
+     *            The environment name.
      * @throws InvalidEntityException
      * @throws AlreadyExistEntityException
      * @throws InfrastructureException
      * @throws QuotaExceededException
+     * @throws InvalidEnvironmentInstanceException
      */
     public void validateCreate(ClaudiaData claudiaData, TierDto environmentDto, String vdc, String environmentName)
-        throws AlreadyExistEntityException, InfrastructureException, QuotaExceededException, InvalidEntityException {
+            throws AlreadyExistEntityException, InfrastructureException, QuotaExceededException,
+            InvalidEntityException, InvalidEnvironmentInstanceException {
 
         try {
             tierManager.load(environmentDto.getName(), vdc, environmentName);
             log.error("The tier " + environmentDto.getName() + " already exists in ");
-            throw new AlreadyExistEntityException("The tier " + environmentDto.getName()
-                    + " already exists in vdc " + vdc
-                    + " and environmentName " + environmentName);
+            throw new AlreadyExistEntityException("The tier " + environmentDto.getName() + " already exists in vdc "
+                    + vdc + " and environmentName " + environmentName);
 
         } catch (EntityNotFoundException e) {
             log.debug("Entity not found. It is possible to create it ");
@@ -96,13 +104,17 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
     /**
      * Validate the request to create an abstract.
-     * @param tierDto   The tier data.
-     * @param environmentName   The name of the environment.
+     * 
+     * @param tierDto
+     *            The tier data.
+     * @param environmentName
+     *            The name of the environment.
      * @throws InvalidEntityException
      * @throws AlreadyExistEntityException
+     * @throws InvalidEnvironmentInstanceException
      */
     public void validateCreateAbstract(TierDto tierDto, String environmentName) throws InvalidEntityException,
-            AlreadyExistEntityException {
+            AlreadyExistEntityException, InvalidEnvironmentInstanceException {
         try {
             tierManager.load(tierDto.getName(), "", environmentName);
             log.error("The tier " + tierDto.getName() + " already exists in ");
@@ -113,6 +125,8 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
             log.debug("Entity not found. It is possible to create it ");
             resourceValidator.validateName(tierDto.getName());
             validataDefaultTier(tierDto);
+            productValidator.validateAttributes(tierDto);
+
         }
 
     }
@@ -123,13 +137,16 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
      * @throws InfrastructureException
      * @throws QuotaExceededException
      * @throws InvalidEntityException
+     * @throws InvalidEnvironmentInstanceException
      */
     private void validateCreateTier(ClaudiaData claudiaData, TierDto tierDto) throws InfrastructureException,
-            QuotaExceededException, InvalidEntityException {
+            QuotaExceededException, InvalidEntityException, InvalidEnvironmentInstanceException {
 
         resourceValidator.validateName(tierDto.getName());
 
         validataDefaultTier(tierDto);
+
+        productValidator.validateAttributes(tierDto);
 
         validateSecurityGroups(claudiaData, tierDto);
 
@@ -199,15 +216,20 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
     /**
      * Validate the update of the Tier resource.
-     * @param vdc   The vdc details.
-     * @param environmentName   The environment name.
-     * @param tierName  The Tier name.
-     * @param environmentDto    The information of the environment.
+     * 
+     * @param vdc
+     *            The vdc details.
+     * @param environmentName
+     *            The environment name.
+     * @param tierName
+     *            The Tier name.
+     * @param environmentDto
+     *            The information of the environment.
      * @throws InvalidEntityException
      * @throws EntityNotFoundException
      */
     public void validateUpdate(String vdc, String environmentName, String tierName, TierDto environmentDto)
-        throws InvalidEntityException, EntityNotFoundException {
+            throws InvalidEntityException, EntityNotFoundException {
 
         try {
             tierManager.load(tierName, vdc, environmentName);
@@ -228,14 +250,18 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
     /**
      * Validate the delete of the Tier resource.
-     * @param vdc   The vdc details.
-     * @param environmentName   The environment name.
-     * @param tierName  The Tier name.
+     * 
+     * @param vdc
+     *            The vdc details.
+     * @param environmentName
+     *            The environment name.
+     * @param tierName
+     *            The Tier name.
      * @throws InvalidEntityException
      * @throws EntityNotFoundException
      */
-    public void validateDelete(String vdc, String environmentName, String tierName)
-        throws InvalidEntityException, EntityNotFoundException {
+    public void validateDelete(String vdc, String environmentName, String tierName) throws InvalidEntityException,
+            EntityNotFoundException {
 
         try {
             tierManager.load(tierName, vdc, environmentName);
@@ -274,13 +300,17 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
     /**
      * Validate the Tiers software dependencies.
-     * @param environmentName   The environment name.
-     * @param vdc   The vdc details.
-     * @param tierDtoList   Set of tiers.
+     * 
+     * @param environmentName
+     *            The environment name.
+     * @param vdc
+     *            The vdc details.
+     * @param tierDtoList
+     *            Set of tiers.
      * @throws InvalidEntityException
      */
     public void validateTiersDependencies(String environmentName, String vdc, Set<TierDto> tierDtoList)
-        throws InvalidEntityException {
+            throws InvalidEntityException {
 
         List<Tier> tiers = new ArrayList<Tier>(2);
         try {
@@ -332,8 +362,10 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
     /**
      * Create the software dependencies for a Tier list.
-     * @param tiers Tier List
-     * @return  The list of dependencies.
+     * 
+     * @param tiers
+     *            Tier List
+     * @return The list of dependencies.
      */
     List<String> createDependenciesForTiers(List<Tier> tiers) {
         List<String> dependenciesList = new ArrayList<String>();
@@ -355,8 +387,10 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
     /**
      * Create the products list associate to a Tiers list.
-     * @param tiers Tier List
-     * @return  The product list associated to each Tier.
+     * 
+     * @param tiers
+     *            Tier List
+     * @return The product list associated to each Tier.
      */
     Map<String, String> createProductList(List<Tier> tiers) {
         Map<String, String> productNameList = new HashMap<String, String>();
@@ -393,6 +427,10 @@ public class TierResourceValidatorImpl implements TierResourceValidator {
 
     public void setResourceValidator(ResourceValidator resourceValidator) {
         this.resourceValidator = resourceValidator;
+    }
+
+    public void setProductValidator(ProductValidator productValidator) {
+        this.productValidator = productValidator;
     }
 
 }

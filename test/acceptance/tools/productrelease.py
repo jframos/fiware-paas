@@ -24,10 +24,12 @@ __author__ = 'henar'
 
 from xml.etree.ElementTree import Element, SubElement, tostring
 
+
 class Attribute:
-    def __init__(self, att_name, att_value):
+    def __init__(self, att_name, att_value, att_type):
         self.key = att_name
         self.value = att_value
+        self.type = att_type
 
 
 class Product:
@@ -55,7 +57,7 @@ class Product:
         name.text = self.name
         description = SubElement(product, "description")
         description.text = self.description
-        if self.attributes == None:
+        if len(self.attributes) == 0:
             return tostring(product)
         for att in self.attributes:
             attribute = SubElement(product, "attributes")
@@ -63,12 +65,15 @@ class Product:
             key.text = att.key
             value = SubElement(attribute, "value")
             value.text = att.value
-        for att in self.metadatas:
+            if att.type is not None:
+                value = SubElement(attribute, "type")
+                value.text = att.type
+        for met in self.metadatas:
             metadata = SubElement(product, "metadatas")
             key = SubElement(metadata, "key")
             key.text = att.key
             value = SubElement(metadata, "value")
-            value.text = att.value
+            value.text = met.value
         return product
 
     def to_product_xml_env(self):
@@ -80,15 +85,23 @@ class Product:
         version = SubElement(product, 'version')
         version.text = self.version
 
-        if self.attributes == None:
-            return product
+        if len(self.attributes) == 0:
+            return tostring(product)
         for att in self.attributes:
-            attribute = SubElement(product, "privateAttributes")
+            attribute = SubElement(product, "attributes")
             key = SubElement(attribute, "key")
             key.text = att.key
             value = SubElement(attribute, "value")
             value.text = att.value
-
+            if att.type is not None:
+                value = SubElement(attribute, "type")
+                value.text = att.type
+        for met in self.metadatas:
+            metadata = SubElement(product, "metadatas")
+            key = SubElement(metadata, "key")
+            key.text = met.key
+            value = SubElement(metadata, "value")
+            value.text = met.value
         return product
 
     def to_string(self):
@@ -99,9 +112,20 @@ class Product:
 
 
 class ProductRelease:
-    def __init__(self, product, product_version):
+    def __init__(self, product, product_version, attribute_list=list()):
         self.version = product_version
         self.product = product
+        self.attribute_list = attribute_list
+
+    def add_atribute(self, attribute_key, attribute_value, attribute_type):
+        attribute = Attribute(attribute_key, attribute_value, attribute_type)
+        self.attribute_list.append(attribute)
+
+    def add_attribute(self, attribute):
+        self.attribute_list.append(attribute)
+
+    def add_attributes(self, attributes):
+        self.attribute_list = attributes
 
     def __eq__(self, other):
         return self.product == other.product\
@@ -124,20 +148,21 @@ class ProductRelease:
         version = SubElement(product, 'version')
         version.text = self.version
 
-        #   if self.product.attributes == None:
-        #       return product
-        #   for att in self.product.attributes:
-        #       attribute = SubElement(product, "privateAttributes")
-        #       key = SubElement(attribute, "key")
-        #       key.text = att.key
-        #       value = SubElement(attribute, "value")
-        #       value.text = att.value
+        for att in self.attribute_list:
+            attribute = SubElement(product, "attributes")
+            key = SubElement(attribute, "key")
+            key.text = att.key
+            value = SubElement(attribute, "value")
+            value.text = att.value
+            if att.type is not None:
+                value = SubElement(attribute, "type")
+                value.text = att.type
 
         return product
 
     def to_string(self):
-        var = self.name + "\t" + self.description + '\t' + self.version + '\t'
-        for att in self.attributes:
+        var = self.product + "\t" + '\t' + self.version + '\t'
+        for att in self.attribute_list:
             var = var + att.key + ':' + att.value
         print var
 
@@ -145,3 +170,13 @@ class ProductRelease:
         ## get_images - Obtiene la lista de imagenes --- Detalle images/detail
         ##
 
+
+def parse_attribute_from_dict(attributes_dict):
+    attribute_list = list()
+    if attributes_dict is not None:
+        if isinstance(attributes_dict, list):
+            for attribute in attributes_dict:
+                attribute_list.append(Attribute(attribute['key'], attribute['value'], attribute['type']))
+        else:
+            attribute_list.append(Attribute(attributes_dict['key'], attributes_dict['value'], attributes_dict['type']))
+    return attribute_list

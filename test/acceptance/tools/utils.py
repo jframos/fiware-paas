@@ -21,10 +21,41 @@
 # contact with opensource@tid.es
 
 import httplib
+import json
 from xml.dom.minidom import parse, parseString
 from xml.dom.minidom import getDOMImplementation
 from xml.etree.ElementTree import Element, SubElement, tostring
 import sys
+
+
+def raw_httplib_request_to_python_dic(http_lib_request, accept_header='application/json'):
+    """
+    Parse a HTTPResponse (httplib) to obtain body data as Python dict
+    :param http_lib_request: http.client.HTTPResponse (httplib)
+    :param accept_header: Response representation expected
+    :return: Python dict with all body content in the request
+    """
+    if accept_header == 'application/json':
+        try:
+            raw_response = http_lib_request.read()
+            return json.loads(raw_response)
+        except Exception as e:
+            raise Exception("Response cannot be parsed: {}. RAW RESPONSE: {}".format(e.message, raw_response))
+    else:
+        raise Exception("TCs don't manage XML so far")
+
+
+def generate_instance_name(instance_name, tier_name, tier_number, tenant_id):
+    """
+    Generate a instance name with a valid format: instancenameqa-tiernameqa-1-000129
+    :param instance_name: Name of the instance
+    :param tier_name: Name of the tier
+    :param tier_number: Number of the tier
+    :param tenant_id: TenantId
+    :return: Name of the instance formatted
+    """
+    last_tenant_id = tenant_id[len(tenant_id)]
+    return "{}-{}-{}-{}".format(instance_name, tier_name, tier_number, last_tenant_id)
 
 
 def doRequestHttpOperation(domine, port, resource, operation, data, headers):

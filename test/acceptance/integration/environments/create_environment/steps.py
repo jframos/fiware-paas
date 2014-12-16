@@ -24,9 +24,8 @@ from lettuce import step, world
 from lettuce_tools.dataset_utils.dataset_utils import DatasetUtils
 from tools import http
 from tools import environment_request
-from tools.tier import Tier
-from tools.constants import NAME, DESCRIPTION, PRODUCTS, NETWORKS, PAAS,\
-    TIER_IMAGE
+from tools.constants import NAME, DESCRIPTION
+from common_steps import sdc_product_provisioning_steps, paas_environment_provisioning
 
 dataset_utils = DatasetUtils()
 
@@ -38,13 +37,7 @@ def the_paas_manager_is_up_and_properly_configured(step):
 
 @step(u'a list of tiers has been defined with data:')
 def a_list_of_tiers_has_been_defined_with_data(step):
-    world.tiers = []
-    for row in step.hashes:
-        data = dataset_utils.prepare_data(row)
-        tier = Tier(data.get(NAME), world.config[PAAS][TIER_IMAGE])
-        tier.parse_and_add_products(data.get(PRODUCTS))
-        tier.parse_and_add_networks(data.get(NETWORKS))
-        world.tiers.append(tier)
+    world.tiers = paas_environment_provisioning.process_the_list_of_tiers(step)
 
 
 @step(u'an environment has already been created with data:')
@@ -68,3 +61,13 @@ def i_request_the_creation_of_an_environment_with_tiers_and_data(step):
 def i_receive_a_response_of_type(step, response_type):
     status_code = http.status_codes[response_type]
     environment_request.check_add_environment_response(world.response, status_code)
+
+
+@step(u'the following instance attributes for product "([^"]*)":')
+def the_following_instance_attributes(step, product_name):
+    paas_environment_provisioning.process_following_instance_attributes(step, product_name)
+
+
+@step(u'the product "([^"]*)" with version "([^"]*)" is created in SDC with attributes:')
+def the_product_group1_is_created_in_sdc_with_attributes(step, product_name, product_version):
+    sdc_product_provisioning_steps.product_is_created_in_sdc_with_attributes(step, product_name, product_version)

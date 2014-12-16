@@ -21,11 +21,24 @@
 # contact with opensource@tid.es
 
 from lettuce import world, after, before
+from tools import terrain_steps
+from tools.http import get_token
 from tools import environment_request, environment_instance_request
 from tools.environment_request import EnvironmentRequest
 from tools.environment_instance_request import EnvironmentInstanceRequest
 from tools.constants import PAAS, KEYSTONE_URL, PAASMANAGER_URL, TENANT, USER,\
-    PASSWORD, VDC, SDC_URL
+    PASSWORD, VDC, SDC_URL, NOVA_URL
+from tools.nova_request import NovaRequest
+from tools.product_sdc_request import ProductSdcRequest
+
+
+@before.all
+def before_all():
+    """ Hook: Before all features. It will config common requisites for TCs execution """
+    # Get Auth Token
+    world.auth_token = get_token(world.config[PAAS][KEYSTONE_URL] + '/tokens', world.config[PAAS][TENANT],
+                                 world.config[PAAS][USER],
+                                 world.config[PAAS][PASSWORD])
 
 
 @before.each_feature
@@ -46,6 +59,40 @@ def before_each_scenario(feature):
         world.config[PAAS][VDC],
         world.config[PAAS][SDC_URL])
 
+    world.product_sdc_request = ProductSdcRequest(world.config[PAAS][KEYSTONE_URL],
+                                                  world.config[PAAS][SDC_URL],
+                                                  world.config[PAAS][TENANT],
+                                                  world.config[PAAS][USER],
+                                                  world.config[PAAS][PASSWORD],
+                                                  world.config[PAAS][VDC])
+
+    world.nova_request = NovaRequest(world.config[PAAS][NOVA_URL],
+                                     world.config[PAAS][TENANT],
+                                     world.config[PAAS][USER],
+                                     world.config[PAAS][PASSWORD],
+                                     world.config[PAAS][VDC],
+                                     world.auth_token)
+
+    # Init vars
+    world.product_and_release_list = list()
+    world.product_installator = 'chef'
+
+    # Create product in SDC to be used by this feature
+    terrain_steps.init_products_in_sdc()
+
+
+@before.each_scenario
+def before_each_scenario(scenario):
+    """ Lettuce Hook. Will be executed before each scenario. Init global scenario vars. """
+    world.product_list_with_attributes = list()
+    world.paas_product_list_with_attributes = list()
+
+
+@before.outline
+def before_outline(param1, param2, param3, param4):
+    """ Hook: Will be executed before each Scenario Outline. Same behaviour as 'before_each_scenario'"""
+    before_each_scenario(None)
+
 
 @after.each_scenario
 def after_each_scenario(scenario):
@@ -53,3 +100,12 @@ def after_each_scenario(scenario):
     environment_instance_request.delete_created_instances()
     environment_request.delete_created_environments()
 
+    for product_and_release in world.product_and_release_list:
+        world.product_sdc_request.delete_product_and_release(product_and_release['product_name'],
+                                                             product_and_release['product_release'])
+
+
+@after.outline
+def after_outline(param1, param2, param3, param4):
+    """ Hook: Will be executed after each Scenario Outline. Same behaviour as 'after_each_scenario'"""
+    after_each_scenario(None)

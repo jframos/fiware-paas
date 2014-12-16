@@ -25,6 +25,7 @@ from tools import environment_request
 from tools.environment_request import EnvironmentRequest
 from tools.constants import PAAS, KEYSTONE_URL, PAASMANAGER_URL, TENANT, USER,\
     PASSWORD, VDC, SDC_URL
+from tools import terrain_steps
 
 
 @before.each_feature
@@ -37,8 +38,33 @@ def before_each_scenario(feature):
         world.config[PAAS][VDC],
         world.config[PAAS][SDC_URL])
 
+    # Init feature vars
+    world.product_and_release_list = list()
+    world.product_installator = 'chef'
+
+    # Create product in SDC to be used by this feature
+    terrain_steps.init_products_in_sdc()
+
+
+@before.each_scenario
+def before_each_scenario(scenario):
+    """ Lettuce Hook. Will be executed before each scenario. Init global scenario vars. """
+    world.product_list_with_attributes = list()
+    world.paas_product_list_with_attributes = list()
+
 
 @after.each_scenario
 def after_each_scenario(scenario):
     # Delete the environments created in the scenario.
     environment_request.delete_created_environments()
+
+    # Remove test products
+    for product_and_release in world.product_and_release_list:
+        world.product_sdc_request.delete_product_and_release(product_and_release['product_name'],
+                                                             product_and_release['product_release'])
+
+
+@after.each_feature
+def after_each_feature(feature):
+    """ Remove testing products in SDC """
+    terrain_steps.remove_testing_products_in_sdc()

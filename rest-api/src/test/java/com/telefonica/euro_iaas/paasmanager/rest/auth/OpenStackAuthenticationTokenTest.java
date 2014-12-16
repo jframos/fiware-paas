@@ -27,7 +27,10 @@ package com.telefonica.euro_iaas.paasmanager.rest.auth;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
@@ -41,7 +44,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
+import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -49,7 +54,74 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.junit.Test;
 
+import com.telefonica.euro_iaas.paasmanager.rest.exception.AuthenticationConnectionException;
+
 public class OpenStackAuthenticationTokenTest {
+
+    @Test
+    public void getCredentialsTest() throws AuthenticationConnectionException, IOException {
+
+        OpenStackAuthenticationToken openStackAuthenticationToken;
+        ArrayList<Object> params = new ArrayList<Object>();
+        HttpClient httpClient;
+        HttpResponse response;
+        StatusLine statusLine;
+        HttpEntity httpEntity;
+        InputStream is;
+
+        String payload = "<access xmlns=\"http://docs.openstack.org/identity/api/v2.0\"><token "
+                + "expires=\"2015-07-09T15:16:07Z\" id=\"35b208abaf09707c5fed8e54af9a48b8\"><tenant "
+                + "enabled=\"true\" id=\"00000000000000000000000000000001\" name=\"00000000000000000000000000000001\"/>"
+                + "</token><serviceCatalog><endpoints><adminURL>http://130.206.80.58:8774/v2/undefined</adminURL>"
+                + "<region>Trento</region><internalURL>http://130.206.80.58:8774/v2/undefined</internalURL>";
+
+        httpClient = mock(HttpClient.class);
+        response = mock(HttpResponse.class);
+        statusLine = mock(StatusLine.class);
+        httpEntity = mock(HttpEntity.class);
+        is = IOUtils.toInputStream(payload, "UTF-8");
+
+        params.add("url");
+        params.add("tenant");
+        params.add("user");
+        params.add("passw");
+        params.add(httpClient);
+        params.add(new Long(3));
+
+        openStackAuthenticationToken = new OpenStackAuthenticationToken(params);
+
+        Header header = new Header() {
+
+            @Override
+            public String getValue() {
+                return "Fri, 21 Nov 2014 12:30:54 GMT";
+            }
+
+            @Override
+            public String getName() {
+                return "Date";
+            }
+
+            @Override
+            public HeaderElement[] getElements() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+        };
+        Header[] headers = new Header[] { header };
+
+        when(statusLine.getStatusCode()).thenReturn(200);
+        when(response.getStatusLine()).thenReturn(statusLine);
+        when(response.getEntity()).thenReturn(httpEntity);
+        when(httpEntity.getContent()).thenReturn(is);
+        when(httpClient.execute(any(HttpPost.class))).thenReturn(response);
+        when(response.getHeaders(anyString())).thenReturn(headers);
+
+        openStackAuthenticationToken.getCredentials();
+
+        verify(httpClient, times(1)).execute(any(HttpPost.class));
+
+    }
 
     @Test
     public void shouldExtractAndValidateData() throws ParseException {
