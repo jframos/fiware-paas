@@ -6,4 +6,11 @@
            timeToIdleSeconds="300"
            timeToLiveSeconds="600">
     </cache>
+
+    <cache name="properties"
+           maxEntriesLocalHeap="500"
+           eternal="false"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="600">
+    </cache>
 </ehcache>
