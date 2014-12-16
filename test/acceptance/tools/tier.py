@@ -22,13 +22,16 @@
 
 import json
 from tools.constants import PAAS, TIER_NUM_MIN, TIER_NUM_MAX, TIER_NUM_INITIAL,\
-    TIER_FLAVOUR, TIER_KEYPAIR, TIER_FLOATINGIP, TIER_IMAGE, TIER_REGION
+    TIER_FLAVOUR, TIER_KEYPAIR, TIER_FLOATINGIP, TIER_IMAGE, TIER_REGION, \
+    TIER_REQUEST_IMAGE, TIER_REQUEST_REGION, TIER_REQUEST_NUM_MIN, TIER_REQUEST_FLAVOUR, TIER_REQUEST_FLOATINGIP, \
+    TIER_REQUEST_KEYPAIR, TIER_REQUEST_NUM_INITIAL, TIER_REQUEST_NUM_MAX
 
 __author__ = 'henar'
 
 from xml.etree.ElementTree import Element, SubElement
 from productrelease import ProductRelease, parse_attribute_from_dict
 from lettuce import world
+from nose.tools import assert_equals
 
 
 class Network:
@@ -49,7 +52,8 @@ class Network:
 
 
 class Tier:
-    def __init__(self, tier_name, tier_image,
+    def __init__(self, tier_name,
+                 tier_image=world.config[PAAS][TIER_IMAGE],
                  tier_num_min=world.config[PAAS][TIER_NUM_MIN],
                  tier_num_max=world.config[PAAS][TIER_NUM_MAX],
                  tier_num_initial=world.config[PAAS][TIER_NUM_INITIAL],
@@ -328,7 +332,8 @@ def check_tier_in_list(tiers_list, tier_name, products=None, networks=None):
 def check_get_tier_response(response, expected_status_code,
                             expected_tier_name=None,
                             expected_products=None,
-                            expected_networks=None):
+                            expected_networks=None,
+                            all_tier_data=None):
     """
     Checks that the response for a get tier request is the
     expected one.
@@ -382,3 +387,27 @@ def check_get_tier_response(response, expected_status_code,
 
             assert network_found,\
             "Network not found in response: %s" % (expected_network.network_name)
+
+    if TIER_REQUEST_REGION in all_tier_data:
+        assert_equals(all_tier_data[TIER_REQUEST_REGION], tier.region)
+
+    if TIER_REQUEST_IMAGE in all_tier_data:
+        assert_equals(all_tier_data[TIER_REQUEST_IMAGE], tier.tier_image)
+
+    if TIER_REQUEST_FLAVOUR in all_tier_data:
+        assert_equals(str(all_tier_data[TIER_REQUEST_FLAVOUR]), tier.tier_flavour)
+
+    if TIER_REQUEST_NUM_MIN in all_tier_data:
+        assert_equals(str(all_tier_data[TIER_REQUEST_NUM_MIN]), tier.tier_num_min)
+
+    if TIER_REQUEST_NUM_MAX in all_tier_data:
+        assert_equals(str(all_tier_data[TIER_REQUEST_NUM_MAX]), tier.tier_num_max)
+
+    if TIER_REQUEST_NUM_INITIAL in all_tier_data:
+        assert_equals(str(all_tier_data[TIER_REQUEST_NUM_INITIAL]), tier.tier_num_initial)
+
+    if TIER_REQUEST_KEYPAIR in all_tier_data:
+        assert_equals(all_tier_data[TIER_REQUEST_KEYPAIR], tier.tier_keypair)
+
+    if TIER_REQUEST_FLOATINGIP in all_tier_data:
+        assert_equals(all_tier_data[TIER_REQUEST_FLOATINGIP], tier.tier_floatingip)

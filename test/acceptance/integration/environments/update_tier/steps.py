@@ -25,8 +25,9 @@ from lettuce_tools.dataset_utils.dataset_utils import DatasetUtils
 from tools import http
 from tools import tier
 from tools.tier import Tier
-from tools.constants import NAME, DESCRIPTION, PRODUCTS, NETWORKS, PAAS,\
-    TIER_IMAGE
+from tools.constants import NAME, DESCRIPTION, PRODUCTS, NETWORKS, PAAS, TIER_IMAGE,\
+    TIER_REQUEST_IMAGE, TIER_REQUEST_REGION, TIER_REQUEST_NUM_MIN, TIER_REQUEST_FLAVOUR, TIER_REQUEST_FLOATINGIP, \
+    TIER_REQUEST_KEYPAIR, TIER_REQUEST_NUM_INITIAL, TIER_REQUEST_NUM_MAX
 
 dataset_utils = DatasetUtils()
 
@@ -53,8 +54,35 @@ def a_tier_has_already_been_added_to_environment_with_data(step, env_name):
 
 @step(u'I request the update of the tier "([^"]*)" of the environment "([^"]*)" with data:')
 def i_request_the_update_of_a_tier_of_a_environment_with_data(step, tier_name, env_name):
-    data = dataset_utils.prepare_data(step.hashes[0])
-    tier = Tier(data.get(NAME), world.config[PAAS][TIER_IMAGE])
+    #data = dataset_utils.prepare_data(step.hashes[0])
+    data = dataset_utils.generate_fixed_length_params(step.hashes[0])
+    data = dataset_utils.remove_missing_params(data)
+    tier = Tier(data.get(NAME))
+
+    if TIER_REQUEST_IMAGE in data:
+        tier.tier_image = data.get(TIER_REQUEST_IMAGE)
+
+    if TIER_REQUEST_REGION in data:
+         tier.region = data.get(TIER_REQUEST_REGION)
+
+    if TIER_REQUEST_NUM_MIN in data:
+         tier.tier_num_min = data.get(TIER_REQUEST_NUM_MIN)
+
+    if TIER_REQUEST_NUM_MAX in data:
+         tier.tier_num_max = data.get(TIER_REQUEST_NUM_MAX)
+
+    if TIER_REQUEST_NUM_INITIAL in data:
+         tier.tier_num_initial = data.get(TIER_REQUEST_NUM_INITIAL)
+
+    if TIER_REQUEST_FLAVOUR in data:
+         tier.tier_flavour = data.get(TIER_REQUEST_FLAVOUR)
+
+    if TIER_REQUEST_KEYPAIR in data:
+         tier.tier_keypair = data.get(TIER_REQUEST_KEYPAIR)
+
+    if TIER_REQUEST_FLOATINGIP in data:
+         tier.tier_floatingip = data.get(TIER_REQUEST_FLOATINGIP)
+
     tier.parse_and_add_products(data.get(PRODUCTS))
     tier.parse_and_add_networks(data.get(NETWORKS))
     world.env_requests.update_tier_environment(env_name, tier_name, tier)
@@ -73,5 +101,4 @@ def the_data_of_a_tier_of_a_environment_becomes(step, tier_name, env_name):
     data = dataset_utils.prepare_data(step.hashes[0])
     products = tier.parse_products(data.get(PRODUCTS))
     networks = tier.parse_networks(data.get(NETWORKS))
-    tier.check_get_tier_response(world.response, 200,
-        data.get(NAME), products, networks)
+    tier.check_get_tier_response(world.response, 200, data.get(NAME), products, networks, data)
