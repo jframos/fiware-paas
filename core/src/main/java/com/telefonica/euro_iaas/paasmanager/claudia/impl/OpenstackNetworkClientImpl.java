@@ -332,8 +332,8 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
     public List<NetworkInstance> loadAllNetwork(ClaudiaData claudiaData, String region) throws InfrastructureException {
         String token = claudiaData.getUser().getToken();
         String vdc = claudiaData.getVdc();
-        log.info("GEt network  for user " + claudiaData.getUser().getTenantName() + " with token " + token
-                + " and vdc " + vdc);
+        log.info("Get network for user " + claudiaData.getUser().getTenantName() + " with token " + token + " and vdc "
+                + vdc);
         List<NetworkInstance> networks = new ArrayList<NetworkInstance>();
         try {
 
@@ -350,17 +350,16 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             }
 
         } catch (OpenStackException e) {
-            String msm = "Error to get the networks :" + e.getMessage();
+            String msm = "Error to get the networks in region " + region + ": " + e.getMessage();
             log.error(msm);
             throw new InfrastructureException(msm, e);
         } catch (JSONException e) {
-            String msm = "Error to get the networks :" + e.getMessage();
+            String msm = "Error to process JSON in load network in region " + region + ": " + e.getMessage();
             log.error(msm);
             throw new InfrastructureException(msm, e);
         }
         return networks;
     }
-    
 
     /**
      * It loads all networks.
@@ -414,7 +413,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      */
     public String loadNetwork(ClaudiaData claudiaData, NetworkInstance network, String region)
             throws EntityNotFoundException {
-    	log.debug("Load network " + network.getIdNetwork() +  " in region " + region + " vdc " + claudiaData.getVdc());
+        log.debug("Load network " + network.getIdNetwork() + " in region " + region + " vdc " + claudiaData.getVdc());
         String response = "";
         try {
             String token = claudiaData.getUser().getToken();
