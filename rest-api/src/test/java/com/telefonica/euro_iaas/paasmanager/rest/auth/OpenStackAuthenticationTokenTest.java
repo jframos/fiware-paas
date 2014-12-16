@@ -34,8 +34,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -48,7 +52,7 @@ import org.junit.Test;
 public class OpenStackAuthenticationTokenTest {
 
     @Test
-    public void shouldExtractAndValidateData() {
+    public void shouldExtractAndValidateData() throws ParseException {
         // given
         String keystoneURL = "http://localhost:4731/v2.0/";
         String adminUser = "admin";
@@ -73,8 +77,12 @@ public class OpenStackAuthenticationTokenTest {
                 + "    <roles name=\"Member\" id=\"8db87ccbca3b4d1ba4814c3bb0d63aaf\"></roles>\n"
                 + "    <roles name=\"admin\" id=\"09e95db0ea3f4495a64e95bfc64b0c56\"></roles>\n" + "  </user>\n"
                 + "</access>";
-        String response2 = new Date().toString();
-        Date response3 = new Date();
+        String response2 = "Tue Dec 10 12:46:50 CET 2014";
+
+        String dateString = "Tue Dec 10 12:45:50 CET 2014";
+        DateFormat format = new SimpleDateFormat("EEE MMM d HH:mm:ss z YYYY", Locale.ENGLISH);
+        Date response3 = format.parse(dateString);
+
         ArrayList<Object> response = new ArrayList<>();
         response.add(response1);
         response.add(response2);
