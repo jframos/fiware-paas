@@ -55,11 +55,14 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
 
     private OpenOperationUtil openOperationUtil;
 
+    private RegionCache regionCache;
+
     /**
      * The constructor.
      */
     public OpenStackConfigUtilImpl() {
         connectionManager = new PoolingHttpClientConnectionManager();
+        regionCache = new RegionCache();
     }
 
     public HttpClientConnectionManager getConnectionManager() {
@@ -76,7 +79,7 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
     public String getPublicAdminNetwork(PaasManagerUser user, String region) throws OpenStackException {
         log.debug("Obtain public admin network ");
         String type = "net";
-        RegionCache regionCache = new RegionCache();
+
         String networkId = regionCache.getUrl(region, type);
         if (networkId != null) {
             log.debug("in cache " + networkId);
@@ -134,7 +137,6 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
     public String getPublicFloatingPool(PaasManagerUser user, String region) throws OpenStackException {
         String type = "floating";
         log.debug("Obtain public admin network");
-        RegionCache regionCache = new RegionCache();
         String networkId = regionCache.getUrl(region, type);
         if (networkId != null) {
             return networkId;
@@ -189,13 +191,12 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
     public String getPublicRouter(PaasManagerUser user, String region, String publicNetworkId)
             throws OpenStackException {
         log.debug("Obtain public router for external netwrk " + publicNetworkId);
-        if (publicNetworkId == null ) {
-        	String errorMessage = "There is not an external network valid for the router";
+        if (publicNetworkId == null) {
+            String errorMessage = "There is not an external network valid for the router";
             log.warn(errorMessage);
             throw new OpenStackException(errorMessage);
         }
         String type = "router";
-        RegionCache regionCache = new RegionCache();
         String routerId = regionCache.getUrl(region, type);
         if (routerId != null) {
             return routerId;
@@ -264,30 +265,29 @@ public class OpenStackConfigUtilImpl implements OpenStackConfigUtil {
         }
 
         log.debug("net " + netInst.getNetworkName() + " " + netInst.getIdNetwork() + " " + netInst.getExternal() + " "
-                + netInst.getTenantId()  + " vdc " + vdc);
+                + netInst.getTenantId() + " vdc " + vdc);
 
         if (!netInst.getExternal()) {
             log.debug("external " + netInst.getExternal());
             return null;
         }
-        
+
         if (vdc.contains(netInst.getTenantId())) {
-        	return netInst;
+            return netInst;
         }
 
         if (netInst.getNetworkName().contains("public")) {
             return netInst;
         }
 
-        
         if (netInst.getNetworkName().contains("ext-net")) {
             return netInst;
         }
-        
+
         if (netInst.getNetworkName().contains("ext")) {
             return netInst;
         }
-        
+
         return null;
     }
 
