@@ -185,7 +185,6 @@ Feature: Update a tier of an environment in a tenant
             | tiernameqa | netqa1   |
         Then I receive a "Not Found" response
 
-    @skip @CLAUDIA-4421
     Scenario Outline: Update tier of an environment. Update Region
         Given the paas manager is up and properly configured
         And an environment has already been created with data:

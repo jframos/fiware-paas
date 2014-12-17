@@ -333,7 +333,7 @@ def check_get_tier_response(response, expected_status_code,
                             expected_tier_name=None,
                             expected_products=None,
                             expected_networks=None,
-                            all_tier_data=None):
+                            all_tier_data=dict()):
     """
     Checks that the response for a get tier request is the
     expected one.
@@ -342,6 +342,7 @@ def check_get_tier_response(response, expected_status_code,
     :param expected_tier_name: Expected name of the tier.
     :param expected_products: Expected products of the tier.
     :param expected_networks: Expected networks of the tier.
+    :param all_tier_data: Dict with all tier data used by TC.
     """
     assert response.status == expected_status_code,\
     "Wrong status code received: %d. Expected: %d. Body content: %s"\
