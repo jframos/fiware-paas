@@ -55,14 +55,8 @@ def before_each_scenario(scenario):
 
 @after.each_scenario
 def after_each_scenario(scenario):
-
     # Delete the environments created in the scenario.
     environment_request.delete_created_environments()
-
-    # Remove test products
-    for product_and_release in world.product_and_release_list:
-        world.product_sdc_request.delete_product_and_release(product_and_release['product_name'],
-                                                             product_and_release['product_release'])
 
 
 @after.each_feature
