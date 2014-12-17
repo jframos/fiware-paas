@@ -159,6 +159,7 @@ Feature: Create an instance of an environment in a tenant
             | instancenameqa3         | [MISSING_PARAM]          | nameqa7 |
 
 
+    @happy_path
     Scenario Outline: Create instance of an environment with one tier with products
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -182,9 +183,9 @@ Feature: Create an instance of an environment in a tenant
     Scenario: Create instance of an environment with several tiers with products
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
-            | name       | products                   |
-            | tiernameqa | testing_paas_product=0.0.1 |
-            | tiernameqa | testing_paas_product=0.0.1 |
+            | name        | products                   |
+            | tiernameqa1 | testing_paas_product=0.0.1 |
+            | tiernameqa2 | testing_paas_product=0.0.1 |
         And an environment has already been created with the previous tiers and data:
             | name   | description |
             | nameqa | descqa      |
@@ -195,7 +196,7 @@ Feature: Create an instance of an environment in a tenant
         And the task ends with "SUCCESS" status
 
 
-    @slow
+    @happy_path
     Scenario Outline: Create instance of an environment with one tier with networks
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -216,7 +217,6 @@ Feature: Create an instance of an environment in a tenant
             | instancenameqa2 | nameqa2 | tiernameqa2 | netqa1,netqa2 |
 
 
-    @slow
     Scenario: Create instance of an environment with several tiers with networks
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:
@@ -233,7 +233,6 @@ Feature: Create an instance of an environment in a tenant
         And the task ends with "SUCCESS" status
 
 
-    @slow
     Scenario Outline: Create instance of an environment with one tier with products and networks
         Given the paas manager is up and properly configured
         And a list of tiers has been defined with data:

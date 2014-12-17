@@ -6,6 +6,7 @@ Feature: Create an instance of an environment in a tenant
     so that I can use them and work with them
 
 
+    @happy_path @release_4_1
     Scenario: Create instance of an environment with two tier with products and attributes using chef
         Given the paas manager is up and properly configured
         And the product installator to be used is "chef"
@@ -29,6 +30,7 @@ Feature: Create an instance of an environment in a tenant
         And the task ends with "SUCCESS" status
 
 
+    @release_4_1
     Scenario: Create instance of an environment with two tier with products and attributes using puppet (IP type)
         Given the paas manager is up and properly configured
         And the product installator to be used is "puppet"
@@ -52,6 +54,7 @@ Feature: Create an instance of an environment in a tenant
         And the task ends with "SUCCESS" status
 
 
+    @release_4_1
     Scenario: Create instance of an environment with two tier with products and attributes using puppet (IPALL type)
         Given the paas manager is up and properly configured
         And the product installator to be used is "puppet"
