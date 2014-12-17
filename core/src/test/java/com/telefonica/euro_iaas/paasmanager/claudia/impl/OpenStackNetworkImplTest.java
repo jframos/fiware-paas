@@ -26,6 +26,7 @@ package com.telefonica.euro_iaas.paasmanager.claudia.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -36,8 +37,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
@@ -265,6 +271,91 @@ public class OpenStackNetworkImplTest {
 
         verify(openStackUtil).deleteInterfaceToPublicRouter(any(PaasManagerUser.class), any(NetworkInstance.class),
                 anyString());
+    }
+
+    @Test
+    public void shouldLoadNetworkNoId() throws OpenStackException, InfrastructureException, EntityNotFoundException {
+
+        // when
+        String response = "{\"networks\": [{\"status\": \"ACTIVE\", \"subnets\": [\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
+                + " \"MYNET\", \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
+                + " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": true, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "
+                + " \"provider:segmentation_id\": 8}, {\"status\": \"ACTIVE\", \"subnets\": [\"e2d10e6b-33c3-400c-88d6-f905d4cd02f2\"], \"name\": \"ext-net\","
+                + " \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\", \"provider:network_type\": "
+                + " \"gre\", \"router:external\": true, \"shared\": false, \"id\": \"080b5f2a-668f-45e0-be23-361c3a7d11d0\", \"provider:segmentation_id\": 1}"
+                + "]}";
+        String response2 = "{\"status\": \"ACTIVE\", \"subnets\": [\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
+                + " \"MYNET\", \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
+                + " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": true, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "
+                + " \"provider:segmentation_id\": 8}}";
+        String response3 = "\n" +
+                "\n" +
+                "    {\n" +
+                "       \"subnet\":\n" +
+                "       {\n" +
+                "           \"name\": \"dd\",\n" +
+                "           \"enable_dhcp\": true,\n" +
+                "           \"network_id\": \"33cb6d12-3792-4ff7-8abe-8f948ce60a4d\",\n" +
+                "           \"tenant_id\": \"00000000000000000000000000000046\",\n" +
+                "           \"dns_nameservers\":\n" +
+                "           [\n" +
+                "           ],\n" +
+                "           \"allocation_pools\":\n" +
+                "           [\n" +
+                "               {\n" +
+                "                   \"start\": \"12.1.0.2\",\n" +
+                "                   \"end\": \"12.1.0.254\"\n" +
+                "               }\n" +
+                "           ],\n" +
+                "           \"host_routes\":\n" +
+                "           [\n" +
+                "           ],\n" +
+                "           \"ip_version\": 4,\n" +
+                "           \"gateway_ip\": \"12.1.0.1\",\n" +
+                "           \"cidr\": \"12.1.0.0/24\",\n" +
+                "           \"id\": \"6959446a-204b-4e68-a5d2-f7a3ef5a442a\"\n" +
+                "       }\n" +
+                "    }\n" +
+                "\n";
+        NetworkInstance net = new NetworkInstance("MYNET", "vdc", "region");
+        when(openStackUtil.listNetworks(any(PaasManagerUser.class), anyString())).thenReturn(response);
+        when(openStackUtil.getNetworkDetails(anyString(),anyString(),anyString(),anyString())).thenReturn(response2);
+        when(openStackUtil.getSubNetworkDetails(anyString(),anyString(),anyString(),anyString())).thenReturn(response3);
+
+        openStackNetworkImpl.loadNetwork(claudiaData, net, REGION);
+        assertNotNull(net.getIdNetwork());
+
+
+    }
+
+    /**
+     * The test for loading the net when the id does not exist
+     * @throws OpenStackException
+     * @throws InfrastructureException
+     */
+    @Test
+    public void shouldLoadNetworkNoIdNetNotExists() throws OpenStackException,
+        InfrastructureException, JSONException {
+
+        // when
+        String response = "{\"networks\": [{\"status\": \"ACTIVE\", \"subnets\": [\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
+                + " \"dia146\", \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
+                + " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": true, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "
+                + " \"provider:segmentation_id\": 8}, {\"status\": \"ACTIVE\", \"subnets\": [\"e2d10e6b-33c3-400c-88d6-f905d4cd02f2\"], \"name\": \"ext-net\","
+                + " \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\", \"provider:network_type\": "
+                + " \"gre\", \"router:external\": true, \"shared\": false, \"id\": \"080b5f2a-668f-45e0-be23-361c3a7d11d0\", \"provider:segmentation_id\": 1}"
+                + "]}";
+        NetworkInstance net = new NetworkInstance("router", "vdc", "region");
+        when(openStackUtil.listNetworks(any(PaasManagerUser.class), anyString())).thenReturn(response);
+
+        try {
+            openStackNetworkImpl.loadNetwork(claudiaData, net, REGION);
+            fail("A Not entity exception should have been lanched");
+        } catch (EntityNotFoundException e) {
+            verify(openStackUtil).listNetworks(any(PaasManagerUser.class), anyString());
+        }
+
+
     }
 
 }

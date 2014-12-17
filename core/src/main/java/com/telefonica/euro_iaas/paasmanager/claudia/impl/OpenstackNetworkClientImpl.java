@@ -411,20 +411,68 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      * @params network
      * @return network information
      */
-    public String loadNetwork(ClaudiaData claudiaData, NetworkInstance network, String region)
+    public NetworkInstance loadNetwork(ClaudiaData claudiaData, NetworkInstance network, String region)
             throws EntityNotFoundException {
+
+        if (network.getIdNetwork() == null ) {
+            String netId = getNetworkId (claudiaData, network, region);
+            if (netId == null) {
+                String msm = "Error to obtain the network infromation " + network.getNetworkName();
+                log.error(msm);
+                throw new EntityNotFoundException(Network.class, msm, new Exception());
+            }
+            network.setIdNetwork(netId);
+        }
         log.debug("Load network " + network.getIdNetwork() + " in region " + region + " vdc " + claudiaData.getVdc());
         String response = "";
         try {
             String token = claudiaData.getUser().getToken();
             String vdc = claudiaData.getVdc();
             response = openStackUtil.getNetworkDetails(network.getIdNetwork(), region, token, vdc);
+            JSONObject jsonNet = new JSONObject(response);
+            JSONObject aux =(JSONObject)jsonNet.get("network");
+            NetworkInstance netInst = NetworkInstance.fromJson(aux, region);
+            JSONArray jsonSubNetworks = aux.getJSONArray("subnets");
+            for (int i = 0; i < jsonSubNetworks.length(); i++) {
+                SubNetworkInstance subNet = loadSubNetwork(claudiaData, jsonSubNetworks.getString (i), region);
+                subNet.setIdNetwork(network.getIdNetwork());
+                netInst.addSubNet(subNet);
+            }
+            return netInst;
+
         } catch (OpenStackException e) {
-            String msm = "Error to obtain the network infromation " + network.getNetworkName() + ":" + e.getMessage();
+            String msm = "Error to obtain the network information " + network.getNetworkName() + ":" + e.getMessage();
             log.error(msm);
             throw new EntityNotFoundException(Network.class, msm, e);
+        } catch (JSONException e) {
+            String msm = "Error to obtain the network instance from json " + network.getNetworkName() + ":" + e.getMessage();
+            log.error(msm);
+
         }
-        return response;
+
+        return network;
+
+    }
+
+    /**
+     * It updates the network id incase the
+     * @param claudiaData
+     * @param network
+     * @param region
+     * @return
+     */
+    public String getNetworkId (ClaudiaData claudiaData, NetworkInstance network, String region)  {
+        try {
+            List<NetworkInstance> loadAllNetworks = this.loadAllNetwork(claudiaData, region);
+            for (NetworkInstance net : loadAllNetworks) {
+                if (net.getNetworkName().equals(network.getNetworkName())) {
+                    return net.getIdNetwork();
+                }
+            }
+        } catch (InfrastructureException e) {
+            return null;
+        }
+        return null;
     }
 
     /**
@@ -439,19 +487,26 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
     /**
      * It load the subNet.
      */
-    public String loadSubNetwork(ClaudiaData claudiaData, SubNetworkInstance subNet, String region)
-            throws EntityNotFoundException {
+    public SubNetworkInstance loadSubNetwork(ClaudiaData claudiaData, String subNetId, String region)
+        throws EntityNotFoundException{
+        SubNetworkInstance subNetInst = null;
         String response;
         try {
             String token = claudiaData.getUser().getToken();
             String vdc = claudiaData.getVdc();
-            response = openStackUtil.getSubNetworkDetails(subNet.getIdNetwork(), region, token, vdc);
+            response = openStackUtil.getSubNetworkDetails(subNetId, region, token, vdc);
+            JSONObject jsonNet = new JSONObject(response);
+            subNetInst = SubNetworkInstance.fromJson((JSONObject)jsonNet.get("subnet"), region);
         } catch (OpenStackException e) {
-            String msm = "Error to obtain the network infromation " + subNet.getName() + ":" + e.getMessage();
+            String msm = "Error to obtain the network infromation " + subNetId + ":" + e.getMessage();
+            log.error(msm);
+            throw new EntityNotFoundException(Network.class, msm, e);
+        } catch (JSONException  e) {
+            String msm = "Error to obtain the network infromation " + subNetId + ":" + e.getMessage();
             log.error(msm);
             throw new EntityNotFoundException(Network.class, msm, e);
         }
-        return response;
+        return subNetInst;
     }
 
     /**

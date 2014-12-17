@@ -330,5 +330,25 @@ public class NetworkInstanceManagerImplTest {
         assertEquals (result, false);
     }
 
+    @Test
+    public void testNetworkExistsInOpenstackbutNotBD() throws Exception {
+        // Given
+        NetworkInstance net = new NetworkInstance(NETWORK_NAME, "VDC", "region");
+        SubNetworkInstance subNet = new SubNetworkInstance ();
+        net.addSubNet(subNet);
+
+        ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
+
+        // When
+        List<Port> ports = new ArrayList<Port> ();
+        ports.add(new Port ());
+        when(networkInstanceDao.load(anyString(),anyString(),anyString())).thenThrow(EntityNotFoundException.class);
+        when (networkClient.loadNetwork(any(ClaudiaData.class), any(NetworkInstance.class),  anyString())).thenReturn(net);
+        when (subNetworkInstanceManager.createInBD(any(SubNetworkInstance.class))).thenReturn(subNet);
+         // Verify
+        boolean result = networkInstanceManager.exists(claudiaData, net, "region");
+        assertEquals (result, true);
+    }
+
 
 }

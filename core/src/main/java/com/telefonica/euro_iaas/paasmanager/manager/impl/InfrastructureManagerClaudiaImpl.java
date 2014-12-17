@@ -99,7 +99,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
     public EnvironmentInstance createInfrasctuctureEnvironmentInstance(EnvironmentInstance environmentInstance,
             Set<Tier> tiers, ClaudiaData claudiaData) throws InfrastructureException, InvalidVappException,
-            InvalidOVFException, InvalidEntityException, EntityNotFoundException {
+            InvalidOVFException, InvalidEntityException, EntityNotFoundException, AlreadyExistsEntityException {
 
         // Deploy MVs
         log.info("Creating infrastructure for environment instance " + environmentInstance.getBlueprintName());
@@ -357,7 +357,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
     }
 
     public void deployNetworks(ClaudiaData data, TierInstance tierInstance) throws InvalidEntityException,
-            InfrastructureException, EntityNotFoundException {
+            InfrastructureException, EntityNotFoundException, AlreadyExistsEntityException {
         Tier tier = tierInstance.getTier();
         tier = tierManager.loadTierWithNetworks(tier.getName(), data.getVdc(), tier.getEnviromentName());
         // Creating networks...

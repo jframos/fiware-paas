@@ -89,10 +89,24 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
         }
 
     }
-    
+
+
+    /**
+     * It deletes the subnet in the DB.
+     * @param subNetworkInstance
+     */
     public void deleteInBD( SubNetworkInstance subNetworkInstance) {
     	log.info("Destroying in bd the subnetwork " + subNetworkInstance.getName());
         subNetworkInstanceDao.remove(subNetworkInstance);
+    }
+
+    /**
+     * It creates the subNet in BD.
+     * @param subNetworkInstance
+     */
+    public SubNetworkInstance createInBD( SubNetworkInstance subNetworkInstance) throws AlreadyExistsEntityException {
+        log.info("Creating in bd the subnetwork " + subNetworkInstance.getName());
+        return subNetworkInstanceDao.create(subNetworkInstance);
     }
 
     /**
@@ -113,7 +127,7 @@ public class SubNetworkInstanceManagerImpl implements SubNetworkInstanceManager 
      */
     public boolean isSubNetworkDeployed(ClaudiaData claudiaData, SubNetworkInstance subNet, String region) {
         try {
-            networkClient.loadSubNetwork(claudiaData, subNet, region);
+            networkClient.loadSubNetwork(claudiaData, subNet.getIdSubNet(), region);
             return true;
         } catch (EntityNotFoundException e) {
             return false;
