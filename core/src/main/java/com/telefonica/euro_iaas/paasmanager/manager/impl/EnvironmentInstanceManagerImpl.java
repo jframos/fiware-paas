@@ -89,31 +89,38 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
     /** Max lenght of an OVF */
     private static final Integer tam_max = 90000;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager
-     * #findByCriteria
-     * (com.telefonica.euro_iaas.paasmanager.model.searchcriteria.
-     * EnvironmentInstanceSearchCriteria)
+    /**
+     * It filter some environment instances.
+     * @param criteria
+     *            the search criteria
+     * @return
      */
     public List<EnvironmentInstance> findByCriteria(EnvironmentInstanceSearchCriteria criteria) {
 
         return environmentInstanceDao.findByCriteria(criteria);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager
-     * #findAll()
+    /**
+     * It returns all environment instances.
+     * @return
      */
     public List<EnvironmentInstance> findAll() {
         return environmentInstanceDao.findAll();
     }
 
+    /**
+     * It creastes the environment instance including hardware and software.
+     * @param claudiaData
+     * @param environmentInstance
+     * @return
+     * @throws AlreadyExistsEntityException
+     * @throws InvalidEntityException
+     * @throws EntityNotFoundException
+     * @throws InvalidVappException
+     * @throws InvalidOVFException
+     * @throws InfrastructureException
+     * @throws ProductInstallatorException
+     */
     public EnvironmentInstance create(ClaudiaData claudiaData, EnvironmentInstance environmentInstance)
             throws AlreadyExistsEntityException, InvalidEntityException, EntityNotFoundException, InvalidVappException,
             InvalidOVFException, InfrastructureException, ProductInstallatorException {
@@ -123,7 +130,6 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         if (environmentInstance.getEnvironment().getOvf() != null)
             environment.setOvf(environmentInstance.getEnvironment().getOvf());
 
-        // environmentInstance.setVdc(claudiaData.getVdc());
         environmentInstance.setName(environmentInstance.getVdc() + "-" + environment.getName());
 
         // with this set we loose the productRelease Attributes
@@ -133,7 +139,6 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         environmentInstance = insertEnvironmentInstanceInDatabase(environmentInstance);
 
         if (environment.isNetworkFederated()) {
-            log.info(" yes Is the environmetn federated ");
             try {
                 updateFederatedNetworks(claudiaData, environment);
             } catch (Exception e) {
@@ -162,9 +167,6 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             environmentInstanceDao.update(environmentInstance);
             throw new InfrastructureException(e.getMessage());
         }
-
-        // environment = environmentUtils.resolveMacros(environmentInstance);
-        // environmentManager.update(environment);
 
         environmentInstance.setStatus(Status.INSTALLING);
         environmentInstanceDao.update(environmentInstance);
@@ -210,12 +212,17 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
         log.info("Enviroment Instance installed correctly");
 
-        // EnvironmentInstance environmentInstanceDB =
-        // insertEnvironmentInstanceDB( claudiaData, environmentInstance);
-
         return environmentInstance;
     }
 
+    /**
+     * It updates the networks federated.
+     * @param claudiaData
+     * @param environment
+     * @throws InfrastructureException
+     * @throws EntityNotFoundException
+     * @throws InvalidEntityException
+     */
     public void updateFederatedNetworks(ClaudiaData claudiaData, Environment environment)
             throws InfrastructureException, EntityNotFoundException, InvalidEntityException {
         log.info(" Update the federated network ");
@@ -246,6 +253,18 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         }
     }
 
+    /**
+     * It installs the software in the environment.
+     * @param claudiaData
+     * @param environmentInstance
+     * @return
+     * @throws ProductInstallatorException
+     * @throws InvalidProductInstanceRequestException
+     * @throws NotUniqueResultException
+     * @throws InfrastructureException
+     * @throws InvalidEntityException
+     * @throws EntityNotFoundException
+     */
     public boolean installSoftwareInEnvironmentInstance(ClaudiaData claudiaData, EnvironmentInstance environmentInstance)
             throws ProductInstallatorException, InvalidProductInstanceRequestException, NotUniqueResultException,
             InfrastructureException, InvalidEntityException, EntityNotFoundException {
@@ -297,12 +316,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
                 if (state && tierInstance.getNumberReplica() == 1) {
                     log.info("Setup scalabiliy ");
-                    String image_Name;
-                    // claudiaData.setFqn(tierInstance.getVM().getFqn());
-
-                    image_Name = infrastructureManager.ImageScalability(claudiaData, tierInstance);
-                    log.info("Generating image " + image_Name);
-                    log.info("Updating OVF ");
+                    String image_Name = infrastructureManager.ImageScalability(claudiaData, tierInstance);
                 }
 
                 if (state && tierInstance.getNumberReplica() > 1) {
@@ -347,19 +361,17 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         try {
             return environmentInstanceDao.update(envInst);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             log.error("It is not possible to update the environment " + envInst.getName() + " : " + e.getMessage());
             throw new InvalidEntityException(EnvironmentInstance.class, e);
 
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager
-     * #destroy(com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance)
+    /**
+     * It destroy the environment.
+     * @param claudiaData
+     * @param envInstance
+     * @throws Exception
      */
     public void destroy(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws Exception {
         log.info("Destroying enviornment isntance " + envInstance.getBlueprintName() + " with environment "
@@ -484,6 +496,9 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                     List<ProductRelease> pReleases = new ArrayList<ProductRelease>();
                     List<ProductRelease> productReleases = tier.getProductReleases();
                     for (ProductRelease pRelease : productReleases) {
+                        if (pRelease == null) {
+                            continue;
+                        }
                         ProductRelease pReleaseDB = productReleaseManager.load(
                                 pRelease.getProduct() + "-" + pRelease.getVersion(), claudiaData);
                         pReleaseDB = updateProductReleaseDB(pReleaseDB, pRelease);
@@ -576,7 +591,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         if (productRelease.getTierName() != null) {
             productReleaseDB.setTierName(productRelease.getTierName());
         }
-        if (productRelease.getAttributes() != null) {
+        if (productRelease.getAttributes() != null && !productRelease.getAttributes().isEmpty()) {
             List<ProductRelease> productReleases = new ArrayList<ProductRelease>();
             productReleaseDB.setAttributes(null);
             for (Attribute attr : productRelease.getAttributes()) {
