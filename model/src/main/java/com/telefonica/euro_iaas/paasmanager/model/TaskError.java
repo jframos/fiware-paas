@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Defines a message in a task.
- *
+ * 
  * @author Sergio Arroyo
  */
 @XmlRootElement
@@ -59,7 +59,7 @@ public class TaskError {
      * @param message
      */
     public TaskError(String message) {
-        this.message = message;
+        setMessage(message);
     }
 
     /**
@@ -91,39 +91,54 @@ public class TaskError {
     }
 
     /**
-     * @param majorErrorCode the majorErrorCode to set
+     * @param majorErrorCode
+     *            the majorErrorCode to set
      */
     public void setMajorErrorCode(String majorErrorCode) {
-        this.majorErrorCode = majorErrorCode;
+        if (majorErrorCode != null) {
+            if (majorErrorCode.length() >= 1024) {
+                this.majorErrorCode = majorErrorCode.substring(0, 1023);
+            } else {
+                this.majorErrorCode = majorErrorCode;
+            }
+        }
     }
 
     /**
-     * @param message the message to set
+     * @param message
+     *            the message to set
      */
     public void setMessage(String message) {
-        this.message = message;
+        if (message != null) {
+            if (message.length() >= 1024) {
+                this.message = message.substring(0, 1023);
+            } else {
+
+                this.message = message;
+            }
+        }
     }
 
     /**
-     * @param minorErrorCode the minorErrorCode to set
+     * @param minorErrorCode
+     *            the minorErrorCode to set
      */
     public void setMinorErrorCode(String minorErrorCode) {
         this.minorErrorCode = minorErrorCode;
     }
 
     /**
-     * @param venodrSpecificErrorCode the venodrSpecificErrorCode to set
+     * @param venodrSpecificErrorCode
+     *            the venodrSpecificErrorCode to set
      */
     public void setVenodrSpecificErrorCode(String venodrSpecificErrorCode) {
         this.venodrSpecificErrorCode = venodrSpecificErrorCode;
     }
 
     /**
-     * Constructs a <code>String</code> with all attributes
-     * in name = value format.
-     *
-     * @return a <code>String</code> representation
-     * of this object.
+     * Constructs a <code>String</code> with all attributes in name = value format.
+     * 
+     * @return a <code>String</code> representation of this object.
      */
     public String toString() {
         StringBuilder sb = new StringBuilder("[[TaskError]");
@@ -134,6 +149,5 @@ public class TaskError {
         sb.append("]");
         return sb.toString();
     }
-
 
 }
