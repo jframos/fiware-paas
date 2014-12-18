@@ -81,7 +81,7 @@ public class SubNetworkInstance {
     }
 
     /**
-     *
+     * Constructor.
      * @param name
      * @param vdc
      * @param region
@@ -166,6 +166,11 @@ public class SubNetworkInstance {
     }
 
 
+    /**
+     * Equals.
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

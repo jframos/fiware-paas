@@ -60,24 +60,37 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
 
     private static Logger log = LoggerFactory.getLogger(NetworkInstanceManagerImpl.class);
 
-      public boolean exists (ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
-          throws InvalidEntityException, EntityNotFoundException, AlreadyExistsEntityException {
+    /**
+     * It checks if the network exists in the DB and Openstack.
+     * @param claudiaData
+     * @param networkInstance
+     * @param region
+     * @return
+     * @throws InvalidEntityException
+     * @throws EntityNotFoundException
+     * @throws AlreadyExistsEntityException
+     */
+    public boolean exists (ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
+        throws InvalidEntityException, EntityNotFoundException, AlreadyExistsEntityException {
     	if (existsInDB(networkInstance.getNetworkName(), claudiaData.getVdc(), region)) {
     		networkInstance = networkInstanceDao.load(networkInstance.getNetworkName(), claudiaData.getVdc(), region);
             if (!existsInOpenstack (claudiaData, networkInstance, region)) {
-            	log.warn ("The network "+  networkInstance.getNetworkName()+ " with id " + networkInstance.getIdNetwork() + " does no exists in Openstack") ;
+            	log.warn ("The network "+  networkInstance.getNetworkName()+ " with id " +
+                     networkInstance.getIdNetwork() + " does no exists in Openstack") ;
             	this.deleteInDb(networkInstance);
             	return false;
             	
             } else {
-            	log.info("The network "+  networkInstance.getNetworkName()+ " with id " + networkInstance.getIdNetwork() + " already exists");
+            	log.info("The network "+  networkInstance.getNetworkName()+ " with id " +
+                    networkInstance.getIdNetwork() + " already exists");
             	return true;
             }
             
            
         } else {
             if (!existsInOpenstack (claudiaData, networkInstance, region)) {
-                log.warn ("The network "+  networkInstance.getNetworkName()+ " with id " + networkInstance.getIdNetwork() + " does no exists in Openstack") ;
+                log.warn ("The network "+  networkInstance.getNetworkName()+ " with id " +
+                    networkInstance.getIdNetwork() + " does no exists in Openstack") ;
                 return false;
 
             } else {
@@ -88,11 +101,23 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
     }
 
 
-    
-    public NetworkInstance create (ClaudiaData claudiaData, NetworkInstance networkInstance, String region) throws InfrastructureException, EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
+    /**
+     * It creates a network in DB and Openstack.
+     * @param claudiaData
+     * @param networkInstance
+     * @param region
+     * @return
+     * @throws InfrastructureException
+     * @throws EntityNotFoundException
+     * @throws InvalidEntityException
+     * @throws AlreadyExistsEntityException
+     */
+    public NetworkInstance create (ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
+            throws InfrastructureException, EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException {
     	networkClient.deployNetwork(claudiaData, networkInstance, region);
         log.info("Network isntance " + networkInstance.getNetworkName() + " with vdc " + claudiaData.getVdc()
-                + ": " + networkInstance.getIdNetwork() + " and federated " + networkInstance.getFederatedRange() + " " + networkInstance.getfederatedNetwork()+  " deployed");
+            + ": " + networkInstance.getIdNetwork() + " and federated " + networkInstance.getFederatedRange() +
+            " " + networkInstance.getfederatedNetwork()+  " deployed");
         try {
             createSubNetworksInstance(claudiaData,networkInstance, region);
             networkClient.addNetworkToPublicRouter(claudiaData, networkInstance, region);

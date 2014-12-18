@@ -60,6 +60,35 @@ public class OpenStackNetworkImplTest {
     ClaudiaData claudiaData;
     private OpenStackUtil openStackUtil;
     private String REGION = "region";
+    private String NETWORK_STRING= "{network: {\"status\": \"ACTIVE\", \"subnets\": " +
+            "[\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
+            + " \"network\", \"provider:physical_network\": null, \"admin_state_up\": true, " +
+            "\"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
+            + " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": false, " +
+            "\"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "
+            + " \"provider:segmentation_id\": 8}}";
+
+    private String NETWORKS_STRING_1NET= "{networks: {\"status\": \"ACTIVE\", \"subnets\": " +
+            "[\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
+            + " \"network\", \"provider:physical_network\": null, \"admin_state_up\": true, " +
+            "\"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
+            + " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": false, " +
+            "\"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "
+            + " \"provider:segmentation_id\": 8}}";
+
+    private String NETWORKS_STRING = "{\"networks\": [{\"status\": \"ACTIVE\", \"subnets\": " +
+            "[\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
+            + " \"dia146\", \"provider:physical_network\": null, \"admin_state_up\":" +
+            " true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
+            + " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\":" +
+            " false, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "
+            + " \"provider:segmentation_id\": 8}, {\"status\": \"ACTIVE\", \"subnets\": " +
+            "[\"e2d10e6b-33c3-400c-88d6-f905d4cd02f2\"], \"name\": \"ext-net\","
+            + " \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\":" +
+            " \"08bed031f6c54c9d9b35b42aa06b51c0\", \"provider:network_type\": "
+            + " \"gre\", \"router:external\": true, \"shared\": false, \"id\": " +
+            "\"080b5f2a-668f-45e0-be23-361c3a7d11d0\", \"provider:segmentation_id\": 1}"
+            + "]}";
 
     @Before
     public void setUp() {
@@ -77,14 +106,7 @@ public class OpenStackNetworkImplTest {
     public void shouldListNetworks() throws OpenStackException, InfrastructureException {
 
         // when
-        String response = "{\"networks\": [{\"status\": \"ACTIVE\", \"subnets\": [\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
-                + " \"dia146\", \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
-                + " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": false, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "
-                + " \"provider:segmentation_id\": 8}, {\"status\": \"ACTIVE\", \"subnets\": [\"e2d10e6b-33c3-400c-88d6-f905d4cd02f2\"], \"name\": \"ext-net\","
-                + " \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\", \"provider:network_type\": "
-                + " \"gre\", \"router:external\": true, \"shared\": false, \"id\": \"080b5f2a-668f-45e0-be23-361c3a7d11d0\", \"provider:segmentation_id\": 1}"
-                + "]}";
-        when(openStackUtil.listNetworks(any(PaasManagerUser.class), anyString())).thenReturn(response);
+        when(openStackUtil.listNetworks(any(PaasManagerUser.class), anyString())).thenReturn(NETWORKS_STRING);
 
         List<NetworkInstance> networks = openStackNetworkImpl.loadAllNetwork(claudiaData, "region");
 
@@ -132,14 +154,7 @@ public class OpenStackNetworkImplTest {
     public void shouldLoadNotSharedNetworks() throws OpenStackException, InfrastructureException {
 
         // when
-        String response = "{\"networks\": [{\"status\": \"ACTIVE\", \"subnets\": [\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
-                + " \"dia146\", \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
-                + " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": true, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "
-                + " \"provider:segmentation_id\": 8}, {\"status\": \"ACTIVE\", \"subnets\": [\"e2d10e6b-33c3-400c-88d6-f905d4cd02f2\"], \"name\": \"ext-net\","
-                + " \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\", \"provider:network_type\": "
-                + " \"gre\", \"router:external\": true, \"shared\": false, \"id\": \"080b5f2a-668f-45e0-be23-361c3a7d11d0\", \"provider:segmentation_id\": 1}"
-                + "]}";
-        when(openStackUtil.listNetworks(any(PaasManagerUser.class), anyString())).thenReturn(response);
+        when(openStackUtil.listNetworks(any(PaasManagerUser.class), anyString())).thenReturn(NETWORKS_STRING);
 
         List<NetworkInstance> networks = openStackNetworkImpl.loadNotSharedNetworks(claudiaData, REGION);
 
@@ -147,25 +162,21 @@ public class OpenStackNetworkImplTest {
         assertNotNull(networks);
 
         verify(openStackUtil).listNetworks(any(PaasManagerUser.class), anyString());
-        assertEquals(1, networks.size());
+        assertEquals(2, networks.size());
     }
 
     @Test
     public void shouldObtainDataNetwork() throws OpenStackException, InfrastructureException {
 
         // when
-        String response = "{\"networks\": [{\"status\": \"ACTIVE\", \"subnets\": [\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
-                + " \"dia146\", \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
-                + " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": false, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "
-                + " \"provider:segmentation_id\": 8}" + "]}";
-        when(openStackUtil.listNetworks(any(PaasManagerUser.class), anyString())).thenReturn(response);
+        when(openStackUtil.listNetworks(any(PaasManagerUser.class), anyString())).thenReturn(NETWORKS_STRING);
 
         List<NetworkInstance> networks = openStackNetworkImpl.loadAllNetwork(claudiaData, REGION);
 
         // then
         assertNotNull(networks);
         verify(openStackUtil).listNetworks(any(PaasManagerUser.class), anyString());
-        assertEquals(1, networks.size());
+        assertEquals(2, networks.size());
         assertEquals(networks.get(0).getAdminStateUp(), true);
         assertEquals(networks.get(0).getNetworkName(), "dia146");
         assertEquals(networks.get(0).getIdNetwork(), "044aecbe-3975-4318-aad2-a1232dcde47d");
@@ -195,13 +206,9 @@ public class OpenStackNetworkImplTest {
     public void shouldDeployDefaultNetwork() throws OpenStackException, InfrastructureException {
 
         // when
-        String response = "{network: {\"status\": \"ACTIVE\", \"subnets\": [\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
-                + " \"network\", \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
-                + " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": false, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "
-                + " \"provider:segmentation_id\": 8}}";
         NetworkInstance net = new NetworkInstance("network", "vdc", "region");
         when(openStackUtil.createNetwork(any(String.class), anyString(), anyString(), anyString()))
-                .thenReturn(response);
+        .thenReturn(NETWORK_STRING);
 
         NetworkInstance net2 = openStackNetworkImpl.deployDefaultNetwork(claudiaData, REGION);
 
@@ -215,14 +222,9 @@ public class OpenStackNetworkImplTest {
     public void shouldDeployNetwork() throws OpenStackException, InfrastructureException {
 
         // when
-        String response = "{network: {\"status\": \"ACTIVE\", \"subnets\": [\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
-                + " \"network\", \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
-                + " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": false, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "
-                + " \"provider:segmentation_id\": 8}}";
-
         NetworkInstance net = new NetworkInstance("network", "vdc", "region");
         when(openStackUtil.createNetwork(any(String.class), anyString(), anyString(), anyString()))
-                .thenReturn(response);
+                .thenReturn(NETWORK_STRING);
 
         openStackNetworkImpl.deployNetwork(claudiaData, net, REGION);
 
@@ -277,16 +279,12 @@ public class OpenStackNetworkImplTest {
     public void shouldLoadNetworkNoId() throws OpenStackException, InfrastructureException, EntityNotFoundException {
 
         // when
-        String response = "{\"networks\": [{\"status\": \"ACTIVE\", \"subnets\": [\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
-                + " \"MYNET\", \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
-                + " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": true, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "
-                + " \"provider:segmentation_id\": 8}, {\"status\": \"ACTIVE\", \"subnets\": [\"e2d10e6b-33c3-400c-88d6-f905d4cd02f2\"], \"name\": \"ext-net\","
-                + " \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\", \"provider:network_type\": "
-                + " \"gre\", \"router:external\": true, \"shared\": false, \"id\": \"080b5f2a-668f-45e0-be23-361c3a7d11d0\", \"provider:segmentation_id\": 1}"
-                + "]}";
-        String response2 = "{\"status\": \"ACTIVE\", \"subnets\": [\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
-                + " \"MYNET\", \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
-                + " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": true, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "
+        String response2 = "{\"status\": \"ACTIVE\", \"subnets\": " +
+                "[\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
+                + " \"MYNET\", \"provider:physical_network\": null, \"admin_state_up\": " +
+                "true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
+                + " \"provider:network_type\": \"gre\", \"router:external\": false, " +
+                "\"shared\": true, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "
                 + " \"provider:segmentation_id\": 8}}";
         String response3 = "\n" +
                 "\n" +
@@ -317,8 +315,8 @@ public class OpenStackNetworkImplTest {
                 "       }\n" +
                 "    }\n" +
                 "\n";
-        NetworkInstance net = new NetworkInstance("MYNET", "vdc", "region");
-        when(openStackUtil.listNetworks(any(PaasManagerUser.class), anyString())).thenReturn(response);
+        NetworkInstance net = new NetworkInstance("dia146", "vdc", "region");
+        when(openStackUtil.listNetworks(any(PaasManagerUser.class), anyString())).thenReturn(NETWORKS_STRING);
         when(openStackUtil.getNetworkDetails(anyString(),anyString(),anyString(),anyString())).thenReturn(response2);
         when(openStackUtil.getSubNetworkDetails(anyString(),anyString(),anyString(),anyString())).thenReturn(response3);
 
@@ -338,15 +336,8 @@ public class OpenStackNetworkImplTest {
         InfrastructureException, JSONException {
 
         // when
-        String response = "{\"networks\": [{\"status\": \"ACTIVE\", \"subnets\": [\"2b7a07f6-0b73-46a1-9327-6911c0480f49\"], \"name\": "
-                + " \"dia146\", \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\", "
-                + " \"provider:network_type\": \"gre\", \"router:external\": false, \"shared\": true, \"id\": \"044aecbe-3975-4318-aad2-a1232dcde47d\", "
-                + " \"provider:segmentation_id\": 8}, {\"status\": \"ACTIVE\", \"subnets\": [\"e2d10e6b-33c3-400c-88d6-f905d4cd02f2\"], \"name\": \"ext-net\","
-                + " \"provider:physical_network\": null, \"admin_state_up\": true, \"tenant_id\": \"08bed031f6c54c9d9b35b42aa06b51c0\", \"provider:network_type\": "
-                + " \"gre\", \"router:external\": true, \"shared\": false, \"id\": \"080b5f2a-668f-45e0-be23-361c3a7d11d0\", \"provider:segmentation_id\": 1}"
-                + "]}";
         NetworkInstance net = new NetworkInstance("router", "vdc", "region");
-        when(openStackUtil.listNetworks(any(PaasManagerUser.class), anyString())).thenReturn(response);
+        when(openStackUtil.listNetworks(any(PaasManagerUser.class), anyString())).thenReturn(NETWORK_STRING);
 
         try {
             openStackNetworkImpl.loadNetwork(claudiaData, net, REGION);
