@@ -95,10 +95,12 @@ public class TaskError {
      *            the majorErrorCode to set
      */
     public void setMajorErrorCode(String majorErrorCode) {
-        if (majorErrorCode.length() >= 1024) {
-            this.majorErrorCode = majorErrorCode.substring(0, 1023);
-        } else {
-            this.majorErrorCode = majorErrorCode;
+        if (majorErrorCode != null) {
+            if (majorErrorCode.length() >= 1024) {
+                this.majorErrorCode = majorErrorCode.substring(0, 1023);
+            } else {
+                this.majorErrorCode = majorErrorCode;
+            }
         }
     }
 
@@ -107,12 +109,13 @@ public class TaskError {
      *            the message to set
      */
     public void setMessage(String message) {
+        if (message != null) {
+            if (message.length() >= 1024) {
+                this.message = message.substring(0, 1023);
+            } else {
 
-        if (message.length() >= 1024) {
-            this.message = message.substring(0, 1023);
-        } else {
-
-            this.message = message;
+                this.message = message;
+            }
         }
     }
 
