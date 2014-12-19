@@ -495,16 +495,15 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
                     List<ProductRelease> pReleases = new ArrayList<ProductRelease>();
                     List<ProductRelease> productReleases = tier.getProductReleases();
-                    for (ProductRelease pRelease : productReleases) {
-                        if (pRelease == null) {
-                            continue;
-                        }
-                        ProductRelease pReleaseDB = productReleaseManager.load(
-                                pRelease.getProduct() + "-" + pRelease.getVersion(), claudiaData);
-                        pReleaseDB = updateProductReleaseDB(pReleaseDB, pRelease);
-                        pReleaseDB = productReleaseManager.update(pReleaseDB);
 
-                        pReleases.add(pReleaseDB);
+                    for (ProductRelease pRelease : productReleases) {
+                        if (pRelease != null) {
+                            ProductRelease pReleaseDB = productReleaseManager.load(
+                                    pRelease.getProduct() + "-" + pRelease.getVersion(), claudiaData);
+                            pReleaseDB = updateProductReleaseDB(pReleaseDB, pRelease);
+                            pReleaseDB = productReleaseManager.update(pReleaseDB);
+                            pReleases.add(pReleaseDB);
+                        }
                     }
                     tierDB.setProductReleases(null);
                     tierDB.setProductReleases(pReleases);
