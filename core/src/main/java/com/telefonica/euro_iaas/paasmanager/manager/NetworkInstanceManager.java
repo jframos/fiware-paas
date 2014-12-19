@@ -49,7 +49,7 @@ public interface NetworkInstanceManager {
 	 * @throws InvalidEntityException
 	 * @throws EntityNotFoundException 
 	 */
-	boolean exists (ClaudiaData claudiaData, NetworkInstance networkInstance, String region) throws InvalidEntityException, EntityNotFoundException;
+	boolean exists (ClaudiaData claudiaData, NetworkInstance networkInstance, String region) throws InvalidEntityException, EntityNotFoundException, AlreadyExistsEntityException;
 	/**
      * Create a network.
      * 
