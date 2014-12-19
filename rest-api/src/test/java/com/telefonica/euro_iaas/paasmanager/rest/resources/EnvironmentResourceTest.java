@@ -25,7 +25,9 @@
 package com.telefonica.euro_iaas.paasmanager.rest.resources;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -55,6 +57,8 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
+
+import javax.validation.constraints.AssertTrue;
 
 /**
  * Test the EnvironmentResource class.
@@ -129,6 +133,49 @@ public class EnvironmentResourceTest extends TestCase {
             thrown = true;
         }
 
+    }
+
+    /**
+     * Test the deletion of a environment without any tier.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testDeleteEnviornment() throws Exception {
+        EnvironmentDto environmentDto = new EnvironmentDto();
+        environmentDto.setDescription("Description");
+        environmentDto.setName("Name");
+        List<Environment> lEvn = new ArrayList<Environment> ();
+        lEvn.add(environmentDto.fromDto());
+        Mockito.doNothing().when(validator)
+                .validateDelete(any(String.class), any(String.class));
+        when(environmentManager.findByOrgAndVdcAndName(anyString(), anyString(), anyString())).thenReturn(lEvn);
+
+        environmentResource.delete("org", "vdc", environmentDto.getName());
+
+        verify(validator).validateDelete(anyString(), anyString());
+        verify(environmentManager).destroy(any(ClaudiaData.class), any(Environment.class));
+    }
+
+    /**
+     * Test the deletion of a environment not found.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testDeleteEnviornmentNoFound() throws Exception {
+
+        Mockito.doNothing().doThrow(new RuntimeException()).when(validator)
+                .validateDelete(any(String.class), any(String.class));
+
+        boolean thrown = false;
+        try {
+            environmentResource.delete("org", "vdc", "env");
+        } catch (APIException e) {
+            thrown = true;
+        }
+
+        assertTrue(thrown);
     }
 
     /**

@@ -94,20 +94,13 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
 
             List<Environment> list = environmentManager.findByOrgAndVdcAndName(org, vdc, envName);
             environmentManager.destroy(claudiaData, list.get(0));
+        } catch (EntityNotFoundException e) {
+            throw new APIException(e);
         } catch (Exception e) {
             throw new APIException(new InvalidEntityException(e.getMessage()));
         }
 
     }
-
-    /*
-     * private List<Environment> filterEqualTiers(List<Environment> environments) { // List<Tier> tierResult = new
-     * ArrayList<Tier>(); List<Environment> result = new ArrayList<Environment>(); for (Environment environment :
-     * environments) { Set<Tier> tierResult = new HashSet<Tier>(); Set<Tier> tiers = environment.getTiers(); for (Tier
-     * tier: tiers) { int i=0; List<Tier> tierAux = new ArrayList<Tier>(); for (int j = i + 1; j < tiers.size(); j++) {
-     * tierAux.add(tiers.get(j)); } if (!tierAux.contains(tier)) { tierResult.add(tier); } i++; }
-     * environment.setTiers(tierResult); result.add(environment); } return result; }
-     */
 
     /**
      * Find all environment resource.
