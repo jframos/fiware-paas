@@ -414,11 +414,11 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
     public NetworkInstance loadNetwork(ClaudiaData claudiaData, NetworkInstance network, String region)
             throws EntityNotFoundException {
 
-        String MENS="Error loading the network: ";
+        String message="Error loading the network: ";
         if (network.getIdNetwork() == null ) {
             String netId = getNetworkId (claudiaData, network, region);
             if (netId == null) {
-                String msm = MENS + network.getNetworkName();
+                String msm = message + network.getNetworkName();
                 log.error(msm);
                 throw new EntityNotFoundException(Network.class, msm, new Exception());
             }
@@ -442,11 +442,11 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             return netInst;
 
         } catch (OpenStackException e) {
-            String msm = MENS + network.getNetworkName() + ":" + e.getMessage();
+            String msm = message + network.getNetworkName() + ":" + e.getMessage();
             log.error(msm);
             throw new EntityNotFoundException(Network.class, msm, e);
         } catch (JSONException e) {
-            String msm = MENS + network.getNetworkName() + ":" + e.getMessage();
+            String msm = message + network.getNetworkName() + ":" + e.getMessage();
             log.error(msm);
 
         }
