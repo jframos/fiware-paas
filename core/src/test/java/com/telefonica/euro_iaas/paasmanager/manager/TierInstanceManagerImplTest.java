@@ -46,6 +46,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
+import com.telefonica.euro_iaas.paasmanager.manager.impl.SecurityGroupManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.TierInstanceManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -54,6 +55,7 @@ import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
+import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
@@ -71,6 +73,7 @@ public class TierInstanceManagerImplTest extends TestCase {
     private TierManager tierManager;
     private EnvironmentManager enviromentManager;
     private EnvironmentInstanceManager environmentInstanceManager;
+    private SecurityGroupManager securityGroupManager;
 
     private Tier tierProductShard = null;
     private Tier tierProductConfig = null;
@@ -100,6 +103,7 @@ public class TierInstanceManagerImplTest extends TestCase {
         productInstanceManager = mock(ProductInstanceManager.class);
         environmentInstanceManager = mock(EnvironmentInstanceManager.class);
         tierManager = mock(TierManager.class);
+        securityGroupManager = mock(SecurityGroupManager.class);
         enviromentManager = mock(EnvironmentManager.class);
 
         manager = new TierInstanceManagerImpl();
@@ -110,6 +114,7 @@ public class TierInstanceManagerImplTest extends TestCase {
         manager.setTierManager(tierManager);
         manager.setEnvironmentInstanceManager(environmentInstanceManager);
         manager.setEnvironmentManager(enviromentManager);
+        manager.setSecurityGroupManager(securityGroupManager);
 
         VM host = new VM(null, "hostname", "domain");
 
@@ -122,7 +127,9 @@ public class TierInstanceManagerImplTest extends TestCase {
         tierProductConfig.setMinimumNumberInstances(new Integer(1));
         tierProductConfig.setName("tierconfig");
         tierProductConfig.setProductReleases(productReleasesConfig);
-
+        
+        SecurityGroup secGroup = new SecurityGroup("name", "description");
+                
         Attribute att = new Attribute("balancer", "mongos", "description");
         List<Attribute> lAtt = new ArrayList();
         lAtt.add(att);
@@ -138,6 +145,7 @@ public class TierInstanceManagerImplTest extends TestCase {
         tierProductShard.setMinimumNumberInstances(new Integer(1));
         tierProductShard.setName("tiershard");
         tierProductShard.setProductReleases(productReleasesShards);
+        tierProductShard.setSecurityGroup(secGroup);
 
         List<ProductRelease> productReleaseBalancer = new ArrayList<ProductRelease>();
         ProductRelease productReleaseMongos = new ProductRelease("mongos", "2.0");
@@ -166,6 +174,7 @@ public class TierInstanceManagerImplTest extends TestCase {
 
         when(productInstanceManager.create(any(ClaudiaData.class), any(ProductInstance.class))).thenReturn(
                 productInstance);
+        when(securityGroupManager.load(anyString())).thenReturn(secGroup);
 
         Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tierProductConfig);
@@ -201,7 +210,9 @@ public class TierInstanceManagerImplTest extends TestCase {
 
         VM host = new VM(null, "hostname", "domain");
         TierInstance tierInstance = new TierInstance(tierProductConfig, "tierInsatnce", "nametierInstance-tier-1", host);
-
+        tierProductShard.setRegion("Region");
+        tierInstance.setTier(tierProductShard);
+        
         TierInstance tierInstanceCreated = manager.create(claudiaData, "env", tierInstance);
 
         assertEquals(tierInstanceCreated.getName(), tierInstanceCreated.getName());

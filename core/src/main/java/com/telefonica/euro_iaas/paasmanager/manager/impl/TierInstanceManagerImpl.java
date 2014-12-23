@@ -26,6 +26,7 @@ package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +34,12 @@ import org.slf4j.LoggerFactory;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.claudia.FirewallingClient;
 import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidProductInstanceRequestException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidSecurityGroupRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductReconfigurationException;
@@ -43,14 +47,19 @@ import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager;
 import com.telefonica.euro_iaas.paasmanager.manager.NetworkInstanceManager;
+import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
+import com.telefonica.euro_iaas.paasmanager.manager.SecurityGroupManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
+import com.telefonica.euro_iaas.paasmanager.model.Metadata;
+import com.telefonica.euro_iaas.paasmanager.model.Rule;
+import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
@@ -70,11 +79,19 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     private EnvironmentInstanceManager environmentInstanceManager;
     private EnvironmentManager environmentManager;
     private NetworkInstanceManager networkInstanceManager;
-
+    private SecurityGroupManager securityGroupManager;
+    private SystemPropertiesProvider systemPropertiesProvider;
+    private FirewallingClient firewallingClient = null;
+    
     private static Logger log = LoggerFactory.getLogger(TierInstanceManagerImpl.class);
 
     public TierInstance create(ClaudiaData data, String envName, TierInstance tierInstance)
-            throws InvalidEntityException, InfrastructureException {
+            /*throws InfrastructureException, EntityNotFoundException,
+            InvalidEntityException, AlreadyExistsEntityException, NotUniqueResultException,
+            InvalidProductInstanceRequestException, InvalidSecurityGroupRequestException, 
+            ProductInstallatorException {*/
+    		throws InvalidEntityException, InfrastructureException {
+    
         log.info("Inserting in database for tier instance " + tierInstance.getName() + " "
                 + tierInstance.getNetworkInstances().size() + " " + tierInstance.getTier().getFloatingip());
 
@@ -87,7 +104,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         } catch (EntityNotFoundException e) {
 
         }
-
+         
         Tier tierDB = null;
         try {
             tierDB = tierManager.loadTierWithProductReleaseAndMetadata(tierInstance.getTier().getName(), envName,
@@ -99,6 +116,28 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             throw new InvalidEntityException("Error to load the Tier " + tierInstance.getTier().getName() + " : "
                     + e.getMessage());
         }
+        
+        //Creating SecurityGroups
+        String secGroupName = "sg_" + data.getService() + "_" + data.getVdc() 
+        		+ "_" + tierDB.getRegion() 
+        		+ "_" + tierDB.getName();
+        
+        SecurityGroup secGroup = null;
+        try{
+        	secGroup = securityGroupManager.load(secGroupName);
+        	tierDB.setSecurityGroup(secGroup);
+        } catch (EntityNotFoundException enfe) {
+        	try {
+        		createSecurityGroups(data, tierDB);
+        	} catch (InvalidSecurityGroupRequestException isgre) {
+        		throw new InvalidEntityException ("InvalidSecurityGroupRequestException "
+                        + isgre.getMessage());
+        	} catch (EntityNotFoundException enfe2) {
+        		throw new InvalidEntityException ("EntityNotFoundException . Products of TierInstance were not found  "
+                        + enfe2.getMessage());
+        	}
+        }
+        
         tierInstanceDB.setTier(tierDB);
 
         if (tierInstance.getProductInstances() != null) {
@@ -442,7 +481,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                 }
             }
         }
-
+        
         tierInstanceDao.remove(tierInstance);
 
     }
@@ -470,6 +509,11 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     public void setProductInstanceManager(ProductInstanceManager productInstanceManager) {
         this.productInstanceManager = productInstanceManager;
     }
+    
+    public void setSecurityGroupManager(SecurityGroupManager securityGroupManager) {
+        this.securityGroupManager = securityGroupManager;
+    }
+    
 
     /**
      * @param tierInstanceDao
@@ -521,6 +565,124 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                 productInstanceManager.configure(claudiaData, productInstance, atributes);
             }
         }
+    }
+
+    /**
+     * It creates the specified security groups.
+     * 
+     * @param claudiaData
+     * @param tier
+     * @return
+     * @throws InvalidSecurityGroupRequestException
+     * @throws EntityNotFoundException
+     */
+
+    private void createSecurityGroups(ClaudiaData claudiaData, Tier tier) throws InvalidSecurityGroupRequestException,
+            EntityNotFoundException {
+        if ((systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")
+                && claudiaData.getVdc() != null && claudiaData.getVdc().length() > 0)) {
+
+            SecurityGroup securityGroup = generateSecurityGroup(claudiaData, tier);
+            try {
+                securityGroup = securityGroupManager.create(tier.getRegion(), claudiaData.getUser().getToken(),
+                        claudiaData.getVdc(), securityGroup);
+            } catch (InvalidEntityException e) {
+                log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
+                        + e.getMessage());
+                throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
+                        + securityGroup.getName() + " " + e.getMessage(), e);
+            } catch (InvalidEnvironmentRequestException e) {
+
+                log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
+                        + e.getMessage());
+                throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
+                        + securityGroup.getName() + " " + e.getMessage(), e);
+            } catch (AlreadyExistsEntityException e) {
+                log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
+                        + e.getMessage());
+                throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
+                        + securityGroup.getName() + " " + e.getMessage(), e);
+            } catch (InfrastructureException e) {
+                log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
+                        + e.getMessage());
+                throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
+                        + securityGroup.getName() + " " + e.getMessage(), e);
+
+            }
+            tier.setSecurityGroup(securityGroup);
+        }
+
+    }
+    
+    private SecurityGroup generateSecurityGroup(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException {
+
+        SecurityGroup securityGroup = new SecurityGroup();
+        securityGroup.setName("sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() + "_" + tier.getName());
+
+        log.info("Generate security group " + "sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() 
+        		+ "_" + tier.getRegion() + "_" + tier.getName());
+
+        List<Rule> rules = getDefaultRules();
+
+        if (tier.getProductReleases() != null) {
+
+            for (ProductRelease productRelease : tier.getProductReleases()) {
+                getRulesFromProduct(productRelease, rules);
+            }
+
+        }
+        securityGroup.setRules(rules);
+        return securityGroup;
+    }
+    
+    private List<Rule> getDefaultRules() {
+        List<Rule> rules = new ArrayList<Rule>();
+        log.info("Generate TCP rule " + 9990);
+        Rule rule2 = new Rule("TCP", "22", "22", "", "0.0.0.0/0");
+        rules.add(rule2);
+        return rules;
+
+    }
+
+    
+    private void getRulesFromProduct(ProductRelease productRelease, List<Rule> rules) throws EntityNotFoundException {
+
+        productRelease = productReleaseManager.loadWithMetadata(productRelease.getProduct() + "-"
+                + productRelease.getVersion());
+        getRules(productRelease, rules, "open_ports", "TCP");
+        getRules(productRelease, rules, "open_ports_udp", "UDP");
+
+    }
+    
+    private void getRules(ProductRelease productRelease, List<Rule> rules, String pathrules, String protocol) {
+        Metadata openPortsAttribute = productRelease.getMetadata(pathrules);
+        if (openPortsAttribute != null) {
+            log.info("Adding product rule " + openPortsAttribute.getValue());
+            StringTokenizer st = new StringTokenizer(openPortsAttribute.getValue());
+            while (st.hasMoreTokens()) {
+                Rule rule = createRulePort(st.nextToken(), protocol);
+                if (!rules.contains(rule)) {
+                    rules.add(rule);
+                }
+            }
+        }
+    }
+    
+    /**
+     * It creates the rule port for ssh.
+     * 
+     * @param port
+     * @return
+     */
+    private Rule createRulePort(String port, String protocol) {
+        log.info("Generate security rule " + port);
+        if (port.contains("-")) {
+            return new Rule(protocol, port.substring(0, port.indexOf("-")), port.substring(port.indexOf("-") + 1), "",
+                    "0.0.0.0/0");
+        } else {
+            return new Rule(protocol, port, port, "", "0.0.0.0/0");
+        }
+
     }
 
 }

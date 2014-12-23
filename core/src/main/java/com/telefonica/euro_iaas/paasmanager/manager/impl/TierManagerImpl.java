@@ -116,7 +116,7 @@ public class TierManagerImpl implements TierManager {
             // check if exist product or need sync with SDC
             existProductOrSyncWithSDC(claudiaData, tier);
 
-            createSecurityGroups(claudiaData, tier);
+            //createSecurityGroups(claudiaData, tier);
 
             createNetworks(tier);
 
