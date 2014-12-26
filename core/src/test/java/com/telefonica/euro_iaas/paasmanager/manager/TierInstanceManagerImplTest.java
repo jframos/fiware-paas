@@ -210,8 +210,8 @@ public class TierInstanceManagerImplTest extends TestCase {
 
         VM host = new VM(null, "hostname", "domain");
         TierInstance tierInstance = new TierInstance(tierProductConfig, "tierInsatnce", "nametierInstance-tier-1", host);
-        tierProductShard.setRegion("Region");
-        tierInstance.setTier(tierProductShard);
+        //tierProductShard.setRegion("Region");
+        //tierInstance.setTier(tierProductShard);
         
         TierInstance tierInstanceCreated = manager.create(claudiaData, "env", tierInstance);
 

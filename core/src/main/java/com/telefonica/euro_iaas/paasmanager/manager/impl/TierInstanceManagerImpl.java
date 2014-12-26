@@ -117,28 +117,45 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                     + e.getMessage());
         }
         
-        //Creating SecurityGroups
         String secGroupName = "sg_" + data.getService() + "_" + data.getVdc() 
         		+ "_" + tierDB.getRegion() 
         		+ "_" + tierDB.getName();
         
-        SecurityGroup secGroup = null;
-        try{
-        	secGroup = securityGroupManager.load(secGroupName);
-        	tierDB.setSecurityGroup(secGroup);
-        } catch (EntityNotFoundException enfe) {
-        	try {
-        		createSecurityGroups(data, tierDB);
-        	} catch (InvalidSecurityGroupRequestException isgre) {
-        		throw new InvalidEntityException ("InvalidSecurityGroupRequestException "
-                        + isgre.getMessage());
-        	} catch (EntityNotFoundException enfe2) {
-        		throw new InvalidEntityException ("EntityNotFoundException . Products of TierInstance were not found  "
-                        + enfe2.getMessage());
-        	}
-        }
-        
-        tierInstanceDB.setTier(tierDB);
+        /*try{
+        	log.info("Checking if  TierDB has a secgroup associated");
+        	SecurityGroup secGroup = tierDB.getSecurityGroup();
+        	log.info("Setting to null SD");
+        	tierDB.setSecurityGroup(null);
+        }catch (NullPointerException npe) {
+        	log.info("TierDB does not have any SecGroup"); 
+        } finally {*/
+          	 //Creating SecurityGroups
+        	tierDB.setSecurityGroup(null);
+            SecurityGroup secGroup = null;
+            try{
+            	log.info("Checking if  " + secGroupName+ " exists");
+            	secGroup = securityGroupManager.load(secGroupName);
+            	log.info(secGroupName + " exists so setting tier");
+            	tierDB.setSecurityGroup(secGroup);
+            } catch (EntityNotFoundException enfe) {
+            	try {
+            		log.info(secGroupName+ " does not exist so creating secgroup " + secGroupName);
+            		createSecurityGroups(data, tierDB);
+            	} catch (InvalidSecurityGroupRequestException isgre) {
+            		log.error("InvalidSecurityGroupRequestException "
+                            + isgre.getMessage());
+            		throw new InvalidEntityException ("InvalidSecurityGroupRequestException "
+                            + isgre.getMessage());
+            	} catch (EntityNotFoundException enfe2) {
+            		log.error("InvalidSecurityGroupRequestException " + enfe2.getMessage());
+            		throw new InvalidEntityException ("EntityNotFoundException . Products of TierInstance were not found  "
+                            + enfe2.getMessage());
+            	}
+            }
+           
+            tierInstanceDB.setTier(tierDB);
+        //}
+       
 
         if (tierInstance.getProductInstances() != null) {
             for (ProductInstance productInstance : tierInstance.getProductInstances()) {
@@ -514,7 +531,12 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         this.securityGroupManager = securityGroupManager;
     }
     
+    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
 
+        this.systemPropertiesProvider = systemPropertiesProvider;
+    }
+
+    
     /**
      * @param tierInstanceDao
      *            the tierInstanceDao to set
@@ -617,7 +639,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     private SecurityGroup generateSecurityGroup(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException {
 
         SecurityGroup securityGroup = new SecurityGroup();
-        securityGroup.setName("sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() + "_" + tier.getName());
+        securityGroup.setName("sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() + "_" + tier.getRegion() + "_" + tier.getName());
 
         log.info("Generate security group " + "sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() 
         		+ "_" + tier.getRegion() + "_" + tier.getName());

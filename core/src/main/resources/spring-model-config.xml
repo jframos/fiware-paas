@@ -106,7 +106,8 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
             <property name="environmentManager" ref="environmentManager"/>
             <property name="networkInstanceManager" ref="networkInstanceManager"/>
-
+            <property name="securityGroupManager" ref="securityGroupManager"/>
+            <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
         </bean>
         <bean id="environmentManager" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl">
