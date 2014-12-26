@@ -37,6 +37,7 @@ import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
+import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
 import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
@@ -52,6 +53,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager;
 import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
+import com.telefonica.euro_iaas.paasmanager.manager.SecurityGroupManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.TierManager;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
@@ -62,6 +64,7 @@ import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.Network;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
+import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
@@ -82,6 +85,9 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
     private TierManager tierManager;
     private ProductReleaseManager productReleaseManager;
     private ProductInstallator productInstallator;
+    private SecurityGroupManager securityGroupManager;
+    private TierDao tierDao;
+
 
     /** The log. */
     private static Logger log = LoggerFactory.getLogger(EnvironmentInstanceManagerImpl.class);
@@ -409,7 +415,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
     }
 
-    private void deletePaaSDB(ClaudiaData claudiaData, EnvironmentInstance envInstance, TierInstance tierInstance, boolean error) throws InvalidEntityException {
+    private void deletePaaSDB(ClaudiaData claudiaData, EnvironmentInstance envInstance, TierInstance tierInstance, boolean error) 
+    		throws InvalidEntityException, InfrastructureException {
         // Borrado del registro en BBDD paasmanager
         log.info("Deleting the environment instance " + envInstance.getBlueprintName() + " in the database ");
 
@@ -420,6 +427,18 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             log.error(e.getMessage());
             error = true;
         }
+        
+       //Deleting SG
+        Tier tier = tierInstance.getTier();
+        log.info("Deleting security group from in tier " + tier.getName() + " in TierInstance");
+        if (tier.getSecurityGroup() != null && !tier.getVdc().isEmpty()) {
+            SecurityGroup sec = tier.getSecurityGroup();
+            log.info("Deleting security group " + sec.getName() + " in tier " + tier.getName());
+            tier.setSecurityGroup(null);
+            tierDao.update(tier);
+            securityGroupManager.destroy(tier.getRegion(), claudiaData.getUser().getToken(), tier.getVdc(), sec);
+        }
+
         tierInstanceManager.remove(tierInstance);
     }
 
@@ -657,5 +676,21 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
     public void setNetworkManager(NetworkManager networkManager) {
         this.networkManager = networkManager;
+    }
+
+    /**
+     * @param securityGroupManager
+     *            the securityGroupManager to set
+     */
+    public void setSecurityGroupManager(SecurityGroupManager securityGroupManager) {
+        this.securityGroupManager = securityGroupManager;
+    }
+
+    /**
+     * @param tierDao
+     *            the tierDao to set
+     */
+    public void setTierDao(TierDao tierDao) {
+        this.tierDao = tierDao;
     }
 }

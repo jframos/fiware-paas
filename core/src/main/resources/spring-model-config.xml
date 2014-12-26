@@ -95,6 +95,8 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="infrastructureManager" ref="infrastructureManager"/>
             <property name="productInstallator" ref="productInstallator"/>
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
+            <property name="securityGroupManager" ref="securityGroupManager"/>
+            <property name="tierDao" ref="tierDao"/>
         </bean>
 
         <bean id="tierInstanceManager" lazy-init="true"

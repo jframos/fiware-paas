@@ -247,14 +247,14 @@ public class TierManagerImpl implements TierManager {
             throw new com.telefonica.euro_iaas.commons.dao.EntityNotFoundException(Tier.class, mens, tier);
         }
 
-        if (tier.getSecurityGroup() != null && !tier.getVdc().isEmpty()) {
+        /*if (tier.getSecurityGroup() != null && !tier.getVdc().isEmpty()) {
             SecurityGroup sec = tier.getSecurityGroup();
             log.info("Deleting security group " + sec.getName() + " in tier " + tier.getName());
             tier.setSecurityGroup(null);
             tierDao.update(tier);
             securityGroupManager.destroy(tier.getRegion(), claudiaData.getUser().getToken(), tier.getVdc(), sec);
 
-        }
+        }*/
 
         log.info("Deleting the networks " + tier.getNetworks());
 

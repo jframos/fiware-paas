@@ -35,6 +35,7 @@ import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.FirewallingClient;
+import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
 import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
@@ -544,7 +545,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     public void setTierInstanceDao(TierInstanceDao tierInstanceDao) {
         this.tierInstanceDao = tierInstanceDao;
     }
-
+    
     public void setTierManager(TierManager tierManager) {
         this.tierManager = tierManager;
     }
