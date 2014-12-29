@@ -57,10 +57,247 @@ For the rest of the explanation, we are going to configure a set of variables:
 .. code::
 
     export PAAS_MANAGER_IP =  pegasus.lab.fi-ware.org
-  
-Catalogue Management API
+
+Abstract Environment API
 ------------------------
-Next we detail some operations that can be done in the catlogue managemente api
+
+Next we detail some operations that can be done in the catalogue managemente api regarding the Abstract Environments.
+Abstract Environments are environments defined by the administrator. They are available for all FIWARE users.
+
+
+**Get the Abstract Environment list from the catalogue**
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id"
+	-X GET "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/environment"
+
+This operation lists the abstract environments stored in the catalogue. The following example shows an XML response for the list Abstract Environment API operation.
+	
+.. code::	
+
+    <environmentDtoes>
+        <environmentDto>
+ 			<tierDtos>
+				<name>orion</name>
+				<flavour>2</flavour>
+				<image>dbefb2d6-2221-46e2-a11c-b466e2503da5</image>
+				<maximumNumberInstances>1</maximumNumberInstances>
+				<minimumNumberInstances>1</minimumNumberInstances>
+				<initialNumberInstances>1</initialNumberInstances>
+ 				<productReleaseDtos>
+					<productName>orion</productName>
+					<version>0.13.0</version>
+ 				</productReleaseDtos>
+				<icono />
+				<securityGroup />
+				<keypair />
+				<floatingip>false</floatingip>
+				<affinity>None</affinity>
+				<region>Spain</region>
+ 			</tierDtos>
+			<name>orion</name>
+			<description>Environment orion</description>
+ 		</environmentDto>
+ 		...
+   </environmentDtoes>
+
+** Get a particular Abstract Environment
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id"
+	-X GET "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/environment/{abstract-environment-name}"
+
+This operation lists the abstract environments stored in the catalogue. The following example shows an XML response for the list Abstract Environment API operation.
+	
+.. code::	
+
+    <environmentDtoes>
+        <environmentDto>
+ 			<tierDtos>
+				<name>{abstract-environment-name}</name>
+				<flavour>2</flavour>
+				<image>dbefb2d6-2221-46e2-a11c-b466e2503da5</image>
+				<maximumNumberInstances>1</maximumNumberInstances>
+				<minimumNumberInstances>1</minimumNumberInstances>
+				<initialNumberInstances>1</initialNumberInstances>
+ 				<productReleaseDtos>
+					<productName>orion</productName>
+					<version>0.13.0</version>
+ 				</productReleaseDtos>
+				<icono />
+				<securityGroup />
+				<keypair />
+				<floatingip>false</floatingip>
+				<affinity>None</affinity>
+				<region>Spain</region>
+ 			</tierDtos>
+			<name>orion</name>
+			<description>Environment orion</description>
+ 		</environmentDto>
+   </environmentDtoes>
+
+
+
+**Add an Abstract Environment to the catalogue**
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
+	-X POST "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/environment"
+
+with the following payload
+
+.. code::
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <environmentDto>
+    	<name>{abstract-environment-name}</name>
+    	<description>description</description>
+    </environmentDto> 
+
+**Delete an abstract template for the catalogue**
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
+	-X DELETE "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/environment/{abstract-environment-name}"
+
+Abstract Tier API
+-----------------
+
+**Add an Tier to an existing Abstract Environment**
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
+	-X POST "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/environment/{abstract-environment-name}/tier"
+
+with the following payload
+
+.. code::
+
+	<tierDto>
+		<minimumNumberInstances>1</minimumNumberInstances>
+		<initialNumberInstances>1</initialNumberInstances>
+		<maximumNumberInstances>1</maximumNumberInstances>
+		<name>{tier-name}</name>
+		<image>0dbf8aff-5dc5-4d6c-9f9c-1e6801e0b629</image>
+		<flavour>2</flavour>
+		<keypair>jesusmmovilla57</keypair>
+		<floatingip>false</floatingip>
+		<region>Trento</region>
+	</tierDto> 
+
+** Get All Tiers associated to a Abstract Environment
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
+	-X GET "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/environment/{abstract-environment-name}/tier"
+
+This operation obtains a response with the following format:
+
+	<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+	<tierDtoes>
+ 		<tierDto>
+			<name>{tier-name}</name>
+			<flavour>2</flavour>
+			<image>dbefb2d6-2221-46e2-a11c-b466e2503da5</image>
+			<maximumNumberInstances>3</maximumNumberInstances>
+			<minimumNumberInstances>1</minimumNumberInstances>
+			<initialNumberInstances>1</initialNumberInstances>
+ 			<productReleaseDtos>
+				<productName>mongodbshard</productName>
+				<productDescription>mongodb shard 2.2.3</productDescription>
+				<version>2.2.3</version>
+ 			</productReleaseDtos>
+			<icono>http://blog.theinit.com/wp-content/uploads/2012/03/bc358_MongoDB.png</icono>
+			<securityGroup />
+			<keypair />
+			<floatingip>false</floatingip>
+			<affinity>None</affinity>
+			<region>Spain</region>
+ 		</tierDto>
+	</tierDtoes>
+
+** Get a particular Tier associated to a Abstract Environment
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
+	-X GET "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/environment/{abstract-environment-name}/tier/{tier-name}"
+
+This operation obtains a response with the following format:
+
+	<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+ 	<tierDto>
+		<name>{tier-name}</name>
+		<flavour>2</flavour>
+		<image>dbefb2d6-2221-46e2-a11c-b466e2503da5</image>
+		<maximumNumberInstances>3</maximumNumberInstances>
+		<minimumNumberInstances>1</minimumNumberInstances>
+		<initialNumberInstances>1</initialNumberInstances>
+ 		<productReleaseDtos>
+			<productName>mongodbshard</productName>
+			<productDescription>mongodb shard 2.2.3</productDescription>
+			<version>2.2.3</version>
+ 		</productReleaseDtos>
+		<icono>http://blog.theinit.com/wp-content/uploads/2012/03/bc358_MongoDB.png</icono>
+		<securityGroup />
+		<keypair />
+		<floatingip>false</floatingip>
+		<affinity>None</affinity>
+		<region>Spain</region>
+ 	</tierDto>
+
+
+**Update a Tier of an existing Abstract Environment**
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
+	-X PUT "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/environment/{abstract-environment-name}/tier"
+
+with the following payload
+
+.. code::
+
+	<tierDto>
+		<minimumNumberInstances>1</minimumNumberInstances>
+		<initialNumberInstances>1</initialNumberInstances>
+		<maximumNumberInstances>1</maximumNumberInstances>
+		<name>{tier-name}</name>
+		<image>0dbf8aff-5dc5-4d6c-9f9c-1e6801e0b629</image>
+		<flavour>2</flavour>
+		<keypair>jesusmmovilla57</keypair>
+		<floatingip>false</floatingip>
+		<region>Spain</region>
+	</tierDto> 
+
+
+** Delete a particular Tier associated to a Abstract Environment
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
+	-X GET "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/environment/{abstract-environment-name}/tier/{tier-name}"
+
+
+Blueprint Template/Environment API
+----------------------------------
+
+Next we detail some operations that can be done in the catalogue managemente api
 
 **Get the blueprint template list from the catalogue**
 
@@ -68,7 +305,7 @@ Next we detail some operations that can be done in the catlogue managemente api
 
     $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id"
-	-X GET "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/environment"
+	-X GET "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/vdc/{your-tenant-id}/environment"
 
 This operation lists the environments stored in the catalogue. The following example shows an XML response for the list Environment API operation. It is possible to see it contains a list of tiers including products to be installed.
 	
@@ -113,7 +350,7 @@ This operation lists the environments stored in the catalogue. The following exa
 
     $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
-	-X POST "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/environment"
+	-X POST "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/vdc/{your-tenant-id}/environment"
 
 with the following payload
 
@@ -162,7 +399,7 @@ The network and region information are including also in the payload of the envi
 
     $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
-	-X PUT "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/environment/{environment-id}"
+	-X PUT "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/vdc/{your-tenant-id}/environment/{environment-id}"
 
 The payload of this request cias as follows
 	
@@ -211,10 +448,10 @@ The payload of this request cias as follows
 
     $ curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
-	-X DELETE "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/environment/{environment-id}"
+	-X DELETE "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/vdc/{your-tenant-id}/environment/{environment-id}"
 
-BluePrint Instance Provisioning API
------------------------------------
+BluePrint/Environment Instance Provisioning API
+-----------------------------------------------
 
 **Deploy a Blueprint Instance**
 
