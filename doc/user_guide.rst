@@ -195,7 +195,7 @@ with the following payload
 		<region>Trento</region>
 	</tierDto> 
 
-** Get All Tiers associated to a Abstract Environment
+**Get All Tiers associated to a Abstract Environment**
 
 .. code::
 
@@ -204,6 +204,8 @@ with the following payload
 	-X GET "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/environment/{abstract-environment-name}/tier"
 
 This operation obtains a response with the following format:
+
+.. code::
 
 	<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 	<tierDtoes>
@@ -237,6 +239,8 @@ This operation obtains a response with the following format:
 	-X GET "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/environment/{abstract-environment-name}/tier/{tier-name}"
 
 This operation obtains a response with the following format:
+
+.. code::
 
 	<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
  	<tierDto>
