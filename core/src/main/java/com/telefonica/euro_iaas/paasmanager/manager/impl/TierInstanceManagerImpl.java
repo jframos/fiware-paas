@@ -141,7 +141,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             } catch (EntityNotFoundException enfe) {
             	try {
             		log.info(secGroupName+ " does not exist so creating secgroup " + secGroupName);
-            		createSecurityGroups(data, tierDB);
+            		tierDB = createSecurityGroups(data, tierDB);
+            		log.info(tierDB.getSecurityGroup().getName() + " In Tier " + tierDB.getName());
             	} catch (InvalidSecurityGroupRequestException isgre) {
             		log.error("InvalidSecurityGroupRequestException "
                             + isgre.getMessage());
@@ -600,7 +601,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
      * @throws EntityNotFoundException
      */
 
-    private void createSecurityGroups(ClaudiaData claudiaData, Tier tier) throws InvalidSecurityGroupRequestException,
+    private Tier createSecurityGroups(ClaudiaData claudiaData, Tier tier) throws InvalidSecurityGroupRequestException,
             EntityNotFoundException {
         if ((systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")
                 && claudiaData.getVdc() != null && claudiaData.getVdc().length() > 0)) {
@@ -634,6 +635,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             }
             tier.setSecurityGroup(securityGroup);
         }
+        return tier;
 
     }
     
