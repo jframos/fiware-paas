@@ -45,6 +45,8 @@ import org.mockito.Mockito;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.paasmanager.claudia.FirewallingClient;
+import com.telefonica.euro_iaas.paasmanager.dao.SecurityGroupDao;
 import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.SecurityGroupManagerImpl;
 import com.telefonica.euro_iaas.paasmanager.manager.impl.TierInstanceManagerImpl;
@@ -67,6 +69,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 public class TierInstanceManagerImplTest extends TestCase {
 
     private TierInstanceDao tierInstanceDao;
+    private SecurityGroupDao securityGroupDao;
     private InfrastructureManager infrastructureManager;
     private ProductReleaseManager productReleaseManager;
     private ProductInstanceManager productInstanceManager;
@@ -74,6 +77,7 @@ public class TierInstanceManagerImplTest extends TestCase {
     private EnvironmentManager enviromentManager;
     private EnvironmentInstanceManager environmentInstanceManager;
     private SecurityGroupManager securityGroupManager;
+    private FirewallingClient firewallingClient;
 
     private Tier tierProductShard = null;
     private Tier tierProductConfig = null;
@@ -98,12 +102,14 @@ public class TierInstanceManagerImplTest extends TestCase {
         claudiaData.setUser(user);
 
         tierInstanceDao = mock(TierInstanceDao.class);
+        securityGroupDao = mock(SecurityGroupDao.class);
         infrastructureManager = mock(InfrastructureManager.class);
         productReleaseManager = mock(ProductReleaseManager.class);
         productInstanceManager = mock(ProductInstanceManager.class);
         environmentInstanceManager = mock(EnvironmentInstanceManager.class);
         tierManager = mock(TierManager.class);
         securityGroupManager = mock(SecurityGroupManager.class);
+        firewallingClient = mock(FirewallingClient.class);
         enviromentManager = mock(EnvironmentManager.class);
 
         manager = new TierInstanceManagerImpl();
@@ -111,10 +117,12 @@ public class TierInstanceManagerImplTest extends TestCase {
         manager.setInfrastructureManager(infrastructureManager);
         manager.setProductInstanceManager(productInstanceManager);
         manager.setTierInstanceDao(tierInstanceDao);
+        manager.setSecurityGroupDao(securityGroupDao);
         manager.setTierManager(tierManager);
         manager.setEnvironmentInstanceManager(environmentInstanceManager);
         manager.setEnvironmentManager(enviromentManager);
         manager.setSecurityGroupManager(securityGroupManager);
+        manager.setFirewallingClient(firewallingClient);
 
         VM host = new VM(null, "hostname", "domain");
 

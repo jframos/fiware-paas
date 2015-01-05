@@ -35,6 +35,7 @@ import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.claudia.FirewallingClient;
+import com.telefonica.euro_iaas.paasmanager.dao.SecurityGroupDao;
 import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
 import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
@@ -73,6 +74,7 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 public class TierInstanceManagerImpl implements TierInstanceManager {
 
     private TierInstanceDao tierInstanceDao;
+    private SecurityGroupDao securityGroupDao;
     private TierManager tierManager;
     private ProductInstanceManager productInstanceManager;
     private InfrastructureManager infrastructureManager;
@@ -82,7 +84,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     private NetworkInstanceManager networkInstanceManager;
     private SecurityGroupManager securityGroupManager;
     private SystemPropertiesProvider systemPropertiesProvider;
-    private FirewallingClient firewallingClient = null;
+    private FirewallingClient firewallingClient;
     
     private static Logger log = LoggerFactory.getLogger(TierInstanceManagerImpl.class);
 
@@ -118,27 +120,42 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                     + e.getMessage());
         }
         
+        
         String secGroupName = "sg_" + data.getService() + "_" + data.getVdc() 
-        		+ "_" + tierDB.getRegion() 
         		+ "_" + tierDB.getName();
         
-        /*try{
-        	log.info("Checking if  TierDB has a secgroup associated");
-        	SecurityGroup secGroup = tierDB.getSecurityGroup();
-        	log.info("Setting to null SD");
-        	tierDB.setSecurityGroup(null);
-        }catch (NullPointerException npe) {
-        	log.info("TierDB does not have any SecGroup"); 
-        } finally {*/
-          	 //Creating SecurityGroups
-        	tierDB.setSecurityGroup(null);
-            SecurityGroup secGroup = null;
-            try{
-            	log.info("Checking if  " + secGroupName+ " exists");
-            	secGroup = securityGroupManager.load(secGroupName);
-            	log.info(secGroupName + " exists so setting tier");
-            	tierDB.setSecurityGroup(secGroup);
-            } catch (EntityNotFoundException enfe) {
+        //Creating SecurityGroups
+        tierDB.setSecurityGroup(null);
+        SecurityGroup secGroup = null;
+        SecurityGroup secGroupOpenStack = null;
+        try{
+        	log.info("Checking if  " + secGroupName+ " exists in Database");
+        	secGroup = securityGroupManager.load(secGroupName);
+        	
+        	//Checking if the SG has been created in Openstack
+        	try {
+        		firewallingClient.loadSecurityGroup(tierDB.getRegion(), 
+        			data.getUser().getToken(), data.getVdc(), 
+        			secGroup.getIdSecurityGroup());
+        	} catch (EntityNotFoundException enfe2) {
+        		log.info(secGroupName + " does not exist in Region " + tierDB.getRegion());
+        		
+        		//Create SG in region and update secgorupId in Database
+        		try {
+        			secGroupOpenStack = securityGroupManager.createInOpenstack(
+        				tierDB.getRegion(), 
+        				data.getUser().getToken(), 
+        				data.getVdc(), secGroup);
+        		} catch (AlreadyExistsEntityException aee) {
+        		    	   log.info(secGroupName+ " already Exist in Region " + tierDB.getRegion());
+        		}
+        		secGroup = securityGroupDao.updateSecurityGroupId(
+        				secGroupOpenStack.getIdSecurityGroup(), 
+        				secGroup);
+        	}
+        	tierDB.setSecurityGroup(secGroup);
+
+       } catch (EntityNotFoundException enfe) {
             	try {
             		log.info(secGroupName+ " does not exist so creating secgroup " + secGroupName);
             		tierDB = createSecurityGroups(data, tierDB);
@@ -153,14 +170,12 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             		throw new InvalidEntityException ("EntityNotFoundException . Products of TierInstance were not found  "
                             + enfe2.getMessage());
             	}
-            }
+       } 
            
-            tierInstanceDB.setTier(tierDB);
-        //}
+       tierInstanceDB.setTier(tierDB);
        
-
-        if (tierInstance.getProductInstances() != null) {
-            for (ProductInstance productInstance : tierInstance.getProductInstances()) {
+       if (tierInstance.getProductInstances() != null) {
+    	   for (ProductInstance productInstance : tierInstance.getProductInstances()) {
                 ProductInstance productInstanceDB = null;
                 try {
                     productInstanceDB = productInstanceManager.load(productInstance.getName());
@@ -538,6 +553,11 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
+    public void setFirewallingClient(FirewallingClient firewallingClient) {
+
+        this.firewallingClient = firewallingClient;
+    }
+    
     
     /**
      * @param tierInstanceDao
@@ -545,6 +565,14 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
      */
     public void setTierInstanceDao(TierInstanceDao tierInstanceDao) {
         this.tierInstanceDao = tierInstanceDao;
+    }
+    
+    /**
+     * @param securityGroupDao
+     *            the securityGroupDao to set
+     */
+    public void setSecurityGroupDao(SecurityGroupDao securityGroupDao) {
+        this.securityGroupDao = securityGroupDao;
     }
     
     public void setTierManager(TierManager tierManager) {
@@ -639,12 +667,12 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     }
     
-    private SecurityGroup generateSecurityGroup(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException {
+   private SecurityGroup generateSecurityGroup(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException {
 
         SecurityGroup securityGroup = new SecurityGroup();
-        securityGroup.setName("sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() + "_" + tier.getRegion() + "_" + tier.getName());
+        securityGroup.setName("sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() + "_" + tier.getName());
 
-        log.info("Generate security group " + "sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() 
+        log.info("Generate Object Security Group " + "sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() 
         		+ "_" + tier.getRegion() + "_" + tier.getName());
 
         List<Rule> rules = getDefaultRules();
@@ -654,7 +682,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             for (ProductRelease productRelease : tier.getProductReleases()) {
                 getRulesFromProduct(productRelease, rules);
             }
-
         }
         securityGroup.setRules(rules);
         return securityGroup;

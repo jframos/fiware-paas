@@ -102,6 +102,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
         <bean id="tierInstanceManager" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.manager.impl.TierInstanceManagerImpl">
             <property name="tierInstanceDao" ref="tierInstanceDao"/>
+            <property name="securityGroupDao" ref="securityGroupDao"/>
             <property name="tierManager" ref="tierManager"/>
             <property name="productInstanceManager" ref="productInstanceManager"/>
             <property name="infrastructureManager" ref="infrastructureManager"/>
@@ -110,6 +111,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="networkInstanceManager" ref="networkInstanceManager"/>
             <property name="securityGroupManager" ref="securityGroupManager"/>
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
+            <property name="firewallingClient" ref="firewallingClient"/>
         </bean>
         <bean id="environmentManager" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl">

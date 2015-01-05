@@ -47,6 +47,15 @@ public interface SecurityGroupManager {
             InfrastructureException;
 
     /**
+     * Create a securityGroup only in OpenStack
+     * 
+     * @param securityGroup
+     * @return the securityGroup.
+     */
+    SecurityGroup createInOpenstack(String region, String token, String vdc, SecurityGroup securityGroup)
+            throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException;
+    
+    /**
      * Destroy a previously creted securityGroup.
      * 
      * @param securityGroup
