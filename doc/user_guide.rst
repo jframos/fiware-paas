@@ -23,6 +23,7 @@ The normal operations sequence to deploying an environment and an application on
 
 API Authentication
 ------------------
+
 All the operations in the PaaS Manager API needs to have a valid token to access it. To obtain the token, you need to have an account in FIWARE Lab (account.lab.fi-ware.org).
 With the credentials (username, password and tenantName) you can obtain a valid token. From now on, we asume that the value of your tenant-id is "your-tenant-id"
 
@@ -34,7 +35,7 @@ With the credentials (username, password and tenantName) you can obtain a valid 
 
 You will receive the following answer, with a valid token (id).
 
-.. code:: json
+.. code::
   
     {
     access: {
@@ -103,7 +104,7 @@ This operation lists the abstract environments stored in the catalogue. The foll
  		...
    </environmentDtoes>
 
-** Get a particular Abstract Environment
+**Get a particular Abstract Environment**
 
 .. code::
 
@@ -139,8 +140,6 @@ This operation lists the abstract environments stored in the catalogue. The foll
 			<description>Environment orion</description>
  		</environmentDto>
    </environmentDtoes>
-
-
 
 **Add an Abstract Environment to the catalogue**
 
@@ -230,7 +229,7 @@ This operation obtains a response with the following format:
  		</tierDto>
 	</tierDtoes>
 
-** Get a particular Tier associated to a Abstract Environment
+**Get a particular Tier associated to a Abstract Environment**
 
 .. code::
 
@@ -289,7 +288,7 @@ with the following payload
 	</tierDto> 
 
 
-** Delete a particular Tier associated to a Abstract Environment
+**Delete a particular Tier associated to a Abstract Environment**
 
 .. code::
 
