@@ -396,55 +396,6 @@ The network and region information are including also in the payload of the envi
         </productReleases>              
     </tier>  
 
-**Modify details of a certain blueprint template**
-
-.. code::
-
-    $ curl -v -H "Content-Type: application/xml" -H "Accept: application/xml" -H
-    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
-	-X PUT "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/vdc/{your-tenant-id}/environment/{environment-id}"
-
-The payload of this request cias as follows
-	
-.. code::
-
-    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-    <environment>
-        <name>{emvironment-name}</name>
-        <tiers>
-            <tier>
-                <initial_number_instances>1</initial_number_instances>
-                <maximum_number_instances>1</maximum_number_instances>
-                <minimum_number_instances>1</minimum_number_instances>
-                <name>{tier-id}</name>               
-                <productReleases>                  
-                    <product>postgresql</product>
-                    <version>0.0.3</version>
-                    <withArtifact>true</withArtifact> 
-                    <productType> 
-                        <id>5</id>
-                        <name>Database</name>  
-                    </productType> 
-                </productReleases>                    
-            </tier>   
-            <tier>
-                <initial_number_instances>1</initial_number_instances>
-                <maximum_number_instances>5</maximum_number_instances>
-                <minimum_number_instances>1</minimum_number_instances>
-                <name>{tier-id}</name>               
-                <productReleases>                  
-                    <product>tomcat</product>
-                    <version>7</version>
-                    <withArtifact>true</withArtifact> 
-                    <productType> 
-                        <id>6</id>
-                       <name>webserver</name>  
-                    </productType> 
-                </productReleases>   
-            </tier>   
-        </tiers>
-    </environment>
-
 **Delete a blueprint template from the catalogue**
 
 .. code::
@@ -452,6 +403,136 @@ The payload of this request cias as follows
     $ curl -v -H "Content-Type: application/xml" -H "Accept: application/xml" -H
     "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
 	-X DELETE "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/vdc/{your-tenant-id}/environment/{environment-id}"
+
+
+Tier API
+--------
+
+**Add a Tier to an existing Environment**
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/xml" -H "Accept: application/xml" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
+	-X POST "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/vdc/{your-tenant-id}/environment/{environment-name}/tier"
+
+with the following payload
+
+.. code::
+
+	<tierDto>
+		<minimumNumberInstances>1</minimumNumberInstances>
+		<initialNumberInstances>1</initialNumberInstances>
+		<maximumNumberInstances>1</maximumNumberInstances>
+		<name>{tier-name}</name>
+		<image>0dbf8aff-5dc5-4d6c-9f9c-1e6801e0b629</image>
+		<flavour>2</flavour>
+		<keypair>jesusmmovilla57</keypair>
+		<floatingip>false</floatingip>
+		<region>Trento</region>
+	</tierDto> 
+
+**Get All Tiers associated to an Environment**
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/xml" -H "Accept: application/xml" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
+	-X GET "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/vdc/{your-tenant-id}/environment/{environment-name}/tier"
+
+This operation obtains a response with the following format:
+
+.. code::
+
+	<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+	<tierDtoes>
+ 		<tierDto>
+			<name>{tier-name}</name>
+			<flavour>2</flavour>
+			<image>dbefb2d6-2221-46e2-a11c-b466e2503da5</image>
+			<maximumNumberInstances>3</maximumNumberInstances>
+			<minimumNumberInstances>1</minimumNumberInstances>
+			<initialNumberInstances>1</initialNumberInstances>
+ 			<productReleaseDtos>
+				<productName>mongodbshard</productName>
+				<productDescription>mongodb shard 2.2.3</productDescription>
+				<version>2.2.3</version>
+ 			</productReleaseDtos>
+			<icono>http://blog.theinit.com/wp-content/uploads/2012/03/bc358_MongoDB.png</icono>
+			<securityGroup />
+			<keypair />
+			<floatingip>false</floatingip>
+			<affinity>None</affinity>
+			<region>Spain</region>
+ 		</tierDto>
+	</tierDtoes>
+
+**Get a particular Tier associated to an Environment**
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/xml" -H "Accept: application/xml" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
+	-X GET "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/vdc/{your-tenant-id}/environment/{environment-name}/tier/{tier-name}"
+
+This operation obtains a response with the following format:
+
+.. code::
+
+	<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+ 	<tierDto>
+		<name>{tier-name}</name>
+		<flavour>2</flavour>
+		<image>dbefb2d6-2221-46e2-a11c-b466e2503da5</image>
+		<maximumNumberInstances>3</maximumNumberInstances>
+		<minimumNumberInstances>1</minimumNumberInstances>
+		<initialNumberInstances>1</initialNumberInstances>
+ 		<productReleaseDtos>
+			<productName>mongodbshard</productName>
+			<productDescription>mongodb shard 2.2.3</productDescription>
+			<version>2.2.3</version>
+ 		</productReleaseDtos>
+		<icono>http://blog.theinit.com/wp-content/uploads/2012/03/bc358_MongoDB.png</icono>
+		<securityGroup />
+		<keypair />
+		<floatingip>false</floatingip>
+		<affinity>None</affinity>
+		<region>Spain</region>
+ 	</tierDto>
+
+
+**Update a Tier of an existing Environment**
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/xml" -H "Accept: application/xml" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
+	-X PUT "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/vdc/{your-tenant-id}/environment/{environment-name}/tier"
+
+with the following payload
+
+.. code::
+
+	<tierDto>
+		<minimumNumberInstances>1</minimumNumberInstances>
+		<initialNumberInstances>1</initialNumberInstances>
+		<maximumNumberInstances>1</maximumNumberInstances>
+		<name>{tier-name}</name>
+		<image>0dbf8aff-5dc5-4d6c-9f9c-1e6801e0b629</image>
+		<flavour>2</flavour>
+		<keypair>jesusmmovilla57</keypair>
+		<floatingip>false</floatingip>
+		<region>Spain</region>
+	</tierDto> 
+
+
+**Delete a particular Tier associated to an Environment**
+
+.. code::
+
+    $ curl -v -H "Content-Type: application/xml" -H "Accept: application/xml" -H
+    "X-Auth-Token: 756cfb31e062216544215f54447e2716" -H "Tenant-Id: your-tenant-id" 
+	-X GET "https://PAAS_MANAGER_IP:8443/paasmanager/rest/catalog/org/FIWARE/vdc/{your-tenant-id}/environment/{environment-name}/tier/{tier-name}"
 
 BluePrint/Environment Instance Provisioning API
 -----------------------------------------------
