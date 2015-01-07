@@ -429,7 +429,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         }
         
        //Deleting SG
-        Tier tier = tierInstance.getTier();
+        /*Tier tier = tierInstance.getTier();
         log.info("Deleting security group from in tier " + tier.getName() + " in TierInstance");
         if (tier.getSecurityGroup() != null && !tier.getVdc().isEmpty()) {
             SecurityGroup sec = tier.getSecurityGroup();
@@ -437,7 +437,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             tier.setSecurityGroup(null);
             tierDao.update(tier);
             securityGroupManager.destroy(tier.getRegion(), claudiaData.getUser().getToken(), tier.getVdc(), sec);
-        }
+        }*/
 
         tierInstanceManager.remove(tierInstance);
     }
