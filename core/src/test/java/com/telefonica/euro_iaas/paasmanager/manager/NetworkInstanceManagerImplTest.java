@@ -28,13 +28,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -274,6 +273,23 @@ public class NetworkInstanceManagerImplTest {
         ports.add(new Port ());
         when(networkClient.listPortsFromNetwork(any(ClaudiaData.class), anyString(), anyString())).thenReturn(ports);
 
+        // Verify
+        boolean result = networkInstanceManager.canBeDeleted(claudiaData, net, "region");
+        assertEquals (result, false);
+    }
+
+    @Test
+    public void testDestroyNetworkErrorInInterface () throws Exception {
+        // Given
+        NetworkInstance net = new NetworkInstance(NETWORK_NAME, "VDC", "region");
+        ClaudiaData claudiaData = new ClaudiaData("dd", "dd", "service");
+
+        // When
+        List<Port> ports = new ArrayList<Port> ();
+        ports.add(new Port ());
+        when(networkClient.listPortsFromNetwork(any(ClaudiaData.class), anyString(), anyString())).thenReturn(ports);
+        Mockito.doThrow(new InfrastructureException("")).when(networkClient).deleteNetworkToPublicRouter(any(ClaudiaData.class),
+                any(NetworkInstance.class), anyString());
         // Verify
         boolean result = networkInstanceManager.canBeDeleted(claudiaData, net, "region");
         assertEquals (result, false);
