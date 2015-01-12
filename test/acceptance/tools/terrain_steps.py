@@ -43,6 +43,6 @@ def init_products_in_sdc():
 
 def remove_testing_products_in_sdc():
     """ Remove created products in SDC """
-    world.product_sdc_request.delete_product_and_release("git", "1.7")
-    world.product_sdc_request.delete_product_and_release("mediawiki", "1.17.0")
-    world.product_sdc_request.delete_product_and_release("testing_paas_product", "0.0.1")
+    for product_and_release in world.product_and_release_list:
+        world.product_sdc_request.delete_product_and_release(product_and_release['product_name'],
+                                                             product_and_release['product_release'])

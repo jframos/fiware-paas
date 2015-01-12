@@ -133,8 +133,8 @@ public class TierResourceTest extends TestCase {
      */
     @Test
     public void testInsertTier()
-        throws APIException, InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException,
-               EntityNotFoundException, AlreadyExistsEntityException {
+            throws APIException, InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException,
+            EntityNotFoundException, AlreadyExistsEntityException {
 
         List<ProductReleaseDto> productReleaseDto = new ArrayList<ProductReleaseDto>();
         productReleaseDto.add(new ProductReleaseDto("test", "0.1"));
@@ -166,8 +166,8 @@ public class TierResourceTest extends TestCase {
      */
     @Test
     public void testInsertTierWithNetwork()
-        throws APIException, InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException,
-               EntityNotFoundException, AlreadyExistsEntityException {
+            throws APIException, InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException,
+            EntityNotFoundException, AlreadyExistsEntityException {
 
         List<ProductReleaseDto> productReleaseDto = new ArrayList<ProductReleaseDto>();
         productReleaseDto.add(new ProductReleaseDto("test", "0.1"));
@@ -224,8 +224,8 @@ public class TierResourceTest extends TestCase {
      */
     @Test(expected = APIException.class)
     public void testTierException()
-        throws APIException, InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException,
-               EntityNotFoundException, AlreadyExistsEntityException {
+            throws APIException, InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException,
+            EntityNotFoundException, AlreadyExistsEntityException {
 
         TierDto tierDto = new TierDto("", new Integer(1), new Integer(1), new Integer(1), null);
         tierDto.setImage("image");
@@ -250,8 +250,8 @@ public class TierResourceTest extends TestCase {
      */
     @Test
     public void testDeleteTier()
-        throws APIException, InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException,
-               EntityNotFoundException, AlreadyExistsEntityException {
+            throws APIException, InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException,
+            EntityNotFoundException, AlreadyExistsEntityException {
 
         List<ProductReleaseDto> productReleaseDto = new ArrayList<ProductReleaseDto>();
         productReleaseDto.add(new ProductReleaseDto("test", "0.1"));
@@ -278,8 +278,8 @@ public class TierResourceTest extends TestCase {
      */
     @Test
     public void testDeleteTierWithNetwork()
-        throws APIException, InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException,
-               EntityNotFoundException, AlreadyExistsEntityException {
+            throws APIException, InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException,
+            EntityNotFoundException, AlreadyExistsEntityException {
 
         List<ProductReleaseDto> productReleaseDto = new ArrayList<ProductReleaseDto>();
         productReleaseDto.add(new ProductReleaseDto("test", "0.1"));
@@ -308,8 +308,8 @@ public class TierResourceTest extends TestCase {
      */
     @Test
     public void testUpdateTier()
-        throws APIException, InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException,
-               EntityNotFoundException, AlreadyExistsEntityException {
+            throws APIException, InvalidEntityException, InvalidSecurityGroupRequestException, InfrastructureException,
+            EntityNotFoundException, AlreadyExistsEntityException {
 
         List<ProductReleaseDto> productReleaseDto = new ArrayList<ProductReleaseDto>();
         productReleaseDto.add(new ProductReleaseDto("test", "0.1"));
@@ -319,6 +319,7 @@ public class TierResourceTest extends TestCase {
         tierDto.setFlavour("flavour");
         tierDto.setFloatingip("floatingip");
         tierDto.setKeypair("keypair");
+        tierDto.setRegion("region1");
         when(tierManager.create(any(ClaudiaData.class), any(String.class), any(Tier.class)))
                 .thenReturn(tierDto.fromDto(vdc, "env"));
 
@@ -333,10 +334,9 @@ public class TierResourceTest extends TestCase {
         tierDto2.setFlavour("flavour");
         tierDto2.setFloatingip("floatingip");
         tierDto2.setKeypair("keypair");
+        tierDto.setRegion("region2");
         Mockito.doNothing().when(tierManager).updateTier(any(ClaudiaData.class), any(Tier.class), any(Tier.class));
         tierResource.update(org, vdc, env, tierDto.getName(), tierDto2);
-
-
     }
 
     /**

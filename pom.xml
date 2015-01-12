@@ -15,7 +15,7 @@
         <!-- This properties will be added to sonar as manual measures -->
         <product.area.name>Industrial IoT</product.area.name>
         <product.name>FIWARE</product.name>
-        <product.release>3.5.3</product.release>
+        <product.release>4.1.2</product.release>
 
         <repoName>fiware-paas</repoName>
 
@@ -61,7 +61,8 @@
         <!-- dependencies-->
 
         <!-- <jersey.version>1.18.1</jersey.version>        -->
-        <jersey2.version>2.13</jersey2.version>
+        <jersey2.version>2.14</jersey2.version>
+        <jaxrs.api.impl.version>2.0.1</jaxrs.api.impl.version>
 
         <logback.version>1.0.13</logback.version>
         <slf4j.version>1.6.1</slf4j.version>
@@ -199,7 +200,7 @@
             <dependency>
                 <groupId>javax.ws.rs</groupId>
                 <artifactId>javax.ws.rs-api</artifactId>
-                <version>2.0</version>
+                <version>${jaxrs.api.impl.version}</version>
             </dependency>
 
             <dependency>
@@ -228,7 +229,7 @@
             <dependency>
                 <groupId>com.telefonica.euro_iaas</groupId>
                 <artifactId>commons-properties</artifactId>
-                <version>1.1.2</version>
+                <version>1.2.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

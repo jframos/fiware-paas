@@ -99,7 +99,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
 
     public EnvironmentInstance createInfrasctuctureEnvironmentInstance(EnvironmentInstance environmentInstance,
             Set<Tier> tiers, ClaudiaData claudiaData) throws InfrastructureException, InvalidVappException,
-            InvalidOVFException, InvalidEntityException, EntityNotFoundException {
+            InvalidOVFException, InvalidEntityException, EntityNotFoundException, AlreadyExistsEntityException {
 
         // Deploy MVs
         log.info("Creating infrastructure for environment instance " + environmentInstance.getBlueprintName());
@@ -262,6 +262,14 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         return netInst;
     }
 
+    /**
+     * it deletes the networks from the environment if they are not used.
+     * @param claudiaData
+     * @param tierInstance
+     * @throws InvalidEntityException
+     * @throws InfrastructureException
+     * @throws EntityNotFoundException
+     */
     @Override
     public void deleteNetworksInTierInstance(ClaudiaData claudiaData, TierInstance tierInstance)
             throws InvalidEntityException, InfrastructureException, EntityNotFoundException {
@@ -283,23 +291,32 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 try {
                     networkInstanceManager.delete(claudiaData, network, network.getRegionName());
                 } catch (Exception e) {
-                    throw new InfrastructureException("It is not delete  the network " + network.getNetworkName() + " "
+                    log.warn("It is not possible to delete  the network " + network.getNetworkName() + " "
                             + network.getRegionName() + " " + e.getMessage());
                 }
             }
         }
     }
 
+    /**
+     * It deletes the VM.
+     * @param claudiaData
+     * @param tierInstance
+     * @throws InfrastructureException
+     */
     public void deleteVMReplica(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
-
-        String fqn = getFQNPaas(claudiaData, tierInstance.getTier().getName(), tierInstance.getNumberReplica());
-        // claudiaData.setFqn(fqn);
-        // claudiaData.setReplica("");
-
         claudiaClient.undeployVMReplica(claudiaData, tierInstance);
 
     }
 
+    /**
+     * It desploys the VM.
+     * @param claudiaData
+     * @param tierInstance
+     * @param replica
+     * @param vm
+     * @throws InfrastructureException
+     */
     public void deployVM(ClaudiaData claudiaData, TierInstance tierInstance, int replica, VM vm)
             throws InfrastructureException {
 
@@ -308,12 +325,6 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 + tierInstance.getTier().getFloatingip());
 
         claudiaClient.deployVM(claudiaData, tierInstance, replica, vm);
-
-        String vAppReplica = null;
-        // String ip = null;
-        String fqn = null;
-        String networks = null;
-        String vmName = null;
 
         List<String> ips = claudiaClient.getIP(claudiaData, tierInstance.getTier().getName(), replica, vm, tierInstance
                 .getTier().getRegion());
@@ -324,23 +335,18 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         } else {
             log.warn("ips null");
         }
-
-        fqn = getFQNPaas(claudiaData, tierInstance.getTier().getName(), replica);
-        log.info("fqn replica " + fqn);
-
-        /*
-         * vm = new VM(fqn, ip, "" + replicaNumber, null, null, vmOVF, vAppReplica);
-         */
         log.info("VM ");
 
         vm.setIp(ips.get(0));
     }
 
-    private String getFQNPaas(ClaudiaData claudiaData, String tierName, int replica) {
-        return claudiaData.getOrg().replace("_", ".") + ".customers." + claudiaData.getVdc() + ".services."
-                + claudiaData.getService() + ".vees." + tierName + ".replicas." + replica;
-    }
-
+    /**
+     *
+     * @param claudiaData
+     * @param tierInstance
+     * @return
+     * @throws InfrastructureException
+     */
     public String ImageScalability(ClaudiaData claudiaData, TierInstance tierInstance) throws InfrastructureException {
         log.info("Image scalability ");
 
@@ -356,8 +362,16 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
         return scaleResponse;
     }
 
+    /**
+     * It deploys the required networks.
+     * @param data
+     * @param tierInstance
+     * @throws InvalidEntityException
+     * @throws InfrastructureException
+     * @throws EntityNotFoundException
+     */
     public void deployNetworks(ClaudiaData data, TierInstance tierInstance) throws InvalidEntityException,
-            InfrastructureException, EntityNotFoundException {
+            InfrastructureException, EntityNotFoundException, AlreadyExistsEntityException {
         Tier tier = tierInstance.getTier();
         tier = tierManager.loadTierWithNetworks(tier.getName(), data.getVdc(), tier.getEnviromentName());
         // Creating networks...
