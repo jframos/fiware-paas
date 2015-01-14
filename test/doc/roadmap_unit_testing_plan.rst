@@ -1,8 +1,9 @@
-==============
-PaaS Test Plan
-==============
+=================
+Pegasus Test Plan
+=================
 
-This section describes the Test Plan designed for the new PaaS Manager features in order to test its functionality.
+This section describes the Test Plan designed for the new Pegasus (PaaS Manager) features in order to test
+its functionality.
 
 Test Plan for previous features can be found in the `Fiware Wiki <https://forge.fi-ware.org/plugins/mediawiki/wiki/fiware/index.php/PaaS_Management_-_Unit_Testing_Plan>`_
 
@@ -74,7 +75,8 @@ Test results:
    GEs in order to manage the GEs deployed in the Cloud. The GE identification 
    is called NID. 
 
-Test Cases involved in this feature should validate that PaaS Manager is creating a NID metadata in each VM when blueprint is deployed.
+Test Cases involved in this feature should validate that Pegasus is creating a NID metadata in each VM when blueprint
+is deployed.
 They are defined in:   
 
 > `instances/create_instance/create_instance_nid.feature <../acceptance/integration/instances/create_instance/create_instance_nid.feature>`_:
@@ -97,7 +99,8 @@ They are defined in:
 	to recipes. Concretely, it means to resolve macros introduced by the user 
 	or the portal. Some example can be IP VM, or a software attribute. 
    
-Test Cases involved in this feature should validate that PaaS Manager is managing IP translation regarding type of the product attribute (Plain, IP, IPALL) and the name of the tier.
+Test Cases involved in this feature should validate that Pegasus is managing IP translation regarding type of the
+product attribute (Plain, IP, IPALL) and the name of the tier.
 
 > `catalog/add_abstract_tier/add_abstract_tier.feature <../acceptance/integration/catalog/add_abstract_tier/add_abstract_tier.feature>`_:
 
