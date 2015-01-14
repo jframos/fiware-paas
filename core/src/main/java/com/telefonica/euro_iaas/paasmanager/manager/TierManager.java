@@ -138,4 +138,12 @@ public interface TierManager {
      */
     void updateTier(ClaudiaData data, Tier tierold, Tier tiernew) throws InvalidEntityException, EntityNotFoundException, AlreadyExistsEntityException;
 
+    /**
+     * Update tier
+     * @param tier
+     * @param idSecurityGroup
+     * @throws InvalidEntityException
+     */
+    //Tier updateTierSecurityGroupId(Tier tier, String idSecurityGroup) throws InvalidEntityException;
+
 }

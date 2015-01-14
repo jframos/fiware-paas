@@ -154,11 +154,14 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         				secGroup);
         	}
         	tierDB.setSecurityGroup(secGroup);
-
+        	
+        	//tierDB = tierManager.updateTier(data, tierold, tierold);
+        	
        } catch (EntityNotFoundException enfe) {
             	try {
             		log.info(secGroupName+ " does not exist so creating secgroup " + secGroupName);
             		tierDB = createSecurityGroups(data, tierDB);
+            		//tierDB = tierManager.updateTierSecurityGroupId(tierDB, tierDB.getSecurityGroup().getIdSecurityGroup());
             		log.info(tierDB.getSecurityGroup().getName() + " In Tier " + tierDB.getName());
             	} catch (InvalidSecurityGroupRequestException isgre) {
             		log.error("InvalidSecurityGroupRequestException "
@@ -169,7 +172,11 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             		log.error("InvalidSecurityGroupRequestException " + enfe2.getMessage());
             		throw new InvalidEntityException ("EntityNotFoundException . Products of TierInstance were not found  "
                             + enfe2.getMessage());
-            	}
+            	} /*catch (InvalidEntityException iee) {
+            		log.error("InvalidEntityException " + iee.getMessage());
+            		throw new InvalidEntityException ("EntityNotFoundException . SecurityGroupId not updated in Tier  "
+                            + iee.getMessage());
+            	}*/
        } 
            
        tierInstanceDB.setTier(tierDB);

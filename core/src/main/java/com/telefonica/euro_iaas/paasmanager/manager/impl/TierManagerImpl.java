@@ -649,6 +649,30 @@ public class TierManagerImpl implements TierManager {
             tierold.addProductRelease(productRelease);
             update(tierold);
         }
+        
+        //adding SecurityGroups
+        /*tierold.setSecurityGroup(null);
+        update(tierold);
+        
+        if (tiernew.getSecurityGroup() == null)
+        	return;
+        
+        tierold.setSecurityGroup(tiernew.getSecurityGroup());
+        update(tierold);*/
+        
     }
-
+    
+    /*public Tier updateTierSecurityGroupId(Tier tier, String idSecurityGroup) throws InvalidEntityException {
+    
+    	log.info("Update updateTierSecurityGroupId " + tier.getName() + " with idSecurityGroup= " + idSecurityGroup);
+        try {
+            Tier newTier = tierDao.updateTierSecurityGroupId(tier, idSecurityGroup);
+            return tierDao.loadComplete(newTier);
+        } catch (Exception e) {
+            log.error("It is not possible to update the tier " + tier.getName() 
+            		+ " with idSecurityGroup= " + idSecurityGroup + " : " + e.getMessage(), e);
+            throw new InvalidEntityException("It is not possible to update the tier " + tier.getName() + " : "
+                    + e.getMessage());
+        }
+    }*/
 }
