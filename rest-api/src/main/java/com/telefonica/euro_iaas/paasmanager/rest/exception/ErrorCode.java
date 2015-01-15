@@ -43,8 +43,8 @@ public enum ErrorCode {
     NAME_NO_VALID(41, "The name is not valid", "(.*)InvalidEntityException:(.*)", 400),
     INFRASTRUCTURE(50, "OpenStack infrastructure failure", "(.*)InfrastructureException(.*)", 500),
     INVALID_ENVIRONMENT(60, "Invalid Environment Instance", "(.*)InvalidEnvironmentInstanceException(.*)", 400),
-    INVALID_TIER(70, "Invalid Tier. Number of Initial VMs is not correct", 
-    		"(.*)InvalidEntityException(.*)Error in the Number initial(.*)", 400);
+    INVALID_NUMBER_INITIAL_VMS_IN_TIER(70, "Invalid Tier. Number of Initial VMs is not correct", 
+    		"(.*)InvalidEntityException(.*)Error in the Number initial(.*)", 400),
     DEFAULT(500, "Internal PaasManager Server error", "(?s).*", 500);
 
     private final int code;
