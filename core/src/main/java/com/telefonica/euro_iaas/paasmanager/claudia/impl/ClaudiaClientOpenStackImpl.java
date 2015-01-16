@@ -392,6 +392,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             throws InvalidEntityException, AlreadyExistsEntityException {
         try {
             networkInstance = networkInstanceManager.load(networkInstance.getNetworkName(), tenantId, region);
+            // check if it exists in Openstack
         } catch (Exception e) {
             log.warn("The network " + networkInstance.getNetworkName() + " is in Openstack but not in DB");
             networkInstanceManager.createInDB(networkInstance);

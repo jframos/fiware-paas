@@ -236,8 +236,6 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         } catch (Exception e) {
             log.warn ("It is not possible to delete the public interface. It is not exist: "+
                 e.getMessage());
-            networkInstance.getSubNets().clear();
-            networkInstanceDao.update(networkInstance);
         }
 
         log.info("Deleting the subnets");

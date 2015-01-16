@@ -25,7 +25,7 @@
 package com.telefonica.euro_iaas.paasmanager.manager;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -287,9 +287,11 @@ public class NetworkInstanceManagerImplTest {
         // When
         List<Port> ports = new ArrayList<Port> ();
         ports.add(new Port ());
-        when(networkClient.listPortsFromNetwork(any(ClaudiaData.class), anyString(), anyString())).thenReturn(ports);
-        Mockito.doThrow(new InfrastructureException("")).when(networkClient).deleteNetworkToPublicRouter(any(ClaudiaData.class),
-                any(NetworkInstance.class), anyString());
+        when(networkClient.listPortsFromNetwork(any(ClaudiaData.class), anyString(),
+            anyString())).thenReturn(ports);
+        Mockito.doThrow(new InfrastructureException("")).when(networkClient).
+            deleteNetworkToPublicRouter(any(ClaudiaData.class),
+            any(NetworkInstance.class), anyString());
         // Verify
         boolean result = networkInstanceManager.canBeDeleted(claudiaData, net, "region");
         assertEquals (result, false);
