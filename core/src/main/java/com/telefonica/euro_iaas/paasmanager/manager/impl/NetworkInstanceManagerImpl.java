@@ -231,7 +231,12 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
             log.error("It is not possible to find the network " + e.getMessage());
             throw new InvalidEntityException(networkInstance);
         }
-        networkClient.deleteNetworkToPublicRouter(claudiaData, networkInstance, region);
+        try {
+            networkClient.deleteNetworkToPublicRouter(claudiaData, networkInstance, region);
+        } catch (Exception e) {
+            log.warn ("It is not possible to delete the public interface. It is not exist: "+
+                e.getMessage());
+        }
 
         log.info("Deleting the subnets");
         Set<SubNetworkInstance> subNetAux = networkInstance.cloneSubNets();
