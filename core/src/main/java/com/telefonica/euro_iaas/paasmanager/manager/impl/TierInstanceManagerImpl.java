@@ -149,12 +149,9 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         		} catch (AlreadyExistsEntityException aee) {
         		    	   log.info(secGroupName+ " already Exist in Region " + tierDB.getRegion());
         		}
-        		secGroup = securityGroupDao.updateSecurityGroupId(
-        				secGroupOpenStack.getIdSecurityGroup(), 
-        				secGroup);
+        		tierManager.updateTierSecurityGroup(tierDB, secGroupOpenStack);
         	}
-        	//tierDB.setSecurityGroup(secGroup);
-        	
+       	
         	tierManager.updateTierSecurityGroup(tierDB, secGroup);
         	
         } catch (EntityNotFoundException enfe) {
@@ -173,16 +170,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                             + enfe2.getMessage());
             	} 
         }
-       	/*} catch (AlreadyExistsEntityException aeee) {
-       		log.error("AlreadyExistsEntityException " + aeee.getMessage());
-   			throw new InvalidEntityException ("AlreadyExistsEntityException . "
-                   + aeee.getMessage());
-    	} catch (InvalidEntityException iee) {
-   			log.error("InvalidEntityException " + iee.getMessage());
-   			throw new InvalidEntityException ("EntityNotFoundException . SecurityGroupId not updated in Tier  "
-                   + iee.getMessage());
-   	 	}*/
-           
+         
        tierInstanceDB.setTier(tierDB);
        
        if (tierInstance.getProductInstances() != null) {
