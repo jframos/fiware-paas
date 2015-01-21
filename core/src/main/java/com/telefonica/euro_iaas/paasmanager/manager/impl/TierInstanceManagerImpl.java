@@ -89,10 +89,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     private static Logger log = LoggerFactory.getLogger(TierInstanceManagerImpl.class);
 
     public TierInstance create(ClaudiaData data, String envName, TierInstance tierInstance)
-            /*throws InfrastructureException, EntityNotFoundException,
-            InvalidEntityException, AlreadyExistsEntityException, NotUniqueResultException,
-            InvalidProductInstanceRequestException, InvalidSecurityGroupRequestException, 
-            ProductInstallatorException {*/
     		throws InvalidEntityException, InfrastructureException {
     
         log.info("Inserting in database for tier instance " + tierInstance.getName() + " "
@@ -120,8 +116,19 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                     + e.getMessage());
         }
         
+        try {
+        	createSecurityGroups(data, tierInstance);
+        } catch (InvalidSecurityGroupRequestException isgre) {
+        	String secGroupMen = "The securityGroupRequest creation is invalid"; 
+        	log.error(secGroupMen);
+            throw new InvalidEntityException(secGroupMen + " : " + isgre.getMessage());
+        } catch (EntityNotFoundException enfe) {
+        	String men = "ProductRelease in tier " + tierInstance.getTier().getName() + "does not exist"; 
+        	log.error(men);
+            throw new InvalidEntityException(men + " : " + enfe.getMessage());
+        }
         
-        String secGroupName = "sg_" + data.getService() + "_" + data.getVdc() 
+        /*String secGroupName = "sg_" + data.getService() + "_" + data.getVdc() 
         		+ "_" + tierDB.getName();
         
         //Creating SecurityGroups
@@ -169,7 +176,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             		throw new InvalidEntityException ("EntityNotFoundException . Products of TierInstance were not found  "
                             + enfe2.getMessage());
             	} 
-        }
+        }*/
          
        tierInstanceDB.setTier(tierDB);
        
@@ -622,23 +629,23 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
      * It creates the specified security groups.
      * 
      * @param claudiaData
-     * @param tier
+     * @param tierInstance
      * @return
      * @throws InvalidSecurityGroupRequestException
      * @throws EntityNotFoundException
      */
 
-    private Tier createSecurityGroups(ClaudiaData claudiaData, Tier tier) throws InvalidSecurityGroupRequestException,
+    private TierInstance createSecurityGroups(ClaudiaData claudiaData, TierInstance tierInstance) throws InvalidSecurityGroupRequestException,
             EntityNotFoundException {
         if ((systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")
                 && claudiaData.getVdc() != null && claudiaData.getVdc().length() > 0)) {
 
-            SecurityGroup securityGroup = generateSecurityGroup(claudiaData, tier);
+            SecurityGroup securityGroup = generateSecurityGroup(claudiaData, tierInstance);
             try {
-                securityGroup = securityGroupManager.create(tier.getRegion(), claudiaData.getUser().getToken(),
+                securityGroup = securityGroupManager.create(tierInstance.getTier().getRegion(), claudiaData.getUser().getToken(),
                         claudiaData.getVdc(), securityGroup);
-                tier.setSecurityGroup(securityGroup);
-                tierManager.updateTierSecurityGroup(tier, securityGroup);
+                tierInstance.setSecurityGroup(securityGroup);
+               // tierManager.updateTierSecurityGroup(tier, securityGroup);
             } catch (InvalidEntityException e) {
                 log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
                         + e.getMessage());
@@ -664,23 +671,23 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             }
             //tier.setSecurityGroup(securityGroup);
         }
-        return tier;
+        return tierInstance;
 
     }
     
-   private SecurityGroup generateSecurityGroup(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException {
+   private SecurityGroup generateSecurityGroup(ClaudiaData claudiaData, TierInstance tierInstance) throws EntityNotFoundException {
 
         SecurityGroup securityGroup = new SecurityGroup();
-        securityGroup.setName("sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() + "_" + tier.getName());
+        securityGroup.setName("sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() + "_" + tierInstance.getName());
 
         log.info("Generate Object Security Group " + "sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() 
-        		+ "_" + tier.getRegion() + "_" + tier.getName());
+        		+ "_" + tierInstance.getTier().getRegion() + "_" + tierInstance.getName());
 
         List<Rule> rules = getDefaultRules();
 
-        if (tier.getProductReleases() != null) {
+        if (tierInstance.getTier().getProductReleases() != null) {
 
-            for (ProductRelease productRelease : tier.getProductReleases()) {
+            for (ProductRelease productRelease : tierInstance.getTier().getProductReleases()) {
                 getRulesFromProduct(productRelease, rules);
             }
         }

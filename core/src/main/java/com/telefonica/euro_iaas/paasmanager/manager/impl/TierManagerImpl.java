@@ -100,7 +100,7 @@ public class TierManagerImpl implements TierManager {
      */
 
     public Tier create(ClaudiaData claudiaData, String envName, Tier tier) throws InvalidEntityException,
-            InvalidSecurityGroupRequestException, InfrastructureException, EntityNotFoundException,
+            InfrastructureException, EntityNotFoundException,
             AlreadyExistsEntityException {
         log.info("Create tier name " + tier.getName() + " image " + tier.getImage() + " flavour " + tier.getFlavour()
                 + " initial_number_instances " + tier.getInitialNumberInstances() + " maximum_number_instances "
