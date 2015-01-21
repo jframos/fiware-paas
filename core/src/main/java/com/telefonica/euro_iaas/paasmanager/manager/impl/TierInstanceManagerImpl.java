@@ -153,15 +153,14 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         				secGroupOpenStack.getIdSecurityGroup(), 
         				secGroup);
         	}
-        	tierDB.setSecurityGroup(secGroup);
+        	//tierDB.setSecurityGroup(secGroup);
         	
-        	//tierDB = tierManager.updateTier(data, tierold, tierold);
+        	tierManager.updateTierSecurityGroup(tierDB, secGroup);
         	
-       } catch (EntityNotFoundException enfe) {
+        } catch (EntityNotFoundException enfe) {
             	try {
             		log.info(secGroupName+ " does not exist so creating secgroup " + secGroupName);
             		tierDB = createSecurityGroups(data, tierDB);
-            		//tierDB = tierManager.updateTierSecurityGroupId(tierDB, tierDB.getSecurityGroup().getIdSecurityGroup());
             		log.info(tierDB.getSecurityGroup().getName() + " In Tier " + tierDB.getName());
             	} catch (InvalidSecurityGroupRequestException isgre) {
             		log.error("InvalidSecurityGroupRequestException "
@@ -172,12 +171,17 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             		log.error("InvalidSecurityGroupRequestException " + enfe2.getMessage());
             		throw new InvalidEntityException ("EntityNotFoundException . Products of TierInstance were not found  "
                             + enfe2.getMessage());
-            	} /*catch (InvalidEntityException iee) {
-            		log.error("InvalidEntityException " + iee.getMessage());
-            		throw new InvalidEntityException ("EntityNotFoundException . SecurityGroupId not updated in Tier  "
-                            + iee.getMessage());
-            	}*/
-       } 
+            	} 
+        }
+       	/*} catch (AlreadyExistsEntityException aeee) {
+       		log.error("AlreadyExistsEntityException " + aeee.getMessage());
+   			throw new InvalidEntityException ("AlreadyExistsEntityException . "
+                   + aeee.getMessage());
+    	} catch (InvalidEntityException iee) {
+   			log.error("InvalidEntityException " + iee.getMessage());
+   			throw new InvalidEntityException ("EntityNotFoundException . SecurityGroupId not updated in Tier  "
+                   + iee.getMessage());
+   	 	}*/
            
        tierInstanceDB.setTier(tierDB);
        
@@ -645,6 +649,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             try {
                 securityGroup = securityGroupManager.create(tier.getRegion(), claudiaData.getUser().getToken(),
                         claudiaData.getVdc(), securityGroup);
+                tier.setSecurityGroup(securityGroup);
+                tierManager.updateTierSecurityGroup(tier, securityGroup);
             } catch (InvalidEntityException e) {
                 log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
                         + e.getMessage());
@@ -668,7 +674,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                         + securityGroup.getName() + " " + e.getMessage(), e);
 
             }
-            tier.setSecurityGroup(securityGroup);
+            //tier.setSecurityGroup(securityGroup);
         }
         return tier;
 

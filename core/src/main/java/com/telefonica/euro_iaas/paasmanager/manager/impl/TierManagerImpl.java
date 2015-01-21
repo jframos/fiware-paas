@@ -662,17 +662,19 @@ public class TierManagerImpl implements TierManager {
         
     }
     
-    /*public Tier updateTierSecurityGroupId(Tier tier, String idSecurityGroup) throws InvalidEntityException {
+    public Tier updateTierSecurityGroup(Tier tier, SecurityGroup securityGroup) throws InvalidEntityException {
     
-    	log.info("Update updateTierSecurityGroupId " + tier.getName() + " with idSecurityGroup= " + idSecurityGroup);
+    	log.info("Update updateTierSecurityGroupId " + tier.getName() 
+    			+ " with idSecurityGroup= " + securityGroup.getIdSecurityGroup());
         try {
-            Tier newTier = tierDao.updateTierSecurityGroupId(tier, idSecurityGroup);
-            return tierDao.loadComplete(newTier);
+        	tier.setSecurityGroup(securityGroup);
+            update(tier);
+        	return tierDao.loadComplete(tier);
         } catch (Exception e) {
             log.error("It is not possible to update the tier " + tier.getName() 
-            		+ " with idSecurityGroup= " + idSecurityGroup + " : " + e.getMessage(), e);
+            		+ " with idSecurityGroup= " + securityGroup.getIdSecurityGroup() + " : " + e.getMessage(), e);
             throw new InvalidEntityException("It is not possible to update the tier " + tier.getName() + " : "
                     + e.getMessage());
         }
-    }*/
+    }
 }

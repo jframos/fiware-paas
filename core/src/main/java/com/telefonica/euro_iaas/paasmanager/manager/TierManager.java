@@ -34,6 +34,7 @@ import com.telefonica.euro_iaas.paasmanager.exception.InvalidSecurityGroupReques
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
+import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
 
@@ -141,9 +142,9 @@ public interface TierManager {
     /**
      * Update tier
      * @param tier
-     * @param idSecurityGroup
+     * @param securityGroup
      * @throws InvalidEntityException
      */
-    //Tier updateTierSecurityGroupId(Tier tier, String idSecurityGroup) throws InvalidEntityException;
+    Tier updateTierSecurityGroup(Tier tier, SecurityGroup securityGroup) throws InvalidEntityException;
 
 }
