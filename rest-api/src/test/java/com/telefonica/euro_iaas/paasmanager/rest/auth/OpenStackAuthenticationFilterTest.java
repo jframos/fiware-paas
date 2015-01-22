@@ -39,6 +39,7 @@ import javax.servlet.http.HttpSession;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -106,7 +107,7 @@ public class OpenStackAuthenticationFilterTest {
         openStackAuthenticationFilter.doFilter(servletRequest, servletResponse, filterChain);
     }
     
-    @Test(expected=BadCredentialsException.class)
+    @Test(expected=AccessDeniedException.class)
     public void doFilterOtherTennantAccess() throws IOException, ServletException {
         HttpServletRequest servletRequest = mock(HttpServletRequest.class);
         HttpServletResponse servletResponse = mock(HttpServletResponse.class);

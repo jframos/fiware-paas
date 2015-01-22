@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -158,7 +159,7 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
         if (uri.contains("vdc") && !uri.contains(headerTennant)){
             String str = "Bar credentials for requested VDC";
             logger.info(str);
-            throw new BadCredentialsException(str);
+            throw new AccessDeniedException(str);
         }
 
         MDC.put("txId", ((HttpServletRequest) req).getSession().getId());
