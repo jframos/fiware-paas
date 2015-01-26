@@ -413,8 +413,6 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
      */
     public NetworkInstance loadNetwork(ClaudiaData claudiaData, NetworkInstance network, String region)
             throws EntityNotFoundException {
-<<<<<<< HEAD
-=======
 
         String message="Error loading the network: ";
         if (network.getIdNetwork() == null ) {
@@ -426,7 +424,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             }
             network.setIdNetwork(netId);
         }
->>>>>>> 43b6528aaed3179c1bc983f26142dfb7b28f3317
+
         log.debug("Load network " + network.getIdNetwork() + " in region " + region + " vdc " + claudiaData.getVdc());
         String response = "";
         try {

@@ -94,11 +94,8 @@ public class EnvironmentResourceImpl implements EnvironmentResource {
 
             List<Environment> list = environmentManager.findByOrgAndVdcAndName(org, vdc, envName);
             environmentManager.destroy(claudiaData, list.get(0));
-<<<<<<< HEAD
-=======
         } catch (EntityNotFoundException e) {
             throw new APIException(e);
->>>>>>> 43b6528aaed3179c1bc983f26142dfb7b28f3317
         } catch (Exception e) {
             throw new APIException(new InvalidEntityException(e.getMessage()));
         }

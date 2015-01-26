@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>paas-manager-rest-api</artifactId>
     <packaging>war</packaging>
-    <name>paas-manager-rest-api</name>
+    <name>Pegasus - PaaS Manager REST API</name>
 
     <parent>
-        <groupId>com.telefonica.euro_iaas</groupId>
+        <groupId>com.telefonica.IoT</groupId>
         <artifactId>paas-manager-server</artifactId>
         <version>1.2.0</version>
     </parent>

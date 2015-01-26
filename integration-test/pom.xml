@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>paas-manager-it</artifactId>
     <packaging>jar</packaging>
-    <name>paas-manager-integration-test</name>
+    <name>Pegasus - PaaS Manager Integration Tests</name>
 
     <parent>
-        <groupId>com.telefonica.euro_iaas</groupId>
+        <groupId>com.telefonica.IoT</groupId>
         <artifactId>paas-manager-server</artifactId>
         <version>1.2.0</version>
     </parent>

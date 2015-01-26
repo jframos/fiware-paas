@@ -319,12 +319,6 @@ ALTER TABLE productrelease ALTER COLUMN tiername TYPE VARCHAR(255);
 
 ALTER TABLE productrelease_attribute DROP CONSTRAINT productrelease_attribute_pkey;
 ALTER TABLE productrelease_attribute ADD CONSTRAINT productrelease_attribute_pkey PRIMARY KEY (productrelease_id, attributes_id);
-<<<<<<< HEAD
-
-
-ALTER TABLE task ALTER COLUMN message TYPE CHARACTER VARYING(1024) USING substr("message", 1, 1024);
-ALTER TABLE networkinstance ALTER COLUMN external SET NOT NULL;
-=======
 
 
 ALTER TABLE task ALTER COLUMN message TYPE CHARACTER VARYING(1024) USING substr("message", 1, 1024);
@@ -335,4 +329,3 @@ ALTER TABLE networkinstance ALTER COLUMN external SET NOT NULL;
 ALTER TABLE attribute ADD COLUMN type character varying(255) NULL;
 UPDATE attribute SET type='Plain' WHERE 1=1;
 ALTER TABLE attribute ALTER COLUMN type SET NOT NULL;
->>>>>>> 43b6528aaed3179c1bc983f26142dfb7b28f3317

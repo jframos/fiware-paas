@@ -100,12 +100,7 @@ public interface EnvironmentInstanceManager {
      * 
      * @param envInstance
      * @param claudiaData
-<<<<<<< HEAD
-     * @throws EntityNotF
-     *             oundException
-=======
-     * @throws EntityNotF   oundException
->>>>>>> 43b6528aaed3179c1bc983f26142dfb7b28f3317
+     * @throws EntityNotFoundException
      * @throws InfrastructureException
      * @throws Exception
      */

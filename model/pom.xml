@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>paas-manager-model</artifactId>
     <packaging>jar</packaging>
-    <name>paas-manager-model</name>
+    <name>Pegasus - PaaS Manager Model</name>
 
     <parent>
-        <groupId>com.telefonica.euro_iaas</groupId>
+        <groupId>com.telefonica.IoT</groupId>
         <artifactId>paas-manager-server</artifactId>
         <version>1.2.0</version>
     </parent>
@@ -51,10 +51,6 @@
             <version>${spring.version}</version>
         </dependency>
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 43b6528aaed3179c1bc983f26142dfb7b28f3317
         <!-- jpa implementation - hibernate -->
         <dependency>
             <groupId>org.hibernate</groupId>

@@ -293,22 +293,12 @@ public class AsynManagerImplTest {
         String callback = "";
         Task task = new Task();
 
-<<<<<<< HEAD
-        when(
-                productInstanceManager.install(any(TierInstance.class), any(ClaudiaData.class), any(String.class),
-                        any(ProductRelease.class), any(HashSet.class))).thenReturn(productInstance);
-
-        productInstanceAsyncManagerImpl.install(tierInstanceShard, claudiaData, "env", productReleaseShard, null, task,
-                callback);
-=======
         when(productInstanceManager.install(any(TierInstance.class),
                 any(ClaudiaData.class), any(EnvironmentInstance.class), any(ProductRelease.class)))
                 .thenReturn(productInstance);
 
         productInstanceAsyncManagerImpl
                 .install(tierInstanceShard, claudiaData, "env","vdc", productReleaseShard, null, task, callback);
->>>>>>> 43b6528aaed3179c1bc983f26142dfb7b28f3317
-
     }
 
     @Test
@@ -320,23 +310,12 @@ public class AsynManagerImplTest {
         String callback = "";
         Task task = new Task();
 
-<<<<<<< HEAD
-        when(
-                productInstanceManager.install(any(TierInstance.class), any(ClaudiaData.class), any(String.class),
-                        any(ProductRelease.class), any(HashSet.class))).thenThrow(
-                new InvalidProductInstanceRequestException("test"));
-
-        productInstanceAsyncManagerImpl.install(tierInstanceShard, claudiaData, "env", productReleaseShard, null, task,
-                callback);
-=======
         when(productInstanceManager.install(any(TierInstance.class),
                 any(ClaudiaData.class), any(EnvironmentInstance.class), any(ProductRelease.class))).
                 thenThrow(new InvalidProductInstanceRequestException("test"));
         
         productInstanceAsyncManagerImpl
                 .install(tierInstanceShard, claudiaData, "env","vdc", productReleaseShard, null, task, callback);
->>>>>>> 43b6528aaed3179c1bc983f26142dfb7b28f3317
-
     }
 
     @Test
@@ -348,28 +327,15 @@ public class AsynManagerImplTest {
         String callback = "";
         Task task = new Task();
 
-<<<<<<< HEAD
-        when(
-                productInstanceManager.install(any(TierInstance.class), any(ClaudiaData.class), any(String.class),
-                        any(ProductRelease.class), any(HashSet.class))).thenThrow(
-                new InvalidProductInstanceRequestException("test"));
-=======
         when(productInstanceManager.install(any(TierInstance.class),
                 any(ClaudiaData.class), any(EnvironmentInstance.class), any(ProductRelease.class))).
                 thenThrow(new InvalidProductInstanceRequestException("test"));
->>>>>>> 43b6528aaed3179c1bc983f26142dfb7b28f3317
 
         when(productInstanceManager.loadByCriteria(any(ProductInstanceSearchCriteria.class))).thenThrow(
                 new EntityNotFoundException(ProductInstance.class, callback, task));
 
-<<<<<<< HEAD
-        productInstanceAsyncManagerImpl.install(tierInstanceShard, claudiaData, "env", productReleaseShard, null, task,
-                callback);
-=======
         productInstanceAsyncManagerImpl
                 .install(tierInstanceShard, claudiaData, "env","vdc", productReleaseShard, null, task, callback);
->>>>>>> 43b6528aaed3179c1bc983f26142dfb7b28f3317
-
     }
 
     @Test
@@ -425,11 +391,7 @@ public class AsynManagerImplTest {
     }
 
     @Test
-<<<<<<< HEAD
-    public void testDeleteEnvInstanceManager() throws Exception {
-=======
     public void testDeleteEnvInstanceManager() throws Exception{
->>>>>>> 43b6528aaed3179c1bc983f26142dfb7b28f3317
 
         ClaudiaData claudiaData = new ClaudiaData("org", "vdc", "service");
         String callback = "";

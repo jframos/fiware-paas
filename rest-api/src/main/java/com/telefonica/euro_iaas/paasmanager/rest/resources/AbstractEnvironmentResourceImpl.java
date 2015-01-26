@@ -42,10 +42,7 @@ import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
-<<<<<<< HEAD
-=======
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
->>>>>>> 43b6528aaed3179c1bc983f26142dfb7b28f3317
 import com.telefonica.euro_iaas.paasmanager.rest.exception.APIException;
 import com.telefonica.euro_iaas.paasmanager.rest.validation.EnvironmentResourceValidator;
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
@@ -163,10 +160,6 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
     }
 
     /**
-<<<<<<< HEAD
-     * >>>>>>> 2ecbf08... improve and optimization find methods in Environment and AbstractEnvironments Get detail
-     * information of a specific environment.
-=======
      * Add PaasManagerUser to claudiaData.
      * 
      * @param claudiaData
@@ -195,8 +188,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
 
     /**
      * Get detail information of a specific environment.
->>>>>>> 43b6528aaed3179c1bc983f26142dfb7b28f3317
-     * 
+     *
      * @param org
      *            The organization of the environment to find.
      * @param name
