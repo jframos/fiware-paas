@@ -38,19 +38,10 @@ def before_each_scenario(feature):
         world.config[PAAS][VDC],
         world.config[PAAS][SDC_URL])
 
-    # Check that the initial list of environments is empty before launching the tests
-    world.env_requests.get_environments()
-    environment_request.check_get_environments_response(world.response, 200, 0)
-
-    # Init feature vars
-    world.product_and_release_list = list()
-
-    # Create product in SDC to be used by this feature
-    terrain_steps.init_products_in_sdc()
-
 
 @before.each_scenario
 def before_each_scenario(scenario):
+    """ Lettuce Hook. Will be executed before each scenario. Init global scenario vars. """
     world.headers = dict()
 
 
@@ -59,8 +50,3 @@ def after_each_scenario(scenario):
     # Delete the environments created in the scenario.
     environment_request.delete_created_environments()
 
-
-@after.each_feature
-def after_each_feature(feature):
-    """ Remove testing products in SDC """
-    terrain_steps.remove_testing_products_in_sdc()
