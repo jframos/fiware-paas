@@ -62,6 +62,7 @@ import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.TierInstance;
 import com.telefonica.euro_iaas.paasmanager.model.dto.PaasManagerUser;
 import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * @author jesus.movilla
@@ -78,6 +79,7 @@ public class TierInstanceManagerImplTest extends TestCase {
     private EnvironmentInstanceManager environmentInstanceManager;
     private SecurityGroupManager securityGroupManager;
     private FirewallingClient firewallingClient;
+    private SystemPropertiesProvider systemPropertiesProvider;
 
     private Tier tierProductShard = null;
     private Tier tierProductConfig = null;
@@ -111,6 +113,7 @@ public class TierInstanceManagerImplTest extends TestCase {
         securityGroupManager = mock(SecurityGroupManager.class);
         firewallingClient = mock(FirewallingClient.class);
         enviromentManager = mock(EnvironmentManager.class);
+        systemPropertiesProvider = mock (SystemPropertiesProvider.class);
 
         manager = new TierInstanceManagerImpl();
 
@@ -123,6 +126,7 @@ public class TierInstanceManagerImplTest extends TestCase {
         manager.setEnvironmentManager(enviromentManager);
         manager.setSecurityGroupManager(securityGroupManager);
         manager.setFirewallingClient(firewallingClient);
+        manager.setSystemPropertiesProvider(systemPropertiesProvider);
 
         VM host = new VM(null, "hostname", "domain");
 
@@ -183,7 +187,14 @@ public class TierInstanceManagerImplTest extends TestCase {
         when(productInstanceManager.create(any(ClaudiaData.class), any(ProductInstance.class))).thenReturn(
                 productInstance);
         when(securityGroupManager.load(anyString())).thenReturn(secGroup);
+        when(securityGroupManager.create(anyString(), anyString(), anyString(), any(SecurityGroup.class))).thenReturn(
+        		secGroup);
 
+        when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("FIWARE");
+        
+        when(productReleaseManager.loadWithMetadata(any(String.class))).thenReturn(productReleaseShard);
+        
+        
         Set<Tier> tiers = new HashSet<Tier>();
         tiers.add(tierProductConfig);
         tiers.add(tierProductShard);
