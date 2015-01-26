@@ -232,6 +232,8 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
                 }
 
                 return;
+            }catch (AccessDeniedException ex){
+                throw ex;
             } catch (Exception ex) {
                 SecurityContextHolder.clearContext();
 
