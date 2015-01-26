@@ -24,6 +24,7 @@
 
 package com.telefonica.euro_iaas.paasmanager.manager;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
@@ -55,6 +56,7 @@ import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
+import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
@@ -71,16 +73,17 @@ public class TierInstanceManagerImplTest extends TestCase {
 
     private TierInstanceDao tierInstanceDao;
     private SecurityGroupDao securityGroupDao;
+    private TierManager tierManager;
+    private ProductInstanceManager productInstanceManager;
     private InfrastructureManager infrastructureManager;
     private ProductReleaseManager productReleaseManager;
-    private ProductInstanceManager productInstanceManager;
-    private TierManager tierManager;
     private EnvironmentManager enviromentManager;
     private EnvironmentInstanceManager environmentInstanceManager;
+    private NetworkInstanceManager networkInstanceManager;
     private SecurityGroupManager securityGroupManager;
-    private FirewallingClient firewallingClient;
     private SystemPropertiesProvider systemPropertiesProvider;
-
+    private FirewallingClient firewallingClient;
+    
     private Tier tierProductShard = null;
     private Tier tierProductConfig = null;
     private Tier tierProductMongos = null;
@@ -105,28 +108,32 @@ public class TierInstanceManagerImplTest extends TestCase {
 
         tierInstanceDao = mock(TierInstanceDao.class);
         securityGroupDao = mock(SecurityGroupDao.class);
-        infrastructureManager = mock(InfrastructureManager.class);
-        productReleaseManager = mock(ProductReleaseManager.class);
-        productInstanceManager = mock(ProductInstanceManager.class);
-        environmentInstanceManager = mock(EnvironmentInstanceManager.class);
         tierManager = mock(TierManager.class);
-        securityGroupManager = mock(SecurityGroupManager.class);
-        firewallingClient = mock(FirewallingClient.class);
+        productInstanceManager = mock(ProductInstanceManager.class);
+        infrastructureManager = mock(InfrastructureManager.class);
+        productReleaseManager = mock(ProductReleaseManager.class);        
         enviromentManager = mock(EnvironmentManager.class);
+        environmentInstanceManager = mock(EnvironmentInstanceManager.class);
+        networkInstanceManager = mock(NetworkInstanceManager.class);
+        securityGroupManager = mock(SecurityGroupManager.class);
         systemPropertiesProvider = mock (SystemPropertiesProvider.class);
+        firewallingClient = mock(FirewallingClient.class);
 
         manager = new TierInstanceManagerImpl();
 
-        manager.setInfrastructureManager(infrastructureManager);
+        manager.setTierInstanceDao(tierInstanceDao);        
+        manager.setSecurityGroupDao(securityGroupDao);        
+        manager.setTierManager(tierManager);        
         manager.setProductInstanceManager(productInstanceManager);
-        manager.setTierInstanceDao(tierInstanceDao);
-        manager.setSecurityGroupDao(securityGroupDao);
-        manager.setTierManager(tierManager);
-        manager.setEnvironmentInstanceManager(environmentInstanceManager);
+        manager.setInfrastructureManager(infrastructureManager);
+        manager.setProductReleaseManager(productReleaseManager);        
         manager.setEnvironmentManager(enviromentManager);
+        manager.setEnvironmentInstanceManager(environmentInstanceManager);
+        manager.setNetworkInstanceManager(networkInstanceManager);
         manager.setSecurityGroupManager(securityGroupManager);
-        manager.setFirewallingClient(firewallingClient);
         manager.setSystemPropertiesProvider(systemPropertiesProvider);
+        manager.setFirewallingClient(firewallingClient);
+
 
         VM host = new VM(null, "hostname", "domain");
 
@@ -316,5 +323,4 @@ public class TierInstanceManagerImplTest extends TestCase {
         // when(tierInstanceDao.load(any(String.class))).thenReturn(tierInstance);
         manager.remove(tierInstanceCreated);
     }
-
 }

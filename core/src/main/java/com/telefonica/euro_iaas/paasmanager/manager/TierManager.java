@@ -128,8 +128,8 @@ public interface TierManager {
      * @throws AlreadyExistsEntityException
      * @throws InvalidEntityException
      */
-    void addSecurityGroupToProductRelease(ClaudiaData claudiaData, Tier tier, ProductRelease productRelease)
-            throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException;
+    //void addSecurityGroupToProductRelease(ClaudiaData claudiaData, Tier tier, ProductRelease productRelease)
+            //throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException;
     
     /**
      * Update tier

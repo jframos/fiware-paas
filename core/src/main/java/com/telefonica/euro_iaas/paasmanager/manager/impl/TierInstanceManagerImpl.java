@@ -79,8 +79,8 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     private ProductInstanceManager productInstanceManager;
     private InfrastructureManager infrastructureManager;
     private ProductReleaseManager productReleaseManager;
-    private EnvironmentInstanceManager environmentInstanceManager;
     private EnvironmentManager environmentManager;
+    private EnvironmentInstanceManager environmentInstanceManager;
     private NetworkInstanceManager networkInstanceManager;
     private SecurityGroupManager securityGroupManager;
     private SystemPropertiesProvider systemPropertiesProvider;
@@ -526,66 +526,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     }
 
-    public void setEnvironmentInstanceManager(EnvironmentInstanceManager environmentInstanceManager) {
-        this.environmentInstanceManager = environmentInstanceManager;
-    }
-
-    public void setEnvironmentManager(EnvironmentManager environmentManager) {
-        this.environmentManager = environmentManager;
-    }
-
-    /**
-     * @param infrastructureManager
-     *            the infrastructureManager to set <property name="tierInstanceDao" ref="tierInstanceDao"/>
-     */
-    public void setInfrastructureManager(InfrastructureManager infrastructureManager) {
-        this.infrastructureManager = infrastructureManager;
-    }
-
-    public void setNetworkInstanceManager(NetworkInstanceManager networkInstanceManager) {
-        this.networkInstanceManager = networkInstanceManager;
-    }
-
-    public void setProductInstanceManager(ProductInstanceManager productInstanceManager) {
-        this.productInstanceManager = productInstanceManager;
-    }
-    
-    public void setSecurityGroupManager(SecurityGroupManager securityGroupManager) {
-        this.securityGroupManager = securityGroupManager;
-    }
-    
-    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
-
-        this.systemPropertiesProvider = systemPropertiesProvider;
-    }
-
-    public void setFirewallingClient(FirewallingClient firewallingClient) {
-
-        this.firewallingClient = firewallingClient;
-    }
-    
-    
-    /**
-     * @param tierInstanceDao
-     *            the tierInstanceDao to set
-     */
-    public void setTierInstanceDao(TierInstanceDao tierInstanceDao) {
-        this.tierInstanceDao = tierInstanceDao;
-    }
-    
-    /**
-     * @param securityGroupDao
-     *            the securityGroupDao to set
-     */
-    public void setSecurityGroupDao(SecurityGroupDao securityGroupDao) {
-        this.securityGroupDao = securityGroupDao;
-    }
-    
-    public void setTierManager(TierManager tierManager) {
-        this.tierManager = tierManager;
-    }
-
-    public TierInstance update(ClaudiaData claudiaData, String envName, TierInstance tierInstance)
+        public TierInstance update(ClaudiaData claudiaData, String envName, TierInstance tierInstance)
             throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException,
             InfrastructureException {
 
@@ -744,5 +685,66 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         }
 
     }
+    
+    /**
+     * @param tierInstanceDao
+     *            the tierInstanceDao to set
+     */
+    public void setTierInstanceDao(TierInstanceDao tierInstanceDao) {
+        this.tierInstanceDao = tierInstanceDao;
+    }
+    
+    /**
+     * @param securityGroupDao
+     *            the securityGroupDao to set
+     */
+    public void setSecurityGroupDao(SecurityGroupDao securityGroupDao) {
+        this.securityGroupDao = securityGroupDao;
+    }
+    
+    public void setTierManager(TierManager tierManager) {
+        this.tierManager = tierManager;
+    }
 
+    public void setProductInstanceManager(ProductInstanceManager productInstanceManager) {
+        this.productInstanceManager = productInstanceManager;
+    }
+    
+    /**
+     * @param infrastructureManager
+     *            the infrastructureManager to set <property name="tierInstanceDao" ref="tierInstanceDao"/>
+     */
+    public void setInfrastructureManager(InfrastructureManager infrastructureManager) {
+        this.infrastructureManager = infrastructureManager;
+    }
+    
+    public void setProductReleaseManager(ProductReleaseManager productReleaseManager) {
+        this.productReleaseManager = productReleaseManager;
+    }
+    
+    public void setEnvironmentInstanceManager(EnvironmentInstanceManager environmentInstanceManager) {
+        this.environmentInstanceManager = environmentInstanceManager;
+    }
+
+    public void setEnvironmentManager(EnvironmentManager environmentManager) {
+        this.environmentManager = environmentManager;
+    }
+
+    public void setNetworkInstanceManager(NetworkInstanceManager networkInstanceManager) {
+        this.networkInstanceManager = networkInstanceManager;
+    }
+    
+    public void setSecurityGroupManager(SecurityGroupManager securityGroupManager) {
+        this.securityGroupManager = securityGroupManager;
+    }
+    
+    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
+
+        this.systemPropertiesProvider = systemPropertiesProvider;
+    }
+
+    public void setFirewallingClient(FirewallingClient firewallingClient) {
+
+        this.firewallingClient = firewallingClient;
+    }
 }

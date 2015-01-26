@@ -77,7 +77,7 @@ public class TierManagerImpl implements TierManager {
     /**
      * It add teh security groups related the products.
      */
-    public void addSecurityGroupToProductRelease(ClaudiaData claudiaData, Tier tier, ProductRelease productRelease)
+   /* public void addSecurityGroupToProductRelease(ClaudiaData claudiaData, Tier tier, ProductRelease productRelease)
             throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
         Attribute openPortsAttribute = productRelease.getAttribute("openports");
         if (openPortsAttribute != null) {
@@ -90,7 +90,7 @@ public class TierManagerImpl implements TierManager {
 
             }
         }
-    }
+    }*/
 
     /**
      * It creates a tier.
@@ -150,7 +150,7 @@ public class TierManagerImpl implements TierManager {
      * @return
      */
 
-    public Rule createRulePort(String port, String protocol) {
+    /*public Rule createRulePort(String port, String protocol) {
         log.info("Generate security rule " + port);
         if (port.contains("-")) {
             return new Rule(protocol, port.substring(0, port.indexOf("-")), port.substring(port.indexOf("-") + 1), "",
@@ -159,7 +159,7 @@ public class TierManagerImpl implements TierManager {
             return new Rule(protocol, port, port, "", "0.0.0.0/0");
         }
 
-    }
+    }*/
 
     /**
      * It creates the specified security groups.
@@ -171,7 +171,7 @@ public class TierManagerImpl implements TierManager {
      * @throws EntityNotFoundException
      */
 
-    private void createSecurityGroups(ClaudiaData claudiaData, Tier tier) throws InvalidSecurityGroupRequestException,
+    /*private void createSecurityGroups(ClaudiaData claudiaData, Tier tier) throws InvalidSecurityGroupRequestException,
             EntityNotFoundException {
         if ((systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")
                 && claudiaData.getVdc() != null && claudiaData.getVdc().length() > 0)) {
@@ -206,7 +206,7 @@ public class TierManagerImpl implements TierManager {
             tier.setSecurityGroup(securityGroup);
         }
 
-    }
+    }*/
 
     public void createNetworks(Tier tier) throws EntityNotFoundException, InvalidEntityException,
             AlreadyExistsEntityException {
@@ -319,7 +319,7 @@ public class TierManagerImpl implements TierManager {
         return null;
     }
 
-    public SecurityGroup generateSecurityGroup(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException {
+    /*public SecurityGroup generateSecurityGroup(ClaudiaData claudiaData, Tier tier) throws EntityNotFoundException {
 
         SecurityGroup securityGroup = new SecurityGroup();
         securityGroup.setName("sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() + "_" + tier.getName());
@@ -338,9 +338,9 @@ public class TierManagerImpl implements TierManager {
         }
         securityGroup.setRules(rules);
         return securityGroup;
-    }
+    }*/
 
-    public List<Rule> getDefaultRules() {
+    /*public List<Rule> getDefaultRules() {
         List<Rule> rules = new ArrayList<Rule>();
         // 9990
         log.info("Generate security rule " + 9990);
@@ -348,9 +348,9 @@ public class TierManagerImpl implements TierManager {
         rules.add(rule2);
         return rules;
 
-    }
+    }*/
 
-    private void getRulesFromProduct(ProductRelease productRelease, List<Rule> rules) throws EntityNotFoundException {
+   /* private void getRulesFromProduct(ProductRelease productRelease, List<Rule> rules) throws EntityNotFoundException {
 
         productRelease = productReleaseManager.loadWithMetadata(productRelease.getProduct() + "-"
                 + productRelease.getVersion());
@@ -371,7 +371,7 @@ public class TierManagerImpl implements TierManager {
                 }
             }
         }
-    }
+    }*/
 
     public Tier load(String name, String vdc, String environmentName) throws EntityNotFoundException {
         try {
