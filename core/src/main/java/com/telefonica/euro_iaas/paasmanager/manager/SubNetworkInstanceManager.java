@@ -97,4 +97,11 @@ public interface SubNetworkInstanceManager {
      */
     boolean isSubNetworkDeployed(ClaudiaData claudiaData, SubNetworkInstance subNet, String region);
 
+    /**
+     * It creates the subNet in DB
+     * @param subNetworkInstance
+     * @throws AlreadyExistsEntityException
+     */
+    SubNetworkInstance createInBD( SubNetworkInstance subNetworkInstance) throws AlreadyExistsEntityException;
+
 }

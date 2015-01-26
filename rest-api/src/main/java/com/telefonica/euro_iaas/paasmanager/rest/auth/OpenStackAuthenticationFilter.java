@@ -32,13 +32,14 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.BadRequestException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -147,9 +148,19 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
         final HttpServletResponse response = (HttpServletResponse) res;
 
         String header = request.getHeader(OPENSTACK_HEADER_TOKEN);
+        String headerTennant = request.getHeader(OPENSTACK_HEADER_TENANTID);
         String pathInfo = request.getPathInfo();
         logger.debug(header);
         logger.debug(pathInfo);
+        
+        //check AUTH-TOKEN and VDC are the same
+        String uri=request.getRequestURI();
+        logger.debug("URI: " +uri);
+        if (uri.contains("vdc") && !uri.contains(headerTennant)){
+            String str = "Bar credentials for requested VDC";
+            logger.info(str);
+            throw new AccessDeniedException(str);
+        }
 
         MDC.put("txId", ((HttpServletRequest) req).getSession().getId());
 
@@ -169,7 +180,7 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
                 if ("".equals(token)) {
                     String str = "Missing token header";
                     logger.info(str);
-                    throw new BadRequestException(str);
+                    throw new BadCredentialsException(str);
                 }
                 String tenantId = request.getHeader(OPENSTACK_HEADER_TENANTID);
                 logger.debug(tenantId);

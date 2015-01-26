@@ -51,6 +51,10 @@
             <version>${spring.version}</version>
         </dependency>
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 43b6528aaed3179c1bc983f26142dfb7b28f3317
         <!-- jpa implementation - hibernate -->
         <dependency>
             <groupId>org.hibernate</groupId>

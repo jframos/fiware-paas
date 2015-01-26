@@ -103,7 +103,7 @@ public class ProductInstanceResourceImpl implements ProductInstanceResource {
             Task task = createTask(
                     MessageFormat.format("Installing product instance {0}", productInstance.getProductRelease()
                             .getName() + "-" + productInstance.getProductRelease().getVersion()), vdc);
-            productInstanceAsyncManager.install(tierInstance, data, environmentInstanceName,
+            productInstanceAsyncManager.install(tierInstance, data, environmentInstanceName,vdc,
                     productInstance.getProductRelease(), productInstance.getPrivateAttributes(), task, null);
             return task;
         } catch (EntityNotFoundException e) {

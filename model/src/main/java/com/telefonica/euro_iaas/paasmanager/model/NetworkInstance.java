@@ -152,6 +152,13 @@ public class NetworkInstance {
     }
 
     /**
+     * It clears the subnets in the network instance.
+     */
+    public void clearSubNets() {
+        this.subNets.clear();
+    }
+
+    /**
      * It updates a subnet to the network.
      *
      * @param subNet

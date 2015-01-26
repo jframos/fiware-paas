@@ -21,6 +21,7 @@
 # contact with opensource@tid.es
 
 from lettuce import world, after, before
+from tools import terrain_steps
 from tools import environment_request, environment_instance_request
 from tools.environment_request import EnvironmentRequest
 from tools.environment_instance_request import EnvironmentInstanceRequest
@@ -46,6 +47,23 @@ def before_each_scenario(feature):
         world.config[PAAS][VDC],
         world.config[PAAS][SDC_URL])
 
+    # Create product in SDC to be used by this feature
+    world.product_and_release_list = list()
+    terrain_steps.init_products_in_sdc()
+
+
+@before.each_scenario
+def before_each_scenario(scenario):
+    world.product_list_with_attributes = list()
+    world.product_and_release_list = list()
+    world.product_installator = 'chef'
+
+
+@before.outline
+def before_outline(param1, param2, param3, param4):
+    """ Hook: Will be executed before each Scenario Outline. Same behaviour as 'before_each_scenario'"""
+    before_each_scenario(None)
+
 
 @after.each_scenario
 def after_each_scenario(scenario):
@@ -53,3 +71,5 @@ def after_each_scenario(scenario):
     environment_instance_request.delete_created_instances()
     environment_request.delete_created_environments()
 
+    # Remove testing products in SDC
+    terrain_steps.remove_testing_products_in_sdc()

@@ -24,7 +24,6 @@
 
 package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
-
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -35,26 +34,22 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
-
 import com.telefonica.euro_iaas.paasmanager.exception.AlreadyExistEntityException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentInstanceException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
-
 import com.telefonica.euro_iaas.paasmanager.model.dto.EnvironmentDto;
 import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.EnvironmentInstanceSearchCriteria;
-
 import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
@@ -72,20 +67,23 @@ public class EnviornmentResourceValidatorImplTest {
 
     /**
      * Initialize the Unit Test.
+     * 
      * @throws EntityNotFoundException
      * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
      * @throws AlreadyExistEntityException
+     * @throws InvalidEnvironmentInstanceException
      */
     @Before
-    public void setUp()
-        throws EntityNotFoundException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException,
-               AlreadyExistEntityException {
+    public void setUp() throws EntityNotFoundException,
+            com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException, AlreadyExistEntityException,
+            InvalidEnvironmentInstanceException {
 
         environmentResourceValidator = new EnvironmentResourceValidatorImpl();
         resourceValidator = mock(ResourceValidator.class);
         environmentManager = mock(EnvironmentManager.class);
         tierResourceValidator = mock(TierResourceValidator.class);
         environmentResourceValidator.setResourceValidator(resourceValidator);
+
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         environmentInstanceManager = mock(EnvironmentInstanceManager.class);
         environmentResourceValidator.setEnvironmentManager(environmentManager);
@@ -99,6 +97,7 @@ public class EnviornmentResourceValidatorImplTest {
 
     /**
      * Validate that an environment data is ok.
+     * 
      * @throws Exception
      */
     @Test
@@ -108,8 +107,8 @@ public class EnviornmentResourceValidatorImplTest {
         EnvironmentDto envDto = new EnvironmentDto();
         envDto.setName("name");
         envDto.setDescription("description");
-        when(environmentManager.load(anyString(), anyString()))
-                .thenThrow(new EntityNotFoundException(Environment.class, "dd", envDto.fromDto()));
+        when(environmentManager.load(anyString(), anyString())).thenThrow(
+                new EntityNotFoundException(Environment.class, "dd", envDto.fromDto()));
 
         ClaudiaData claudiaData = mock(ClaudiaData.class);
 
@@ -119,6 +118,7 @@ public class EnviornmentResourceValidatorImplTest {
 
     /**
      * Test the validation of an abstract environment.
+     * 
      * @throws EntityNotFoundException
      */
     @Test
@@ -127,8 +127,8 @@ public class EnviornmentResourceValidatorImplTest {
         EnvironmentDto envDto = new EnvironmentDto();
         envDto.setName("name");
         envDto.setDescription("description");
-        when(environmentManager.load(anyString(), anyString())).
-                thenThrow(new EntityNotFoundException(Environment.class, "dd", envDto.fromDto()));
+        when(environmentManager.load(anyString(), anyString())).thenThrow(
+                new EntityNotFoundException(Environment.class, "dd", envDto.fromDto()));
 
         try {
             environmentResourceValidator.validateAbstractCreate(envDto);
@@ -140,6 +140,7 @@ public class EnviornmentResourceValidatorImplTest {
 
     /**
      * Test the validation of a delete environment.
+     * 
      * @throws EntityNotFoundException
      * @throws InvalidEntityException
      */
@@ -160,23 +161,24 @@ public class EnviornmentResourceValidatorImplTest {
         ltiers.add(tierDTO);
         envDto.setTierDtos(ltiers);
         when(environmentManager.load(anyString(), anyString())).thenReturn(envDto.fromDto());
-        when(environmentInstanceManager.findByCriteria(any(EnvironmentInstanceSearchCriteria.class)))
-                .thenReturn(new ArrayList<EnvironmentInstance>());
+        when(environmentInstanceManager.findByCriteria(any(EnvironmentInstanceSearchCriteria.class))).thenReturn(
+                new ArrayList<EnvironmentInstance>());
 
         environmentResourceValidator.validateDelete(envDto.getName(), "vdc");
-
 
     }
 
     /**
      * Test the creation of a abstract environment with tiers.
+     * 
      * @throws EntityNotFoundException
      * @throws AlreadyExistEntityException
      * @throws InvalidEntityException
+     * @throws InvalidEnvironmentInstanceException
      */
     @Test
-    public void shouldValidateAbstractEnvWitTiers()
-        throws EntityNotFoundException, AlreadyExistEntityException, InvalidEntityException {
+    public void shouldValidateAbstractEnvWitTiers() throws EntityNotFoundException, AlreadyExistEntityException,
+            InvalidEntityException, InvalidEnvironmentInstanceException {
 
         EnvironmentDto envDto = new EnvironmentDto();
         envDto.setName("name");
@@ -191,23 +193,24 @@ public class EnviornmentResourceValidatorImplTest {
         Set<TierDto> ltiers = new HashSet<TierDto>();
         ltiers.add(tierDTO);
         envDto.setTierDtos(ltiers);
-        when(environmentManager.load(anyString(), anyString())).
-                thenThrow(new EntityNotFoundException(Environment.class, "dd", envDto.fromDto()));
+        when(environmentManager.load(anyString(), anyString())).thenThrow(
+                new EntityNotFoundException(Environment.class, "dd", envDto.fromDto()));
 
         environmentResourceValidator.validateAbstractCreate(envDto);
-
 
     }
 
     /**
      * Test the creation of an abstract enviroment when it already exists.
+     * 
      * @throws EntityNotFoundException
      * @throws AlreadyExistEntityException
      * @throws InvalidEntityException
+     * @throws InvalidEnvironmentInstanceException
      */
     @Test(expected = AlreadyExistEntityException.class)
-    public void shouldValidateAbstractEnvAlreadyExists()
-        throws EntityNotFoundException, AlreadyExistEntityException, InvalidEntityException {
+    public void shouldValidateAbstractEnvAlreadyExists() throws EntityNotFoundException, AlreadyExistEntityException,
+            InvalidEntityException, InvalidEnvironmentInstanceException {
 
         EnvironmentDto envDto = new EnvironmentDto();
         envDto.setName("name");
@@ -215,8 +218,6 @@ public class EnviornmentResourceValidatorImplTest {
         when(environmentManager.load(anyString(), anyString())).thenReturn(envDto.fromDto());
         environmentResourceValidator.validateAbstractCreate(envDto);
 
-
     }
-
 
 }

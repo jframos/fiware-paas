@@ -33,6 +33,7 @@ import com.telefonica.euro_iaas.paasmanager.model.NetworkInstance;
 import com.telefonica.euro_iaas.paasmanager.model.Port;
 import com.telefonica.euro_iaas.paasmanager.model.RouterInstance;
 import com.telefonica.euro_iaas.paasmanager.model.SubNetworkInstance;
+import org.json.JSONException;
 
 /**
  * @author henar
@@ -88,7 +89,7 @@ public interface NetworkClient {
      * @param subNet
      */
     void deploySubNetwork(ClaudiaData claudiaData, SubNetworkInstance subNet, String region)
-            throws InfrastructureException;
+        throws InfrastructureException;
 
     /**
      * Destroy the network in the infrastructure.
@@ -97,7 +98,7 @@ public interface NetworkClient {
      * @param networkInstance
      */
     void destroyNetwork(ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
-            throws InfrastructureException;
+        throws InfrastructureException;
 
     /**
      * It delete a router in Openstack.
@@ -106,7 +107,8 @@ public interface NetworkClient {
      * @param router
      * @throws InfrastructureException
      */
-    void destroyRouter(ClaudiaData claudiaData, RouterInstance router, String region) throws InfrastructureException;
+    void destroyRouter(ClaudiaData claudiaData, RouterInstance router, String region)
+        throws InfrastructureException;
 
     /**
      * Destroy a subnet in OpenStack.
@@ -131,17 +133,18 @@ public interface NetworkClient {
     /**
      * Load a Network from OpenStack.
      */
-    String loadNetwork(ClaudiaData claudiaData, NetworkInstance network, String region) throws EntityNotFoundException;
+    NetworkInstance loadNetwork(ClaudiaData claudiaData, NetworkInstance network, String region)
+        throws EntityNotFoundException;
 
     /**
      * Load a subNet from Openstack.
      * 
      * @param claudiaData
-     * @param subNet
+     * @param subNetId
      * @return
      * @throws EntityNotFoundException
      */
-    String loadSubNetwork(ClaudiaData claudiaData, SubNetworkInstance subNet, String region)
+    SubNetworkInstance loadSubNetwork(ClaudiaData claudiaData, String subNetId, String region)
         throws EntityNotFoundException;
     
     /**
@@ -163,7 +166,7 @@ public interface NetworkClient {
      * @throws InfrastructureException
      */
     void deleteNetworkToPublicRouter(ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
-            throws InfrastructureException;
+        throws InfrastructureException;
 
 	/**
 	 * It obtains the no shared networks.
@@ -190,6 +193,6 @@ public interface NetworkClient {
      * @throws InfrastructureException 
      */
 	void joinNetworks(ClaudiaData claudiaData, NetworkInstance networkInstance,
-			NetworkInstance networkInstance2) throws InfrastructureException;
+	    NetworkInstance networkInstance2) throws InfrastructureException;
 
 }

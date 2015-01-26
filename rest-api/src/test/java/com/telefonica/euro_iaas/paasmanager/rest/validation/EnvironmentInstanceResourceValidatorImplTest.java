@@ -58,6 +58,7 @@ public class EnvironmentInstanceResourceValidatorImplTest {
 
     /**
      * Initialize the Unit Test.
+     * 
      * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
      */
     @Before
@@ -72,6 +73,7 @@ public class EnvironmentInstanceResourceValidatorImplTest {
 
     /**
      * Test the instance number on the creation operation without any exception.
+     * 
      * @throws Exception
      */
     @Test
@@ -107,7 +109,9 @@ public class EnvironmentInstanceResourceValidatorImplTest {
     }
 
     /**
-     * Test the creation of an instance when we have no more floating IPs available.
+     * Test the creation of an instance when we have no more floating IPs
+     * available.
+     * 
      * @throws Exception
      */
     @Test
@@ -149,14 +153,14 @@ public class EnvironmentInstanceResourceValidatorImplTest {
 
     /**
      * Test that the validation return OK when there is no limits assigned.
+     * 
      * @throws AlreadyExistEntityException
      * @throws InfrastructureException
      * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
      */
     @Test
-    public void shouldReturnValidateOKWhenLimitsValuesDontExist()
-        throws AlreadyExistEntityException, InfrastructureException,
-               com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+    public void shouldReturnValidateOKWhenLimitsValuesDontExist() throws AlreadyExistEntityException,
+            InfrastructureException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
 
         // given
 
@@ -188,15 +192,17 @@ public class EnvironmentInstanceResourceValidatorImplTest {
     }
 
     /**
-     * Test the validation of resources when the maximum limits of instances do not exist.
+     * Test the validation of resources when the maximum limits of instances do
+     * not exist.
+     * 
      * @throws AlreadyExistEntityException
      * @throws InfrastructureException
      * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
      */
     @Test
     public void shouldReturnValidateOKWhenLimitMaxTotalInstancesValuesDontExistEgEssexInstance()
-        throws AlreadyExistEntityException, InfrastructureException,
-               com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+            throws AlreadyExistEntityException, InfrastructureException,
+            com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
 
         // given
 
@@ -230,14 +236,15 @@ public class EnvironmentInstanceResourceValidatorImplTest {
 
     /**
      * Test that the new instance cannot be created due to quota exceeded.
+     * 
      * @throws AlreadyExistEntityException
      * @throws InfrastructureException
      * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
      */
     @Test
     public void shouldValidateInstanceNumberOnCreateAndReturnQuotaExceedByInstancesUsed()
-        throws AlreadyExistEntityException, InfrastructureException,
-               com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+            throws AlreadyExistEntityException, InfrastructureException,
+            com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
 
         // given
 
@@ -276,6 +283,7 @@ public class EnvironmentInstanceResourceValidatorImplTest {
 
     /**
      * Test that the information associated to a tier is valid.
+     * 
      * @throws Exception
      */
     @Test
@@ -296,13 +304,15 @@ public class EnvironmentInstanceResourceValidatorImplTest {
     }
 
     /**
-     * Test that it can launch an exception when the maximum number of security group was reached.
+     * Test that it can launch an exception when the maximum number of security
+     * group was reached.
+     * 
      * @throws InfrastructureException
      * @throws com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException
      */
     @Test
-    public void shouldThrowExceptionWithMaxSecurityGroupsAreExceeded()
-        throws InfrastructureException, com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
+    public void shouldThrowExceptionWithMaxSecurityGroupsAreExceeded() throws InfrastructureException,
+            com.telefonica.euro_iaas.paasmanager.exception.InvalidEntityException {
 
         // given
 

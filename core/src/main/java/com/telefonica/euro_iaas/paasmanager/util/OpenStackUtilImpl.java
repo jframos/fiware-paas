@@ -753,7 +753,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // -H "Accept: application/xml"
         // -X GET "http://10.95.171.115:9696/v2/networks/5867b6bd-ba18-4ae3-a34f-dd0f2e189eb6"
         HttpUriRequest request = openOperationUtil.createQuantumGetRequest(RESOURCE_NETWORKS + "/" + networkId,
-                APPLICATION_XML, region, token, vdc);
+                APPLICATION_JSON, region, token, vdc);
 
         String response = null;
 
@@ -783,7 +783,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
         // -H "Accept: application/xml"
         // -X GET "http://10.95.171.115:9696/v2/networks/5867b6bd-ba18-4ae3-a34f-dd0f2e189eb6"
         HttpUriRequest request = openOperationUtil.createQuantumGetRequest(RESOURCE_SUBNETS + "/" + subNetworkId,
-                APPLICATION_XML, region, token, vdc);
+                APPLICATION_JSON, region, token, vdc);
 
         String response;
 

@@ -39,11 +39,13 @@ import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidProductInstanceRequestException;
 import com.telefonica.euro_iaas.paasmanager.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
+import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.ProductInstanceAsyncManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
 import com.telefonica.euro_iaas.paasmanager.model.Task;
@@ -63,13 +65,17 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     private TaskManager taskManager;
     private SystemPropertiesProvider propertiesProvider;
     private TaskNotificator taskNotificator;
+    private EnvironmentInstanceManager environmentInstanceManager;
 
-    public void install(TierInstance tierInstance, ClaudiaData claudiaData, String envName,
-            ProductRelease productRelease, Set<Attribute> attributes, Task task, String callback) {
+    public void install(TierInstance tierInstance, ClaudiaData claudiaData, String envName, String vdc,
+            ProductRelease productRelease, Set<Attribute> attributes, Task task, String callback)
+            throws EntityNotFoundException {
+
+        EnvironmentInstance environmentInstance = environmentInstanceManager.load(vdc, envName);
 
         try {
-            ProductInstance productInstance = productInstanceManager.install(tierInstance, claudiaData, envName,
-                    productRelease, attributes);
+            ProductInstance productInstance = productInstanceManager.install(tierInstance, claudiaData,
+                    environmentInstance, productRelease);
             log.info("Product " + productRelease.getProduct() + '-' + productRelease.getVersion()
                     + " installed successfully");
         } catch (InvalidProductInstanceRequestException e) {
@@ -113,17 +119,25 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
         }
 
         /*
-         * try { productInstanceManager.uninstall(productInstance); updateSuccessTask(task, productInstance);
-         * log.info("Product " + productInstance.getProduct().getProduct().getName() + "-" +
-         * productInstance.getProduct().getVersion() + " uninstalled successfully"); } catch (FSMViolationException e) {
-         * updateErrorTask(productInstance, task, "The product " + productInstance.getId() +
-         * " can not be uninstalled due to previous status", e); } catch (ApplicationInstalledException e) {
-         * updateErrorTask(productInstance, task, "The product " + productInstance.getId() +
-         * " can not be uninstalled due to some applications are" + " installed on it.", e); } catch
-         * (NodeExecutionException e) { updateErrorTask(productInstance, task, "The product " + productInstance.getId()
-         * + " can not be uninstalled due to an error executing in node.", e); } catch (Throwable e) {
-         * updateErrorTask(productInstance, task, "The product " + productInstance.getId() +
-         * " can not be uninstalled due to unexpected error.", e); } finally { notifyTask(callback, task); }
+         * try { productInstanceManager.uninstall(productInstance);
+         * updateSuccessTask(task, productInstance); log.info("Product " +
+         * productInstance.getProduct().getProduct().getName() + "-" +
+         * productInstance.getProduct().getVersion() +
+         * " uninstalled successfully"); } catch (FSMViolationException e) {
+         * updateErrorTask(productInstance, task, "The product " +
+         * productInstance.getId() +
+         * " can not be uninstalled due to previous status", e); } catch
+         * (ApplicationInstalledException e) { updateErrorTask(productInstance,
+         * task, "The product " + productInstance.getId() +
+         * " can not be uninstalled due to some applications are" +
+         * " installed on it.", e); } catch (NodeExecutionException e) {
+         * updateErrorTask(productInstance, task, "The product " +
+         * productInstance.getId() +
+         * " can not be uninstalled due to an error executing in node.", e); }
+         * catch (Throwable e) { updateErrorTask(productInstance, task,
+         * "The product " + productInstance.getId() +
+         * " can not be uninstalled due to unexpected error.", e); } finally {
+         * notifyTask(callback, task); }
          */
 
     }
@@ -146,7 +160,8 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     }
 
     private String getUrl(ProductInstance productInstance) {
-        String path = MessageFormat.format(PRODUCT_INSTANCE_PATH, productInstance.getId(), // the id
+        String path = MessageFormat.format(PRODUCT_INSTANCE_PATH, productInstance.getId(), // the
+                                                                                           // id
 
                 productInstance.getProductRelease().getProduct(), productInstance.getVdc());
 
@@ -154,7 +169,8 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
     }
 
     /*
-     * Update the task with necessary information when the task is wrong and the product instance exists in the system.
+     * Update the task with necessary information when the task is wrong and the
+     * product instance exists in the system.
      */
     private void updateErrorTask(ProductInstance productInstance, Task task, String message, Throwable t) {
         String piResource = getUrl(productInstance);
@@ -228,6 +244,10 @@ public class ProductInstanceAsyncManagerImpl implements ProductInstanceAsyncMana
      */
     public void setTaskNotificator(TaskNotificator taskNotificator) {
         this.taskNotificator = taskNotificator;
+    }
+
+    public void setEnvironmentInstanceManager(EnvironmentInstanceManager environmentInstanceManager) {
+        this.environmentInstanceManager = environmentInstanceManager;
     }
 
 }

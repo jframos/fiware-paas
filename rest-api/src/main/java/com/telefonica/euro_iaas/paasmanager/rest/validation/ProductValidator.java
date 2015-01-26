@@ -21,26 +21,13 @@
  * For those usages not covered by the Apache version 2.0 License please contact with opensource@tid.es
  * </p>
  */
+package com.telefonica.euro_iaas.paasmanager.rest.validation;
 
-package com.telefonica.euro_iaas.paasmanager.installator.sdc.util;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentInstanceException;
+import com.telefonica.euro_iaas.paasmanager.model.dto.TierDto;
 
-import com.telefonica.euro_iaas.paasmanager.exception.OpenStackException;
-import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
-import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
-import com.telefonica.euro_iaas.sdc.model.Task;
+public interface ProductValidator {
 
-public class SDCDummyUtilImpl implements SDCUtil {
-
-
-    public void checkTaskStatus(Task task, String token, String vdc) throws ProductInstallatorException {
-
-
-    }
-
-    public String getSdcUtil(String token) throws OpenStackException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
+    void validateAttributes(TierDto tierDto) throws InvalidEnvironmentInstanceException;
 
 }

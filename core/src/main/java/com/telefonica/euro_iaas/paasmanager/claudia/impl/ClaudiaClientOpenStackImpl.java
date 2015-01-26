@@ -28,10 +28,12 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 import net.sf.json.JSONArray;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.io.File;
 
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
@@ -76,6 +78,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
     private OpenStackRegion openStackRegion = null;
     private FileUtils fileUtils;
     private NetworkInstanceManager networkInstanceManager = null;
+    private SystemPropertiesProvider systemPropertiesProvider = null;
     private static final int POLLING_INTERVAL = 10000;
 
     /**
@@ -221,7 +224,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         String chefServerUrl;
         String puppetUrl;
         try {
-            file = fileUtils.readFile("userdata");
+            file = fileUtils.readFile(systemPropertiesProvider.getProperty("user_data_path"));
             log.debug("File userdata read");
         } catch (Exception e) {
             log.warn("Error to find the file" + e.getMessage());
@@ -237,6 +240,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             log.warn("Error to obtain the chef-server url" + e1.getMessage());
             return file;
         }
+
 
         try {
             puppetUrl = openStackRegion.getPuppetMasterEndPoint(
@@ -388,6 +392,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
             throws InvalidEntityException, AlreadyExistsEntityException {
         try {
             networkInstance = networkInstanceManager.load(networkInstance.getNetworkName(), tenantId, region);
+            // check if it exists in Openstack
         } catch (Exception e) {
             log.warn("The network " + networkInstance.getNetworkName() + " is in Openstack but not in DB");
             networkInstanceManager.createInDB(networkInstance);
@@ -605,9 +610,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         this.openStackUtil = openStackUtil;
     }
 
-    /**
-     * @param openStackUtil the openStackUtil to set
-     */
+
     public void setNetworkInstanceManager(NetworkInstanceManager networkInstanceManager) {
         this.networkInstanceManager = networkInstanceManager;
     }
@@ -674,6 +677,10 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
 
     public void setFileUtils(FileUtils fileUtils) {
         this.fileUtils = fileUtils;
+    }
+
+    public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
+        this.systemPropertiesProvider= systemPropertiesProvider;
     }
 
     public void setOpenStackRegion(OpenStackRegion openStackRegion) {

@@ -22,13 +22,16 @@
 
 import json
 from tools.constants import PAAS, TIER_NUM_MIN, TIER_NUM_MAX, TIER_NUM_INITIAL,\
-    TIER_FLAVOUR, TIER_KEYPAIR, TIER_FLOATINGIP, TIER_IMAGE
+    TIER_FLAVOUR, TIER_KEYPAIR, TIER_FLOATINGIP, TIER_IMAGE, TIER_REGION, \
+    TIER_REQUEST_IMAGE, TIER_REQUEST_REGION, TIER_REQUEST_NUM_MIN, TIER_REQUEST_FLAVOUR, TIER_REQUEST_FLOATINGIP, \
+    TIER_REQUEST_KEYPAIR, TIER_REQUEST_NUM_INITIAL, TIER_REQUEST_NUM_MAX
 
 __author__ = 'henar'
 
 from xml.etree.ElementTree import Element, SubElement
-from productrelease import ProductRelease
+from productrelease import ProductRelease, parse_attribute_from_dict
 from lettuce import world
+from nose.tools import assert_equals
 
 
 class Network:
@@ -49,24 +52,27 @@ class Network:
 
 
 class Tier:
-    def __init__(self, tier_name, tier_image,
+    def __init__(self, tier_name,
+                 tier_image=world.config[PAAS][TIER_IMAGE],
                  tier_num_min=world.config[PAAS][TIER_NUM_MIN],
                  tier_num_max=world.config[PAAS][TIER_NUM_MAX],
                  tier_num_initial=world.config[PAAS][TIER_NUM_INITIAL],
                  tier_flavour=world.config[PAAS][TIER_FLAVOUR],
                  tier_keypair=world.config[PAAS][TIER_KEYPAIR],
-                 tier_floatingip=world.config[PAAS][TIER_FLOATINGIP]):
-        self.name = tier_name
-        self.tier_num_min = tier_num_min
-        self.tier_num_max = tier_num_max
-        self.tier_num_initial = tier_num_initial
-        self.tier_image = tier_image
-        self.tier_flavour = tier_flavour
-        self.tier_keypair = tier_keypair
-        self.tier_floatingip = tier_floatingip
+                 tier_floatingip=world.config[PAAS][TIER_FLOATINGIP],
+                 tier_region=world.config[PAAS][TIER_REGION]):
+
+        self.name = str(tier_name) if tier_name is not None else None
+        self.tier_num_min = str(tier_num_min) if tier_num_min is not None else None
+        self.tier_num_max = str(tier_num_max) if tier_num_max is not None else None
+        self.tier_num_initial = str(tier_num_initial) if tier_num_initial is not None else None
+        self.tier_image = str(tier_image) if tier_image is not None else None
+        self.tier_flavour = str(tier_flavour) if tier_flavour is not None else None
+        self.tier_keypair = str(tier_keypair) if tier_keypair is not None else None
+        self.tier_floatingip = str(tier_floatingip) if tier_floatingip is not None else None
         self.products = []
         self.networks = []
-        self.region = "RegionOne"
+        self.region = str(tier_region) if tier_region is not None else None
 
     def __eq__(self, other):
         return self.name == other.name\
@@ -86,6 +92,11 @@ class Tier:
 
     def add_network(self, network):
         self.networks.append(network)
+
+    def add_attribute_to_product(self, product_name, attribute_key, attribute_value, attribute_type):
+        for product_in_tier in self.products:
+            if product_in_tier.product == product_name:
+                product_in_tier.add_atribute(attribute_key, attribute_value, attribute_type)
 
     def parse_and_add_products(self, products_information):
         self.products.extend(parse_products(products_information))
@@ -194,20 +205,29 @@ def process_tier(tier):
     :param tiers: tier to be processed.
     :return: a Tier object.
     """
-    processed_tier = Tier(tier['name'], world.config[PAAS][TIER_IMAGE])
+    processed_tier = Tier(tier_name=tier['name'], tier_image=tier['image'],
+                          tier_num_min=tier['minimumNumberInstances'],
+                          tier_num_max=tier['maximumNumberInstances'],
+                          tier_num_initial=tier['initialNumberInstances'],
+                          tier_flavour=tier['flavour'],
+                          tier_keypair=tier['keypair'],
+                          tier_floatingip=tier['floatingip'],
+                          tier_region=tier['region'])
 
-    try:
+    if 'productReleaseDtos' in tier:
         product_dtos = tier['productReleaseDtos']
 
         if isinstance(product_dtos, list):
             for product_dto in product_dtos:
+                attribute_list = product_dto['attributes'] if 'attributes' in product_dto else None
                 processed_tier.add_product(ProductRelease(product_dto['productName'],
-                    product_dto['version']))
+                                                          product_dto['version'],
+                                                          parse_attribute_from_dict(attribute_list)))
         else:
+            attribute_list = product_dtos['attributes'] if 'attributes' in product_dtos else None
             processed_tier.add_product(ProductRelease(product_dtos['productName'],
-                product_dtos['version']))
-    except:
-        pass
+                                                      product_dtos['version'],
+                                                      parse_attribute_from_dict(attribute_list)))
 
     try:
         network_dtos = tier['networkDto']
@@ -312,7 +332,8 @@ def check_tier_in_list(tiers_list, tier_name, products=None, networks=None):
 def check_get_tier_response(response, expected_status_code,
                             expected_tier_name=None,
                             expected_products=None,
-                            expected_networks=None):
+                            expected_networks=None,
+                            all_tier_data=dict()):
     """
     Checks that the response for a get tier request is the
     expected one.
@@ -321,6 +342,7 @@ def check_get_tier_response(response, expected_status_code,
     :param expected_tier_name: Expected name of the tier.
     :param expected_products: Expected products of the tier.
     :param expected_networks: Expected networks of the tier.
+    :param all_tier_data: Dict with all tier data used by TC.
     """
     assert response.status == expected_status_code,\
     "Wrong status code received: %d. Expected: %d. Body content: %s"\
@@ -366,3 +388,27 @@ def check_get_tier_response(response, expected_status_code,
 
             assert network_found,\
             "Network not found in response: %s" % (expected_network.network_name)
+
+    if TIER_REQUEST_REGION in all_tier_data:
+        assert_equals(all_tier_data[TIER_REQUEST_REGION], tier.region)
+
+    if TIER_REQUEST_IMAGE in all_tier_data:
+        assert_equals(all_tier_data[TIER_REQUEST_IMAGE], tier.tier_image)
+
+    if TIER_REQUEST_FLAVOUR in all_tier_data:
+        assert_equals(str(all_tier_data[TIER_REQUEST_FLAVOUR]), tier.tier_flavour)
+
+    if TIER_REQUEST_NUM_MIN in all_tier_data:
+        assert_equals(str(all_tier_data[TIER_REQUEST_NUM_MIN]), tier.tier_num_min)
+
+    if TIER_REQUEST_NUM_MAX in all_tier_data:
+        assert_equals(str(all_tier_data[TIER_REQUEST_NUM_MAX]), tier.tier_num_max)
+
+    if TIER_REQUEST_NUM_INITIAL in all_tier_data:
+        assert_equals(str(all_tier_data[TIER_REQUEST_NUM_INITIAL]), tier.tier_num_initial)
+
+    if TIER_REQUEST_KEYPAIR in all_tier_data:
+        assert_equals(all_tier_data[TIER_REQUEST_KEYPAIR], tier.tier_keypair)
+
+    if TIER_REQUEST_FLOATINGIP in all_tier_data:
+        assert_equals(all_tier_data[TIER_REQUEST_FLOATINGIP], tier.tier_floatingip)

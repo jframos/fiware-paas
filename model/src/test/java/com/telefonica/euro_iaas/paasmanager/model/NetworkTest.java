@@ -357,6 +357,51 @@ public class NetworkTest extends TestCase {
     }
 
     /**
+     * Test the creation of a network from json file.
+     * @throws Exception
+     */
+    @Test
+    public void testSubNetFromJSon() throws Exception {
+
+        String payload = "\n" +
+                "\n" +
+                "       {\n" +
+                "           \"name\": \"dd\",\n" +
+                "           \"enable_dhcp\": true,\n" +
+                "           \"network_id\": \"33cb6d12-3792-4ff7-8abe-8f948ce60a4d\",\n" +
+                "           \"tenant_id\": \"00000000000000000000000000000046\",\n" +
+                "           \"dns_nameservers\":\n" +
+                "           [\n" +
+                "           ],\n" +
+                "           \"allocation_pools\":\n" +
+                "           [\n" +
+                "               {\n" +
+                "                   \"start\": \"12.1.0.2\",\n" +
+                "                   \"end\": \"12.1.0.254\"\n" +
+                "               }\n" +
+                "           ],\n" +
+                "           \"host_routes\":\n" +
+                "           [\n" +
+                "           ],\n" +
+                "           \"ip_version\": 4,\n" +
+                "           \"gateway_ip\": \"12.1.0.1\",\n" +
+                "           \"cidr\": \"12.1.0.0/24\",\n" +
+                "           \"id\": \"6959446a-204b-4e68-a5d2-f7a3ef5a442a\"\n" +
+                "       }\n" +
+                "\n";
+
+        JSONObject jsonNet = new JSONObject(payload);
+        SubNetworkInstance subnet = SubNetworkInstance.fromJson(jsonNet, "region");
+        assertEquals(subnet.getIdNetwork(), "33cb6d12-3792-4ff7-8abe-8f948ce60a4d");
+        assertEquals(subnet.getIdSubNet(), "6959446a-204b-4e68-a5d2-f7a3ef5a442a");
+        assertEquals(subnet.getName(), "dd");
+        assertEquals(subnet.getCidr(), "12.1.0.0/24");
+        assertEquals(subnet.getRegion(), "region");
+
+    }
+
+
+    /**
      * It test the dto from the Network specification.
      *
      * @throws Exception
@@ -395,6 +440,24 @@ public class NetworkTest extends TestCase {
             assertEquals(subNet.getName(), SUBNETWORK_NAME);
             assertEquals(subNet.getCidr(), CIDR);
         }
+    }
+
+    /**
+     * It tests the eliminination of the subnets.
+     * @throws Exception
+     */
+    @Test
+    public void testClearSubNetInstances() throws Exception {
+
+        NetworkInstance network = new NetworkInstance(NETWORK_NAME, VDC, REGION);
+        network.setIdNetwork(ID);
+        SubNetworkInstance subNetwork = new SubNetworkInstance(SUBNETWORK_NAME, VDC, REGION);
+        subNetwork.setIdSubNet(ID);
+        network.addSubNet(subNetwork);
+
+        assertEquals(network.getSubNets().size(), 1);
+        network.clearSubNets();
+        assertEquals(network.getSubNets().size(), 0);
     }
 
     /**
