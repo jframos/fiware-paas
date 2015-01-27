@@ -164,7 +164,7 @@ public class TierInstanceManagerImplTest extends TestCase {
         tierProductShard.setMinimumNumberInstances(new Integer(1));
         tierProductShard.setName("tiershard");
         tierProductShard.setProductReleases(productReleasesShards);
-        tierProductShard.setSecurityGroup(secGroup);
+        //tierProductShard.setSecurityGroup(secGroup);
 
         List<ProductRelease> productReleaseBalancer = new ArrayList<ProductRelease>();
         ProductRelease productReleaseMongos = new ProductRelease("mongos", "2.0");

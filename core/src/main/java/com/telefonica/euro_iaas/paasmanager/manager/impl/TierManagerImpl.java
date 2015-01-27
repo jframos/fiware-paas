@@ -66,7 +66,7 @@ public class TierManagerImpl implements TierManager {
     private TierDao tierDao;
 
     private ProductReleaseManager productReleaseManager;
-    private SecurityGroupManager securityGroupManager;
+    //private SecurityGroupManager securityGroupManager;
 
     private NetworkManager networkManager;
 
@@ -412,13 +412,13 @@ public class TierManagerImpl implements TierManager {
         }
     }
 
-    private void restore(ClaudiaData claudiaData, Tier tier) throws InvalidEntityException, InfrastructureException {
+    /*private void restore(ClaudiaData claudiaData, Tier tier) throws InvalidEntityException, InfrastructureException {
         if (tier.getSecurityGroup() != null) {
             securityGroupManager.destroy(tier.getRegion(), tier.getVdc(), claudiaData.getUser().getToken(),
                     tier.getSecurityGroup());
 
         }
-    }
+    }*/
 
     public void setNetworkManager(NetworkManager networkManager) {
         this.networkManager = networkManager;
@@ -429,9 +429,9 @@ public class TierManagerImpl implements TierManager {
 
     }
 
-    public void setSecurityGroupManager(SecurityGroupManager securityGroupManager) {
+    /*public void setSecurityGroupManager(SecurityGroupManager securityGroupManager) {
         this.securityGroupManager = securityGroupManager;
-    }
+    }*/
 
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
 
@@ -485,7 +485,7 @@ public class TierManagerImpl implements TierManager {
             } catch (Exception e2) {
                 String errorMessage = "The Tier  " + tier.getName() + "  cannot be created " + e2.getMessage();
                 log.error(errorMessage);
-                restore(data, tier);
+                //restore(data, tier);
                 throw new InvalidEntityException(errorMessage);
             }
 
@@ -662,7 +662,7 @@ public class TierManagerImpl implements TierManager {
         
     }
     
-    public Tier updateTierSecurityGroup(Tier tier, SecurityGroup securityGroup) throws InvalidEntityException {
+    /*public Tier updateTierSecurityGroup(Tier tier, SecurityGroup securityGroup) throws InvalidEntityException {
     
     	log.info("Update updateTierSecurityGroupId " + tier.getName() 
     			+ " with idSecurityGroup= " + securityGroup.getIdSecurityGroup());
@@ -676,5 +676,5 @@ public class TierManagerImpl implements TierManager {
             throw new InvalidEntityException("It is not possible to update the tier " + tier.getName() + " : "
                     + e.getMessage());
         }
-    }
+    }*/
 }

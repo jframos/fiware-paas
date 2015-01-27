@@ -69,7 +69,7 @@ public class TierManagerImplTest {
     private TierManagerImpl tierManager;
     private TierDao tierDao;
     private ProductReleaseManager productReleaseManager;
-    private SecurityGroupManager securityGroupManager;
+    //private SecurityGroupManager securityGroupManager;
     private ProductRelease productRelease;
     private NetworkManager networkManager;
     private SystemPropertiesProvider systemPropertiesProvider;
@@ -92,11 +92,11 @@ public class TierManagerImplTest {
         tierManager = new TierManagerImpl();
         tierDao = mock(TierDao.class);
         productReleaseManager = mock(ProductReleaseManager.class);
-        securityGroupManager = mock(SecurityGroupManager.class);
+        //securityGroupManager = mock(SecurityGroupManager.class);
         networkManager = mock(NetworkManager.class);
         systemPropertiesProvider = mock(SystemPropertiesProvider.class);
         tierManager.setProductReleaseManager(productReleaseManager);
-        tierManager.setSecurityGroupManager(securityGroupManager);
+        //tierManager.setSecurityGroupManager(securityGroupManager);
         tierManager.setSystemPropertiesProvider(systemPropertiesProvider);
         tierManager.setTierDao(tierDao);
         tierManager.setNetworkManager(networkManager);
@@ -361,10 +361,10 @@ public class TierManagerImplTest {
 
         SecurityGroup securityGroup = new SecurityGroup("nanme", "description");
         securityGroup.addRule(new Rule("ipProtocol", "fromPort", "toPort", "sourceGroup", "cidr"));
-        tier.setSecurityGroup(securityGroup);
+        //tier.setSecurityGroup(securityGroup);
         when(systemPropertiesProvider.getProperty(any(String.class))).thenReturn("FIWARE");
-        when(securityGroupManager.create(anyString(), anyString(), anyString(), any(SecurityGroup.class))).thenReturn(
-                securityGroup);
+        //when(securityGroupManager.create(anyString(), anyString(), anyString(), any(SecurityGroup.class))).thenReturn(
+          //      securityGroup);
         when(tierDao.create(any(Tier.class))).thenReturn(tier);
         Mockito.doThrow(new EntityNotFoundException(Tier.class, "test", tier)).when(tierDao)
                 .load(any(String.class), any(String.class), any(String.class));
@@ -511,7 +511,7 @@ public class TierManagerImplTest {
                 "image", "icono", "keypair", "floatingip", "payload");
         SecurityGroup securityGroup = new SecurityGroup ("dd", "ddd");
         securityGroup.addRule(new Rule());
-        tier.setSecurityGroup(securityGroup);
+        //tier.setSecurityGroup(securityGroup);
         
         Network net = new Network("NETWORK_NAME", "vdc",REGION);
         tier.addNetwork(net);

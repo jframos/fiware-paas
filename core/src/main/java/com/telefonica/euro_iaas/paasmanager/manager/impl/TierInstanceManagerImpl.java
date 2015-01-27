@@ -117,6 +117,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         }
         
         try {
+        	tierInstance.setTier(tierDB);
         	createSecurityGroups(data, tierInstance);
         } catch (InvalidSecurityGroupRequestException isgre) {
         	String secGroupMen = "The securityGroupRequest creation is invalid"; 

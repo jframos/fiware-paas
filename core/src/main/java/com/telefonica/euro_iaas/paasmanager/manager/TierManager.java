@@ -145,6 +145,6 @@ public interface TierManager {
      * @param securityGroup
      * @throws InvalidEntityException
      */
-    Tier updateTierSecurityGroup(Tier tier, SecurityGroup securityGroup) throws InvalidEntityException;
+    //Tier updateTierSecurityGroup(Tier tier, SecurityGroup securityGroup) throws InvalidEntityException;
 
 }

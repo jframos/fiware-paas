@@ -64,8 +64,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="tierDao" ref="tierDao"/>
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
             <property name="networkManager" ref="networkManager"/>
-            <property name="securityGroupManager" ref="securityGroupManager"/>
-
+            <!--<property name="securityGroupManager" ref="securityGroupManager"/>-->
         </bean>
 
         <bean id="productInstanceManager" lazy-init="true"
