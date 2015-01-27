@@ -196,7 +196,7 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
                 String uri = request.getRequestURI();
                 logger.debug("URI: " + uri);
                 if (uri.contains("vdc") && !uri.contains(tenantId)) {
-                    String str = "Bar credentials for requested VDC";
+                    String str = "Bad credentials for requested VDC";
                     logger.info(str);
                     throw new AccessDeniedException(str);
                 }
