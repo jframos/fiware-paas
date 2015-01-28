@@ -11,7 +11,7 @@ else
      ip=$(ip addr show dev $defaultdev |awk '/inet / { X = split($2, A, "/") ; print A[1]}')
   fi
 fi
-echo "sigue"
+echo "Generating certificate with CN=$ip"
 keytool -genkey -keyalg RSA -alias jetty -keystore /etc/keystorejetty.new -validity 730 -keypass password -storepass password -dname "CN=$ip, O=fiware" -keysize 2048
 
 if [ -f /etc/keystorejetty.new ] ; then
