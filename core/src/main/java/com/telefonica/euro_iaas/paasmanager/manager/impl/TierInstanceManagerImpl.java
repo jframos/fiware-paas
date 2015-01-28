@@ -119,6 +119,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         try {
         	tierInstance.setTier(tierDB);
         	createSecurityGroups(data, tierInstance);
+        	//tierInstance = tierInstanceDao.update(tierInstance);
         } catch (InvalidSecurityGroupRequestException isgre) {
         	String secGroupMen = "The securityGroupRequest creation is invalid"; 
         	log.error(secGroupMen);
@@ -180,6 +181,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         }*/
          
        tierInstanceDB.setTier(tierDB);
+       tierInstanceDB.setSecurityGroup(tierInstance.getSecurityGroup());
        
        if (tierInstance.getProductInstances() != null) {
     	   for (ProductInstance productInstance : tierInstance.getProductInstances()) {
@@ -566,7 +568,22 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             }
         }
     }
-
+    
+    /*private TierInstance updateTierInstanceSecurityGroup(TierInstance tierInstance, SecurityGroup securityGroup) throws InvalidEntityException {
+        
+    	log.info("Update updateTierInstanceSecurityGroup " + tierInstance.getName() 
+    			+ " with idSecurityGroup= " + securityGroup.getIdSecurityGroup());
+        try {
+        	tierInstance.setSecurityGroup(securityGroup);
+        	tierInstance = tierInstanceDao.update(tierInstance);
+            return tierInstanceDao.findByTierInstanceIdWithMetadata(tierInstance.getId());
+        } catch (Exception e) {
+            log.error("It is not possible to update the tierInstance " + tierInstance.getName() 
+            		+ " with idSecurityGroup= " + securityGroup.getIdSecurityGroup() + " : " + e.getMessage(), e);
+            throw new InvalidEntityException("It is not possible to update the tierInstance " + tierInstance.getName() + " : "
+                    + e.getMessage());
+        }
+    }*/
     /**
      * It creates the specified security groups.
      * 
@@ -611,7 +628,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                         + securityGroup.getName() + " " + e.getMessage(), e);
 
             }
-            //tier.setSecurityGroup(securityGroup);
+            tierInstance.setSecurityGroup(securityGroup);
         }
         return tierInstance;
 
