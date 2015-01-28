@@ -6,7 +6,7 @@
     <name>Pegasus - PaaS Manager Migrations</name>
 
     <parent>
-        <groupId>com.telefonica.IoT</groupId>
+        <groupId>com.telefonica.iot</groupId>
         <artifactId>paas-manager-server</artifactId>
         <version>1.3.0-SNAPSHOT</version>
     </parent>
