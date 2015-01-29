@@ -424,6 +424,7 @@ public class OpenstackNetworkClientImpl implements NetworkClient {
             }
             network.setIdNetwork(netId);
         }
+
         log.debug("Load network " + network.getIdNetwork() + " in region " + region + " vdc " + claudiaData.getVdc());
         String response = "";
         try {

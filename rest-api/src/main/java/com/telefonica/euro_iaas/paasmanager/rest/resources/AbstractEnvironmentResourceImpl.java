@@ -188,7 +188,7 @@ public class AbstractEnvironmentResourceImpl implements AbstractEnvironmentResou
 
     /**
      * Get detail information of a specific environment.
-     * 
+     *
      * @param org
      *            The organization of the environment to find.
      * @param name
