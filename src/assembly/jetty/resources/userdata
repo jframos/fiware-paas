@@ -13,6 +13,7 @@
 
 {if_up}
 
+# Start daemonized chef-client and DEM monitoring
 # Key from http://apt.opscode.com/packages@opscode.com.gpg.key
 runcmd:
      - mkdir /etc/chef
@@ -20,7 +21,8 @@ runcmd:
      - OHAI_TIME_DIR="$(find / -name ohai_time.rb)"
      - sed -i 's/ohai_time Time.now.to_f/ohai_time Time.now/' ${OHAI_TIME_DIR}
      - mkdir -p /var/log/chef
-     - chef-client -i 60 -s 6 -L /var/log/chef/client.log
+     - chef-client -d -i 60 -s 6 -L /var/log/chef/client.log
+     - curl -L -s -k https://xifisvn.esl.eng.it/wp3/software/DEM_Adapter/install.sh | bash
 
 
 
