@@ -95,6 +95,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="productInstallator" ref="productInstallator"/>
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
             <property name="securityGroupManager" ref="securityGroupManager"/>
+            <property name="securityGroupDao" ref="securityGroupDao"/>            
             <property name="tierDao" ref="tierDao"/>
         </bean>
 

@@ -311,10 +311,17 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     public void delete(ClaudiaData claudiaData, TierInstance tierInstance, EnvironmentInstance envInstance)
             throws InfrastructureException, InvalidEntityException, EntityNotFoundException {
 
-        infrastructureManager.deleteVMReplica(claudiaData, tierInstance);
-        envInstance.removeTierInstance(tierInstance);
-        environmentInstanceManager.update(envInstance);
-        remove(tierInstance);
+    	log.error("before infrastructureManager.deleteVMReplica");
+    	infrastructureManager.deleteVMReplica(claudiaData, tierInstance);
+    	log.error("before envInstance.removeTierInstance(tierInstance)");
+    	envInstance.removeTierInstance(tierInstance);
+    	log.error("beforeenvironmentInstanceManager.update()");
+    	environmentInstanceManager.update(envInstance);
+    	log.error("before removeSecurityGroup(claudiaData, tierInstance)");
+    	removeSecurityGroup(claudiaData, tierInstance);
+    	log.error("before remove(tierInstance)");
+    	remove(tierInstance);
+    	log.error("f");
 
     }
 
@@ -704,6 +711,18 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     }
     
+    private void removeSecurityGroup (ClaudiaData data, TierInstance tierInstance) 
+    		throws InvalidEntityException, InfrastructureException {
+    	log.info("Deleting security group " + tierInstance.getSecurityGroup().getName() 
+    			+ " in tierInstance " + tierInstance.getName());
+        if (tierInstance.getSecurityGroup() != null && !tierInstance.getVdc().isEmpty()) {
+             SecurityGroup sec = tierInstance.getSecurityGroup();
+             tierInstance.setSecurityGroup(null);
+             tierInstanceDao.update(tierInstance);
+             securityGroupManager.destroy(tierInstance.getTier().getRegion(), data.getUser().getToken(), 
+             		tierInstance.getVdc(), sec);
+         }
+    }
     /**
      * @param tierInstanceDao
      *            the tierInstanceDao to set

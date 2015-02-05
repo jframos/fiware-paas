@@ -37,6 +37,7 @@ import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.EnvironmentInstanceDao;
+import com.telefonica.euro_iaas.paasmanager.dao.SecurityGroupDao;
 import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
 import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
@@ -87,6 +88,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
     private ProductInstallator productInstallator;
     private SecurityGroupManager securityGroupManager;
     private TierDao tierDao;
+    private SecurityGroupDao securityGroupDao;
 
 
     /** The log. */
@@ -424,22 +426,29 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         try {
             infrastructureManager.deleteNetworksInTierInstance(claudiaData, tierInstance);
         } catch (Exception e) {
-            log.error(e.getMessage());
+        	log.error(e.getMessage());
             error = true;
+        } finally {
+        	//Deleting SG
+            log.info("Deleting security group from in tier " + tierInstance.getName() + " in TierInstance");
+            if (tierInstance.getSecurityGroup() != null && !tierInstance.getVdc().isEmpty()) {
+            	SecurityGroup securityGroup=null;
+            	try {
+        			securityGroup = securityGroupDao.load(tierInstance.getSecurityGroup().getName());
+        		} catch (EntityNotFoundException e1) {
+        			String msg = "SecurityGroup is not present in database " + securityGroup.getName();
+        			log.error(msg);
+        			e1.printStackTrace();
+        			throw new InvalidEntityException(msg);
+        		}
+                log.info("Deleting security group " + securityGroup.getName() + " in tier " + tierInstance.getName());
+                tierInstance.setSecurityGroup(null);
+                tierInstanceDao.update(tierInstance);
+                securityGroupManager.destroy(tierInstance.getTier().getRegion(), claudiaData.getUser().getToken(), 
+                		tierInstance.getVdc(), securityGroup);
+            }
+        	tierInstanceManager.remove(tierInstance);        	
         }
-        
-       //Deleting SG
-        /*Tier tier = tierInstance.getTier();
-        log.info("Deleting security group from in tier " + tier.getName() + " in TierInstance");
-        if (tier.getSecurityGroup() != null && !tier.getVdc().isEmpty()) {
-            SecurityGroup sec = tier.getSecurityGroup();
-            log.info("Deleting security group " + sec.getName() + " in tier " + tier.getName());
-            tier.setSecurityGroup(null);
-            tierDao.update(tier);
-            securityGroupManager.destroy(tier.getRegion(), claudiaData.getUser().getToken(), tier.getVdc(), sec);
-        }*/
-
-        tierInstanceManager.remove(tierInstance);
     }
 
     // PRVATE METHODS
@@ -692,5 +701,12 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
      */
     public void setTierDao(TierDao tierDao) {
         this.tierDao = tierDao;
+    }
+    /**
+     * @param tierDao
+     *            the tierDao to set
+     */
+    public void setSecurityGroupDao(SecurityGroupDao securityGroupDao) {
+        this.securityGroupDao = securityGroupDao;
     }
 }

@@ -129,15 +129,15 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
      * It destroy a security group.
      */
 
-    public void destroy(String region, String token, String vdc, SecurityGroup securityGroup)
+    public void destroy(String region, String token, String vdc, SecurityGroup secGroup)
             throws InvalidEntityException, InfrastructureException {
-
-        if (securityGroup.getRules().isEmpty()) {
+    	log.info("Destroying securitygroup: " + secGroup.getName());
+        if (secGroup.getRules().isEmpty()) {
             log.warn("There is not any rule associated to the security group");
         } else {
-            List<Rule> rules = securityGroup.cloneRules();
-            securityGroup.setRules(null);
-            securityGroupDao.update(securityGroup);
+            List<Rule> rules = secGroup.cloneRules();
+            secGroup.setRules(null);
+            securityGroupDao.update(secGroup);
 
             for (Rule rule : rules) {
                 try {
@@ -149,12 +149,12 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
         }
 
         try {
-            firewallingClient.destroySecurityGroup(region, token, vdc, securityGroup);
+            firewallingClient.destroySecurityGroup(region, token, vdc, secGroup);
         } catch (Exception e) {
             log.warn("There is not any rule associated to the security group");
         }
 
-        securityGroupDao.remove(securityGroup);
+        securityGroupDao.remove(secGroup);
 
     }
 
