@@ -38,8 +38,19 @@ def before_each_scenario(feature):
         world.config[PAAS][VDC],
         world.config[PAAS][SDC_URL])
 
+    # Init feature vars
+    world.product_and_release_list = list()
+    world.product_installator = 'chef'
+
     # Create product in SDC to be used by this feature
     terrain_steps.init_products_in_sdc()
+
+
+@before.each_scenario
+def before_each_scenario(scenario):
+    """ Lettuce Hook. Will be executed before each scenario. Init global scenario vars. """
+    world.product_list_with_attributes = list()
+    world.paas_product_list_with_attributes = list()
 
 
 @after.each_scenario

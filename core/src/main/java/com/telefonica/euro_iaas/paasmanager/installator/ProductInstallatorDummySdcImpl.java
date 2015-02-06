@@ -34,6 +34,7 @@ import com.telefonica.euro_iaas.paasmanager.installator.sdc.util.SDCUtil;
 import com.telefonica.euro_iaas.paasmanager.model.Artifact;
 import com.telefonica.euro_iaas.paasmanager.model.Attribute;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
+import com.telefonica.euro_iaas.paasmanager.model.EnvironmentInstance;
 import com.telefonica.euro_iaas.paasmanager.model.InstallableInstance.Status;
 import com.telefonica.euro_iaas.paasmanager.model.ProductInstance;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
@@ -47,8 +48,6 @@ public class ProductInstallatorDummySdcImpl implements ProductInstallator {
     private SDCClient sDCClient;
     private SystemPropertiesProvider systemPropertiesProvider;
     private SDCUtil sDCUtil;
-
-
 
     // //////////// I.O.C /////////////
     /**
@@ -71,10 +70,9 @@ public class ProductInstallatorDummySdcImpl implements ProductInstallator {
         this.sDCUtil = sDCUtil;
     }
 
-
-
-    public ProductInstance install(ClaudiaData claudiaData, String envName, TierInstance tierInstance,
-            ProductRelease productRelease, Set<Attribute> attributes) throws ProductInstallatorException {
+    public ProductInstance install(ClaudiaData claudiaData, EnvironmentInstance environmentInstance,
+            TierInstance tierInstance, ProductRelease productRelease)
+            throws ProductInstallatorException {
 
         ProductInstance productInstance = new ProductInstance();
         productInstance.setStatus(Status.INSTALLED);
@@ -95,14 +93,14 @@ public class ProductInstallatorDummySdcImpl implements ProductInstallator {
     @Override
     public void deleteNode(ClaudiaData claudiaData, String vdc, String nodeName) throws ProductInstallatorException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void installArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact)
             throws ProductInstallatorException, OpenStackException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -116,15 +114,14 @@ public class ProductInstallatorDummySdcImpl implements ProductInstallator {
     public void uninstall(ClaudiaData claudiaData, ProductInstance productInstance) throws ProductInstallatorException,
             OpenStackException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void uninstallArtifact(ClaudiaData claudiaData, ProductInstance productInstance, Artifact artifact)
             throws ProductInstallatorException, OpenStackException {
         // TODO Auto-generated method stub
-        
-    }
 
+    }
 
 }

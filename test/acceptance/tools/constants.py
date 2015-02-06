@@ -21,17 +21,24 @@
 # contact with opensource@tid.es
 # Names of the properties in the {environment}-properties.json files
 
+# Configuration values
 ENVIRONMENT = "environment"
+ENVIRONMENT_TESTFILES = "test_files"
 NAME = "name"
 LOGS_PATH = "logs_path"
 PAAS = "paas"
 KEYSTONE_URL = "keystone_url"
 SDC_URL = "sdc_url"
 PAASMANAGER_URL = "paasmanager_url"
+GLANCE_URL = "glance_url"
+NOVA_URL = "nova_url"
 VDC = "vdc"
 TENANT = "tenant"
 USER = "user"
 PASSWORD = "password"
+TENANT_ALT = "tenant_alt"
+USER_ALT = "user_alt"
+PASSWORD_ALT = "password_alt"
 TIER_IMAGE = "tier_image"
 TIER_NUM_MIN = "tier_num_min"
 TIER_NUM_MAX = "tier_num_max"
@@ -39,9 +46,23 @@ TIER_NUM_INITIAL = "tier_num_initial"
 TIER_FLAVOUR = "tier_flavour"
 TIER_KEYPAIR = "tier_keypair"
 TIER_FLOATINGIP = "tier_floatingip"
+TIER_REGION = "tier_region"
+
+# METADATA constants
+METADATA_NID = "nid"
+METADATA_NID_NOVA_KEY = "nid"
 
 # Auxiliary constants used in .feature files or interfaces
+# Request values
 NAME = "name"
 DESCRIPTION = "description"
 PRODUCTS = "products"
 NETWORKS = "networks"
+TIER_REQUEST_IMAGE = "image"
+TIER_REQUEST_NUM_MIN = "minimumNumberInstances"
+TIER_REQUEST_NUM_MAX = "maximumNumberInstances"
+TIER_REQUEST_NUM_INITIAL = "initialNumberInstances"
+TIER_REQUEST_FLAVOUR = "flavour"
+TIER_REQUEST_KEYPAIR = "keypair"
+TIER_REQUEST_FLOATINGIP = "floatingip"
+TIER_REQUEST_REGION = "region"

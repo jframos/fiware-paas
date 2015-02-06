@@ -48,8 +48,14 @@ public interface SystemPropertiesProvider {
     String KEYSTONE_USER = "openstack-tcloud.keystone.user";
 
     String KEYSTONE_PASS = "openstack-tcloud.keystone.pass";
- 
+
+    /** Keystone tenant id **/
     String KEYSTONE_TENANT = "openstack-tcloud.keystone.tenant";
+
+    /** Path for the user data **/
+    String USER_DATA_PATH= "user_data_path";
+    
+    String AVAILABLE_ATTRIBUTE_TYPES = "available.attribute.types";
 
 
     /**

@@ -17,6 +17,11 @@ target/
 testreport/
 logs/
 
+core/bin/
+integration-test/bin/
+model/bin/
+rest-api/bin/
+
 #IDE
 *.iml
 .idea/

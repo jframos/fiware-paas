@@ -32,13 +32,14 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.BadRequestException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -151,6 +152,7 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
         logger.debug(header);
         logger.debug(pathInfo);
 
+
         MDC.put("txId", ((HttpServletRequest) req).getSession().getId());
 
         if (pathInfo != null && (pathInfo.equals("/") || pathInfo.equals("/extensions"))) {
@@ -169,7 +171,7 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
                 if ("".equals(token)) {
                     String str = "Missing token header";
                     logger.info(str);
-                    throw new BadRequestException(str);
+                    throw new BadCredentialsException(str);
                 }
                 String tenantId = request.getHeader(OPENSTACK_HEADER_TENANTID);
                 logger.debug(tenantId);
@@ -188,6 +190,15 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
 
                 if (debug) {
                     logger.debug("Authentication success: " + authResult);
+                }
+
+                // check AUTH-TOKEN and VDC are the same
+                String uri = request.getRequestURI();
+                logger.debug("URI: " + uri);
+                if (uri.contains("vdc") && !uri.contains(tenantId)) {
+                    String str = "Bad credentials for requested VDC";
+                    logger.info(str);
+                    throw new AccessDeniedException(str);
                 }
 
                 PaasManagerUser user = (PaasManagerUser) authResult.getPrincipal();
@@ -221,6 +232,8 @@ public class OpenStackAuthenticationFilter extends GenericFilterBean {
                 }
 
                 return;
+            }catch (AccessDeniedException ex){
+                throw ex;
             } catch (Exception ex) {
                 SecurityContextHolder.clearContext();
 

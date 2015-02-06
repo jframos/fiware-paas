@@ -24,9 +24,6 @@
 
 package com.telefonica.euro_iaas.paasmanager.claudia;
 
-
-import java.util.ArrayList;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -35,7 +32,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -57,7 +54,7 @@ import com.telefonica.euro_iaas.paasmanager.model.dto.VM;
 import com.telefonica.euro_iaas.paasmanager.util.FileUtilsImpl;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackRegion;
 import com.telefonica.euro_iaas.paasmanager.util.OpenStackUtil;
-
+import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 
 /**
  * @author jesus.movilla
@@ -71,6 +68,7 @@ public class ClaudiaClientOpenStackImplTest {
     private OpenStackRegion openStackRegion;
     private NetworkInstanceManager networkInstanceManager;
     private ClaudiaClientOpenStackImpl claudiaClientOpenStack;
+    private SystemPropertiesProvider systemPropertiesProvider;
 
     @Before
     public void setUp() throws Exception {
@@ -79,8 +77,7 @@ public class ClaudiaClientOpenStackImplTest {
                 + " xmlns:provider=\"http://docs.openstack.org/ext/provider/api/v1.0\""
                 + " xmlns:quantum=\"http://openstack.org/quantum/api/v2.0\" "
                 + "xmlns:router=\"http://docs.openstack.org/ext/quantum/router/api/v1.0\" "
-                + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-                + "<network><status>ACTIVE</status>"
+                + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" + "<network><status>ACTIVE</status>"
                 + "<subnets><subnet>e7118ac1-4aea-49f3-8ebf-383170453fd9</subnet></subnets>"
                 + "<name>test</name><provider:physical_network xsi:nil=\"true\" />"
                 + "<admin_state_up quantum:type=\"bool\">True</admin_state_up>"
@@ -104,6 +101,32 @@ public class ClaudiaClientOpenStackImplTest {
                 + " \"router:external\": false, \"tenant_id\": \"67c979f51c5b4e89b85c1f876bdffe31\","
                 + " \"admin_state_up\": false,"
                 + " \"shared\": false, \"id\": \"d8023576-7743-4f98-8089-a1ccc60b5ec2\"}}";
+
+        String userData = "# The default is to install from packages.\n" + "{networks}\n" + "\n" + "{if_up}\n" + "\n"
+                + "# Key from http://apt.opscode.com/packages@opscode.com.gpg.key\n" + "runcmd:\n"
+                + "     - mkdir /etc/chef\n"
+                + "     - curl -L http://repositories.testbed.fi-ware.org/webdav/chef/install.sh | bash\n"
+                + "     - OHAI_TIME_DIR=\"$(find / -name ohai_time.rb)\"\n"
+                + "     - sed -i 's/ohai_time Time.now.to_f/ohai_time Time.now/' ${OHAI_TIME_DIR}\n"
+                + "     - mkdir -p /var/log/chef\n" + "     - chef-client -i 60 -s 6 -L /var/log/chef/client.log\n"
+                + "\n" + "\n" + "\n" + "chef:\n" + "\n" + " # Valid values are 'gems' and 'packages' and 'omnibus'\n"
+                + " install_type: \"packages\"\n" + "\n" + " # Boolean: run 'install_type' code even if chef-client\n"
+                + " #          appears already installed.\n" + " force_install: false\n" + " node_name: {node_name}\n"
+                + " # Chef settings\n" + " server_url: {server_url}\n" + " # Node Name\n"
+                + " # Defaults to the instance-id if not present\n" + " validation_name: \"chef-validator\"\n"
+                + " # Node Name\n" + " # Defaults to the instance-id if not present\n" + "\n"
+                + " # Default validation name is chef-validator\n" + " validation_key: |\n" + "{validation_key}\n"
+                + "\n" + "puppet:\n" + " # Every key present in the conf object will be added to puppet.conf:\n"
+                + " # [name]\n" + " # subkey=value\n" + " #\n"
+                + " # For example the configuration below will have the following section\n"
+                + " # added to puppet.conf:\n" + " # [puppetd]\n" + " # server=puppetmaster.example.org\n"
+                + " # certname=i-0123456.ip-X-Y-Z.cloud.internal\n" + " #\n"
+                + " # The puppmaster ca certificate will be available in\n" + " # /var/lib/puppet/ssl/certs/ca.pem\n"
+                + " conf:\n" + "   agent:\n" + "     server: \"{puppet_master}\"\n" + "     runinterval: \"60\"\n"
+                + "     pluginsync: true\n" + "\n" + "\n" + "\n" + " # Capture all subprocess output into a logfile\n"
+                + "# Useful for troubleshooting cloud-init issues\n"
+                + "output: {all: '| tee -a /var/log/cloud-init-output.log'}\n";
+
         PaasManagerUser user = new PaasManagerUser("username", "myToken", new HashSet<GrantedAuthority>());
         user.setTenantName("FIWARE");
         claudiaData = new ClaudiaData("vdc", "org", "service");
@@ -122,16 +145,18 @@ public class ClaudiaClientOpenStackImplTest {
         networkInstanceManager = mock(NetworkInstanceManager.class);
         openStackRegion = mock(OpenStackRegion.class);
         fileUtils = new FileUtilsImpl();
+        systemPropertiesProvider = mock(SystemPropertiesProvider.class);
+        when(systemPropertiesProvider.getProperty(anyString())).thenReturn("src/main/resources/userdata");
         claudiaClientOpenStack.setNetworkInstanceManager(networkInstanceManager);
         claudiaClientOpenStack.setOpenStackUtil(openStackUtil);
         claudiaClientOpenStack.setFileUtils(fileUtils);
         claudiaClientOpenStack.setOpenStackRegion(openStackRegion);
-
+        claudiaClientOpenStack.setSystemPropertiesProvider(systemPropertiesProvider);
 
         when(openStackUtil.createServer(any(String.class), anyString(), anyString(), anyString())).thenReturn(
                 "response");
-        when(openStackUtil.createNetwork(any(String.class), anyString(), anyString(), anyString()))
-                .thenReturn(expectedNetwork);
+        when(openStackUtil.createNetwork(any(String.class), anyString(), anyString(), anyString())).thenReturn(
+                expectedNetwork);
         when(openStackUtil.createSubNet(any(SubNetworkInstance.class), anyString(), anyString(), anyString()))
                 .thenReturn(expectedSubnet);
         when(openStackUtil.createRouter(any(RouterInstance.class), anyString(), anyString(), anyString())).thenReturn(
@@ -140,12 +165,11 @@ public class ClaudiaClientOpenStackImplTest {
                 openStackUtil.addRouterInterface(any(String.class), any(String.class), anyString(), anyString(),
                         anyString())).thenReturn("OK");
         when(openStackUtil.getNetworks(anyString(), anyString(), anyString())).thenReturn(expectedNetworks);
+        // when(fileUtils.readFile(anyString())).thenReturn(userData);
     }
-
 
     @Test
     public void testDeployVMEssex() throws Exception {
-
 
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
@@ -156,7 +180,6 @@ public class ClaudiaClientOpenStackImplTest {
         when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
         when(openStackRegion.getPuppetMasterEndPoint(anyString(), anyString())).thenReturn("http");
 
-
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         verify(openStackUtil).createServer(any(String.class), anyString(), anyString(), anyString());
 
@@ -164,7 +187,6 @@ public class ClaudiaClientOpenStackImplTest {
 
     @Test
     public void testUserData() throws Exception {
-
 
         TierInstance tierInstance = new TierInstance();
         tierInstance.setTier(tier);
@@ -179,10 +201,8 @@ public class ClaudiaClientOpenStackImplTest {
         when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
         when(openStackRegion.getPuppetMasterEndPoint(anyString(), anyString())).thenReturn("http");
 
-
         String result = claudiaClientOpenStack.getUserData(claudiaData, tierInstance);
         assertNotNull(result);
-        System.out.println(result);
 
     }
 
@@ -225,8 +245,8 @@ public class ClaudiaClientOpenStackImplTest {
         when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
         when(openStackRegion.getPuppetMasterEndPoint(anyString(), anyString())).thenReturn("http");
 
-        when(networkInstanceManager.listNetworks(any(ClaudiaData.class), any(String.class)))
-                .thenReturn(networkInstances);
+        when(networkInstanceManager.listNetworks(any(ClaudiaData.class), any(String.class))).thenReturn(
+                networkInstances);
 
         when(networkInstanceManager.load(any(String.class), any(String.class), any(String.class))).thenReturn(netInst);
 
@@ -235,7 +255,6 @@ public class ClaudiaClientOpenStackImplTest {
         verify(openStackUtil).createServer(any(String.class), any(String.class), any(String.class), any(String.class));
 
     }
-
 
     @Test
     public void testDeployVMEGrizzlyNotNetwork2() throws Exception {
@@ -258,16 +277,15 @@ public class ClaudiaClientOpenStackImplTest {
         when(openStackRegion.getChefServerEndPoint(anyString(), anyString())).thenReturn("http");
         when(openStackRegion.getPuppetMasterEndPoint(anyString(), anyString())).thenReturn("http");
 
-        when(networkInstanceManager.listNetworks(any(ClaudiaData.class), any(String.class)))
-                .thenReturn(networkInstances);
+        when(networkInstanceManager.listNetworks(any(ClaudiaData.class), any(String.class))).thenReturn(
+                networkInstances);
 
         when(networkInstanceManager.create(any(ClaudiaData.class), any(NetworkInstance.class), any(String.class)))
                 .thenReturn(netInst2);
 
         claudiaClientOpenStack.deployVM(claudiaData, tierInstance, 1, vm);
         assertEquals(tierInstance.getNetworkInstances().size(), 1);
-        verify(openStackUtil)
-                .createServer(any(String.class), any(String.class), any(String.class), any(String.class));
+        verify(openStackUtil).createServer(any(String.class), any(String.class), any(String.class), any(String.class));
 
     }
 
@@ -299,7 +317,6 @@ public class ClaudiaClientOpenStackImplTest {
         String file = claudiaClientOpenStack.writeInterfaces(tierInstance);
         System.out.println(file);
         assertNotNull(file);
-
 
     }
 

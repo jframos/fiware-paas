@@ -36,6 +36,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.telefonica.euro_iaas.paasmanager.model.dto.SubNetworkDto;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A sub network.
@@ -79,7 +81,10 @@ public class SubNetworkInstance {
     }
 
     /**
-     * @param networkName
+     * Constructor.
+     * @param name
+     * @param vdc
+     * @param region
      */
     public SubNetworkInstance(String name, String vdc, String region) {
         this.name = name;
@@ -89,7 +94,11 @@ public class SubNetworkInstance {
     }
 
     /**
-     * @param networkName
+     *
+     * @param name
+     * @param vdc
+     * @param region
+     * @param id
      */
     public SubNetworkInstance(String name, String vdc, String region, String id) {
         this.name = name;
@@ -156,6 +165,12 @@ public class SubNetworkInstance {
         this.idSubNet = id;
     }
 
+
+    /**
+     * Equals.
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -247,6 +262,27 @@ public class SubNetworkInstance {
         sb.append("[allocationPoolsEnd = ").append(this.allocationPoolsEnd).append("]");
         sb.append("]");
         return sb.toString();
+    }
+
+    /**
+     * It obtains the subnetwork entity from the Json.
+     * @param jsonNet
+     * @param region
+     * @return
+     * @throws JSONException
+     */
+    public static SubNetworkInstance fromJson(JSONObject jsonNet, String region) throws JSONException {
+        String name = (String) jsonNet.get("name");
+        String subNetworkId = (String) jsonNet.get("id");
+        String networkId = (String) jsonNet.get("network_id");
+        String cidr =  (String) jsonNet.get("cidr");
+        String tenantId = (String) jsonNet.get("tenant_id");
+
+        SubNetworkInstance subnetInst = new SubNetworkInstance(name, tenantId, region);
+        subnetInst.setIdSubNet(subNetworkId);
+        subnetInst.setIdNetwork(networkId);
+        subnetInst.setCidr(cidr);
+        return subnetInst;
     }
 
 

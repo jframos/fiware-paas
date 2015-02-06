@@ -34,9 +34,15 @@ import mimetypes
 status_codes = {"OK": 200,
                 "No Content": 204,
                 "Bad Request": 400,
+                "Unauthorized": 401,
+                "Forbidden": 403,
                 "Not Found": 404,
                 "Conflict": 409,
+                "Not acceptable": 406,
+                "Unsupported media type": 415,
                 "Internal Server Error": 500}
+
+MAX_CHECK_TIMES_FOR_TASK_EXECUTION = 200
 
 
 def post_multipart(host, port, selector, fields, files):
@@ -83,15 +89,19 @@ def get_content_type(filename):
 def __do_http_req(method, url, headers, payload):
     #print "##### REQUEST #####"
     #print method, url
+    #print "Headers: ", headers
     #print payload, "\n"
 
-    url = urllib.quote(url, ":/")  # Apply URL encoding to the URL
     parsed_url = urlparse(url)
+    final_uri = parsed_url.path
+    if parsed_url.query is not None and len(parsed_url.query) != 0:
+        final_uri += "?" + parsed_url.query
+
     if 'https' in parsed_url[0]:
         con = httplib.HTTPSConnection(parsed_url.netloc)
     else:
         con = httplib.HTTPConnection(parsed_url.netloc)
-    con.request(method, parsed_url.path, payload, headers)
+    con.request(method, final_uri, payload, headers)
     return con.getresponse()
 
     ##
@@ -159,11 +169,13 @@ def wait_for_task(task_data, headers):
     except:
         assert False, "No task information received: %s" % (task_data)
 
-    while status == 'RUNNING':
+    i = 0
+    while status == 'RUNNING' and i < MAX_CHECK_TIMES_FOR_TASK_EXECUTION:
         time.sleep(5)
         task_data = json.loads(get_task_data(href, headers))
         status = task_data["status"]
-
+        print "WAITING for task execution ({}). STATUS: {}".format(i, status)
+        i += 1
     return task_data
 
 

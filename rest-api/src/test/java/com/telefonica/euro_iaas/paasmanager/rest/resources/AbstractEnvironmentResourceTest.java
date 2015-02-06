@@ -63,6 +63,7 @@ public class AbstractEnvironmentResourceTest extends TestCase {
 
     /**
      * Initialize the Unit Test.
+     * 
      * @throws Exception
      */
     @Before
@@ -73,6 +74,7 @@ public class AbstractEnvironmentResourceTest extends TestCase {
         environmentResourceValidator = mock(EnvironmentResourceValidator.class);
         environmentResource.setEnvironmentManager(environmentManager);
         environmentResource.setEnvironmentResourceValidator(environmentResourceValidator);
+        environmentResource.setSystemPropertiesProvider(systemPropertiesProvider);
 
         Environment environment = new Environment();
         environment.setName("Name");
@@ -94,6 +96,7 @@ public class AbstractEnvironmentResourceTest extends TestCase {
 
     /**
      * Test the insertion of a new environment.
+     * 
      * @throws Exception
      */
     @Test
@@ -107,8 +110,8 @@ public class AbstractEnvironmentResourceTest extends TestCase {
         environmentDto.setVdc("");
         environmentDto.setDescription("Description");
 
-  //      when(environmentManager.load(any(String.class),any(String.class))).thenThrow(
-    //            new EntityNotFoundException(Environment.class, "", environment));
+        // when(environmentManager.load(any(String.class),any(String.class))).thenThrow(
+        // new EntityNotFoundException(Environment.class, "", environment));
 
         List<ProductReleaseDto> productReleaseDto = new ArrayList<ProductReleaseDto>();
         productReleaseDto.add(new ProductReleaseDto("test", "0.1"));
@@ -125,6 +128,7 @@ public class AbstractEnvironmentResourceTest extends TestCase {
 
     /**
      * Test the insertion of a environment together with some tiers on it.
+     * 
      * @throws Exception
      */
     @Test
@@ -137,8 +141,8 @@ public class AbstractEnvironmentResourceTest extends TestCase {
         environmentDto.setName("Name2");
         environmentDto.setDescription("Description");
 
-      //  when(environmentManager.load(any(String.class),any(String.class))).thenThrow(
-        //        new EntityNotFoundException(Environment.class, "", environment));
+        // when(environmentManager.load(any(String.class),any(String.class))).thenThrow(
+        // new EntityNotFoundException(Environment.class, "", environment));
 
         environmentResource.insert("org", environmentDto);
 
