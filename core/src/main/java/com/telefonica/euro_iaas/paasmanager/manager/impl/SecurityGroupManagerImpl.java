@@ -25,6 +25,7 @@
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,7 +137,7 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
             log.warn("There is not any rule associated to the security group");
         } else {
             List<Rule> rules = secGroup.cloneRules();
-            secGroup.setRules(null);
+        	secGroup.setRules(null);
             securityGroupDao.update(secGroup);
 
             for (Rule rule : rules) {

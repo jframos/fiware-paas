@@ -25,7 +25,9 @@
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
@@ -650,7 +652,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         		+ "_" + tierInstance.getTier().getRegion() + "_" + tierInstance.getName());
 
         List<Rule> rules = getDefaultRules();
-
+        
         if (tierInstance.getTier().getProductReleases() != null) {
 
             for (ProductRelease productRelease : tierInstance.getTier().getProductReleases()) {
@@ -661,7 +663,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         return securityGroup;
     }
     
-    private List<Rule> getDefaultRules() {
+   	   	private List<Rule> getDefaultRules() {
         List<Rule> rules = new ArrayList<Rule>();
         log.info("Generate TCP rule " + 9990);
         Rule rule2 = new Rule("TCP", "22", "22", "", "0.0.0.0/0");
@@ -670,7 +672,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     }
 
-    
     private void getRulesFromProduct(ProductRelease productRelease, List<Rule> rules) throws EntityNotFoundException {
 
         productRelease = productReleaseManager.loadWithMetadata(productRelease.getProduct() + "-"
@@ -693,7 +694,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             }
         }
     }
-    
+   	
     /**
      * It creates the rule port for ssh.
      * 

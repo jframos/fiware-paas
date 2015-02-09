@@ -434,7 +434,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             if (tierInstance.getSecurityGroup() != null && !tierInstance.getVdc().isEmpty()) {
             	SecurityGroup securityGroup=null;
             	try {
-        			securityGroup = securityGroupDao.load(tierInstance.getSecurityGroup().getName());
+        			securityGroup = securityGroupDao.loadWithRules(tierInstance.getSecurityGroup().getName());
         		} catch (EntityNotFoundException e1) {
         			String msg = "SecurityGroup is not present in database " + securityGroup.getName();
         			log.error(msg);
