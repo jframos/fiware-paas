@@ -414,10 +414,7 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         if (!(claudiaData.getVdc() == null || claudiaData.getVdc().isEmpty())) {
             cidrOpenstack = getNumberDeployedNetwork(claudiaData, region) + 1;
         }
-
-        int cidrdb = this.findAll().size();
-        int cidrCount = cidrdb + cidrOpenstack;
-        return "10.0." + cidrCount + ".0/24";
+        return "10.1." + cidrOpenstack + ".0/24";
     }
 
 
