@@ -25,9 +25,7 @@
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
@@ -36,9 +34,6 @@ import org.slf4j.LoggerFactory;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
-import com.telefonica.euro_iaas.paasmanager.claudia.FirewallingClient;
-import com.telefonica.euro_iaas.paasmanager.dao.SecurityGroupDao;
-import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
 import com.telefonica.euro_iaas.paasmanager.dao.TierInstanceDao;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentRequestException;
@@ -50,8 +45,6 @@ import com.telefonica.euro_iaas.paasmanager.exception.ProductReconfigurationExce
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentManager;
 import com.telefonica.euro_iaas.paasmanager.manager.InfrastructureManager;
-import com.telefonica.euro_iaas.paasmanager.manager.NetworkInstanceManager;
-import com.telefonica.euro_iaas.paasmanager.manager.NetworkManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductInstanceManager;
 import com.telefonica.euro_iaas.paasmanager.manager.ProductReleaseManager;
 import com.telefonica.euro_iaas.paasmanager.manager.SecurityGroupManager;
@@ -76,17 +69,14 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 public class TierInstanceManagerImpl implements TierInstanceManager {
 
     private TierInstanceDao tierInstanceDao;
-    private SecurityGroupDao securityGroupDao;
     private TierManager tierManager;
     private ProductInstanceManager productInstanceManager;
     private InfrastructureManager infrastructureManager;
     private ProductReleaseManager productReleaseManager;
     private EnvironmentManager environmentManager;
     private EnvironmentInstanceManager environmentInstanceManager;
-    private NetworkInstanceManager networkInstanceManager;
     private SecurityGroupManager securityGroupManager;
     private SystemPropertiesProvider systemPropertiesProvider;
-    private FirewallingClient firewallingClient;
     
     private static Logger log = LoggerFactory.getLogger(TierInstanceManagerImpl.class);
 
@@ -121,7 +111,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         try {
         	tierInstance.setTier(tierDB);
         	createSecurityGroups(data, tierInstance);
-        	//tierInstance = tierInstanceDao.update(tierInstance);
         } catch (InvalidSecurityGroupRequestException isgre) {
         	String secGroupMen = "The securityGroupRequest creation is invalid"; 
         	log.error(secGroupMen);
@@ -132,56 +121,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             throw new InvalidEntityException(men + " : " + enfe.getMessage());
         }
         
-        /*String secGroupName = "sg_" + data.getService() + "_" + data.getVdc() 
-        		+ "_" + tierDB.getName();
-        
-        //Creating SecurityGroups
-        tierDB.setSecurityGroup(null);
-        SecurityGroup secGroup = null;
-        SecurityGroup secGroupOpenStack = null;
-        try{
-        	log.info("Checking if  " + secGroupName+ " exists in Database");
-        	secGroup = securityGroupManager.load(secGroupName);
-        	
-        	//Checking if the SG has been created in Openstack
-        	try {
-        		firewallingClient.loadSecurityGroup(tierDB.getRegion(), 
-        			data.getUser().getToken(), data.getVdc(), 
-        			secGroup.getIdSecurityGroup());
-        	} catch (EntityNotFoundException enfe2) {
-        		log.info(secGroupName + " does not exist in Region " + tierDB.getRegion());
-        		
-        		//Create SG in region and update secgorupId in Database
-        		try {
-        			secGroupOpenStack = securityGroupManager.createInOpenstack(
-        				tierDB.getRegion(), 
-        				data.getUser().getToken(), 
-        				data.getVdc(), secGroup);
-        		} catch (AlreadyExistsEntityException aee) {
-        		    	   log.info(secGroupName+ " already Exist in Region " + tierDB.getRegion());
-        		}
-        		tierManager.updateTierSecurityGroup(tierDB, secGroupOpenStack);
-        	}
-       	
-        	tierManager.updateTierSecurityGroup(tierDB, secGroup);
-        	
-        } catch (EntityNotFoundException enfe) {
-            	try {
-            		log.info(secGroupName+ " does not exist so creating secgroup " + secGroupName);
-            		tierDB = createSecurityGroups(data, tierDB);
-            		log.info(tierDB.getSecurityGroup().getName() + " In Tier " + tierDB.getName());
-            	} catch (InvalidSecurityGroupRequestException isgre) {
-            		log.error("InvalidSecurityGroupRequestException "
-                            + isgre.getMessage());
-            		throw new InvalidEntityException ("InvalidSecurityGroupRequestException "
-                            + isgre.getMessage());
-            	} catch (EntityNotFoundException enfe2) {
-            		log.error("InvalidSecurityGroupRequestException " + enfe2.getMessage());
-            		throw new InvalidEntityException ("EntityNotFoundException . Products of TierInstance were not found  "
-                            + enfe2.getMessage());
-            	} 
-        }*/
-         
        tierInstanceDB.setTier(tierDB);
        tierInstanceDB.setSecurityGroup(tierInstance.getSecurityGroup());
        
@@ -578,22 +517,7 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         }
     }
     
-    /*private TierInstance updateTierInstanceSecurityGroup(TierInstance tierInstance, SecurityGroup securityGroup) throws InvalidEntityException {
-        
-    	log.info("Update updateTierInstanceSecurityGroup " + tierInstance.getName() 
-    			+ " with idSecurityGroup= " + securityGroup.getIdSecurityGroup());
-        try {
-        	tierInstance.setSecurityGroup(securityGroup);
-        	tierInstance = tierInstanceDao.update(tierInstance);
-            return tierInstanceDao.findByTierInstanceIdWithMetadata(tierInstance.getId());
-        } catch (Exception e) {
-            log.error("It is not possible to update the tierInstance " + tierInstance.getName() 
-            		+ " with idSecurityGroup= " + securityGroup.getIdSecurityGroup() + " : " + e.getMessage(), e);
-            throw new InvalidEntityException("It is not possible to update the tierInstance " + tierInstance.getName() + " : "
-                    + e.getMessage());
-        }
-    }*/
-    /**
+   /**
      * It creates the specified security groups.
      * 
      * @param claudiaData
@@ -613,7 +537,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                 securityGroup = securityGroupManager.create(tierInstance.getTier().getRegion(), claudiaData.getUser().getToken(),
                         claudiaData.getVdc(), securityGroup);
                 tierInstance.setSecurityGroup(securityGroup);
-               // tierManager.updateTierSecurityGroup(tier, securityGroup);
             } catch (InvalidEntityException e) {
                 log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
                         + e.getMessage());
@@ -732,14 +655,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         this.tierInstanceDao = tierInstanceDao;
     }
     
-    /**
-     * @param securityGroupDao
-     *            the securityGroupDao to set
-     */
-    public void setSecurityGroupDao(SecurityGroupDao securityGroupDao) {
-        this.securityGroupDao = securityGroupDao;
-    }
-    
     public void setTierManager(TierManager tierManager) {
         this.tierManager = tierManager;
     }
@@ -768,10 +683,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         this.environmentManager = environmentManager;
     }
 
-    public void setNetworkInstanceManager(NetworkInstanceManager networkInstanceManager) {
-        this.networkInstanceManager = networkInstanceManager;
-    }
-    
     public void setSecurityGroupManager(SecurityGroupManager securityGroupManager) {
         this.securityGroupManager = securityGroupManager;
     }
@@ -781,8 +692,4 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
 
-    public void setFirewallingClient(FirewallingClient firewallingClient) {
-
-        this.firewallingClient = firewallingClient;
-    }
 }

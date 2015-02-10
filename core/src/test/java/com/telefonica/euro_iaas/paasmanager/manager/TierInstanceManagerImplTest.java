@@ -72,17 +72,14 @@ import com.telefonica.euro_iaas.paasmanager.util.SystemPropertiesProvider;
 public class TierInstanceManagerImplTest extends TestCase {
 
     private TierInstanceDao tierInstanceDao;
-    private SecurityGroupDao securityGroupDao;
     private TierManager tierManager;
     private ProductInstanceManager productInstanceManager;
     private InfrastructureManager infrastructureManager;
     private ProductReleaseManager productReleaseManager;
     private EnvironmentManager enviromentManager;
     private EnvironmentInstanceManager environmentInstanceManager;
-    private NetworkInstanceManager networkInstanceManager;
     private SecurityGroupManager securityGroupManager;
     private SystemPropertiesProvider systemPropertiesProvider;
-    private FirewallingClient firewallingClient;
     
     private Tier tierProductShard = null;
     private Tier tierProductConfig = null;
@@ -107,33 +104,27 @@ public class TierInstanceManagerImplTest extends TestCase {
         claudiaData.setUser(user);
 
         tierInstanceDao = mock(TierInstanceDao.class);
-        securityGroupDao = mock(SecurityGroupDao.class);
         tierManager = mock(TierManager.class);
         productInstanceManager = mock(ProductInstanceManager.class);
         infrastructureManager = mock(InfrastructureManager.class);
         productReleaseManager = mock(ProductReleaseManager.class);        
         enviromentManager = mock(EnvironmentManager.class);
         environmentInstanceManager = mock(EnvironmentInstanceManager.class);
-        networkInstanceManager = mock(NetworkInstanceManager.class);
         securityGroupManager = mock(SecurityGroupManager.class);
         systemPropertiesProvider = mock (SystemPropertiesProvider.class);
-        firewallingClient = mock(FirewallingClient.class);
-
+        
         manager = new TierInstanceManagerImpl();
 
         manager.setTierInstanceDao(tierInstanceDao);        
-        manager.setSecurityGroupDao(securityGroupDao);        
         manager.setTierManager(tierManager);        
         manager.setProductInstanceManager(productInstanceManager);
         manager.setInfrastructureManager(infrastructureManager);
         manager.setProductReleaseManager(productReleaseManager);        
         manager.setEnvironmentManager(enviromentManager);
         manager.setEnvironmentInstanceManager(environmentInstanceManager);
-        manager.setNetworkInstanceManager(networkInstanceManager);
         manager.setSecurityGroupManager(securityGroupManager);
         manager.setSystemPropertiesProvider(systemPropertiesProvider);
-        manager.setFirewallingClient(firewallingClient);
-
+        
 
         VM host = new VM(null, "hostname", "domain");
 
