@@ -642,7 +642,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         } else {
             return new Rule(protocol, port, port, "", "0.0.0.0/0");
         }
-
     }
     
     private void removeSecurityGroup (ClaudiaData data, TierInstance tierInstance) 

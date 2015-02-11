@@ -430,7 +430,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             error = true;
         } finally {
         	//Deleting SG
-            log.info("Deleting security group from in tier " + tierInstance.getName() + " in TierInstance");
+            log.info("Deleting security group from tierInstance " + tierInstance.getName() + " in TierInstance");
             SecurityGroup secGroup = tierInstance.getSecurityGroup();
             if (secGroup != null && !tierInstance.getVdc().isEmpty()) {
             	SecurityGroup securityGroup=null;
