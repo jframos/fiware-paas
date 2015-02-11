@@ -44,6 +44,7 @@ The PaaS Manager is a maven application:
         (created target/rpm/paasmanager/RPMS/noarch/paasmanager-XXXX.noarch.rpm)
 
 Please, be aware that the supported installation method is the RPM package. If you use other method, some extra steps may be required. For example you would need to generate manually the certificate (See the section about "generating the SSL certificate" for mor information):
+
 .. code::
 
    fiware-paas/bin/generateselfsigned.sh
@@ -159,7 +160,7 @@ If you need to regenerate a self-signed certificate with a different IP address 
 
 By the way, the self-signed certificate is at /etc/keystorejetty. This file wont be overwritten although you reinstall the package. The same way, it wont be removed automatically if you uninstall de package.
 
-Advanced solution: Using certificates signed by a CA
+Advanced solution: using certificates signed by a CA
 ----------------------------------------------------
 
 Although a self-signed certificate works against passive attack, it is not enough by itself to prevent active attacks, specifically a "man in the middle attack" where an attacker try to impersonate the server. Indeed, any browser warns user against self-signed certificates. To avoid these problems, a certificate conveniently signed by a CA may be used.
@@ -167,13 +168,15 @@ Although a self-signed certificate works against passive attack, it is not enoug
 If you need a certificate signed by a CA, the more cost effective and less intrusive practice when an organization has several services is to use a wildcard certificate, that is, a common certificate among all the servers of a DNS domain. Instead of using an IP or hostname in the CN, an expression as "*.fiware.org" is used.
 
 This solution implies:
-*The service must have a DNS name in the domain specified in the wildcard certificate. For example, if the domain is "*.fiware.org" a valid name may be "paasmanager.fiware.org".
-*The clients should use this hostname instead of the IP
-*The file /etc/keystorejetty must be replaced with another one generated from the wildcard certificate, the corresponding private key and other certificates signing the wild certificate.
+
+* The service must have a DNS name in the domain specified in the wildcard certificate. For example, if the domain is "*.fiware.org" a valid name may be "paasmanager.fiware.org".
+* The clients should use this hostname instead of the IP
+* The file /etc/keystorejetty must be replaced with another one generated from the wildcard certificate, the corresponding private key and other certificates signing the wild certificate.
 
 It's possible that you already have a wild certificate securing your portal, but Apache server uses a different file format. A tool is provided to import a wildcard certificate, a private key and a chain of certificates, into /etc/keystorejetty:
 
 .. code::
+
     # usually, on an Apache installation, the certificate files are at /etc/ssl/private
     /opt/fiware-paas/bin/importcert.sh key.pem cert.crt chain.crt
 
