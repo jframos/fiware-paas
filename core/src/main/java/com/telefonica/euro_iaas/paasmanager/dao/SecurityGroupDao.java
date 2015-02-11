@@ -36,8 +36,8 @@ import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
  */
 public interface SecurityGroupDao extends BaseDAO<SecurityGroup, String> {
 
-	SecurityGroup loadWithRules(String name) throws EntityNotFoundException;
+    SecurityGroup loadWithRules(String name) throws EntityNotFoundException;
 	
-	SecurityGroup updateSecurityGroupId(String securityGroupId, SecurityGroup securityGroup)
+    SecurityGroup updateSecurityGroupId(String securityGroupId, SecurityGroup securityGroup)
             throws InvalidEntityException;
 }

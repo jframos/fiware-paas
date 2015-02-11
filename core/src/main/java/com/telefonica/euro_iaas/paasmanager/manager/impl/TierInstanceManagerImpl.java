@@ -79,7 +79,10 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     private SystemPropertiesProvider systemPropertiesProvider;
     
     private static Logger log = LoggerFactory.getLogger(TierInstanceManagerImpl.class);
-
+    
+    /**
+     * Creates a TierInstance and returns the TierInstance object
+     */
     public TierInstance create(ClaudiaData data, String envName, TierInstance tierInstance)
     		throws InvalidEntityException, InfrastructureException {
     
@@ -109,23 +112,24 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         }
         
         try {
-        	tierInstance.setTier(tierDB);
-        	createSecurityGroups(data, tierInstance);
+            tierInstance.setTier(tierDB);
+            createSecurityGroups(data, tierInstance);
         } catch (InvalidSecurityGroupRequestException isgre) {
-        	String secGroupMen = "The securityGroupRequest creation is invalid"; 
-        	log.error(secGroupMen);
+            String secGroupMen = "The securityGroupRequest creation is invalid"; 
+            log.error(secGroupMen);
             throw new InvalidEntityException(secGroupMen + " : " + isgre.getMessage());
         } catch (EntityNotFoundException enfe) {
-        	String men = "ProductRelease in tier " + tierInstance.getTier().getName() + "does not exist"; 
-        	log.error(men);
+            String men = "ProductRelease in tier " + tierInstance.getTier().getName() + "does not exist"; 
+            log.error(men);
             throw new InvalidEntityException(men + " : " + enfe.getMessage());
         }
         
        tierInstanceDB.setTier(tierDB);
        tierInstanceDB.setSecurityGroup(tierInstance.getSecurityGroup());
        
-       if (tierInstance.getProductInstances() != null) {
-    	   for (ProductInstance productInstance : tierInstance.getProductInstances()) {
+       List<ProductInstance> productInstances = tierInstance.getProductInstances();
+       if (productInstances != null) {
+    	   for (ProductInstance productInstance : productInstances) {
                 ProductInstance productInstanceDB = null;
                 try {
                     productInstanceDB = productInstanceManager.load(productInstance.getName());
@@ -165,14 +169,16 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             tierInstanceDB.setStatus(tierInstance.getStatus());
             tierInstanceDB = tierInstanceDao.create(tierInstanceDB);
         } catch (AlreadyExistsEntityException e) {
-            // TODO Auto-generated catch block
-            throw new InvalidEntityException("Error to create the tier instance " + tierInstanceDB.getName() + " : "
+           throw new InvalidEntityException("Error to create the tier instance " + tierInstanceDB.getName() + " : "
                     + e.getMessage());
         }
-
+        
         return tierInstanceDB;
     }
 
+    /**
+     * Creates a TierInstance
+     */
     public void create(ClaudiaData claudiaData, TierInstance tierInstance, EnvironmentInstance envInstance,
             SystemPropertiesProvider systemPropertiesProvider) throws InfrastructureException, EntityNotFoundException,
             InvalidEntityException, AlreadyExistsEntityException, NotUniqueResultException,
@@ -249,28 +255,30 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     }
 
+    /**
+     * Delete a TierInstance
+     */
     public void delete(ClaudiaData claudiaData, TierInstance tierInstance, EnvironmentInstance envInstance)
             throws InfrastructureException, InvalidEntityException, EntityNotFoundException {
 
-    	log.error("before infrastructureManager.deleteVMReplica");
     	infrastructureManager.deleteVMReplica(claudiaData, tierInstance);
-    	log.error("before envInstance.removeTierInstance(tierInstance)");
     	envInstance.removeTierInstance(tierInstance);
-    	log.error("beforeenvironmentInstanceManager.update()");
     	environmentInstanceManager.update(envInstance);
-    	log.error("before removeSecurityGroup(claudiaData, tierInstance)");
     	removeSecurityGroup(claudiaData, tierInstance);
-    	log.error("before remove(tierInstance)");
     	remove(tierInstance);
-    	log.error("f");
-
     }
 
+    /**
+     * Finds a list of TierInstance from a certain searching criteria
+     */
     public List<TierInstance> findByCriteria(TierInstanceSearchCriteria criteria) throws EntityNotFoundException {
 
         return tierInstanceDao.findByCriteria(criteria);
     }
 
+    /**
+     * Finds a list of TierInstance associated to a environment
+     */
     public List<TierInstance> findByEnvironment(String vdc, EnvironmentInstance environmentInstance)
             throws EntityNotFoundException {
         TierInstanceSearchCriteria criteria = new TierInstanceSearchCriteria();
@@ -427,7 +435,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                     "Error to reconfigure the tier " + tierInstanceToConfigured.getName() + " from tier "
                             + tierInstanceToConfigured.getTier().getName(), e);
         }
-        // TODO Auto-generated catch block
 
         String[] name = tierInstance.getName().split("-", 3);
         try {
@@ -477,21 +484,26 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     }
 
-        public TierInstance update(ClaudiaData claudiaData, String envName, TierInstance tierInstance)
-            throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException,
-            InfrastructureException {
+    /**
+     * Update a TierInstance and returns the TierInstance updated
+     */
+    public TierInstance update(ClaudiaData claudiaData, String envName, TierInstance tierInstance) 
+    		throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException, 
+    		InfrastructureException {
 
         if (tierInstance.getId() != null) {
             tierInstance = tierInstanceDao.update(tierInstance);
             tierInstance = tierInstanceDao.findByTierInstanceIdWithMetadata(tierInstance.getId());
         }
-
         else {
             tierInstance = create(claudiaData, envName, tierInstance);
         }
         return tierInstance;
     }
 
+    /**
+     * Updates the TierInstance
+     */
     public void update(ClaudiaData claudiaData, TierInstance tierInstance, EnvironmentInstance envInstance)
             throws ProductInstallatorException, InvalidEntityException, AlreadyExistsEntityException,
             EntityNotFoundException, ProductReconfigurationException {
@@ -527,38 +539,37 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
      * @throws EntityNotFoundException
      */
 
-    private TierInstance createSecurityGroups(ClaudiaData claudiaData, TierInstance tierInstance) throws InvalidSecurityGroupRequestException,
-            EntityNotFoundException {
+    private TierInstance createSecurityGroups(ClaudiaData claudiaData, TierInstance tierInstance) 
+    		throws InvalidSecurityGroupRequestException, EntityNotFoundException {
+    	
         if ((systemPropertiesProvider.getProperty(SystemPropertiesProvider.CLOUD_SYSTEM).equals("FIWARE")
                 && claudiaData.getVdc() != null && claudiaData.getVdc().length() > 0)) {
 
             SecurityGroup securityGroup = generateSecurityGroup(claudiaData, tierInstance);
             try {
-                securityGroup = securityGroupManager.create(tierInstance.getTier().getRegion(), claudiaData.getUser().getToken(),
-                        claudiaData.getVdc(), securityGroup);
+                securityGroup = securityGroupManager.create(tierInstance.getTier().getRegion(), 
+                		claudiaData.getUser().getToken(), claudiaData.getVdc(), securityGroup);
                 tierInstance.setSecurityGroup(securityGroup);
             } catch (InvalidEntityException e) {
-                log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
-                        + e.getMessage());
-                throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
-                        + securityGroup.getName() + " " + e.getMessage(), e);
-            } catch (InvalidEnvironmentRequestException e) {
-
-                log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
-                        + e.getMessage());
-                throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
-                        + securityGroup.getName() + " " + e.getMessage(), e);
-            } catch (AlreadyExistsEntityException e) {
-                log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
-                        + e.getMessage());
-                throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
-                        + securityGroup.getName() + " " + e.getMessage(), e);
-            } catch (InfrastructureException e) {
-                log.error("It is not posssible to create the security group " + securityGroup.getName() + " "
-                        + e.getMessage());
-                throw new InvalidSecurityGroupRequestException("It is not posssible to create the security group "
-                        + securityGroup.getName() + " " + e.getMessage(), e);
-
+                String messg_e = "[InvalidEntityException] It is not possible to create the security group " + securityGroup.getName() + " "
+                        + e.getMessage(); 
+            	log.error(messg_e);
+                throw new InvalidSecurityGroupRequestException(messg_e, e);
+            } catch (InvalidEnvironmentRequestException iere) {
+            	String messg_iere = "[InvalidEnvironmentRequestException] It is not possible to create the security group " + securityGroup.getName() + " "
+                        + iere.getMessage(); 
+                log.error(messg_iere);
+                throw new InvalidSecurityGroupRequestException(messg_iere, iere);
+            } catch (AlreadyExistsEntityException aeee) {
+            	String messg_aeee = "[AlreadyExistsEntity] It is not possible to create the security group " + securityGroup.getName() + " "
+                        + aeee.getMessage(); 
+            	log.error(messg_aeee);
+                throw new InvalidSecurityGroupRequestException(messg_aeee, aeee);
+            } catch (InfrastructureException ie) {
+            	String messg_ie = "[InfrastructureException] It is not possible to create the security group " + securityGroup.getName() + " "
+                        + ie.getMessage(); 
+            	log.error(messg_ie);
+                throw new InvalidSecurityGroupRequestException(messg_ie, ie);
             }
             tierInstance.setSecurityGroup(securityGroup);
         }
@@ -566,18 +577,18 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     }
     
-   private SecurityGroup generateSecurityGroup(ClaudiaData claudiaData, TierInstance tierInstance) throws EntityNotFoundException {
+   private SecurityGroup generateSecurityGroup(ClaudiaData claudiaData, TierInstance tierInstance) 
+		   throws EntityNotFoundException {
 
         SecurityGroup securityGroup = new SecurityGroup();
-        securityGroup.setName("sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() + "_" + tierInstance.getName());
-
+        securityGroup.setName("sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() 
+        		+ "_" + tierInstance.getName());
         log.info("Generate Object Security Group " + "sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() 
         		+ "_" + tierInstance.getTier().getRegion() + "_" + tierInstance.getName());
 
         List<Rule> rules = getDefaultRules();
-        
-        if (tierInstance.getTier().getProductReleases() != null) {
-
+        List<ProductRelease> productReleases = tierInstance.getTier().getProductReleases();
+        if (productReleases != null) {
             for (ProductRelease productRelease : tierInstance.getTier().getProductReleases()) {
                 getRulesFromProduct(productRelease, rules);
             }
@@ -586,13 +597,12 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         return securityGroup;
     }
     
-   	   	private List<Rule> getDefaultRules() {
+    private List<Rule> getDefaultRules() {
         List<Rule> rules = new ArrayList<Rule>();
         log.info("Generate TCP rule " + 9990);
         Rule rule2 = new Rule("TCP", "22", "22", "", "0.0.0.0/0");
         rules.add(rule2);
         return rules;
-
     }
 
     private void getRulesFromProduct(ProductRelease productRelease, List<Rule> rules) throws EntityNotFoundException {
@@ -655,10 +665,18 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         this.tierInstanceDao = tierInstanceDao;
     }
     
+    /**
+     * @param tierManager
+     *            the tierManager to set
+     */
     public void setTierManager(TierManager tierManager) {
         this.tierManager = tierManager;
     }
 
+    /**
+     * @param productInstanceManager
+     *            the productInstanceManager to set
+     */
     public void setProductInstanceManager(ProductInstanceManager productInstanceManager) {
         this.productInstanceManager = productInstanceManager;
     }
@@ -671,25 +689,44 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         this.infrastructureManager = infrastructureManager;
     }
     
+    /**
+     * @param productReleaseManager
+     *            the productReleaseManager to set
+     */
     public void setProductReleaseManager(ProductReleaseManager productReleaseManager) {
         this.productReleaseManager = productReleaseManager;
     }
-    
+
+    /**
+     * @param environmentInstanceManager
+     *            the environmentInstanceManager to set
+     */
     public void setEnvironmentInstanceManager(EnvironmentInstanceManager environmentInstanceManager) {
         this.environmentInstanceManager = environmentInstanceManager;
     }
 
+    /**
+     * @param environmentManager
+     *            the environmentManager to set
+     */
     public void setEnvironmentManager(EnvironmentManager environmentManager) {
         this.environmentManager = environmentManager;
     }
 
+    /**
+     * @param securityGroupManager
+     *            the securityGroupManager to set
+     */
     public void setSecurityGroupManager(SecurityGroupManager securityGroupManager) {
         this.securityGroupManager = securityGroupManager;
     }
-    
+ 
+    /**
+     * @param systemPropertiesProvider
+     *            the systemPropertiesProvider to set
+     */
     public void setSystemPropertiesProvider(SystemPropertiesProvider systemPropertiesProvider) {
 
         this.systemPropertiesProvider = systemPropertiesProvider;
     }
-
 }

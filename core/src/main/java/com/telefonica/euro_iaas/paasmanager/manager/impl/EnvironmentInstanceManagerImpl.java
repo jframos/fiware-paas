@@ -417,8 +417,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
     }
 
-    private void deletePaaSDB(ClaudiaData claudiaData, EnvironmentInstance envInstance, TierInstance tierInstance, boolean error) 
-    		throws InvalidEntityException, InfrastructureException {
+    private void deletePaaSDB(ClaudiaData claudiaData, EnvironmentInstance envInstance, TierInstance tierInstance, 
+    		boolean error) throws InvalidEntityException, InfrastructureException {
         // Borrado del registro en BBDD paasmanager
         log.info("Deleting the environment instance " + envInstance.getBlueprintName() + " in the database ");
 
@@ -431,17 +431,19 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         } finally {
         	//Deleting SG
             log.info("Deleting security group from in tier " + tierInstance.getName() + " in TierInstance");
-            if (tierInstance.getSecurityGroup() != null && !tierInstance.getVdc().isEmpty()) {
+            SecurityGroup secGroup = tierInstance.getSecurityGroup();
+            if (secGroup != null && !tierInstance.getVdc().isEmpty()) {
             	SecurityGroup securityGroup=null;
             	try {
-        			securityGroup = securityGroupDao.loadWithRules(tierInstance.getSecurityGroup().getName());
+        			securityGroup = securityGroupDao.loadWithRules(secGroup.getName());
         		} catch (EntityNotFoundException e1) {
         			String msg = "SecurityGroup is not present in database " + securityGroup.getName();
-        			log.error(msg);
-        			e1.printStackTrace();
+        		    log.error(msg);
+        		    e1.printStackTrace();
         			throw new InvalidEntityException(msg);
         		}
-                log.info("Deleting security group " + securityGroup.getName() + " in tier " + tierInstance.getName());
+                log.info("Deleting security group " + securityGroup.getName() 
+                		+ " associated to tierInstance " + tierInstance.getName());
                 tierInstance.setSecurityGroup(null);
                 tierInstanceDao.update(tierInstance);
                 securityGroupManager.destroy(tierInstance.getTier().getRegion(), claudiaData.getUser().getToken(), 

@@ -135,7 +135,7 @@ public class OpenStackSyncImpl extends Thread implements OpenStackSync {
                         // Synchronizing instances
                         tierInstancesSync(claudiaData);
                     } catch (OpenStackSynchronizationException e) {
-                        String message = "Error accesing OpenSatck. Token outof date for user " + user.getUserName();
+                        String message = "Error accesing OpenSatck. Token out of date for user " + user.getUserName();
                         log.info(message);
                         throw new OpenStackSynchronizationException (message);
                     }

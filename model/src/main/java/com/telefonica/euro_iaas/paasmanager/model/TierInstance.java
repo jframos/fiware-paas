@@ -78,11 +78,13 @@ public class TierInstance extends InstallableInstance {
     private VM vm;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "tierinstance_has_productinstances", joinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "productinstance_ID", nullable = false, updatable = false) })
+    @JoinTable(name = "tierinstance_has_productinstances", joinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) }, 
+    inverseJoinColumns = { @JoinColumn(name = "productinstance_ID", nullable = false, updatable = false) })
     private List<ProductInstance> productInstances;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "tierinstance_has_networkinstance", joinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "networkinstance_ID", nullable = false, updatable = false) })
+    @JoinTable(name = "tierinstance_has_networkinstance", joinColumns = { @JoinColumn(name = "tierinstance_ID", nullable = false, updatable = false) }, 
+    inverseJoinColumns = { @JoinColumn(name = "networkinstance_ID", nullable = false, updatable = false) })
     private Set<NetworkInstance> networkInstances;
 
     @ManyToOne(fetch = FetchType.EAGER)

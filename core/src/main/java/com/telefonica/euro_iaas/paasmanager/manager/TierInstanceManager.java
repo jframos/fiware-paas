@@ -121,12 +121,12 @@ public interface TierInstanceManager {
 
     /**
      * @param tierInstance
-     * @return
+     * @return tierInstance
      * @throws InvalidEntityException
      * @throws InfrastructureException 
      */
-    TierInstance create(ClaudiaData claudiaa, String envName, TierInstance tierInstance) throws InvalidEntityException, 
-    	InfrastructureException;
+    TierInstance create(ClaudiaData claudiaa, String envName, TierInstance tierInstance) 
+    		throws InvalidEntityException, InfrastructureException;
 
     /**
      * @param org

@@ -231,29 +231,10 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
             tier = (Tier) query.getResultList().get(0);
             tier.getNetworks();
             tier.getProductReleases();
-            //tier.getSecurityGroup();
         } catch (Exception e) {
-            String message = " Tier don't exist in database ";
+            String message = " Tier does not exist in database ";
             throw new EntityNotFoundException(Tier.class, message, newTier.getName());
         }
         return tier;
     }
-    
-    /*public Tier updateTierSecurityGroupId(Tier newTier, String idSecurityGroup)
-            throws InvalidEntityException {
-        Query query = getEntityManager().createQuery(
-                "UPDATE Tier tier " + "SET tier.securityGroup= :idSecurityGroup" + "  where tier.id = :id");
-        query.setParameter("idSecurityGroup", idSecurityGroup);
-        query.setParameter("id", newTier.getId() );
-        Tier tier = null;
-        try {
-            query.executeUpdate();
-            tier = load(newTier.getName(), newTier.getVdc(), newTier.getEnviromentName());
-        } catch (NoResultException e) {
-            throw new InvalidEntityException(tier);
-        } catch (EntityNotFoundException e) {
-            throw new InvalidEntityException(tier);
-        }
-        return tier;
-    }*/
 }

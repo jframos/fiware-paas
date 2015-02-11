@@ -55,13 +55,14 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
         SecurityGroup securityGroupDB = new SecurityGroup();
         String idSecurityGroup = firewallingClient.deploySecurityGroup(region, token, vdc, securityGroup);
         log.info("Create security group " + securityGroup.getName() + " with idSecurityGroup " + idSecurityGroup);
-
-        if (securityGroup.getRules() != null) {
-            for (Rule rule : securityGroup.getRules()) {
-                rule.setIdParent(idSecurityGroup);
-                rule = ruleManager.create(region, token, vdc, rule);
-                securityGroupDB.addRule(rule);
-            }
+        
+        List<Rule> rules = securityGroup.getRules();
+        //if (securityGroup.getRules() != null) {
+        for (Rule rule : rules) {
+            rule.setIdParent(idSecurityGroup);
+            rule = ruleManager.create(region, token, vdc, rule);
+            securityGroupDB.addRule(rule);
+          //  }
         }
         securityGroup.setIdSecurityGroup(idSecurityGroup);
         securityGroupDB = insert(securityGroup);
@@ -73,13 +74,14 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
 
         String idSecurityGroup = firewallingClient.deploySecurityGroup(region, token, vdc, securityGroup);
         log.info("Create security group " + securityGroup.getName() + " with idSecurityGroup " + idSecurityGroup);
-
-        if (securityGroup.getRules() != null) {
-            for (Rule rule : securityGroup.getRules()) {
-                rule.setIdParent(idSecurityGroup);
-                rule = ruleManager.create(region, token, vdc, rule);
-                securityGroup.addRule(rule);
-            }
+        
+        List<Rule> rules = securityGroup.getRules();
+        //if (securityGroup.getRules() != null) {
+        for (Rule rule : rules) {
+            rule.setIdParent(idSecurityGroup);
+            rule = ruleManager.create(region, token, vdc, rule);
+            securityGroup.addRule(rule);
+        //    }
         }
         securityGroup.setIdSecurityGroup(idSecurityGroup);
         return securityGroup;
@@ -132,15 +134,16 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
 
     public void destroy(String region, String token, String vdc, SecurityGroup secGroup)
             throws InvalidEntityException, InfrastructureException {
-    	log.info("Destroying securitygroup: " + secGroup.getName());
-        if (secGroup.getRules().isEmpty()) {
+        log.info("Destroying securitygroup: " + secGroup.getName());
+        List<Rule> rules = secGroup.getRules();
+    	if (rules.isEmpty()) {
             log.warn("There is not any rule associated to the security group");
         } else {
-            List<Rule> rules = secGroup.cloneRules();
-        	secGroup.setRules(null);
+            List<Rule> cloneRules = secGroup.cloneRules();
+            secGroup.setRules(null);
             securityGroupDao.update(secGroup);
 
-            for (Rule rule : rules) {
+            for (Rule rule : cloneRules) {
                 try {
                     ruleManager.destroy(region, token, vdc, rule);
                 } catch (Exception e) {
@@ -154,11 +157,20 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
         } catch (Exception e) {
             log.warn("There is not any rule associated to the security group");
         }
-
         securityGroupDao.remove(secGroup);
-
     }
 
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.telefonica.euro_iaas.paasmanager.manager.SecurityGroupManager#update(com.telefonica.euro_iaas.paasmanager
+     * .model.SecurityGroup)
+     */
+    public SecurityGroup update(SecurityGroup securityGroup) throws InvalidEntityException {
+        return securityGroupDao.update(securityGroup);
+    }
+
+    
     public List<SecurityGroup> findAll() {
         return securityGroupDao.findAll();
     }
@@ -178,15 +190,4 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
     public void setFirewallingClient(FirewallingClient firewallingClient) {
         this.firewallingClient = firewallingClient;
     }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * com.telefonica.euro_iaas.paasmanager.manager.SecurityGroupManager#update(com.telefonica.euro_iaas.paasmanager
-     * .model.SecurityGroup)
-     */
-    public SecurityGroup update(SecurityGroup securityGroup) throws InvalidEntityException {
-        return securityGroupDao.update(securityGroup);
-    }
-
 }
