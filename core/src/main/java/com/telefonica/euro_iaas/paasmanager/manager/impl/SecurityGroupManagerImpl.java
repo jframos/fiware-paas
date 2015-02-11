@@ -25,7 +25,6 @@
 package com.telefonica.euro_iaas.paasmanager.manager.impl;
 
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +48,17 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
 
     private static Logger log = LoggerFactory.getLogger(SecurityGroupManagerImpl.class);
 
+    /**
+     * Creates a SecurityGroup in a openstack of a certan region and insert info in database
+     * @param region
+     * @param token
+     * @param vdc
+     * @param securityGroup
+     * @return
+     * @throws AlreadyExistsEntityException
+     * @throws InvalidEntityException
+     * @throws InfrastructureException
+     */
     public SecurityGroup create(String region, String token, String vdc, SecurityGroup securityGroup)
             throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
 
@@ -68,7 +78,18 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
         securityGroupDB = insert(securityGroup);
         return securityGroupDB;
     }
-
+    
+    /**
+     * Creates a SecurityGroup only in a openstack of a certain region
+     * @param region
+     * @param token
+     * @param vdc
+     * @param securityGroup
+     * @return
+     * @throws AlreadyExistsEntityException
+     * @throws InvalidEntityException
+     * @throws InfrastructureException
+     */
     public SecurityGroup createInOpenstack(String region, String token, String vdc, SecurityGroup securityGroup)
             throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
 
@@ -87,6 +108,18 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
         return securityGroup;
     }
     
+    /**
+     * Adds a rule to a security group
+     * @param region
+     * @param token
+     * @param vdc
+     * @param securityGroup
+     * @param rule
+     * @return
+     * @throws AlreadyExistsEntityException
+     * @throws InvalidEntityException
+     * @throws InfrastructureException
+     */
     public void addRule(String region, String token, String vdc, SecurityGroup securityGroup, Rule rule)
             throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
 
@@ -97,6 +130,13 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
 
     }
 
+    /**
+     * Insert a SecurityGroup in the database
+     * @param securityGroup
+     * @return
+     * @throws AlreadyExistsEntityException
+     * @throws InvalidEntityException
+     */
     public SecurityGroup insert(SecurityGroup securityGroup) throws AlreadyExistsEntityException,
             InvalidEntityException {
         SecurityGroup securityGroupDB = new SecurityGroup();
@@ -130,8 +170,14 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
 
     /**
      * It destroy a security group.
+     * @param region
+     * @param token
+     * @param vdc
+     * @param secGroup
+     * @return
+     * @throws AlreadyExistsEntityException
+     * @throws InvalidEntityException
      */
-
     public void destroy(String region, String token, String vdc, SecurityGroup secGroup)
             throws InvalidEntityException, InfrastructureException {
         log.info("Destroying securitygroup: " + secGroup.getName());
@@ -160,33 +206,55 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
         securityGroupDao.remove(secGroup);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * com.telefonica.euro_iaas.paasmanager.manager.SecurityGroupManager#update(com.telefonica.euro_iaas.paasmanager
-     * .model.SecurityGroup)
+    /**
+     * Updates a securitygroup in database
+     * @param secGroup
+     * @return SecurityGroup
+     * @throws InvalidEntityException
      */
     public SecurityGroup update(SecurityGroup securityGroup) throws InvalidEntityException {
         return securityGroupDao.update(securityGroup);
     }
 
-    
+    /**
+     * List all security groups that are in te database
+     * @return
+     * @throws
+     */    
     public List<SecurityGroup> findAll() {
         return securityGroupDao.findAll();
     }
 
+    /**
+     * Load a security group by name
+     * @param name
+     * @return SecurityGroup
+     * @throws EntityNotFoundException
+     */    
     public SecurityGroup load(String name) throws EntityNotFoundException {
         return securityGroupDao.load(name);
     }
-
+    
+    /**
+     * @param securityGroupDao
+     *            the securityGroupDao to set
+     */
     public void setSecurityGroupDao(SecurityGroupDao securityGroupDao) {
         this.securityGroupDao = securityGroupDao;
     }
-
+    
+    /**
+     * @param ruleManager
+     *            the ruleManager to set
+     */
     public void setRuleManager(RuleManager ruleManager) {
         this.ruleManager = ruleManager;
     }
-
+    
+    /**
+     * @param firewallingClient
+     *            the firewallingClient to set
+     */
     public void setFirewallingClient(FirewallingClient firewallingClient) {
         this.firewallingClient = firewallingClient;
     }

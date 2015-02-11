@@ -426,10 +426,10 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         try {
             infrastructureManager.deleteNetworksInTierInstance(claudiaData, tierInstance);
         } catch (Exception e) {
-        	log.error(e.getMessage());
+            log.error(e.getMessage());
             error = true;
         } finally {
-        	//Deleting SG
+            //Deleting SG
             log.info("Deleting security group from tierInstance " + tierInstance.getName() + " in TierInstance");
             SecurityGroup secGroup = tierInstance.getSecurityGroup();
             if (secGroup != null && !tierInstance.getVdc().isEmpty()) {

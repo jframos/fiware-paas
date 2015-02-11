@@ -82,6 +82,12 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
     
     /**
      * Creates a TierInstance and returns the TierInstance object
+     * @param data
+     * @param envName
+     * @param tierInstance
+     * @return TierInstance
+     * @throws InvalidEntityException
+     * @throws InfrastructureException
      */
     public TierInstance create(ClaudiaData data, String envName, TierInstance tierInstance)
     		throws InvalidEntityException, InfrastructureException {
@@ -178,7 +184,16 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     /**
      * Creates a TierInstance
-     */
+     * @param claudiaData
+     * @param envInstance
+     * @param tierInstance
+     * @param systemPropertiesProvider
+     * @return 
+     * @throws InvalidEntityException
+     * @throws AlreadyExistsEntityException
+     * @throws InvalidProductInstanceRequestException
+     * @throws ProductInstallatorException
+     */ 
     public void create(ClaudiaData claudiaData, TierInstance tierInstance, EnvironmentInstance envInstance,
             SystemPropertiesProvider systemPropertiesProvider) throws InfrastructureException, EntityNotFoundException,
             InvalidEntityException, AlreadyExistsEntityException, NotUniqueResultException,
@@ -257,7 +272,14 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     /**
      * Delete a TierInstance
-     */
+     * @param claudiaData
+     * @param envInstance
+     * @param tierInstance
+     * @return 
+     * @throws InfrastructureException
+     * @throws InvalidEntityException
+     * @throws EntityNotFoundException
+     */ 
     public void delete(ClaudiaData claudiaData, TierInstance tierInstance, EnvironmentInstance envInstance)
             throws InfrastructureException, InvalidEntityException, EntityNotFoundException {
 
@@ -270,7 +292,10 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     /**
      * Finds a list of TierInstance from a certain searching criteria
-     */
+     * @param criteria
+     * @return List<TierInstance>
+     * @throws EntityNotFoundException
+     */ 
     public List<TierInstance> findByCriteria(TierInstanceSearchCriteria criteria) throws EntityNotFoundException {
 
         return tierInstanceDao.findByCriteria(criteria);
@@ -278,6 +303,10 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     /**
      * Finds a list of TierInstance associated to a environment
+     * @param vdc
+     * @param environmentInstance
+     * @return List<TierInstance>
+     * @throws EntityNotFoundException
      */
     public List<TierInstance> findByEnvironment(String vdc, EnvironmentInstance environmentInstance)
             throws EntityNotFoundException {
@@ -314,6 +343,12 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
             return null;
     }
 
+    /**
+     * Get the Value of attribute "balancer" of a product from a Tier
+     * @param tier
+     * @param environmentInstance
+     * @return attribute balancer value
+     */
     public String getProductNameBalanced(Tier tier) {
         if (tier.getProductReleases() != null) {
             for (ProductRelease productRelease : tier.getProductReleases()) {
@@ -328,7 +363,13 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         }
         return null;
     }
-
+    
+    /**
+     * Get TierInstance to Configure
+     * @param tier
+     * @param environmentInstance
+     * @return TierInstance
+     */
     public TierInstance getTierInstanceToConfigure(EnvironmentInstance environmentInstance, Tier tier) {
         log.info("getTierInstanceToConfigure for tier " + tier.getName());
         String productName = getProductNameBalanced(tier);
@@ -351,7 +392,13 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
     }
 
-    public TierInstance getTierInstanceWithTier(EnvironmentInstance enviromentInstance, Tier tier) {
+    /**
+     * Get TierInstance with Tiers associated
+     * @param tier
+     * @param environmentInstance
+     * @return TierInstance
+     */
+   public TierInstance getTierInstanceWithTier(EnvironmentInstance enviromentInstance, Tier tier) {
         if (enviromentInstance.getTierInstances() != null) {
             for (TierInstance tierInstance : enviromentInstance.getTierInstances()) {
                 log.info("Looking for " + tier.getName() + " tier instance " + tierInstance.getName());
@@ -363,8 +410,13 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         return null;
     }
 
+   /**
+    * Find Tier defined in Environment with a particular productName 
+    * @param environment
+    * @param productName
+    * @return Tier
+    */
     public Tier getTierProductWithName(Environment environment, String productName) throws InvalidEntityException {
-
         if (productName == null) {
             return null;
         }
@@ -374,45 +426,78 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
             throw new InvalidEntityException(e);
         }
-
         if (environment.getTiers() != null) {
             for (Tier tier : environment.getTiers()) {
-
                 if (tier.getProductReleases() != null) {
                     for (ProductRelease productRelease : tier.getProductReleases()) {
                         if (productRelease.getProduct().equals(productName)) {
-
                             return tier;
                         }
-
                     }
                 }
             }
-
         }
         return null;
     }
 
+    /**
+     * Load TierInstance by id 
+     * @param id
+     * @return TierInstance
+     * @throws EntityNotFoundException
+     */
     public TierInstance load(long id) throws EntityNotFoundException {
         return tierInstanceDao.findByTierInstanceId(id);
     }
-
+    
+    /**
+     * Load TierInstance by name 
+     * @param id
+     * @return TierInstance
+     * @throws EntityNotFoundException
+     */
     public TierInstance load(String name) throws EntityNotFoundException {
         return tierInstanceDao.load(name);
     }
 
+    /**
+     * Update TierInstance in database 
+     * @param TierInstance
+     * @return TierInstance
+     * @throws EntityNotFoundException
+     * @throws InvalidEntityException
+     */
     public TierInstance update(TierInstance tierInstance) throws EntityNotFoundException, InvalidEntityException {
         return tierInstanceDao.update(tierInstance);
     }
-
+   
+    /**
+     * Find TierInstance by name 
+     * @param name
+     * @return TierInstance
+     * @throws EntityNotFoundException
+     */
     public TierInstance loadByName(String name) throws EntityNotFoundException {
         return tierInstanceDao.findByTierInstanceName(name);
     }
 
+    /**
+     * Find TierInstance with NetworkInstances by name 
+     * @param name
+     * @return TierInstance
+     * @throws EntityNotFoundException
+     */
     public TierInstance loadNetworkInstnace(String name) throws EntityNotFoundException {
         return tierInstanceDao.findByTierInstanceNameNetworkInst(name);
     }
 
+    /**
+     * Reconfigure TierInstance
+     * @param claudiaData
+     * @param environmentInstance
+     * @param tierInstance
+     * @throws ProductReconfigurationException
+     */
     public void reconfigure(ClaudiaData claudiaData, EnvironmentInstance environmentInstance, TierInstance tierInstance)
             throws ProductReconfigurationException {
         log.info("Reconfiguring the balancer for the tier Instance " + tierInstance.getName());
@@ -455,19 +540,20 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         }
     }
 
+    /**
+     * Remove TierInstance
+     * @param tierInstance
+     * @throws InvalidEntityException
+     */
     public void remove(TierInstance tierInstance) throws InvalidEntityException {
 
         try {
             tierInstance = load(tierInstance.getName());
         } catch (EntityNotFoundException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-
         List<ProductInstance> productInstances = tierInstance.getProductInstances();
-
         tierInstance.setProductInstances(null);
-
         tierInstanceDao.update(tierInstance);
 
         if (productInstances != null && productInstances.size() > 0) {
@@ -478,14 +564,16 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
                     e.printStackTrace();
                 }
             }
-        }
-        
+        }      
         tierInstanceDao.remove(tierInstance);
-
     }
 
     /**
      * Update a TierInstance and returns the TierInstance updated
+     * @param tierInstance
+     * @throws EntityNotFoundException
+     * @throws InvalidEntityException
+     * @throws AlreadyExistsEntityException
      */
     public TierInstance update(ClaudiaData claudiaData, String envName, TierInstance tierInstance) 
     		throws EntityNotFoundException, InvalidEntityException, AlreadyExistsEntityException, 
@@ -501,8 +589,17 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
         return tierInstance;
     }
 
+
     /**
      * Updates the TierInstance
+     * @param claudiaData
+     * @param tierInstance
+     * @param envInstance
+     * @throws ProductInstallatorException
+     * @throws InvalidEntityException
+     * @throws AlreadyExistsEntityException
+     * @throws EntityNotFoundException
+     * @throws ProductReconfigurationException
      */
     public void update(ClaudiaData claudiaData, TierInstance tierInstance, EnvironmentInstance envInstance)
             throws ProductInstallatorException, InvalidEntityException, AlreadyExistsEntityException,
@@ -538,7 +635,6 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
      * @throws InvalidSecurityGroupRequestException
      * @throws EntityNotFoundException
      */
-
     private TierInstance createSecurityGroups(ClaudiaData claudiaData, TierInstance tierInstance) 
     		throws InvalidSecurityGroupRequestException, EntityNotFoundException {
     	
