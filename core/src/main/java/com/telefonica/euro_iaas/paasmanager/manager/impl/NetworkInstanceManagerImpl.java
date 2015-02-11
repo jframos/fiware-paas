@@ -78,8 +78,8 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
     	if (existsInDB(networkInstance.getNetworkName(), claudiaData.getVdc(), region)) {
     		networkInstance = networkInstanceDao.load(networkInstance.getNetworkName(), claudiaData.getVdc(), region);
             if (!existsInOpenstack (claudiaData, networkInstance, region)) {
-            	log.warn ("The network "+  networkInstance.getNetworkName()+ " with id " +
-                     networkInstance.getIdNetwork() + " does no exists in Openstack") ;
+            	log.warn ("The network "+  networkInstance.getNetworkName()+ " with id "
+                    + networkInstance.getIdNetwork() + " does no exists in Openstack") ;
             	this.deleteInDb(networkInstance);
             	return false;
 
@@ -216,9 +216,11 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
      * @params claudiaData
      * @params network
      */
-    public void delete(ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
+    public void delete(ClaudiaData claudiaData,
+                       NetworkInstance networkInstance, String region)
             throws InvalidEntityException, InfrastructureException {
-        log.info("Destroying network " + networkInstance.getNetworkName() + " region " + region);
+        log.info("Destroying network " + networkInstance.getNetworkName()
+            + " region " + region);
 
         if (!canBeDeleted(claudiaData, networkInstance, region)) {
             log.info("The network cannot be deleted due to existing ports");
@@ -227,18 +229,21 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
 
         log.info("Deleting the public interface");
         try {
-            log.info("Loading newtwokr " + networkInstance.getNetworkName() + "  " + claudiaData.getVdc() + " "
-                    + region);
-            networkInstance = networkInstanceDao.load(networkInstance.getNetworkName(), claudiaData.getVdc(), region);
+            log.info("Loading network " + networkInstance.getNetworkName()
+                + "  " + claudiaData.getVdc() + " " + region);
+            networkInstance = networkInstanceDao.load(networkInstance.getNetworkName(),
+                claudiaData.getVdc(), region);
         } catch (Exception e) {
-            log.error("It is not possible to find the network " + e.getMessage());
+            log.error("It is not possible to find the network "
+                + e.getMessage());
             throw new InvalidEntityException(networkInstance);
         }
         try {
-            networkClient.deleteNetworkToPublicRouter(claudiaData, networkInstance, region);
+            networkClient.deleteNetworkToPublicRouter(claudiaData,
+                networkInstance, region);
         } catch (Exception e) {
-            log.warn ("It is not possible to delete the public interface. It is not exist: "+
-                e.getMessage());
+            log.warn ("It is not possible to delete the public interface. " +
+                "It is not exist: " + e.getMessage());
         }
 
         log.info("Deleting the subnets");
@@ -259,9 +264,10 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
 
     }
 
-    private void deleteInDb(NetworkInstance networkInstance) throws InvalidEntityException {
-    log.info("Destroying network in DB" + networkInstance.getNetworkName() + " " + networkInstance.getSubNets().size() );
-
+    private void deleteInDb(NetworkInstance networkInstance)
+        throws InvalidEntityException {
+    log.info("Destroying network in DB" + networkInstance.getNetworkName()
+        + " " + networkInstance.getSubNets().size() );
 
     Set<SubNetworkInstance> subNetAux = networkInstance.cloneSubNets();
     log.info("Deleting the subnets " + subNetAux.size());
@@ -287,11 +293,14 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
      * @params claudiaData
      * @params network
      */
-    public boolean canBeDeleted(ClaudiaData claudiaData, NetworkInstance networkInstance, String region)
+    public boolean canBeDeleted(ClaudiaData claudiaData,
+                                NetworkInstance networkInstance, String region)
             throws InvalidEntityException, InfrastructureException {
-        log.info("Obtaining ports from network" + networkInstance.getNetworkName());
+        log.info("Obtaining ports from network"
+            + networkInstance.getNetworkName());
 
-        List<Port> ports = networkClient.listPortsFromNetwork(claudiaData, region, networkInstance.getIdNetwork());
+        List<Port> ports = networkClient.listPortsFromNetwork(claudiaData, region,
+                networkInstance.getIdNetwork());
         log.info("List ports " + ports.size());
         if (ports.size() == 0) {
             return true;
@@ -300,16 +309,29 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
             for (Port port : ports) {
                 strPorts = strPorts + " " + port.getNetworkId();
             }
-            log.info("It is not possible to undeply the network since there are VMs associated to it " + strPorts);
+            log.info("It is not possible to undeply the network since there " +
+                " are VMs associated to it " + strPorts);
             return false;
 
         }
     }
 
-    public void joinNetwork(ClaudiaData claudiaData, NetworkInstance networkInstance, NetworkInstance networkInstance2)
-            throws EntityNotFoundException, InvalidEntityException, InfrastructureException {
-        log.info("joining netowrk " + networkInstance.getNetworkName() + " " + networkInstance2.getNetworkName());
-        networkClient.joinNetworks(claudiaData, networkInstance, networkInstance2);
+    /**
+     * It join two networks.
+     * @param claudiaData: credentials
+     * @param net1
+     * @param net2
+     * @throws EntityNotFoundException
+     * @throws InvalidEntityException
+     * @throws InfrastructureException
+     */
+    public void joinNetwork(ClaudiaData claudiaData, NetworkInstance net1,
+                            NetworkInstance net2)
+            throws EntityNotFoundException, InvalidEntityException,
+        InfrastructureException {
+        log.info("joining netowrk " + net1.getNetworkName()
+            + " " + net2.getNetworkName());
+        networkClient.joinNetworks(claudiaData, net1, net2);
 
     }
 
@@ -449,7 +471,9 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         return true;
     }
 
-    public String getValidCidr (ClaudiaData claudiaData, String region,int subNetElement) throws InfrastructureException{
+    private String getValidCidr (ClaudiaData claudiaData, String region,
+                                int subNetElement)
+        throws InfrastructureException {
         String cidr = String.format(NETWORK_CIDR, NET_ELEMENT, subNetElement);
         if (checkCidrValid(claudiaData, region, cidr)) {
             return cidr;
@@ -459,6 +483,15 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
         }
     }
 
+    /**
+     * It gets the defaults Cidr.
+     * @param claudiaData
+     * @param region
+     * @return
+     * @throws InvalidEntityException
+     * @throws AlreadyExistsEntityException
+     * @throws InfrastructureException
+     */
     public String getDefaultCidr(ClaudiaData claudiaData, String region)
         throws InvalidEntityException, AlreadyExistsEntityException,
         InfrastructureException {
