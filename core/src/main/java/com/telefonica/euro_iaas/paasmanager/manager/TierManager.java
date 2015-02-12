@@ -47,6 +47,7 @@ public interface TierManager {
 
     /**
      * Create a Tier
+     * 
      * @param claudiaData
      * @param envName
      * @param tier
@@ -70,9 +71,10 @@ public interface TierManager {
      */
 
     Tier load(String name, String vdc, String environmentNamae) throws EntityNotFoundException;
-    
+
     /**
      * Load the Tier with Network Information
+     * 
      * @param name
      * @param vdc
      * @param environmentNamae
@@ -128,13 +130,21 @@ public interface TierManager {
 
     /**
      * Update tier
+     * 
      * @param tierold
      * @param tiernew
      * @throws InvalidEntityException
      * @throws EntityNotFoundException
      * @throws AlreadyExistsEntityException
      */
-    void updateTier(ClaudiaData data, Tier tierold, Tier tiernew) 
-    		throws InvalidEntityException, EntityNotFoundException, AlreadyExistsEntityException;
+    void updateTier(ClaudiaData data, Tier tierold, Tier tiernew) throws InvalidEntityException,
+            EntityNotFoundException, AlreadyExistsEntityException;
 
+    /**
+     * Load with networks, products, security groups from database
+     * 
+     * @param tier
+     * @return
+     */
+    Tier loadComplete(Tier tier) throws EntityNotFoundException;
 }
