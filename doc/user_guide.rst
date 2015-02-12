@@ -322,13 +322,13 @@ This operation lists the environments stored in the catalogue. The following exa
                     <initial_number_instances>1</initial_number_instances>
                     <maximum_number_instances>1</maximum_number_instances>
                     <minimum_number_instances>1</minimum_number_instances>
-                    <name>{tier-id}</name>               
+                    <name>{tier-id}</name>
                     <networkDto>
-						<networkName>Internet</networkName>
-						<subNetworkDto>
-							<subnetName>sub-net-Internet</subnetName>
-						</subNetworkDto>
- 					</networkDto>
+                    	<networkName>Internet</networkName>
+                    	<subNetworkDto>
+                    		<subnetName>sub-net-Internet</subnetName>
+                    	</subNetworkDto>
+                    </networkDto>
                     <productReleases>                  
                         <product>postgresql</product>
                         <version>0.0.3</version>
@@ -375,11 +375,11 @@ with the following payload
                 <minimum_number_instances>1</minimum_number_instances>
                 <name>{tier-id}</name>
                 <networkDto>
-					<networkName>Internet</networkName>
-					<subNetworkDto>
-						<subnetName>sub-net-Internet</subnetName>
-					</subNetworkDto>
- 				</networkDto>               
+                	<networkName>Internet</networkName>
+                	<subNetworkDto>
+                		<subnetName>sub-net-Internet</subnetName>
+                	</subNetworkDto>
+                </networkDto>               
                 <productReleases>                  
                     <product>postgresql</product>
                     <version>0.0.3</version>
