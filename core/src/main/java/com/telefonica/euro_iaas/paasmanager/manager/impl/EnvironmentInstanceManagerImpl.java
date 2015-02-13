@@ -152,7 +152,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             try {
                 updateFederatedNetworks(claudiaData, environment);
             } catch (Exception e) {
-                log.warn("It is not possible to update the federates networks");
+                log.warn("It is not possible to update the federated networks");
             }
         }
 
@@ -199,10 +199,10 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             throw new ProductInstallatorException(e);
         }
 
-        log.info("Is the environmetn federated ? ");
+        log.info("Is the environment federated? ");
         if (environment.isNetworkFederated()) {
             try {
-                log.info(" Federating networks ");
+                log.info("Federating networks");
                 infrastructureManager.federatedNetworks(claudiaData, environmentInstance);
             } catch (Exception e) {
                 environmentInstance.setStatus(Status.ERROR);
@@ -217,10 +217,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
         infrastructureManager.StartStopScalability(claudiaData, bScalableEnvironment);
 
-        environmentInstance.setStatus(Status.INSTALLED);
-        environmentInstanceDao.update(environmentInstance);
-
-        log.info("Enviroment Instance installed correctly");
+        log.info("Environment Instance installed correctly");
 
         return environmentInstance;
     }
@@ -326,15 +323,19 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                     }
                 }
 
-                if (state && tierInstance.getNumberReplica() == 1) {
-                    log.info("Setup scalabiliy ");
-                    String image_Name = infrastructureManager.ImageScalability(claudiaData, tierInstance);
-                }
+                if (state) {
 
-                if (state && tierInstance.getNumberReplica() > 1) {
-                    log.info("Updating OVF replica more than 1 ");
-                    if (!newOVF.equals(" "))
-                        tierInstance.setOvf(newOVF);
+                    if (tierInstance.getNumberReplica() == 1) {
+                        log.info("Setup scalability ");
+                        String image_Name = infrastructureManager.ImageScalability(claudiaData, tierInstance);
+                    }
+
+                    if (tierInstance.getNumberReplica() > 1) {
+                        log.info("Updating OVF replica more than 1 ");
+                        if (!newOVF.equals(" ")) {
+                            tierInstance.setOvf(newOVF);
+                        }
+                    }
                 }
 
                 tierInstance.setStatus(Status.INSTALLED);
@@ -381,7 +382,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
      * @throws Exception
      */
     public void destroy(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws Exception {
-        log.info("Destroying enviornment isntance " + envInstance.getBlueprintName() + " with environment "
+        log.info("Destroying environment instance " + envInstance.getBlueprintName() + " with environment "
                 + envInstance.getEnvironment().getName() + " vdc " + envInstance.getVdc());
         boolean error = false;
         try {
@@ -393,7 +394,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
         } catch (NullPointerException ne) {
             log.info("Environment Instance " + envInstance.getBlueprintName()
-                    + " does not have any TierInstances associated");
+                    + " does not have any TierInstance associated");
         }
 
         List<TierInstance> tierInstancesSDC = envInstance.getTierInstances();
@@ -405,7 +406,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             try {
                 deleteTierOnSDC(claudiaData, tierInstance, error);
             } catch (Exception e) {
-                String errorMsg = "Error deleting node from Node Manager : " + tierInstance.getVM().getFqn() + ""
+                String errorMsg = "Error deleting node from Node Manager : " + tierInstance.getVM().getFqn() + "    "
                         + e.getMessage();
                 log.error(errorMsg);
                 error = true;
@@ -469,7 +470,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
     private void deleteVM(ClaudiaData claudiaData, EnvironmentInstance envInstance) throws InvalidEntityException {
         // Borrado de VMs
         try {
-            log.info("Deleting Virtual Machines for environmetn instance " + envInstance.getBlueprintName());
+            log.info("Deleting Virtual Machines for environment instance " + envInstance.getBlueprintName());
             envInstance.setStatus(Status.UNDEPLOYING);
             envInstance = environmentInstanceDao.update(envInstance);
 
@@ -544,7 +545,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
 
                 return environment;
             } catch (Exception e1) {
-                log.warn("Error to load env " + e1.getMessage());
+                log.warn("Error loading environment " + e1.getMessage());
                 throw new EntityNotFoundException(Environment.class,
                         "The environment should have been already created", e1);
             }
@@ -562,13 +563,13 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
                 environment = environmentManager.create(claudiaData, env);
             } catch (InvalidEnvironmentRequestException e) {
                 // TODO Auto-generated catch block
-                String errorMessage = " Error to create the environment . " + environment.getName() + ". " + "Desc: "
+                String errorMessage = " Error creating the environment. " + environment.getName() + ". Desc: "
                         + e.getMessage();
                 log.error(errorMessage);
                 throw new InvalidEntityException(Environment.class, e);
             } catch (Exception e) {
                 // TODO Auto-generated catch block
-                String errorMessage = " Error to create the environment . " + environment.getName() + ". " + "Desc: "
+                String errorMessage = " Error to creating the environment. " + environment.getName() + ". Desc: "
                         + e.getMessage();
                 log.error(errorMessage);
                 throw new InvalidEntityException(Environment.class, e);
@@ -582,7 +583,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
         try {
             environmentInstance = environmentInstanceDao.create(environmentInstance);
         } catch (Exception e) {
-            String errorMessage = " Invalid environmentInstance object . Desc: " + e.getMessage();
+            String errorMessage = " Invalid environmentInstance object. Desc: " + e.getMessage();
             log.error(errorMessage);
             throw new InvalidEntityException(EnvironmentInstance.class, e);
 
