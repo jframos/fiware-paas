@@ -84,8 +84,8 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
             	return false;
 
             } else {
-            	log.info("The network "+  networkInstance.getNetworkName()+ " with id " +
-                    networkInstance.getIdNetwork() + " already exists");
+            	log.info("The network "+  networkInstance.getNetworkName()+ " with id "
+                    + networkInstance.getIdNetwork() + " already exists");
             	return true;
             }
 
@@ -242,8 +242,8 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
             networkClient.deleteNetworkToPublicRouter(claudiaData,
                 networkInstance, region);
         } catch (Exception e) {
-            log.warn ("It is not possible to delete the public interface. " +
-                "It is not exist: " + e.getMessage());
+            log.warn ("It is not possible to delete the public interface. "
+                + "It is not exist: " + e.getMessage());
         }
 
         log.info("Deleting the subnets");
@@ -309,8 +309,8 @@ public class NetworkInstanceManagerImpl implements NetworkInstanceManager {
             for (Port port : ports) {
                 strPorts = strPorts + " " + port.getNetworkId();
             }
-            log.info("It is not possible to undeply the network since there " +
-                " are VMs associated to it " + strPorts);
+            log.info("It is not possible to undeply the network since there "
+                + " are VMs associated to it " + strPorts);
             return false;
 
         }
