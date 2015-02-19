@@ -67,12 +67,10 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
         log.info("Create security group " + securityGroup.getName() + " with idSecurityGroup " + idSecurityGroup);
         
         List<Rule> rules = securityGroup.getRules();
-        //if (securityGroup.getRules() != null) {
         for (Rule rule : rules) {
             rule.setIdParent(idSecurityGroup);
             rule = ruleManager.create(region, token, vdc, rule);
             securityGroupDB.addRule(rule);
-          //  }
         }
         securityGroup.setIdSecurityGroup(idSecurityGroup);
         securityGroupDB = insert(securityGroup);
@@ -90,7 +88,7 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
      * @throws InvalidEntityException
      * @throws InfrastructureException
      */
-    public SecurityGroup createInOpenstack(String region, String token, String vdc, SecurityGroup securityGroup)
+    /*public SecurityGroup createInOpenstack(String region, String token, String vdc, SecurityGroup securityGroup)
             throws InvalidEntityException, AlreadyExistsEntityException, InfrastructureException {
 
         String idSecurityGroup = firewallingClient.deploySecurityGroup(region, token, vdc, securityGroup);
@@ -106,7 +104,7 @@ public class SecurityGroupManagerImpl implements SecurityGroupManager {
         }
         securityGroup.setIdSecurityGroup(idSecurityGroup);
         return securityGroup;
-    }
+    }*/
     
     /**
      * Adds a rule to a security group

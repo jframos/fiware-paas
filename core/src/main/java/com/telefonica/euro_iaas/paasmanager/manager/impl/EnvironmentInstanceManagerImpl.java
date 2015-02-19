@@ -432,7 +432,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             //Deleting SG
             log.info("Deleting security group from tierInstance " + tierInstance.getName() + " in TierInstance");
             SecurityGroup secGroup = tierInstance.getSecurityGroup();
-            if (secGroup != null && !tierInstance.getVdc().isEmpty()) {
+            if (secGroup != null) {
             	SecurityGroup securityGroup=null;
             	try {
         			securityGroup = securityGroupDao.loadWithRules(secGroup.getName());

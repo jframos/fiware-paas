@@ -95,13 +95,4 @@ public interface TierDao extends BaseDAO<Tier, String> {
      * @return
      */
     Tier loadComplete(Tier newTier) throws EntityNotFoundException;
-    
-    /**
-     * Update the securitygroupId of a Tier
-     * @param tier
-     * @param idSecurityGroup
-     * @return
-     * @throws InvalidEntityException
-     */
-    //Tier updateTierSecurityGroupId(Tier tier, String idSecurityGroup) throws InvalidEntityException;
 }
