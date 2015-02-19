@@ -64,8 +64,7 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="tierDao" ref="tierDao"/>
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
             <property name="networkManager" ref="networkManager"/>
-            <property name="securityGroupManager" ref="securityGroupManager"/>
-
+            <!--<property name="securityGroupManager" ref="securityGroupManager"/>-->
         </bean>
 
         <bean id="productInstanceManager" lazy-init="true"
@@ -95,6 +94,9 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="infrastructureManager" ref="infrastructureManager"/>
             <property name="productInstallator" ref="productInstallator"/>
             <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
+            <property name="securityGroupManager" ref="securityGroupManager"/>
+            <property name="securityGroupDao" ref="securityGroupDao"/>            
+            <property name="tierDao" ref="tierDao"/>
         </bean>
 
         <bean id="tierInstanceManager" lazy-init="true"
@@ -103,10 +105,11 @@ http://www.springframework.org/schema/beans/spring-beans.xsd">
             <property name="tierManager" ref="tierManager"/>
             <property name="productInstanceManager" ref="productInstanceManager"/>
             <property name="infrastructureManager" ref="infrastructureManager"/>
+            <property name="productReleaseManager" ref="productReleaseManager"/>
             <property name="environmentInstanceManager" ref="environmentInstanceManager"/>
             <property name="environmentManager" ref="environmentManager"/>
-            <property name="networkInstanceManager" ref="networkInstanceManager"/>
-
+            <property name="securityGroupManager" ref="securityGroupManager"/>
+            <property name="systemPropertiesProvider" ref="systemPropertiesProvider"/>
         </bean>
         <bean id="environmentManager" lazy-init="true"
               class="com.telefonica.euro_iaas.paasmanager.manager.impl.EnvironmentManagerImpl">

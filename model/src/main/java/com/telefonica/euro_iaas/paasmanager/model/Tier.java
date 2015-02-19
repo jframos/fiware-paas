@@ -94,8 +94,8 @@ public class Tier {
 
     private Set<Network> networks;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private SecurityGroup securityGroup;
+    /*@ManyToOne(fetch = FetchType.EAGER)
+    private SecurityGroup securityGroup;*/
 
     private String region = "";
 
@@ -370,9 +370,9 @@ public class Tier {
         return productReleases;
     }
 
-    public SecurityGroup getSecurityGroup() {
+    /*public SecurityGroup getSecurityGroup() {
         return this.securityGroup;
-    }
+    }*/
 
     public String getVdc() {
         return vdc;
@@ -489,9 +489,9 @@ public class Tier {
         this.productReleases = productReleases;
     }
 
-    public void setSecurityGroup(SecurityGroup securityGroup) {
+    /*public void setSecurityGroup(SecurityGroup securityGroup) {
         this.securityGroup = securityGroup;
-    }
+    }*/
 
     /**
      * Set a vdc.
@@ -521,9 +521,9 @@ public class Tier {
         tierDto.setFlavour(getFlavour());
         tierDto.setImage(getImage());
         tierDto.setRegion(getRegion());
-        if (this.getSecurityGroup() != null) {
+        /*if (this.getSecurityGroup() != null) {
             tierDto.setSecurityGroup(this.getSecurityGroup().getName());
-        }
+        }*/
         tierDto.setKeypair(getKeypair());
         tierDto.setFloatingip(getFloatingip());
 
@@ -559,9 +559,9 @@ public class Tier {
      */
     public String toJson() {
         String payload = "{\"server\": " + "{\"key_name\": \"" + getKeypair() + "\", ";
-        if (getSecurityGroup() != null) {
+        /*if (getSecurityGroup() != null) {
             payload += "\"security_groups\": [{ \"name\": \"" + getSecurityGroup().getName() + "\"}], ";
-        }
+        }*/
         /*
          * if (getNetworks() != null) { payload = payload + "\"networks\": ["; for (Network net: this.getNetworks()){
          * payload = payload + "{ \"uuid\": \"" + net.getIdNetwork() + "\"}"; } payload = payload + "], "; }
@@ -627,7 +627,7 @@ public class Tier {
         sb.append("[payload = ").append(this.payload).append("]");
         sb.append("[productReleases = ").append(this.productReleases).append("]");
         sb.append("[networks = ").append(this.networks).append("]");
-        sb.append("[securityGroup = ").append(this.securityGroup).append("]");
+        //sb.append("[securityGroup = ").append(this.securityGroup).append("]");
         sb.append("[region = ").append(this.region).append("]");
         sb.append("]");
         return sb.toString();

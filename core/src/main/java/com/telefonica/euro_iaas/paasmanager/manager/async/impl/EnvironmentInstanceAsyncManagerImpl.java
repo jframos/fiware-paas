@@ -39,12 +39,14 @@ import org.springframework.scheduling.annotation.Async;
 import com.telefonica.euro_iaas.commons.dao.AlreadyExistsEntityException;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
 import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
+import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
 import com.telefonica.euro_iaas.paasmanager.exception.IPNotRetrievedException;
 import com.telefonica.euro_iaas.paasmanager.exception.InfrastructureException;
 import com.telefonica.euro_iaas.paasmanager.exception.NotUniqueResultException;
 import com.telefonica.euro_iaas.paasmanager.exception.ProductInstallatorException;
 import com.telefonica.euro_iaas.paasmanager.exception.TaskNotFoundException;
 import com.telefonica.euro_iaas.paasmanager.manager.EnvironmentInstanceManager;
+import com.telefonica.euro_iaas.paasmanager.manager.SecurityGroupManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.EnvironmentInstanceAsyncManager;
 import com.telefonica.euro_iaas.paasmanager.manager.async.TaskManager;
 import com.telefonica.euro_iaas.paasmanager.model.ClaudiaData;
@@ -64,7 +66,6 @@ public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceA
     private TaskManager taskManager;
     private SystemPropertiesProvider propertiesProvider;
     private TaskNotificator taskNotificator;
-
     @Async
 
     public void create(ClaudiaData claudiaData, EnvironmentInstance environmentInstance, Task task, String callback) {

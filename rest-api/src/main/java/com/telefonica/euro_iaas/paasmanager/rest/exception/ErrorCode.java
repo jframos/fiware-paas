@@ -45,6 +45,9 @@ public enum ErrorCode {
     NAME_NO_VALID(41, "The name is not valid", "(.*)InvalidEntityException:(.*)", 400),
     INFRASTRUCTURE(50, "OpenStack infrastructure failure", "(.*)InfrastructureException(.*)", 500),
     INVALID_ENVIRONMENT(60, "Invalid Environment Instance", "(.*)InvalidEnvironmentInstanceException(.*)", 400),
+    INVALID_INITIAL_NUMBER_REPLICAS(70, "The number of replicas is not valid",
+    		"(.*)InvalidEntityException:(.*)The number of replicas is not valid(.*)",
+    		400),
     DEFAULT(500, "Internal PaasManager Server error", "(?s).*", 500);
 
     private final int code;

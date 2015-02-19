@@ -27,6 +27,7 @@ package com.telefonica.euro_iaas.paasmanager.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.commons.lang.StringUtils;
@@ -40,10 +41,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.telefonica.euro_iaas.commons.dao.AbstractBaseDao;
 import com.telefonica.euro_iaas.commons.dao.EntityNotFoundException;
+import com.telefonica.euro_iaas.commons.dao.InvalidEntityException;
 import com.telefonica.euro_iaas.paasmanager.dao.TierDao;
 import com.telefonica.euro_iaas.paasmanager.model.Environment;
 import com.telefonica.euro_iaas.paasmanager.model.Metadata;
 import com.telefonica.euro_iaas.paasmanager.model.ProductRelease;
+import com.telefonica.euro_iaas.paasmanager.model.SecurityGroup;
 import com.telefonica.euro_iaas.paasmanager.model.Tier;
 import com.telefonica.euro_iaas.paasmanager.model.searchcriteria.TierSearchCriteria;
 
@@ -228,9 +231,8 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
             tier = (Tier) query.getResultList().get(0);
             tier.getNetworks();
             tier.getProductReleases();
-            tier.getSecurityGroup();
         } catch (Exception e) {
-            String message = " Tier don't exist in database ";
+            String message = " Tier does not exist in database ";
             throw new EntityNotFoundException(Tier.class, message, newTier.getName());
         }
         return tier;
