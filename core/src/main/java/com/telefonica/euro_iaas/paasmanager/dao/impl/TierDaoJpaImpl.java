@@ -232,8 +232,6 @@ public class TierDaoJpaImpl extends AbstractBaseDao<Tier, String> implements Tie
             if (tier.getProductReleases() != null) {
                 tier.getProductReleases().size();
             }
-            tier.getNetworks().size();
-            tier.getProductReleases().size();
         } catch (Exception e) {
             String message = " Tier does not exist in database ";
             throw new EntityNotFoundException(Tier.class, message, newTier.getName());
