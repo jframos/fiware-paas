@@ -35,7 +35,6 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +66,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      */
     private String tenant;
 
-    private HttpClientConnectionManager connectionManager;
+    private HttpClientConnectionManager httpConnectionManager;
 
     private OpenStackRegion openStackRegion;
 
@@ -79,15 +78,14 @@ public class OpenStackUtilImpl implements OpenStackUtil {
      * The constructor.
      */
     public OpenStackUtilImpl() {
-        connectionManager = new PoolingHttpClientConnectionManager();
     }
 
-    public HttpClientConnectionManager getConnectionManager() {
-        return connectionManager;
+    public HttpClientConnectionManager getHttpConnectionManager() {
+        return httpConnectionManager;
     }
 
-    public void setConnectionManager(HttpClientConnectionManager connectionManager) {
-        this.connectionManager = connectionManager;
+    public void setHttpConnectionManager(HttpClientConnectionManager httpConnectionManager) {
+        this.httpConnectionManager = httpConnectionManager;
     }
 
     /**
@@ -629,7 +627,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
     }
 
     protected CloseableHttpClient getHttpClient() {
-        return HttpClients.custom().setConnectionManager(connectionManager).build();
+        return HttpClients.custom().setConnectionManager(httpConnectionManager).build();
     }
 
     /**
@@ -1014,20 +1012,21 @@ public class OpenStackUtilImpl implements OpenStackUtil {
 
     /**
      * It lists the subnets for the user in a concrete region.
-     * @param user: the user
-     * @param region: the region
+     * 
+     * @param user
+     *            : the user
+     * @param region
+     *            : the region
      * @return
      * @throws OpenStackException
      */
-    public String listSubNetworks(PaasManagerUser user, String region)
-        throws OpenStackException {
+    public String listSubNetworks(PaasManagerUser user, String region) throws OpenStackException {
         log.debug("List subnetworks from user " + user.getUserName());
 
         PaasManagerUser user2 = openOperationUtil.getAdminUser(user);
 
-        HttpUriRequest request = openOperationUtil.
-            createQuantumGetRequest(RESOURCE_SUBNETS, APPLICATION_JSON, region,
-            user2.getToken(), user2.getUserName());
+        HttpUriRequest request = openOperationUtil.createQuantumGetRequest(RESOURCE_SUBNETS, APPLICATION_JSON, region,
+                user2.getToken(), user2.getUserName());
 
         String response = null;
 
@@ -1037,8 +1036,7 @@ public class OpenStackUtilImpl implements OpenStackUtil {
             log.debug(response);
 
         } catch (Exception e) {
-            String errorMessage = "Error getting list of subnetworks " +
-                "from OpenStack: " + e;
+            String errorMessage = "Error getting list of subnetworks " + "from OpenStack: " + e;
             log.error(errorMessage);
             throw new OpenStackException(errorMessage);
         }

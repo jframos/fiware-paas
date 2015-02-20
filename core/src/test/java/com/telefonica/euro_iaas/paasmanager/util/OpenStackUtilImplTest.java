@@ -113,7 +113,7 @@ public class OpenStackUtilImplTest {
         paasManagerUser.setTenantId("08bed031f6c54c9d9b35b42aa06b51c0");
 
         HttpClientConnectionManager httpClientConnectionManager = mock(HttpClientConnectionManager.class);
-        openStackUtil.setConnectionManager(httpClientConnectionManager);
+        openStackUtil.setHttpConnectionManager(httpClientConnectionManager);
 
         httpResponse = mock(CloseableHttpResponse.class);
         statusLine = mock(StatusLine.class);
