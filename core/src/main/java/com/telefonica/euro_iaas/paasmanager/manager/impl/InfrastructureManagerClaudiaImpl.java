@@ -139,7 +139,7 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 log.info("Number of networks " + tierInstance.getNetworkInstances().size() + " floatin ip "
                         + tierInstance.getTier().getFloatingip());
 
-                try {
+                //try {
                     log.info("Inserting in database ");
                     tierInstance = insertTierInstanceBD(claudiaData, environmentInstance.getEnvironment().getName(),
                             tierInstance);
@@ -147,16 +147,15 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                             + " floating ip " + tierInstance.getTier().getFloatingip());
                     environmentInstance.addTierInstance(tierInstance);
                     environmentInstanceDao.update(environmentInstance);
-                } catch (EntityNotFoundException e) {
-                    log.error("Entity Not found: Tier " + tierInstance.getTier().getName() + " " + e.getMessage());
-                    throw new InfrastructureException(e);
-                } catch (InvalidEntityException e) {
-                    log.error("Invalid: Tier " + tierInstance.getTier().getName() + " " + e.getMessage());
-                    throw new InfrastructureException(e);
+                /*} catch (InvalidEntityException e) {
+                	String ieemessage = "Invalid: Tier " + tierInstance.getTier().getName() + " " + e.getMessage();
+                	log.error(ieemessage);
+                    throw new InvalidEntityException(ieemessage);
                 } catch (AlreadyExistsEntityException e) {
-                    log.error("AllReady found: Tier " + tierInstance.getTier().getName() + " " + e.getMessage());
-                    throw new InfrastructureException(e);
-                }
+                    String aeeemessage = "Already found: Tier " + tierInstance.getTier().getName() + " " + e.getMessage();
+                	log.error(aeeemessage);
+                    throw new AlreadyExistsEntityException(aeeemessage);
+                }*/
 
                 try {
                     tierInstanceManager.update(claudiaData, environmentInstance.getEnvironment().getName(),
