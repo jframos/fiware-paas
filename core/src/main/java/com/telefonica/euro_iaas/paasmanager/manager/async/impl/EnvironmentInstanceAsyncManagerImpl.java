@@ -93,9 +93,6 @@ public class EnvironmentInstanceAsyncManagerImpl implements EnvironmentInstanceA
             } catch (AlreadyExistsEntityException aee) {
                 String errorMsg = "The Environment " + environmentInstance.getBlueprintName() + " already exists";
                 updateErrorTaskOnInstall(environmentInstance, claudiaData.getVdc(), task, errorMsg, aee);
-            } catch (NotUniqueResultException nue) {
-                String errorMsg = "There is a Product Instance already INSTALLED" + "in the system";
-                updateErrorTaskOnInstall(environmentInstance, claudiaData.getVdc(), task, errorMsg, nue);
             } catch (InfrastructureException ie) {
                 String errorMsg = "Infrastructure error " + ie.getLocalizedMessage();
                 updateErrorTaskOnInstall(environmentInstance, claudiaData.getVdc(), task, errorMsg, ie);

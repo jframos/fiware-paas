@@ -193,10 +193,6 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             environmentInstance.setStatus(Status.ERROR);
             environmentInstanceDao.update(environmentInstance);
             throw new ProductInstallatorException(e);
-        } catch (NotUniqueResultException e) {
-            environmentInstance.setStatus(Status.ERROR);
-            environmentInstanceDao.update(environmentInstance);
-            throw new ProductInstallatorException(e);
         }
 
         log.info("Is the environment federated? ");
@@ -275,7 +271,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
      * @throws EntityNotFoundException
      */
     public boolean installSoftwareInEnvironmentInstance(ClaudiaData claudiaData, EnvironmentInstance environmentInstance)
-            throws ProductInstallatorException, InvalidProductInstanceRequestException, NotUniqueResultException,
+            throws ProductInstallatorException, InvalidProductInstanceRequestException,
             InfrastructureException, InvalidEntityException, EntityNotFoundException {
         // TierInstance by TierInstance let's check if we have to install
         // software
