@@ -164,15 +164,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             environmentInstance = infrastructureManager.createInfrasctuctureEnvironmentInstance(environmentInstance,
                     environment.getTiers(), claudiaData);
 
-        } /*catch (InvalidVappException e) {
-            environmentInstance.setStatus(Status.ERROR);
-            environmentInstanceDao.update(environmentInstance);
-            throw new InvalidVappException(e);
-        } catch (InvalidOVFException e) {
-            environmentInstance.setStatus(Status.ERROR);
-            environmentInstanceDao.update(environmentInstance);
-            throw new InvalidOVFException(e);
-        }*/ catch (InfrastructureException e) {
+        } catch (InfrastructureException e) {
             environmentInstance.setStatus(Status.ERROR);
             environmentInstanceDao.update(environmentInstance);
             throw new InfrastructureException(e.getMessage());
