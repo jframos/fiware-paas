@@ -132,7 +132,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
      */
     public EnvironmentInstance create(ClaudiaData claudiaData, EnvironmentInstance environmentInstance)
             throws AlreadyExistsEntityException, InvalidEntityException, EntityNotFoundException, InvalidVappException,
-            InvalidOVFException, InfrastructureException, ProductInstallatorException {
+            InfrastructureException, ProductInstallatorException {
 
         Environment environment = insertEnvironmentInDatabase(claudiaData, environmentInstance.getEnvironment());
 
@@ -164,7 +164,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             environmentInstance = infrastructureManager.createInfrasctuctureEnvironmentInstance(environmentInstance,
                     environment.getTiers(), claudiaData);
 
-        } catch (InvalidVappException e) {
+        } /*catch (InvalidVappException e) {
             environmentInstance.setStatus(Status.ERROR);
             environmentInstanceDao.update(environmentInstance);
             throw new InvalidVappException(e);
@@ -172,7 +172,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             environmentInstance.setStatus(Status.ERROR);
             environmentInstanceDao.update(environmentInstance);
             throw new InvalidOVFException(e);
-        } catch (InfrastructureException e) {
+        }*/ catch (InfrastructureException e) {
             environmentInstance.setStatus(Status.ERROR);
             environmentInstanceDao.update(environmentInstance);
             throw new InfrastructureException(e.getMessage());

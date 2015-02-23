@@ -98,8 +98,8 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
     }
 
     public EnvironmentInstance createInfrasctuctureEnvironmentInstance(EnvironmentInstance environmentInstance,
-            Set<Tier> tiers, ClaudiaData claudiaData) throws InfrastructureException, InvalidVappException,
-            InvalidOVFException, InvalidEntityException, EntityNotFoundException, AlreadyExistsEntityException {
+            Set<Tier> tiers, ClaudiaData claudiaData) throws InfrastructureException,
+            InvalidEntityException, EntityNotFoundException, AlreadyExistsEntityException {
 
         // Deploy MVs
         log.info("Creating infrastructure for environment instance " + environmentInstance.getBlueprintName());
