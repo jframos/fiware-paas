@@ -25,6 +25,7 @@
 package com.telefonica.euro_iaas.paasmanager.rest.exception;
 
 import com.telefonica.euro_iaas.paasmanager.exception.InvalidEnvironmentInstanceException;
+import com.telefonica.euro_iaas.paasmanager.exception.InvalidSecurityGroupRequestException;
 
 /**
  * Class that contain the information related to the error code.
@@ -46,6 +47,7 @@ public enum ErrorCode {
     NAME_NO_VALID(41, "The name is not valid", "(.*)InvalidEntityException:(.*)", 400),
     OPENSTACK_ERROR_CREATINGSERVER (50, "Openstack error creating a server/assigning floating ip", "(.*)InfrastructureException(.*)Error interacting with OpenStack(.*)", 500),
     OPENSTACK_ERROR_FEDERATING_NETWORKS (51, "Error federating the networks", "(.*)InfrastructureException(.*)Error federating the networks(.*)", 500),
+    OPENSTACK_ERROR_CREATING_SECGROUPS (52, "It is not possible to create the security group", "(.*)InvalidSecurityGroupRequestException(.*)", 500),
     INFRASTRUCTURE(52, "OpenStack infrastructure failure", "(.*)InfrastructureException(.*)", 500),
     INVALID_ENVIRONMENT(60, "Invalid Environment Instance", "(.*)InvalidEnvironmentInstanceException(.*)", 400),
     INVALID_INITIAL_NUMBER_REPLICAS(70, "The number of replicas is not valid",
