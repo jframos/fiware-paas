@@ -486,7 +486,7 @@ public class ClaudiaClientOpenStackImpl implements ClaudiaClient {
         } catch (OpenStackException e) {
             String errorMessage = "Error interacting with OpenStack " + e.getMessage();
             log.error(errorMessage);
-            throw new InfrastructureException(e.getMessage());
+            throw new InfrastructureException(errorMessage);
 
         }
 
