@@ -131,7 +131,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
      * @throws ProductInstallatorException
      */
     public EnvironmentInstance create(ClaudiaData claudiaData, EnvironmentInstance environmentInstance)
-            throws AlreadyExistsEntityException, InvalidEntityException, EntityNotFoundException, InvalidVappException,
+            throws AlreadyExistsEntityException, InvalidEntityException, EntityNotFoundException,
             InfrastructureException, ProductInstallatorException {
 
         Environment environment = insertEnvironmentInDatabase(claudiaData, environmentInstance.getEnvironment());
