@@ -36,6 +36,7 @@ public enum ErrorCode {
     ENTITY_NOT_FOUND(30, "Entity not found", "(.*)EntityNotFoundException(.*)", 404),
     ALREADY_EXIST(31, "Entity already exist", "(.*)AlreadyExistEntityException(.*)", 409),
     ALREADY_EXIST2(32, "Invalid environment", "(.*)already exists(.*)", 409),
+    TIERINSTANCE_ALREADY_EXIST(33,"TierInstance Already exists", "(.*)InvalidEntityException(.*)TierInstance Already exists(.*)", 409),
     ENVIRONMENT_IN_USE(40,
             "The environment is being used by an instance",
             "(.*)InvalidEntityException: (.*)is being used(.*)",

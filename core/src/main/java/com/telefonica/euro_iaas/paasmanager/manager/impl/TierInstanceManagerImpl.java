@@ -99,8 +99,10 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 
         try {
             tierInstanceDao.load(tierInstance.getName());
-            throw new InvalidEntityException("Error to create the Tier Instance " + tierInstance.getName()
-                    + ". It already exists. ");
+            String message = "TierInstance Already exists [" + tierInstance.getName()
+                    + "]";
+            log.error(message);
+            throw new InvalidEntityException(message);
         } catch (EntityNotFoundException e) {
 
         }
