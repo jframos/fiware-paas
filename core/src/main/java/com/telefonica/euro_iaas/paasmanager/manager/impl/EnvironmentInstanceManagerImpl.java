@@ -131,8 +131,8 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
      * @throws ProductInstallatorException
      */
     public EnvironmentInstance create(ClaudiaData claudiaData, EnvironmentInstance environmentInstance)
-            throws AlreadyExistsEntityException, InvalidEntityException, EntityNotFoundException, InvalidVappException,
-            InvalidOVFException, InfrastructureException, ProductInstallatorException {
+            throws AlreadyExistsEntityException, InvalidEntityException, EntityNotFoundException,
+            InfrastructureException, ProductInstallatorException {
 
         Environment environment = insertEnvironmentInDatabase(claudiaData, environmentInstance.getEnvironment());
 
@@ -164,14 +164,6 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             environmentInstance = infrastructureManager.createInfrasctuctureEnvironmentInstance(environmentInstance,
                     environment.getTiers(), claudiaData);
 
-        } catch (InvalidVappException e) {
-            environmentInstance.setStatus(Status.ERROR);
-            environmentInstanceDao.update(environmentInstance);
-            throw new InvalidVappException(e);
-        } catch (InvalidOVFException e) {
-            environmentInstance.setStatus(Status.ERROR);
-            environmentInstanceDao.update(environmentInstance);
-            throw new InvalidOVFException(e);
         } catch (InfrastructureException e) {
             environmentInstance.setStatus(Status.ERROR);
             environmentInstanceDao.update(environmentInstance);
@@ -190,10 +182,6 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
             environmentInstanceDao.update(environmentInstance);
             throw new ProductInstallatorException(e);
         } catch (InvalidProductInstanceRequestException e) {
-            environmentInstance.setStatus(Status.ERROR);
-            environmentInstanceDao.update(environmentInstance);
-            throw new ProductInstallatorException(e);
-        } catch (NotUniqueResultException e) {
             environmentInstance.setStatus(Status.ERROR);
             environmentInstanceDao.update(environmentInstance);
             throw new ProductInstallatorException(e);
@@ -275,7 +263,7 @@ public class EnvironmentInstanceManagerImpl implements EnvironmentInstanceManage
      * @throws EntityNotFoundException
      */
     public boolean installSoftwareInEnvironmentInstance(ClaudiaData claudiaData, EnvironmentInstance environmentInstance)
-            throws ProductInstallatorException, InvalidProductInstanceRequestException, NotUniqueResultException,
+            throws ProductInstallatorException, InvalidProductInstanceRequestException,
             InfrastructureException, InvalidEntityException, EntityNotFoundException {
         // TierInstance by TierInstance let's check if we have to install
         // software
