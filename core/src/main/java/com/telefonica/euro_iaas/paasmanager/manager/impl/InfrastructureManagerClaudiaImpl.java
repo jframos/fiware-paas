@@ -139,24 +139,14 @@ public class InfrastructureManagerClaudiaImpl implements InfrastructureManager {
                 log.info("Number of networks " + tierInstance.getNetworkInstances().size() + " floatin ip "
                         + tierInstance.getTier().getFloatingip());
 
-                //try {
-                    log.info("Inserting in database ");
-                    tierInstance = insertTierInstanceBD(claudiaData, environmentInstance.getEnvironment().getName(),
-                            tierInstance);
-                    log.info("Return: Number of networks " + tierInstance.getNetworkInstances().size()
-                            + " floating ip " + tierInstance.getTier().getFloatingip());
-                    environmentInstance.addTierInstance(tierInstance);
-                    environmentInstanceDao.update(environmentInstance);
-                /*} catch (InvalidEntityException e) {
-                	String ieemessage = "Invalid: Tier " + tierInstance.getTier().getName() + " " + e.getMessage();
-                	log.error(ieemessage);
-                    throw new InvalidEntityException(ieemessage);
-                } catch (AlreadyExistsEntityException e) {
-                    String aeeemessage = "Already found: Tier " + tierInstance.getTier().getName() + " " + e.getMessage();
-                	log.error(aeeemessage);
-                    throw new AlreadyExistsEntityException(aeeemessage);
-                }*/
-
+                log.info("Inserting in database ");
+                tierInstance = insertTierInstanceBD(claudiaData, environmentInstance.getEnvironment().getName(),
+                		tierInstance);
+                log.info("Return: Number of networks " + tierInstance.getNetworkInstances().size() 
+                		+ " floating ip " + tierInstance.getTier().getFloatingip());
+                environmentInstance.addTierInstance(tierInstance);
+                environmentInstanceDao.update(environmentInstance);
+                
                 try {
                     tierInstanceManager.update(claudiaData, environmentInstance.getEnvironment().getName(),
                             tierInstance);
