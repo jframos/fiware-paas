@@ -679,10 +679,9 @@ public class TierInstanceManagerImpl implements TierInstanceManager {
 		   throws EntityNotFoundException {
 
         SecurityGroup securityGroup = new SecurityGroup();
-        securityGroup.setName("sg_" + claudiaData.getVdc() 
-        		+ "_" + tierInstance.getName());
-        log.info("Generate Object Security Group " + "sg_" + claudiaData.getService() + "_" + claudiaData.getVdc() 
-        		+ "_" + tierInstance.getTier().getRegion() + "_" + tierInstance.getName());
+        String secGroupName = "sg_" + claudiaData.getVdc() + "_" + tierInstance.getName();
+        securityGroup.setName(secGroupName);
+        log.info("Generate Object Security Group " + secGroupName);
 
         List<Rule> rules = getDefaultRules();
         List<ProductRelease> productReleases = tierInstance.getTier().getProductReleases();
